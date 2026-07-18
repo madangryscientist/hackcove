@@ -1,0 +1,18 @@
+{
+  "name": "@omnibus/ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "peerDependencies": {
+    "react": "*"
+  },
+  "devDependencies": {
+    "@storybook/react-vite": "^10.5.2",
+    "@vitejs/plugin-react": "^6.0.3",
+    "storybook": "^10.5.2",
+    "vite": "^8.1.5"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "ui",
+  "root": "platform/ui",
+  "sourceRoot": "platform/ui/src",
+  "projectType": "library",
+  "tags": [
+    "scope:ui"
+  ],
+  "targets": {
+    "storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bunx storybook dev -p 6006",
+        "cwd": "platform/ui"
+      }
+    },
+    "build-storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "bunx storybook build",
+        "cwd": "platform/ui"
+      }
+    }
+  }
+}
