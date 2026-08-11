@@ -4,6 +4,8 @@ export {
   Body,
   BodyStrong,
   Caption,
+  Display,
+  Lead,
   ModalHeading,
   Overline,
   PageHeading,

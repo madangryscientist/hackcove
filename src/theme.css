@@ -1,0 +1,175 @@
+/* ---------------------------------------------------------------------------
+   @omnibus/ui — the Catppuccin Mocha dark theme for this design system.
+   ---------------------------------------------------------------------------
+   The components in this package are written against Tailwind's slate/colour
+   utilities directly (bg-white, text-slate-900, …) rather than carrying `dark:`
+   variants. This file is what makes them dark: it remaps those core utilities
+   to real Catppuccin Mocha tokens under `.dark`. The rules are unlayered, so
+   they override Tailwind's (layered) utilities.
+
+   Consumers import it AFTER `@import "tailwindcss"` and put `.dark` on <html>:
+
+     @import "tailwindcss";
+     @import "@omnibus/ui/theme.css";
+
+   Palette:
+     base #1e1e2e · mantle #181825 · crust #11111b · surface0 #313244
+     surface1 #45475a · surface2 #585b70 · text #cdd6f4 · subtext1 #bac2de
+     subtext0 #a6adc8 · overlay1 #7f849c · green #a6e3a1 · red #f38ba8
+     yellow #f9e2af · blue #89b4fa · mauve #cba6f7
+   --------------------------------------------------------------------------- */
+
+/* Class-based dark mode (toggle adds `.dark` to <html>). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+.dark {
+  color-scheme: dark;
+}
+
+/* Surfaces — cards (base) lift off the mantle canvas. */
+.dark .bg-white {
+  background-color: #1e1e2e; /* base */
+}
+.dark .bg-white\/80 {
+  background-color: rgba(30, 30, 46, 0.85);
+}
+.dark .bg-slate-50,
+.dark .bg-slate-50\/50,
+.dark .bg-slate-50\/60,
+.dark .bg-slate-50\/70 {
+  background-color: #313244; /* surface0 */
+}
+.dark .bg-slate-100 {
+  background-color: #45475a; /* surface1 */
+}
+.dark .bg-slate-900 {
+  background-color: #313244; /* surface0 — e.g. the brand badge */
+}
+
+/* Text */
+.dark .text-slate-900,
+.dark .text-slate-800 {
+  color: #cdd6f4; /* text — incl. bold totals/footers */
+}
+.dark .text-slate-700,
+.dark .text-slate-600 {
+  color: #bac2de; /* subtext1 */
+}
+.dark .text-slate-500 {
+  color: #a6adc8; /* subtext0 */
+}
+.dark .text-slate-400 {
+  color: #9399b2; /* overlay2 — legible muted/headers */
+}
+
+/* Borders */
+.dark .border-slate-100 {
+  border-color: #282839;
+}
+.dark .border-slate-200,
+.dark .border-slate-200\/70 {
+  border-color: #313244; /* surface0 */
+}
+.dark .border-slate-300 {
+  border-color: #45475a; /* surface1 */
+}
+/* "emphasis" / active borders flip to light so they stay visible */
+.dark .border-slate-900 {
+  border-color: #cdd6f4;
+}
+
+/* Money + accent text */
+.dark .text-emerald-600 {
+  color: #a6e3a1; /* green */
+}
+.dark .text-red-600 {
+  color: #f38ba8; /* red */
+}
+
+/* Stat-card accent bars */
+.dark .bg-emerald-500 {
+  background-color: #a6e3a1;
+}
+.dark .bg-red-500 {
+  background-color: #f38ba8;
+}
+.dark .bg-slate-300 {
+  background-color: #585b70; /* surface2 */
+}
+
+/* Hover states */
+.dark .hover\:bg-slate-50:hover {
+  background-color: #262739;
+}
+.dark .hover\:bg-slate-100:hover {
+  background-color: #313244;
+}
+
+/* Coloured callouts / chips — tint backgrounds, lighten text & borders */
+.dark .bg-emerald-50,
+.dark .bg-emerald-50\/60,
+.dark .bg-emerald-100 {
+  background-color: rgba(166, 227, 161, 0.13);
+}
+.dark .bg-amber-50,
+.dark .bg-amber-50\/60,
+.dark .bg-amber-100 {
+  background-color: rgba(249, 226, 175, 0.13);
+}
+.dark .bg-red-50 {
+  background-color: rgba(243, 139, 168, 0.13);
+}
+.dark .bg-blue-50 {
+  background-color: rgba(137, 180, 250, 0.13);
+}
+.dark .bg-violet-50 {
+  background-color: rgba(203, 166, 247, 0.14); /* mauve tint */
+}
+.dark .text-emerald-700,
+.dark .text-emerald-800 {
+  color: #a6e3a1; /* green */
+}
+.dark .text-amber-700,
+.dark .text-amber-800,
+.dark .text-amber-900 {
+  color: #f9e2af; /* yellow */
+}
+.dark .text-red-900 {
+  color: #f38ba8; /* red */
+}
+.dark .text-blue-600,
+.dark .text-blue-700,
+.dark .text-blue-800,
+.dark .text-blue-900 {
+  color: #89b4fa; /* blue */
+}
+.dark .text-violet-600,
+.dark .text-violet-700 {
+  color: #cba6f7; /* mauve */
+}
+.dark .border-emerald-200,
+.dark .border-emerald-300 {
+  border-color: rgba(166, 227, 161, 0.4);
+}
+.dark .border-amber-300 {
+  border-color: rgba(249, 226, 175, 0.4);
+}
+.dark .border-red-300,
+.dark .border-red-400 {
+  border-color: rgba(243, 139, 168, 0.45);
+}
+.dark .border-blue-200,
+.dark .border-blue-300 {
+  border-color: rgba(137, 180, 250, 0.4);
+}
+
+/* Inline links — Mocha mauve (green is reserved for positive values). */
+.link {
+  color: #cba6f7; /* mauve */
+  font-weight: 500;
+  text-underline-offset: 2px;
+  transition: color 0.12s ease;
+}
+.link:hover {
+  color: #b4befe; /* lavender */
+}

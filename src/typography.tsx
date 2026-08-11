@@ -79,6 +79,23 @@ function typography<D extends ElementType>(displayName: string, defaultAs: D, va
 
 // --- Structural roles (block by default) -----------------------------------
 
+/**
+ * Marketing-scale headline — the one line at the top of a public page. `h1`,
+ * text-4xl/tight semibold, primary text, growing to text-6xl on wider screens.
+ * The dashboard's `PageHeading` scale is deliberately dev-tool sized; a brochure
+ * hero needs a display scale, so it gets its own pinned role rather than callers
+ * overriding PageHeading's size.
+ */
+export const Display = typography(
+  "Display",
+  "h1",
+  "text-4xl/[1.1] font-semibold tracking-tight sm:text-5xl/[1.05] lg:text-6xl/[1.05]",
+  "default",
+);
+
+/** The supporting sentence under a `Display`. `p`, text-lg/7 normal, secondary. */
+export const Lead = typography("Lead", "p", "text-lg/7 font-normal sm:text-xl/8", "secondary");
+
 /** Page title. `h1`, text-2xl/8 semibold, primary text. */
 export const PageHeading = typography("PageHeading", "h1", "text-2xl/8 font-semibold tracking-tight", "default");
 
