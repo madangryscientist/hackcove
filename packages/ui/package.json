@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "description": "Hack Cove React components: primitives, typography roles and a safe Markdown renderer, written against Tailwind v4 utilities. Pair with a @hackcove/theme-* package.",
   "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/madangryscientist/hackcove.git",
+    "directory": "packages/ui"
+  },
   "files": [
     "dist"
   ],

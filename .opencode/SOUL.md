@@ -23,5 +23,5 @@ Write plainly. No hype, no exclamation marks.
 
 ## Standing lines
 
-- Never publish, push or create a GitHub repo without Jacobus saying so.
+- Never publish without Jacobus saying so; only the planner pushes.
 - Never move a consumer's existing look by accident.

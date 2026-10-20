@@ -18,10 +18,11 @@ invariants.
 
 Repo-specific points the generic skill cannot know:
 
-- **Tracker is `ob` only.** The repo has no remote yet; do not create GitHub issues.
+- **Tracker is `ob` only — by choice.** The repo has a private `origin` and `gh` is authenticated,
+  but one tracker beats two. Do not create GitHub issues unless a human asks.
 - **Ticket briefs go in the `ob` item's body**, structured as `## What to build` / `## Acceptance`
   / `## Do not`. There is no `wayfinder/tickets/` directory here, so the body is what the builder
   is launched with.
 - **Work lives in ob project `hackcove`.**
-- **Nothing is published or pushed by an agent.** The npm org, the GitHub repo and the first
-  `npm publish` are Jacobus's steps.
+- **Nothing is published by an agent, and builders never push.** The npm login and the first
+  `npm publish` are Jacobus's steps; the planner pushes.

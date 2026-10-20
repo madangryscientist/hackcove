@@ -13,8 +13,10 @@ will adapt to a stale repo.
 
 ## Tracker: `ob` only
 
-The repo has **no remote yet** (Jacobus creates the GitHub repo himself), so there is no `gh`
-issue tracker to reach for. When one exists we still use `ob`: one tracker is better than two.
+The repo has a remote — `origin`, `github.com/madangryscientist/hackcove`, **private** — and `gh`
+is authenticated, so `gh issue` would work. We do not use it: one tracker is better than two, and
+`ob` is where the planning, spinoff and landing workflow lives. Do not create GitHub issues unless
+a human asks for them.
 
 - Tickets live in `ob`, project **`hackcove`**. Create with
   `ob add "<title>" --project hackcove --body "<brief>"`.
@@ -79,8 +81,13 @@ planner gates and squash-merges with `ob-land`.
 1. Builder commits on its own branch, ending the message with one of
    `State: ready` / `State: needs-human` / `State: blocked` / `State: partial`.
 2. The builder never pushes, never merges and **never publishes**.
-3. On `State: ready`, the planner loads `ob-land` and lands it into `main`. There is no remote
-   yet, so landing is local until Jacobus adds one.
+3. On `State: ready`, the planner loads `ob-land` and lands it into `main`. Landing is what
+   touches the remote, and it is the only step that does:
+
+   ```bash
+   git push origin main
+   git push origin --delete <branch>   # only after the squash is on main
+   ```
 
 Scan several worktrees without opening a diff:
 
@@ -150,7 +157,8 @@ The skills need no wiring here — the global config registers `omnibus/skills`,
    have, which silently breaks consumers' types.
 6. **Tailwind skips `node_modules`.** A consumer must `@source` the package's `dist/`; the READMEs
    say so. Anything that changes how a consumer wires this is a documented, breaking change.
-7. **Nothing is published or pushed without Jacobus.** No `npm publish`, no GitHub repo, no remote.
-   `LICENSE` is a placeholder until he chooses one; versions stay `0.x`.
+7. **Nothing is published without Jacobus, and only the planner pushes.** No `npm publish`; no
+   `git push` from a builder. The repo stays private. `LICENSE` is a placeholder until he chooses
+   one; versions stay `0.x`.
 8. **Existing looks do not move silently.** The dashboard and `hack-cove-site` render from these
    packages. A visual change is deliberate and says so in the commit.
