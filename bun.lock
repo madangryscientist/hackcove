@@ -25,6 +25,7 @@
       "devDependencies": {
         "@storybook/react-vite": "^10.6.2",
         "@tailwindcss/vite": "^4.3.3",
+        "@types/bun": "1.4.3",
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
         "storybook": "^10.6.2",
@@ -37,11 +38,13 @@
       "version": "0.1.0",
       "devDependencies": {
         "@hackcove/tools": "workspace:*",
+        "@types/bun": "1.4.3",
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
         "react": "^19.3.1",
         "react-dom": "^19.3.1",
         "tailwindcss": "^4.3.3",
+        "vitest": "5.0.5",
       },
       "peerDependencies": {
         "react": ">=18",
@@ -53,7 +56,9 @@
       "version": "0.1.0",
       "devDependencies": {
         "@hackcove/tools": "workspace:*",
+        "@types/bun": "1.4.3",
         "tailwindcss": "^4.3.3",
+        "vitest": "5.0.5",
       },
       "peerDependencies": {
         "tailwindcss": "^4",
@@ -62,6 +67,10 @@
     "tools": {
       "name": "@hackcove/tools",
       "version": "0.0.0",
+      "devDependencies": {
+        "@types/bun": "1.4.3",
+        "vitest": "5.0.5",
+      },
     },
   },
   "packages": {
