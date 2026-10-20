@@ -74,8 +74,10 @@ bunx nx release publish             # builds, then publishes @hackcove/ui and ev
 ```
 
 Add `-p ui` or `-p theme-<name>` to publish one package. Versions are bumped by hand in each
-`package.json` (0.x). `scripts/publish.ts` is the target body: it maps Nx's `--dryRun` onto
-`npm publish --dry-run`, so a dry run cannot publish.
+`package.json` (0.x). The `nx-release-publish` target is Nx's own `@nx/js:release-publish` executor
+(`nx.json`). Nx reads only a root `tsconfig.base.json` or `tsconfig.json`, and TypeScript 7 has no
+classic compiler API for it to parse them with, so the shared compiler options live in
+`tsconfig.shared.json` instead.
 
 ## Develop
 

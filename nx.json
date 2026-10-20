@@ -4,7 +4,7 @@
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": ["default"],
     "sharedGlobals": [
-      "{workspaceRoot}/tsconfig.base.json",
+      "{workspaceRoot}/tsconfig.shared.json",
       "{workspaceRoot}/.oxlintrc.json",
       "{workspaceRoot}/nx.json"
     ]
@@ -28,11 +28,11 @@
       "dependsOn": ["build"]
     },
     "nx-release-publish": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/js:release-publish",
       "dependsOn": ["build"],
       "options": {
-        "command": "bun ../../scripts/publish.ts",
-        "cwd": "{projectRoot}"
+        "packageRoot": "{projectRoot}",
+        "access": "public"
       }
     }
   },

@@ -18,6 +18,7 @@
     "storybook": "nx run storybook:storybook"
   },
   "devDependencies": {
+    "@nx/js": "23.3.0",
     "@types/bun": "1.4.3",
     "nx": "23.3.0",
     "oxfmt": "0.74.0",
