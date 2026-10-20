@@ -4,7 +4,7 @@ The Catppuccin Mocha dark theme for Hack Cove. One CSS file, `theme.css`: it dec
 class-based `dark` variant and, under `.dark`, remaps the Tailwind slate/colour utilities that
 `@hackcove/ui` is written against to real Mocha tokens. It also ships a `.link` class.
 
-Status: `0.x`, not yet published to npm. License: MIT.
+Status: `0.x`, published to npm. License: MIT.
 
 ## Install
 
