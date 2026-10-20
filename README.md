@@ -8,7 +8,6 @@ on its own; nothing is published yet.
 | `packages/ui` | `@hackcove/ui` | The React components: primitives, typography roles, a safe Markdown renderer. Written against Tailwind v4 utilities. No theme CSS. |
 | `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha` | The Catppuccin Mocha dark theme: one `theme.css` that remaps those utilities under `.dark`. |
 | `apps/storybook` | (private) | Storybook for the components, with a toolbar theme switcher that lists every folder under `themes/`. |
-| `tools` | (private) | The shared contract tests every package and theme must pass. |
 
 There is **no light theme package**. The light look is the components' own default Tailwind classes
 and has no CSS of its own; Storybook's `default` choice shows it.
@@ -51,15 +50,15 @@ A theme is a folder. Copy one, rename it, change the CSS:
 cp -r themes/catppuccin-mocha themes/<name>
 ```
 
-1. In `themes/<name>/package.json` set `name` to `@hackcove/theme-<name>` and `description`; in
-   `project.json` set `name` to `theme-<name>` and replace the folder in `root` and every `cwd`.
+1. In `themes/<name>/package.json` set `name` to `@hackcove/theme-<name>`, `description`, and the
+   Nx project name under `"nx"` to `theme-<name>`. Its scripts are folder-relative, so nothing else
+   needs editing.
 2. Edit `theme.css`. The contract: remap the utilities `@hackcove/ui` uses under a `.dark` scope,
    declare `@custom-variant dark (&:where(.dark, .dark *));`, and do not import Tailwind (the
    consumer does).
 3. Rewrite `README.md` and the LICENSE placeholder for the new package.
-4. `bun install`, then `bunx nx run theme-<name>:test`. The shared contract in `tools` checks the
-   name, the exports, the `files` list, the `.dark` scope and that the README names only packages
-   that exist here.
+4. `bun install`, then `bunx nx run theme-<name>:test` (checks the name, exports, `files` list and
+   the `.dark` scope in the theme's own `theme.test.ts`; edit it to match your theme).
 
 There is nothing else to register. Storybook finds `themes/*/theme.css` on its own, so the new
 theme is in the toolbar the next time it starts.
@@ -79,6 +78,3 @@ bunx nx run storybook:storybook                 # http://localhost:6006
 Use the packages from a consumer checkout before they are published: run `bun link` once inside
 `packages/ui` and each `themes/<name>`, then `bun link @hackcove/ui` (and the theme) in the
 consumer. Rebuild `packages/ui` (`bunx nx build ui`) after a change; consumers read its `dist/`.
-
-Package names live in each package's `package.json`. `tools/src/contract.ts` fails any README that
-names a scoped package this workspace does not have.

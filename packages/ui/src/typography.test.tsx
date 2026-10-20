@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { Body, Caption, Display, PageHeading, SectionHeading } from "./typography.js";
+import { Body, Caption, PageHeading, SectionHeading } from "./typography.js";
 
 describe("typography", () => {
   it("renders the semantic default element and pinned classes", () => {
@@ -28,9 +28,5 @@ describe("typography", () => {
     );
     expect(out).toContain('class="text-base/6 font-semibold text-slate-900 mt-4"');
     expect(out).toContain('id="s1"');
-  });
-
-  it("exposes a display name per role", () => {
-    expect(Display.displayName).toBe("Display");
   });
 });

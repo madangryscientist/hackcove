@@ -43,7 +43,6 @@ Write each brief with these three headings, because the builder's launch prompt 
 | `ui` | `packages/ui` | `@hackcove/ui`: the components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, tailwindcss v4. No theme CSS. |
 | `theme-catppuccin-mocha` | `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha`: one `theme.css`, shipped as-is. |
 | `storybook` | `apps/storybook` | Storybook for the components; a toolbar switcher lists every `themes/*` folder. Private. |
-| `tools` | `tools` | The shared contract tests (`describePackage`, `describeTheme`). Private. |
 
 **One folder, one publishable package per theme.** Adding a theme is copying a folder
 (`README.md`, "How to add a theme"); nothing else registers it. There is no light theme package:
@@ -110,55 +109,20 @@ The planner itself is the pinned T3 thread `planner · hackcove`, created by
 `ob t3 planner --repo hackcove` (idempotent: a re-run reads the same thread back and creates
 nothing).
 
-## The ob planner
-
-Everything for driving this repo through `ob` from opencode lives in `.opencode/`:
-
-| Path | What it is |
-| --- | --- |
-| `agents/planner.md` | The planning agent. Primary mode, subagents denied. Overrides the global `planner` for this repo only. |
-| `commands/ob-planner.md` | `/ob-planner` — primes a session as the planner. Overrides the global command here. |
-| `SOUL.md` | Injected into every request by `ob-soul`. Keep it short; it costs tokens on every turn. |
-| `plugins/*.ts` | One-line re-exports of ob's four runtime plugins (see below). |
-
-These are the opencode fallback; the planner is the pinned T3 thread. There is no launcher script
-here, and the `ob-planner` skill sets `disable-model-invocation`, so `/ob-planner` alone cannot
-load it — an opencode planner session needs the skill injected over
-`POST /api/experimental/session/{id}/skill`.
-
-The plugins give a session the `ob agents` heartbeat, always-on memory, SOUL injection and the
-skill-filing nudge. They are re-exported from the omnibus checkout by **absolute** path: a relative
-path breaks from a T3 worktree, and a `plugins` entry in `opencode.jsonc` that names files rather
-than a directory loads nothing, silently. After touching any of this, confirm all four load:
-
-```bash
-opencode api get "/api/plugin?location%5Bdirectory%5D=$PWD" \
-  | python3 -c "import json,sys; print([p['id'] for p in json.load(sys.stdin)['data'] if p['id'].startswith('ob-')])"
-```
-
-The skills need no wiring here — the global config registers `omnibus/skills`, so `ob-cli`,
-`ob-spinoff`, `ob-land`, `ob-skeptical-review` and the rest resolve.
-
 ## Repo invariants
 
 1. **`@hackcove/ui` carries no theme.** Components are written against stock Tailwind utilities
    (`bg-white`, `text-slate-900`, …) and never contain a `dark:` variant or a palette colour. A
    theme is the only place a palette lives, and it remaps those utilities under `.dark`.
 2. **A theme is a folder and nothing else registers it.** No theme name appears in code: Storybook
-   globs `themes/*/theme.css`, and `tools`' `describeTheme` is the contract (name
+   globs `themes/*/theme.css`, and each theme's own `theme.test.ts` is the contract (name
    `@hackcove/theme-<folder>`, exports + `files` = `theme.css` only, `@custom-variant dark`,
    rules scoped under `.dark`, no Tailwind import). Do not add a theme list anywhere.
 3. **Packages stay dependency-free at runtime.** `@hackcove/ui` has only peers (react, tailwindcss
    v4); a theme has only the tailwindcss peer. A new dependency is a human decision.
-4. **Package names live in each `package.json`.** READMEs name only packages that exist here;
-   `tools/src/contract.ts` fails the test otherwise. The scope is `@hackcove` (no hyphen).
-5. **`packages/ui` source imports use `.js` specifiers** (`./ui.js`, resolved to the `.tsx`). A
+4. **`packages/ui` source imports use `.js` specifiers** (`./ui.js`, resolved to the `.tsx`). A
    `.tsx` specifier is emitted into the `.d.ts` unchanged and points at a file `dist` does not
    have, which silently breaks consumers' types.
-6. **Tailwind skips `node_modules`.** A consumer must `@source` the package's `dist/`; the READMEs
-   say so. Anything that changes how a consumer wires this is a documented, breaking change.
-7. **Nothing is published without Jacobus, and only the planner pushes.** No `npm publish`; no
+5. **Nothing is published without Jacobus, and only the planner pushes.** No `npm publish`; no
    `git push` from a builder. The repo stays private. `LICENSE` is a placeholder until he chooses
    one; versions stay `0.x`.
-8. **Existing looks do not move silently.** The dashboard and `hack-cove-site` render from these
-   packages. A visual change is deliberate and says so in the commit.

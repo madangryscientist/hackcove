@@ -84,7 +84,7 @@
       }
     },
     {
-      "files": ["scripts/**", "tools/**"],
+      "files": ["scripts/**"],
       "rules": {
         "no-console": "off"
       }

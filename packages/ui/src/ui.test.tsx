@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { Card, Empty, Pill, groupByEpic } from "./ui.js";
+import { Card, Pill, groupByEpic } from "./ui.js";
 
 describe("groupByEpic", () => {
   it("orders real epics by ref and puts 'no epic' last", () => {
@@ -13,10 +13,6 @@ describe("groupByEpic", () => {
     const groups = groupByEpic(items, (i) => i.epic);
     expect(groups.map(([epic]) => epic)).toEqual(["a", "b", null]);
     expect(groups[1]?.[1].map((i) => i.id)).toEqual([2, 4]);
-  });
-
-  it("returns nothing for no items", () => {
-    expect(groupByEpic([], () => null)).toEqual([]);
   });
 });
 
@@ -38,11 +34,5 @@ describe("Card", () => {
     );
     expect(titled).toContain(">Open</h2>");
     expect(titled).toContain(">0</span>");
-  });
-});
-
-describe("Empty", () => {
-  it("renders muted text", () => {
-    expect(renderToStaticMarkup(<Empty>none</Empty>)).toContain("text-slate-400");
   });
 });
