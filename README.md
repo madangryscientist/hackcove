@@ -1,7 +1,7 @@
 # hackcove
 
 The Hack Cove design system, as an Nx + Bun-workspaces monorepo. Every package here is published
-on its own; nothing is published yet.
+on its own; `0.1.0` of both is on npm (MIT).
 
 | Folder | Package | What it is |
 | --- | --- | --- |
@@ -92,8 +92,12 @@ OTP. One-time setup, by hand:
    `publish.yml`, environment `npm-publish`.
 
 A trusted publisher can only be added to a package that already exists, so the first publish of
-each new package has to be made locally (`bunx nx release publish -p <project>` with a login that
-can publish, or a security key); every later one can go through the workflow. Provenance is only
+each new package has to be made locally (`bunx nx release publish -p <project>` with a granular
+token that bypasses 2FA, since the executor cannot prompt for an OTP; delete the token afterwards);
+every later one goes through the workflow. `0.1.0` of both packages was published that way, and both
+have the trusted publisher above (it shows "pending validation" until the workflow's first real
+publish). npm stages a brand-new package's first publish, so a `0.0.0-stage` placeholder version
+exists alongside `0.1.0`. Provenance is only
 attached for public repositories. Nx reads only a root `tsconfig.base.json` or `tsconfig.json`, and TypeScript 7 has no
 classic compiler API for it to parse them with, so the shared compiler options live in
 `tsconfig.shared.json` instead.
