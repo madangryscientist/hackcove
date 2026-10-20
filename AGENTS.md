@@ -126,5 +126,5 @@ nothing).
 5. **Nothing is published without Jacobus, and only the planner pushes.** A builder never runs
    `nx release publish` and never runs a bare `npm publish`; Jacobus publishes, either by
    dispatching `.github/workflows/publish.yml` (which runs `nx release publish`) or locally. No
-   `git push` from a builder. The repo stays private. `LICENSE` is a placeholder until he chooses
-   one; versions stay `0.x`.
+   `git push` from a builder. The repo stays private. Every package is MIT (a `LICENSE` in
+   each package and at the root); versions stay `0.x`.

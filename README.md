@@ -56,7 +56,7 @@ cp -r themes/catppuccin-mocha themes/<name>
 2. Edit `theme.css`. The contract: remap the utilities `@hackcove/ui` uses under a `.dark` scope,
    declare `@custom-variant dark (&:where(.dark, .dark *));`, and do not import Tailwind (the
    consumer does).
-3. Rewrite `README.md` and the LICENSE placeholder for the new package.
+3. Rewrite `README.md` for the new package; keep the MIT `LICENSE` and `"license": "MIT"`.
 4. `bun install`, then `bunx nx run theme-<name>:test` (checks the name, exports, `files` list and
    the `.dark` scope in the theme's own `theme.test.ts`; edit it to match your theme).
 

@@ -4,7 +4,7 @@ The Catppuccin Mocha dark theme for Hack Cove. One CSS file, `theme.css`: it dec
 class-based `dark` variant and, under `.dark`, remaps the Tailwind slate/colour utilities that
 `@hackcove/ui` is written against to real Mocha tokens. It also ships a `.link` class.
 
-Status: `0.x`, not yet published to npm. License: undecided (see `LICENSE`).
+Status: `0.x`, not yet published to npm. License: MIT.
 
 ## Install
 
@@ -27,7 +27,7 @@ utilities.
 
 ## Palette and attribution
 
-The palette is [Catppuccin](https://github.com/catppuccin/catppuccin) Mocha, © 2021 Catppuccin, used under the MIT license. The full notice ships in this package as `NOTICE`, and a one-line credit sits at the top of `theme.css`. Tailwind's build drops that comment from a consumer's bundled CSS, so an app that wants the credit visible should add its own. This package's own license is separate: see `LICENSE`.
+The palette is [Catppuccin](https://github.com/catppuccin/catppuccin) Mocha, © 2021 Catppuccin, used under the MIT license. The full notice ships in this package as `NOTICE`, and a one-line credit sits at the top of `theme.css`. Tailwind's build drops that comment from a consumer's bundled CSS, so an app that wants the credit visible should add its own. This package's own license (MIT, see `LICENSE`) is separate.
 
 base `#1e1e2e` · mantle `#181825` · crust `#11111b` · surface0 `#313244` · surface1 `#45475a` ·
 surface2 `#585b70` · text `#cdd6f4` · subtext1 `#bac2de` · subtext0 `#a6adc8` · overlay1 `#7f849c` ·

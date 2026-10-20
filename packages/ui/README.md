@@ -4,7 +4,7 @@ Hack Cove React components, written against Tailwind v4 utilities. They carry no
 with a `@hackcove/theme-*` package such as `@hackcove/theme-catppuccin-mocha`, or use them on their
 own for the default light look.
 
-Status: `0.x`, not yet published to npm. License: undecided (see `LICENSE`).
+Status: `0.x`, not yet published to npm. License: MIT.
 
 ## Install
 
