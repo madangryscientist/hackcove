@@ -123,6 +123,6 @@ nothing).
 4. **`packages/ui` source imports use `.js` specifiers** (`./ui.js`, resolved to the `.tsx`). A
    `.tsx` specifier is emitted into the `.d.ts` unchanged and points at a file `dist` does not
    have, which silently breaks consumers' types.
-5. **Nothing is published without Jacobus, and only the planner pushes.** No `npm publish`; no
+5. **Nothing is published without Jacobus, and only the planner pushes.** No `nx release publish`, no bare `npm publish`; no
    `git push` from a builder. The repo stays private. `LICENSE` is a placeholder until he chooses
    one; versions stay `0.x`.

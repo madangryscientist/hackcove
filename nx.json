@@ -10,11 +10,38 @@
     ]
   },
   "targetDefaults": {
-    "build": { "cache": true, "dependsOn": ["^build"] },
-    "test": { "cache": true },
-    "typecheck": { "cache": true },
-    "lint": { "cache": true },
-    "pack-check": { "cache": true, "dependsOn": ["build"] }
+    "build": {
+      "cache": true,
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "cache": true
+    },
+    "typecheck": {
+      "cache": true
+    },
+    "lint": {
+      "cache": true
+    },
+    "pack-check": {
+      "cache": true,
+      "dependsOn": ["build"]
+    },
+    "nx-release-publish": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "bun ../../scripts/publish.ts",
+        "cwd": "{projectRoot}"
+      }
+    }
   },
-  "analytics": false
+  "analytics": false,
+  "release": {
+    "projects": ["ui", "theme-*"],
+    "projectsRelationship": "independent",
+    "releaseTag": {
+      "pattern": "{projectName}@{version}"
+    }
+  }
 }

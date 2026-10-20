@@ -63,6 +63,20 @@ cp -r themes/catppuccin-mocha themes/<name>
 There is nothing else to register. Storybook finds `themes/*/theme.css` on its own, so the new
 theme is in the toolbar the next time it starts.
 
+## Publish
+
+Publishing goes through Nx, never a bare `npm publish`. After `npm login` to the `hackcove` org
+(2FA, or a granular token that bypasses it):
+
+```sh
+bunx nx release publish --dry-run   # builds, then `npm publish --dry-run` per package; publishes nothing
+bunx nx release publish             # builds, then publishes @hackcove/ui and every theme, access public
+```
+
+Add `-p ui` or `-p theme-<name>` to publish one package. Versions are bumped by hand in each
+`package.json` (0.x). `scripts/publish.ts` is the target body: it maps Nx's `--dryRun` onto
+`npm publish --dry-run`, so a dry run cannot publish.
+
 ## Develop
 
 Everything goes through Nx:
