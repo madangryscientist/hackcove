@@ -7,7 +7,8 @@
     "storybook": "storybook dev -p 6006",
     "build": "storybook build",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint -c ../../.oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts"
+    "lint": "oxlint -c ../../.oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@hackcove/ui": "workspace:*",
@@ -39,6 +40,16 @@
         "outputs": [
           "{projectRoot}/storybook-static"
         ]
+      },
+      "e2e": {
+        "executor": "nx:run-script",
+        "options": {
+          "script": "test:e2e"
+        },
+        "dependsOn": [
+          "build"
+        ],
+        "cache": false
       }
     }
   }

@@ -42,7 +42,7 @@ Write each brief with these three headings, because the builder's launch prompt 
 | --- | --- | --- |
 | `ui` | `packages/ui` | `@hackcove/ui`: the components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, tailwindcss v4. No theme CSS. |
 | `theme-catppuccin-mocha` | `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha`: one `theme.css`, shipped as-is. |
-| `storybook` | `apps/storybook` | Storybook for the components; a toolbar switcher lists every `themes/*` folder. Private. |
+| `storybook` | `apps/storybook` | Storybook for the components; a toolbar switcher lists every `themes/*` folder. Its `e2e/` is the Playwright layer (`test:e2e`). Private. |
 
 **One folder, one publishable package per theme.** Adding a theme is copying a folder
 (`README.md`, "How to add a theme"); nothing else registers it. There is no light theme package:
@@ -59,11 +59,15 @@ bun install                                        # a fresh worktree has no nod
 bunx nx run-many -t typecheck lint test build      # tsc strict · oxlint --type-aware --deny-warnings + check-slop · Vitest · dist + Storybook build
 bun run format:check                               # oxfmt --check  (`bun run format` fixes)
 bunx nx run-many -t pack-check                     # npm pack --dry-run for every package
+bunx nx e2e storybook                              # Playwright: builds Storybook, serves it on 127.0.0.1:6007, flips every theme
 ```
 
 `bunx nx affected -t ...` for just what changed; `--skip-nx-cache` to force a rerun. Lint rules are
 all errors; fix the code, do not disable a rule. A change to a component or a `theme.css` also gets
 a look: `bunx nx run storybook:storybook`, flip the theme switcher, and read the stories.
+
+The e2e needs a Chromium once per machine: `bunx playwright install chromium`. It discovers themes
+from `themes/*` like the switcher does, so a new theme needs no test edit.
 
 **The consumers.** Every class a component uses and every utility a theme remaps shows up in
 omnibus's dashboard and `hack-cove-site`. After such a change, rebuild (`bunx nx build ui`) and

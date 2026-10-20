@@ -3,3 +3,5 @@ dist
 storybook-static
 *.tgz
 .nx
+test-results
+playwright-report
