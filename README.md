@@ -75,7 +75,26 @@ bunx nx release publish             # builds, then publishes @hackcove/ui and ev
 
 Add `-p ui` or `-p theme-<name>` to publish one package. Versions are bumped by hand in each
 `package.json` (0.x). The `nx-release-publish` target is Nx's own `@nx/js:release-publish` executor
-(`nx.json`). Nx reads only a root `tsconfig.base.json` or `tsconfig.json`, and TypeScript 7 has no
+(`nx.json`). `nx.json` sets `cli.packageManager` to `npm`, so the executor runs `npm publish` rather
+than `bun publish`: bun cannot do npm trusted publishing or prompt for an OTP.
+
+### From CI (GitHub Actions)
+
+`.github/workflows/publish.yml` is a manual workflow (Actions → Publish → Run workflow, from
+`main`). It runs the gate, then `nx release publish`, and defaults to a dry run; untick `dry_run`
+to publish. It authenticates with npm trusted publishing (OIDC), so there is no `NPM_TOKEN` and no
+OTP. One-time setup, by hand:
+
+1. On GitHub, create an environment named `npm-publish` (Settings → Environments); add a required
+   reviewer if you want a gate on every publish.
+2. On npmjs.com, for each package (`@hackcove/ui`, `@hackcove/theme-catppuccin-mocha`): Settings →
+   Trusted Publisher → GitHub Actions, repository `madangryscientist/hackcove`, workflow filename
+   `publish.yml`, environment `npm-publish`.
+
+A trusted publisher can only be added to a package that already exists, so the first publish of
+each new package has to be made locally (`bunx nx release publish -p <project>` with a login that
+can publish, or a security key); every later one can go through the workflow. Provenance is only
+attached for public repositories. Nx reads only a root `tsconfig.base.json` or `tsconfig.json`, and TypeScript 7 has no
 classic compiler API for it to parse them with, so the shared compiler options live in
 `tsconfig.shared.json` instead.
 

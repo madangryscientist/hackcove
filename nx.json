@@ -37,6 +37,9 @@
     }
   },
   "analytics": false,
+  "cli": {
+    "packageManager": "npm"
+  },
   "release": {
     "projects": ["ui", "theme-*"],
     "projectsRelationship": "independent",

@@ -1,0 +1,65 @@
+name: Publish
+
+# Manual only: Jacobus decides when a release goes out. The default is a dry run.
+# Publishing authenticates with npm trusted publishing (OIDC), so there is no NPM_TOKEN and no OTP.
+# Each package needs a trusted publisher on npmjs.com pointing at this workflow file, repository
+# madangryscientist/hackcove and the environment below. See README "Publish".
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: Nx project to publish (ui or theme-<name>). Empty publishes every releasable package.
+        type: string
+        default: ""
+      dry_run:
+        description: Dry run (builds and packs, publishes nothing)
+        type: boolean
+        default: true
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: npm-publish
+    permissions:
+      contents: read
+      id-token: write # the OIDC token npm exchanges for a short-lived publish credential
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      # Trusted publishing needs npm 11.5.1 or newer; nx.json sets cli.packageManager to npm so
+      # `nx release publish` shells out to `npm publish`, which is the client that speaks OIDC.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Use a trusted-publishing capable npm
+        run: npm install -g npm@^11.5.1 && npm --version
+
+      - run: bun install --frozen-lockfile
+
+      - name: Gate
+        run: |
+          bun run format:check
+          bunx nx run-many -t typecheck lint test build pack-check
+
+      - name: Publish
+        env:
+          PROJECT: ${{ inputs.project }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          args=()
+          if [ -n "$PROJECT" ]; then args+=(-p "$PROJECT"); fi
+          if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+          bunx nx release publish "${args[@]}"
