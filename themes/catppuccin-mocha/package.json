@@ -4,7 +4,8 @@
   "description": "The Catppuccin Mocha dark theme for Hack Cove: one CSS file that remaps the Tailwind utilities @hackcove/ui is written against.",
   "license": "SEE LICENSE IN LICENSE",
   "files": [
-    "theme.css"
+    "theme.css",
+    "NOTICE"
   ],
   "type": "module",
   "sideEffects": [

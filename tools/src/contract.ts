@@ -72,9 +72,10 @@ export function describeTheme(dir: string): void {
       expect(pkg.name).toBe(`${SCOPE}theme-${basename(dir)}`);
     });
 
-    it("exports theme.css and nothing else", () => {
+    it("exports theme.css, and every file it ships exists", () => {
       expect(Object.keys(pkg.exports ?? {})).toEqual(expect.arrayContaining(["./theme.css"]));
-      expect(pkg.files).toEqual(["theme.css"]);
+      expect(pkg.files).toContain("theme.css");
+      expect((pkg.files ?? []).filter((file) => !existsSync(join(dir, file)))).toEqual([]);
     });
 
     it("declares the class-based dark variant and scopes its remaps under .dark", () => {
