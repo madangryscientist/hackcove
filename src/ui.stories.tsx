@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Card, Empty, EpicHeader, PageTitle, Pill } from "./ui.tsx";
-import { Markdown } from "./Markdown.tsx";
+import { Card, Empty, EpicHeader, PageTitle, Pill } from "./ui.js";
+import { Markdown } from "./Markdown.js";
 
 const meta: Meta = { title: "UI/Primitives" };
 export default meta;
@@ -17,8 +17,20 @@ export const Pills: S = {
     </div>
   ),
 };
-export const CardStory: S = { render: () => <Card title="Section" count={3}>body content</Card> };
-export const Header: S = { render: () => <EpicHeader color="#cba6f7" label="CUE-9388 · Voice Inbox" /> };
-export const Title: S = { render: () => <PageTitle title="Status" subtitle="what's happening now" /> };
-export const MarkdownStory: S = { render: () => <Markdown md={"## What I did\n- **CUE-9388** shipped\n- plain item"} /> };
+export const CardStory: S = {
+  render: () => (
+    <Card title="Section" count={3}>
+      body content
+    </Card>
+  ),
+};
+export const Header: S = {
+  render: () => <EpicHeader color="#cba6f7" label="CUE-9388 · Voice Inbox" />,
+};
+export const Title: S = {
+  render: () => <PageTitle title="Status" subtitle="what's happening now" />,
+};
+export const MarkdownStory: S = {
+  render: () => <Markdown md={"## What I did\n- **CUE-9388** shipped\n- plain item"} />,
+};
 export const EmptyState: S = { render: () => <Empty>nothing here yet</Empty> };

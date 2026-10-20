@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
-   @omnibus/ui — the Catppuccin Mocha dark theme for this design system.
+   Hack Cove themes — the Catppuccin Mocha dark theme for this design system.
    ---------------------------------------------------------------------------
    The components in this package are written against Tailwind's slate/colour
    utilities directly (bg-white, text-slate-900, …) rather than carrying `dark:`
@@ -7,10 +7,9 @@
    to real Catppuccin Mocha tokens under `.dark`. The rules are unlayered, so
    they override Tailwind's (layered) utilities.
 
-   Consumers import it AFTER `@import "tailwindcss"` and put `.dark` on <html>:
-
-     @import "tailwindcss";
-     @import "@omnibus/ui/theme.css";
+   Consumers import it AFTER `@import "tailwindcss"` and put `.dark` on <html>
+   (see the README for the import line and the `@source` that makes Tailwind
+   scan the shipped components):
 
    Palette:
      base #1e1e2e · mantle #181825 · crust #11111b · surface0 #313244

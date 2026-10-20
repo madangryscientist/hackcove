@@ -1,5 +1,5 @@
-export { Card, EpicHeader, Empty, PageTitle, Pill, groupByEpic } from "./ui.tsx";
-export { Markdown } from "./Markdown.tsx";
+export { Card, EpicHeader, Empty, PageTitle, Pill, groupByEpic } from "./ui.js";
+export { Markdown } from "./Markdown.js";
 export {
   Body,
   BodyStrong,
@@ -14,4 +14,4 @@ export {
   Subtitle,
   type TypographyColor,
   type TypographyProps,
-} from "./typography.tsx";
+} from "./typography.js";

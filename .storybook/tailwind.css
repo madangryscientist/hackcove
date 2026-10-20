@@ -1,28 +1,4 @@
 @import "tailwindcss";
 
-/* Class-based dark mode (the preview decorator wraps stories in `.dark`). */
-@custom-variant dark (&:where(.dark, .dark *));
-
-/* ---------------------------------------------------------------------------
-   Catppuccin Mocha remaps — the SAME subset used by apps/dashboard/src/styles.css,
-   copied here so Storybook renders the typography colour axis with the real
-   tokens. Unlayered so they override Tailwind's (layered) text utilities.
-     text-slate-900 → #cdd6f4 text · text-slate-600 → #bac2de subtext1
-     text-slate-500 → #a6adc8 subtext0 · text-slate-400 → #9399b2 overlay2
-     text-violet-600 → #cba6f7 mauve (accent)
-   --------------------------------------------------------------------------- */
-.dark .text-slate-900 {
-  color: #cdd6f4;
-}
-.dark .text-slate-600 {
-  color: #bac2de;
-}
-.dark .text-slate-500 {
-  color: #a6adc8;
-}
-.dark .text-slate-400 {
-  color: #9399b2;
-}
-.dark .text-violet-600 {
-  color: #cba6f7;
-}
+/* The package's own theme layer, so stories render with the same Mocha tokens consumers get. */
+@import "../src/theme.css";

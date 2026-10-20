@@ -1,17 +1,17 @@
 import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
 
 /* ---------------------------------------------------------------------------
-   Typography system for @omnibus/ui
+   Typography system
    ---------------------------------------------------------------------------
    Semantic text components that each PIN a size + weight + a default colour, so
    text can never accidentally inherit the wrong weight/scale. Mirrors the
-   @cue/elements typography pattern, adapted to omnibus's stack (Tailwind v4 +
+   @cue/elements typography pattern, adapted to this stack (Tailwind v4 +
    Catppuccin Mocha).
 
-   Colour axis — the `color` prop maps to the app's slate utilities, which
-   apps/dashboard/src/styles.css remaps to the real Catppuccin Mocha tokens in
-   dark mode (so these stay consistent with the rest of the dashboard rather
-   than inventing a parallel palette). In dark mode they resolve to:
+   Colour axis — the `color` prop maps to Tailwind's slate utilities, which
+   theme.css remaps to the real Catppuccin Mocha tokens in dark mode (so these
+   stay consistent with the rest of the system rather than inventing a parallel
+   palette). In dark mode they resolve to:
      default   → text-slate-900 → #cdd6f4  (Catppuccin `text`)
      secondary → text-slate-600 → #bac2de  (Catppuccin `subtext1`)
      tertiary  → text-slate-500 → #a6adc8  (Catppuccin `subtext0`)
@@ -31,7 +31,7 @@ import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
 
 export type TypographyColor = "default" | "secondary" | "tertiary" | "muted" | "brand";
 
-/** Colour token → slate/violet utility (remapped to Catppuccin Mocha in dark mode by styles.css). */
+/** Colour token → slate/violet utility (remapped to Catppuccin Mocha in dark mode by theme.css). */
 const COLOR: Record<TypographyColor, string> = {
   default: "text-slate-900", // Catppuccin text     #cdd6f4
   secondary: "text-slate-600", // Catppuccin subtext1 #bac2de
@@ -64,9 +64,20 @@ export type TypographyProps<E extends ElementType> = OwnProps & { as?: E } & Omi
  * one place (the call below), and callers can only vary the colour, element, and
  * layout classes — never the pinned size/weight.
  */
-function typography<D extends ElementType>(displayName: string, defaultAs: D, variantClass: string, defaultColor: TypographyColor) {
-  function Typography<E extends ElementType = D>({ as, color, className, children, ...rest }: TypographyProps<E>) {
-    const Tag = (as ?? defaultAs) as ElementType;
+function typography<D extends ElementType>(
+  displayName: string,
+  defaultAs: D,
+  variantClass: string,
+  defaultColor: TypographyColor,
+) {
+  function Typography<E extends ElementType = D>({
+    as,
+    color,
+    className,
+    children,
+    ...rest
+  }: TypographyProps<E>) {
+    const Tag: ElementType = as ?? defaultAs;
     return (
       <Tag className={cx(variantClass, COLOR[color ?? defaultColor], className)} {...rest}>
         {children}
@@ -82,7 +93,7 @@ function typography<D extends ElementType>(displayName: string, defaultAs: D, va
 /**
  * Marketing-scale headline — the one line at the top of a public page. `h1`,
  * text-4xl/tight semibold, primary text, growing to text-6xl on wider screens.
- * The dashboard's `PageHeading` scale is deliberately dev-tool sized; a brochure
+ * `PageHeading`'s scale is deliberately dev-tool sized; a brochure
  * hero needs a display scale, so it gets its own pinned role rather than callers
  * overriding PageHeading's size.
  */
@@ -97,16 +108,36 @@ export const Display = typography(
 export const Lead = typography("Lead", "p", "text-lg/7 font-normal sm:text-xl/8", "secondary");
 
 /** Page title. `h1`, text-2xl/8 semibold, primary text. */
-export const PageHeading = typography("PageHeading", "h1", "text-2xl/8 font-semibold tracking-tight", "default");
+export const PageHeading = typography(
+  "PageHeading",
+  "h1",
+  "text-2xl/8 font-semibold tracking-tight",
+  "default",
+);
 
 /** Top-level section header. `h2`, text-base/6 semibold, primary text. */
-export const SectionHeading = typography("SectionHeading", "h2", "text-base/6 font-semibold", "default");
+export const SectionHeading = typography(
+  "SectionHeading",
+  "h2",
+  "text-base/6 font-semibold",
+  "default",
+);
 
 /** Nested header. `h3`, text-sm/5 semibold, primary text. */
-export const SubsectionHeading = typography("SubsectionHeading", "h3", "text-sm/5 font-semibold", "default");
+export const SubsectionHeading = typography(
+  "SubsectionHeading",
+  "h3",
+  "text-sm/5 font-semibold",
+  "default",
+);
 
 /** Dialog/modal title. `h2`, text-base/6 semibold, primary text. */
-export const ModalHeading = typography("ModalHeading", "h2", "text-base/6 font-semibold", "default");
+export const ModalHeading = typography(
+  "ModalHeading",
+  "h2",
+  "text-base/6 font-semibold",
+  "default",
+);
 
 /** Supporting line under a heading. `p`, text-sm/5 normal, secondary. */
 export const Subtitle = typography("Subtitle", "p", "text-sm/5 font-normal", "secondary");
@@ -114,7 +145,12 @@ export const Subtitle = typography("Subtitle", "p", "text-sm/5 font-normal", "se
 // --- Inline roles (inline by default) --------------------------------------
 
 /** Small all-caps label above a group. `span`, text-xs semibold uppercase, tertiary. */
-export const Overline = typography("Overline", "span", "text-xs font-semibold uppercase tracking-wide", "tertiary");
+export const Overline = typography(
+  "Overline",
+  "span",
+  "text-xs font-semibold uppercase tracking-wide",
+  "tertiary",
+);
 
 /** Default running text. `span` (inline; `as="p"` for a paragraph), text-sm/5 normal, secondary. */
 export const Body = typography("Body", "span", "text-sm/5 font-normal", "secondary");

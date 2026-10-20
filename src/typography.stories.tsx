@@ -11,7 +11,7 @@ import {
   SubsectionHeading,
   Subtitle,
   type TypographyColor,
-} from "./typography.tsx";
+} from "./typography.js";
 
 const meta: Meta = { title: "UI/Typography" };
 export default meta;
@@ -55,8 +55,8 @@ export const BodyStory: S = {
   name: "Body",
   render: () => (
     <Body>
-      Default running text. Inline by default, so an emphasised <BodyStrong>run of text</BodyStrong> composes right inside
-      the sentence.
+      Default running text. Inline by default, so an emphasised <BodyStrong>run of text</BodyStrong>{" "}
+      composes right inside the sentence.
     </Body>
   ),
 };
@@ -77,15 +77,15 @@ export const Specimen: S = {
   render: () => (
     <div className="flex max-w-xl flex-col gap-4">
       <PageHeading>Typography specimen</PageHeading>
-      <Subtitle>Every semantic role in @omnibus/ui, on the Catppuccin base surface.</Subtitle>
+      <Subtitle>Every semantic role in the design system, on the Catppuccin base surface.</Subtitle>
       <div className="flex flex-col gap-1">
         <Overline>Overline</Overline>
         <SectionHeading>Section heading</SectionHeading>
         <SubsectionHeading>Subsection heading</SubsectionHeading>
       </div>
       <Body as="p">
-        This is a paragraph of <BodyStrong>body text</BodyStrong> rendered with <code>as="p"</code> so it takes block
-        layout, while the default <Body>Body</Body> stays inline.
+        This is a paragraph of <BodyStrong>body text</BodyStrong> rendered with <code>as="p"</code>{" "}
+        so it takes block layout, while the default <Body>Body</Body> stays inline.
       </Body>
       <Caption as="p">Caption — fine print and metadata.</Caption>
     </div>
@@ -100,7 +100,10 @@ export const ColorAxis: S = {
     const rows: Array<[string, (c: TypographyColor) => ReactNode]> = [
       ["PageHeading", (c) => <PageHeading color={c}>PageHeading</PageHeading>],
       ["SectionHeading", (c) => <SectionHeading color={c}>SectionHeading</SectionHeading>],
-      ["SubsectionHeading", (c) => <SubsectionHeading color={c}>SubsectionHeading</SubsectionHeading>],
+      [
+        "SubsectionHeading",
+        (c) => <SubsectionHeading color={c}>SubsectionHeading</SubsectionHeading>,
+      ],
       ["ModalHeading", (c) => <ModalHeading color={c}>ModalHeading</ModalHeading>],
       ["Subtitle", (c) => <Subtitle color={c}>Subtitle</Subtitle>],
       ["Overline", (c) => <Overline color={c}>Overline</Overline>],
@@ -147,7 +150,9 @@ export const AsOverride: S = {
   name: "as override",
   render: () => (
     <div className="flex flex-col gap-3">
-      <Caption color="muted">Same PageHeading style rendered as different elements via `as`:</Caption>
+      <Caption color="muted">
+        Same PageHeading style rendered as different elements via `as`:
+      </Caption>
       <PageHeading>as="h1" (default)</PageHeading>
       <PageHeading as="h2">as="h2"</PageHeading>
       <PageHeading as="div">as="div"</PageHeading>

@@ -32,7 +32,10 @@ export function Markdown({ md }: { md: string }) {
     if (t.startsWith("## ")) {
       flush();
       out.push(
-        <h2 key={i} className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400 first:mt-0">
+        <h2
+          key={i}
+          className="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400 first:mt-0"
+        >
           {t.slice(3)}
         </h2>,
       );

@@ -1,0 +1,3 @@
+{
+  "ignorePatterns": ["dist/**", "storybook-static/**", "**/*.md", "bun.lock"]
+}
