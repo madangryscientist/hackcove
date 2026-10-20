@@ -72,9 +72,12 @@ from `themes/*` like the switcher does, so a new theme needs no test edit.
 **The consumers.** Every class a component uses and every utility a theme remaps shows up in
 omnibus's dashboard and `hack-cove-site`. After such a change, rebuild (`bunx nx build ui`) and
 build those two apps in an omnibus worktree (`bunx nx build dashboard`, `bunx nx build
-hack-cove-site`) and compare the CSS before and after. The omnibus apps use `link:@hackcove/ui` and
-`link:@hackcove/theme-catppuccin-mocha` (bun's global link registry: `bun link` once inside each
-package here), so they read this checkout's `dist/` until the packages are published.
+hack-cove-site`) and compare the CSS before and after. The apps install the published `^0.1.0` of
+`@hackcove/ui` and `@hackcove/theme-catppuccin-mocha` from npm, so they do not read this checkout
+unless you point them at it. To check an unpublished change against them: `bun link` once inside
+`packages/ui` and `themes/catppuccin-mocha` (bun's global link registry), then in the omnibus
+worktree temporarily `bun link @hackcove/ui @hackcove/theme-catppuccin-mocha`, build, compare, and
+do not commit the link in omnibus.
 
 ## Landing: no PRs
 

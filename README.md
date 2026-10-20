@@ -115,6 +115,7 @@ bunx nx e2e storybook                           # Playwright over the built Stor
 bunx nx run storybook:storybook                 # http://localhost:6006
 ```
 
-Use the packages from a consumer checkout before they are published: run `bun link` once inside
-`packages/ui` and each `themes/<name>`, then `bun link @hackcove/ui` (and the theme) in the
-consumer. Rebuild `packages/ui` (`bunx nx build ui`) after a change; consumers read its `dist/`.
+Try an unpublished change in a consumer checkout: run `bun link` once inside `packages/ui` and
+each `themes/<name>`, then `bun link @hackcove/ui` (and the theme) in the consumer. Consumers
+install the published `0.x` from npm, so the link is only for checking a change before it is
+published. Rebuild `packages/ui` (`bunx nx build ui`) after a change; a linked consumer reads its `dist/`.
