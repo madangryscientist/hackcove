@@ -1,0 +1,24 @@
+{
+  "name": "@hackcove/theme-catppuccin-mocha",
+  "version": "0.1.0",
+  "description": "The Catppuccin Mocha dark theme for Hack Cove: one CSS file that remaps the Tailwind utilities @hackcove/ui is written against.",
+  "license": "SEE LICENSE IN LICENSE",
+  "files": [
+    "theme.css"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    "./theme.css": "./theme.css",
+    "./package.json": "./package.json"
+  },
+  "devDependencies": {
+    "@hackcove/tools": "workspace:*",
+    "tailwindcss": "^4.3.3"
+  },
+  "peerDependencies": {
+    "tailwindcss": "^4"
+  }
+}

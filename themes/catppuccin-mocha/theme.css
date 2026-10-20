@@ -1,15 +1,14 @@
 /* ---------------------------------------------------------------------------
-   Hack Cove themes — the Catppuccin Mocha dark theme for this design system.
+   Catppuccin Mocha — the dark theme for the Hack Cove design system.
    ---------------------------------------------------------------------------
-   The components in this package are written against Tailwind's slate/colour
+   The @hackcove/ui components are written against Tailwind's slate/colour
    utilities directly (bg-white, text-slate-900, …) rather than carrying `dark:`
    variants. This file is what makes them dark: it remaps those core utilities
    to real Catppuccin Mocha tokens under `.dark`. The rules are unlayered, so
    they override Tailwind's (layered) utilities.
 
    Consumers import it AFTER `@import "tailwindcss"` and put `.dark` on <html>
-   (see the README for the import line and the `@source` that makes Tailwind
-   scan the shipped components):
+   (see the README for the import line).
 
    Palette:
      base #1e1e2e · mantle #181825 · crust #11111b · surface0 #313244

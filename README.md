@@ -1,35 +1,39 @@
-# @hackcove/themes
+# hackcove
 
-The Hack Cove design system: a **Catppuccin Mocha dark theme layer** for Tailwind v4, plus the
-small React components and typography roles written against it.
+The Hack Cove design system, as an Nx + Bun-workspaces monorepo. Every package here is published
+on its own; nothing is published yet.
 
-Status: `0.x`, not yet published to npm. License: undecided (see `LICENSE`).
+| Folder | Package | What it is |
+| --- | --- | --- |
+| `packages/ui` | `@hackcove/ui` | The React components: primitives, typography roles, a safe Markdown renderer. Written against Tailwind v4 utilities. No theme CSS. |
+| `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha` | The Catppuccin Mocha dark theme: one `theme.css` that remaps those utilities under `.dark`. |
+| `apps/storybook` | (private) | Storybook for the components, with a toolbar theme switcher that lists every folder under `themes/`. |
+| `tools` | (private) | The shared contract tests every package and theme must pass. |
 
-## Install
+There is **no light theme package**. The light look is the components' own default Tailwind classes
+and has no CSS of its own; Storybook's `default` choice shows it.
+
+## Use it
 
 ```sh
-bun add @hackcove/themes
+bun add @hackcove/ui @hackcove/theme-catppuccin-mocha
 # peers: react >= 18, tailwindcss ^4
 ```
 
-## Use
-
-In your app's global stylesheet, after Tailwind:
-
 ```css
 @import "tailwindcss";
-@import "@hackcove/themes/theme.css";
+@import "@hackcove/theme-catppuccin-mocha/theme.css";
 
 /* The components use Tailwind utilities, and Tailwind skips node_modules, so point it at the
    package's build. The path is relative to this stylesheet. */
-@source "../node_modules/@hackcove/themes/dist";
+@source "../node_modules/@hackcove/ui/dist";
 ```
 
-Put `class="dark"` on `<html>`. `theme.css` declares the class-based `dark` variant and remaps the
-slate/colour utilities the components use to real Mocha tokens under `.dark`.
+Put `class="dark"` on `<html>`. The theme declares the class-based `dark` variant and remaps the
+slate/colour utilities to Mocha tokens under `.dark`.
 
 ```tsx
-import { Card, Pill, PageHeading, Body } from "@hackcove/themes";
+import { Body, Card, PageHeading, Pill } from "@hackcove/ui";
 
 export const Example = () => (
   <Card title="Status" count={2}>
@@ -39,27 +43,42 @@ export const Example = () => (
 );
 ```
 
-### What is exported
+## How to add a theme
 
-- `theme.css`: the token layer (surfaces, text, borders, accents, `.link`).
-- Primitives: `Card`, `EpicHeader`, `Empty`, `PageTitle`, `Pill`, `groupByEpic`, `Markdown`.
-- Typography roles (each pins size + weight, takes a `color` and an `as`): `Display`, `Lead`,
-  `PageHeading`, `SectionHeading`, `SubsectionHeading`, `ModalHeading`, `Subtitle`, `Overline`,
-  `Body`, `BodyStrong`, `Caption`.
+A theme is a folder. Copy one, rename it, change the CSS:
+
+```sh
+cp -r themes/catppuccin-mocha themes/<name>
+```
+
+1. In `themes/<name>/package.json` set `name` to `@hackcove/theme-<name>` and `description`; in
+   `project.json` set `name` to `theme-<name>` and replace the folder in `root` and every `cwd`.
+2. Edit `theme.css`. The contract: remap the utilities `@hackcove/ui` uses under a `.dark` scope,
+   declare `@custom-variant dark (&:where(.dark, .dark *));`, and do not import Tailwind (the
+   consumer does).
+3. Rewrite `README.md` and the LICENSE placeholder for the new package.
+4. `bun install`, then `bunx nx run theme-<name>:test`. The shared contract in `tools` checks the
+   name, the exports, the `files` list, the `.dark` scope and that the README names only packages
+   that exist here.
+
+There is nothing else to register. Storybook finds `themes/*/theme.css` on its own, so the new
+theme is in the toolbar the next time it starts.
 
 ## Develop
 
+Everything goes through Nx:
+
 ```sh
 bun install
-bun run typecheck && bun run lint && bun run format:check && bun run test
-bun run build          # dist/ (ESM + .d.ts, theme.css copied as-is)
-bun run pack:check     # build, then `npm pack --dry-run`: the tarball is dist/ + package.json + README + LICENSE
-bun run storybook      # the visual reference, http://localhost:6006
+bunx nx run-many -t typecheck lint test build   # the gate
+bun run format:check                            # oxfmt, workspace-wide
+bunx nx run-many -t pack-check                  # npm pack --dry-run per package
+bunx nx run storybook:storybook                 # http://localhost:6006
 ```
 
-Use it from a checkout before publishing: run `bun link` once in this repo, then
-`bun link @hackcove/themes` in the consumer (it writes `"@hackcove/themes": "link:@hackcove/themes"`).
-Rebuild (`bun run build`) after changes; consumers read `dist/`.
+Use the packages from a consumer checkout before they are published: run `bun link` once inside
+`packages/ui` and each `themes/<name>`, then `bun link @hackcove/ui` (and the theme) in the
+consumer. Rebuild `packages/ui` (`bunx nx build ui`) after a change; consumers read its `dist/`.
 
-The package name lives in `package.json` alone. If the name ever changes, edit `name` there and the
-occurrences in this README; `src/package.test.ts` fails on any other scoped name left behind.
+Package names live in each package's `package.json`. `tools/src/contract.ts` fails any README that
+names a scoped package this workspace does not have.

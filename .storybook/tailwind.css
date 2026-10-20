@@ -1,4 +1,0 @@
-@import "tailwindcss";
-
-/* The package's own theme layer, so stories render with the same Mocha tokens consumers get. */
-@import "../src/theme.css";

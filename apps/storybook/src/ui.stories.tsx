@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Card, Empty, EpicHeader, PageTitle, Pill } from "./ui.js";
-import { Markdown } from "./Markdown.js";
+import { Card, Empty, EpicHeader, Markdown, PageTitle, Pill } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Primitives" };
 export default meta;

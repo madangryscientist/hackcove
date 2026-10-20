@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+/* The components use Tailwind utilities; scan their source for them. Theme CSS is NOT imported
+   here: preview.tsx injects the selected theme, so switching themes swaps the whole palette. */
+@source "../../../packages/ui/src";

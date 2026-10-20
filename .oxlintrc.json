@@ -84,17 +84,17 @@
       }
     },
     {
-      "files": ["scripts/**"],
+      "files": ["scripts/**", "tools/**"],
       "rules": {
         "no-console": "off"
       }
     },
     {
-      "files": [".storybook/**"],
+      "files": ["**/.storybook/**"],
       "rules": {
         "import/no-unassigned-import": "off"
       }
     }
   ],
-  "ignorePatterns": ["dist/**", "storybook-static/**"]
+  "ignorePatterns": ["**/dist/**", "**/storybook-static/**"]
 }

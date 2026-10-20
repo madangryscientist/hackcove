@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "include": ["src", ".storybook"],
+  "compilerOptions": {
+    "types": ["bun", "vite/client"],
+    "paths": { "@hackcove/ui": ["../../packages/ui/src/index.ts"] }
+  }
+}

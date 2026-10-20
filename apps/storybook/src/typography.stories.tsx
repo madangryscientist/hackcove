@@ -11,7 +11,7 @@ import {
   SubsectionHeading,
   Subtitle,
   type TypographyColor,
-} from "./typography.js";
+} from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Typography" };
 export default meta;

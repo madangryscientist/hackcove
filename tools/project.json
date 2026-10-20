@@ -1,0 +1,31 @@
+{
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "name": "tools",
+  "root": "tools",
+  "sourceRoot": "tools/src",
+  "projectType": "library",
+  "tags": ["scope:tools", "kind:internal"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "command": "tsc --noEmit", "cwd": "tools" }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "oxlint -c ../.oxlintrc.json --type-aware --deny-warnings && bun ../scripts/check-slop.ts",
+        "cwd": "tools"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "inputs": [
+        "default",
+        "{workspaceRoot}/README.md",
+        "{workspaceRoot}/packages/*/README.md",
+        "{workspaceRoot}/themes/*/README.md"
+      ],
+      "options": { "command": "vitest run", "cwd": "tools" }
+    }
+  }
+}

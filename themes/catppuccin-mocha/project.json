@@ -1,0 +1,28 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "theme-catppuccin-mocha",
+  "root": "themes/catppuccin-mocha",
+  "projectType": "library",
+  "tags": ["scope:themes", "kind:theme"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "command": "tsc --noEmit", "cwd": "themes/catppuccin-mocha" }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "oxlint -c ../../.oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
+        "cwd": "themes/catppuccin-mocha"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": { "command": "vitest run", "cwd": "themes/catppuccin-mocha" }
+    },
+    "pack-check": {
+      "executor": "nx:run-commands",
+      "options": { "command": "npm pack --dry-run", "cwd": "themes/catppuccin-mocha" }
+    }
+  }
+}
