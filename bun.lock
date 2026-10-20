@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "@hack-cove/themes",
+      "name": "@hackcove/themes",
       "devDependencies": {
         "@storybook/react-vite": "^10.6.2",
         "@tailwindcss/vite": "^4.3.3",

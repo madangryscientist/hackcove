@@ -1,4 +1,4 @@
-# @hack-cove/themes
+# @hackcove/themes
 
 The Hack Cove design system: a **Catppuccin Mocha dark theme layer** for Tailwind v4, plus the
 small React components and typography roles written against it.
@@ -8,7 +8,7 @@ Status: `0.x`, not yet published to npm. License: undecided (see `LICENSE`).
 ## Install
 
 ```sh
-bun add @hack-cove/themes
+bun add @hackcove/themes
 # peers: react >= 18, tailwindcss ^4
 ```
 
@@ -18,18 +18,18 @@ In your app's global stylesheet, after Tailwind:
 
 ```css
 @import "tailwindcss";
-@import "@hack-cove/themes/theme.css";
+@import "@hackcove/themes/theme.css";
 
 /* The components use Tailwind utilities, and Tailwind skips node_modules, so point it at the
    package's build. The path is relative to this stylesheet. */
-@source "../node_modules/@hack-cove/themes/dist";
+@source "../node_modules/@hackcove/themes/dist";
 ```
 
 Put `class="dark"` on `<html>`. `theme.css` declares the class-based `dark` variant and remaps the
 slate/colour utilities the components use to real Mocha tokens under `.dark`.
 
 ```tsx
-import { Card, Pill, PageHeading, Body } from "@hack-cove/themes";
+import { Card, Pill, PageHeading, Body } from "@hackcove/themes";
 
 export const Example = () => (
   <Card title="Status" count={2}>
@@ -57,9 +57,9 @@ bun run pack:check     # build, then `npm pack --dry-run`: the tarball is dist/ 
 bun run storybook      # the visual reference, http://localhost:6006
 ```
 
-Use it from a checkout before publishing with a `link:` dependency
-(`"@hack-cove/themes": "link:../hack-cove-themes"`), and rebuild (`bun run build`) after changes.
+Use it from a checkout before publishing: run `bun link` once in this repo, then
+`bun link @hackcove/themes` in the consumer (it writes `"@hackcove/themes": "link:@hackcove/themes"`).
+Rebuild (`bun run build`) after changes; consumers read `dist/`.
 
-The package name lives in `package.json` alone. If the `@hack-cove` npm scope turns out to be
-taken, change `name` there (fallback: `hack-cove-themes`) and update the occurrences in this README;
-`src/package.test.ts` fails on any other scoped name left behind.
+The package name lives in `package.json` alone. If the name ever changes, edit `name` there and the
+occurrences in this README; `src/package.test.ts` fails on any other scoped name left behind.

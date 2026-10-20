@@ -1,5 +1,5 @@
 {
-  "name": "@hack-cove/themes",
+  "name": "@hackcove/themes",
   "version": "0.1.0",
   "description": "The Hack Cove design system: a Catppuccin Mocha theme layer for Tailwind v4 and the React components built on it.",
   "license": "SEE LICENSE IN LICENSE",
