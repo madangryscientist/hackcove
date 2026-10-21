@@ -45,6 +45,28 @@
     "projectsRelationship": "independent",
     "releaseTag": {
       "pattern": "{projectName}@{version}"
+    },
+    "version": {
+      "conventionalCommits": true,
+      "adjustSemverBumpsForZeroMajorVersion": true,
+      "versionActionsOptions": {
+        "skipLockFileUpdate": true
+      }
+    },
+    "conventionalCommits": {
+      "useCommitScope": false,
+      "types": {
+        "perf": {
+          "semverBump": "patch"
+        }
+      }
+    },
+    "changelog": {
+      "workspaceChangelog": false,
+      "projectChangelogs": {
+        "file": "CHANGELOG.md",
+        "createRelease": "github"
+      }
     }
   }
 }

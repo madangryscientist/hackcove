@@ -1,6 +1,8 @@
 name: Publish
 
 # Manual only: Jacobus decides when a release goes out. The default is a dry run.
+# `nx release` versions only the projects that changed since their last tag (conventional commits),
+# writes their changelogs, commits and tags the release, pushes, creates a GitHub release and publishes.
 # Publishing authenticates with npm trusted publishing (OIDC), so there is no NPM_TOKEN and no OTP.
 # Each package needs a trusted publisher on npmjs.com pointing at this workflow file, repository
 # madangryscientist/hackcove and the environment below. See README "Publish".
@@ -8,11 +10,11 @@ on:
   workflow_dispatch:
     inputs:
       project:
-        description: Nx project to publish (ui or theme-<name>). Empty publishes every releasable package.
+        description: Nx project to release (ui or theme-<name>). Empty releases every project that has a release tag.
         type: string
         default: ""
       dry_run:
-        description: Dry run (builds and packs, publishes nothing)
+        description: Dry run (versions, changelogs and publishes nothing; no commit, tag, push or release)
         type: boolean
         default: true
 
@@ -29,17 +31,20 @@ jobs:
     runs-on: ubuntu-latest
     environment: npm-publish
     permissions:
-      contents: read
+      contents: write # the release commit and tags, pushed with GITHUB_TOKEN, and the GitHub release
       id-token: write # the OIDC token npm exchanges for a short-lived publish credential
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # nx release reads the history since each project's last tag
+          fetch-tags: true
 
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.4.2
 
       # Trusted publishing needs npm 11.5.1 or newer; nx.json sets cli.packageManager to npm so
-      # `nx release publish` shells out to `npm publish`, which is the client that speaks OIDC.
+      # `nx release` shells out to `npm publish`, which is the client that speaks OIDC.
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -54,12 +59,38 @@ jobs:
           bun run format:check
           bunx nx run-many -t typecheck lint test build pack-check
 
-      - name: Publish
+      # Only projects with a release tag (<project>@<version>) on origin are released. nx refuses a
+      # project with no matching tag, so a package never published through this flow (a first publish,
+      # see README "Publish") stays out of the release until its first tag exists.
+      - name: Pick the tagged projects
+        id: projects
         env:
           PROJECT: ${{ inputs.project }}
-          DRY_RUN: ${{ inputs.dry_run }}
         run: |
-          args=()
-          if [ -n "$PROJECT" ]; then args+=(-p "$PROJECT"); fi
+          tagged=$(git tag -l '*@*' | sed 's/@.*//' | sort -u)
+          if [ -z "$tagged" ]; then
+            echo "::error::No <project>@<version> tags on origin; nothing to release."
+            exit 1
+          fi
+          if [ -n "$PROJECT" ]; then
+            if ! grep -qx -- "$PROJECT" <<<"$tagged"; then
+              echo "::error::$PROJECT has no release tag yet. Publish its first version by hand and push the tag (README \"Publish\")."
+              exit 1
+            fi
+            list="$PROJECT"
+          else
+            list=$(paste -sd, <<<"$tagged")
+          fi
+          echo "projects=$list" >> "$GITHUB_OUTPUT"
+
+      - name: Release
+        env:
+          PROJECTS: ${{ steps.projects.outputs.projects }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          args=(--projects "$PROJECTS" --yes)
           if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
-          bunx nx release publish "${args[@]}"
+          bunx nx release "${args[@]}"

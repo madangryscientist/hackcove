@@ -91,22 +91,41 @@ unless you point them at it. To check an unpublished change against them: `bun l
 worktree temporarily `bun link @hackcove/ui @hackcove/theme-catppuccin-mocha`, build, compare, and
 do not commit the link in omnibus.
 
+## Commits: conventional, because nx reads them
+
+Every commit is `<type>(<scope>): <subject>`: the builder's branch commits and the planner's squash
+commit on main alike. For ob work the scope is `ob N`, as in `fix(ob 1646): …`. The squash commit
+on main is the one `nx release` reads, so the planner keeps its subject in this form when squashing.
+
+The type is honest because it drives the version bump:
+
+- While a package is `0.x`, Nx shifts each bump one step down: `feat`, `fix` and `perf` → patch. A `!`
+  after the type, or a `BREAKING CHANGE:` footer → minor. Nothing reaches `1.0.0` by a commit; that
+  is a decision for later.
+- `docs`, `test`, `chore`, `refactor`, `build` and `ci` release nothing.
+
+Which packages a commit bumps is decided by the files it touches, not by its scope. A `feat(ob N)`
+that touches only `packages/ui` bumps `@hackcove/ui`, and nothing else.
+
 ## Landing: no PRs
 
 Implementation lands on a branch, the builder commits with a trailing `State:` line, and the
 planner gates and squash-merges with `ob-land`.
 
-1. Builder commits on its own branch, ending the message with one of
-   `State: ready` / `State: needs-human` / `State: blocked` / `State: partial`.
+1. Builder commits on its own branch, with a conventional subject (above), ending the message with
+   one of `State: landable` / `State: needs-human` / `State: blocked` / `State: partial`.
 2. The builder never pushes, never merges and **never publishes**.
-3. On `State: ready`, the planner loads `ob-land` and lands it into `main`. Before pushing, the
-   planner runs the visual check on the squash and reads every changed capture. Landing is what
-   touches the remote, and it is the only step that does:
+3. On `State: landable`, the planner loads `ob-land` and lands it into `main`. The squash commit
+   keeps a conventional subject. Before pushing, the planner runs the visual check on the squash and
+   reads every changed capture. Landing is what touches the remote, and it is the only step that does:
 
    ```bash
    git push origin main
    git push origin --delete <branch>   # only after the squash is on main
    ```
+
+Releasing is a separate step, after landing: Jacobus starts `.github/workflows/publish.yml`
+(README "Publish"). It bumps only the packages whose commits changed since their last tag.
 
 Scan several worktrees without opening a diff:
 
@@ -149,6 +168,6 @@ nothing).
    have, which silently breaks consumers' types.
 5. **Nothing is published without Jacobus, and only the planner pushes.** A builder never runs
    `nx release publish` and never runs a bare `npm publish`; Jacobus publishes, either by
-   dispatching `.github/workflows/publish.yml` (which runs `nx release publish`) or locally. No
+   dispatching `.github/workflows/publish.yml` (which runs `nx release`) or locally. No
    `git push` from a builder. The repo stays private. Every package is MIT (a `LICENSE` in
    each package and at the root); versions stay `0.x`.
