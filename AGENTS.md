@@ -73,7 +73,12 @@ The e2e needs a Chromium once per machine: `bunx playwright install chromium`. I
 from `themes/*` like the switcher does and asserts each one under the scope class its `theme.css`
 names, so a new theme needs no test edit.
 
-**Visual check.** `bunx nx run storybook:visual --output-style=stream` shows what a change did to every story in every theme (not part of the gate; about a minute once origin/main is cached). It builds and captures the working tree, captures origin/main's Storybook from a reusable worktree at `~/dev/hackcove.visual-main` (fast-forwarded, `bun install` when its lockfile changed, skipped when `.pixelslash/main.sha` already equals origin/main), and runs `pixelslash compare`, printing the path to `apps/storybook/.pixelslash/report/index.html`; open it. pixelslash is not published and not a dependency: it runs from the checkout `PIXELSLASH_DIR` (default `~/dev/pixelslash`). The stories and themes come from `pixelslash.config.ts`, which reads `themes/*` like the toolbar. A story that renders only into a portal leaves `#storybook-root` empty and times out in capture: file it on pixelslash and `exclude` it in the config with a comment naming the ticket. `.pixelslash/` is gitignored.
+**Visual check (required review step).** `bunx nx run storybook:visual --output-style=stream` shows what a change did to every story in every theme (not part of the gate; about a minute once the baseline is cached). It builds and captures the working tree, captures the baseline's Storybook from a reusable worktree at `~/dev/hackcove.visual-main` (fast-forwarded, `bun install` when its lockfile changed, skipped when `.pixelslash/main.sha` already equals the baseline sha), and runs `pixelslash compare`, printing the path to `apps/storybook/.pixelslash/report/index.html`; open it. pixelslash is not published and not a dependency: it runs from the checkout `PIXELSLASH_DIR` (default `~/dev/pixelslash`). The stories and themes come from `pixelslash.config.ts`, which reads `themes/*` like the toolbar. A story that renders only into a portal leaves `#storybook-root` empty and times out in capture: file it on pixelslash and `exclude` it in the config with a comment naming the ticket. `.pixelslash/` is gitignored.
+
+- **Every change** runs `bunx nx run storybook:visual --output-style=stream` before committing, and carries the `Visual:` line below. A change that should not touch visuals reports `0 changed`, which proves it.
+- The commit body carries one line: `Visual: <N> changed, <M> new, <K> removed vs <base> — <one line on why each changed capture was expected>` (`<base>` is `origin/main`, or the `VISUAL_BASE` ref; the run prints it, and the `pixelslash:` summary line gives the counts). Any unexpected change means fixing the change, not committing it.
+- The planner re-runs it in the land worktree before pushing.
+- `VISUAL_BASE=<ref>` compares against another ref instead of `origin/main` (e.g. the commit before a series of lands). The baseline is still `git fetch origin main` first, and the cache stamp records the resolved sha.
 
 **The consumers.** Every class a component uses and every utility a theme remaps shows up in
 omnibus's dashboard and `hack-cove-site`. After such a change, rebuild (`bunx nx build ui`) and
@@ -93,7 +98,8 @@ planner gates and squash-merges with `ob-land`.
 1. Builder commits on its own branch, ending the message with one of
    `State: ready` / `State: needs-human` / `State: blocked` / `State: partial`.
 2. The builder never pushes, never merges and **never publishes**.
-3. On `State: ready`, the planner loads `ob-land` and lands it into `main`. Landing is what
+3. On `State: ready`, the planner loads `ob-land` and lands it into `main`. Before pushing, the
+   planner runs the visual check on the squash and reads every changed capture. Landing is what
    touches the remote, and it is the only step that does:
 
    ```bash

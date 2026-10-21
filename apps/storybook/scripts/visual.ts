@@ -94,16 +94,17 @@ async function main() {
   await capture(join(appDir, "storybook-static"), join(out, "branch"));
 
   await git(repoRoot, "fetch", "origin", "main");
-  const sha = await git(repoRoot, "rev-parse", "origin/main");
+  const base = process.env["VISUAL_BASE"] || "origin/main";
+  const sha = await git(repoRoot, "rev-parse", base);
   const stamp = join(out, "main.sha");
   const cached =
     existsSync(join(out, "main", "manifest.json")) &&
     existsSync(stamp) &&
     readFileSync(stamp, "utf8").trim() === sha;
   if (cached) {
-    log(`origin/main ${sha.slice(0, 7)} already captured`);
+    log(`${base} ${sha.slice(0, 7)} already captured`);
   } else {
-    log(`building and capturing origin/main ${sha.slice(0, 7)}`);
+    log(`building and capturing ${base} ${sha.slice(0, 7)}`);
     rmSync(stamp, { force: true });
     await checkoutBaseline(sha);
     await run(["bunx", "nx", "build", "storybook"], baselineDir);
