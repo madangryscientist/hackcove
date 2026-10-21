@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "oxlint -c ../../.oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
     "test:e2e": "playwright test",
-    "visual": "bun scripts/visual.ts"
+    "visual": "bun scripts/visual.ts",
+    "visual:upload": "bun scripts/visual.ts --upload"
   },
   "dependencies": {
     "@hackcove/ui": "workspace:*",
@@ -56,6 +57,16 @@
         "executor": "nx:run-script",
         "options": {
           "script": "visual"
+        },
+        "dependsOn": [
+          "build"
+        ],
+        "cache": false
+      },
+      "visual-upload": {
+        "executor": "nx:run-script",
+        "options": {
+          "script": "visual:upload"
         },
         "dependsOn": [
           "build"

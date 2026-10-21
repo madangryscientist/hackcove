@@ -79,6 +79,7 @@ names, so a new theme needs no test edit.
 - The commit body carries one line: `Visual: <N> changed, <M> new, <K> removed vs <base> — <one line on why each changed capture was expected>` (`<base>` is `origin/main`, or the `VISUAL_BASE` ref; the run prints it, and the `pixelslash:` summary line gives the counts). Any unexpected change means fixing the change, not committing it.
 - The planner re-runs it in the land worktree before pushing.
 - `VISUAL_BASE=<ref>` compares against another ref instead of `origin/main` (e.g. the commit before a series of lands). The baseline is still `git fetch origin main` first, and the cache stamp records the resolved sha.
+- `bunx nx run storybook:visual-upload` runs the same check and also uploads both captures to a PixelSlash server for review on its build page: origin/main's as `main` once per main commit and server (recorded in `.pixelslash/main.uploaded`), then the working tree's on its branch. It refuses `VISUAL_BASE`, the `main` branch, a dirty tree and a branch not based on origin/main's tip (the server's baseline is the build at the merge-base). It needs `PIXELSLASH_SERVER` and `PIXELSLASH_TOKEN_PATH` (a chmod 600 file outside the repo; never commit a token); running a local server is in pixelslash's `apps/web/README.md`.
 
 **The consumers.** Every class a component uses and every utility a theme remaps shows up in
 omnibus's dashboard and `hack-cove-site`. After such a change, rebuild (`bunx nx build ui`) and

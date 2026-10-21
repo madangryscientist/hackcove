@@ -5,6 +5,10 @@
  * PixelSlash, then compares them locally. pixelslash is not published: it runs from the checkout
  * `PIXELSLASH_DIR` names (default ~/dev/pixelslash). The baseline is built in a reusable worktree
  * at ~/dev/hackcove.visual-main, so this checkout's branch and working tree are never touched.
+ *
+ * `--upload` also sends both captures to the PixelSlash server `PIXELSLASH_SERVER` names, with the
+ * CI token from `PIXELSLASH_TOKEN` or the file `PIXELSLASH_TOKEN_PATH`: origin/main's once per
+ * commit (as branch `main`, which the server auto-accepts as the baseline), then the branch's.
  */
 import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
@@ -19,6 +23,8 @@ const pixelslashDir = resolve(
 );
 const storybookUrl = "http://127.0.0.1:6008"; // the port pixelslash.config.ts serves on
 const baselineDir = join(homedir(), "dev", "hackcove.visual-main");
+
+const upload = process.argv.includes("--upload");
 
 class VisualError extends Error {}
 
@@ -69,6 +75,25 @@ async function capture(staticDir: string, into: string) {
   );
 }
 
+/**
+ * `pixelslash upload` run from `cwd`, the checkout whose commit, branch and merge-base it sends.
+ * Not `bun run --cwd` like the other calls: that would read git from the pixelslash checkout.
+ */
+async function uploadSnapshots(dir: string, cwd: string, ...flags: string[]) {
+  const tokenPath = process.env["PIXELSLASH_TOKEN_PATH"];
+  await run(
+    [
+      "bun",
+      join(pixelslashDir, "packages", "cli", "src", "index.ts"),
+      "upload",
+      dir,
+      ...(tokenPath ? ["--token-path", tokenPath] : []),
+      ...flags,
+    ],
+    cwd,
+  );
+}
+
 /** The baseline worktree at `sha`, with dependencies installed when its lockfile changed. */
 async function checkoutBaseline(sha: string) {
   if (existsSync(baselineDir)) {
@@ -85,10 +110,52 @@ async function checkoutBaseline(sha: string) {
     await run(["bun", "install"], baselineDir);
 }
 
+/**
+ * What `--upload` needs, checked before the minute-long capture. The server takes a branch's
+ * baseline from its merge-base, and a `main` upload is auto-accepted, so only a clean branch on
+ * origin/main's tip uploads: anything else would read "new" everywhere or seed a wrong baseline.
+ */
+async function checkUpload() {
+  if (!process.env["PIXELSLASH_SERVER"]) throw new VisualError("--upload needs PIXELSLASH_SERVER");
+  if (process.env["VISUAL_BASE"])
+    throw new VisualError("--upload seeds origin/main as the baseline; unset VISUAL_BASE");
+  if ((await git(repoRoot, "branch", "--show-current")) === "main")
+    throw new VisualError("on main: the server would auto-accept the working tree as the baseline");
+  if (await git(repoRoot, "status", "--porcelain"))
+    throw new VisualError("uncommitted changes: the upload names HEAD; commit first");
+  await git(repoRoot, "fetch", "origin", "main");
+  const [tip, mergeBase] = await Promise.all([
+    git(repoRoot, "rev-parse", "origin/main"),
+    git(repoRoot, "merge-base", "HEAD", "origin/main"),
+  ]);
+  if (mergeBase !== tip)
+    throw new VisualError(
+      "not based on origin/main's tip, so its baseline is out of reach; rebase",
+    );
+}
+
+/** origin/main's capture as `main`, once per commit and server, then the working tree's. */
+async function uploadBoth(sha: string) {
+  const uploaded = join(out, "main.uploaded");
+  const seeded = `${sha} ${process.env["PIXELSLASH_SERVER"] ?? ""}`;
+  if (existsSync(uploaded) && readFileSync(uploaded, "utf8").trim() === seeded) {
+    log(`origin/main ${sha.slice(0, 7)} already uploaded`);
+  } else {
+    log(`uploading origin/main ${sha.slice(0, 7)}`);
+    await checkoutBaseline(sha);
+    await uploadSnapshots(join(out, "main"), baselineDir, "--branch", "main");
+    writeFileSync(uploaded, `${seeded}\n`);
+  }
+  log("uploading the working tree");
+  await uploadSnapshots(join(out, "branch"), repoRoot);
+}
+
 async function main() {
   const started = Date.now();
   if (!existsSync(join(pixelslashDir, "packages", "cli", "src", "index.ts")))
     throw new VisualError(`no pixelslash checkout at ${pixelslashDir}; set PIXELSLASH_DIR`);
+
+  if (upload) await checkUpload();
 
   log("capturing the working tree");
   await capture(join(appDir, "storybook-static"), join(out, "branch"));
@@ -130,6 +197,8 @@ async function main() {
     ],
     pixelslashDir,
   );
+  if (upload) await uploadBoth(sha);
+
   log(`done in ${Math.round((Date.now() - started) / 1000)}s`);
   log(`report: ${join(report, "index.html")}`);
 }
