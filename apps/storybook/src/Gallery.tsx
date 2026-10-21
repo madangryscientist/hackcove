@@ -8,6 +8,7 @@ import {
   Empty,
   EpicHeader,
   IconButton,
+  Input,
   Lead,
   Markdown,
   ModalHeading,
@@ -79,6 +80,22 @@ export function Gallery() {
             <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
           </svg>
         </IconButton>
+      </div>
+
+      <div className="flex max-w-sm flex-col gap-3">
+        <Input
+          type="search"
+          placeholder="Search by name, suburb or tag…"
+          icon={
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path
+                fillRule="evenodd"
+                d="M9 3.5a5.5 5.5 0 1 0 3.4 9.8l3.15 3.15a.75.75 0 1 0 1.06-1.06l-3.15-3.15A5.5 5.5 0 0 0 9 3.5Zm-4 5.5a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z"
+                clipRule="evenodd"
+              />
+            </svg>
+          }
+        />
       </div>
 
       <Empty>nothing here yet</Empty>
