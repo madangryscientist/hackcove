@@ -1,7 +1,7 @@
 # hackcove
 
 The Hack Cove design system, as an Nx + Bun-workspaces monorepo. Every package here is published
-on its own; `0.1.0` of `@hackcove/ui` and the Mocha theme is on npm (MIT).
+on its own; `0.2.0` of `@hackcove/ui` and the Mocha theme is on npm (MIT).
 
 | Folder | Package | What it is |
 | --- | --- | --- |
