@@ -27,7 +27,7 @@ export function ToggleChip({
       {dot && (
         <span
           aria-hidden="true"
-          className="h-1.5 w-1.5 rounded-full"
+          className={cx("h-1.5 w-1.5 rounded-full", pressed && "ring-1 ring-current")}
           style={{ backgroundColor: dot }}
         />
       )}
