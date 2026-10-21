@@ -60,6 +60,9 @@
 .dark .text-slate-400 {
   color: #9399b2; /* overlay2 — legible muted/headers */
 }
+.dark .placeholder\:text-slate-400::placeholder {
+  color: #7f849c; /* overlay1 */
+}
 
 /* Borders */
 .dark .border-slate-100 {
@@ -94,6 +97,35 @@
 }
 .dark .bg-slate-300 {
   background-color: #585b70; /* surface2 */
+}
+
+/* Accent: buttons, focus, controls */
+.dark .bg-violet-600 {
+  background-color: #cba6f7; /* mauve */
+}
+.dark .hover\:bg-violet-700:hover {
+  background-color: #b4befe; /* lavender */
+}
+.dark .text-violet-50 {
+  color: #11111b; /* crust — text on the mauve button */
+}
+.dark .hover\:text-violet-700:hover {
+  color: #b4befe; /* lavender */
+}
+.dark .hover\:bg-violet-50:hover {
+  background-color: rgba(203, 166, 247, 0.14); /* mauve tint */
+}
+.dark .border-violet-600 {
+  border-color: #cba6f7; /* mauve */
+}
+.dark .hover\:border-violet-400:hover {
+  border-color: rgba(203, 166, 247, 0.5);
+}
+.dark .focus-visible\:outline-violet-600:focus-visible {
+  outline-color: #cba6f7; /* mauve */
+}
+.dark .accent-violet-600 {
+  accent-color: #cba6f7; /* mauve */
 }
 
 /* Hover states */
@@ -133,6 +165,8 @@
 .dark .text-amber-900 {
   color: #f9e2af; /* yellow */
 }
+.dark .text-red-700,
+.dark .text-red-800,
 .dark .text-red-900 {
   color: #f38ba8; /* red */
 }
@@ -150,8 +184,12 @@
 .dark .border-emerald-300 {
   border-color: rgba(166, 227, 161, 0.4);
 }
+.dark .border-amber-200,
 .dark .border-amber-300 {
   border-color: rgba(249, 226, 175, 0.4);
+}
+.dark .border-red-200 {
+  border-color: rgba(243, 139, 168, 0.45);
 }
 .dark .border-red-300,
 .dark .border-red-400 {

@@ -16,8 +16,8 @@
      ink #1c1917 · ink-body #3b342e · ink-mute #6b6259
      accent #c2410c · accent-hover #9a3412 · accent-soft #fdf5f0
      positive #047857 / #ecfdf5 · warn #b45309 / #fffbeb · note #0f766e / #f0fdfa
+     danger #b91c1c / #fef2f2
 
-   Thrifty has no danger colour, so the red utilities keep Tailwind's own.
    --------------------------------------------------------------------------- */
 
 /* The scope: the page is cream canvas with ink text. */
@@ -60,6 +60,9 @@
 .thrifty-paper .text-slate-400 {
   color: #6b6259; /* ink-mute — Thrifty's lightest text */
 }
+.thrifty-paper .placeholder\:text-slate-400::placeholder {
+  color: rgba(107, 98, 89, 0.7); /* ink-mute/70 */
+}
 
 /* Borders */
 .thrifty-paper .border-slate-100,
@@ -83,6 +86,35 @@
 }
 .thrifty-paper .bg-slate-300 {
   background-color: #ece3d4; /* line */
+}
+
+/* Accent: buttons, focus, controls */
+.thrifty-paper .bg-violet-600 {
+  background-color: #c2410c; /* accent */
+}
+.thrifty-paper .hover\:bg-violet-700:hover {
+  background-color: #9a3412; /* accent-hover */
+}
+.thrifty-paper .text-violet-50 {
+  color: #ffffff; /* text on the accent button */
+}
+.thrifty-paper .hover\:text-violet-700:hover {
+  color: #9a3412; /* accent-hover */
+}
+.thrifty-paper .hover\:bg-violet-50:hover {
+  background-color: #fdf5f0; /* accent-soft */
+}
+.thrifty-paper .border-violet-600 {
+  border-color: #c2410c; /* accent */
+}
+.thrifty-paper .hover\:border-violet-400:hover {
+  border-color: rgba(194, 65, 12, 0.4);
+}
+.thrifty-paper .focus-visible\:outline-violet-600:focus-visible {
+  outline-color: #c2410c; /* accent */
+}
+.thrifty-paper .accent-violet-600 {
+  accent-color: #c2410c; /* accent */
 }
 
 /* Hover states */
@@ -110,6 +142,9 @@
 .thrifty-paper .bg-violet-50 {
   background-color: #fdf5f0; /* accent-soft */
 }
+.thrifty-paper .bg-red-50 {
+  background-color: #fef2f2; /* danger-soft */
+}
 .thrifty-paper .text-emerald-700,
 .thrifty-paper .text-emerald-800 {
   color: #047857; /* positive */
@@ -131,12 +166,21 @@
 .thrifty-paper .text-violet-700 {
   color: #9a3412; /* accent-hover */
 }
+.thrifty-paper .text-red-700,
+.thrifty-paper .text-red-800,
+.thrifty-paper .text-red-900 {
+  color: #b91c1c; /* danger */
+}
 .thrifty-paper .border-emerald-200,
 .thrifty-paper .border-emerald-300 {
   border-color: rgba(4, 120, 87, 0.3); /* positive */
 }
+.thrifty-paper .border-amber-200,
 .thrifty-paper .border-amber-300 {
   border-color: rgba(180, 83, 9, 0.3); /* warn */
+}
+.thrifty-paper .border-red-200 {
+  border-color: rgba(185, 28, 28, 0.3); /* danger */
 }
 .thrifty-paper .border-blue-200,
 .thrifty-paper .border-blue-300 {

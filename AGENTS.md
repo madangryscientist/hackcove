@@ -127,11 +127,13 @@ nothing).
 1. **`@hackcove/ui` carries no theme.** Components are written against stock Tailwind utilities
    (`bg-white`, `text-slate-900`, …) and never contain a `dark:` variant or a palette colour. A
    theme is the only place a palette lives, and it remaps those utilities under its own scope
-   class (`.dark` for Mocha).
+   class (`.dark` for Mocha). Components use only the colour utilities in
+   `packages/ui/palette.json` (`palette.test.ts`). A new colour utility in a component is a
+   palette change: add it to `palette.json` and remap it in every theme in the same commit.
 2. **A theme is a folder and nothing else registers it.** No theme name appears in code: Storybook
    globs `themes/*/theme.css`, and each theme's own `theme.test.ts` is the contract (name
    `@hackcove/theme-<folder>`, exports + `files` = `theme.css` only, rules scoped under the
-   theme's scope class, no Tailwind import; a dark theme also declares `@custom-variant dark`).
+   theme's scope class, no Tailwind import, remaps every palette utility; a dark theme also declares `@custom-variant dark`).
    The scope class is read from `theme.css`, never listed. Do not add a theme list anywhere.
 3. **Packages stay dependency-free at runtime.** `@hackcove/ui` has only peers (react, tailwindcss
    v4); a theme has only the tailwindcss peer. A new dependency is a human decision.

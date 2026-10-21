@@ -1,0 +1,31 @@
+{
+  "surface": ["bg-white"],
+  "subtle": ["bg-slate-50", "hover:bg-slate-50"],
+  "inset": ["bg-slate-100", "hover:bg-slate-100"],
+  "line": ["border-slate-200", "border-slate-200/70", "border-slate-300"],
+  "ink": [
+    "text-slate-900",
+    "text-slate-700",
+    "text-slate-600",
+    "text-slate-500",
+    "text-slate-400",
+    "placeholder:text-slate-400"
+  ],
+  "accent": [
+    "bg-violet-600",
+    "hover:bg-violet-700",
+    "text-violet-50",
+    "text-violet-600",
+    "hover:text-violet-700",
+    "bg-violet-50",
+    "hover:bg-violet-50",
+    "border-violet-600",
+    "hover:border-violet-400",
+    "focus-visible:outline-violet-600",
+    "accent-violet-600"
+  ],
+  "positive": ["bg-emerald-50", "text-emerald-700", "text-emerald-800", "border-emerald-200"],
+  "warn": ["bg-amber-50", "text-amber-700", "text-amber-800", "border-amber-200"],
+  "danger": ["bg-red-50", "text-red-700", "text-red-800", "text-red-900", "border-red-200"],
+  "info": ["bg-blue-50", "text-blue-700", "text-blue-800", "border-blue-200"]
+}

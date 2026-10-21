@@ -28,3 +28,15 @@ it("leaves the Tailwind import to the consumer", () => {
   expect(rules).not.toMatch(/@import\s+["']tailwindcss/);
   expect(pkg.peerDependencies.tailwindcss).toBeDefined();
 });
+
+it("remaps every utility in @hackcove/ui's palette", () => {
+  const palette: Record<string, string[]> = JSON.parse(read("../../packages/ui/palette.json"));
+  const missing = Object.values(palette)
+    .flat()
+    .filter((utility) => {
+      const selector = "." + utility.replace(/[:/]/g, "\\$&");
+      const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return !new RegExp(`${escaped}(?=[\\s,:{])`).test(css);
+    });
+  expect(missing).toEqual([]);
+});

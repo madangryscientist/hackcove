@@ -41,6 +41,26 @@ export const Example = () => (
   `PageHeading`, `SectionHeading`, `SubsectionHeading`, `ModalHeading`, `Subtitle`, `Overline`,
   `Body`, `BodyStrong`, `Caption`.
 
+## Palette
+
+`palette.json` (in the repo, not in the package) lists the colour utilities the components may use,
+by role.
+
+| Role       | For                                                                   |
+| ---------- | --------------------------------------------------------------------- |
+| `surface`  | Cards and panels: the main background.                                |
+| `subtle`   | A step off the surface: table stripes, hover rows.                    |
+| `inset`    | A step deeper: wells, chips, pressed fills.                           |
+| `line`     | Borders and dividers.                                                 |
+| `ink`      | Text, from primary down to muted, plus input placeholders.            |
+| `accent`   | Primary actions, links, focus rings and controls; text on the accent. |
+| `positive` | Success: fill, text and border.                                       |
+| `warn`     | Caution: fill, text and border.                                       |
+| `danger`   | Errors and destructive actions: fill, text and border.                |
+| `info`     | Neutral notes: fill, text and border.                                 |
+
+A theme remaps every utility in `palette.json`; a component uses no colour utility outside it.
+
 ## Develop
 
 From the workspace root: `bunx nx run-many -t typecheck lint test build -p ui` and
