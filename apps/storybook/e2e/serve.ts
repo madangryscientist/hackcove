@@ -1,7 +1,7 @@
-/** Serves storybook-static on localhost for the e2e run; no dependency, no network beyond the loopback. */
+/** Serves storybook-static (or `STATIC_DIR`) on localhost for the e2e run and the visual check; no dependency, no network beyond the loopback. */
 import { join, normalize } from "node:path";
 
-const root = join(import.meta.dirname, "..", "storybook-static");
+const root = process.env["STATIC_DIR"] ?? join(import.meta.dirname, "..", "storybook-static");
 const port = Number(process.env["PORT"] ?? 6007);
 
 Bun.serve({

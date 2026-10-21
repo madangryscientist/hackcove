@@ -73,6 +73,8 @@ The e2e needs a Chromium once per machine: `bunx playwright install chromium`. I
 from `themes/*` like the switcher does and asserts each one under the scope class its `theme.css`
 names, so a new theme needs no test edit.
 
+**Visual check.** `bunx nx run storybook:visual --output-style=stream` shows what a change did to every story in every theme (not part of the gate; about a minute once origin/main is cached). It builds and captures the working tree, captures origin/main's Storybook from a reusable worktree at `~/dev/hackcove.visual-main` (fast-forwarded, `bun install` when its lockfile changed, skipped when `.pixelslash/main.sha` already equals origin/main), and runs `pixelslash compare`, printing the path to `apps/storybook/.pixelslash/report/index.html`; open it. pixelslash is not published and not a dependency: it runs from the checkout `PIXELSLASH_DIR` (default `~/dev/pixelslash`). The stories and themes come from `pixelslash.config.ts`, which reads `themes/*` like the toolbar. A story that renders only into a portal leaves `#storybook-root` empty and times out in capture: file it on pixelslash and `exclude` it in the config with a comment naming the ticket. `.pixelslash/` is gitignored.
+
 **The consumers.** Every class a component uses and every utility a theme remaps shows up in
 omnibus's dashboard and `hack-cove-site`. After such a change, rebuild (`bunx nx build ui`) and
 build those two apps in an omnibus worktree (`bunx nx build dashboard`, `bunx nx build

@@ -1,6 +1,13 @@
 {
   "extends": "../../tsconfig.shared.json",
-  "include": ["src", ".storybook", "e2e", "playwright.config.ts"],
+  "include": [
+    "src",
+    ".storybook",
+    "e2e",
+    "scripts",
+    "playwright.config.ts",
+    "pixelslash.config.ts"
+  ],
   "compilerOptions": {
     "types": ["bun", "vite/client"],
     "paths": { "@hackcove/ui": ["../../packages/ui/src/index.ts"] }

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { NONE } from "./none";
 import { themeScope } from "./scope";
 
 // Every folder under themes/ ships a theme.css. Globbing them means a new theme appears in the
@@ -12,7 +13,7 @@ const themeCss = import.meta.glob<string>("../../../themes/*/theme.css", {
 export const THEMES: Record<string, string> = Object.fromEntries(
   Object.entries(themeCss).map(([path, css]) => [path.split("/").at(-2) ?? path, css]),
 );
-export const NONE = "default";
+export { NONE };
 export const themeNames = Object.keys(THEMES).toSorted();
 
 /** Each theme remaps under its own scope class; `default` is the components' own Tailwind classes. */

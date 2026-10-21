@@ -8,7 +8,8 @@
     "build": "storybook build",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint -c ../../.oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "visual": "bun scripts/visual.ts"
   },
   "dependencies": {
     "@hackcove/ui": "workspace:*",
@@ -45,6 +46,16 @@
         "executor": "nx:run-script",
         "options": {
           "script": "test:e2e"
+        },
+        "dependsOn": [
+          "build"
+        ],
+        "cache": false
+      },
+      "visual": {
+        "executor": "nx:run-script",
+        "options": {
+          "script": "visual"
         },
         "dependsOn": [
           "build"
