@@ -9,8 +9,12 @@
  * `--upload` also sends both captures to the PixelSlash server `PIXELSLASH_SERVER` names, with the
  * CI token from `PIXELSLASH_TOKEN` or the file `PIXELSLASH_TOKEN_PATH`: origin/main's once per
  * commit (as branch `main`, which the server auto-accepts as the baseline), then the branch's.
+ *
+ * The static Storybook is served on a port free at run time (`VISUAL_PORT` overrides it), so two
+ * checkouts can run at once. The baseline worktree is shared by all of them, so it is built under
+ * a lock.
  */
-import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -21,7 +25,6 @@ const config = join(appDir, "pixelslash.config.ts");
 const pixelslashDir = resolve(
   process.env["PIXELSLASH_DIR"] ?? join(homedir(), "dev", "pixelslash"),
 );
-const storybookUrl = "http://127.0.0.1:6008"; // the port pixelslash.config.ts serves on
 const baselineDir = join(homedir(), "dev", "hackcove.visual-main");
 
 const upload = process.argv.includes("--upload");
@@ -45,16 +48,62 @@ async function git(cwd: string, ...args: string[]): Promise<string> {
   return text.trim();
 }
 
-/** One capture of a built storybook-static into a fresh snapshot dir. */
-async function capture(staticDir: string, into: string) {
+/** A port nothing listens on now: the OS hands out a free one, and the probe server stops at once. */
+async function freePort(): Promise<number> {
+  const probe = Bun.serve({ hostname: "127.0.0.1", port: 0, fetch: () => new Response() });
+  const port = probe.port;
+  await probe.stop(true);
+  if (port === undefined) throw new VisualError("no TCP port to serve the capture on");
+  return port;
+}
+
+/** The port this run serves on: `VISUAL_PORT` if set, else one free now. */
+async function capturePort(): Promise<number> {
+  const given = process.env["VISUAL_PORT"];
+  if (!given) return freePort();
+  const port = Number(given);
+  if (!Number.isInteger(port) || port <= 0) throw new VisualError(`VISUAL_PORT is not a port`);
+  return port;
+}
+
+/**
+ * Runs `task` holding the baseline lock. The baseline worktree is one directory for every checkout
+ * on this machine, so two builds at once would check out and install over each other. `mkdir` is
+ * atomic, so the run that creates the lock holds it and the others wait. A lock left by a run that
+ * died is removed by hand, as the wait message says.
+ */
+async function withBaselineLock<T>(task: () => Promise<T>): Promise<T> {
+  const lock = `${baselineDir}.lock`;
+  let waiting = false;
+  while (true) {
+    try {
+      mkdirSync(lock);
+      break;
+    } catch {
+      if (!waiting)
+        log(`waiting for another run on the baseline; if none is running, rm -r ${lock}`);
+      waiting = true;
+      await Bun.sleep(1000);
+    }
+  }
+  try {
+    return await task();
+  } finally {
+    rmSync(lock, { recursive: true, force: true });
+  }
+}
+
+/** One capture of a built storybook-static into a fresh snapshot dir, served on `port`. */
+async function capture(staticDir: string, into: string, port: number) {
   // PixelSlash takes any answer on the ready URL for its own server, so a server left on the port
   // (or another worktree's run) would be captured instead, and the report could say 0 changed.
-  const taken = await fetch(`${storybookUrl}/`, { signal: AbortSignal.timeout(2000) }).then(
+  const taken = await fetch(`http://127.0.0.1:${port}/`, {
+    signal: AbortSignal.timeout(2000),
+  }).then(
     () => true,
     () => false,
   );
-  if (taken)
-    throw new VisualError(`something already answers on ${storybookUrl}; stop it and re-run`);
+  if (taken) throw new VisualError(`something already answers on port ${port}; stop it and re-run`);
   rmSync(into, { recursive: true, force: true });
   await run(
     [
@@ -71,7 +120,7 @@ async function capture(staticDir: string, into: string) {
       into,
     ],
     pixelslashDir,
-    { VISUAL_STATIC_DIR: staticDir },
+    { VISUAL_STATIC_DIR: staticDir, VISUAL_PORT: String(port) },
   );
 }
 
@@ -142,8 +191,10 @@ async function uploadBoth(sha: string) {
     log(`origin/main ${sha.slice(0, 7)} already uploaded`);
   } else {
     log(`uploading origin/main ${sha.slice(0, 7)}`);
-    await checkoutBaseline(sha);
-    await uploadSnapshots(join(out, "main"), baselineDir, "--branch", "main");
+    await withBaselineLock(async () => {
+      await checkoutBaseline(sha);
+      await uploadSnapshots(join(out, "main"), baselineDir, "--branch", "main");
+    });
     writeFileSync(uploaded, `${seeded}\n`);
   }
   log("uploading the working tree");
@@ -157,8 +208,10 @@ async function main() {
 
   if (upload) await checkUpload();
 
+  const port = await capturePort();
+
   log("capturing the working tree");
-  await capture(join(appDir, "storybook-static"), join(out, "branch"));
+  await capture(join(appDir, "storybook-static"), join(out, "branch"), port);
 
   await git(repoRoot, "fetch", "origin", "main");
   const base = process.env["VISUAL_BASE"] || "origin/main";
@@ -173,9 +226,15 @@ async function main() {
   } else {
     log(`building and capturing ${base} ${sha.slice(0, 7)}`);
     rmSync(stamp, { force: true });
-    await checkoutBaseline(sha);
-    await run(["bunx", "nx", "build", "storybook"], baselineDir);
-    await capture(join(baselineDir, "apps", "storybook", "storybook-static"), join(out, "main"));
+    await withBaselineLock(async () => {
+      await checkoutBaseline(sha);
+      await run(["bunx", "nx", "build", "storybook"], baselineDir);
+      await capture(
+        join(baselineDir, "apps", "storybook", "storybook-static"),
+        join(out, "main"),
+        port,
+      );
+    });
     writeFileSync(stamp, `${sha}\n`);
   }
 

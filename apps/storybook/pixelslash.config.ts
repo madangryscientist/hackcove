@@ -14,13 +14,15 @@ const themes = readdirSync(themesDir, { withFileTypes: true })
   .map((entry) => entry.name)
   .toSorted();
 
-// The script points this at the checkout's build, or at the baseline worktree's.
+// The script points this at the checkout's build, or at the baseline worktree's, and picks the port
+// it serves on (free at run time, so two runs do not collide). 6008 is the fallback for a bare run.
 const staticDir = process.env["VISUAL_STATIC_DIR"] ?? join(import.meta.dirname, "storybook-static");
-const url = "http://127.0.0.1:6008";
+const port = process.env["VISUAL_PORT"] ?? "6008";
+const url = `http://127.0.0.1:${port}`;
 
 export default {
   start: {
-    command: `STATIC_DIR='${staticDir}' PORT=6008 bun '${join(import.meta.dirname, "e2e", "serve.ts")}'`,
+    command: `STATIC_DIR='${staticDir}' PORT=${port} bun '${join(import.meta.dirname, "e2e", "serve.ts")}'`,
     readyUrl: `${url}/iframe.html`,
   },
   storybook: { url, globals: { theme: [NONE, ...themes] } },

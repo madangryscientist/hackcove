@@ -12,8 +12,12 @@ export const Gallery: S = {
   render: () => <GalleryView />,
 };
 
-/** Every theme side by side, each in its own frame. Skips the toolbar frame (see preview.tsx). */
+/**
+ * Every theme side by side, each in its own frame. Skips the toolbar frame (see preview.tsx).
+ * Tagged for PixelSlash: it renders every theme itself, so the visual check shoots it once.
+ */
 export const AllThemes: S = {
+  tags: ["pixelslash-once"],
   parameters: { allThemes: true },
   render: () => (
     <div className="grid grid-cols-[repeat(auto-fit,minmax(26rem,1fr))]">
