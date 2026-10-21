@@ -1,5 +1,6 @@
 import {
   Body,
+  Button,
   BodyStrong,
   Caption,
   Card,
@@ -59,6 +60,12 @@ export function Gallery() {
           <Markdown md={"## What I did\n- **CUE-9388** shipped\n- plain item"} />
         </div>
       </Card>
+
+      <div className="flex flex-wrap gap-2">
+        <Button>Save</Button>
+        <Button variant="outline">Cancel</Button>
+        <Button variant="ghost">Skip</Button>
+      </div>
 
       <Empty>nothing here yet</Empty>
     </div>

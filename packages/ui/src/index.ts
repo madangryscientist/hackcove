@@ -1,5 +1,6 @@
 export { Card, EpicHeader, Empty, PageTitle, Pill, groupByEpic } from "./ui.js";
 export { Markdown } from "./Markdown.js";
+export { Button, buttonClass, type ButtonVariant } from "./Button.js";
 export {
   Body,
   BodyStrong,

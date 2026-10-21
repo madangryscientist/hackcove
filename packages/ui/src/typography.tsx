@@ -1,4 +1,5 @@
 import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
+import { cx } from "./cx.js";
 
 /* ---------------------------------------------------------------------------
    Typography system
@@ -39,10 +40,6 @@ const COLOR: Record<TypographyColor, string> = {
   muted: "text-slate-400", // Catppuccin overlay2 #9399b2
   brand: "text-violet-600", // Catppuccin mauve    #cba6f7
 };
-
-function cx(...parts: Array<string | false | null | undefined>): string {
-  return parts.filter(Boolean).join(" ");
-}
 
 /** Own props shared by every typography component; the rest follow the rendered element. */
 type OwnProps = {
