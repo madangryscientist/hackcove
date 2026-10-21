@@ -26,6 +26,7 @@ import {
   SubsectionHeading,
   Subtitle,
   Textarea,
+  ToggleChip,
 } from "@hackcove/ui";
 
 const searchIcon = (
@@ -59,6 +60,26 @@ function GalleryHeader() {
         ]}
       />
     </>
+  );
+}
+
+/** The filter chips block of the Gallery: four ToggleChips with category dots, one pressed. */
+function GalleryChips() {
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      <ToggleChip pressed={false} dot="#e11d48">
+        Charity
+      </ToggleChip>
+      <ToggleChip pressed dot="#7c3aed">
+        Vintage
+      </ToggleChip>
+      <ToggleChip pressed={false} dot="#0891b2">
+        Books
+      </ToggleChip>
+      <ToggleChip pressed={false} dot="#ca8a04">
+        Furniture
+      </ToggleChip>
+    </div>
   );
 }
 
@@ -142,6 +163,8 @@ export function Gallery() {
       <Callout tone="warn" title="Draft.">
         This page has not yet been reviewed by a lawyer.
       </Callout>
+
+      <GalleryChips />
 
       <Empty>nothing here yet</Empty>
     </div>
