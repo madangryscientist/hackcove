@@ -84,6 +84,27 @@ function GalleryChips() {
   );
 }
 
+/** The dot Pill row of the Gallery: the five tones, each with a leading dot. */
+function GalleryPillsWithDot() {
+  return (
+    <div className="flex flex-wrap gap-2">
+      <Pill dot>slate</Pill>
+      <Pill tone="amber" dot>
+        amber
+      </Pill>
+      <Pill tone="emerald" dot>
+        emerald
+      </Pill>
+      <Pill tone="blue" dot>
+        blue
+      </Pill>
+      <Pill tone="red" dot>
+        red
+      </Pill>
+    </div>
+  );
+}
+
 /** Every component in @hackcove/ui, once each. Colour comes from the components and the theme only. */
 export function Gallery() {
   const nameId = useId();
@@ -114,6 +135,8 @@ export function Gallery() {
         <Pill tone="blue">blue</Pill>
         <Pill tone="red">red</Pill>
       </div>
+
+      <GalleryPillsWithDot />
 
       <Card title="Section" count={3}>
         <div className="flex flex-col gap-4">

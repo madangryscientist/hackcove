@@ -21,6 +21,22 @@ describe("Pill", () => {
     expect(renderToStaticMarkup(<Pill>x</Pill>)).toContain("bg-slate-100");
     expect(renderToStaticMarkup(<Pill tone="red">x</Pill>)).toContain("text-red-900");
   });
+
+  it("renders the same markup as before when dot is off", () => {
+    expect(renderToStaticMarkup(<Pill tone="amber">x</Pill>)).toBe(
+      '<span class="rounded-md px-1.5 py-0.5 text-xs font-medium bg-amber-50 text-amber-700">x</span>',
+    );
+  });
+
+  it("adds a leading dot in the text colour when dot is on", () => {
+    const markup = renderToStaticMarkup(
+      <Pill tone="amber" dot>
+        x
+      </Pill>,
+    );
+    expect(markup).toContain("bg-current");
+    expect(markup).toContain("inline-flex");
+  });
 });
 
 describe("Card", () => {

@@ -16,6 +16,25 @@ export const Pills: S = {
     </div>
   ),
 };
+export const PillsWithDot: S = {
+  render: () => (
+    <div className="flex gap-2">
+      <Pill dot>slate</Pill>
+      <Pill tone="amber" dot>
+        amber
+      </Pill>
+      <Pill tone="emerald" dot>
+        emerald
+      </Pill>
+      <Pill tone="blue" dot>
+        blue
+      </Pill>
+      <Pill tone="red" dot>
+        red
+      </Pill>
+    </div>
+  ),
+};
 export const CardStory: S = {
   render: () => (
     <Card title="Section" count={3}>

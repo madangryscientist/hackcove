@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { cx } from "./cx.js";
 
 // Small presentational primitives written against Tailwind's slate-based class vocabulary
 // (remapped to Catppuccin Mocha in dark mode by theme.css).
@@ -46,12 +47,15 @@ export function EpicHeader({ color, label }: { color: string; label: string }) {
   );
 }
 
+/** A small tinted label; `dot` adds a leading dot in the pill's own text colour. */
 export function Pill({
   children,
   tone = "slate",
+  dot = false,
 }: {
   children: ReactNode;
   tone?: "slate" | "amber" | "emerald" | "blue" | "red";
+  dot?: boolean;
 }) {
   const tones: Record<string, string> = {
     slate: "bg-slate-100 text-slate-600",
@@ -61,7 +65,14 @@ export function Pill({
     red: "bg-red-50 text-red-900",
   };
   return (
-    <span className={`rounded-md px-1.5 py-0.5 text-xs font-medium ${tones[tone]}`}>
+    <span
+      className={cx(
+        "rounded-md px-1.5 py-0.5 text-xs font-medium",
+        tones[tone],
+        dot && "inline-flex items-center gap-1",
+      )}
+    >
+      {dot && <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-current" />}
       {children}
     </span>
   );
