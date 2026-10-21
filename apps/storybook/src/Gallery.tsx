@@ -16,6 +16,7 @@ import {
   Lead,
   Markdown,
   ModalHeading,
+  NavTabs,
   Overline,
   PageHeading,
   PageTitle,
@@ -37,17 +38,36 @@ const searchIcon = (
   </svg>
 );
 
-/** Every component in @hackcove/ui, once each. Colour comes from the components and the theme only. */
-export function Gallery() {
-  const nameId = useId();
+/** The page header block of the Gallery: a Display title, a PageTitle and a NavTabs row. */
+function GalleryHeader() {
   return (
-    <div className="flex max-w-3xl flex-col gap-6">
+    <>
       <div className="flex flex-col gap-2">
         <Display>Hack Cove</Display>
         <Lead>The supporting sentence that sits under a Display heading.</Lead>
       </div>
 
       <PageTitle title="Status" subtitle="what's happening now" />
+
+      <NavTabs
+        label="Main"
+        items={[
+          { label: "Map", href: "/" },
+          { label: "Directory", href: "/stores", active: true },
+          { label: "Events", href: "/events" },
+          { label: "About", href: "/about" },
+        ]}
+      />
+    </>
+  );
+}
+
+/** Every component in @hackcove/ui, once each. Colour comes from the components and the theme only. */
+export function Gallery() {
+  const nameId = useId();
+  return (
+    <div className="flex max-w-3xl flex-col gap-6">
+      <GalleryHeader />
 
       <div className="flex flex-col gap-2">
         <PageHeading>PageHeading</PageHeading>
