@@ -40,7 +40,7 @@ export const Example = () => (
 - Typography roles (each pins size + weight, takes a `color` and an `as`): `Display`, `Lead`,
   `PageHeading`, `SectionHeading`, `SubsectionHeading`, `ModalHeading`, `Subtitle`, `Overline`,
   `Body`, `BodyStrong`, `Caption`.
-- Controls: `Button`, `buttonClass` (the classes of a `Button`, for a router's own `<Link>`).
+- Controls: `Button`, `buttonClass` (the classes of a `Button`, for a router's own `<Link>`), `IconButton` (a square button holding one icon; `label` is required and becomes its `aria-label` and `title`).
 
 ## Palette
 
