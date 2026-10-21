@@ -3,6 +3,7 @@ export { Markdown } from "./Markdown.js";
 export { Button, buttonClass, type ButtonVariant } from "./Button.js";
 export { IconButton } from "./IconButton.js";
 export { Input } from "./Input.js";
+export { Select } from "./Select.js";
 export { Textarea } from "./Textarea.js";
 export {
   Body,

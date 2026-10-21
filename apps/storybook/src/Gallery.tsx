@@ -16,6 +16,7 @@ import {
   PageHeading,
   PageTitle,
   Pill,
+  Select,
   SectionHeading,
   SubsectionHeading,
   Subtitle,
@@ -98,6 +99,13 @@ export function Gallery() {
           }
         />
         <Textarea placeholder="What did you find? How were the prices?" />
+        <Select defaultValue={5}>
+          <option value={5}>★★★★★ (5)</option>
+          <option value={4}>★★★★ (4)</option>
+          <option value={3}>★★★ (3)</option>
+          <option value={2}>★★ (2)</option>
+          <option value={1}>★ (1)</option>
+        </Select>
       </div>
 
       <Empty>nothing here yet</Empty>
