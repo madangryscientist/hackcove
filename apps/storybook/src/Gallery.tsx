@@ -19,6 +19,7 @@ import {
   SectionHeading,
   SubsectionHeading,
   Subtitle,
+  Textarea,
 } from "@hackcove/ui";
 
 /** Every component in @hackcove/ui, once each. Colour comes from the components and the theme only. */
@@ -96,6 +97,7 @@ export function Gallery() {
             </svg>
           }
         />
+        <Textarea placeholder="What did you find? How were the prices?" />
       </div>
 
       <Empty>nothing here yet</Empty>
