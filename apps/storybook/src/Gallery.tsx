@@ -1,3 +1,4 @@
+import { useId } from "react";
 import {
   Body,
   Button,
@@ -8,6 +9,7 @@ import {
   Display,
   Empty,
   EpicHeader,
+  Field,
   IconButton,
   Input,
   Lead,
@@ -36,6 +38,7 @@ const searchIcon = (
 
 /** Every component in @hackcove/ui, once each. Colour comes from the components and the theme only. */
 export function Gallery() {
+  const nameId = useId();
   return (
     <div className="flex max-w-3xl flex-col gap-6">
       <div className="flex flex-col gap-2">
@@ -96,7 +99,14 @@ export function Gallery() {
       </div>
 
       <div className="flex max-w-sm flex-col gap-3">
-        <Input type="search" placeholder="Search by name, suburb or tag…" icon={searchIcon} />
+        <Field label="Display name" htmlFor={nameId} hint="Shown on your reviews.">
+          <Input
+            id={nameId}
+            type="search"
+            placeholder="Search by name, suburb or tag…"
+            icon={searchIcon}
+          />
+        </Field>
         <Textarea placeholder="What did you find? How were the prices?" />
         <Select defaultValue={5}>
           <option value={5}>★★★★★ (5)</option>
