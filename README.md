@@ -76,19 +76,21 @@ Publishing goes through Nx, never a bare `npm publish`.
 
 ### From CI (GitHub Actions)
 
-`.github/workflows/publish.yml` is a manual workflow (Actions → Publish → Run workflow, from
+`.github/workflows/publish.yml` is the only thing that publishes: no one publishes from a laptop,
+not even a package's first version. It is a manual workflow (Actions → Publish → Run workflow, from
 `main`). It runs the gate, then `nx release`. Two inputs:
 
 - `dry_run` (default on) versions and previews changelogs, and publishes nothing. No commit, tag,
   push or GitHub release happens either. Untick it to release for real.
-- `project` (optional) releases one project, such as `ui`. Empty releases every project that has a
-  release tag.
+- `project` (optional) releases one project, such as `ui`. Empty releases every releasable project
+  (`release.projects` in `nx.json`).
 
-It authenticates with npm trusted publishing (OIDC), so there is no `NPM_TOKEN` and no OTP. `nx.json`
-sets `cli.packageManager` to `npm`, so the publish step (Nx's `@nx/js:release-publish` executor) runs
-`npm publish` rather than `bun publish`: bun cannot do npm trusted publishing or prompt for an OTP.
-The release commit and tags are pushed with the job's `GITHUB_TOKEN` (`contents: write`), so `main`
-must accept pushes from GitHub Actions. One-time setup, by hand:
+Already-released packages authenticate with npm trusted publishing (OIDC), so there is no
+`NPM_TOKEN` and no OTP in their step. `nx.json` sets `cli.packageManager` to `npm`, so the publish
+step (Nx's `@nx/js:release-publish` executor) runs `npm publish` rather than `bun publish`: bun
+cannot do npm trusted publishing or prompt for an OTP. The release commit and tags are pushed with
+the job's `GITHUB_TOKEN` (`contents: write`), so `main` must accept pushes from GitHub Actions.
+One-time setup, by hand:
 
 1. On GitHub, create an environment named `npm-publish` (Settings → Environments); add a required
    reviewer if you want a gate on every publish.
@@ -97,40 +99,58 @@ must accept pushes from GitHub Actions. One-time setup, by hand:
    filename `publish.yml`, environment `npm-publish`.
 
 Nx pushes the release commit, the tags and the GitHub release before it runs `npm publish`. If the
-publish then fails, a re-run finds nothing new to release. Publish the version already tagged by hand
-with `bunx nx release publish -p <project>` from `main`.
+publish then fails, a re-run finds nothing new to release. Fix the cause and land a releasable
+commit: the next run publishes the next version. A stranded version is never published by hand.
+The exception is a first publish: its tag exists from the moment Nx pushes, so a failed first
+publish (wrong token scope, expired token) leaves a project the workflow now treats as tagged, and
+OIDC cannot publish a package that is not on npm yet. Delete the tag (`git push origin
+:refs/tags/<project>@<version>`) and the GitHub release, revert the release commit, and start the
+first-release steps again. A dry run does not exercise the token, so it cannot catch this.
 
-Locally, the same dry run is:
+Locally, the same dry run of the tagged projects is:
 
 ```sh
 bunx nx release --dry-run --projects ui,theme-catppuccin-mocha   # use the tagged projects, see below
 ```
 
-### Only projects with a tag are released
+### Tagged projects and new ones
 
-Nx's `git-tag` version resolver refuses a project that has no `<project>@<version>` tag, so
-`nx release` cannot run over a project that has never been released. The workflow therefore passes
-Nx only the projects that already have a tag on origin (`git tag -l '*@*'`). A package stays out
-until its first tag is pushed.
+The workflow sorts the releasable projects by their tags on origin (its "Pick" step):
+
+- **Tagged** (a `<project>@<version>` tag exists): released by conventional commits, as above, through OIDC.
+- **New** (no such tag): its first publish, in its own step ("First release"), at the version
+  already in its `package.json`. Nothing about which projects are new is listed anywhere; it is
+  computed from tags.
+
+Nx's `git-tag` version resolver refuses a project with no tag, which is why the two are separate Nx
+invocations. The first-release step runs `nx release <version-on-disk> --first-release --projects
+<project>` once per new project: `--first-release` falls back to the version on disk, starts the
+changelog at the first commit and skips the "already on npm" check, and the explicit specifier keeps
+conventional commits from bumping it. It tags `<project>@<version>`, writes `CHANGELOG.md`, pushes
+and creates the GitHub release. Because it now has a tag, the project is a tagged project from the
+next run on. New and tagged projects can be in the same run; the first-release step goes first.
 
 ### First publish of a new package
 
-Trusted publishing cannot make a package's first publish, and this is how `ui` and
-`theme-catppuccin-mocha` shipped `0.1.0`. `theme-thrifty-paper` has never been published and is
-released this way first:
+OIDC trusted publishing cannot make a package's first publish, because npm cannot attach a trusted
+publisher to a package that does not exist yet. So the first release authenticates with a
+short-lived token that only the workflow's first-release step sees. If a releasable project has no
+tag and `NPM_TOKEN` is unset, the workflow fails before it versions, tags or pushes anything, and
+names the project. `theme-thrifty-paper` (0.1.0) is the first one.
 
-1. Log in to npm with a granular token that bypasses 2FA (`npm login`).
-2. On `main`, publish the version already in its `package.json` (0.1.0):
-   `bunx nx release publish -p theme-thrifty-paper`. npm stages a brand-new package's first publish,
-   so a `0.0.0-stage` placeholder version may also appear alongside it.
-3. Delete the token.
-4. Tag the commit you published from and push the tag:
-   `git tag theme-thrifty-paper@0.1.0 <sha> && git push origin theme-thrifty-paper@0.1.0`.
-5. On npmjs.com, add the trusted publisher for `@hackcove/theme-thrifty-paper` (workflow
-   `publish.yml`, environment `npm-publish`).
+1. On npmjs.com, make a granular access token: publish rights for the `@hackcove` scope, bypass 2FA,
+   shortest expiry that covers the run.
+2. `gh secret set NPM_TOKEN --env npm-publish` (paste the token when prompted).
+3. Run the workflow with `dry_run` on and read the log: the version (`0.1.0`), the tag
+   (`theme-thrifty-paper@0.1.0`), the changelog and the GitHub release it would create. Then run it
+   again with `dry_run` off. npm stages a brand-new package's first publish, so a `0.0.0-stage`
+   placeholder version may also appear alongside it.
+4. On npmjs.com, add the trusted publisher for `@hackcove/theme-thrifty-paper` (workflow
+   `publish.yml`, environment `npm-publish`), or `npm trust github …`.
+5. `gh secret delete NPM_TOKEN --env npm-publish`, and revoke the token on npmjs.com.
 
-From then on the workflow releases it whenever it has releasable commits. Provenance is only
-attached for public repositories. Nx reads only a root `tsconfig.base.json` or `tsconfig.json`, and
+From then on the workflow releases it through OIDC whenever it has releasable commits. Provenance is
+only attached for public repositories. Nx reads only a root `tsconfig.base.json` or `tsconfig.json`, and
 TypeScript 7 has no classic compiler API for it to parse them with, so the shared compiler options
 live in `tsconfig.shared.json` instead.
 

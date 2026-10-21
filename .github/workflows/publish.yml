@@ -3,14 +3,17 @@ name: Publish
 # Manual only: Jacobus decides when a release goes out. The default is a dry run.
 # `nx release` versions only the projects that changed since their last tag (conventional commits),
 # writes their changelogs, commits and tags the release, pushes, creates a GitHub release and publishes.
-# Publishing authenticates with npm trusted publishing (OIDC), so there is no NPM_TOKEN and no OTP.
-# Each package needs a trusted publisher on npmjs.com pointing at this workflow file, repository
-# madangryscientist/hackcove and the environment below. See README "Publish".
+# Publishing authenticates with npm trusted publishing (OIDC): no token, no OTP. Each package needs a
+# trusted publisher on npmjs.com pointing at this workflow file, repository madangryscientist/hackcove
+# and the environment below. The one exception is a package's first publish: npm cannot attach a trusted
+# publisher to a package that does not exist yet, so a project with no release tag is released by the
+# "First release" step with an NPM_TOKEN secret on the environment. See README "Publish" and
+# "First publish of a new package".
 on:
   workflow_dispatch:
     inputs:
       project:
-        description: Nx project to release (ui or theme-<name>). Empty releases every project that has a release tag.
+        description: Nx project to release (ui or theme-<name>). Empty releases every releasable project.
         type: string
         default: ""
       dry_run:
@@ -54,43 +57,82 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
+      # A releasable project (nx.json release.projects) with a <project>@<version> tag is "tagged" and
+      # released by conventional commits. One without is "new": its first publish. Computed from tags,
+      # never from a list. The token check runs before anything is versioned, tagged or pushed.
+      - name: Pick the tagged and the new projects
+        id: projects
+        env:
+          PROJECT: ${{ inputs.project }}
+          HAS_NPM_TOKEN: ${{ secrets.NPM_TOKEN != '' }}
+        run: |
+          patterns=$(jq -r '.release.projects | join(",")' nx.json)
+          releasable=$(bunx nx show projects -p "$patterns" --json | jq -r '.[]')
+          if [ -z "$releasable" ]; then
+            echo "::error::No releasable project (nx.json release.projects)."
+            exit 1
+          fi
+          if [ -n "$PROJECT" ] && ! grep -qx -- "$PROJECT" <<<"$releasable"; then
+            echo "::error::$PROJECT is not a releasable project. Releasable: $(paste -sd' ' <<<"$releasable")"
+            exit 1
+          fi
+          tagged=() new=()
+          for project in ${PROJECT:-$releasable}; do
+            if [ -n "$(git tag -l "$project@*")" ]; then tagged+=("$project"); else new+=("$project"); fi
+          done
+          tagged=$(IFS=,; echo "${tagged[*]}")
+          new=$(IFS=,; echo "${new[*]}")
+          echo "tagged=$tagged" | tee -a "$GITHUB_OUTPUT"
+          echo "new=$new" | tee -a "$GITHUB_OUTPUT"
+          if [ -n "$new" ] && [ "$HAS_NPM_TOKEN" != "true" ]; then
+            echo "::error::New project(s) with no release tag: $new. Their first publish needs an NPM_TOKEN secret on the npm-publish environment (README \"First publish of a new package\"), or set the project input to release only an already-tagged project."
+            exit 1
+          fi
+
       - name: Gate
         run: |
           bun run format:check
           bunx nx run-many -t typecheck lint test build pack-check
 
-      # Only projects with a release tag (<project>@<version>) on origin are released. nx refuses a
-      # project with no matching tag, so a package never published through this flow (a first publish,
-      # see README "Publish") stays out of the release until its first tag exists.
-      - name: Pick the tagged projects
-        id: projects
+      # A new project's first publish, at the version already in its package.json. Each one gets its
+      # own `nx release <that version> --first-release`: the explicit specifier is the on-disk version,
+      # so nothing is bumped (without it, conventional commits would bump it); `--first-release` makes
+      # Nx fall back to disk where there is no tag, start the changelog at the first commit and skip the
+      # "does it exist on npm" check. It tags <project>@<version>, writes the changelog, pushes and
+      # creates the GitHub release. This is the only step that sees NPM_TOKEN; it is written to an
+      # .npmrc outside the checkout that the step removes on exit.
+      - name: First release (new projects, NPM_TOKEN)
+        if: steps.projects.outputs.new != ''
         env:
-          PROJECT: ${{ inputs.project }}
+          NEW: ${{ steps.projects.outputs.new }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          tagged=$(git tag -l '*@*' | sed 's/@.*//' | sort -u)
-          if [ -z "$tagged" ]; then
-            echo "::error::No <project>@<version> tags on origin; nothing to release."
-            exit 1
-          fi
-          if [ -n "$PROJECT" ]; then
-            if ! grep -qx -- "$PROJECT" <<<"$tagged"; then
-              echo "::error::$PROJECT has no release tag yet. Publish its first version by hand and push the tag (README \"Publish\")."
-              exit 1
-            fi
-            list="$PROJECT"
-          else
-            list=$(paste -sd, <<<"$tagged")
-          fi
-          echo "projects=$list" >> "$GITHUB_OUTPUT"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          export NPM_CONFIG_USERCONFIG="$RUNNER_TEMP/first-release.npmrc"
+          trap 'rm -f "$NPM_CONFIG_USERCONFIG"' EXIT
+          (umask 077 && printf '//registry.npmjs.org/:_authToken=%s\n' "$NPM_TOKEN" > "$NPM_CONFIG_USERCONFIG")
+          for project in ${NEW//,/ }; do
+            root=$(bunx nx show project "$project" --json | jq -r .root)
+            version=$(jq -r .version "$root/package.json")
+            args=("$version" --first-release --projects "$project" --yes)
+            if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+            bunx nx release "${args[@]}"
+          done
 
-      - name: Release
+      # Projects that already have a tag: conventional commits decide the bump, and publishing
+      # authenticates through OIDC. No token is in this step's environment.
+      - name: Release (tagged projects, OIDC)
+        if: steps.projects.outputs.tagged != ''
         env:
-          PROJECTS: ${{ steps.projects.outputs.projects }}
+          TAGGED: ${{ steps.projects.outputs.tagged }}
           DRY_RUN: ${{ inputs.dry_run }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          args=(--projects "$PROJECTS" --yes)
+          args=(--projects "$TAGGED" --yes)
           if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
           bunx nx release "${args[@]}"

@@ -166,8 +166,10 @@ nothing).
 4. **`packages/ui` source imports use `.js` specifiers** (`./ui.js`, resolved to the `.tsx`). A
    `.tsx` specifier is emitted into the `.d.ts` unchanged and points at a file `dist` does not
    have, which silently breaks consumers' types.
-5. **Nothing is published without Jacobus, and only the planner pushes.** A builder never runs
-   `nx release publish` and never runs a bare `npm publish`; Jacobus publishes, either by
-   dispatching `.github/workflows/publish.yml` (which runs `nx release`) or locally. No
-   `git push` from a builder. The repo stays private. Every package is MIT (a `LICENSE` in
+5. **Only the Action publishes, and only the planner pushes.** Nothing is published from a
+   laptop, a first publish included: `.github/workflows/publish.yml` (which runs `nx release`)
+   is the only path, and Jacobus starts it. A builder never runs `nx release publish`, never runs
+   a bare `npm publish` and never runs `npm login`. A new package's first publish uses the
+   workflow's `NPM_TOKEN` step (README "First publish of a new package"); Jacobus sets and deletes
+   that secret. No `git push` from a builder. The repo stays private. Every package is MIT (a `LICENSE` in
    each package and at the root); versions stay `0.x`.
