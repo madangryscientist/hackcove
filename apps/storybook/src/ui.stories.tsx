@@ -42,6 +42,13 @@ export const CardStory: S = {
     </Card>
   ),
 };
+export const CardAsArticle: S = {
+  render: () => (
+    <Card as="article" title="Article card">
+      body
+    </Card>
+  ),
+};
 export const Header: S = {
   render: () => <EpicHeader color="#cba6f7" label="CUE-9388 · Voice Inbox" />,
 };

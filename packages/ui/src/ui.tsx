@@ -13,17 +13,22 @@ export function PageTitle({ title, subtitle }: { title: string; subtitle?: strin
   );
 }
 
+/** A bordered panel with an optional title and count; `as` picks the element (default `section`). */
 export function Card({
   title,
   count,
+  as: Tag = "section",
+  className,
   children,
 }: {
   title?: string;
   count?: number;
+  as?: "section" | "article" | "div";
+  className?: string;
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm">
+    <Tag className={cx("rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm", className)}>
       {title && (
         <div className="mb-3 flex items-baseline gap-2">
           <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-400">{title}</h2>
@@ -33,7 +38,7 @@ export function Card({
         </div>
       )}
       {children}
-    </section>
+    </Tag>
   );
 }
 
