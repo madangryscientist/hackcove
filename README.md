@@ -64,7 +64,7 @@ cp -r themes/catppuccin-mocha themes/<name>
    the scope in the theme's own `theme.test.ts`; edit it to match your theme).
 
 There is nothing else to register. Storybook finds `themes/*/theme.css` on its own, so the new
-theme is in the toolbar the next time it starts.
+theme is in the toolbar the next time it starts. It also appears as a panel in **Overview / All themes**, with no code edit.
 
 ## Publish
 

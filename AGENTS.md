@@ -67,7 +67,7 @@ bunx nx e2e storybook                              # Playwright: builds Storyboo
 
 `bunx nx affected -t ...` for just what changed; `--skip-nx-cache` to force a rerun. Lint rules are
 all errors; fix the code, do not disable a rule. A change to a component or a `theme.css` also gets
-a look: `bunx nx run storybook:storybook`, flip the theme switcher, and read the stories.
+a look: `bunx nx run storybook:storybook`, flip the theme switcher, and read the stories. Every component exported from `packages/ui/src/index.ts` has its own story and appears in `apps/storybook/src/Gallery.tsx`. A new component adds both in the same change. **Overview / All themes** is the one-page check of every component in every theme.
 
 The e2e needs a Chromium once per machine: `bunx playwright install chromium`. It discovers themes
 from `themes/*` like the switcher does and asserts each one under the scope class its `theme.css`

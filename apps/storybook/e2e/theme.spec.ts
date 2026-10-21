@@ -53,3 +53,31 @@ for (const theme of themes) {
     expect(themed.amber).not.toBe(plain.amber);
   });
 }
+
+test("Overview / All themes lays out every theme, each under its own scope, with its own frame paint", async ({
+  page,
+}) => {
+  await page.goto("/iframe.html?id=overview--all-themes&viewMode=story");
+  await page.getByText("nothing here yet").first().waitFor();
+
+  const panels = await page.locator("[data-theme]").evaluateAll((els) =>
+    els.map((el) => ({
+      theme: el.getAttribute("data-theme"),
+      classes: [...el.classList],
+      background: getComputedStyle(el).backgroundColor,
+    })),
+  );
+
+  expect(panels).toHaveLength(themes.length + 1);
+
+  const plain = panels.find((panel) => panel.theme === "default");
+  expect(plain?.classes).toEqual([]);
+
+  for (const theme of themes) {
+    const scope = themeScope(readFileSync(`${themesDir}/${theme}/theme.css`, "utf8"));
+    const panel = panels.find((candidate) => candidate.theme === theme);
+
+    expect(panel?.classes).toEqual([scope]);
+    expect(panel?.background).not.toBe(plain?.background);
+  }
+});

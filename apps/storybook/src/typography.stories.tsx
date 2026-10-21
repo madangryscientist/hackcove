@@ -4,6 +4,8 @@ import {
   Body,
   BodyStrong,
   Caption,
+  Display,
+  Lead,
   ModalHeading,
   Overline,
   PageHeading,
@@ -20,6 +22,16 @@ type S = StoryObj;
 const COLORS: TypographyColor[] = ["default", "secondary", "tertiary", "muted", "brand"];
 
 // One story per component --------------------------------------------------
+
+export const DisplayStory: S = {
+  name: "Display",
+  render: () => <Display>Tools for people who build</Display>,
+};
+
+export const LeadStory: S = {
+  name: "Lead",
+  render: () => <Lead>The supporting sentence that sits under a Display heading.</Lead>,
+};
 
 export const PageHeadingStory: S = {
   name: "PageHeading",

@@ -3,3 +3,14 @@
 /* The components use Tailwind utilities; scan their source for them. Theme CSS is NOT imported
    here: preview.tsx injects the selected theme, so switching themes swaps the whole palette. */
 @source "../../../packages/ui/src";
+
+/* The frame's page colour. Layered, so a theme's own unlayered scope rule (thrifty-paper's
+   cream canvas) wins; a theme that paints no canvas (Mocha) gets the browser's canvas for
+   its color-scheme, which is dark under `.dark`. */
+@layer base {
+  [data-theme] {
+    min-height: 100vh;
+    background-color: Canvas;
+    color: CanvasText;
+  }
+}
