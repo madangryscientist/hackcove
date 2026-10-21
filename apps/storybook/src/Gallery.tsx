@@ -11,6 +11,7 @@ import {
   Empty,
   EpicHeader,
   Field,
+  FilterGroup,
   IconButton,
   Input,
   Lead,
@@ -63,10 +64,10 @@ function GalleryHeader() {
   );
 }
 
-/** The filter chips block of the Gallery: four ToggleChips with category dots, one pressed. */
+/** The filter chips block of the Gallery: four ToggleChips with category dots, one pressed, in a FilterGroup. */
 function GalleryChips() {
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <FilterGroup legend="Type of shop">
       <ToggleChip pressed={false} dot="#e11d48">
         Charity
       </ToggleChip>
@@ -79,7 +80,7 @@ function GalleryChips() {
       <ToggleChip pressed={false} dot="#ca8a04">
         Furniture
       </ToggleChip>
-    </div>
+    </FilterGroup>
   );
 }
 

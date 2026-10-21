@@ -5,6 +5,7 @@ export { Callout, type CalloutTone } from "./Callout.js";
 export { IconButton } from "./IconButton.js";
 export { NavTabs, navTabClass, type NavTab } from "./NavTabs.js";
 export { ToggleChip } from "./ToggleChip.js";
+export { FilterGroup } from "./FilterGroup.js";
 export { Checkbox } from "./Checkbox.js";
 export { Field } from "./Field.js";
 export { Input } from "./Input.js";
