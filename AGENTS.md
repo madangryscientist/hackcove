@@ -41,12 +41,15 @@ Write each brief with these three headings, because the builder's launch prompt 
 | Project | Path | What it is |
 | --- | --- | --- |
 | `ui` | `packages/ui` | `@hackcove/ui`: the components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, tailwindcss v4. No theme CSS. |
-| `theme-catppuccin-mocha` | `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha`: one `theme.css`, shipped as-is. |
+| `theme-catppuccin-mocha` | `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha`: one `theme.css`, shipped as-is. Dark; scope `.dark`. |
+| `theme-thrifty-paper` | `themes/thrifty-paper` | `@hackcove/theme-thrifty-paper`: one `theme.css`, shipped as-is. Light (Thrifty's cream paper); scope `.thrifty-paper`. |
 | `storybook` | `apps/storybook` | Storybook for the components; a toolbar switcher lists every `themes/*` folder. Its `e2e/` is the Playwright layer (`test:e2e`). Private. |
 
 **One folder, one publishable package per theme.** Adding a theme is copying a folder
-(`README.md`, "How to add a theme"); nothing else registers it. There is no light theme package:
-the light look is the components' default Tailwind classes, with no CSS of its own.
+(`README.md`, "How to add a theme"); nothing else registers it. **Each theme names its own scope
+class**: the class of the first top-level `.<class> { … }` rule in its `theme.css` (Mocha's is
+`.dark`, thrifty-paper's `.thrifty-paper`). Storybook and the e2e read it from there. With no theme
+at all, the look is the components' default Tailwind classes (Storybook's `default`).
 
 ## The gate
 
@@ -67,7 +70,8 @@ all errors; fix the code, do not disable a rule. A change to a component or a `t
 a look: `bunx nx run storybook:storybook`, flip the theme switcher, and read the stories.
 
 The e2e needs a Chromium once per machine: `bunx playwright install chromium`. It discovers themes
-from `themes/*` like the switcher does, so a new theme needs no test edit.
+from `themes/*` like the switcher does and asserts each one under the scope class its `theme.css`
+names, so a new theme needs no test edit.
 
 **The consumers.** Every class a component uses and every utility a theme remaps shows up in
 omnibus's dashboard and `hack-cove-site`. After such a change, rebuild (`bunx nx build ui`) and
@@ -120,11 +124,13 @@ nothing).
 
 1. **`@hackcove/ui` carries no theme.** Components are written against stock Tailwind utilities
    (`bg-white`, `text-slate-900`, …) and never contain a `dark:` variant or a palette colour. A
-   theme is the only place a palette lives, and it remaps those utilities under `.dark`.
+   theme is the only place a palette lives, and it remaps those utilities under its own scope
+   class (`.dark` for Mocha).
 2. **A theme is a folder and nothing else registers it.** No theme name appears in code: Storybook
    globs `themes/*/theme.css`, and each theme's own `theme.test.ts` is the contract (name
-   `@hackcove/theme-<folder>`, exports + `files` = `theme.css` only, `@custom-variant dark`,
-   rules scoped under `.dark`, no Tailwind import). Do not add a theme list anywhere.
+   `@hackcove/theme-<folder>`, exports + `files` = `theme.css` only, rules scoped under the
+   theme's scope class, no Tailwind import; a dark theme also declares `@custom-variant dark`).
+   The scope class is read from `theme.css`, never listed. Do not add a theme list anywhere.
 3. **Packages stay dependency-free at runtime.** `@hackcove/ui` has only peers (react, tailwindcss
    v4); a theme has only the tailwindcss peer. A new dependency is a human decision.
 4. **`packages/ui` source imports use `.js` specifiers** (`./ui.js`, resolved to the `.tsx`). A

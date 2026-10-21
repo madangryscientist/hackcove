@@ -1,5 +1,6 @@
 import type { Preview } from "@storybook/react-vite";
 import type { ReactNode } from "react";
+import { themeScope } from "./scope";
 import "./tailwind.css";
 
 // Every folder under themes/ ships a theme.css. Globbing them means a new theme appears in the
@@ -16,11 +17,11 @@ const THEMES: Record<string, string> = Object.fromEntries(
 const NONE = "default";
 const themeNames = Object.keys(THEMES).toSorted();
 
-/** `.dark` is the scope every theme remaps under; `default` is the components' own Tailwind classes. */
+/** Each theme remaps under its own scope class; `default` is the components' own Tailwind classes. */
 function ThemeFrame({ theme, children }: { theme: string; children: ReactNode }) {
   const css = THEMES[theme];
   return (
-    <div className={css === undefined ? undefined : "dark"} data-theme={theme}>
+    <div className={css === undefined ? undefined : themeScope(css)} data-theme={theme}>
       {css !== undefined && <style dangerouslySetInnerHTML={{ __html: css }} />}
       <div className="min-h-screen bg-white p-8">{children}</div>
     </div>

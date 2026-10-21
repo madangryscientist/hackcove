@@ -1,0 +1,155 @@
+/*! Thrifty Paper palette from Thrifty's light theme (cream paper, ink text, clay accent) */
+/* ---------------------------------------------------------------------------
+   Thrifty Paper — a light theme for the Hack Cove design system.
+   ---------------------------------------------------------------------------
+   The @hackcove/ui components are written against Tailwind's slate/colour
+   utilities directly (bg-white, text-slate-900, …). This file remaps those
+   utilities to Thrifty's light tokens under `.thrifty-paper`. The rules are
+   unlayered, so they override Tailwind's (layered) utilities.
+
+   Consumers import it AFTER `@import "tailwindcss"` and put `.thrifty-paper`
+   on <html> (see the README for the import line). It is light, so it declares
+   no `dark` variant.
+
+   Palette (Thrifty's @theme block):
+     canvas #fdfbf7 · surface #ffffff · subtle #f7f2e9 · line #ece3d4
+     ink #1c1917 · ink-body #3b342e · ink-mute #6b6259
+     accent #c2410c · accent-hover #9a3412 · accent-soft #fdf5f0
+     positive #047857 / #ecfdf5 · warn #b45309 / #fffbeb · note #0f766e / #f0fdfa
+
+   Thrifty has no danger colour, so the red utilities keep Tailwind's own.
+   --------------------------------------------------------------------------- */
+
+/* The scope: the page is cream canvas with ink text. */
+.thrifty-paper {
+  color-scheme: light;
+  background-color: #fdfbf7; /* canvas */
+  color: #1c1917; /* ink */
+}
+
+/* Surfaces — white cards on the cream canvas, cream insets. */
+.thrifty-paper .bg-white {
+  background-color: #ffffff; /* surface */
+}
+.thrifty-paper .bg-white\/80 {
+  background-color: rgba(255, 255, 255, 0.85);
+}
+.thrifty-paper .bg-slate-50,
+.thrifty-paper .bg-slate-50\/50,
+.thrifty-paper .bg-slate-50\/60,
+.thrifty-paper .bg-slate-50\/70 {
+  background-color: #f7f2e9; /* subtle */
+}
+.thrifty-paper .bg-slate-100 {
+  background-color: #ece3d4; /* line — one step deeper than subtle */
+}
+.thrifty-paper .bg-slate-900 {
+  background-color: #1c1917; /* ink — e.g. the brand badge */
+}
+
+/* Text */
+.thrifty-paper .text-slate-900,
+.thrifty-paper .text-slate-800 {
+  color: #1c1917; /* ink */
+}
+.thrifty-paper .text-slate-700,
+.thrifty-paper .text-slate-600 {
+  color: #3b342e; /* ink-body */
+}
+.thrifty-paper .text-slate-500,
+.thrifty-paper .text-slate-400 {
+  color: #6b6259; /* ink-mute — Thrifty's lightest text */
+}
+
+/* Borders */
+.thrifty-paper .border-slate-100,
+.thrifty-paper .border-slate-200,
+.thrifty-paper .border-slate-200\/70,
+.thrifty-paper .border-slate-300 {
+  border-color: #ece3d4; /* line */
+}
+.thrifty-paper .border-slate-900 {
+  border-color: #1c1917; /* ink */
+}
+
+/* Money + accent text */
+.thrifty-paper .text-emerald-600 {
+  color: #047857; /* positive */
+}
+
+/* Stat-card accent bars */
+.thrifty-paper .bg-emerald-500 {
+  background-color: #047857; /* positive */
+}
+.thrifty-paper .bg-slate-300 {
+  background-color: #ece3d4; /* line */
+}
+
+/* Hover states */
+.thrifty-paper .hover\:bg-slate-50:hover {
+  background-color: #f7f2e9; /* subtle */
+}
+.thrifty-paper .hover\:bg-slate-100:hover {
+  background-color: #ece3d4; /* line */
+}
+
+/* Coloured callouts / chips — the soft fills, the full-strength text. */
+.thrifty-paper .bg-emerald-50,
+.thrifty-paper .bg-emerald-50\/60,
+.thrifty-paper .bg-emerald-100 {
+  background-color: #ecfdf5; /* positive-soft */
+}
+.thrifty-paper .bg-amber-50,
+.thrifty-paper .bg-amber-50\/60,
+.thrifty-paper .bg-amber-100 {
+  background-color: #fffbeb; /* warn-soft */
+}
+.thrifty-paper .bg-blue-50 {
+  background-color: #f0fdfa; /* note-soft */
+}
+.thrifty-paper .bg-violet-50 {
+  background-color: #fdf5f0; /* accent-soft */
+}
+.thrifty-paper .text-emerald-700,
+.thrifty-paper .text-emerald-800 {
+  color: #047857; /* positive */
+}
+.thrifty-paper .text-amber-700,
+.thrifty-paper .text-amber-800,
+.thrifty-paper .text-amber-900 {
+  color: #b45309; /* warn */
+}
+.thrifty-paper .text-blue-600,
+.thrifty-paper .text-blue-700,
+.thrifty-paper .text-blue-800,
+.thrifty-paper .text-blue-900 {
+  color: #0f766e; /* note */
+}
+.thrifty-paper .text-violet-600 {
+  color: #c2410c; /* accent */
+}
+.thrifty-paper .text-violet-700 {
+  color: #9a3412; /* accent-hover */
+}
+.thrifty-paper .border-emerald-200,
+.thrifty-paper .border-emerald-300 {
+  border-color: rgba(4, 120, 87, 0.3); /* positive */
+}
+.thrifty-paper .border-amber-300 {
+  border-color: rgba(180, 83, 9, 0.3); /* warn */
+}
+.thrifty-paper .border-blue-200,
+.thrifty-paper .border-blue-300 {
+  border-color: rgba(15, 118, 110, 0.3); /* note */
+}
+
+/* Inline links — the clay accent. */
+.thrifty-paper .link {
+  color: #c2410c; /* accent */
+  font-weight: 500;
+  text-underline-offset: 2px;
+  transition: color 0.12s ease;
+}
+.thrifty-paper .link:hover {
+  color: #9a3412; /* accent-hover */
+}

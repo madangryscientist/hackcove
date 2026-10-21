@@ -1,16 +1,18 @@
 # hackcove
 
 The Hack Cove design system, as an Nx + Bun-workspaces monorepo. Every package here is published
-on its own; `0.1.0` of both is on npm (MIT).
+on its own; `0.1.0` of `@hackcove/ui` and the Mocha theme is on npm (MIT).
 
 | Folder | Package | What it is |
 | --- | --- | --- |
 | `packages/ui` | `@hackcove/ui` | The React components: primitives, typography roles, a safe Markdown renderer. Written against Tailwind v4 utilities. No theme CSS. |
 | `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha` | The Catppuccin Mocha dark theme: one `theme.css` that remaps those utilities under `.dark`. |
+| `themes/thrifty-paper` | `@hackcove/theme-thrifty-paper` | The Thrifty Paper light theme (cream paper, ink text, clay accent): one `theme.css` that remaps those utilities under `.thrifty-paper`. Not yet published. |
 | `apps/storybook` | (private) | Storybook for the components, with a toolbar theme switcher that lists every folder under `themes/`. |
 
-There is **no light theme package**. The light look is the components' own default Tailwind classes
-and has no CSS of its own; Storybook's `default` choice shows it.
+Each theme scopes under its own class, which goes on `<html>`: `.dark` for Mocha,
+`.thrifty-paper` for Thrifty Paper. With no theme, the look is the components' own default Tailwind
+classes; Storybook's `default` choice shows it.
 
 ## Use it
 
@@ -53,12 +55,13 @@ cp -r themes/catppuccin-mocha themes/<name>
 1. In `themes/<name>/package.json` set `name` to `@hackcove/theme-<name>`, `description`, and the
    Nx project name under `"nx"` to `theme-<name>`. Its scripts are folder-relative, so nothing else
    needs editing.
-2. Edit `theme.css`. The contract: remap the utilities `@hackcove/ui` uses under a `.dark` scope,
-   declare `@custom-variant dark (&:where(.dark, .dark *));`, and do not import Tailwind (the
-   consumer does).
+2. Edit `theme.css`. The contract: pick the theme's scope class and make its first top-level rule
+   `.<scope> { color-scheme: …; }` (Storybook and the e2e read the scope from that rule), remap the
+   utilities `@hackcove/ui` uses under `.<scope>`, and do not import Tailwind (the consumer does).
+   A dark theme also declares `@custom-variant dark (&:where(.<scope>, .<scope> *));`.
 3. Rewrite `README.md` for the new package; keep the MIT `LICENSE` and `"license": "MIT"`.
 4. `bun install`, then `bunx nx run theme-<name>:test` (checks the name, exports, `files` list and
-   the `.dark` scope in the theme's own `theme.test.ts`; edit it to match your theme).
+   the scope in the theme's own `theme.test.ts`; edit it to match your theme).
 
 There is nothing else to register. Storybook finds `themes/*/theme.css` on its own, so the new
 theme is in the toolbar the next time it starts.
