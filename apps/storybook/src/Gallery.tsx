@@ -3,6 +3,7 @@ import {
   Body,
   Button,
   BodyStrong,
+  Callout,
   Caption,
   Card,
   Checkbox,
@@ -117,6 +118,10 @@ export function Gallery() {
         </Select>
         <Checkbox label="Open now" defaultChecked />
       </div>
+
+      <Callout tone="warn" title="Draft.">
+        This page has not yet been reviewed by a lawyer.
+      </Callout>
 
       <Empty>nothing here yet</Empty>
     </div>
