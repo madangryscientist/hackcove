@@ -29,7 +29,7 @@ export function Callout({
     <div className={cx("rounded-xl border p-4 text-sm", TONES[tone], className)} {...rest}>
       {title ? (
         <>
-          <p className="font-medium">{title}</p>
+          <p className="font-semibold">{title}</p>
           <div className="mt-1">{children}</div>
         </>
       ) : (

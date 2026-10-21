@@ -15,13 +15,13 @@ describe("Callout", () => {
     expect(renderToStaticMarkup(<Callout tone="danger">x</Callout>)).toContain("bg-red-50");
   });
 
-  it("renders a title as a font-medium paragraph above the body", () => {
+  it("renders a title as a font-semibold paragraph above the body", () => {
     const out = renderToStaticMarkup(
       <Callout title="Draft." tone="warn">
         Body text.
       </Callout>,
     );
-    expect(out).toContain('<p class="font-medium">Draft.</p>');
+    expect(out).toContain('<p class="font-semibold">Draft.</p>');
     expect(out).toContain('<div class="mt-1">Body text.</div>');
   });
 
