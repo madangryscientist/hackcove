@@ -23,6 +23,10 @@ export const Four: S = {
   ),
 };
 
+export const PlainParents: S = {
+  render: () => <Breadcrumbs crumbs={["Org", "Project", "Build", "Snapshot"]} />,
+};
+
 export const LongTruncates: S = {
   render: () => (
     <div className="flex w-72">

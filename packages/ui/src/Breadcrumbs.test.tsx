@@ -16,6 +16,12 @@ describe("Breadcrumbs", () => {
     expect(out).toMatch(/<li[^>]*aria-current="page"[^>]*>(?:(?!<\/li>).)*Build/);
   });
 
+  it("dims a plain-text parent crumb and leaves the current crumb at full strength", () => {
+    const out = renderToStaticMarkup(<Breadcrumbs crumbs={["Org", "Project", "Build"]} />);
+    expect(out.match(/<span class="min-w-0 truncate text-slate-500">/g)).toHaveLength(2);
+    expect(out).toContain('<span class="min-w-0 truncate font-medium text-slate-900">Build</span>');
+  });
+
   it("renders one separator between each pair of crumbs, hidden from assistive tech", () => {
     const out = renderToStaticMarkup(<Breadcrumbs crumbs={["Org", "Project", "Build", "Snap"]} />);
     expect(out.match(/aria-hidden="true" class="text-slate-400"/g)).toHaveLength(3);

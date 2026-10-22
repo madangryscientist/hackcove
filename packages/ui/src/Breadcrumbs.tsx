@@ -28,7 +28,10 @@ export function Breadcrumbs({
               </span>
             )}
             <span
-              className={cx("min-w-0 truncate", index === last && "font-medium text-slate-900")}
+              className={cx(
+                "min-w-0 truncate",
+                index === last ? "font-medium text-slate-900" : "text-slate-500",
+              )}
             >
               {crumb}
             </span>
