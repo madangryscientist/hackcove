@@ -3,6 +3,7 @@ import {
   Body,
   Button,
   BodyStrong,
+  Breadcrumbs,
   Callout,
   Caption,
   Card,
@@ -183,6 +184,8 @@ export function Gallery() {
         </Select>
         <Checkbox label="Open now" defaultChecked />
       </div>
+
+      <Breadcrumbs crumbs={["Org", "Project", "Build", "Snapshot"]} />
 
       <Callout tone="warn" title="Draft.">
         This page has not yet been reviewed by a lawyer.

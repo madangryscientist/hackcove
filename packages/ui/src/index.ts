@@ -1,6 +1,7 @@
 export { Card, EpicHeader, Empty, PageTitle, Pill, groupByEpic } from "./ui.js";
 export { Markdown } from "./Markdown.js";
 export { Button, buttonClass, type ButtonVariant } from "./Button.js";
+export { Breadcrumbs, crumbLinkClass } from "./Breadcrumbs.js";
 export { Callout, type CalloutTone } from "./Callout.js";
 export { IconButton } from "./IconButton.js";
 export { NavTabs, navTabClass, type NavTab } from "./NavTabs.js";
