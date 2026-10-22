@@ -1,10 +1,13 @@
 /**
  * `nx run storybook:visual`: what did this change do to every story in every theme?
  *
- * Captures the built working tree (the Nx `build` dependency) and origin/main's Storybook with
- * PixelSlash, then compares them locally. pixelslash is not published: it runs from the checkout
- * `PIXELSLASH_DIR` names (default ~/dev/pixelslash). The baseline is built in a reusable worktree
- * at ~/dev/hackcove.visual-main, so this checkout's branch and working tree are never touched.
+ * Captures the built working tree (the Nx `build` dependency) and the baseline's Storybook with
+ * PixelSlash, then compares them locally. The baseline is the branch's merge-base with origin/main
+ * (the fork point, so a main that moved since the fork stays out of the diff); `VISUAL_BASE` names
+ * another ref. pixelslash is not published: it runs from the checkout `PIXELSLASH_DIR` names
+ * (default ~/dev/pixelslash), whose dependencies are installed from its lockfile here when behind.
+ * The baseline is built in a reusable worktree at ~/dev/hackcove.visual-main, so this checkout's
+ * branch and working tree are never touched.
  *
  * `--upload` also sends both captures to the PixelSlash server `PIXELSLASH_SERVER` names, with the
  * CI token from `PIXELSLASH_TOKEN` or the file `PIXELSLASH_TOKEN_PATH`: origin/main's once per
@@ -143,6 +146,34 @@ async function uploadSnapshots(dir: string, cwd: string, ...flags: string[]) {
   );
 }
 
+/**
+ * PIXELSLASH_DIR's dependencies, in step with its lockfile. `--frozen-lockfile` never rewrites the
+ * lockfile and is a no-op when `node_modules` is current; when it cannot install, the message names
+ * the command to run by hand.
+ */
+async function ensurePixelslashInstall() {
+  const command = "bun install --frozen-lockfile";
+  const proc = Bun.spawn(["bun", "install", "--frozen-lockfile"], {
+    cwd: pixelslashDir,
+    stdio: ["ignore", 2, 2],
+  });
+  if ((await proc.exited) !== 0)
+    throw new VisualError(
+      `\`${command}\` failed in ${pixelslashDir}; run it there and read why (node_modules behind its lockfile, or the lockfile out of step with package.json)`,
+    );
+}
+
+/**
+ * The commit to compare against: `VISUAL_BASE` when set, else the branch's merge-base with
+ * origin/main. `label` is what the log calls it.
+ */
+async function resolveBase(): Promise<{ label: string; sha: string }> {
+  await git(repoRoot, "fetch", "origin", "main");
+  const given = process.env["VISUAL_BASE"];
+  if (given) return { label: given, sha: await git(repoRoot, "rev-parse", given) };
+  return { label: "merge-base", sha: await git(repoRoot, "merge-base", "HEAD", "origin/main") };
+}
+
 /** The baseline worktree at `sha`, with dependencies installed when its lockfile changed. */
 async function checkoutBaseline(sha: string) {
   if (existsSync(baselineDir)) {
@@ -199,6 +230,41 @@ async function uploadBoth(sha: string) {
   }
   log("uploading the working tree");
   await uploadSnapshots(join(out, "branch"), repoRoot);
+  await logBuildUrl();
+}
+
+function isBuildList(value: unknown): value is { builds: { web_url?: string }[] } {
+  return (
+    typeof value === "object" && value !== null && "builds" in value && Array.isArray(value.builds)
+  );
+}
+
+/** The branch's newest build on the server: `upload` itself prints no link, `builds --json` has it. */
+async function logBuildUrl() {
+  const tokenPath = process.env["PIXELSLASH_TOKEN_PATH"];
+  const branch = await git(repoRoot, "branch", "--show-current");
+  const proc = Bun.spawn(
+    [
+      "bun",
+      join(pixelslashDir, "packages", "cli", "src", "index.ts"),
+      "builds",
+      "--branch",
+      branch,
+      "--limit",
+      "1",
+      "--json",
+      ...(tokenPath ? ["--token-path", tokenPath] : []),
+    ],
+    { cwd: repoRoot, stdout: "pipe", stderr: "inherit" },
+  );
+  const text = await new Response(proc.stdout).text();
+  if ((await proc.exited) !== 0) {
+    log("uploaded, but `pixelslash builds` could not list the build; find it on the server");
+    return;
+  }
+  const listing: unknown = JSON.parse(text);
+  const url = isBuildList(listing) ? listing.builds[0]?.web_url : undefined;
+  log(url ? `build: ${url}` : "uploaded, but the server lists no build for this branch");
 }
 
 async function main() {
@@ -206,6 +272,7 @@ async function main() {
   if (!existsSync(join(pixelslashDir, "packages", "cli", "src", "index.ts")))
     throw new VisualError(`no pixelslash checkout at ${pixelslashDir}; set PIXELSLASH_DIR`);
 
+  await ensurePixelslashInstall();
   if (upload) await checkUpload();
 
   const port = await capturePort();
@@ -213,18 +280,17 @@ async function main() {
   log("capturing the working tree");
   await capture(join(appDir, "storybook-static"), join(out, "branch"), port);
 
-  await git(repoRoot, "fetch", "origin", "main");
-  const base = process.env["VISUAL_BASE"] || "origin/main";
-  const sha = await git(repoRoot, "rev-parse", base);
+  const { label: base, sha } = await resolveBase();
+  log(`base: ${base} ${sha}`);
   const stamp = join(out, "main.sha");
   const cached =
     existsSync(join(out, "main", "manifest.json")) &&
     existsSync(stamp) &&
     readFileSync(stamp, "utf8").trim() === sha;
   if (cached) {
-    log(`${base} ${sha.slice(0, 7)} already captured`);
+    log(`base ${sha.slice(0, 7)} already captured`);
   } else {
-    log(`building and capturing ${base} ${sha.slice(0, 7)}`);
+    log(`building and capturing base ${sha.slice(0, 7)}`);
     rmSync(stamp, { force: true });
     await withBaselineLock(async () => {
       await checkoutBaseline(sha);
