@@ -7,6 +7,8 @@ import {
   Callout,
   Caption,
   Card,
+  CopyButton,
+  CopyLine,
   Checkbox,
   Display,
   Empty,
@@ -41,6 +43,20 @@ const searchIcon = (
       d="M9 3.5a5.5 5.5 0 1 0 3.4 9.8l3.15 3.15a.75.75 0 1 0 1.06-1.06l-3.15-3.15A5.5 5.5 0 0 0 9 3.5Zm-4 5.5a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z"
       clipRule="evenodd"
     />
+  </svg>
+);
+
+const moonIcon = (
+  <svg
+    viewBox="0 0 24 24"
+    className="h-4 w-4"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+    strokeLinecap="round"
+    aria-hidden="true"
+  >
+    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
   </svg>
 );
 
@@ -123,6 +139,16 @@ function GalleryKeyValues() {
   );
 }
 
+/** The copy pair: a CopyLine (with its own CopyButton) and a bare CopyButton. */
+function GalleryCopy() {
+  return (
+    <div className="flex max-w-sm flex-col gap-3">
+      <CopyLine text="bun add @hackcove/ui" />
+      <CopyButton text="bun add @hackcove/ui" className="self-start" />
+    </div>
+  );
+}
+
 /** Every component in @hackcove/ui, once each. Colour comes from the components and the theme only. */
 export function Gallery() {
   const nameId = useId();
@@ -167,20 +193,10 @@ export function Gallery() {
         <Button>Save</Button>
         <Button variant="outline">Cancel</Button>
         <Button variant="ghost">Skip</Button>
-        <IconButton label="Switch to dark theme">
-          <svg
-            viewBox="0 0 24 24"
-            className="h-4 w-4"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            aria-hidden="true"
-          >
-            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
-          </svg>
-        </IconButton>
+        <IconButton label="Switch to dark theme">{moonIcon}</IconButton>
       </div>
+
+      <GalleryCopy />
 
       <div className="flex max-w-sm flex-col gap-3">
         <Field label="Display name" htmlFor={nameId} hint="Shown on your reviews.">

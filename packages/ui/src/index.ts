@@ -8,6 +8,8 @@ export { NavTabs, navTabClass, type NavTab } from "./NavTabs.js";
 export { ToggleChip } from "./ToggleChip.js";
 export { FilterGroup } from "./FilterGroup.js";
 export { Checkbox } from "./Checkbox.js";
+export { CopyButton } from "./CopyButton.js";
+export { CopyLine } from "./CopyLine.js";
 export { Field } from "./Field.js";
 export { Input } from "./Input.js";
 export { Kbd } from "./Kbd.js";
