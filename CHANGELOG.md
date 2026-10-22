@@ -1,3 +1,15 @@
+## 0.1.0 (2026-10-22)
+
+### 🚀 Features
+
+- **ob 1748:** Dialog and FieldDialog on the native <dialog> in @hackcove/ui ([6b438b1](https://github.com/madangryscientist/hackcove/commit/6b438b1))
+- **ob 1603:** the @hackcove/ui palette, enforced from both sides ([01976ba](https://github.com/madangryscientist/hackcove/commit/01976ba))
+- **ob 1591:** thrifty-paper light theme; each theme scopes under its own class ([56fe39f](https://github.com/madangryscientist/hackcove/commit/56fe39f))
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
 ## 0.2.1 (2026-10-22)
 
 ### 🚀 Features
