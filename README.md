@@ -82,8 +82,11 @@ not even a package's first version. It is a manual workflow (Actions → Publish
 
 - `dry_run` (default on) versions and previews changelogs, and publishes nothing. No commit, tag,
   push or GitHub release happens either. Untick it to release for real.
-- `project` (optional) releases one project, such as `ui`. Empty releases every releasable project
-  (`release.projects` in `nx.json`).
+- `project` (optional) is only for deliberately releasing one project on its own, such as `ui` (a
+  re-publish after a failed first publish, say). A release is started with it empty, which releases
+  every releasable project (`release.projects` in `nx.json`). One run per project buys extra gate
+  runs and separate release commits, and each run versions only its own project, so a package
+  changed in the same commit is missed.
 
 Already-released packages authenticate with npm trusted publishing (OIDC), so there is no
 `NPM_TOKEN` and no OTP in their step. `nx.json` sets `cli.packageManager` to `npm`, so the publish

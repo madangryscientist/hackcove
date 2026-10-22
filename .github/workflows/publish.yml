@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
     inputs:
       project:
-        description: Nx project to release (ui or theme-<name>). Empty releases every releasable project.
+        description: Leave empty to release every changed project in one dispatch. Set it only to release one project on its own (ui, theme-<name>), e.g. a re-publish after a failure.
         type: string
         default: ""
       dry_run:

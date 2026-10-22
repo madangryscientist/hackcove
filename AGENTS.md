@@ -140,7 +140,10 @@ planner gates and squash-merges with `ob-land`.
    ```
 
 Releasing is a separate step, after landing: Jacobus starts `.github/workflows/publish.yml`
-(README "Publish"). It bumps only the packages whose commits changed since their last tag.
+(README "Publish"). It bumps only the packages whose commits changed since their last tag. Start it
+with `project` empty so one dispatch releases all of them; name a project only when that one project
+alone is meant. A dispatch per project means extra gate runs and separate release commits, and each
+run versions only its own project, so a package changed in the same commit is left behind.
 
 Scan several worktrees without opening a diff:
 
