@@ -149,6 +149,22 @@ function GalleryCopy() {
   );
 }
 
+/** The Button row of the Gallery: the three variants, then the blocked and busy states, then an IconButton. */
+function GalleryButtons() {
+  return (
+    <div className="flex flex-wrap gap-2">
+      <Button>Save</Button>
+      <Button variant="outline">Cancel</Button>
+      <Button variant="ghost">Skip</Button>
+      <Button disabledReason="Pick a shop first">Blocked</Button>
+      <Button variant="outline" busy busyLabel="Saving…">
+        Busy
+      </Button>
+      <IconButton label="Switch to dark theme">{moonIcon}</IconButton>
+    </div>
+  );
+}
+
 /** Every component in @hackcove/ui, once each. Colour comes from the components and the theme only. */
 export function Gallery() {
   const nameId = useId();
@@ -189,12 +205,7 @@ export function Gallery() {
         </div>
       </Card>
 
-      <div className="flex flex-wrap gap-2">
-        <Button>Save</Button>
-        <Button variant="outline">Cancel</Button>
-        <Button variant="ghost">Skip</Button>
-        <IconButton label="Switch to dark theme">{moonIcon}</IconButton>
-      </div>
+      <GalleryButtons />
 
       <GalleryCopy />
 
