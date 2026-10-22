@@ -1,5 +1,6 @@
 import { useId, useState } from "react";
 import {
+  Avatar,
   Body,
   Button,
   BodyStrong,
@@ -207,6 +208,25 @@ function GalleryButtons() {
   );
 }
 
+/** The Avatar pair: the seven identity colours at md, then a ringed stack. */
+function GalleryAvatars() {
+  const names = ["ada", "grace", "linus", "margaret", "dennis", "ken", "barbara"];
+  return (
+    <div className="flex flex-wrap items-center gap-6">
+      <div className="flex gap-2">
+        {names.map((name) => (
+          <Avatar key={name} name={name} />
+        ))}
+      </div>
+      <div className="flex items-center">
+        <Avatar name="ada" size="lg" ring />
+        <Avatar name="grace" size="lg" ring />
+        <Avatar name="linus" size="lg" ring />
+      </div>
+    </div>
+  );
+}
+
 /** Every component in @hackcove/ui, once each. Colour comes from the components and the theme only. */
 export function Gallery() {
   const nameId = useId();
@@ -248,6 +268,8 @@ export function Gallery() {
       </Card>
 
       <GalleryButtons />
+
+      <GalleryAvatars />
 
       <GalleryCopy />
 

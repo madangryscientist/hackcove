@@ -1,6 +1,6 @@
 {
   "surface": ["bg-white"],
-  "subtle": ["bg-slate-50", "hover:bg-slate-50"],
+  "subtle": ["bg-slate-50", "hover:bg-slate-50", "border-slate-50"],
   "inset": ["bg-slate-100", "hover:bg-slate-100"],
   "scrim": ["backdrop:bg-slate-900/35"],
   "line": ["border-slate-200", "border-slate-200/70", "border-slate-300"],
@@ -24,6 +24,15 @@
     "hover:border-violet-400",
     "focus-visible:outline-violet-600",
     "accent-violet-600"
+  ],
+  "identity": [
+    "bg-violet-600",
+    "bg-orange-600",
+    "bg-cyan-600",
+    "bg-emerald-600",
+    "bg-sky-600",
+    "bg-pink-600",
+    "bg-amber-600"
   ],
   "positive": ["bg-emerald-50", "text-emerald-700", "text-emerald-800", "border-emerald-200"],
   "warn": ["bg-amber-50", "text-amber-700", "text-amber-800", "border-amber-200"],
