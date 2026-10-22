@@ -15,6 +15,9 @@ import {
   FilterGroup,
   IconButton,
   Input,
+  Kbd,
+  KeyValue,
+  KeyValueList,
   Lead,
   Markdown,
   ModalHeading,
@@ -106,6 +109,20 @@ function GalleryPillsWithDot() {
   );
 }
 
+/** The KeyValueList block of the Gallery: a label/value row with a value and a Kbd key. */
+function GalleryKeyValues() {
+  return (
+    <div className="max-w-sm">
+      <KeyValueList>
+        <KeyValue label="Size">1280×720</KeyValue>
+        <KeyValue label="Next shot">
+          <Kbd>j</Kbd>
+        </KeyValue>
+      </KeyValueList>
+    </div>
+  );
+}
+
 /** Every component in @hackcove/ui, once each. Colour comes from the components and the theme only. */
 export function Gallery() {
   const nameId = useId();
@@ -192,6 +209,8 @@ export function Gallery() {
       </Callout>
 
       <GalleryChips />
+
+      <GalleryKeyValues />
 
       <Empty>nothing here yet</Empty>
     </div>

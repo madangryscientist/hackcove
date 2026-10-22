@@ -10,6 +10,8 @@ export { FilterGroup } from "./FilterGroup.js";
 export { Checkbox } from "./Checkbox.js";
 export { Field } from "./Field.js";
 export { Input } from "./Input.js";
+export { Kbd } from "./Kbd.js";
+export { KeyValue, KeyValueList } from "./KeyValueList.js";
 export { Select } from "./Select.js";
 export { Textarea } from "./Textarea.js";
 export {
