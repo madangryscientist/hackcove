@@ -1,3 +1,13 @@
+## 0.2.2 (2026-10-22)
+
+### 🚀 Features
+
+- **ob 1765:** Avatar, initialsOf and avatarColourClass in @hackcove/ui ([798cae7](https://github.com/madangryscientist/hackcove/commit/798cae7))
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
 ## 0.1.0 (2026-10-22)
 
 ### 🚀 Features
