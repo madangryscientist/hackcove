@@ -44,6 +44,9 @@
 .dark .bg-slate-900 {
   background-color: #313244; /* surface0 — e.g. the brand badge */
 }
+.dark .backdrop\:bg-slate-900\/35::backdrop {
+  background-color: rgba(17, 17, 27, 0.6); /* crust — the modal scrim */
+}
 
 /* Text */
 .dark .text-slate-900,

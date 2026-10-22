@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useId, useState } from "react";
 import {
   Body,
   Button,
@@ -10,10 +10,12 @@ import {
   CopyButton,
   CopyLine,
   Checkbox,
+  Dialog,
   Display,
   Empty,
   EpicHeader,
   Field,
+  FieldDialog,
   FilterGroup,
   IconButton,
   Input,
@@ -139,6 +141,46 @@ function GalleryKeyValues() {
   );
 }
 
+/** The two dialogs, shut: each button opens one over the page (open, they make the page inert). */
+function GalleryDialogs() {
+  const [open, setOpen] = useState<"dialog" | "field" | null>(null);
+  const close = () => setOpen(null);
+  return (
+    <div className="flex flex-wrap gap-2">
+      <Button variant="outline" onClick={() => setOpen("dialog")}>
+        Open Dialog
+      </Button>
+      <Button variant="outline" onClick={() => setOpen("field")}>
+        Open FieldDialog
+      </Button>
+      {open === "dialog" && (
+        <Dialog
+          title="Delete build"
+          description="This removes the build and every snapshot in it."
+          onClose={close}
+          footer={<Button onClick={close}>Delete</Button>}
+        >
+          <Body>There is no undo.</Body>
+        </Dialog>
+      )}
+      {open === "field" && (
+        <FieldDialog
+          title="New project"
+          label="Name"
+          inputLabel="Project name"
+          placeholder="my-project"
+          hint="Letters, numbers and dashes."
+          emptyReason="Type a name first."
+          submit="Create"
+          busyLabel="Creating…"
+          onSubmit={() => Promise.resolve()}
+          onClose={close}
+        />
+      )}
+    </div>
+  );
+}
+
 /** The copy pair: a CopyLine (with its own CopyButton) and a bare CopyButton. */
 function GalleryCopy() {
   return (
@@ -238,6 +280,8 @@ export function Gallery() {
       <GalleryChips />
 
       <GalleryKeyValues />
+
+      <GalleryDialogs />
 
       <Empty>nothing here yet</Empty>
     </div>

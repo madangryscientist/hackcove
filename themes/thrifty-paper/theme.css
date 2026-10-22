@@ -46,6 +46,9 @@
 .thrifty-paper .bg-slate-900 {
   background-color: #1c1917; /* ink — e.g. the brand badge */
 }
+.thrifty-paper .backdrop\:bg-slate-900\/35::backdrop {
+  background-color: rgba(28, 25, 23, 0.35); /* ink — the modal scrim */
+}
 
 /* Text */
 .thrifty-paper .text-slate-900,
