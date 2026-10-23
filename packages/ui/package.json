@@ -2,7 +2,25 @@
   "name": "@hackcove/ui",
   "version": "0.2.3",
   "description": "Hack Cove React components: primitives, typography roles and a safe Markdown renderer, written against Tailwind v4 utilities. Pair with a @hackcove/theme-* package.",
+  "keywords": [
+    "components",
+    "design-system",
+    "hackcove",
+    "markdown",
+    "react",
+    "tailwind",
+    "tailwindcss",
+    "ui"
+  ],
+  "homepage": "https://github.com/madangryscientist/hackcove/tree/main/packages/ui#readme",
+  "bugs": {
+    "url": "https://github.com/madangryscientist/hackcove/issues"
+  },
   "license": "MIT",
+  "author": {
+    "name": "Jacobus Langner",
+    "url": "https://github.com/madangryscientist"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/madangryscientist/hackcove.git",

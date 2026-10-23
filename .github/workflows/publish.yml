@@ -7,7 +7,7 @@ name: Publish
 # trusted publisher on npmjs.com pointing at this workflow file, repository madangryscientist/hackcove
 # and the environment below. The one exception is a package's first publish: npm cannot attach a trusted
 # publisher to a package that does not exist yet, so a project with no release tag is released by the
-# "First release" step with an NPM_TOKEN secret on the environment. See README "Publish" and
+# "First release" step with an NPM_TOKEN secret on the environment. See docs/releasing.md,
 # "First publish of a new package".
 on:
   workflow_dispatch:
@@ -85,7 +85,7 @@ jobs:
           echo "tagged=$tagged" | tee -a "$GITHUB_OUTPUT"
           echo "new=$new" | tee -a "$GITHUB_OUTPUT"
           if [ -n "$new" ] && [ "$HAS_NPM_TOKEN" != "true" ]; then
-            echo "::error::New project(s) with no release tag: $new. Their first publish needs an NPM_TOKEN secret on the npm-publish environment (README \"First publish of a new package\"), or set the project input to release only an already-tagged project."
+            echo "::error::New project(s) with no release tag: $new. Their first publish needs an NPM_TOKEN secret on the npm-publish environment (docs/releasing.md \"First publish of a new package\"), or set the project input to release only an already-tagged project."
             exit 1
           fi
 

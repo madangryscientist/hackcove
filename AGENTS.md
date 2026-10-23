@@ -140,7 +140,7 @@ planner gates and squash-merges with `ob-land`.
    ```
 
 Releasing is a separate step, after landing: Jacobus starts `.github/workflows/publish.yml`
-(README "Publish"). It bumps only the packages whose commits changed since their last tag. Start it
+(`docs/releasing.md`). It bumps only the packages whose commits changed since their last tag. Start it
 with `project` empty so one dispatch releases all of them; name a project only when that one project
 alone is meant. A dispatch per project means extra gate runs and separate release commits, and each
 run versions only its own project, so a package changed in the same commit is left behind.
@@ -191,6 +191,6 @@ nothing).
    laptop, a first publish included: `.github/workflows/publish.yml` (which runs `nx release`)
    is the only path, and Jacobus starts it. A builder never runs `nx release publish`, never runs
    a bare `npm publish` and never runs `npm login`. A new package's first publish uses the
-   workflow's `NPM_TOKEN` step (README "First publish of a new package"); Jacobus sets and deletes
+   workflow's `NPM_TOKEN` step (`docs/releasing.md`, "First publish of a new package"); Jacobus sets and deletes
    that secret. No `git push` from a builder. The repo stays private. Every package is MIT (a `LICENSE` in
    each package and at the root); versions stay `0.x`.

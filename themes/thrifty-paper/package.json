@@ -2,7 +2,24 @@
   "name": "@hackcove/theme-thrifty-paper",
   "version": "0.1.1",
   "description": "The Thrifty Paper light theme for Hack Cove: one CSS file that remaps the Tailwind utilities @hackcove/ui is written against.",
+  "keywords": [
+    "design-system",
+    "hackcove",
+    "light-theme",
+    "paper",
+    "tailwind",
+    "tailwindcss",
+    "theme"
+  ],
+  "homepage": "https://github.com/madangryscientist/hackcove/tree/main/themes/thrifty-paper#readme",
+  "bugs": {
+    "url": "https://github.com/madangryscientist/hackcove/issues"
+  },
   "license": "MIT",
+  "author": {
+    "name": "Jacobus Langner",
+    "url": "https://github.com/madangryscientist"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/madangryscientist/hackcove.git",
