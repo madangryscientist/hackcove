@@ -17,6 +17,7 @@
      accent #c2410c · accent-hover #9a3412 · accent-soft #fdf5f0
      positive #047857 / #ecfdf5 · warn #b45309 / #fffbeb · note #0f766e / #f0fdfa
      danger #b91c1c / #fef2f2
+   Added for 3:1 control edges (not in Thrifty's block): edge #948a7c
 
    --------------------------------------------------------------------------- */
 
@@ -64,7 +65,7 @@
   color: #6b6259; /* ink-mute — Thrifty's lightest text */
 }
 .thrifty-paper .text-slate-300 {
-  color: rgba(107, 98, 89, 0.5); /* ink-mute/50 — dimmed (days outside the month) */
+  color: #6b6259; /* ink-mute — days outside the month: 5.97:1 on white (ink-mute/50 was 2.15:1) */
 }
 .thrifty-paper .placeholder\:text-slate-400::placeholder {
   color: rgba(107, 98, 89, 0.7); /* ink-mute/70 */
@@ -76,9 +77,11 @@
 }
 .thrifty-paper .border-slate-100,
 .thrifty-paper .border-slate-200,
-.thrifty-paper .border-slate-200\/70,
-.thrifty-paper .border-slate-300 {
+.thrifty-paper .border-slate-200\/70 {
   border-color: #ece3d4; /* line */
+}
+.thrifty-paper .border-slate-300 {
+  border-color: #948a7c; /* control edge: 3.39:1 on white, 3.28:1 on canvas (line was 1.27:1) */
 }
 .thrifty-paper .border-slate-900 {
   border-color: #1c1917; /* ink */
@@ -117,7 +120,7 @@
   border-color: #c2410c; /* accent */
 }
 .thrifty-paper .hover\:border-violet-400:hover {
-  border-color: rgba(194, 65, 12, 0.4);
+  border-color: #c2410c; /* accent: 5.18:1 on white, darker than the resting edge (was accent/40, 1.85:1) */
 }
 .thrifty-paper .focus-visible\:outline-violet-600:focus-visible {
   outline-color: #c2410c; /* accent */
@@ -209,7 +212,12 @@
   border-color: rgba(180, 83, 9, 0.3); /* warn */
 }
 .thrifty-paper .border-red-200 {
-  border-color: rgba(185, 28, 28, 0.3); /* danger */
+  border-color: rgba(
+    185,
+    28,
+    28,
+    0.7
+  ); /* danger/70: an invalid field's edge, 3.62:1 on danger-soft (danger/30 was 1.67:1) */
 }
 .thrifty-paper .border-blue-200,
 .thrifty-paper .border-blue-300 {
