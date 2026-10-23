@@ -1,3 +1,13 @@
+## 0.1.2 (2026-10-23)
+
+### 🩹 Fixes
+
+- **ob 1800:** thrifty-paper: meet WCAG contrast on the 0.2.3 date controls ([2ff6ff2](https://github.com/madangryscientist/hackcove/commit/2ff6ff2))
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
 ## 0.1.1 (2026-10-23)
 
 ### 🚀 Features
