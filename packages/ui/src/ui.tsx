@@ -1,16 +1,13 @@
 import type { ReactNode } from "react";
 import { cx } from "./cx.js";
+import { PageHeaderContent } from "./PageHeader.js";
 
 // Small presentational primitives written against Tailwind's slate-based class vocabulary
 // (remapped to Catppuccin Mocha in dark mode by theme.css).
 
+/** @deprecated use PageHeader */
 export function PageTitle({ title, subtitle }: { title: string; subtitle?: string }) {
-  return (
-    <div>
-      <h1 className="text-2xl font-bold tracking-tight text-slate-900">{title}</h1>
-      {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
-    </div>
-  );
+  return <PageHeaderContent title={title} subtitle={subtitle} />;
 }
 
 /** A bordered panel with an optional title and count; `as` picks the element (default `section`). */

@@ -1,5 +1,9 @@
 export { Card, EpicHeader, Empty, PageTitle, Pill, groupByEpic } from "./ui.js";
 export { Markdown } from "./Markdown.js";
+export { AppShell, appShellRootClass } from "./AppShell.js";
+export { Container } from "./Container.js";
+export { PageHeader } from "./PageHeader.js";
+export { Section, Stack, type StackGap } from "./Stack.js";
 export { Button, buttonClass, type ButtonVariant } from "./Button.js";
 export { Avatar, avatarColourClass, initialsOf, type AvatarSize } from "./Avatar.js";
 export { Breadcrumbs, crumbLinkClass } from "./Breadcrumbs.js";

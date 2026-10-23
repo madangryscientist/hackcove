@@ -44,6 +44,21 @@ export const Example = () => (
 );
 ```
 
+## Layout
+
+`AppShell` gives every page one content edge: a sticky one-row header, then main, both inside
+`Container` (`max-w-6xl`, `px-4 sm:px-6`, defined there and nowhere else). Put `appShellRootClass`
+on your `<html>` so the scrollbar is always reserved and centred content does not shift between a
+short and a long page; no component touches `<html>`. Pages never set their own width or outer
+padding: they start with `PageHeader` and space their blocks with `Stack` (`sm` inside a group, `md`
+between blocks, `lg` between groups). See
+[`packages/ui/README.md`](packages/ui/README.md#layout).
+
+The Layout stories in Storybook are checked at 375, 768 and 1280 px by `e2e/layout.spec.ts`: the
+page title must start at the logo's x, the same x on every `Layout/…` story (found by title, so a
+new one needs no test edit). The visual check shoots desktop (1280) only; for the narrow widths, pick
+Phone (375) or Tablet (768) from Storybook's viewport toolbar.
+
 ## Light and dark
 
 `@hackcove/ui` ships the switch for the `.dark` class: inline `colourSchemeScript` in `<head>` (it
