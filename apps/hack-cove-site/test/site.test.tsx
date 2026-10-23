@@ -1,10 +1,10 @@
 import { describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { CaseStudies } from "../src/components/CaseStudies";
 import { Contact } from "../src/components/Contact";
 import { Hero } from "../src/components/Hero";
+import { Projects } from "../src/components/Projects";
 import { Team } from "../src/components/Team";
-import { type Person, site } from "../src/content/site";
+import { type Person, type Project, site } from "../src/content/site";
 
 /* The point of these tests is that the words and the people survive rendering as
    REAL HTML — the reason the site is Astro-with-islands rather than an SPA. They
@@ -25,6 +25,9 @@ describe("content", () => {
     ]);
   });
 });
+
+const countWith = (status: Project["status"]) =>
+  site.projects.filter((p) => p.status === status).length;
 
 describe("static HTML", () => {
   test("the hero renders the tagline, the intro and a mailto link", () => {
@@ -59,16 +62,51 @@ describe("static HTML", () => {
     }
   });
 
-  test("case studies render nothing while there are none (the later-addition seam)", () => {
-    expect(renderToStaticMarkup(<CaseStudies />)).toBe("");
-    const original = [...site.caseStudies];
-    site.caseStudies.push({ slug: "x", title: "A project", summary: "What we did." });
+  test("three projects render, each with its name and status", () => {
+    expect(site.projects).toHaveLength(3);
+    const html = renderToStaticMarkup(<Projects />);
+    expect(html.match(/<article/g)).toHaveLength(3);
+    for (const project of site.projects) expect(html).toContain(project.name);
+    expect(html.match(/>Available</g) ?? []).toHaveLength(countWith("available"));
+    expect(html.match(/>Coming soon</g) ?? []).toHaveLength(countWith("coming-soon"));
+  });
+
+  test("links render exactly where the content has them", () => {
+    const html = renderToStaticMarkup(<Projects />);
+    const links = site.projects.flatMap((p) => p.links ?? []);
+    expect(html.match(/<a /g) ?? []).toHaveLength(links.length);
+    for (const link of links) expect(html).toContain(`href="${link.href}"`);
+  });
+
+  test("a project's copy, status and links come from the content file alone", () => {
+    const original = [...site.projects];
+    const extra: Project = {
+      slug: "x",
+      name: "A new project",
+      status: "available",
+      summary: "What it is.",
+      details: ["One detail."],
+      links: [{ label: "Home", href: "https://example.com/x" }],
+    };
+    site.projects.splice(0, site.projects.length, extra);
     try {
-      const html = renderToStaticMarkup(<CaseStudies />);
-      expect(html).toContain("A project");
-      expect(html).toContain("What we did.");
+      const html = renderToStaticMarkup(<Projects />);
+      expect(html).toContain("A new project");
+      expect(html).toContain("One detail.");
+      expect(html).toContain('href="https://example.com/x"');
+      expect(html).toContain(">Home<");
     } finally {
-      site.caseStudies.splice(0, site.caseStudies.length, ...original);
+      site.projects.splice(0, site.projects.length, ...original);
+    }
+  });
+
+  test("the projects section renders nothing while there are none", () => {
+    const original = [...site.projects];
+    site.projects.splice(0, site.projects.length);
+    try {
+      expect(renderToStaticMarkup(<Projects />)).toBe("");
+    } finally {
+      site.projects.splice(0, site.projects.length, ...original);
     }
   });
 
