@@ -9,6 +9,7 @@ on its own and is on npm under the `@hackcove` scope (MIT, all `0.x`).
 | `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha` | The Catppuccin Mocha dark theme: one `theme.css` that remaps those utilities under `.dark`. |
 | `themes/thrifty-paper` | `@hackcove/theme-thrifty-paper` | The Thrifty Paper light theme (cream paper, ink text, clay accent): one `theme.css` that remaps those utilities under `.thrifty-paper`. |
 | `apps/storybook` | (private) | Storybook for the components, with a toolbar theme switcher that lists every folder under `themes/`. |
+| `apps/hack-cove-site` | (private) | The hack-cove.com website (Astro), built on the workspace components and the Mocha theme. |
 
 Each theme scopes under its own class, which goes on `<html>`: `.dark` for Mocha,
 `.thrifty-paper` for Thrifty Paper. With no theme, the look is the components' own default Tailwind
@@ -126,6 +127,7 @@ bun run format:check                            # oxfmt, workspace-wide
 bunx nx run-many -t pack-check                  # npm pack --dry-run per package
 bunx nx e2e storybook                           # Playwright over the built Storybook (first time: bunx playwright install chromium)
 bunx nx run storybook:storybook                 # http://localhost:6006
+bunx nx dev hack-cove-site                      # the website, http://localhost:4321
 ```
 
 Contributing? Start with [`CONTRIBUTING.md`](CONTRIBUTING.md).

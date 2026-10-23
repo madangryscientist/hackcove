@@ -1,0 +1,10 @@
+---
+import { LegalPage } from "../components/LegalPage";
+import { terms } from "../content/legal";
+import { site } from "../content/site";
+import Base from "../layouts/Base.astro";
+---
+
+<Base title={`${terms.title} — ${site.name}`} description={terms.description}>
+  <LegalPage doc={terms} />
+</Base>

@@ -1,0 +1,39 @@
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  .cv-screen-nav {
+    display: none;
+  }
+
+  .cv {
+    max-width: none;
+    padding: 0 !important;
+  }
+
+  /* The site shell (1797): no header row on paper, and the page margin is @page's, not the Container's. */
+  header:has(.site-header) {
+    display: none;
+  }
+
+  main > div:has(> .cv) {
+    padding: 0 !important;
+  }
+
+  .cv-job {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

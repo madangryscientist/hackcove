@@ -1,0 +1,85 @@
+{
+  "name": "hack-cove-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --port 4321",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check --minimumFailingSeverity error",
+    "lint": "oxlint -c ../../.oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
+    "test": "vitest run",
+    "deploy": "./deploy.sh"
+  },
+  "dependencies": {
+    "@hackcove/theme-catppuccin-mocha": "workspace:*",
+    "@hackcove/ui": "workspace:*",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.11",
+    "@astrojs/react": "7.1.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/bun": "1.4.3",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "astro": "7.4.1",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.7.0",
+    "vitest": "5.0.5",
+    "wrangler": "4.151.3"
+  },
+  "nx": {
+    "name": "hack-cove-site",
+    "tags": [
+      "kind:app"
+    ],
+    "targets": {
+      "build": {
+        "inputs": [
+          "default",
+          "{workspaceRoot}/themes/catppuccin-mocha/theme.css",
+          "{workspaceRoot}/packages/ui/src/**/*"
+        ],
+        "outputs": [
+          "{projectRoot}/dist"
+        ]
+      },
+      "preview": {
+        "executor": "nx:run-script",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "script": "preview"
+        }
+      },
+      "deploy": {
+        "executor": "nx:run-script",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "script": "deploy"
+        },
+        "cache": false
+      },
+      "typecheck": {
+        "dependsOn": [
+          "^build"
+        ]
+      },
+      "lint": {
+        "dependsOn": [
+          "^build"
+        ]
+      },
+      "test": {
+        "dependsOn": [
+          "^build"
+        ]
+      }
+    }
+  }
+}

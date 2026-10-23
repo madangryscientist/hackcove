@@ -1,0 +1,20 @@
+---
+import { CaseStudies } from "../components/CaseStudies";
+import { Contact } from "../components/Contact";
+import { Hero } from "../components/Hero";
+import { Team } from "../components/Team";
+import { site } from "../content/site";
+import Base from "../layouts/Base.astro";
+
+// No `client:` directive on any of these: they are static, so Astro renders the
+// React components to real HTML at build time and the page ships zero JS. That
+// is the whole reason for Astro here — crawlers and link-preview bots get the
+// words, not an empty div.
+---
+
+<Base title={`${site.name} — ${site.tagline}`}>
+  <Hero />
+  <Team />
+  <CaseStudies />
+  <Contact slot="footer" />
+</Base>

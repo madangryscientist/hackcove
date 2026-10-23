@@ -16,6 +16,7 @@ private agent rules on top of it.
 | `theme-catppuccin-mocha` | `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha`: one `theme.css`, shipped as-is. Dark; scope `.dark`. |
 | `theme-thrifty-paper` | `themes/thrifty-paper` | `@hackcove/theme-thrifty-paper`: one `theme.css`, shipped as-is. Light (Thrifty's cream paper); scope `.thrifty-paper`. |
 | `storybook` | `apps/storybook` | Storybook for the components; a toolbar switcher lists every `themes/*` folder. Its `e2e/` is the Playwright layer (`test:e2e`). Private. |
+| `hack-cove-site` | `apps/hack-cove-site` | The hack-cove.com Astro site. Builds `dist/` against the workspace `@hackcove/ui` and `@hackcove/theme-catppuccin-mocha` (`workspace:*`). `deploy.sh` direct-uploads to Cloudflare Pages; only Jacobus runs it. Private; not in `nx release`. |
 
 **One folder, one publishable package per theme.** Adding a theme is copying a folder
 (`README.md`, "How to add a theme"); nothing else registers it. **Each theme names its own scope

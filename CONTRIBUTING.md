@@ -31,6 +31,7 @@ themes** shows every component in every theme on one page.
 | `packages/ui` | `@hackcove/ui` | The components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, react-dom, tailwindcss v4. No theme CSS. |
 | `themes/<name>` | `@hackcove/theme-<name>` | One `theme.css`, shipped as-is. |
 | `apps/storybook` | (private) | Storybook and the Playwright e2e. |
+| `apps/hack-cove-site` | (private) | The hack-cove.com Astro site; run it with `bunx nx dev hack-cove-site` (http://localhost:4321). |
 
 ## The gate
 

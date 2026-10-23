@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+/* The Catppuccin Mocha palette that makes @hackcove/ui's slate-based components dark. It is its own
+   package (@hackcove/theme-catppuccin-mocha, in the hackcove repo, ~/dev/hackcove) so this app and
+   apps/dashboard share one copy. `.dark` is set on <html> in Base.astro. */
+@import "@hackcove/theme-catppuccin-mocha/theme.css";
+
+/* Tailwind skips node_modules, so tell it to scan the components' build for the
+   utilities they use — otherwise their classes are absent from the bundle. */
+@source "../../node_modules/@hackcove/ui/dist";
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  /* The dark canvas the Mocha cards float on, matching the dashboard. */
+  background-color: #000000;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}

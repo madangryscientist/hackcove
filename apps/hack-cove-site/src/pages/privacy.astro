@@ -1,0 +1,10 @@
+---
+import { LegalPage } from "../components/LegalPage";
+import { privacy } from "../content/legal";
+import { site } from "../content/site";
+import Base from "../layouts/Base.astro";
+---
+
+<Base title={`${privacy.title} — ${site.name}`} description={privacy.description}>
+  <LegalPage doc={privacy} />
+</Base>
