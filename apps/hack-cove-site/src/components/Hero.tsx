@@ -1,4 +1,4 @@
-import { Display, Lead, Overline } from "@hackcove/ui";
+import { Display, Lead, Overline, TextLink } from "@hackcove/ui";
 import { site } from "../content/site";
 
 export function Hero() {
@@ -8,9 +8,9 @@ export function Hero() {
       <Display className="mt-4">{site.tagline}</Display>
       <Lead className="mt-6">{site.intro}</Lead>
       <p className="mt-8">
-        <a className="link text-base" href={`mailto:${site.contactEmail}`}>
+        <TextLink className="text-base" href={`mailto:${site.contactEmail}`}>
           {site.contactEmail}
-        </a>
+        </TextLink>
       </p>
     </header>
   );

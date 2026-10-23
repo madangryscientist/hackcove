@@ -36,10 +36,12 @@ export { CopyLine } from "./CopyLine.js";
 export { Field } from "./Field.js";
 export { FieldDialog, type FieldDialogProps } from "./FieldDialog.js";
 export { Input } from "./Input.js";
+export { InlineLinks, type InlineLinksSeparator } from "./InlineLinks.js";
 export { Kbd } from "./Kbd.js";
 export { KeyValue, KeyValueList } from "./KeyValueList.js";
 export { Select } from "./Select.js";
 export { Textarea } from "./Textarea.js";
+export { linkClass, TextLink } from "./TextLink.js";
 export {
   Body,
   BodyStrong,

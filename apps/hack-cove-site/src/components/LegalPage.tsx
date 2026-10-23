@@ -1,4 +1,4 @@
-import { Body, Caption, PageHeader, Section, Stack } from "@hackcove/ui";
+import { Body, Caption, InlineLinks, PageHeader, Section, Stack, TextLink } from "@hackcove/ui";
 import { type LegalDoc } from "../content/legal";
 import { site } from "../content/site";
 
@@ -12,9 +12,9 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
     <div className="max-w-3xl">
       <PageHeader
         breadcrumbs={
-          <a className="link text-sm" href="/">
+          <TextLink className="text-sm" href="/">
             {site.name}
-          </a>
+          </TextLink>
         }
         title={doc.title}
         subtitle={<>Last updated {doc.updated}</>}
@@ -34,15 +34,10 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
 
       <footer className="mt-16 border-t border-slate-200/70 pt-8">
         <Caption as="p">{site.legalName}</Caption>
-        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-          <a className="link" href={`mailto:${site.contactEmail}`}>
-            {site.contactEmail}
-          </a>
-          <Caption aria-hidden="true">·</Caption>
-          <a className="link" href={other.href}>
-            {other.label}
-          </a>
-        </p>
+        <InlineLinks className="mt-2">
+          <TextLink href={`mailto:${site.contactEmail}`}>{site.contactEmail}</TextLink>
+          <TextLink href={other.href}>{other.label}</TextLink>
+        </InlineLinks>
       </footer>
     </div>
   );

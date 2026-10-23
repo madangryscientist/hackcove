@@ -1,4 +1,4 @@
-import { Body, Card, Pill, Section, SubsectionHeading } from "@hackcove/ui";
+import { Body, Card, InlineLinks, Pill, Section, SubsectionHeading, TextLink } from "@hackcove/ui";
 import { type Project, site } from "../content/site";
 
 const STATUS = {
@@ -25,13 +25,13 @@ function ProjectCard({ project }: { project: Project }) {
         ))}
       </ul>
       {project.links && project.links.length > 0 && (
-        <p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+        <InlineLinks separator="none" className="mt-4">
           {project.links.map((link) => (
-            <a key={link.href} className="link" href={link.href}>
+            <TextLink key={link.href} href={link.href}>
               {link.label}
-            </a>
+            </TextLink>
           ))}
-        </p>
+        </InlineLinks>
       )}
     </Card>
   );

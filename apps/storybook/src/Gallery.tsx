@@ -43,6 +43,7 @@ import {
   ToggleChip,
 } from "@hackcove/ui";
 import { GalleryLayout } from "./GalleryLayout";
+import { GalleryLinks } from "./GalleryLinks";
 import { GalleryPages } from "./GalleryPages";
 import { samplePhoto } from "./samplePhoto";
 
@@ -314,6 +315,8 @@ export function Gallery() {
       <Callout tone="warn" title="Draft.">
         This page has not yet been reviewed by a lawyer.
       </Callout>
+
+      <GalleryLinks />
 
       <GalleryChips />
 

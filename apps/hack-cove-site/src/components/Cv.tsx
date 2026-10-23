@@ -4,9 +4,11 @@ import {
   BodyStrong,
   Caption,
   Card,
+  InlineLinks,
   PageHeader,
   SectionHeading,
   SubsectionHeading,
+  TextLink,
 } from "@hackcove/ui";
 import { cv, type CvJob } from "../content/cv";
 import { site } from "../content/site";
@@ -56,17 +58,12 @@ function CvHeader() {
   return (
     <PageHeader
       breadcrumbs={
-        <p className="cv-screen-nav">
-          <a className="link text-sm" href="/">
-            {site.name}
-          </a>
-          <Caption aria-hidden="true" className="mx-3">
-            ·
-          </Caption>
-          <a className="link text-sm" href={cv.pdf} download="jacobus.pdf">
+        <InlineLinks className="cv-screen-nav">
+          <TextLink href="/">{site.name}</TextLink>
+          <TextLink href={cv.pdf} download="jacobus.pdf">
             Download PDF
-          </a>
-        </p>
+          </TextLink>
+        </InlineLinks>
       }
       title={cv.name}
       subtitle={
@@ -76,16 +73,13 @@ function CvHeader() {
       }
       actions={<Avatar name={cv.name} src={cv.photo} size="2xl" />}
       tabs={
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-          {cv.links.map((link, i) => (
-            <span key={link.href} className="inline-flex items-center gap-x-3 whitespace-nowrap">
-              {i > 0 && <Caption aria-hidden="true">•</Caption>}
-              <a className="link" href={link.href}>
-                {link.label}
-              </a>
-            </span>
+        <InlineLinks separator="•">
+          {cv.links.map((link) => (
+            <TextLink key={link.href} href={link.href}>
+              {link.label}
+            </TextLink>
           ))}
-        </p>
+        </InlineLinks>
       }
     />
   );

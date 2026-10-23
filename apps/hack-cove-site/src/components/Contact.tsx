@@ -1,4 +1,4 @@
-import { Caption, SectionHeading, Subtitle } from "@hackcove/ui";
+import { Caption, InlineLinks, SectionHeading, Subtitle, TextLink } from "@hackcove/ui";
 import { site } from "../content/site";
 
 /**
@@ -12,24 +12,15 @@ export function Contact() {
       <div className="pt-4 pb-14">
         <SectionHeading>Get in touch</SectionHeading>
         <Subtitle className="mt-2">
-          Email{" "}
-          <a className="link" href={`mailto:${site.contactEmail}`}>
-            {site.contactEmail}
-          </a>
-          .
+          Email <TextLink href={`mailto:${site.contactEmail}`}>{site.contactEmail}</TextLink>.
         </Subtitle>
         <Caption as="p" className="mt-8">
           {site.legalName}
         </Caption>
-        <p className="mt-2 flex flex-wrap items-center gap-x-3 text-sm">
-          <a className="link" href="/privacy">
-            Privacy
-          </a>
-          <Caption aria-hidden="true">·</Caption>
-          <a className="link" href="/terms">
-            Terms
-          </a>
-        </p>
+        <InlineLinks className="mt-2">
+          <TextLink href="/privacy">Privacy</TextLink>
+          <TextLink href="/terms">Terms</TextLink>
+        </InlineLinks>
       </div>
     </div>
   );

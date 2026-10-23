@@ -229,7 +229,9 @@
   border-color: rgba(137, 180, 250, 0.4);
 }
 
-/* Inline links — Mocha mauve (green is reserved for positive values). */
+/* Inline links — Mocha mauve (green is reserved for positive values). Alias of @hackcove/ui's
+   TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
+   write class="link" on a bare <a>. */
 .link {
   color: #cba6f7; /* mauve */
   font-weight: 500;

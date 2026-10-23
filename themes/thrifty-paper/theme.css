@@ -224,7 +224,9 @@
   border-color: rgba(15, 118, 110, 0.3); /* note */
 }
 
-/* Inline links — the clay accent. */
+/* Inline links — the clay accent. Alias of @hackcove/ui's TextLink (text-violet-600,
+   hover:text-violet-700, remapped above), kept for consumers that still write class="link" on a
+   bare <a>. */
 .thrifty-paper .link {
   color: #c2410c; /* accent */
   font-weight: 500;

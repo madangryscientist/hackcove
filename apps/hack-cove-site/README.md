@@ -21,14 +21,14 @@ string and component in `src/` is listed, each with one of three calls:
 | `global.css`: `body { font-family: ui-sans-serif, system-ui, … }` | Removed: it repeats Tailwind's default sans stack. |
 | `Team.tsx`: a hand-written monogram `<span>` (slate circle, one initial) and the `initials()` helper in `content/site.ts` | `Avatar` from `@hackcove/ui` (coloured circle, two letters), `size="xl"` (56px) for the whole grid so a photo and a monogram never mix sizes. The look changes: coloured by name, two letters. |
 | `Team.tsx` / `Cv.tsx`: a hand-written round photo `<img className="h-14/h-24 w-… shrink-0 rounded-full object-cover">` | `Avatar` with `src`: `xl` (56px) for the team, `2xl` (96px) for the CV portrait. |
+| `Hero.tsx`, `Projects.tsx`, `Contact.tsx`, `LegalPage.tsx`, `Cv.tsx`: `className="link"` on a bare `<a>` (Mocha's inline link look lived only in the theme CSS) | `TextLink` from `@hackcove/ui` (ticket 1818): the same mauve, weight 500 and lavender hover, from stock utilities. The theme's `.link` stays as an alias |
+| `Contact.tsx`, `LegalPage.tsx`, `Cv.tsx`, `Projects.tsx`: a wrapping `flex flex-wrap gap-x-3 text-sm` row of links with a hand-placed `Caption` dot or bullet | `InlineLinks` (ticket 1895): `separator` `·`, `•` or `none`, `aria-hidden`, held to its link so a wrap never strands one. The project links row goes from `gap-x-4` to `gap-x-3` |
 | `Team.tsx` / `Projects.tsx` (was `CaseStudies.tsx`): `<SectionHeading className="mb-4">` + a sibling block | `Section title="…"` (heading plus `gap-4`): pixel-identical. |
 
 ## Flagged (b)
 
 | file:line | What it does | Call |
 | --- | --- | --- |
-| `Hero.tsx:11`, `Projects.tsx:30`, `Contact.tsx:16,25,29`, `LegalPage.tsx:15,38,42`, `Cv.tsx:59,65,90` | `className="link …"` on a bare `<a>`: Mocha's inline link look lives only in the theme CSS | (b) **1818** TextLink / `linkClass` (site needs it too: noted there) |
-| `Projects.tsx:28`, `Contact.tsx:24`, `LegalPage.tsx:37`, `Cv.tsx:58,62,86,88` | A wrapping row of links (`flex flex-wrap items-center gap-x-3 text-sm`; on the projects `flex flex-wrap gap-x-4 gap-y-1 text-sm`, no separator) | (b) **1895** InlineLinks |
 | `Cv.tsx:104,144,156`, `LegalPage.tsx:35` | A hairline rule under a section heading or above a footer (`border-b/t border-slate-200/70 pb-2/pt-8`) | (b) **1896** Divider and a ruled SectionHeading |
 | `Projects.tsx:20`, `Cv.tsx:15` | `<ul className="mt-3 list-disc space-y-1 pl-5">` around a project's details; the same `<ul>` (`mt-2`) around each CV bullet. The project items are `Body as="li"`, so the list is the only hand-styled part | (b) **1826** Video, BulletList and Code (site needs it too: noted there) |
 | `SiteShell.tsx:14` | The brand link's `site-header text-base font-bold tracking-tight text-slate-900` | (b) **1824** AppShell header slots (site needs it too: noted there). The `site-header` marker class is for `cv-print.css:27` and goes with **1897** |
