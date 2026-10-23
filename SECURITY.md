@@ -4,11 +4,8 @@
 
 Please do not open a public issue or pull request for a security problem.
 
-Report it privately by either of these:
-
-- GitHub: **Security → Report a vulnerability** on this repository (private vulnerability
-  reporting), or
-- email: **[INSERT SECURITY CONTACT]**
+Report it privately with GitHub's private vulnerability reporting: on this repository, go to
+**Security → Report a vulnerability**.
 
 Include the package and version (`@hackcove/ui`, `@hackcove/theme-…`), what you found, and the
 smallest steps or markup that reproduce it. You will get an acknowledgement within a week. A fix is

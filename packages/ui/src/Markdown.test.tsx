@@ -21,7 +21,7 @@ describe("Markdown", () => {
   });
 
   it("renders **bold** as strong", () => {
-    expect(html("- **CUE-1** shipped")).toContain("<strong");
+    expect(html("- **HC-42** shipped")).toContain("<strong");
   });
 
   it("never injects HTML from the input", () => {

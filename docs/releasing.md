@@ -88,8 +88,8 @@ names the project. (`theme-thrifty-paper` was the first package to go through th
    `publish.yml`, environment `npm-publish`), or `npm trust github …`.
 5. `gh secret delete NPM_TOKEN --env npm-publish`, and revoke the token on npmjs.com.
 
-From then on the workflow releases it through OIDC whenever it has releasable commits. Provenance is
-only attached for public repositories. Nx reads only a root `tsconfig.base.json` or `tsconfig.json`, and
+From then on the workflow releases it through OIDC whenever it has releasable commits, and npm
+attaches provenance for a public repository. Nx reads only a root `tsconfig.base.json` or `tsconfig.json`, and
 TypeScript 7 has no classic compiler API for it to parse them with, so the shared compiler options
 live in `tsconfig.shared.json` instead.
 

@@ -2,39 +2,11 @@
 
 The Hack Cove design system: React components (`@hackcove/ui`) and one folder per theme
 (`@hackcove/theme-<name>`), each its own npm package, in an Nx + Bun-workspaces monorepo.
-`README.md` is the user-facing contract (install, usage, how to add a theme).
+`README.md` is the user-facing contract (install, usage, how to add a theme);
+`CONTRIBUTING.md` is the guide for contributors.
 
-Extracted from omnibus on 2026-10-20 (ob 1501, decision #70). History before that commit is
-omnibus's `platform/ui`. Its consumers are omnibus's `apps/dashboard` and `apps/hack-cove-site`.
-
-This file is the operating agreement for agents working here. The `ob-planner` skill reads it in
-Step 0 to learn this repo's tracker, gate and landing convention — keep it accurate or the planner
-will adapt to a stale repo.
-
-## Tracker: `ob` only
-
-The repo has a remote — `origin`, `github.com/madangryscientist/hackcove`, **private** — and `gh`
-is authenticated, so `gh issue` would work. We do not use it: one tracker is better than two, and
-`ob` is where the planning, spinoff and landing workflow lives. Do not create GitHub issues unless
-a human asks for them.
-
-- Tickets live in `ob`, project **`hackcove`**. Create with
-  `ob add "<title>" --project hackcove --body "<brief>"`.
-- Refer to tickets **by name**, not bare ids, in anything a human reads.
-- Put the brief in the item's **body**. `ob spinoff brief` reads `wayfinder/tickets/<ref>-*.md`
-  only in omnibus; here there is no such directory, so the brief falls back to the item's title +
-  body. That fallback is the mechanism — use it.
-
-Write each brief with these three headings, because the builder's launch prompt is built from them:
-
-```
-## What to build
-## Acceptance
-## Do not
-```
-
-`## Do not` is where you fence scope: files out of bounds, things that must not be refactored,
-"do not add a dependency for this".
+This file is the operating agreement for agents working here. Maintainers' tooling may load extra,
+private agent rules on top of it.
 
 ## Layout
 
@@ -53,12 +25,11 @@ at all, the look is the components' default Tailwind classes (Storybook's `defau
 
 ## The gate
 
-Everything runs through Nx (the standard stack: `skills/ob-new-project/STANDARD-STACK.md` in
-omnibus — Bun, strict tsconfig, oxlint + oxfmt, Vitest). A change is green when all of these pass
-**from the worktree**:
+Everything runs through Nx (Bun, strict tsconfig, oxlint + oxfmt, Vitest). A change is green when
+all of these pass **from the checkout**:
 
 ```bash
-bun install                                        # a fresh worktree has no node_modules
+bun install                                        # a fresh checkout has no node_modules
 bunx nx run-many -t typecheck lint test build      # tsc strict · oxlint --type-aware --deny-warnings + check-slop · Vitest · dist + Storybook build
 bun run format:check                               # oxfmt --check  (`bun run format` fixes)
 bunx nx run-many -t pack-check                     # npm pack --dry-run for every package
@@ -73,44 +44,11 @@ The e2e needs a Chromium once per machine: `bunx playwright install chromium`. I
 from `themes/*` like the switcher does and asserts each one under the scope class its `theme.css`
 names, so a new theme needs no test edit.
 
-**Visual check (required review step).** This page is everything a builder needs; do not ask anyone. It shows what a change did to every story in every theme (not part of the gate; about a minute once the baseline is cached).
-
-1. **Setup, once per machine.** pixelslash is not published and not a dependency: it runs from the checkout `PIXELSLASH_DIR` (default `~/dev/pixelslash`). Clone it there and `bun install` in it. `visual.ts` runs `bun install --frozen-lockfile` there on every run (a no-op when current) and fails naming that command if it cannot. Chromium comes from `bunx playwright install chromium` (see above).
-2. **Run the local check** from the worktree, after `bun install`: `bunx nx run storybook:visual --output-style=stream`. It builds and captures the working tree, captures the baseline's Storybook from a reusable worktree at `~/dev/hackcove.visual-main` (checked out at the base sha, `bun install` when its lockfile changed, skipped when `.pixelslash/main.sha` already equals the base sha), and runs `pixelslash compare`. It prints `visual: base: <label> <sha>`, the `pixelslash:` summary line with the counts, and the path to `apps/storybook/.pixelslash/report/index.html`; open the report and read every changed capture. The stories and themes come from `pixelslash.config.ts`, which reads `themes/*` like the toolbar. A story that renders only into a portal leaves `#storybook-root` empty and times out in capture: file it on pixelslash and `exclude` it in the config with a comment naming the ticket. `.pixelslash/` is gitignored.
-3. **The base.** The default is the branch's **merge-base with origin/main** (the fork point; the run does `git fetch origin main` first), so a main that moved since you forked never shows up in your diff. `VISUAL_BASE=<ref>` compares against another ref instead (e.g. the commit before a series of lands). The cache stamp records the resolved sha either way.
-4. **When to upload.** When the `Visual:` line **shows changes** (`N changed` > 0), upload your build to the PixelSlash server yourself so the planner reviews it on the dashboard. `0 changed` needs no upload. `storybook:visual-upload` runs the same check and also uploads both captures: the base's as `main` once per base sha and server (recorded in `.pixelslash/main.uploaded`), then the working tree's on its branch. It refuses `VISUAL_BASE`, the `main` branch, a dirty tree (commit first) and a branch not on origin/main's tip, because the server takes the baseline from the branch's merge-base. So a real rebase comes first, and the rebased tree is new, so **re-run the gate** after it. `git reset --soft` and `git commit-tree` stay banned. The recipe, verbatim:
-
-   ```bash
-   export PIXELSLASH_SERVER=http://pixelslash.invalid:3000
-   umask 077; ob secret get pixelslash-hackcove > "$TMPDIR/pixelslash.token"
-   export PIXELSLASH_TOKEN_PATH="$TMPDIR/pixelslash.token"
-   git fetch origin && git rebase origin/main   # then re-run the gate
-   bunx nx run storybook:visual-upload
-   ```
-
-   The server is `ob hosts pixelslash`. The token file lives under `$TMPDIR`, never in the repo; never commit it, print it or paste it anywhere. The run prints `visual: build: <url>` after the upload; that URL goes on the `Visual:` line. A `401 missing, wrong, expired or revoked token` means the secret needs reissuing in the project's Settings on the server: stop and stamp `needs-human`, do not look for another token.
-5. **The `Visual:` line.** Every change carries it, one line in the commit body:
-
-   `Visual: <N> changed, <M> new, <K> removed vs <base> — <one line on why each changed capture was expected>[ — <build URL>]`
-
-   `<base>` is the merge-base sha the run printed (or the `VISUAL_BASE` ref); `N`/`M`/`K` come from the `pixelslash:` summary line; the build URL is added when you uploaded. A change that should not touch visuals reports `0 changed`, which proves it. Any unexpected change means fixing the change, not committing it. If you rebased after the check, the line quotes the post-rebase run.
-6. **The planner** re-runs the check in the land worktree before pushing.
-
-**The consumers.** Every class a component uses and every utility a theme remaps shows up in
-omnibus's dashboard and `hack-cove-site`. After such a change, rebuild (`bunx nx build ui`) and
-build those two apps in an omnibus worktree (`bunx nx build dashboard`, `bunx nx build
-hack-cove-site`) and compare the CSS before and after. The apps install the published `^0.1.0` of
-`@hackcove/ui` and `@hackcove/theme-catppuccin-mocha` from npm, so they do not read this checkout
-unless you point them at it. To check an unpublished change against them: `bun link` once inside
-`packages/ui` and `themes/catppuccin-mocha` (bun's global link registry), then in the omnibus
-worktree temporarily `bun link @hackcove/ui @hackcove/theme-catppuccin-mocha`, build, compare, and
-do not commit the link in omnibus.
-
 ## Commits: conventional, because nx reads them
 
-Every commit is `<type>(<scope>): <subject>`: the builder's branch commits and the planner's squash
-commit on main alike. For ob work the scope is `ob N`, as in `fix(ob 1646): …`. The squash commit
-on main is the one `nx release` reads, so the planner keeps its subject in this form when squashing.
+Every commit is `<type>(<scope>): <subject>`, as in `fix(ui): keep the Pill label on one line`:
+branch commits and the squash commit on `main` alike. The squash commit on `main` is the one
+`nx release` reads, so its subject keeps this form.
 
 The type is honest because it drives the version bump:
 
@@ -119,52 +57,8 @@ The type is honest because it drives the version bump:
   is a decision for later.
 - `docs`, `test`, `chore`, `refactor`, `build` and `ci` release nothing.
 
-Which packages a commit bumps is decided by the files it touches, not by its scope. A `feat(ob N)`
+Which packages a commit bumps is decided by the files it touches, not by its scope. A `feat(ui)`
 that touches only `packages/ui` bumps `@hackcove/ui`, and nothing else.
-
-## Landing: no PRs
-
-Implementation lands on a branch, the builder commits with a trailing `State:` line, and the
-planner gates and squash-merges with `ob-land`.
-
-1. Builder commits on its own branch, with a conventional subject (above), ending the message with
-   one of `State: landable` / `State: needs-human` / `State: blocked` / `State: partial`.
-2. The builder never pushes, never merges and **never publishes**.
-3. On `State: landable`, the planner loads `ob-land` and lands it into `main`. The squash commit
-   keeps a conventional subject. Before pushing, the planner runs the visual check on the squash and
-   reads every changed capture. Landing is what touches the remote, and it is the only step that does:
-
-   ```bash
-   git push origin main
-   git push origin --delete <branch>   # only after the squash is on main
-   ```
-
-Releasing is a separate step, after landing: Jacobus starts `.github/workflows/publish.yml`
-(`docs/releasing.md`). It bumps only the packages whose commits changed since their last tag. Start it
-with `project` empty so one dispatch releases all of them; name a project only when that one project
-alone is meant. A dispatch per project means extra gate runs and separate release commits, and each
-run versions only its own project, so a package changed in the same commit is left behind.
-
-Scan several worktrees without opening a diff:
-
-```bash
-git log --format='%s%n%b' main..<branch>
-```
-
-Never commit implementation straight to `main`. Never `git commit -am` — stage new files
-explicitly or they are silently dropped.
-
-## Dispatch
-
-`ob spinoff <ref>` enqueues a launch; the daemon drains it in-session. Dispatch is always
-interactive and `--agent` is a usage error. `ob config` routes `spinoff_launcher_by_repo` →
-`hackcove: t3`, so a spinoff opens a **T3 Code thread** in this repo's T3 project (workspace root
-`~/dev/hackcove`), bound to the ob-owned worktree. A fresh spinoff worktree has no `node_modules`;
-`bun install` is the builder's first step.
-
-The planner itself is the pinned T3 thread `planner · hackcove`, created by
-`ob t3 planner --repo hackcove` (idempotent: a re-run reads the same thread back and creates
-nothing).
 
 ## Repo invariants
 
@@ -187,10 +81,10 @@ nothing).
 4. **`packages/ui` source imports use `.js` specifiers** (`./ui.js`, resolved to the `.tsx`). A
    `.tsx` specifier is emitted into the `.d.ts` unchanged and points at a file `dist` does not
    have, which silently breaks consumers' types.
-5. **Only the Action publishes, and only the planner pushes.** Nothing is published from a
-   laptop, a first publish included: `.github/workflows/publish.yml` (which runs `nx release`)
-   is the only path, and Jacobus starts it. A builder never runs `nx release publish`, never runs
-   a bare `npm publish` and never runs `npm login`. A new package's first publish uses the
-   workflow's `NPM_TOKEN` step (`docs/releasing.md`, "First publish of a new package"); Jacobus sets and deletes
-   that secret. No `git push` from a builder. The repo stays private. Every package is MIT (a `LICENSE` in
-   each package and at the root); versions stay `0.x`.
+5. **Only the Action publishes, and only maintainers push to `main`.** Nothing is published from
+   a laptop, a first publish included: `.github/workflows/publish.yml` (which runs `nx release`)
+   is the only path, and Jacobus starts it. Never run `nx release publish`, a bare `npm publish`
+   or `npm login`. A new package's first publish uses the workflow's `NPM_TOKEN` step
+   (`docs/releasing.md`, "First publish of a new package"); Jacobus sets and deletes that secret.
+   Agents and contributors do not push to `main`. Every package is MIT (a `LICENSE` in each
+   package and at the root); versions stay `0.x`.

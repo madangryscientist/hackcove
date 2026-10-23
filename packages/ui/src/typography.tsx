@@ -5,9 +5,8 @@ import { cx } from "./cx.js";
    Typography system
    ---------------------------------------------------------------------------
    Semantic text components that each PIN a size + weight + a default colour, so
-   text can never accidentally inherit the wrong weight/scale. Mirrors the
-   @cue/elements typography pattern, adapted to this stack (Tailwind v4 +
-   Catppuccin Mocha).
+   text can never accidentally inherit the wrong weight/scale. Written for
+   this stack (Tailwind v4 + Catppuccin Mocha).
 
    Colour axis — the `color` prop maps to Tailwind's slate utilities, which
    theme.css remaps to the real Catppuccin Mocha tokens in dark mode (so these
@@ -24,7 +23,7 @@ import { cx } from "./cx.js";
 
    Inline vs block — the inline-role components (Body, BodyStrong, Overline,
    Caption) default to `<span>` so they compose inside a sentence/flex row
-   ("inline-by-default for inline roles", per the Cue pattern). The structural
+   (inline by default for inline roles). The structural
    roles (PageHeading, SectionHeading, SubsectionHeading, ModalHeading,
    Subtitle) default to block elements (h1/h2/h3/p). Pass `as="p"` (etc.) to
    turn an inline role into a block.

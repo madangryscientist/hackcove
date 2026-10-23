@@ -1,0 +1,39 @@
+name: CI
+
+# Runs the gate on every pull request and on pushes to main. It uses the plain `pull_request`
+# trigger, so a fork's pull request runs with a read-only token and no secrets. Never switch it to
+# `pull_request_target`. The visual check is not part of CI: it needs a separate checkout and a
+# private server.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.2
+
+      - run: bun install --frozen-lockfile
+
+      - run: bunx nx run-many -t typecheck lint test build pack-check
+
+      - run: bun run format:check
+
+      - run: bunx playwright install --with-deps chromium
+
+      - run: bunx nx e2e storybook

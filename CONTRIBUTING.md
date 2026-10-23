@@ -5,6 +5,12 @@ one folder per theme (`@hackcove/theme-<name>`), each its own npm package, in an
 Bun-workspaces monorepo. By taking part you agree to the [Code of Conduct](CODE_OF_CONDUCT.md). For
 a security problem, follow [SECURITY.md](SECURITY.md) instead of opening an issue.
 
+## Issues and pull requests
+
+Bug reports, questions and proposals are welcome as GitHub issues, and so are pull requests. The
+maintainer reads each issue and tracks the work in a private tracker; the issue stays open until
+the fix has landed, and is closed then. A small fix needs no issue first: open the pull request.
+
 ## Setup
 
 You need [Bun](https://bun.sh) and Node. Then:
@@ -22,7 +28,7 @@ themes** shows every component in every theme on one page.
 
 | Folder | Package | What it is |
 | --- | --- | --- |
-| `packages/ui` | `@hackcove/ui` | The components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, tailwindcss v4. No theme CSS. |
+| `packages/ui` | `@hackcove/ui` | The components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, react-dom, tailwindcss v4. No theme CSS. |
 | `themes/<name>` | `@hackcove/theme-<name>` | One `theme.css`, shipped as-is. |
 | `apps/storybook` | (private) | Storybook and the Playwright e2e. |
 
@@ -69,7 +75,7 @@ is the contract; Storybook and the e2e find it from `themes/*`, so there is no l
 
 The maintainers also run a screenshot comparison (PixelSlash, an internal tool that is not published)
 over every story in every theme, against the branch's merge-base with `main`. It is not part of the
-gate above and **you do not need it to contribute**: it runs from a separate checkout and uploads to
+gate above and **you do not need it to contribute**: it runs from a separate checkout and reports to
 a private server that outside contributors have no access to.
 
 What it means for you:
@@ -99,6 +105,7 @@ Which packages a commit bumps depends on the files it touches, not on its scope.
 
 - Branch from `main`, keep the change small and focused, and run the gate before you push.
 - Describe what changed and why, and say whether you ran the visual check (above).
+- CI runs the gate (without the visual check) on every pull request; it needs to be green.
 - Maintainers squash-merge, keeping a conventional subject.
 - Releases are cut by a maintainer from GitHub Actions ([docs/releasing.md](docs/releasing.md)).
   Contributors never publish.

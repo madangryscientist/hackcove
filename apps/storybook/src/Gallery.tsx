@@ -269,8 +269,8 @@ export function Gallery() {
 
       <Card title="Section" count={3}>
         <div className="flex flex-col gap-4">
-          <EpicHeader color="#cba6f7" label="CUE-9388 · Voice Inbox" />
-          <Markdown md={"## What I did\n- **CUE-9388** shipped\n- plain item"} />
+          <EpicHeader color="#cba6f7" label="HC-42 · Voice Inbox" />
+          <Markdown md={"## What I did\n- **HC-42** shipped\n- plain item"} />
         </div>
       </Card>
 

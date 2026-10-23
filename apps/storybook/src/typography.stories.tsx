@@ -80,7 +80,7 @@ export const BodyStrongStory: S = {
 
 export const CaptionStory: S = {
   name: "Caption",
-  render: () => <Caption>Updated 2 minutes ago · CUE-9388</Caption>,
+  render: () => <Caption>Updated 2 minutes ago · HC-42</Caption>,
 };
 
 // A realistic composition of the whole scale ------------------------------

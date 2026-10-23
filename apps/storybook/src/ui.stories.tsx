@@ -50,12 +50,12 @@ export const CardAsArticle: S = {
   ),
 };
 export const Header: S = {
-  render: () => <EpicHeader color="#cba6f7" label="CUE-9388 · Voice Inbox" />,
+  render: () => <EpicHeader color="#cba6f7" label="HC-42 · Voice Inbox" />,
 };
 export const Title: S = {
   render: () => <PageTitle title="Status" subtitle="what's happening now" />,
 };
 export const MarkdownStory: S = {
-  render: () => <Markdown md={"## What I did\n- **CUE-9388** shipped\n- plain item"} />,
+  render: () => <Markdown md={"## What I did\n- **HC-42** shipped\n- plain item"} />,
 };
 export const EmptyState: S = { render: () => <Empty>nothing here yet</Empty> };
