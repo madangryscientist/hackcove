@@ -142,6 +142,18 @@ except the last four.
 - **`FullBleedLayout`**: use this for a viewer that needs the whole width. Render it in
   `<AppShell bleed>`; `children` fill the width, and an optional `panel` takes `lg:w-72` on the
   right and stacks below under `lg`.
+
+  **`SidebarLayout` and `FullBleedLayout` deliberately break the shared left edge from `md` and
+  `lg` up.** A full-height rail and an edge-to-edge viewer need the viewport's edges, so they cannot
+  sit inside the Container the header uses. At 1280 px the header logo and every other layout start
+  at x=88, `SidebarLayout`'s rail at x=0 and its canvas at x=264 (rail 240 + the Container's 24
+  padding), `FullBleedLayout`'s `children` at x=0 (they add their own padding). Below `md` (`lg` for
+  `FullBleedLayout`) everything stacks and all layouts agree at the Container's padding. To avoid
+  the shift between pages, give a whole section of an app the same layout (every page under a
+  project on `SidebarLayout`) rather than mixing it with `ListLayout` pages that a user moves
+  between; the header, which stays inside the Container, is the constant. The title's y also
+  differs from `ListLayout` only when one page passes `breadcrumbs` and the other does not:
+  `PageHeader` puts them above the title in every layout.
 - **`CenteredLayout`**: use this for sign-in, landing, not-found and error pages. A `max-w-md` card
   centred at a fixed offset from the top; the one layout that does not share the left edge.
 

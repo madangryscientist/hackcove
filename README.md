@@ -61,7 +61,10 @@ The Layout stories in Storybook are checked at 375, 768 and 1280 px by `e2e/layo
 page title must start at the logo's x, the same x on every `Layout/…` story (found by title, so a
 new one needs no test edit). `CenteredLayout`, `SidebarLayout` and `FullBleedLayout` are the
 exceptions (a narrow card, a rail beside the canvas, no page padding) and are asserted on their own
-terms in the same file. The screenshot-based visual check (see
+terms in the same file. The last two break the edge on purpose, from `md` and `lg` up: a full-height
+rail and an edge-to-edge viewer need the viewport's edges (at 1280 px the logo and the other
+layouts are at x=88, the rail at 0, its canvas at 264), so the header stays the constant and an
+app gives a whole section one layout. The screenshot-based visual check (see
 [`CONTRIBUTING.md`](CONTRIBUTING.md#the-visual-check)) shoots desktop (1280) only; for the narrow widths, pick
 Phone (375) or Tablet (768) from Storybook's viewport toolbar.
 

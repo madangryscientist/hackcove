@@ -106,6 +106,10 @@ export function CardGrid({
  * A full-height `rail` beside the `children` canvas. Render it in `<AppShell bleed>`: it fills what
  * the shell's flex column leaves under the header, so no header height is written down. The rail is
  * `md:w-60` and stacks above the canvas below `md`; the canvas keeps the Container's padding.
+ *
+ * It deliberately breaks the shared left edge from `md` up: a full-height rail needs the viewport's
+ * left edge, so the rail starts at x=0 and the canvas at the rail's width plus the Container's
+ * padding (264 at 1280), not at the header logo's x. Below `md` every layout agrees.
  */
 export function SidebarLayout({
   rail,
@@ -127,7 +131,12 @@ export function SidebarLayout({
   );
 }
 
-/** Edge-to-edge `children` with an optional right `panel` (`lg:w-72`) that stacks below on a smaller screen. Render it in `<AppShell bleed>`. */
+/**
+ * Edge-to-edge `children` with an optional right `panel` (`lg:w-72`) that stacks below on a smaller
+ * screen. Render it in `<AppShell bleed>`. It deliberately breaks the shared left edge: a viewer
+ * that needs the whole width has no Container of its own, so `children` start at the viewport's
+ * left edge and add their own padding.
+ */
 export function FullBleedLayout({
   panel,
   children,
