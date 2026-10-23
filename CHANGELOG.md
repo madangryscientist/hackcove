@@ -1,3 +1,27 @@
+## 0.1.1 (2026-10-23)
+
+### 🚀 Features
+
+- **ob 1778:** DatePicker and DateField on react-aria-components ([e9afcf7](https://github.com/madangryscientist/hackcove/commit/e9afcf7))
+- **ob 1765:** Avatar, initialsOf and avatarColourClass in @hackcove/ui ([798cae7](https://github.com/madangryscientist/hackcove/commit/798cae7))
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
+## 0.2.3 (2026-10-23)
+
+### 🚀 Features
+
+- **ob 1780:** Page layouts: List, Detail, Form, CardGrid, Sidebar, FullBleed, Centered ([36105d9](https://github.com/madangryscientist/hackcove/commit/36105d9))
+- **ob 1778:** DatePicker and DateField on react-aria-components ([e9afcf7](https://github.com/madangryscientist/hackcove/commit/e9afcf7))
+- **ob 1779:** Layout foundation: AppShell, Container, PageHeader, Stack + no-jump e2e ([ec97ad7](https://github.com/madangryscientist/hackcove/commit/ec97ad7))
+- **ob 1777:** ColourSchemeToggle and a pre-paint colourSchemeScript in @hackcove/ui ([4c93f0b](https://github.com/madangryscientist/hackcove/commit/4c93f0b))
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
 ## 0.2.2 (2026-10-22)
 
 ### 🚀 Features
