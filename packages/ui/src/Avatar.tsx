@@ -16,6 +16,8 @@ const SIZE_CLASSES = {
   sm: "size-6 text-xs",
   md: "size-7 text-xs",
   lg: "size-10 text-base",
+  xl: "size-14 text-xl",
+  "2xl": "size-24 text-3xl",
 } as const;
 
 export type AvatarSize = keyof typeof SIZE_CLASSES;
@@ -38,21 +40,41 @@ export function initialsOf(name: string): string {
 }
 
 /**
- * A person as a round badge of initials. It never loads a remote image: that is a request to
- * another server for decoration, and it makes a screenshot depend on the network.
+ * A person as a round badge of initials, or as their photo when `src` is given. It never loads a
+ * remote image on its own: that is a request to another server for decoration, and it makes a
+ * screenshot depend on the network. `src` is the app's own local path.
  */
 export function Avatar({
   name,
+  src,
   size = "md",
   ring = false,
   className,
   ...rest
 }: {
   name: string;
+  /** The person's photo, a local path. It replaces the initials and is announced as `name`. */
+  src?: string;
   size?: AvatarSize;
   /** A ring in the page colour, for a stack of overlapping avatars. */
   ring?: boolean;
-} & Omit<HTMLAttributes<HTMLSpanElement>, "children">): ReactElement {
+} & Omit<HTMLAttributes<HTMLElement>, "children">): ReactElement {
+  if (src) {
+    return (
+      <img
+        src={src}
+        alt={name}
+        title={name}
+        className={cx(
+          "shrink-0 rounded-full object-cover",
+          SIZE_CLASSES[size],
+          ring && "-ml-1.5 border-2 border-slate-50 first:ml-0",
+          className,
+        )}
+        {...rest}
+      />
+    );
+  }
   return (
     <span
       aria-hidden="true"

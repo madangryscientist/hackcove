@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Body,
   BodyStrong,
   Caption,
@@ -73,15 +74,7 @@ function CvHeader() {
           {cv.headline} · {cv.location}
         </>
       }
-      actions={
-        <img
-          src={cv.photo}
-          alt={cv.name}
-          width={96}
-          height={96}
-          className="h-24 w-24 shrink-0 rounded-full object-cover"
-        />
-      }
+      actions={<Avatar name={cv.name} src={cv.photo} size="2xl" />}
       tabs={
         <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
           {cv.links.map((link, i) => (

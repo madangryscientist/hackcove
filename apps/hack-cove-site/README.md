@@ -17,8 +17,10 @@ string and component in `src/` is listed, each with one of three calls:
 
 | Was | Now |
 | --- | --- |
-| `global.css`: `* { box-sizing }`, `body { margin; min-height }`, `html { -webkit-text-size-adjust }` | Removed: Tailwind's preflight sets all four. The built pages are byte-identical in screenshots. |
-| `Team.tsx`: a hand-written monogram `<span>` (slate circle, one initial) and the `initials()` helper in `content/site.ts` | `Avatar` from `@hackcove/ui` (coloured circle, two letters). This one changes the look: the circle is 40px, not 56px, and coloured by name. |
+| `global.css`: `* { box-sizing }`, `body { margin }`, `html { -webkit-text-size-adjust }` | Removed: Tailwind's preflight sets all three. The built pages are byte-identical in screenshots. (`body { min-height }` is not preflight's: `AppShell`'s `min-h-dvh` covers it.) |
+| `global.css`: `body { font-family: ui-sans-serif, system-ui, … }` | Removed: it repeats Tailwind's default sans stack. |
+| `Team.tsx`: a hand-written monogram `<span>` (slate circle, one initial) and the `initials()` helper in `content/site.ts` | `Avatar` from `@hackcove/ui` (coloured circle, two letters), `size="xl"` (56px) for the whole grid so a photo and a monogram never mix sizes. The look changes: coloured by name, two letters. |
+| `Team.tsx` / `Cv.tsx`: a hand-written round photo `<img className="h-14/h-24 w-… shrink-0 rounded-full object-cover">` | `Avatar` with `src`: `xl` (56px) for the team, `2xl` (96px) for the CV portrait. |
 | `Team.tsx` / `CaseStudies.tsx`: `<SectionHeading className="mb-4">` + a sibling block | `Section title="…"` (heading plus `gap-4`): pixel-identical. |
 
 ## Flagged (b)
@@ -28,13 +30,11 @@ string and component in `src/` is listed, each with one of three calls:
 | `Hero.tsx:11`, `Contact.tsx:16,25,29`, `LegalPage.tsx:15,38,42`, `Cv.tsx:59,65,90` | `className="link …"` on a bare `<a>`: Mocha's inline link look lives only in the theme CSS | (b) **1818** TextLink / `linkClass` (site needs it too: noted there) |
 | `Contact.tsx:24`, `LegalPage.tsx:37`, `Cv.tsx:58,62,86,88` | A wrapping row of links joined by a `Caption` dot or bullet (`flex flex-wrap items-center gap-x-3 text-sm`) | (b) **1895** InlineLinks |
 | `Cv.tsx:104,144,156`, `LegalPage.tsx:35` | A hairline rule under a section heading or above a footer (`border-b/t border-slate-200/70 pb-2/pt-8`) | (b) **1896** Divider and a ruled SectionHeading |
-| `Team.tsx:12`, `Cv.tsx:82` | A round photo: `<img className="h-14/h-24 w-… shrink-0 rounded-full object-cover">` | (b) **1894** Avatar: a photo (`src`) and larger sizes |
 | `Cv.tsx:15` | `<ul className="mt-2 list-disc space-y-1 pl-5">` around each CV bullet | (b) **1826** Video, BulletList and Code (site needs it too: noted there) |
 | `SiteShell.tsx:14` | The brand link's `site-header text-base font-bold tracking-tight text-slate-900` | (b) **1824** AppShell header slots (site needs it too: noted there). The `site-header` marker class is for `cv-print.css:27` and goes with **1897** |
 | `Hero.tsx:6`, `CaseStudies.tsx:14`, `Team.tsx:40`, `Contact.tsx:11`, `LegalPage.tsx:12`, `Cv.tsx:132` | `max-w-3xl` reading measure on each block; `pb-16 sm:pb-24` between home sections; `mt-12` between CV sections (`Cv.tsx:103,143,155`); `mt-16` above the legal footer (`LegalPage.tsx:35`) | (b) **1838** ProseLayout (site needs it too: noted there; **1825** is the width prop) |
 | `CaseStudies.tsx:18`, `Team.tsx:25,29`, `Contact.tsx:14,21`, `Cv.tsx:35,40,46,150` | `mt-0.5 … mt-8` on `Body`/`Caption`/`Subtitle` and on the wrappers between a title, its line and its paragraph | (b) **1899** tight stacks for text blocks |
 | `global.css:12-15` | `html { background-color: #000000 }`: the canvas the Mocha cards sit on | (b) **1823** Mocha paints its own canvas (site needs it too: noted there; its canvas is black, not Mantle) |
-| `global.css:17-20` | `body { font-family: … }` | (b) **1898** themes set the base typeface |
 | `cv-print.css:27-33` | `header:has(.site-header)` hidden and `main > div:has(> .cv)` unpadded on paper, reaching into AppShell/Container's markup | (b) **1897** AppShell and Container print chrome |
 
 ## Custom, by design (c)

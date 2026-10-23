@@ -50,4 +50,28 @@ describe("Avatar", () => {
     expect(renderToStaticMarkup(<Avatar name="a" />)).not.toContain("border-2");
     expect(renderToStaticMarkup(<Avatar name="a" ring />)).toContain("border-slate-50");
   });
+
+  it("has xl (56px) and 2xl (96px) sizes", () => {
+    expect(renderToStaticMarkup(<Avatar name="a" size="xl" />)).toContain("size-14");
+    expect(renderToStaticMarkup(<Avatar name="a" size="2xl" />)).toContain("size-24");
+  });
+
+  it("renders a round, cropped image named for the person when given a src", () => {
+    const out = renderToStaticMarkup(<Avatar name="Ada Lovelace" src="/team/ada.jpg" size="xl" />);
+    expect(out).toContain("<img ");
+    expect(out).toContain('src="/team/ada.jpg"');
+    expect(out).toContain('alt="Ada Lovelace"');
+    expect(out).toContain("rounded-full");
+    expect(out).toContain("object-cover");
+    expect(out).toContain("size-14");
+    expect(out).not.toContain("aria-hidden");
+    expect(out).not.toContain("AD");
+    expect(out).not.toContain(avatarColourClass("Ada Lovelace"));
+  });
+
+  it("keeps the overlap ring on a photo", () => {
+    expect(renderToStaticMarkup(<Avatar name="a" src="/a.jpg" ring />)).toContain(
+      "border-slate-50",
+    );
+  });
 });

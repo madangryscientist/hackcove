@@ -44,6 +44,7 @@ import {
 } from "@hackcove/ui";
 import { GalleryLayout } from "./GalleryLayout";
 import { GalleryPages } from "./GalleryPages";
+import { samplePhoto } from "./samplePhoto";
 
 const searchIcon = (
   <svg viewBox="0 0 20 20" fill="currentColor">
@@ -215,7 +216,7 @@ function GalleryButtons() {
   );
 }
 
-/** The Avatar pair: the seven identity colours at md, then a ringed stack. */
+/** The Avatar set: the seven identity colours at md, a ringed stack, then initials and a photo at xl and 2xl. */
 function GalleryAvatars() {
   const names = ["ada", "grace", "linus", "margaret", "dennis", "ken", "barbara"];
   return (
@@ -229,6 +230,12 @@ function GalleryAvatars() {
         <Avatar name="ada" size="lg" ring />
         <Avatar name="grace" size="lg" ring />
         <Avatar name="linus" size="lg" ring />
+      </div>
+      <div className="flex items-center gap-3">
+        <Avatar name="Ada Lovelace" size="xl" />
+        <Avatar name="Ada Lovelace" src={samplePhoto} size="xl" />
+        <Avatar name="Ada Lovelace" size="2xl" />
+        <Avatar name="Ada Lovelace" src={samplePhoto} size="2xl" />
       </div>
     </div>
   );

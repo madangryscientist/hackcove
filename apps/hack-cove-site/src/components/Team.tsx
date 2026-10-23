@@ -1,25 +1,10 @@
 import { Avatar, Body, Card, Section, SubsectionHeading } from "@hackcove/ui";
 import { type Person, site } from "../content/site";
 
-function TeamAvatar({ person }: { person: Person }) {
-  if (person.photo) {
-    return (
-      <img
-        src={person.photo}
-        alt={person.name}
-        width={56}
-        height={56}
-        className="h-14 w-14 shrink-0 rounded-full object-cover"
-      />
-    );
-  }
-  return <Avatar name={person.name} size="lg" />;
-}
-
 function TeamMember({ person }: { person: Person }) {
   return (
     <div className="flex items-start gap-4">
-      <TeamAvatar person={person} />
+      <Avatar name={person.name} src={person.photo} size="xl" />
       <div className="min-w-0">
         <SubsectionHeading>{person.name}</SubsectionHeading>
         <Body as="p" className="mt-0.5" color="tertiary">

@@ -13,8 +13,3 @@ html {
   /* The dark canvas the Mocha cards float on, matching the dashboard. */
   background-color: #000000;
 }
-
-body {
-  font-family:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-}
