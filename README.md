@@ -68,6 +68,10 @@ app gives a whole section one layout. The screenshot-based visual check (see
 [`CONTRIBUTING.md`](CONTRIBUTING.md#the-visual-check)) shoots desktop (1280) only; for the narrow widths, pick
 Phone (375) or Tablet (768) from Storybook's viewport toolbar.
 
+A header or subnav row that is wider than the viewport scrolls sideways, and says so: the edge with
+more content past it fades out (a mask, so it follows any theme), and the fade goes once the row is
+scrolled to that end. A row that fits is untouched. Story: `Layout/AppShell › OverflowingSubnav`.
+
 ## Dates
 
 `DatePicker` is a segmented DD/MM/YYYY field with a calendar popover; `DateField` is the field on its

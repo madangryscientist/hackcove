@@ -88,6 +88,33 @@ test("at 375px the header stays one 56px row: a long nav scrolls and does not wr
 
 const storyUrl = (id: string) => `/iframe.html?id=${id}&viewMode=story&globals=theme:default`;
 
+test("at 390px an overflowing subnav fades the side with more to scroll, and a fitting row does not", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+  await page.goto(storyUrl("layout-appshell--overflowing-subnav"));
+  const subnav = page.getByRole("banner").locator("div:has(> nav[aria-label='Personal'])");
+  await subnav.waitFor();
+  const state = () =>
+    subnav.evaluate((el) => ({
+      start: el.hasAttribute("data-more-start"),
+      end: el.hasAttribute("data-more-end"),
+      mask: getComputedStyle(el).maskImage,
+    }));
+
+  await expect.poll(state).toMatchObject({ start: false, end: true });
+  expect((await state()).mask).toContain("linear-gradient");
+
+  // Tabbing to the last link scrolls it into view: the end fade goes, the start one arrives.
+  await subnav.getByRole("link", { name: "Settings" }).focus();
+  await expect.poll(state).toMatchObject({ start: true, end: false });
+  expect((await state()).mask).toContain("linear-gradient");
+
+  // Wide enough that the row fits: no cue, no mask.
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await expect.poll(state).toEqual({ start: false, end: false, mask: "none" });
+});
+
 for (const width of widths) {
   test(`at ${width}px the form's column starts at the title's x, as the list's rows do`, async ({
     page,

@@ -8,11 +8,18 @@ import { cx } from "./cx.js";
 export function Container({
   as: Tag = "div",
   className,
+  elementRef,
   children,
 }: {
   as?: "div" | "main" | "header" | "footer" | "section" | "nav";
   className?: string;
+  /** The rendered element, for a parent that measures or scrolls it. */
+  elementRef?: (element: HTMLElement | null) => void;
   children?: ReactNode;
 }): ReactElement {
-  return <Tag className={cx("mx-auto w-full max-w-6xl px-4 sm:px-6", className)}>{children}</Tag>;
+  return (
+    <Tag ref={elementRef} className={cx("mx-auto w-full max-w-6xl px-4 sm:px-6", className)}>
+      {children}
+    </Tag>
+  );
 }

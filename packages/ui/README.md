@@ -106,7 +106,8 @@ import { AppShell, PageHeader, Section, Stack, appShellRootClass } from "@hackco
 ```
 
 - **`AppShell`** is the page frame: a sticky header that is always one `h-14` row (a nav that does
-  not fit scrolls sideways, it never wraps), an optional `subnav` second row (same rule), `main`
+  not fit scrolls sideways, it never wraps, and the edge with more to scroll to fades out until it
+  is reached), an optional `subnav` second row (same rule), `main`
   with fixed `py-8`, and an optional `footer`. `bleed` drops main's `Container` for a full-bleed
   page; the header keeps its own, so put a `Container` back around anything that should line up.
 - **`Container`** is the only place the content width (`max-w-6xl`) and side padding

@@ -49,3 +49,37 @@ export const ShortPage: S = {
     </DemoShell>
   ),
 };
+
+const personal = [
+  "Overview",
+  "Tasks",
+  "Inbox",
+  "Calendar",
+  "Budget",
+  "Habits",
+  "Notes",
+  "Reading",
+  "Travel",
+  "Health",
+  "Journal",
+  "Settings",
+];
+
+/**
+ * A subnav of twelve links, far wider than a phone. At 375 px (Phone in the viewport toolbar) the
+ * row fades out on the side that still has links; scroll it to the end and that fade goes.
+ */
+export const OverflowingSubnav: S = {
+  render: () => (
+    <DemoShell
+      subnav={
+        <NavTabs
+          label="Personal"
+          items={personal.map((label, i) => ({ label, href: `#${label}`, active: i === 0 }))}
+        />
+      }
+    >
+      <PageHeader title="Personal" subtitle="The subnav scrolls sideways." />
+    </DemoShell>
+  ),
+};
