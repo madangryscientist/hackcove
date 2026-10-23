@@ -18,7 +18,7 @@ classes; Storybook's `default` choice shows it.
 
 ```sh
 bun add @hackcove/ui @hackcove/theme-catppuccin-mocha
-# peers: react >= 18, tailwindcss ^4
+# peers: react >= 18, react-dom >= 18, tailwindcss ^4
 ```
 
 ```css
@@ -44,6 +44,9 @@ export const Example = () => (
 );
 ```
 
+`@hackcove/ui` has one runtime dependency, `react-aria-components` (with `@internationalized/date`),
+for the date picker. Any other dependency is a human decision.
+
 ## Layout
 
 `AppShell` gives every page one content edge: a sticky one-row header, then main, both inside
@@ -58,6 +61,12 @@ The Layout stories in Storybook are checked at 375, 768 and 1280 px by `e2e/layo
 page title must start at the logo's x, the same x on every `Layout/…` story (found by title, so a
 new one needs no test edit). The visual check shoots desktop (1280) only; for the narrow widths, pick
 Phone (375) or Tablet (768) from Storybook's viewport toolbar.
+
+## Dates
+
+`DatePicker` is a segmented DD/MM/YYYY field with a calendar popover; `DateField` is the field on its
+own. Values are `CalendarDate`s; `toISODate` and `fromISODate` convert to and from `"1990-05-17"`.
+See [`packages/ui/README.md`](packages/ui/README.md#dates).
 
 ## Light and dark
 

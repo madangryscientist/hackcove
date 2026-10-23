@@ -63,6 +63,9 @@
 .thrifty-paper .text-slate-400 {
   color: #6b6259; /* ink-mute — Thrifty's lightest text */
 }
+.thrifty-paper .text-slate-300 {
+  color: rgba(107, 98, 89, 0.5); /* ink-mute/50 — dimmed (days outside the month) */
+}
 .thrifty-paper .placeholder\:text-slate-400::placeholder {
   color: rgba(107, 98, 89, 0.7); /* ink-mute/70 */
 }

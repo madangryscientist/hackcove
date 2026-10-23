@@ -63,6 +63,9 @@
 .dark .text-slate-400 {
   color: #9399b2; /* overlay2 — legible muted/headers */
 }
+.dark .text-slate-300 {
+  color: #6c7086; /* overlay0 — dimmed (days outside the month) */
+}
 .dark .placeholder\:text-slate-400::placeholder {
   color: #7f849c; /* overlay1 */
 }

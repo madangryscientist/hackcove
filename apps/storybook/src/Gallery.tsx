@@ -12,6 +12,8 @@ import {
   CopyButton,
   CopyLine,
   Checkbox,
+  DateField,
+  DatePicker,
   Dialog,
   Display,
   Empty,
@@ -19,6 +21,7 @@ import {
   Field,
   FieldDialog,
   FilterGroup,
+  fromISODate,
   IconButton,
   Input,
   Kbd,
@@ -294,6 +297,8 @@ export function Gallery() {
           <option value={1}>★ (1)</option>
         </Select>
         <Checkbox label="Open now" defaultChecked />
+        <DatePicker label="Date of birth" defaultValue={fromISODate("1990-05-17")} />
+        <DateField label="Visited on" description="DD/MM/YYYY" />
       </div>
 
       <Breadcrumbs crumbs={["Org", "Project", "Build", "Snapshot"]} />

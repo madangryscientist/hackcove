@@ -40,7 +40,7 @@ Write each brief with these three headings, because the builder's launch prompt 
 
 | Project | Path | What it is |
 | --- | --- | --- |
-| `ui` | `packages/ui` | `@hackcove/ui`: the components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, tailwindcss v4. No theme CSS. |
+| `ui` | `packages/ui` | `@hackcove/ui`: the components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, react-dom, tailwindcss v4; one runtime dependency, react-aria-components (the date picker). No theme CSS. |
 | `theme-catppuccin-mocha` | `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha`: one `theme.css`, shipped as-is. Dark; scope `.dark`. |
 | `theme-thrifty-paper` | `themes/thrifty-paper` | `@hackcove/theme-thrifty-paper`: one `theme.css`, shipped as-is. Light (Thrifty's cream paper); scope `.thrifty-paper`. |
 | `storybook` | `apps/storybook` | Storybook for the components; a toolbar switcher lists every `themes/*` folder. Its `e2e/` is the Playwright layer (`test:e2e`). Private. |
@@ -179,8 +179,11 @@ nothing).
    `@hackcove/theme-<folder>`, exports + `files` = `theme.css` only, rules scoped under the
    theme's scope class, no Tailwind import, remaps every palette utility; a dark theme also declares `@custom-variant dark`).
    The scope class is read from `theme.css`, never listed. Do not add a theme list anywhere.
-3. **Packages stay dependency-free at runtime.** `@hackcove/ui` has only peers (react, tailwindcss
-   v4); a theme has only the tailwindcss peer. A new dependency is a human decision.
+3. **Packages stay (nearly) dependency-free at runtime.** `@hackcove/ui` has one approved runtime
+   dependency, `react-aria-components`, for the date picker (with `@internationalized/date`, whose
+   `CalendarDate` is the picker's value type and which RAC already brings in); its peers are react,
+   react-dom and tailwindcss v4. A theme has only the tailwindcss peer. Any other dependency is a
+   human decision.
 4. **`packages/ui` source imports use `.js` specifiers** (`./ui.js`, resolved to the `.tsx`). A
    `.tsx` specifier is emitted into the `.d.ts` unchanged and points at a file `dist` does not
    have, which silently breaks consumers' types.
