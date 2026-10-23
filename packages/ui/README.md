@@ -40,7 +40,7 @@ export const Example = () => (
 ## What is exported
 
 - Primitives: `Card`, `EpicHeader`, `Empty`, `PageTitle` (deprecated: use `PageHeader`), `Pill`, `groupByEpic`, `Markdown`.
-- Layout (see Layout): `AppShell`, `appShellRootClass`, `Container`, `PageHeader`, `Stack`, `Section`.
+- Layout (see Layout): `AppShell`, `appShellRootClass`, `Container`, `PageHeader`, `Stack`, `Section`, and the page layouts `ListLayout`, `DetailLayout`, `FormLayout`, `CardGrid`, `SidebarLayout`, `FullBleedLayout`, `CenteredLayout`.
 - Typography roles (each pins size + weight, takes a `color` and an `as`): `Display`, `Lead`,
   `PageHeading`, `SectionHeading`, `SubsectionHeading`, `ModalHeading`, `Subtitle`, `Overline`,
   `Body`, `BodyStrong`, `Caption`.
@@ -119,6 +119,40 @@ import { AppShell, PageHeader, Section, Stack, appShellRootClass } from "@hackco
   default) between blocks, `lg` (`gap-8`) between groups. Use it instead of `space-y-*`.
   **`Section`** is a `<section>` Stack (`sm` by default) with an optional `SectionHeading` `title`
   and `actions` beside it.
+
+### Page layouts
+
+Small compositions of the above: they take slots, own no data, and set no page width or outer
+padding. Each takes the `PageHeader` props (`title`, `subtitle`, `actions`, `breadcrumbs`, `tabs`)
+except the last four.
+
+- **`ListLayout`**: use this when a page is a filterable list. `filters` sits under the header;
+  `children` is the list, replaced by `empty` when `isEmpty`.
+- **`DetailLayout`**: use this when a page is one thing with facts beside it. `children` take two
+  thirds from `lg` and `aside` one third; below `lg` the aside stacks under the main column.
+- **`FormLayout`**: use this for a create or edit page. A `max-w-3xl` `<form>` that starts at the
+  Container's left edge (it is not re-centred, so the title does not jump), with an `actions` row at
+  the end. Other props (`onSubmit`, `action`) go on the `<form>`.
+- **`CardGrid`**: use this for stat tiles or a gallery of cards. `columns` is `2`, `3` (default) or
+  `4`: one column on a phone, two from `sm`, `columns` from `lg`.
+- **`SidebarLayout`**: use this when a `rail` of navigation sits beside the content. Render it in
+  `<AppShell bleed>`: it fills the height under the header with no header height written down
+  (`AppShell`'s main is a flex column). The rail is `md:w-60` and stacks above the canvas below `md`;
+  the canvas keeps the Container's padding.
+- **`FullBleedLayout`**: use this for a viewer that needs the whole width. Render it in
+  `<AppShell bleed>`; `children` fill the width, and an optional `panel` takes `lg:w-72` on the
+  right and stacks below under `lg`.
+- **`CenteredLayout`**: use this for sign-in, landing, not-found and error pages. A `max-w-md` card
+  centred at a fixed offset from the top; the one layout that does not share the left edge.
+
+```tsx
+<AppShell header={header}>
+  <ListLayout title="Quotes" actions={<Button>New</Button>} filters={<FilterGroup …/>}
+    isEmpty={quotes.length === 0} empty={<Empty>No quotes yet.</Empty>}>
+    {quotes.map(…)}
+  </ListLayout>
+</AppShell>
+```
 
 ## Light and dark
 

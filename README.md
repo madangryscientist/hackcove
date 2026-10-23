@@ -59,7 +59,9 @@ between blocks, `lg` between groups). See
 
 The Layout stories in Storybook are checked at 375, 768 and 1280 px by `e2e/layout.spec.ts`: the
 page title must start at the logo's x, the same x on every `Layout/…` story (found by title, so a
-new one needs no test edit). The visual check shoots desktop (1280) only; for the narrow widths, pick
+new one needs no test edit). `CenteredLayout`, `SidebarLayout` and `FullBleedLayout` are the
+exceptions (a narrow card, a rail beside the canvas, no page padding) and are asserted on their own
+terms in the same file. The visual check shoots desktop (1280) only; for the narrow widths, pick
 Phone (375) or Tablet (768) from Storybook's viewport toolbar.
 
 ## Dates

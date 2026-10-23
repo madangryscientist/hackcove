@@ -14,7 +14,8 @@ const ROW = "flex items-center gap-4 overflow-x-auto whitespace-nowrap *:shrink-
 /**
  * The page frame: a sticky one-row header, an optional second `subnav` row, the main area and an
  * optional footer. Header, main and footer each sit in a `Container`, so pages never set their own
- * width or padding. `bleed` drops main's Container (the header keeps its own).
+ * width or padding. `bleed` drops main's Container (the header keeps its own). Main is a flex
+ * column, so a full-height child (`SidebarLayout`) is `flex-1 min-h-0` and needs no header height.
  */
 export function AppShell({
   header,
@@ -38,7 +39,7 @@ export function AppShell({
         <Container className={cx(ROW, "h-14")}>{header}</Container>
         {subnav && <Container className={cx(ROW, "h-12")}>{subnav}</Container>}
       </header>
-      <main className="flex-1">
+      <main className="flex flex-1 flex-col">
         {bleed ? children : <Container className="py-8">{children}</Container>}
       </main>
       {footer && (

@@ -2,7 +2,7 @@ import type { ReactElement, ReactNode } from "react";
 import { cx } from "./cx.js";
 import { PageHeading, Subtitle } from "./typography.js";
 
-type PageHeaderProps = {
+export type PageHeaderProps = {
   /** A `Breadcrumbs` above the title. */
   breadcrumbs?: ReactNode;
   title: ReactNode;

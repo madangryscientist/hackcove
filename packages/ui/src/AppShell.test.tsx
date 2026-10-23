@@ -17,7 +17,7 @@ describe("AppShell", () => {
   it("puts main in a Container with fixed vertical padding", () => {
     const out = renderToStaticMarkup(<AppShell header="h">page</AppShell>);
     expect(out).toContain(
-      `<main class="flex-1"><div class="mx-auto w-full ${EDGE} py-8">page</div></main>`,
+      `<main class="flex flex-1 flex-col"><div class="mx-auto w-full ${EDGE} py-8">page</div></main>`,
     );
   });
 
@@ -27,7 +27,7 @@ describe("AppShell", () => {
         page
       </AppShell>,
     );
-    expect(out).toContain('<main class="flex-1">page</main>');
+    expect(out).toContain('<main class="flex flex-1 flex-col">page</main>');
     expect(out).toContain(EDGE);
   });
 

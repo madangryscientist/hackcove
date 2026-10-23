@@ -43,6 +43,7 @@ import {
   ToggleChip,
 } from "@hackcove/ui";
 import { GalleryLayout } from "./GalleryLayout";
+import { GalleryPages } from "./GalleryPages";
 
 const searchIcon = (
   <svg viewBox="0 0 20 20" fill="currentColor">
@@ -314,6 +315,8 @@ export function Gallery() {
       <GalleryDialogs />
 
       <GalleryLayout />
+
+      <GalleryPages />
 
       <Empty>nothing here yet</Empty>
     </div>
