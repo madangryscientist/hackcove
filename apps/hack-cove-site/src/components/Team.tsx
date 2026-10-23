@@ -1,7 +1,7 @@
-import { Body, Card, SectionHeading, SubsectionHeading } from "@hackcove/ui";
-import { initials, type Person, site } from "../content/site";
+import { Avatar, Body, Card, Section, SubsectionHeading } from "@hackcove/ui";
+import { type Person, site } from "../content/site";
 
-function Avatar({ person }: { person: Person }) {
+function TeamAvatar({ person }: { person: Person }) {
   if (person.photo) {
     return (
       <img
@@ -13,20 +13,13 @@ function Avatar({ person }: { person: Person }) {
       />
     );
   }
-  return (
-    <span
-      aria-hidden="true"
-      className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-600"
-    >
-      {initials(person.name)}
-    </span>
-  );
+  return <Avatar name={person.name} size="lg" />;
 }
 
 function TeamMember({ person }: { person: Person }) {
   return (
     <div className="flex items-start gap-4">
-      <Avatar person={person} />
+      <TeamAvatar person={person} />
       <div className="min-w-0">
         <SubsectionHeading>{person.name}</SubsectionHeading>
         <Body as="p" className="mt-0.5" color="tertiary">
@@ -44,8 +37,7 @@ function TeamMember({ person }: { person: Person }) {
 
 export function Team() {
   return (
-    <section className="max-w-3xl pb-16 sm:pb-24">
-      <SectionHeading className="mb-4">The team</SectionHeading>
+    <Section title="The team" className="max-w-3xl pb-16 sm:pb-24">
       <Card>
         <div className="grid gap-8 sm:grid-cols-2">
           {site.team.map((person) => (
@@ -53,6 +45,6 @@ export function Team() {
           ))}
         </div>
       </Card>
-    </section>
+    </Section>
   );
 }

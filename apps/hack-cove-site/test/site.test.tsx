@@ -4,7 +4,7 @@ import { CaseStudies } from "../src/components/CaseStudies";
 import { Contact } from "../src/components/Contact";
 import { Hero } from "../src/components/Hero";
 import { Team } from "../src/components/Team";
-import { initials, type Person, site } from "../src/content/site";
+import { type Person, site } from "../src/content/site";
 
 /* The point of these tests is that the words and the people survive rendering as
    REAL HTML — the reason the site is Astro-with-islands rather than an SPA. They
@@ -23,11 +23,6 @@ describe("content", () => {
       "Erin — Design Engineer",
       "Silindile — Client Service agent",
     ]);
-  });
-
-  test("initials makes a monogram from a first name", () => {
-    expect(initials("Erin")).toBe("E");
-    expect(initials("erin langner")).toBe("EL");
   });
 });
 
@@ -50,7 +45,7 @@ describe("static HTML", () => {
   test("a person with no photo gets a monogram, not a broken image", () => {
     const html = renderToStaticMarkup(<Team />);
     expect(html).not.toContain("<img");
-    expect(html).toContain(">J</span>");
+    expect(html).toContain(">JA</span>");
   });
 
   test("a person's bio renders when one is filled in", () => {

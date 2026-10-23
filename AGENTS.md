@@ -24,6 +24,8 @@ class**: the class of the first top-level `.<class> { … }` rule in its `theme.
 `.dark`, thrifty-paper's `.thrifty-paper`). Storybook and the e2e read it from there. With no theme
 at all, the look is the components' default Tailwind classes (Storybook's `default`).
 
+**The site composes ui components.** `apps/hack-cove-site` is a composition of `@hackcove/ui` and a theme and nothing of its own; a custom style or component there is a flag, not a fix. Put it on the list in the site's `README.md` (a swap, a hackcove ticket, or "Custom, by design" with the reason), and do not add the style to the site.
+
 ## The gate
 
 Everything runs through Nx (Bun, strict tsconfig, oxlint + oxfmt, Vitest). A change is green when

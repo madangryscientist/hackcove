@@ -48,13 +48,3 @@ export const site = {
   /** Out of scope for now (ticket 164); the team page renders nothing when empty. */
   caseStudies,
 };
-
-/** The monogram shown when a person has no photo. */
-export function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part.charAt(0).toUpperCase())
-    .join("");
-}

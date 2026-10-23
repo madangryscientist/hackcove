@@ -1,4 +1,4 @@
-import { Body, Card, SectionHeading, SubsectionHeading } from "@hackcove/ui";
+import { Body, Card, Section, SubsectionHeading } from "@hackcove/ui";
 import { site } from "../content/site";
 
 /**
@@ -11,18 +11,15 @@ export function CaseStudies() {
   if (site.caseStudies.length === 0) return null;
 
   return (
-    <section className="max-w-3xl pb-16 sm:pb-24">
-      <SectionHeading className="mb-4">Work</SectionHeading>
-      <div className="grid gap-4">
-        {site.caseStudies.map((study) => (
-          <Card key={study.slug}>
-            <SubsectionHeading>{study.title}</SubsectionHeading>
-            <Body as="p" className="mt-1">
-              {study.summary}
-            </Body>
-          </Card>
-        ))}
-      </div>
-    </section>
+    <Section title="Work" className="max-w-3xl pb-16 sm:pb-24">
+      {site.caseStudies.map((study) => (
+        <Card key={study.slug}>
+          <SubsectionHeading>{study.title}</SubsectionHeading>
+          <Body as="p" className="mt-1">
+            {study.summary}
+          </Body>
+        </Card>
+      ))}
+    </Section>
   );
 }
