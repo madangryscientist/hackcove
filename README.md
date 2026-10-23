@@ -44,6 +44,13 @@ export const Example = () => (
 );
 ```
 
+## Light and dark
+
+`@hackcove/ui` ships the switch for the `.dark` class: inline `colourSchemeScript` in `<head>` (it
+applies the stored choice, else the system preference, before first paint), drop the hard-coded
+`class="dark"` from `<html>`, and place `<ColourSchemeToggle />` in the header. Two states, no
+provider. See [`packages/ui/README.md`](packages/ui/README.md#light-and-dark).
+
 ## How to add a theme
 
 A theme is a folder. Copy one, rename it, change the CSS:

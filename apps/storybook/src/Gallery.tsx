@@ -8,6 +8,7 @@ import {
   Callout,
   Caption,
   Card,
+  ColourSchemeToggle,
   CopyButton,
   CopyLine,
   Checkbox,
@@ -192,7 +193,7 @@ function GalleryCopy() {
   );
 }
 
-/** The Button row of the Gallery: the three variants, then the blocked and busy states, then an IconButton. */
+/** The Button row of the Gallery: the three variants, then the blocked and busy states, then an IconButton and the ColourSchemeToggle. */
 function GalleryButtons() {
   return (
     <div className="flex flex-wrap gap-2">
@@ -204,6 +205,7 @@ function GalleryButtons() {
         Busy
       </Button>
       <IconButton label="Switch to dark theme">{moonIcon}</IconButton>
+      <ColourSchemeToggle />
     </div>
   );
 }

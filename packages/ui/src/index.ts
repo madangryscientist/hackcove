@@ -6,6 +6,14 @@ export { Breadcrumbs, crumbLinkClass } from "./Breadcrumbs.js";
 export { Callout, type CalloutTone } from "./Callout.js";
 export { Dialog, type DialogProps } from "./Dialog.js";
 export { IconButton } from "./IconButton.js";
+export { ColourSchemeToggle } from "./ColourSchemeToggle.js";
+export {
+  applyColourScheme,
+  colourSchemeScript,
+  readColourScheme,
+  storeColourScheme,
+  type ColourScheme,
+} from "./colourScheme.js";
 export { NavTabs, navTabClass, type NavTab } from "./NavTabs.js";
 export { ToggleChip } from "./ToggleChip.js";
 export { FilterGroup } from "./FilterGroup.js";

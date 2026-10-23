@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Overline } from "@hackcove/ui";
 import { NONE, ThemeFrame, themeNames } from "../.storybook/themes";
 import { Gallery as GalleryView } from "./Gallery";
+import { resetColourScheme } from "./resetColourScheme";
 
 const meta: Meta = { title: "Overview" };
 export default meta;
@@ -9,6 +10,7 @@ type S = StoryObj;
 
 /** Follows the toolbar switcher. */
 export const Gallery: S = {
+  beforeEach: resetColourScheme,
   render: () => <GalleryView />,
 };
 
@@ -18,6 +20,7 @@ export const Gallery: S = {
  */
 export const AllThemes: S = {
   tags: ["pixelslash-once"],
+  beforeEach: resetColourScheme,
   parameters: { allThemes: true },
   render: () => (
     <div className="grid grid-cols-[repeat(auto-fit,minmax(26rem,1fr))]">
