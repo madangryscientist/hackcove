@@ -2,7 +2,7 @@
 
 ### 🩹 Fixes
 
-- **ob 1800:** thrifty-paper: meet WCAG contrast on the 0.2.3 date controls ([e3c8878](https://github.com/madangryscientist/hackcove/commit/e3c8878))
+- **ob 1800:** thrifty-paper: meet WCAG contrast on the 0.2.3 date controls ([890ae03](https://github.com/madangryscientist/hackcove/commit/890ae03))
 
 ### ❤️ Thank You
 
@@ -12,8 +12,8 @@
 
 ### 🚀 Features
 
-- **ob 1778:** DatePicker and DateField on react-aria-components ([8e01b1b](https://github.com/madangryscientist/hackcove/commit/8e01b1b))
-- **ob 1765:** Avatar, initialsOf and avatarColourClass in @hackcove/ui ([0dd46fb](https://github.com/madangryscientist/hackcove/commit/0dd46fb))
+- **ob 1778:** DatePicker and DateField on react-aria-components ([7e3f25e](https://github.com/madangryscientist/hackcove/commit/7e3f25e))
+- **ob 1765:** Avatar, initialsOf and avatarColourClass in @hackcove/ui ([c8ec5ec](https://github.com/madangryscientist/hackcove/commit/c8ec5ec))
 
 ### ❤️ Thank You
 
@@ -23,10 +23,10 @@
 
 ### 🚀 Features
 
-- **ob 1780:** Page layouts: List, Detail, Form, CardGrid, Sidebar, FullBleed, Centered ([6984348](https://github.com/madangryscientist/hackcove/commit/6984348))
-- **ob 1778:** DatePicker and DateField on react-aria-components ([8e01b1b](https://github.com/madangryscientist/hackcove/commit/8e01b1b))
-- **ob 1779:** Layout foundation: AppShell, Container, PageHeader, Stack + no-jump e2e ([c119743](https://github.com/madangryscientist/hackcove/commit/c119743))
-- **ob 1777:** ColourSchemeToggle and a pre-paint colourSchemeScript in @hackcove/ui ([a608b23](https://github.com/madangryscientist/hackcove/commit/a608b23))
+- **ob 1780:** Page layouts: List, Detail, Form, CardGrid, Sidebar, FullBleed, Centered ([76dae79](https://github.com/madangryscientist/hackcove/commit/76dae79))
+- **ob 1778:** DatePicker and DateField on react-aria-components ([7e3f25e](https://github.com/madangryscientist/hackcove/commit/7e3f25e))
+- **ob 1779:** Layout foundation: AppShell, Container, PageHeader, Stack + no-jump e2e ([7d08661](https://github.com/madangryscientist/hackcove/commit/7d08661))
+- **ob 1777:** ColourSchemeToggle and a pre-paint colourSchemeScript in @hackcove/ui ([dd8294b](https://github.com/madangryscientist/hackcove/commit/dd8294b))
 
 ### ❤️ Thank You
 
@@ -36,7 +36,7 @@
 
 ### 🚀 Features
 
-- **ob 1765:** Avatar, initialsOf and avatarColourClass in @hackcove/ui ([0dd46fb](https://github.com/madangryscientist/hackcove/commit/0dd46fb))
+- **ob 1765:** Avatar, initialsOf and avatarColourClass in @hackcove/ui ([c8ec5ec](https://github.com/madangryscientist/hackcove/commit/c8ec5ec))
 
 ### ❤️ Thank You
 
@@ -46,9 +46,9 @@
 
 ### 🚀 Features
 
-- **ob 1748:** Dialog and FieldDialog on the native <dialog> in @hackcove/ui ([1b438ef](https://github.com/madangryscientist/hackcove/commit/1b438ef))
-- **ob 1603:** the @hackcove/ui palette, enforced from both sides ([c8ee7a6](https://github.com/madangryscientist/hackcove/commit/c8ee7a6))
-- **ob 1591:** thrifty-paper light theme; each theme scopes under its own class ([909c5d6](https://github.com/madangryscientist/hackcove/commit/909c5d6))
+- **ob 1748:** Dialog and FieldDialog on the native <dialog> in @hackcove/ui ([7cfd80f](https://github.com/madangryscientist/hackcove/commit/7cfd80f))
+- **ob 1603:** the @hackcove/ui palette, enforced from both sides ([3463adf](https://github.com/madangryscientist/hackcove/commit/3463adf))
+- **ob 1591:** thrifty-paper light theme; each theme scopes under its own class ([4f63523](https://github.com/madangryscientist/hackcove/commit/4f63523))
 
 ### ❤️ Thank You
 
@@ -58,15 +58,15 @@
 
 ### 🚀 Features
 
-- **ob 1748:** Dialog and FieldDialog on the native <dialog> in @hackcove/ui ([1b438ef](https://github.com/madangryscientist/hackcove/commit/1b438ef))
-- **ob 1747:** Button blocked and busy states (disabledReason, busy, busyLabel) ([a71a586](https://github.com/madangryscientist/hackcove/commit/a71a586))
-- **ob 1749:** CopyButton and CopyLine in @hackcove/ui ([585be89](https://github.com/madangryscientist/hackcove/commit/585be89))
-- **ob 1751:** KeyValueList, KeyValue and Kbd in @hackcove/ui ([a62724e](https://github.com/madangryscientist/hackcove/commit/a62724e))
-- **ob 1750:** Breadcrumbs and crumbLinkClass in @hackcove/ui ([3ba7b1d](https://github.com/madangryscientist/hackcove/commit/3ba7b1d))
+- **ob 1748:** Dialog and FieldDialog on the native <dialog> in @hackcove/ui ([7cfd80f](https://github.com/madangryscientist/hackcove/commit/7cfd80f))
+- **ob 1747:** Button blocked and busy states (disabledReason, busy, busyLabel) ([56c7d18](https://github.com/madangryscientist/hackcove/commit/56c7d18))
+- **ob 1749:** CopyButton and CopyLine in @hackcove/ui ([5107826](https://github.com/madangryscientist/hackcove/commit/5107826))
+- **ob 1751:** KeyValueList, KeyValue and Kbd in @hackcove/ui ([9238d2a](https://github.com/madangryscientist/hackcove/commit/9238d2a))
+- **ob 1750:** Breadcrumbs and crumbLinkClass in @hackcove/ui ([cca8fa2](https://github.com/madangryscientist/hackcove/commit/cca8fa2))
 
 ### 🩹 Fixes
 
-- **ob 1764:** dim plain-text parent breadcrumbs ([b5d6bf9](https://github.com/madangryscientist/hackcove/commit/b5d6bf9))
+- **ob 1764:** dim plain-text parent breadcrumbs ([0aa9c07](https://github.com/madangryscientist/hackcove/commit/0aa9c07))
 
 ### ❤️ Thank You
 
