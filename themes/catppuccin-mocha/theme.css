@@ -23,6 +23,7 @@
 
 .dark {
   color-scheme: dark;
+  background-color: #181825; /* mantle — the canvas the base-coloured cards lift off */
 }
 
 /* Surfaces — cards (base) lift off the mantle canvas. */

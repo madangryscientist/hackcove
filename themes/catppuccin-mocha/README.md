@@ -22,8 +22,9 @@ In your global stylesheet, after Tailwind:
 @import "@hackcove/theme-catppuccin-mocha/theme.css";
 ```
 
-Put `class="dark"` on `<html>`. The rules are unlayered, so they override Tailwind's layered
-utilities.
+Put `class="dark"` on `<html>`. The scope paints the mantle canvas (`#181825`), so the base-coloured
+cards lift off it and the app needs no page-background rule of its own. The rules are unlayered, so
+they override Tailwind's layered utilities.
 
 ## Palette and attribution
 

@@ -6,8 +6,8 @@
 @source "../../../packages/ui/palette.json";
 
 /* The frame's page colour. Layered, so a theme's own unlayered scope rule (thrifty-paper's
-   cream canvas) wins; a theme that paints no canvas (Mocha) gets the browser's canvas for
-   its color-scheme, which is dark under `.dark`. */
+   cream canvas, Mocha's mantle) wins; a theme that paints no canvas gets the browser's canvas
+   for its color-scheme. */
 @layer base {
   [data-theme] {
     min-height: 100vh;
