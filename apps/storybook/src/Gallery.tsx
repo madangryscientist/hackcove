@@ -39,6 +39,7 @@ import {
   Textarea,
   ToggleChip,
 } from "@hackcove/ui";
+import { GalleryBars } from "./GalleryBars";
 import { GalleryButtons } from "./GalleryButtons";
 import { GalleryLayout } from "./GalleryLayout";
 import { GalleryPills } from "./GalleryPills";
@@ -217,6 +218,8 @@ export function Gallery() {
       <GalleryText />
 
       <GalleryPills />
+
+      <GalleryBars />
 
       <Card title="Section" count={3}>
         <div className="flex flex-col gap-4">
