@@ -8,9 +8,3 @@
 /* Tailwind skips node_modules, so tell it to scan the components' build for the
    utilities they use — otherwise their classes are absent from the bundle. */
 @source "../../node_modules/@hackcove/ui/dist";
-
-/* `html.dark`, not `html`: the theme's `.dark` scope now paints Mantle and would outrank a bare `html`. */
-html.dark {
-  /* The dark canvas the Mocha cards float on, matching the dashboard. */
-  background-color: #000000;
-}

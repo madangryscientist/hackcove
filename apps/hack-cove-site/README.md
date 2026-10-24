@@ -38,7 +38,6 @@ string and component in `src/` is listed, each with one of three calls:
 | --- | --- | --- |
 | `Projects.tsx`, `Team.tsx`, `Cv.tsx`, `Hero.tsx` | `mt-0.5 … mt-8` on `Body`/`Caption`/`Subtitle`/`Display`/`Lead` where the step is not uniform in its block: a team member's name, role and bio (2px then 8px), a project card's name row, summary, list and links (8, 12, 16px), the hero (16, 24, 32px), a CV job (8, 12px). `xs` is 8px and one gap fits a whole Stack, so none of these fit; a 2px and a 4px step (`mt-0.5`, `mt-1`) would need a `2xs` | (b) **1899** (the `xs` gap landed; a `2xs` waits for a consumer that needs a whole Stack at 2–4px) |
 | `Projects.tsx`, `Team.tsx`, `Hero.tsx`, `Cv.tsx` | `pb-16 sm:pb-24` between home sections (a responsive step no `Stack` gap has); `mt-12` between CV sections and the CV's one wrapper `<div>` that lets them keep it (no gap is 48px) | (b) a larger, responsive section gap on `Stack` |
-| `global.css:12-15` | `html { background-color: #000000 }`: the canvas the Mocha cards sit on | (b) **1823** Mocha paints its own canvas (site needs it too: noted there; its canvas is black, not Mantle) |
 
 ## Custom, by design (c)
 
