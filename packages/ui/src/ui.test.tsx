@@ -28,6 +28,19 @@ describe("Pill", () => {
     );
   });
 
+  it("takes the violet and sky tones", () => {
+    expect(renderToStaticMarkup(<Pill tone="violet">x</Pill>)).toContain(
+      "bg-violet-50 text-violet-700",
+    );
+    expect(renderToStaticMarkup(<Pill tone="sky">x</Pill>)).toContain("bg-sky-50 text-sky-700");
+  });
+
+  it("swaps rounded-md for rounded-full when round is on", () => {
+    const markup = renderToStaticMarkup(<Pill round>x</Pill>);
+    expect(markup).toContain("rounded-full");
+    expect(markup).not.toContain("rounded-md");
+  });
+
   it("adds a leading dot in the text colour when dot is on", () => {
     const markup = renderToStaticMarkup(
       <Pill tone="amber" dot>

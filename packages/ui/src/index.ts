@@ -1,4 +1,5 @@
-export { Card, EpicHeader, Empty, PageTitle, Pill, groupByEpic } from "./ui.js";
+export { Card, EpicHeader, Empty, PageTitle, Pill, groupByEpic, type PillTone } from "./ui.js";
+export { Badge } from "./Badge.js";
 export { Markdown } from "./Markdown.js";
 export { AppShell, appShellRootClass } from "./AppShell.js";
 export { Container } from "./Container.js";

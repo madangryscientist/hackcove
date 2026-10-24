@@ -49,15 +49,22 @@ export function EpicHeader({ color, label }: { color: string; label: string }) {
   );
 }
 
-/** A small tinted label; `dot` adds a leading dot in the pill's own text colour. */
+export type PillTone = "slate" | "amber" | "emerald" | "blue" | "red" | "violet" | "sky";
+
+/**
+ * A small tinted label; `dot` adds a leading dot in the pill's own text colour, `round` swaps the
+ * rounded-md corners for a full pill shape.
+ */
 export function Pill({
   children,
   tone = "slate",
   dot = false,
+  round = false,
 }: {
   children: ReactNode;
-  tone?: "slate" | "amber" | "emerald" | "blue" | "red";
+  tone?: PillTone;
   dot?: boolean;
+  round?: boolean;
 }) {
   const tones: Record<string, string> = {
     slate: "bg-slate-100 text-slate-600",
@@ -65,11 +72,14 @@ export function Pill({
     emerald: "bg-emerald-50 text-emerald-700",
     blue: "bg-blue-50 text-blue-700",
     red: "bg-red-50 text-red-900",
+    violet: "bg-violet-50 text-violet-700",
+    sky: "bg-sky-50 text-sky-700",
   };
   return (
     <span
       className={cx(
-        "rounded-md px-1.5 py-0.5 text-xs font-medium",
+        round ? "rounded-full" : "rounded-md",
+        "px-1.5 py-0.5 text-xs font-medium",
         tones[tone],
         dot && "inline-flex items-center gap-1",
       )}

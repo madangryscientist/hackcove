@@ -13,6 +13,33 @@ export const Pills: S = {
       <Pill tone="emerald">emerald</Pill>
       <Pill tone="blue">blue</Pill>
       <Pill tone="red">red</Pill>
+      <Pill tone="violet">violet</Pill>
+      <Pill tone="sky">sky</Pill>
+    </div>
+  ),
+};
+export const PillsRound: S = {
+  render: () => (
+    <div className="flex gap-2">
+      <Pill round>slate</Pill>
+      <Pill tone="amber" round>
+        amber
+      </Pill>
+      <Pill tone="emerald" round>
+        emerald
+      </Pill>
+      <Pill tone="blue" round>
+        blue
+      </Pill>
+      <Pill tone="red" round>
+        red
+      </Pill>
+      <Pill tone="violet" round>
+        violet
+      </Pill>
+      <Pill tone="sky" round dot>
+        sky
+      </Pill>
     </div>
   ),
 };
@@ -31,6 +58,12 @@ export const PillsWithDot: S = {
       </Pill>
       <Pill tone="red" dot>
         red
+      </Pill>
+      <Pill tone="violet" dot>
+        violet
+      </Pill>
+      <Pill tone="sky" dot>
+        sky
       </Pill>
     </div>
   ),

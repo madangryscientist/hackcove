@@ -203,6 +203,9 @@
 .dark .bg-violet-50 {
   background-color: rgba(203, 166, 247, 0.14); /* mauve tint */
 }
+.dark .bg-sky-50 {
+  background-color: rgba(137, 220, 235, 0.13); /* sky tint */
+}
 .dark .text-emerald-700,
 .dark .text-emerald-800 {
   color: #a6e3a1; /* green */
@@ -226,6 +229,9 @@
 .dark .text-violet-600,
 .dark .text-violet-700 {
   color: #cba6f7; /* mauve */
+}
+.dark .text-sky-700 {
+  color: #89dceb; /* sky */
 }
 .dark .border-emerald-200,
 .dark .border-emerald-300 {

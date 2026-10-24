@@ -32,7 +32,6 @@ import {
   Overline,
   PageHeading,
   PageTitle,
-  Pill,
   Select,
   SectionHeading,
   SubsectionHeading,
@@ -42,6 +41,7 @@ import {
 } from "@hackcove/ui";
 import { GalleryButtons } from "./GalleryButtons";
 import { GalleryLayout } from "./GalleryLayout";
+import { GalleryPills } from "./GalleryPills";
 import { GalleryText } from "./GalleryText";
 import { GalleryLinks } from "./GalleryLinks";
 import { GalleryPages } from "./GalleryPages";
@@ -99,27 +99,6 @@ function GalleryChips() {
         Furniture
       </ToggleChip>
     </FilterGroup>
-  );
-}
-
-/** The dot Pill row of the Gallery: the five tones, each with a leading dot. */
-function GalleryPillsWithDot() {
-  return (
-    <div className="flex flex-wrap gap-2">
-      <Pill dot>slate</Pill>
-      <Pill tone="amber" dot>
-        amber
-      </Pill>
-      <Pill tone="emerald" dot>
-        emerald
-      </Pill>
-      <Pill tone="blue" dot>
-        blue
-      </Pill>
-      <Pill tone="red" dot>
-        red
-      </Pill>
-    </div>
   );
 }
 
@@ -237,15 +216,7 @@ export function Gallery() {
 
       <GalleryText />
 
-      <div className="flex flex-wrap gap-2">
-        <Pill>slate</Pill>
-        <Pill tone="amber">amber</Pill>
-        <Pill tone="emerald">emerald</Pill>
-        <Pill tone="blue">blue</Pill>
-        <Pill tone="red">red</Pill>
-      </div>
-
-      <GalleryPillsWithDot />
+      <GalleryPills />
 
       <Card title="Section" count={3}>
         <div className="flex flex-col gap-4">

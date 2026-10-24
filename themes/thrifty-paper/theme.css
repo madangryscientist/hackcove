@@ -191,6 +191,9 @@
 .thrifty-paper .bg-violet-50 {
   background-color: #fdf5f0; /* accent-soft */
 }
+.thrifty-paper .bg-sky-50 {
+  background-color: #eff6fa; /* steel blue, soft */
+}
 .thrifty-paper .bg-red-50 {
   background-color: #fef2f2; /* danger-soft */
 }
@@ -214,6 +217,9 @@
 }
 .thrifty-paper .text-violet-700 {
   color: #9a3412; /* accent-hover */
+}
+.thrifty-paper .text-sky-700 {
+  color: #1e6a8f; /* steel blue */
 }
 .thrifty-paper .text-red-700,
 .thrifty-paper .text-red-800,
