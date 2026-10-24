@@ -71,7 +71,7 @@ test("at 375px the header stays one 56px row: a long nav scrolls and does not wr
   await page.goto(
     "/iframe.html?id=layout-appshell--long-page&viewMode=story&globals=theme:default",
   );
-  const row = page.getByRole("banner").locator("div:has(> a[aria-label='Hack Cove'])");
+  const row = page.getByRole("banner").locator("div:has(> nav[aria-label='Main'])");
   await row.waitFor();
   const { height, scrollWidth, clientWidth, navHeight } = await row.evaluate((el) => ({
     height: el.getBoundingClientRect().height,
@@ -140,8 +140,7 @@ for (const width of widths) {
     const railBox = await boxOf(rail, "rail");
     const titleBox = await boxOf(title, "title");
     const { root, padding } = await page.evaluate(() => {
-      const logo = document.querySelector("header a");
-      const row = logo?.parentElement;
+      const row = document.querySelector("header nav")?.parentElement;
       const box = document.querySelector("main > div")?.getBoundingClientRect();
       return {
         root: { bottom: box?.bottom ?? 0 },

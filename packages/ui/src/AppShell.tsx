@@ -49,39 +49,97 @@ function ScrollRow({ className, children }: { className: string; children: React
   );
 }
 
+/** The header row's slots in order: brand, nav, the free `children`, then controls at the end. */
+function HeaderSlots({
+  brand,
+  nav,
+  controls,
+  children,
+}: {
+  brand: ReactNode;
+  nav: ReactNode;
+  controls: ReactNode;
+  children: ReactNode;
+}): ReactElement {
+  return (
+    <>
+      {brand && (
+        <div className="flex items-center gap-2 text-base font-bold tracking-tight text-slate-900">
+          {brand}
+        </div>
+      )}
+      {nav}
+      {children}
+      {controls && <div className="ml-auto flex items-center gap-2">{controls}</div>}
+    </>
+  );
+}
+
 /**
  * The page frame: a sticky one-row header, an optional second `subnav` row, the main area and an
  * optional footer. Header, main and footer each sit in a `Container`, so pages never set their own
  * width or padding. `bleed` drops main's Container (the header keeps its own). Main is a flex
  * column, so a full-height child (`SidebarLayout`) is `flex-1 min-h-0` and needs no header height.
+ *
+ * The header row is laid out by its slots, left to right: `brand`, `nav`, then `header` (anything
+ * the slots do not cover), then `controls`, pushed to the end. An app writes no wrapper or
+ * `className` for any of them.
  */
 export function AppShell({
+  brand,
+  nav,
+  controls,
   header,
   subnav,
   footer,
   bleed = false,
+  hideChromeInPrint = false,
   children,
 }: {
-  /** The header row: logo, nav, controls. Always one `h-14` row. */
-  header: ReactNode;
+  /** The brand: a logo and a name, in the header's brand type, with the gap between them. */
+  brand?: ReactNode;
+  /** The main navigation, e.g. `NavTabs` (it is already a `<nav>`). */
+  nav?: ReactNode;
+  /** The end of the row: a picker, a theme toggle. Gap-2, vertically centred. */
+  controls?: ReactNode;
+  /** The escape hatch: a free node in the header row, after `brand` and `nav`. */
+  header?: ReactNode;
   /** A second fixed-height row under the header, e.g. `NavTabs`. */
   subnav?: ReactNode;
   footer?: ReactNode;
   /** Main without a Container, for a full-bleed layout. */
   bleed?: boolean;
+  /**
+   * Print only the page: the header and footer are hidden, and main's Container drops its padding
+   * (the page margin is then `@page`'s). Off by default, so a print is unchanged unless an app asks.
+   */
+  hideChromeInPrint?: boolean;
   children: ReactNode;
 }): ReactElement {
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white">
-        <ScrollRow className="h-14">{header}</ScrollRow>
+      <header
+        className={cx(
+          "sticky top-0 z-10 border-b border-slate-200 bg-white",
+          hideChromeInPrint && "print:hidden",
+        )}
+      >
+        <ScrollRow className="h-14">
+          <HeaderSlots brand={brand} nav={nav} controls={controls}>
+            {header}
+          </HeaderSlots>
+        </ScrollRow>
         {subnav && <ScrollRow className="h-12">{subnav}</ScrollRow>}
       </header>
       <main className="flex flex-1 flex-col">
-        {bleed ? children : <Container className="py-8">{children}</Container>}
+        {bleed ? (
+          children
+        ) : (
+          <Container className={cx("py-8", hideChromeInPrint && "print:p-0")}>{children}</Container>
+        )}
       </main>
       {footer && (
-        <footer className="border-t border-slate-200">
+        <footer className={cx("border-t border-slate-200", hideChromeInPrint && "print:hidden")}>
           <Container className="py-6 text-sm text-slate-500">{footer}</Container>
         </footer>
       )}

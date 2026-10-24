@@ -1,22 +1,30 @@
-import { AppShell, Body, Button, NavTabs, PageHeader, Section, Stack } from "@hackcove/ui";
+import {
+  AppShell,
+  Body,
+  Button,
+  ColourSchemeToggle,
+  NavTabs,
+  PageHeader,
+  Section,
+  Stack,
+} from "@hackcove/ui";
 
-/** AppShell (and the Container inside it), PageHeader, Section and Stack, in a box that scrolls under the sticky header. */
+/** AppShell (its brand, nav and controls slots, and the Container inside it), PageHeader, Section and Stack, in a box that scrolls under the sticky header. */
 export function GalleryLayout() {
   return (
     <div className="h-80 overflow-y-auto rounded-xl border border-slate-200">
       <AppShell
-        header={
-          <>
-            <span className="text-sm font-semibold text-slate-900">Hack Cove</span>
-            <NavTabs
-              label="Gallery shell"
-              items={[
-                { label: "Builds", href: "#builds", active: true },
-                { label: "Settings", href: "#settings" },
-              ]}
-            />
-          </>
+        brand="Hack Cove"
+        nav={
+          <NavTabs
+            label="Gallery shell"
+            items={[
+              { label: "Builds", href: "#builds", active: true },
+              { label: "Settings", href: "#settings" },
+            ]}
+          />
         }
+        controls={<ColourSchemeToggle />}
         footer="Hack Cove · MIT"
       >
         <PageHeader

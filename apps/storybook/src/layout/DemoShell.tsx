@@ -10,34 +10,40 @@ export function layoutPage(): () => void {
 
 const nav = ["Overview", "Builds", "Snapshots", "Reviews", "Projects", "Members", "Settings"];
 
-/** An app's shell: the logo, a long nav (it scrolls on a phone). Every Layout story renders inside it. */
+/** An app's shell: the brand and a long nav in their slots (it scrolls on a phone). Every Layout story renders inside it. */
 export function DemoShell({
   subnav,
+  controls,
   footer,
   bleed = false,
+  hideChromeInPrint = false,
   children,
 }: {
   subnav?: ReactNode;
+  controls?: ReactNode;
   footer?: ReactNode;
   bleed?: boolean;
+  hideChromeInPrint?: boolean;
   children: ReactNode;
 }) {
   return (
     <AppShell
-      header={
-        <>
-          <a href="#" aria-label="Hack Cove" className="text-sm font-semibold text-slate-900">
-            Hack Cove
-          </a>
-          <NavTabs
-            label="Main"
-            items={nav.map((label, index) => ({ label, href: `#${label}`, active: index === 1 }))}
-          />
-        </>
+      brand={
+        <a href="#" aria-label="Hack Cove">
+          Hack Cove
+        </a>
       }
+      nav={
+        <NavTabs
+          label="Main"
+          items={nav.map((label, index) => ({ label, href: `#${label}`, active: index === 1 }))}
+        />
+      }
+      controls={controls}
       subnav={subnav}
       footer={footer}
       bleed={bleed}
+      hideChromeInPrint={hideChromeInPrint}
     >
       {children}
     </AppShell>

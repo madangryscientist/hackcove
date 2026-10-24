@@ -73,6 +73,11 @@ A header or subnav row that is wider than the viewport scrolls sideways, and say
 more content past it fades out (a mask, so it follows any theme), and the fade goes once the row is
 scrolled to that end. A row that fits is untouched. Story: `Layout/AppShell › OverflowingSubnav`.
 
+The header row is laid out by slots, so an app writes no wrapper or `className` there: `brand`,
+`nav` and `controls` (`header` stays as a free node). `hideChromeInPrint` is opt-in: the header and
+footer are hidden on paper and main drops its padding, so the page margin is the app's `@page`.
+Stories: `Layout/AppShell › HeaderSlots` and `HiddenInPrint`.
+
 ## Dates
 
 `DatePicker` is a segmented DD/MM/YYYY field with a calendar popover; `DateField` is the field on its

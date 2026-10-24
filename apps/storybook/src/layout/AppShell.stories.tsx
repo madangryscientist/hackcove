@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Card, NavTabs, PageHeader, Stack } from "@hackcove/ui";
+import { Body, Card, ColourSchemeToggle, NavTabs, PageHeader, Select, Stack } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 /** Every story under `Layout/` is picked up by the no-jump e2e (e2e/layout.spec.ts) at 375, 768 and 1280. */
@@ -80,6 +80,42 @@ export const OverflowingSubnav: S = {
       }
     >
       <PageHeader title="Personal" subtitle="The subnav scrolls sideways." />
+    </DemoShell>
+  ),
+};
+
+/**
+ * The three header slots, none with a wrapper or `className` from the app: `brand` is the logo and
+ * name at the brand type with the logo gap, `nav` is a `NavTabs`, and `controls` sits at the end of
+ * the row, gap-2 and vertically centred.
+ */
+export const HeaderSlots: S = {
+  render: () => (
+    <DemoShell
+      controls={
+        <>
+          <Select aria-label="Adviser" defaultValue="a">
+            <option value="a">Ada Lovelace</option>
+            <option value="b">Grace Hopper</option>
+          </Select>
+          <ColourSchemeToggle />
+        </>
+      }
+    >
+      <PageHeader title="Header slots" subtitle="Brand, nav and controls." />
+    </DemoShell>
+  ),
+};
+
+/**
+ * `hideChromeInPrint`: on screen nothing changes. On paper the header and footer are gone and main
+ * has no padding, so the page margin is `@page`'s. Try it with Print preview, or emulate print media.
+ */
+export const HiddenInPrint: S = {
+  render: () => (
+    <DemoShell footer="Hack Cove · MIT" hideChromeInPrint>
+      <PageHeader title="Printed page" subtitle="Only this prints." />
+      <Body as="p">The header and footer above and below are hidden in print.</Body>
     </DemoShell>
   ),
 };

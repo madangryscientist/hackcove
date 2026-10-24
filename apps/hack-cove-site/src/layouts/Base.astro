@@ -4,8 +4,8 @@ import { appShellRootClass } from "@hackcove/ui";
 import { SiteShell } from "../components/SiteShell";
 import { site } from "../content/site";
 
-type Props = { title?: string; description?: string };
-const { title = site.name, description = site.tagline } = Astro.props;
+type Props = { title?: string; description?: string; hideChromeInPrint?: boolean };
+const { title = site.name, description = site.tagline, hideChromeInPrint = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 ---
 
@@ -28,12 +28,12 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
   <body>
     {
       Astro.slots.has("footer") ? (
-        <SiteShell>
+        <SiteShell hideChromeInPrint={hideChromeInPrint}>
           <slot />
           <slot name="footer" slot="footer" />
         </SiteShell>
       ) : (
-        <SiteShell>
+        <SiteShell hideChromeInPrint={hideChromeInPrint}>
           <slot />
         </SiteShell>
       )

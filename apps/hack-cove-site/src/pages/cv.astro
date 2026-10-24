@@ -5,6 +5,10 @@ import Base from "../layouts/Base.astro";
 import "../styles/cv-print.css";
 ---
 
-<Base title={`${cv.name} — CV`} description={`${cv.name}, ${cv.headline}.`}>
+<Base
+  title={`${cv.name} — CV`}
+  description={`${cv.name}, ${cv.headline}.`}
+  hideChromeInPrint
+>
   <Cv />
 </Base>

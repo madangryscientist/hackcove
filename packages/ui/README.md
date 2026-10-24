@@ -97,7 +97,7 @@ import { AppShell, PageHeader, Section, Stack, appShellRootClass } from "@hackco
 // short page and a long one centre their content at the same x. AppShell cannot set it itself.
 <html className={appShellRootClass}>
   <body>
-    <AppShell header={<><Logo /><NavTabs label="Main" items={nav} /></>} footer="…">
+    <AppShell brand={<Logo />} nav={<NavTabs label="Main" items={nav} />} footer="…">
       <PageHeader title="Builds" subtitle="Every build" actions={<Button>New</Button>} />
       <Stack>
         <Section title="Recent">…</Section>
@@ -110,7 +110,11 @@ import { AppShell, PageHeader, Section, Stack, appShellRootClass } from "@hackco
 - **`AppShell`** is the page frame: a sticky header that is always one `h-14` row (a nav that does
   not fit scrolls sideways, it never wraps, and the edge with more to scroll to fades out until it
   is reached), an optional `subnav` second row (same rule), `main`
-  with fixed `py-8`, and an optional `footer`. `bleed` drops main's `Container` for a full-bleed
+  with fixed `py-8`, and an optional `footer`. The header row is filled by slots, left to right:
+  `brand` (logo and name, at the brand type with the logo gap), `nav` (a `NavTabs`), `header` (a
+  free node, the escape hatch) and `controls` (end-aligned, `gap-2`, centred): no wrapper, no
+  `className`. `hideChromeInPrint` is opt-in: the header and footer are hidden in print and main
+  drops its padding (the page margin is then your `@page`); without it a print is unchanged. `bleed` drops main's `Container` for a full-bleed
   page; the header keeps its own, so put a `Container` back around anything that should line up.
 - **`Container`** is the only place the content width (`max-w-6xl`) and side padding
   (`px-4 sm:px-6`) are defined. **Pages never set their own width or outer padding**: no `max-w-*`,
