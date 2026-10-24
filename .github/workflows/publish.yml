@@ -2,7 +2,7 @@ name: Publish
 
 # Manual only: Jacobus decides when a release goes out. The default is a dry run.
 # `nx release` versions only the projects that changed since their last tag (conventional commits),
-# writes their changelogs, commits and tags the release, pushes, creates a GitHub release and publishes.
+# writes their changelogs, refreshes bun.lock (scripts/release-version-actions.cjs), commits and tags the release, pushes, creates a GitHub release and publishes.
 # Publishing authenticates with npm trusted publishing (OIDC): no token, no OTP. Each package needs a
 # trusted publisher on npmjs.com pointing at this workflow file, repository madangryscientist/hackcove
 # and the environment below. The one exception is a package's first publish: npm cannot attach a trusted

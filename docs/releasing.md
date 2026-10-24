@@ -37,6 +37,12 @@ One-time setup, by hand:
    Settings → Trusted Publisher → GitHub Actions, repository `madangryscientist/hackcove`, workflow
    filename `publish.yml`, environment `npm-publish`.
 
+The release commit also carries `bun.lock`. The workspace entries in it hold each package's version, so
+`scripts/release-version-actions.cjs` (`release.version.versionActions` in `nx.json`) runs
+`bun install --lockfile-only` after the bump and Nx stages the file. Nx's own refresh is not used: it
+follows `cli.packageManager`, which must stay `npm` for the publish step, and would run
+`npm install --package-lock-only`. After a release, `bun install` on the release commit changes nothing.
+
 Nx pushes the release commit, the tags and the GitHub release before it runs `npm publish`. If the
 publish then fails, a re-run finds nothing new to release. Fix the cause and land a releasable
 commit: the next run publishes the next version. A stranded version is never published by hand.

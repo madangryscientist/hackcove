@@ -49,9 +49,7 @@
     "version": {
       "conventionalCommits": true,
       "adjustSemverBumpsForZeroMajorVersion": true,
-      "versionActionsOptions": {
-        "skipLockFileUpdate": true
-      }
+      "versionActions": "./scripts/release-version-actions.cjs"
     },
     "conventionalCommits": {
       "useCommitScope": false,
