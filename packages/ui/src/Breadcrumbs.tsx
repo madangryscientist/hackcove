@@ -1,15 +1,51 @@
-import type { ReactElement, ReactNode } from "react";
+import { isValidElement, type ReactElement, type ReactNode } from "react";
 import { cx, focusRing } from "./cx.js";
+import { type LinkRender, renderLink } from "./link.js";
 
 /** The classes of a crumb that links somewhere, for a router's own <Link>. The current page is plain text, not a link. */
 export const crumbLinkClass = cx("rounded text-slate-500 hover:underline", focusRing);
 
-/** `org / project / build / snapshot`: each crumb truncates, and the last is the current page. */
+/**
+ * A crumb that links: a plain `<a href>`, or with `render` the app's own router `<Link>`
+ * (`render: (p) => <Link to="/quotes" {...p} />`; `href` is then not used). `external` opens in a
+ * new tab. The last crumb is the current page and is never a link.
+ */
+export type Crumb = {
+  label: ReactNode;
+  external?: boolean;
+} & ({ href: string; render?: LinkRender } | { href?: string; render: LinkRender });
+
+function isCrumb(crumb: Crumb | ReactNode): crumb is Crumb {
+  return typeof crumb === "object" && crumb !== null && !isValidElement(crumb) && "label" in crumb;
+}
+
+function CrumbContent({
+  crumb,
+  current,
+}: {
+  crumb: Crumb | ReactNode;
+  current: boolean;
+}): ReactNode {
+  if (!isCrumb(crumb)) return crumb;
+  if (current) return crumb.label;
+  return renderLink({
+    href: crumb.href,
+    render: crumb.render,
+    external: crumb.external,
+    className: crumbLinkClass,
+    children: crumb.label,
+  });
+}
+
+/**
+ * `org / project / build / snapshot`: each crumb truncates, and the last is the current page. A
+ * crumb is a node, or a `Crumb` object when it links.
+ */
 export function Breadcrumbs({
   crumbs,
   className,
 }: {
-  crumbs: ReactNode[];
+  crumbs: Array<Crumb | ReactNode>;
   className?: string;
 }): ReactElement {
   const last = crumbs.length - 1;
@@ -33,7 +69,7 @@ export function Breadcrumbs({
                 index === last ? "font-medium text-slate-900" : "text-slate-500",
               )}
             >
-              {crumb}
+              <CrumbContent crumb={crumb} current={index === last} />
             </span>
           </li>
         ))}

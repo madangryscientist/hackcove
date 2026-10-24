@@ -1,6 +1,8 @@
+import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { Breadcrumbs, crumbLinkClass } from "./Breadcrumbs.js";
+import type { LinkRenderProps } from "./link.js";
 
 describe("Breadcrumbs", () => {
   it("names the nav landmark Breadcrumb over an ordered list", () => {
@@ -34,5 +36,68 @@ describe("crumbLinkClass", () => {
     expect(crumbLinkClass).toContain("text-slate-500");
     expect(crumbLinkClass).toContain("hover:underline");
     expect(crumbLinkClass).toContain("focus-visible:outline-violet-600");
+  });
+});
+
+// A stand-in for a router's <Link>: it takes `to` and spreads the props it is handed.
+const Link = ({ to, ...rest }: { to: string } & LinkRenderProps): ReactElement => (
+  <a data-to={to} {...rest} />
+);
+
+describe("Breadcrumbs link crumbs", () => {
+  it("draws a crumb object with href as an <a> in the crumb link classes", () => {
+    const out = renderToStaticMarkup(
+      <Breadcrumbs crumbs={[{ label: "Org", href: "/org" }, "Project"]} />,
+    );
+    expect(out).toContain(`<a href="/org" class="${crumbLinkClass}">Org</a>`);
+  });
+
+  it("draws a crumb with render as the app's own Link, with no href", () => {
+    const out = renderToStaticMarkup(
+      <Breadcrumbs
+        crumbs={[{ label: "Quotes", render: (p) => <Link to="/quotes" {...p} /> }, "Quote 12"]}
+      />,
+    );
+    expect(out).toContain('data-to="/quotes"');
+    expect(out).toContain(crumbLinkClass);
+    expect(out).not.toContain("href=");
+  });
+
+  it("never links the last crumb, even if it is given a href", () => {
+    const out = renderToStaticMarkup(
+      <Breadcrumbs
+        crumbs={[
+          { label: "Org", href: "/org" },
+          { label: "Here", href: "/here" },
+        ]}
+      />,
+    );
+    expect(out).not.toContain('href="/here"');
+    expect(out).toContain("Here");
+    expect(out.match(/<a /g)).toHaveLength(1);
+  });
+
+  it("external opens in a new tab", () => {
+    const out = renderToStaticMarkup(
+      <Breadcrumbs
+        crumbs={[{ label: "Docs", href: "https://d.example", external: true }, "Page"]}
+      />,
+    );
+    expect(out).toContain('target="_blank"');
+    expect(out).toContain('rel="noreferrer"');
+  });
+
+  it("still takes an element as a crumb", () => {
+    const out = renderToStaticMarkup(
+      <Breadcrumbs
+        crumbs={[
+          <a key="a" href="/a" className={crumbLinkClass}>
+            A
+          </a>,
+          "B",
+        ]}
+      />,
+    );
+    expect(out).toContain('<a href="/a"');
   });
 });

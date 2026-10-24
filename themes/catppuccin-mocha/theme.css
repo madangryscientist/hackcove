@@ -138,6 +138,23 @@
   accent-color: #cba6f7; /* mauve */
 }
 
+/* Danger button (Button tone="danger"): solid, outline and ghost */
+.dark .bg-red-600 {
+  background-color: #f38ba8; /* red */
+}
+.dark .hover\:bg-red-700:hover {
+  background-color: #eba0ac; /* maroon */
+}
+.dark .text-red-50 {
+  color: #11111b; /* crust — text on the red button */
+}
+.dark .border-red-600 {
+  border-color: #f38ba8; /* red */
+}
+.dark .hover\:bg-red-50:hover {
+  background-color: rgba(243, 139, 168, 0.14); /* red tint */
+}
+
 /* Avatar identity colours — violet-600 is the accent above; the rest sit on the theme. */
 .dark .bg-orange-600 {
   background-color: #fab387; /* peach */

@@ -103,7 +103,7 @@ describe("Button states", () => {
     expect(out).not.toContain("cursor-not-allowed");
   });
 
-  it("blocked works on every variant", () => {
+  it("blocked works on every boxed variant", () => {
     for (const variant of ["primary", "outline", "ghost"] as const) {
       const out = html(
         <Button variant={variant} disabledReason="No">
@@ -119,5 +119,113 @@ describe("Button states", () => {
   it("no state class uses an important override", () => {
     const out = html(<Button disabledReason="No">X</Button>) + html(<Button busy>X</Button>);
     expect(out).not.toMatch(/class="[^"]*![^"]*"/);
+  });
+});
+
+describe("Button size", () => {
+  it("is md by default: px-4 py-2 text-sm", () => {
+    const out = html(<Button>Save</Button>);
+    expect(out).toContain("px-4 py-2");
+    expect(out).toContain("text-sm");
+    expect(out).not.toContain("text-xs");
+  });
+
+  it("sm is compact: smaller padding and text-xs, with none of md's", () => {
+    const out = html(<Button size="sm">Save</Button>);
+    expect(out).toContain("px-2.5 py-1");
+    expect(out).toContain("text-xs");
+    expect(out).not.toContain("px-4");
+    expect(out).not.toContain("text-sm");
+  });
+});
+
+describe("Button tone", () => {
+  it("danger primary is a solid red with the red hover", () => {
+    const out = html(<Button tone="danger">Delete</Button>);
+    expect(out).toContain("bg-red-600");
+    expect(out).toContain("hover:bg-red-700");
+    expect(out).not.toMatch(/(?:bg|border|text)-violet/);
+  });
+
+  it("danger outline and ghost are red text, no fill at rest", () => {
+    const outline = html(
+      <Button tone="danger" variant="outline">
+        Clear
+      </Button>,
+    );
+    expect(outline).toContain("border-red-200");
+    expect(outline).toContain("text-red-700");
+    expect(outline).not.toContain("bg-red-600");
+    const ghost = html(
+      <Button tone="danger" variant="ghost">
+        Remove
+      </Button>,
+    );
+    expect(ghost).toContain("border-transparent");
+    expect(ghost).toContain("text-red-700");
+  });
+
+  it("danger is flat grey when blocked and keeps its colour when busy", () => {
+    const blocked = html(
+      <Button tone="danger" disabledReason="No">
+        X
+      </Button>,
+    );
+    expect(blocked).not.toContain("red");
+    expect(blocked).toContain("cursor-not-allowed");
+    const busy = html(
+      <Button tone="danger" busy>
+        X
+      </Button>,
+    );
+    expect(busy).toContain("bg-red-600");
+    expect(busy).toContain("cursor-progress");
+  });
+});
+
+describe("Button link variant", () => {
+  it("has no box: transparent border, no padding, underline on hover", () => {
+    const out = html(<Button variant="link">Edit</Button>);
+    expect(out).toContain("border-transparent");
+    expect(out).toContain("text-violet-600");
+    expect(out).toContain("hover:underline");
+    expect(out).not.toContain("px-");
+    expect(out).not.toContain("py-");
+    expect(out).not.toContain("bg-");
+  });
+
+  it("takes the size's text and the danger tone", () => {
+    const out = html(
+      <Button variant="link" size="sm" tone="danger">
+        Remove
+      </Button>,
+    );
+    expect(out).toContain("text-xs");
+    expect(out).toContain("text-red-700");
+    expect(out).toContain("hover:underline");
+  });
+
+  it("blocked is grey text with no box", () => {
+    const out = html(
+      <Button variant="link" disabledReason="No">
+        Edit
+      </Button>,
+    );
+    expect(out).toContain("cursor-not-allowed");
+    expect(out).toContain("text-slate-400");
+    expect(out).toContain("border-transparent");
+    expect(out).not.toContain("bg-slate-100");
+    expect(out).not.toContain("hover:");
+  });
+});
+
+describe("buttonClass options", () => {
+  it("matches the Button's own classes", () => {
+    const out = html(
+      <Button variant="ghost" size="sm" tone="danger">
+        X
+      </Button>,
+    );
+    expect(out).toContain(buttonClass("ghost", { size: "sm", tone: "danger" }));
   });
 });

@@ -1,8 +1,17 @@
 import type { ReactElement, ReactNode } from "react";
 import { cx, focusRing } from "./cx.js";
+import { type LinkRender, renderLink } from "./link.js";
 
-/** One pill link in a NavTabs row. */
-export type NavTab = { label: ReactNode; href: string; active?: boolean };
+/**
+ * One pill link in a NavTabs row: a plain `<a href>`, or with `render` the app's own router
+ * `<Link>` (`render: (p) => <Link to="/stores" {...p} />`, which gets the tab's classes and
+ * `aria-current`; `href` is then not used). `external` opens in a new tab.
+ */
+export type NavTab = {
+  label: ReactNode;
+  active?: boolean;
+  external?: boolean;
+} & ({ href: string; render?: LinkRender } | { href?: string; render: LinkRender });
 
 const BASE = `rounded-lg px-3 py-1.5 transition ${focusRing}`;
 
@@ -14,7 +23,7 @@ export function navTabClass(active: boolean): string {
   );
 }
 
-/** A row of pill links where the active one is filled. Renders plain <a>; use navTabClass with a router's Link. */
+/** A row of pill links where the active one is filled. Plain <a> by default; a tab's `render` draws a router's Link. */
 export function NavTabs({
   items,
   label,
@@ -27,16 +36,20 @@ export function NavTabs({
 }): ReactElement {
   return (
     <nav aria-label={label} className={cx("flex flex-wrap gap-1 text-sm", className)}>
-      {items.map((item) => (
-        <a
-          key={item.href}
-          href={item.href}
-          className={navTabClass(!!item.active)}
-          aria-current={item.active ? "page" : undefined}
-        >
-          {item.label}
-        </a>
+      {items.map((item, index) => (
+        <Tab key={item.href ?? index} item={item} />
       ))}
     </nav>
   );
+}
+
+function Tab({ item }: { item: NavTab }): ReactElement {
+  return renderLink({
+    href: item.href,
+    render: item.render,
+    external: item.external,
+    className: navTabClass(!!item.active),
+    "aria-current": item.active ? "page" : undefined,
+    children: item.label,
+  });
 }

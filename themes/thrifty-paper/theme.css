@@ -129,6 +129,23 @@
   accent-color: #c2410c; /* accent */
 }
 
+/* Danger button (Button tone="danger"): solid, outline and ghost */
+.thrifty-paper .bg-red-600 {
+  background-color: #b91c1c; /* danger */
+}
+.thrifty-paper .hover\:bg-red-700:hover {
+  background-color: #991b1b; /* danger-hover */
+}
+.thrifty-paper .text-red-50 {
+  color: #ffffff; /* text on the danger button */
+}
+.thrifty-paper .border-red-600 {
+  border-color: #b91c1c; /* danger */
+}
+.thrifty-paper .hover\:bg-red-50:hover {
+  background-color: #fef2f2; /* danger-soft */
+}
+
 /* Avatar identity colours — violet-600 is the accent above; the rest sit on the theme. */
 .thrifty-paper .bg-orange-600 {
   background-color: #8c5a2b; /* brown */

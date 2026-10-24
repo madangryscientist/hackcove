@@ -2,13 +2,12 @@ import { useId, useState } from "react";
 import {
   Avatar,
   Body,
-  Button,
   BodyStrong,
+  Button,
   Breadcrumbs,
   Callout,
   Caption,
   Card,
-  ColourSchemeToggle,
   CopyButton,
   CopyLine,
   Checkbox,
@@ -22,7 +21,6 @@ import {
   FieldDialog,
   FilterGroup,
   fromISODate,
-  IconButton,
   Input,
   Kbd,
   KeyValue,
@@ -42,6 +40,7 @@ import {
   Textarea,
   ToggleChip,
 } from "@hackcove/ui";
+import { GalleryButtons } from "./GalleryButtons";
 import { GalleryLayout } from "./GalleryLayout";
 import { GalleryText } from "./GalleryText";
 import { GalleryLinks } from "./GalleryLinks";
@@ -55,20 +54,6 @@ const searchIcon = (
       d="M9 3.5a5.5 5.5 0 1 0 3.4 9.8l3.15 3.15a.75.75 0 1 0 1.06-1.06l-3.15-3.15A5.5 5.5 0 0 0 9 3.5Zm-4 5.5a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z"
       clipRule="evenodd"
     />
-  </svg>
-);
-
-const moonIcon = (
-  <svg
-    viewBox="0 0 24 24"
-    className="h-4 w-4"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.8"
-    strokeLinecap="round"
-    aria-hidden="true"
-  >
-    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
   </svg>
 );
 
@@ -90,6 +75,7 @@ function GalleryHeader() {
           { label: "Directory", href: "/stores", active: true },
           { label: "Events", href: "/events" },
           { label: "About", href: "/about" },
+          { label: "Traces", href: "https://example.com/traces", external: true },
         ]}
       />
     </>
@@ -201,23 +187,6 @@ function GalleryCopy() {
   );
 }
 
-/** The Button row of the Gallery: the three variants, then the blocked and busy states, then an IconButton and the ColourSchemeToggle. */
-function GalleryButtons() {
-  return (
-    <div className="flex flex-wrap gap-2">
-      <Button>Save</Button>
-      <Button variant="outline">Cancel</Button>
-      <Button variant="ghost">Skip</Button>
-      <Button disabledReason="Pick a shop first">Blocked</Button>
-      <Button variant="outline" busy busyLabel="Saving…">
-        Busy
-      </Button>
-      <IconButton label="Switch to dark theme">{moonIcon}</IconButton>
-      <ColourSchemeToggle />
-    </div>
-  );
-}
-
 /** The Avatar set: the seven identity colours at md, a ringed stack, then initials and a photo at xl and 2xl. */
 function GalleryAvatars() {
   const names = ["ada", "grace", "linus", "margaret", "dennis", "ken", "barbara"];
@@ -313,7 +282,14 @@ export function Gallery() {
         <DateField label="Visited on" description="DD/MM/YYYY" />
       </div>
 
-      <Breadcrumbs crumbs={["Org", "Project", "Build", "Snapshot"]} />
+      <Breadcrumbs
+        crumbs={[
+          { label: "Org", href: "#org" },
+          { label: "Project", href: "#project" },
+          "Build",
+          "Snapshot",
+        ]}
+      />
 
       <Callout tone="warn" title="Draft.">
         This page has not yet been reviewed by a lawyer.

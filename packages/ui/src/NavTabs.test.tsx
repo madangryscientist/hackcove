@@ -1,5 +1,7 @@
+import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import type { LinkRenderProps } from "./link.js";
 import { NavTabs, navTabClass } from "./NavTabs.js";
 
 const items = [
@@ -43,5 +45,62 @@ describe("navTabClass", () => {
   it("fills and emphasises an active tab", () => {
     expect(navTabClass(true)).toContain("bg-slate-100");
     expect(navTabClass(true)).toContain("font-medium");
+  });
+});
+
+// A stand-in for a router's <Link>: it takes `to` and spreads the props it is handed.
+const Link = ({ to, ...rest }: { to: string } & LinkRenderProps): ReactElement => (
+  <a data-to={to} {...rest} />
+);
+
+describe("NavTabs with a router Link", () => {
+  const tabs = [
+    { label: "Quotes", active: true, render: (p: LinkRenderProps) => <Link to="/quotes" {...p} /> },
+    { label: "Settings", render: (p: LinkRenderProps) => <Link to="/settings" {...p} /> },
+  ];
+
+  it("draws each tab with its render, in the tab classes", () => {
+    const out = renderToStaticMarkup(<NavTabs items={tabs} label="Main" />);
+    expect(out).toContain('data-to="/quotes"');
+    expect(out).toContain('data-to="/settings"');
+    expect(out).toContain(navTabClass(true));
+    expect(out).toContain(navTabClass(false));
+    expect(out).not.toContain("href=");
+  });
+
+  it("hands the active tab aria-current, and no other", () => {
+    const out = renderToStaticMarkup(<NavTabs items={tabs} label="Main" />);
+    expect(out.match(/aria-current="page"/g)).toHaveLength(1);
+    expect(out).toMatch(
+      /data-to="\/quotes"[^>]*aria-current="page"|aria-current="page"[^>]*data-to="\/quotes"/,
+    );
+  });
+
+  it("keeps the nav layout and mixes with plain <a> tabs", () => {
+    const out = renderToStaticMarkup(
+      <NavTabs items={[tabs[0]!, { label: "Docs", href: "/docs" }]} label="Main" />,
+    );
+    expect(out).toContain("flex flex-wrap gap-1 text-sm");
+    expect(out).toContain('<a href="/docs"');
+  });
+});
+
+describe("NavTabs external tabs", () => {
+  it("opens an external tab in a new tab", () => {
+    const out = renderToStaticMarkup(
+      <NavTabs
+        items={[{ label: "Traces", href: "https://t.example", external: true }]}
+        label="Main"
+      />,
+    );
+    expect(out).toContain('href="https://t.example"');
+    expect(out).toContain('target="_blank"');
+    expect(out).toContain('rel="noreferrer"');
+  });
+
+  it("leaves a plain tab without target or rel", () => {
+    const out = renderToStaticMarkup(<NavTabs items={items} label="Main" />);
+    expect(out).not.toContain("target");
+    expect(out).not.toContain("rel=");
   });
 });

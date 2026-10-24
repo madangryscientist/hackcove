@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { TextLink } from "@hackcove/ui";
+import { TextLink, type LinkRenderProps } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/TextLink" };
 export default meta;
@@ -32,5 +32,30 @@ export const Sizes: S = {
         Base link
       </TextLink>
     </div>
+  ),
+};
+
+/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
+function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
+  return <a href={`#${to}`} {...rest} />;
+}
+
+export const WithRouterLink: S = {
+  render: () => <TextLink render={(p) => <FakeLink to="/terms" {...p} />}>Read the terms</TextLink>,
+};
+
+/** `stretch` covers the nearest `relative` ancestor, so the whole row is the click target. */
+export const Stretch: S = {
+  render: () => (
+    <ul className="max-w-sm divide-y divide-slate-200 rounded-lg border border-slate-200 text-sm">
+      {["Quote 12", "Quote 13", "Quote 14"].map((name) => (
+        <li key={name} className="relative flex justify-between px-3 py-2 hover:bg-slate-50">
+          <TextLink href={`#${name}`} stretch>
+            {name}
+          </TextLink>
+          <span className="text-slate-500">draft</span>
+        </li>
+      ))}
+    </ul>
   ),
 };

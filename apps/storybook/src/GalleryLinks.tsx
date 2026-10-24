@@ -1,6 +1,11 @@
-import { InlineLinks, TextLink } from "@hackcove/ui";
+import { InlineLinks, TextLink, type LinkRenderProps } from "@hackcove/ui";
 
-/** The links block of the Gallery: a TextLink in a sentence, and an InlineLinks row. */
+/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
+function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
+  return <a href={`#${to}`} {...rest} />;
+}
+
+/** The links block of the Gallery: a TextLink in a sentence, an InlineLinks row, a router-Link TextLink and a row with a stretched link. */
 export function GalleryLinks() {
   return (
     <div className="flex flex-col gap-3">
@@ -14,8 +19,14 @@ export function GalleryLinks() {
       <InlineLinks>
         <TextLink href="#privacy">Privacy</TextLink>
         <TextLink href="#terms">Terms</TextLink>
-        <TextLink href="#contact">Contact</TextLink>
+        <TextLink render={(p) => <FakeLink to="/contact" {...p} />}>Contact</TextLink>
       </InlineLinks>
+      <div className="relative flex max-w-sm justify-between rounded-lg border border-slate-200 px-3 py-2 text-sm hover:bg-slate-50">
+        <TextLink href="#quote-12" stretch>
+          Quote 12
+        </TextLink>
+        <span className="text-slate-500">the whole row opens it</span>
+      </div>
     </div>
   );
 }

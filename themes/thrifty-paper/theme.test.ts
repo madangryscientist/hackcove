@@ -108,3 +108,10 @@ it("keeps the focus ring at 3:1 on every surface", () => {
     ).toBeGreaterThanOrEqual(3);
   }
 });
+
+it("keeps the danger button's text at WCAG AA (4.5:1) on its fill, resting and hovered", () => {
+  for (const fill of ["bg-red-600", "hover:bg-red-700"]) {
+    const bg = colourOf(fill, "background-color");
+    expect(contrast("text-red-50", "color", bg)).toBeGreaterThanOrEqual(4.5);
+  }
+});

@@ -1,5 +1,6 @@
 import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import { cx, focusRing } from "./cx.js";
+import { type LinkRender, renderLink } from "./link.js";
 
 /** The classes of an inline text link, for a router's own <Link> that should look like one. */
 export const linkClass = cx(
@@ -7,25 +8,42 @@ export const linkClass = cx(
   focusRing,
 );
 
+/**
+ * Stretches a link's hit area over its nearest `relative` ancestor (a table row, a card), so the
+ * whole of it opens the link. Add it to the one link in the row; the ancestor needs `relative`.
+ */
+export const linkStretchClass = "after:absolute after:inset-0";
+
 type TextLinkProps = {
   /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
   external?: boolean | undefined;
-} & ComponentPropsWithoutRef<"a"> & { href: string };
+  /** The link covers its nearest `relative` ancestor, so the whole row or card is the click target. */
+  stretch?: boolean | undefined;
+} & Omit<ComponentPropsWithoutRef<"a">, "href"> &
+  (
+    | { href: string; render?: LinkRender | undefined }
+    | { href?: string | undefined; render: LinkRender }
+  );
 
-/** An inline text link in the accent colour. Every anchor prop goes on the `<a>`. */
+/**
+ * An inline text link in the accent colour. Every anchor prop goes on the `<a>`. With `render` it
+ * draws the app's own router `<Link>` instead (`render={(p) => <Link to="/terms" {...p} />}`).
+ */
 export function TextLink({
   external = false,
+  stretch = false,
+  href,
+  render,
   className,
   children,
   ...rest
 }: TextLinkProps): ReactElement {
-  return (
-    <a
-      className={cx(linkClass, className)}
-      {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
-      {...rest}
-    >
-      {children}
-    </a>
-  );
+  return renderLink({
+    ...rest,
+    href,
+    render,
+    external,
+    className: cx(linkClass, stretch && linkStretchClass, className),
+    children,
+  });
 }

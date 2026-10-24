@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Breadcrumbs, crumbLinkClass } from "@hackcove/ui";
+import { Breadcrumbs, crumbLinkClass, type LinkRenderProps } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Breadcrumbs" };
 export default meta;
@@ -39,5 +39,23 @@ export const LongTruncates: S = {
         ]}
       />
     </div>
+  ),
+};
+
+/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
+function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
+  return <a href={`#${to}`} {...rest} />;
+}
+
+/** A crumb object links with `href` or draws the app's own Link with `render`; the last is never a link. */
+export const LinkCrumbs: S = {
+  render: () => (
+    <Breadcrumbs
+      crumbs={[
+        { label: "Quotes", render: (p) => <FakeLink to="/quotes" {...p} /> },
+        { label: "Docs", href: "https://example.com/docs", external: true },
+        "Quote 12",
+      ]}
+    />
   ),
 };

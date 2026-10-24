@@ -14,9 +14,19 @@ export {
   SidebarLayout,
 } from "./PageLayouts.js";
 export { Section, Stack, type StackGap, type StackWidth } from "./Stack.js";
-export { Button, buttonClass, type ButtonVariant } from "./Button.js";
+export {
+  Button,
+  buttonClass,
+  type ButtonLook,
+  type ButtonSize,
+  type ButtonTone,
+  type ButtonVariant,
+} from "./Button.js";
+export { ButtonGroup } from "./ButtonGroup.js";
+export { ButtonLink } from "./ButtonLink.js";
+export { type LinkRender, type LinkRenderProps } from "./link.js";
 export { Avatar, avatarColourClass, initialsOf, type AvatarSize } from "./Avatar.js";
-export { Breadcrumbs, crumbLinkClass } from "./Breadcrumbs.js";
+export { Breadcrumbs, crumbLinkClass, type Crumb } from "./Breadcrumbs.js";
 export { BulletList } from "./BulletList.js";
 export { Callout, type CalloutTone } from "./Callout.js";
 export { Code } from "./Code.js";
@@ -46,7 +56,7 @@ export { KeyValue, KeyValueList } from "./KeyValueList.js";
 export { Select } from "./Select.js";
 export { Textarea } from "./Textarea.js";
 export { Video } from "./Video.js";
-export { linkClass, TextLink } from "./TextLink.js";
+export { linkClass, linkStretchClass, TextLink } from "./TextLink.js";
 export {
   Body,
   BodyStrong,
