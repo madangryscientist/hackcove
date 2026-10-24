@@ -16,7 +16,10 @@ export { Section, Stack, type StackGap } from "./Stack.js";
 export { Button, buttonClass, type ButtonVariant } from "./Button.js";
 export { Avatar, avatarColourClass, initialsOf, type AvatarSize } from "./Avatar.js";
 export { Breadcrumbs, crumbLinkClass } from "./Breadcrumbs.js";
+export { BulletList } from "./BulletList.js";
 export { Callout, type CalloutTone } from "./Callout.js";
+export { Code } from "./Code.js";
+export { Divider } from "./Divider.js";
 export { Dialog, type DialogProps } from "./Dialog.js";
 export { IconButton } from "./IconButton.js";
 export { ColourSchemeToggle } from "./ColourSchemeToggle.js";
@@ -41,6 +44,7 @@ export { Kbd } from "./Kbd.js";
 export { KeyValue, KeyValueList } from "./KeyValueList.js";
 export { Select } from "./Select.js";
 export { Textarea } from "./Textarea.js";
+export { Video } from "./Video.js";
 export { linkClass, TextLink } from "./TextLink.js";
 export {
   Body,
@@ -53,6 +57,7 @@ export {
   PageHeading,
   SectionHeading,
   SubsectionHeading,
+  type SubsectionHeadingSize,
   Subtitle,
   type TypographyColor,
   type TypographyProps,

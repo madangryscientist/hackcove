@@ -43,9 +43,30 @@ export const SectionHeadingStory: S = {
   render: () => <SectionHeading>In progress</SectionHeading>,
 };
 
+export const SectionHeadingRuleStory: S = {
+  name: "SectionHeading rule",
+  render: () => (
+    <div className="max-w-xl">
+      <SectionHeading rule>In progress</SectionHeading>
+      <Body as="p">The rule and the space either side of it are built in.</Body>
+    </div>
+  ),
+};
+
 export const SubsectionHeadingStory: S = {
   name: "SubsectionHeading",
   render: () => <SubsectionHeading>Blocked on review</SubsectionHeading>,
+};
+
+export const SubsectionHeadingSizes: S = {
+  name: "SubsectionHeading size",
+  render: () => (
+    <div className="flex flex-col gap-2">
+      <SubsectionHeading size="sm">sm (default): form-group caption</SubsectionHeading>
+      <SubsectionHeading size="base">base: card title in a header bar</SubsectionHeading>
+      <SubsectionHeading size="lg">lg: drawer title</SubsectionHeading>
+    </div>
+  ),
 };
 
 export const ModalHeadingStory: S = {
@@ -70,6 +91,18 @@ export const BodyStory: S = {
       Default running text. Inline by default, so an emphasised <BodyStrong>run of text</BodyStrong>{" "}
       composes right inside the sentence.
     </Body>
+  ),
+};
+
+export const BodyPreserveNewlines: S = {
+  name: "Body preserveNewlines",
+  render: () => (
+    <div className="flex max-w-xl flex-col gap-3">
+      <Body as="p">{"Collapsed (default):\nthe note's line break is lost."}</Body>
+      <Body as="p" preserveNewlines>
+        {"Preserved:\nthe note's line break is kept."}
+      </Body>
+    </div>
   ),
 };
 

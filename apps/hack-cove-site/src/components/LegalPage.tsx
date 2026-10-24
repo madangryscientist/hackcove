@@ -1,4 +1,13 @@
-import { Body, Caption, InlineLinks, PageHeader, Section, Stack, TextLink } from "@hackcove/ui";
+import {
+  Body,
+  Caption,
+  Divider,
+  InlineLinks,
+  PageHeader,
+  Section,
+  Stack,
+  TextLink,
+} from "@hackcove/ui";
 import { type LegalDoc } from "../content/legal";
 import { site } from "../content/site";
 
@@ -32,7 +41,8 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
         ))}
       </Stack>
 
-      <footer className="mt-16 border-t border-slate-200/70 pt-8">
+      <Divider className="mt-16" />
+      <footer className="pt-8">
         <Caption as="p">{site.legalName}</Caption>
         <InlineLinks className="mt-2">
           <TextLink href={`mailto:${site.contactEmail}`}>{site.contactEmail}</TextLink>

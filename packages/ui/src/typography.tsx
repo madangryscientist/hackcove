@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ElementType, ReactElement, ReactNode } from "react";
 import { cx } from "./cx.js";
 
 /* ---------------------------------------------------------------------------
@@ -66,22 +66,29 @@ function typography<D extends ElementType>(
   variantClass: string,
   defaultColor: TypographyColor,
 ) {
-  function Typography<E extends ElementType = D>({
-    as,
-    color,
-    className,
-    children,
-    ...rest
-  }: TypographyProps<E>) {
-    const Tag: ElementType = as ?? defaultAs;
-    return (
-      <Tag className={cx(variantClass, COLOR[color ?? defaultColor], className)} {...rest}>
-        {children}
-      </Tag>
-    );
+  function Typography<E extends ElementType = D>(props: TypographyProps<E>) {
+    return pinned(defaultAs, variantClass, defaultColor, props);
   }
   Typography.displayName = displayName;
   return Typography;
+}
+
+/**
+ * The one place a pinned role renders. The few roles with an opt-in prop of their own are
+ * written by hand, not by `typography`, and call this too.
+ */
+function pinned(
+  defaultAs: ElementType,
+  variantClass: string,
+  defaultColor: TypographyColor,
+  { as, color, className, children, ...rest }: OwnProps & { as?: ElementType | undefined },
+): ReactElement {
+  const Tag: ElementType = as ?? defaultAs;
+  return (
+    <Tag className={cx(variantClass, COLOR[color ?? defaultColor], className)} {...rest}>
+      {children}
+    </Tag>
+  );
 }
 
 // --- Structural roles (block by default) -----------------------------------
@@ -111,21 +118,37 @@ export const PageHeading = typography(
   "default",
 );
 
-/** Top-level section header. `h2`, text-base/6 semibold, primary text. */
-export const SectionHeading = typography(
-  "SectionHeading",
-  "h2",
-  "text-base/6 font-semibold",
-  "default",
-);
+/**
+ * Top-level section header. `h2`, text-base/6 semibold, primary text. `rule` sets
+ * a hairline under it (the `Divider` line colour) with the space either side of
+ * the line built in.
+ */
+export function SectionHeading<E extends ElementType = "h2">({
+  rule,
+  ...props
+}: TypographyProps<E> & { rule?: boolean }): ReactElement {
+  const variant = cx(rule && "mb-4 border-b border-slate-200/70 pb-2", "text-base/6 font-semibold");
+  return pinned("h2", variant, "default", props);
+}
 
-/** Nested header. `h3`, text-sm/5 semibold, primary text. */
-export const SubsectionHeading = typography(
-  "SubsectionHeading",
-  "h3",
-  "text-sm/5 font-semibold",
-  "default",
-);
+export type SubsectionHeadingSize = "sm" | "base" | "lg";
+
+const SUBSECTION_SIZE: Record<SubsectionHeadingSize, string> = {
+  sm: "text-sm/5 font-semibold",
+  base: "text-base/6 font-bold",
+  lg: "text-lg/7 font-semibold",
+};
+
+/**
+ * Nested header. `h3`, text-sm/5 semibold, primary text. `size` steps it up for
+ * a card, drawer or form-group title: `sm` (default), `base` (bold) or `lg`.
+ */
+export function SubsectionHeading<E extends ElementType = "h3">({
+  size = "sm",
+  ...props
+}: TypographyProps<E> & { size?: SubsectionHeadingSize }): ReactElement {
+  return pinned("h3", SUBSECTION_SIZE[size], "default", props);
+}
 
 /** Dialog/modal title. `h2`, text-base/6 semibold, primary text. */
 export const ModalHeading = typography(
@@ -148,8 +171,17 @@ export const Overline = typography(
   "tertiary",
 );
 
-/** Default running text. `span` (inline; `as="p"` for a paragraph), text-sm/5 normal, secondary. */
-export const Body = typography("Body", "span", "text-sm/5 font-normal", "secondary");
+/**
+ * Default running text. `span` (inline; `as="p"` for a paragraph), text-sm/5 normal, secondary.
+ * `preserveNewlines` keeps the line breaks in the text (a user-typed note); runs of spaces still collapse.
+ */
+export function Body<E extends ElementType = "span">({
+  preserveNewlines,
+  ...props
+}: TypographyProps<E> & { preserveNewlines?: boolean }): ReactElement {
+  const variant = cx(preserveNewlines && "whitespace-pre-line", "text-sm/5 font-normal");
+  return pinned("span", variant, "secondary", props);
+}
 
 /** Emphasised run of body text. `span`, text-sm/5 medium, primary text. */
 export const BodyStrong = typography("BodyStrong", "span", "text-sm/5 font-medium", "default");

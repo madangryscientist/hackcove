@@ -43,6 +43,7 @@ import {
   ToggleChip,
 } from "@hackcove/ui";
 import { GalleryLayout } from "./GalleryLayout";
+import { GalleryText } from "./GalleryText";
 import { GalleryLinks } from "./GalleryLinks";
 import { GalleryPages } from "./GalleryPages";
 import { samplePhoto } from "./samplePhoto";
@@ -264,6 +265,8 @@ export function Gallery() {
         </Body>
         <Caption as="p">Caption — fine print and metadata.</Caption>
       </div>
+
+      <GalleryText />
 
       <div className="flex flex-wrap gap-2">
         <Pill>slate</Pill>

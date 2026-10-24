@@ -75,3 +75,9 @@ describe("legal static HTML", () => {
     expect(termsHtml).toContain('href="/privacy"');
   });
 });
+
+describe("legal footer", () => {
+  test("a Divider sits above the footer", () => {
+    expect(privacyHtml).toContain('<hr class="border-t border-slate-200/70 mt-16"/><footer');
+  });
+});

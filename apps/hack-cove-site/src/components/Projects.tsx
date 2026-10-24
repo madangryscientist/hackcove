@@ -1,4 +1,13 @@
-import { Body, Card, InlineLinks, Pill, Section, SubsectionHeading, TextLink } from "@hackcove/ui";
+import {
+  Body,
+  BulletList,
+  Card,
+  InlineLinks,
+  Pill,
+  Section,
+  SubsectionHeading,
+  TextLink,
+} from "@hackcove/ui";
 import { type Project, site } from "../content/site";
 
 const STATUS = {
@@ -17,13 +26,13 @@ function ProjectCard({ project }: { project: Project }) {
       <Body as="p" className="mt-2">
         {project.summary}
       </Body>
-      <ul className="mt-3 list-disc space-y-1 pl-5">
+      <BulletList className="mt-3">
         {project.details.map((detail) => (
           <Body as="li" key={detail} color="secondary">
             {detail}
           </Body>
         ))}
-      </ul>
+      </BulletList>
       {project.links && project.links.length > 0 && (
         <InlineLinks separator="none" className="mt-4">
           {project.links.map((link) => (

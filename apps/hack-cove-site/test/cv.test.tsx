@@ -135,3 +135,13 @@ describe("cv static HTML", () => {
     expect(existsSync(join(import.meta.dirname, "../public/cv/jacobus.pdf"))).toBe(true);
   });
 });
+
+describe("cv layout", () => {
+  test("the three section headings are ruled", () => {
+    expect(html.match(/<h2 class="[^"]*border-b border-slate-200\/70[^"]*"/g)).toHaveLength(3);
+  });
+
+  test("a job's bullets are a BulletList", () => {
+    expect(html).toMatch(/<ul class="list-disc[^"]*mt-2">/);
+  });
+});

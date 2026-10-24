@@ -2,6 +2,7 @@ import {
   Avatar,
   Body,
   BodyStrong,
+  BulletList,
   Caption,
   Card,
   InlineLinks,
@@ -15,13 +16,13 @@ import { site } from "../content/site";
 
 function Bullets({ items }: { items: string[] }) {
   return (
-    <ul className="mt-2 list-disc space-y-1 pl-5">
+    <BulletList className="mt-2">
       {items.map((line) => (
         <li key={line}>
           <Body>{line}</Body>
         </li>
       ))}
-    </ul>
+    </BulletList>
   );
 }
 
@@ -88,7 +89,7 @@ function CvHeader() {
 function Experience() {
   return (
     <section className="mt-12">
-      <SectionHeading className="mb-4 border-b border-slate-200/70 pb-2">Experience</SectionHeading>
+      <SectionHeading rule>Experience</SectionHeading>
       <div className="grid gap-10">
         {cv.experience.map((job) => (
           <Job key={job.company} job={job} />
@@ -128,9 +129,7 @@ export function Cv() {
       <Experience />
 
       <section className="mt-12">
-        <SectionHeading className="mb-4 border-b border-slate-200/70 pb-2">
-          Education
-        </SectionHeading>
+        <SectionHeading rule>Education</SectionHeading>
         <SubsectionHeading>
           {cv.education.qualification} — {cv.education.school}
         </SubsectionHeading>
@@ -140,7 +139,7 @@ export function Cv() {
       </section>
 
       <section className="mt-12">
-        <SectionHeading className="mb-4 border-b border-slate-200/70 pb-2">Skills</SectionHeading>
+        <SectionHeading rule>Skills</SectionHeading>
         <dl className="grid gap-2">
           {cv.skills.map((group, i) => (
             <div key={`${group.label}-${i}`} className="flex flex-wrap gap-x-2">
