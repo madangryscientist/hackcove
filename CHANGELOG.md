@@ -1,3 +1,28 @@
+## 0.1.3 (2026-10-24)
+
+### 🚀 Features
+
+- **ob 1818:** TextLink / linkClass and InlineLinks; the site adopts both ([46aefa9](https://github.com/madangryscientist/hackcove/commit/46aefa9))
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
+## 0.2.4 (2026-10-24)
+
+### 🚀 Features
+
+- **ob 1838:** ProseLayout, Stack width and xs gap; the site adopts them ([9f80d1c](https://github.com/madangryscientist/hackcove/commit/9f80d1c))
+- **ob 1824:** AppShell brand/nav/controls slots and hideChromeInPrint; the site adopts both ([1b9dc42](https://github.com/madangryscientist/hackcove/commit/1b9dc42))
+- **ob 1896:** Divider, ruled SectionHeading, Video, BulletList, Code, Body preserveNewlines, SubsectionHeading sizes; the site adopts them ([b92ae30](https://github.com/madangryscientist/hackcove/commit/b92ae30))
+- **ob 1818:** TextLink / linkClass and InlineLinks; the site adopts both ([46aefa9](https://github.com/madangryscientist/hackcove/commit/46aefa9))
+- **ob 1894:** Avatar takes a photo (src) and xl/2xl sizes; the site uses it ([ff31587](https://github.com/madangryscientist/hackcove/commit/ff31587))
+- **ob 1845:** AppShell rows fade the side that still scrolls ([4c92fcd](https://github.com/madangryscientist/hackcove/commit/4c92fcd))
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
 ## 0.1.2 (2026-10-23)
 
 ### 🩹 Fixes
