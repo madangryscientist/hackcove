@@ -7,6 +7,7 @@ import {
   PageHeader,
   Section,
   Stack,
+  SubsectionHeading,
 } from "@hackcove/ui";
 
 /** AppShell (its brand, nav and controls slots, and the Container inside it), PageHeader, Section and Stack, in a box that scrolls under the sticky header. */
@@ -32,13 +33,17 @@ export function GalleryLayout() {
           subtitle="in an AppShell"
           actions={<Button>Action</Button>}
         />
-        <Stack>
+        <Stack width="narrow">
           <Section title="Section">
             <Body>A Stack of Sections, gap md.</Body>
           </Section>
           <Section title="Another">
             <Body>Each Section stacks its children at gap sm.</Body>
           </Section>
+          <Stack gap="xs">
+            <SubsectionHeading>Text block</SubsectionHeading>
+            <Body as="p">A Stack at gap xs, in a narrow (max-w-3xl) column.</Body>
+          </Stack>
         </Stack>
       </AppShell>
     </div>

@@ -6,7 +6,7 @@ import {
   Caption,
   Card,
   InlineLinks,
-  PageHeader,
+  ProseLayout,
   SectionHeading,
   SubsectionHeading,
   TextLink,
@@ -55,37 +55,6 @@ function Job({ job }: { job: CvJob }) {
   );
 }
 
-function CvHeader() {
-  return (
-    <PageHeader
-      breadcrumbs={
-        <InlineLinks className="cv-screen-nav">
-          <TextLink href="/">{site.name}</TextLink>
-          <TextLink href={cv.pdf} download="jacobus.pdf">
-            Download PDF
-          </TextLink>
-        </InlineLinks>
-      }
-      title={cv.name}
-      subtitle={
-        <>
-          {cv.headline} · {cv.location}
-        </>
-      }
-      actions={<Avatar name={cv.name} src={cv.photo} size="2xl" />}
-      tabs={
-        <InlineLinks separator="•">
-          {cv.links.map((link) => (
-            <TextLink key={link.href} href={link.href}>
-              {link.label}
-            </TextLink>
-          ))}
-        </InlineLinks>
-      }
-    />
-  );
-}
-
 function Experience() {
   return (
     <section className="mt-12">
@@ -117,38 +86,65 @@ function Experience() {
 
 export function Cv() {
   return (
-    <div className="cv max-w-3xl">
-      <CvHeader />
-
-      <Card>
-        <Body as="p" className="italic">
-          {cv.summary}
-        </Body>
-      </Card>
-
-      <Experience />
-
-      <section className="mt-12">
-        <SectionHeading rule>Education</SectionHeading>
-        <SubsectionHeading>
-          {cv.education.qualification} — {cv.education.school}
-        </SubsectionHeading>
-        <Caption as="p" className="mt-1" color="brand">
-          {cv.education.detail}
-        </Caption>
-      </section>
-
-      <section className="mt-12">
-        <SectionHeading rule>Skills</SectionHeading>
-        <dl className="grid gap-2">
-          {cv.skills.map((group, i) => (
-            <div key={`${group.label}-${i}`} className="flex flex-wrap gap-x-2">
-              <BodyStrong as="dt">{group.label}:</BodyStrong>
-              <Body as="dd">{group.items.join(", ")}</Body>
-            </div>
+    <ProseLayout
+      className="cv"
+      breadcrumbs={
+        <InlineLinks className="cv-screen-nav">
+          <TextLink href="/">{site.name}</TextLink>
+          <TextLink href={cv.pdf} download="jacobus.pdf">
+            Download PDF
+          </TextLink>
+        </InlineLinks>
+      }
+      title={cv.name}
+      subtitle={
+        <>
+          {cv.headline} · {cv.location}
+        </>
+      }
+      actions={<Avatar name={cv.name} src={cv.photo} size="2xl" />}
+      tabs={
+        <InlineLinks separator="•">
+          {cv.links.map((link) => (
+            <TextLink key={link.href} href={link.href}>
+              {link.label}
+            </TextLink>
           ))}
-        </dl>
-      </section>
-    </div>
+        </InlineLinks>
+      }
+    >
+      {/* One block, so the sections keep their own mt-12 rhythm: no Stack gap is 48px. */}
+      <div>
+        <Card>
+          <Body as="p" className="italic">
+            {cv.summary}
+          </Body>
+        </Card>
+
+        <Experience />
+
+        <section className="mt-12">
+          <SectionHeading rule>Education</SectionHeading>
+          <SubsectionHeading>
+            {cv.education.qualification} — {cv.education.school}
+          </SubsectionHeading>
+          <Caption as="p" className="mt-1" color="brand">
+            {cv.education.detail}
+          </Caption>
+        </section>
+
+        <section className="mt-12">
+          <SectionHeading rule>Skills</SectionHeading>
+          <dl className="grid gap-2">
+            {cv.skills.map((group, i) => (
+              <div key={`${group.label}-${i}`} className="flex flex-wrap gap-x-2">
+                <BodyStrong as="dt">{group.label}:</BodyStrong>
+                <Body as="dd">{group.items.join(", ")}</Body>
+              </div>
+            ))}
+          </dl>
+        </section>
+      </div>
+    </ProseLayout>
   );
 }

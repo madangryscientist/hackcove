@@ -3,7 +3,7 @@ import {
   Caption,
   Divider,
   InlineLinks,
-  PageHeader,
+  ProseLayout,
   Section,
   Stack,
   TextLink,
@@ -18,37 +18,36 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
       : { href: "/privacy", label: "Privacy" };
 
   return (
-    <div className="max-w-3xl">
-      <PageHeader
-        breadcrumbs={
-          <TextLink className="text-sm" href="/">
-            {site.name}
-          </TextLink>
-        }
-        title={doc.title}
-        subtitle={<>Last updated {doc.updated}</>}
-      />
+    <ProseLayout
+      gap="lg"
+      breadcrumbs={
+        <TextLink className="text-sm" href="/">
+          {site.name}
+        </TextLink>
+      }
+      title={doc.title}
+      subtitle={<>Last updated {doc.updated}</>}
+    >
+      {doc.sections.map((section) => (
+        <Section key={section.heading} title={section.heading}>
+          {section.paragraphs.map((para) => (
+            <Body key={para} as="p">
+              {para}
+            </Body>
+          ))}
+        </Section>
+      ))}
 
-      <Stack gap="lg">
-        {doc.sections.map((section) => (
-          <Section key={section.heading} title={section.heading}>
-            {section.paragraphs.map((para) => (
-              <Body key={para} as="p">
-                {para}
-              </Body>
-            ))}
-          </Section>
-        ))}
-      </Stack>
-
-      <Divider className="mt-16" />
-      <footer className="pt-8">
-        <Caption as="p">{site.legalName}</Caption>
-        <InlineLinks className="mt-2">
-          <TextLink href={`mailto:${site.contactEmail}`}>{site.contactEmail}</TextLink>
-          <TextLink href={other.href}>{other.label}</TextLink>
-        </InlineLinks>
+      <footer className="mt-8">
+        <Divider />
+        <Stack gap="xs" className="pt-8">
+          <Caption as="p">{site.legalName}</Caption>
+          <InlineLinks>
+            <TextLink href={`mailto:${site.contactEmail}`}>{site.contactEmail}</TextLink>
+            <TextLink href={other.href}>{other.label}</TextLink>
+          </InlineLinks>
+        </Stack>
       </footer>
-    </div>
+    </ProseLayout>
   );
 }

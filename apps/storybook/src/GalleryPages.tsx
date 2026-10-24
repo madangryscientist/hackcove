@@ -9,7 +9,7 @@ import {
   SidebarLayout,
 } from "@hackcove/ui";
 import { DemoShell } from "./layout/DemoShell";
-import { DetailPage, FormPage, ListPage, StatTiles } from "./layout/pages";
+import { DetailPage, FormPage, ListPage, ProsePage, StatTiles } from "./layout/pages";
 
 /** An AppShell in a box that scrolls under its sticky header; `bleed` is for the full-height layouts. */
 function PageBox({
@@ -53,6 +53,9 @@ export function GalleryPages() {
   return (
     <div className="flex flex-col gap-6">
       <PageSequence />
+      <PageBox label="ProseLayout">
+        <ProsePage />
+      </PageBox>
       <PageBox label="CardGrid">
         <StatTiles columns={4} />
       </PageBox>

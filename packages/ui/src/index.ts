@@ -10,9 +10,10 @@ export {
   FormLayout,
   FullBleedLayout,
   ListLayout,
+  ProseLayout,
   SidebarLayout,
 } from "./PageLayouts.js";
-export { Section, Stack, type StackGap } from "./Stack.js";
+export { Section, Stack, type StackGap, type StackWidth } from "./Stack.js";
 export { Button, buttonClass, type ButtonVariant } from "./Button.js";
 export { Avatar, avatarColourClass, initialsOf, type AvatarSize } from "./Avatar.js";
 export { Breadcrumbs, crumbLinkClass } from "./Breadcrumbs.js";

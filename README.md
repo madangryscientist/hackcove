@@ -54,8 +54,9 @@ for the date picker. Any other dependency is a human decision.
 `Container` (`max-w-6xl`, `px-4 sm:px-6`, defined there and nowhere else). Put `appShellRootClass`
 on your `<html>` so the scrollbar is always reserved and centred content does not shift between a
 short and a long page; no component touches `<html>`. Pages never set their own width or outer
-padding: they start with `PageHeader` and space their blocks with `Stack` (`sm` inside a group, `md`
-between blocks, `lg` between groups). See
+padding: they start with `PageHeader` and space their blocks with `Stack` (`xs` between lines of text,
+`sm` inside a group, `md` between blocks, `lg` between groups). A text page uses `ProseLayout`, or
+`Stack width="narrow"`, for its reading measure. See
 [`packages/ui/README.md`](packages/ui/README.md#layout).
 
 The Layout stories in Storybook are checked at 375, 768 and 1280 px by `e2e/layout.spec.ts`: the

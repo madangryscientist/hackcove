@@ -8,6 +8,7 @@ import {
   FormLayout,
   FullBleedLayout,
   ListLayout,
+  ProseLayout,
   SidebarLayout,
 } from "./PageLayouts.js";
 
@@ -95,6 +96,35 @@ describe("FormLayout", () => {
 
   it("renders no actions row without actions", () => {
     expect(renderToStaticMarkup(<FormLayout title="t">x</FormLayout>)).not.toContain("flex-wrap");
+  });
+});
+
+describe("ProseLayout", () => {
+  const out = renderToStaticMarkup(
+    <ProseLayout title="Privacy" subtitle="Last updated" actions="PHOTO" className="doc">
+      ONE
+      <p>TWO</p>
+    </ProseLayout>,
+  );
+
+  it("is one left-aligned max-w-3xl column, with the caller's className on it", () => {
+    expect(out).toMatch(/^<div class="max-w-3xl doc">/);
+    expect(out).not.toContain("mx-auto");
+  });
+
+  it("puts the header inside the column, then the blocks in a Stack", () => {
+    expect(inOrder(out, ["Privacy", "Last updated", "PHOTO", "ONE", "TWO"])).toBe(true);
+    expect(out).toContain('<div class="flex flex-col gap-6">ONE<p>TWO</p></div>');
+  });
+
+  it("takes a Stack gap", () => {
+    expect(
+      renderToStaticMarkup(
+        <ProseLayout title="t" gap="lg">
+          x
+        </ProseLayout>,
+      ),
+    ).toContain('<div class="flex flex-col gap-8">x</div>');
   });
 });
 

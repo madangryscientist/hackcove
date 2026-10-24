@@ -1,4 +1,4 @@
-import { Caption, InlineLinks, SectionHeading, Subtitle, TextLink } from "@hackcove/ui";
+import { Caption, InlineLinks, SectionHeading, Stack, Subtitle, TextLink } from "@hackcove/ui";
 import { site } from "../content/site";
 
 /**
@@ -8,20 +8,20 @@ import { site } from "../content/site";
  */
 export function Contact() {
   return (
-    <div className="max-w-3xl">
-      <div className="pt-4 pb-14">
+    <Stack width="narrow" gap="lg" className="pt-4 pb-14">
+      <Stack gap="xs">
         <SectionHeading>Get in touch</SectionHeading>
-        <Subtitle className="mt-2">
+        <Subtitle>
           Email <TextLink href={`mailto:${site.contactEmail}`}>{site.contactEmail}</TextLink>.
         </Subtitle>
-        <Caption as="p" className="mt-8">
-          {site.legalName}
-        </Caption>
-        <InlineLinks className="mt-2">
+      </Stack>
+      <Stack gap="xs">
+        <Caption as="p">{site.legalName}</Caption>
+        <InlineLinks>
           <TextLink href="/privacy">Privacy</TextLink>
           <TextLink href="/terms">Terms</TextLink>
         </InlineLinks>
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   );
 }

@@ -77,7 +77,9 @@ describe("legal static HTML", () => {
 });
 
 describe("legal footer", () => {
-  test("a Divider sits above the footer", () => {
-    expect(privacyHtml).toContain('<hr class="border-t border-slate-200/70 mt-16"/><footer');
+  test("a Divider opens the footer", () => {
+    expect(privacyHtml).toContain(
+      '<footer class="mt-8"><hr class="border-t border-slate-200/70"/>',
+    );
   });
 });

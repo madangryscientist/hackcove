@@ -3,7 +3,7 @@ import { Card } from "./ui.js";
 import { Container } from "./Container.js";
 import { cx } from "./cx.js";
 import { PageHeader, PageHeaderContent, type PageHeaderProps } from "./PageHeader.js";
-import { Stack } from "./Stack.js";
+import { STACK_WIDTH, Stack, type StackGap } from "./Stack.js";
 
 // Compositions of the layout foundation. None sets a page width or outer padding of its own; the
 // ones that narrow their content do it inside the Container they are rendered in.
@@ -76,6 +76,30 @@ export function FormLayout({
         </Stack>
       </form>
     </>
+  );
+}
+
+/**
+ * A text page: header, then `children` stacked `gap` apart (`md` by default), all in one `narrow`
+ * (`max-w-3xl`) reading column that starts at the Container's left edge (it is not re-centred, so
+ * the title does not jump). Unlike `FormLayout` the header sits inside the column, so its `actions`
+ * stay beside the text instead of at the Container's far edge. `className` goes on the column.
+ */
+export function ProseLayout({
+  gap,
+  className,
+  children,
+  ...header
+}: PageHeaderProps & {
+  gap?: StackGap | undefined;
+  className?: string;
+  children?: ReactNode;
+}): ReactElement {
+  return (
+    <div className={cx(STACK_WIDTH.narrow, className)}>
+      <PageHeader {...header} />
+      <Stack gap={gap}>{children}</Stack>
+    </div>
   );
 }
 

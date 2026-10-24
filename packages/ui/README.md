@@ -40,7 +40,7 @@ export const Example = () => (
 ## What is exported
 
 - Primitives: `Card`, `EpicHeader`, `Empty`, `PageTitle` (deprecated: use `PageHeader`), `Pill`, `groupByEpic`, `Markdown`.
-- Layout (see Layout): `AppShell`, `appShellRootClass`, `Container`, `PageHeader`, `Stack`, `Section`, and the page layouts `ListLayout`, `DetailLayout`, `FormLayout`, `CardGrid`, `SidebarLayout`, `FullBleedLayout`, `CenteredLayout`.
+- Layout (see Layout): `AppShell`, `appShellRootClass`, `Container`, `PageHeader`, `Stack`, `Section`, and the page layouts `ListLayout`, `DetailLayout`, `FormLayout`, `ProseLayout`, `CardGrid`, `SidebarLayout`, `FullBleedLayout`, `CenteredLayout`.
 - Typography roles (each pins size + weight, takes a `color` and an `as`): `Display`, `Lead`,
   `PageHeading`, `SectionHeading`, `SubsectionHeading`, `ModalHeading`, `Subtitle`, `Overline`,
   `Body`, `BodyStrong`, `Caption`. Three opt-in props, none changing today's look: `SectionHeading rule`
@@ -122,10 +122,13 @@ import { AppShell, PageHeader, Section, Stack, appShellRootClass } from "@hackco
 - **`PageHeader`** is the top of every page: optional `breadcrumbs`, the `title` (a `PageHeading`),
   `subtitle`, `actions` (right of the title from `sm`, under it on a phone) and `tabs` under it. Its
   fixed bottom margin puts every page's first block at the same y.
-- **`Stack`** spaces blocks in a column: `gap="sm"` (`gap-4`) inside a group, `md` (`gap-6`, the
-  default) between blocks, `lg` (`gap-8`) between groups. Use it instead of `space-y-*`.
-  **`Section`** is a `<section>` Stack (`sm` by default) with an optional `SectionHeading` `title`
-  and `actions` beside it.
+- **`Stack`** spaces blocks in a column: `gap="xs"` (`gap-2`) between lines of one text block (a
+  heading, the line under it), `sm` (`gap-4`) inside a group, `md` (`gap-6`, the default) between
+  blocks, `lg` (`gap-8`) between groups. Use it instead of `space-y-*`. `width` caps the column:
+  `narrow` (`max-w-3xl`, a reading measure), `wide` (`max-w-5xl`), `full` (`w-full`) or `default`
+  (nothing). A capped Stack starts at the Container's left edge and is never re-centred.
+  **`Section`** is a `<section>` Stack (`sm` by default) with an optional `SectionHeading` `title`,
+  `actions` beside it and the same `width`.
 
 ### Page layouts
 
@@ -140,6 +143,11 @@ except the last four.
 - **`FormLayout`**: use this for a create or edit page. A `max-w-3xl` `<form>` that starts at the
   Container's left edge (it is not re-centred, so the title does not jump), with an `actions` row at
   the end. Other props (`onSubmit`, `action`) go on the `<form>`.
+- **`ProseLayout`**: use this for a text page (privacy, terms, a CV, an about page). One `narrow`
+  (`max-w-3xl`) column that starts at the Container's left edge (not re-centred, so the title does
+  not jump): the header, then `children` in a `Stack` (`gap` prop, `md` by default). Unlike
+  `FormLayout` the header sits inside the column, so its `actions` stay beside the text.
+  `className` goes on the column.
 - **`CardGrid`**: use this for stat tiles or a gallery of cards. `columns` is `2`, `3` (default) or
   `4`: one column on a phone, two from `sm`, `columns` from `lg`.
 - **`SidebarLayout`**: use this when a `rail` of navigation sits beside the content. Render it in

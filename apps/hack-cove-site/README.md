@@ -28,13 +28,16 @@ string and component in `src/` is listed, each with one of three calls:
 | `SiteShell.tsx`: the brand link's `site-header text-base font-bold tracking-tight text-slate-900` | `AppShell` `brand` slot (ticket 1824), which owns the brand type. The `site-header` marker class is gone |
 | `cv-print.css`: `header:has(.site-header)` hidden and `main > div:has(> .cv)` unpadded on paper | `AppShell` `hideChromeInPrint` (ticket 1897), set on the CV page only. The CV prints to the same three A4 pages, pixel-identical; the other pages now print their header, since the old rule hid it everywhere |
 | `Team.tsx` / `Projects.tsx` (was `CaseStudies.tsx`): `<SectionHeading className="mb-4">` + a sibling block | `Section title="…"` (heading plus `gap-4`): pixel-identical. |
+| `Projects.tsx`, `Team.tsx`, `Contact.tsx`, `LegalPage.tsx`, `Cv.tsx`: a hand-set `max-w-3xl` on each block | `Section width="narrow"`, `Stack width="narrow"` and `ProseLayout` (tickets 1825, 1838): the same `max-w-3xl`, left-aligned. `LegalPage` and `Cv` are `ProseLayout` (header inside the column, as before); the CV keeps its `cv` print class on it. All eight captures (home, CV, privacy, terms at 375 and 1280) and the CV print are pixel-identical |
+| `Hero.tsx` | `max-w-3xl` on the `<header>` | `Stack width="narrow"` around an unchanged `<header>`: the Overline is an inline span, and as a flex item it would lose its line box and move the hero up 8px |
+| `Contact.tsx`, `LegalPage.tsx`: `mt-2` between a heading and its line, and between the legal name and its links; `mt-8` between those groups | `Stack gap="xs"` and `gap="lg"` (ticket 1899): pixel-identical. The legal footer's `mt-16` above the `Divider` is now the Stack's `lg` plus `mt-8` |
 
 ## Flagged (b)
 
 | file:line | What it does | Call |
 | --- | --- | --- |
-| `Hero.tsx:6`, `Projects.tsx:48`, `Team.tsx:40`, `Contact.tsx:11`, `LegalPage.tsx:12`, `Cv.tsx:132` | `max-w-3xl` reading measure on each block; `pb-16 sm:pb-24` between home sections; `mt-12` between CV sections (`Cv.tsx:103,143,155`); `mt-16` above the legal footer's `Divider` and its `pt-8` | (b) **1838** ProseLayout (site needs it too: noted there; **1825** is the width prop) |
-| `Projects.tsx:13,17,20,28`, `Team.tsx:25,29`, `Contact.tsx:14,21`, `Cv.tsx:35,40,46,150` | `mt-0.5 … mt-8` on `Body`/`Caption`/`Subtitle` and on the wrappers between a title, its line and its paragraph; on a project card `mt-2/3/4` between the name row, summary, list and links, and `flex flex-wrap items-center gap-x-3 gap-y-1` for the name beside its status `Pill` | (b) **1899** tight stacks for text blocks |
+| `Projects.tsx`, `Team.tsx`, `Cv.tsx`, `Hero.tsx` | `mt-0.5 … mt-8` on `Body`/`Caption`/`Subtitle`/`Display`/`Lead` where the step is not uniform in its block: a team member's name, role and bio (2px then 8px), a project card's name row, summary, list and links (8, 12, 16px), the hero (16, 24, 32px), a CV job (8, 12px). `xs` is 8px and one gap fits a whole Stack, so none of these fit; a 2px and a 4px step (`mt-0.5`, `mt-1`) would need a `2xs` | (b) **1899** (the `xs` gap landed; a `2xs` waits for a consumer that needs a whole Stack at 2–4px) |
+| `Projects.tsx`, `Team.tsx`, `Hero.tsx`, `Cv.tsx` | `pb-16 sm:pb-24` between home sections (a responsive step no `Stack` gap has); `mt-12` between CV sections and the CV's one wrapper `<div>` that lets them keep it (no gap is 48px) | (b) a larger, responsive section gap on `Stack` |
 | `global.css:12-15` | `html { background-color: #000000 }`: the canvas the Mocha cards sit on | (b) **1823** Mocha paints its own canvas (site needs it too: noted there; its canvas is black, not Mantle) |
 
 ## Custom, by design (c)

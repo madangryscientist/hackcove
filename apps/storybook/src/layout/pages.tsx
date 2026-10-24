@@ -16,6 +16,8 @@ import {
   KeyValueList,
   ListLayout,
   Pill,
+  ProseLayout,
+  Section,
   Select,
   Textarea,
   ToggleChip,
@@ -146,6 +148,40 @@ export function FormPage() {
         </Field>
       </Card>
     </FormLayout>
+  );
+}
+
+export function ProsePage() {
+  return (
+    <ProseLayout
+      breadcrumbs={
+        <Breadcrumbs
+          crumbs={[
+            <a key="home" href="#home" className={crumbLinkClass}>
+              Hack Cove
+            </a>,
+            "Privacy",
+          ]}
+        />
+      }
+      title="Privacy"
+      subtitle="Last updated 12 October 2026"
+      gap="lg"
+    >
+      <Section title="What we collect">
+        <Body as="p">
+          We keep the email address you write to us from and nothing else: no cookies, no analytics
+          and no accounts. A message stays in one inbox until the question it asks is answered.
+        </Body>
+        <Body as="p">
+          This paragraph is long on purpose: the column stops at the reading measure, so a line
+          holds a comfortable number of words however wide the window is.
+        </Body>
+      </Section>
+      <Section title="Who to ask">
+        <Body as="p">Write to the address in the footer and we reply within a working week.</Body>
+      </Section>
+    </ProseLayout>
   );
 }
 
