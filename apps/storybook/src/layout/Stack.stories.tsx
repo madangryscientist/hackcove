@@ -1,5 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Button, Card, PageHeader, Section, Stack, SubsectionHeading } from "@hackcove/ui";
+import {
+  Body,
+  Button,
+  Card,
+  Field,
+  Input,
+  PageHeader,
+  Section,
+  Stack,
+  SubsectionHeading,
+} from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 const meta: Meta = {
@@ -94,6 +104,66 @@ export const Widths: S = {
             </Card>
           </Stack>
         ))}
+      </Stack>
+    </DemoShell>
+  ),
+};
+
+/** `as="form"` is a `<form>` that spaces its fields: `onSubmit`, `action`, `method` and the other form props go on it. */
+export const AsForm: S = {
+  render: () => (
+    <DemoShell>
+      <PageHeader
+        title="Form"
+        subtitle='Stack as="form": the fields are spaced, the submit is yours.'
+      />
+      <Stack
+        as="form"
+        width="narrow"
+        aria-label="Invite a member"
+        onSubmit={(event) => event.preventDefault()}
+      >
+        <Field label="Name" htmlFor="stack-form-name">
+          <Input id="stack-form-name" />
+        </Field>
+        <Field label="Email" htmlFor="stack-form-email">
+          <Input id="stack-form-email" type="email" />
+        </Field>
+        <Button type="submit">Invite</Button>
+      </Stack>
+    </DemoShell>
+  ),
+};
+
+/** `as="ul"` and `as="ol"` draw a list with no markers; the children are `<li>`s, which Stack does not wrap. */
+export const AsList: S = {
+  render: () => (
+    <DemoShell>
+      <PageHeader
+        title="Lists"
+        subtitle='Stack as="ul" and as="ol": a spaced list, children are li.'
+      />
+      <Stack gap="lg" width="narrow">
+        <Stack as="ul" gap="sm" aria-label="Builds">
+          <li>
+            <Card>
+              <Body>Build 412 · 3 changed</Body>
+            </Card>
+          </li>
+          <li>
+            <Card>
+              <Body>Build 411 · 0 changed</Body>
+            </Card>
+          </li>
+        </Stack>
+        <Stack as="ol" gap="sm" aria-label="Steps">
+          <li>
+            <Body>1. Install the package.</Body>
+          </li>
+          <li>
+            <Body>2. Import the theme.</Body>
+          </li>
+        </Stack>
       </Stack>
     </DemoShell>
   ),

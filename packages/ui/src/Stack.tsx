@@ -1,5 +1,12 @@
-import { useId, type ReactElement, type ReactNode } from "react";
+import {
+  useId,
+  type ComponentPropsWithoutRef,
+  type ElementType,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import { cx } from "./cx.js";
+import type { Unstyled } from "./props.js";
 import { SectionHeading } from "./typography.js";
 
 export type StackGap = "xs" | "sm" | "md" | "lg" | "section";
@@ -30,29 +37,57 @@ export const STACK_WIDTH: Record<StackWidth, string | undefined> = {
  * `width` caps the column: `narrow` is a reading measure (`max-w-3xl`), `wide` is `max-w-5xl`, `full`
  * is the parent's whole width and `default` sets nothing. A capped Stack starts at its parent's left
  * edge (it is never re-centred), so its first line lines up with every other block on the page.
+ *
+ * `as` is a closed set: `div` (default), `section`, `form`, `ul` or `ol`. A `form` takes the form
+ * props (`onSubmit`, `action`, `method`, `noValidate`, ...). A `ul` or `ol` is drawn with no
+ * markers and its children are `<li>`s, as in `BulletList` and `Timeline`: the Stack does not wrap
+ * them, so a child is one list item and `Body as="li"` or a bare `<li>` both work.
  */
 export function Stack({
   gap = "md",
   width = "default",
-  as: Tag = "div",
+  as = "div",
   children,
   ...rest
-}: {
-  gap?: StackGap | undefined;
-  width?: StackWidth | undefined;
-  as?: "div" | "section";
-  children?: ReactNode;
-  "aria-labelledby"?: string | undefined;
-}): ReactElement {
+}: StackProps): ReactElement {
   return (
-    <Tag
-      className={cx("flex flex-col", STACK_GAP[gap], STACK_WIDTH[width], "*:data-page-header:mb-0")}
+    <Box
+      tag={as}
+      className={cx(
+        "flex flex-col",
+        (as === "ul" || as === "ol") && "list-none",
+        STACK_GAP[gap],
+        STACK_WIDTH[width],
+        "*:data-page-header:mb-0",
+      )}
       {...rest}
     >
       {children}
-    </Tag>
+    </Box>
   );
 }
+
+/** The element `as` picked, drawn with props already narrowed by `StackProps`. */
+function Box({
+  tag: Tag,
+  ...props
+}: { tag: ElementType; className: string; children: ReactNode } & Record<string, unknown>) {
+  return <Tag {...props} />;
+}
+
+type StackBase = {
+  gap?: StackGap | undefined;
+  width?: StackWidth | undefined;
+  children?: ReactNode;
+};
+
+type StackProps = StackBase &
+  (
+    | { as?: "div" | "section"; "aria-labelledby"?: string | undefined }
+    | ({ as: "form" } & Unstyled<Omit<ComponentPropsWithoutRef<"form">, "children">>)
+    | ({ as: "ul" } & Unstyled<Omit<ComponentPropsWithoutRef<"ul">, "children">>)
+    | ({ as: "ol" } & Unstyled<Omit<ComponentPropsWithoutRef<"ol">, "children">>)
+  );
 
 /** A `<section>` Stack with an optional `SectionHeading` title (which names it) and `actions` beside it. */
 export function Section({

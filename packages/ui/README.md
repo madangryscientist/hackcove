@@ -187,6 +187,10 @@ import { AppShell, PageHeader, Section, Stack, appShellRootClass } from "@hackco
   blocks, `lg` (`gap-8`) between groups, `section` (`gap-12`, `sm:gap-16`) between a page's top-level blocks. Use it instead of `space-y-*`. `width` caps the column:
   `narrow` (`max-w-3xl`, a reading measure), `wide` (`max-w-5xl`), `full` (`w-full`) or `default`
   (nothing). A capped Stack starts at the Container's left edge and is never re-centred.
+  `as` is `div` (default), `section`, `form`, `ul` or `ol`, and nothing else. A `form` Stack takes
+  the form props (`onSubmit`, `action`, `method`, `noValidate`, `aria-*`, `data-*`). A `ul` or `ol`
+  Stack has no markers and its children are `<li>`s (the Stack does not wrap them, as with
+  `BulletList` and `Timeline`; `Body as="li"` works).
   **`Section`** is a `<section>` Stack (`sm` by default) with an optional `SectionHeading` `title`,
   `actions` beside it and the same `width`.
 - **`Cluster`** spaces items in a row, the counterpart of `Stack`: `gap` is `xs` (`gap-2`), `sm`

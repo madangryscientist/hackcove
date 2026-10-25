@@ -6,7 +6,9 @@ import {
   Button,
   Cluster,
   ClusterGrow,
+  Card,
   ColourSchemeToggle,
+  Field,
   Input,
   NavTabs,
   PageHeader,
@@ -55,6 +57,24 @@ export function GalleryLayout() {
           <Stack gap="xs">
             <SubsectionHeading>Text block</SubsectionHeading>
             <Body as="p">A Stack at gap xs, in a narrow (max-w-3xl) column.</Body>
+          </Stack>
+          <Stack as="form" gap="sm" aria-label="Stack as form" onSubmit={(e) => e.preventDefault()}>
+            <Field label="Stack as form" htmlFor="gallery-stack-form">
+              <Input id="gallery-stack-form" placeholder="A form is a Stack" />
+            </Field>
+            <Button type="submit">Save</Button>
+          </Stack>
+          <Stack as="ul" gap="sm" aria-label="Stack as ul">
+            <li>
+              <Card>
+                <Body>Stack as ul: each child is an li, no markers.</Body>
+              </Card>
+            </li>
+            <li>
+              <Card>
+                <Body>Second item.</Body>
+              </Card>
+            </li>
           </Stack>
           <Cluster>
             <ClusterGrow>
