@@ -5,29 +5,39 @@ import { cx, focusRing } from "./cx.js";
 /**
  * A native checkbox with its label. `className` goes on the label, every other prop on the input.
  * `size="sm"` is `text-xs` and a smaller box, for a dense row. Leave `label` out for a bare box in
- * a table cell, and name it with `aria-label`.
+ * a table cell, and name it with `aria-label`. `align="start"` puts the box on the label's first
+ * line, for a label that wraps onto several; the default centres it on the whole label.
  */
 export function Checkbox({
   label,
   size = "md",
+  align = "center",
   className,
   ...rest
 }: {
   label?: ReactNode;
   size?: ControlSize | undefined;
+  align?: "center" | "start" | undefined;
 } & Omit<ComponentPropsWithoutRef<"input">, "type" | "size" | "width">): ReactElement {
   const small = size === "sm";
   return (
     <label
       className={cx(
-        "inline-flex cursor-pointer items-center text-slate-700",
+        "inline-flex cursor-pointer text-slate-700",
+        align === "start" ? "items-start" : "items-center",
         small ? "gap-1.5 text-xs" : "gap-2 text-sm",
         className,
       )}
     >
       <input
         type="checkbox"
-        className={cx(small ? "h-3.5 w-3.5" : "h-4 w-4", "accent-violet-600", focusRing)}
+        className={cx(
+          small ? "h-3.5 w-3.5" : "h-4 w-4",
+          align === "start" && "shrink-0",
+          align === "start" && (small ? "mt-px" : "mt-0.5"),
+          "accent-violet-600",
+          focusRing,
+        )}
         {...rest}
       />
       {label}

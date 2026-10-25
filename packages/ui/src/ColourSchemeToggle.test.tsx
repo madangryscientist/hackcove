@@ -101,6 +101,28 @@ describe("ColourSchemeToggle", () => {
     expect(button.getAttribute("aria-label")).toBe("Switch to dark theme");
   });
 
+  it("puts id and data-* on the button, and leaves its own props alone", () => {
+    const button = buttonOf(
+      mount(<ColourSchemeToggle id="theme" data-testid="toggle" className="ml-2" />),
+    );
+    expect(button.id).toBe("theme");
+    expect(button.dataset["testid"]).toBe("toggle");
+    expect(button.className).toContain("ml-2");
+    expect(button.getAttribute("aria-label")).toBe("Switch to dark theme");
+    expect(button.hasAttribute("aria-pressed")).toBe(false);
+  });
+
+  it("with store={false} switches and calls onChange but writes no localStorage", async () => {
+    const setItem = vi.spyOn(Storage.prototype, "setItem");
+    const onChange = vi.fn<(scheme: ColourScheme) => void>();
+    const button = buttonOf(mount(<ColourSchemeToggle store={false} onChange={onChange} />));
+    await click(button);
+    expect(root.classList.contains("dark")).toBe(true);
+    expect(onChange).toHaveBeenLastCalledWith("dark");
+    expect(setItem).not.toHaveBeenCalled();
+    expect(localStorage.getItem(KEY)).toBeNull();
+  });
+
   describe("hydrating the server markup", () => {
     /** Hydrate what the server rendered for `initial`, with `<html>` as the server left it. */
     async function hydrate(initial: ColourScheme | undefined, htmlClass: string) {

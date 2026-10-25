@@ -21,3 +21,19 @@ export const Bare: S = {
 export const Disabled: S = {
   render: () => <Checkbox label="Open now" disabled />,
 };
+/** `align="start"` puts the box on the first line of a label that wraps; the default centres it on all of them. */
+export const MultiLine: S = {
+  render: () => (
+    <div className="flex w-64 flex-col gap-4">
+      <Checkbox
+        label="Email me when a shop I follow posts a new find, and a weekly summary of the best ones"
+        defaultChecked
+      />
+      <Checkbox
+        align="start"
+        label="Email me when a shop I follow posts a new find, and a weekly summary of the best ones"
+        defaultChecked
+      />
+    </div>
+  ),
+};

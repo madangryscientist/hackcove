@@ -1,4 +1,4 @@
-import { useSyncExternalStore, type ReactElement } from "react";
+import { useSyncExternalStore, type ComponentPropsWithoutRef, type ReactElement } from "react";
 import {
   appliedColourScheme,
   applyColourScheme,
@@ -51,12 +51,16 @@ function subscribe(onChange: () => void): () => void {
  * the toggle swaps those classes, and `schemeClass` gives the same one for the server to render on `<html>`.
  * An app that knows the scheme on the server (from a cookie) passes it as `initial`, so the server
  * markup, the hydrating client and the `<html>` class agree; persist a change from `onChange`.
+ * `store={false}` skips `localStorage`, for an app that keeps the choice in a server cookie and
+ * writes it from `onChange`. Every other button prop (`id`, `data-*`, `aria-*`) goes on the button.
  */
 export function ColourSchemeToggle({
   className,
   onChange,
   schemes = { light: "", dark: "dark" },
   initial,
+  store = true,
+  ...rest
 }: {
   className?: string;
   onChange?: (scheme: ColourScheme) => void;
@@ -64,7 +68,12 @@ export function ColourSchemeToggle({
   schemes?: ColourSchemeClasses | undefined;
   /** The scheme the server rendered. What the server and the hydrating client show; the real state follows right after. Default `"light"`. */
   initial?: ColourScheme | undefined;
-}): ReactElement {
+  /** Remember the choice in `localStorage`. `false` leaves persisting to `onChange`. Default `true`. */
+  store?: boolean | undefined;
+} & Omit<
+  ComponentPropsWithoutRef<"button">,
+  "onChange" | "onClick" | "children" | "className" | "aria-label" | "title"
+>): ReactElement {
   const scheme = useSyncExternalStore(
     subscribe,
     () => appliedColourScheme(document.documentElement, schemes),
@@ -73,11 +82,12 @@ export function ColourSchemeToggle({
   const next: ColourScheme = scheme === "dark" ? "light" : "dark";
   return (
     <IconButton
+      {...rest}
       label={`Switch to ${next} theme`}
       className={className}
       onClick={() => {
         applyColourScheme(next, document.documentElement, schemes);
-        storeColourScheme(next);
+        if (store) storeColourScheme(next);
         onChange?.(next);
       }}
     >
