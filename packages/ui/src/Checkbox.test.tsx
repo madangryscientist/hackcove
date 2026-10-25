@@ -30,7 +30,10 @@ describe("Checkbox", () => {
     const centred = renderToStaticMarkup(<Checkbox label="Open now" />);
     expect(centred).toMatch(/<label[^>]*class="[^"]*items-center/);
     expect(centred).not.toContain("items-start");
-    expect(centred).not.toContain("shrink-0");
+    expect(centred).toMatch(/<input[^>]*class="[^"]*h-4 w-4 shrink-0/);
+    expect(renderToStaticMarkup(<Checkbox label="Paid" size="sm" />)).toMatch(
+      /<input[^>]*class="[^"]*h-3\.5 w-3\.5 shrink-0/,
+    );
 
     const start = renderToStaticMarkup(<Checkbox label="Open now" align="start" />);
     expect(start).toMatch(/<label[^>]*class="[^"]*items-start/);

@@ -6,7 +6,8 @@ import { cx, focusRing } from "./cx.js";
  * A native checkbox with its label. `className` goes on the label, every other prop on the input.
  * `size="sm"` is `text-xs` and a smaller box, for a dense row. Leave `label` out for a bare box in
  * a table cell, and name it with `aria-label`. `align="start"` puts the box on the label's first
- * line, for a label that wraps onto several; the default centres it on the whole label.
+ * line, for a label that wraps onto several; the default centres it on the whole label. The box
+ * keeps its size either way.
  */
 export function Checkbox({
   label,
@@ -33,7 +34,7 @@ export function Checkbox({
         type="checkbox"
         className={cx(
           small ? "h-3.5 w-3.5" : "h-4 w-4",
-          align === "start" && "shrink-0",
+          "shrink-0",
           align === "start" && (small ? "mt-px" : "mt-0.5"),
           "accent-violet-600",
           focusRing,
