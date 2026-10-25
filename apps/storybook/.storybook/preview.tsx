@@ -1,5 +1,5 @@
 import type { Preview } from "@storybook/react-vite";
-import { NONE, ThemeFrame, themeNames } from "./themes";
+import { ThemeFrame, themeNames } from "./themes";
 import "./tailwind.css";
 
 const preview: Preview = {
@@ -22,14 +22,14 @@ const preview: Preview = {
       },
     },
   },
-  initialGlobals: { theme: themeNames[0] ?? NONE },
+  initialGlobals: { theme: themeNames[0] },
   globalTypes: {
     theme: {
       description: "Theme (one per folder under themes/)",
       toolbar: {
         icon: "paintbrush",
         dynamicTitle: true,
-        items: [NONE, ...themeNames].map((name) => ({ value: name, title: name })),
+        items: themeNames.map((name) => ({ value: name, title: name })),
       },
     },
   },
@@ -40,7 +40,7 @@ const preview: Preview = {
         <Story />
       ) : (
         <ThemeFrame
-          theme={String(context.globals["theme"] ?? NONE)}
+          theme={String(context.globals["theme"] ?? themeNames[0])}
           bare={context.parameters["bare"] === true}
         >
           <Story />

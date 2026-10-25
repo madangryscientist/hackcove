@@ -16,8 +16,19 @@ async function open(page: Page, theme: string) {
   await page.getByText("amber", { exact: true }).waitFor();
 }
 
-const pillBackground = (page: Page, tone: string) =>
-  page.getByText(tone, { exact: true }).evaluate((el) => getComputedStyle(el).backgroundColor);
+/**
+ * The Pill's paint inside the theme frame, and the same classes on a probe placed outside every
+ * theme scope: the components' stock Tailwind utilities, which a theme must remap.
+ */
+const pillBackgrounds = (page: Page, tone: string) =>
+  page.getByText(tone, { exact: true }).evaluate((el) => {
+    const probe = document.createElement("span");
+    probe.className = el.className;
+    document.body.append(probe);
+    const stock = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return { themed: getComputedStyle(el).backgroundColor, stock };
+  });
 
 async function snapshot(page: Page, theme: string) {
   await open(page, theme);
@@ -26,8 +37,8 @@ async function snapshot(page: Page, theme: string) {
       .locator("[data-theme]")
       .first()
       .evaluate((el) => [...el.classList]),
-    amber: await pillBackground(page, "amber"),
-    slate: await pillBackground(page, "slate"),
+    amber: await pillBackgrounds(page, "amber"),
+    slate: await pillBackgrounds(page, "slate"),
   };
 }
 
@@ -35,22 +46,16 @@ test("the themes folder lists at least one theme", () => {
   expect(themes.length).toBeGreaterThan(0);
 });
 
-test("default is the components' own look: no theme scope", async ({ page }) => {
-  const plain = await snapshot(page, "default");
-  expect(plain.classes).toEqual([]);
-});
-
 for (const theme of themes) {
   const scope = themeScope(readFileSync(`${themesDir}/${theme}/theme.css`, "utf8"));
 
   test(`theme ${theme} remaps the slate and amber Pills under its own scope`, async ({ page }) => {
-    const plain = await snapshot(page, "default");
     const themed = await snapshot(page, theme);
 
     expect(scope).toBeDefined();
     expect(themed.classes).toEqual([scope]);
-    expect(themed.slate).not.toBe(plain.slate);
-    expect(themed.amber).not.toBe(plain.amber);
+    expect(themed.slate.themed).not.toBe(themed.slate.stock);
+    expect(themed.amber.themed).not.toBe(themed.amber.stock);
   });
 }
 
@@ -68,16 +73,13 @@ test("Overview / All themes lays out every theme, each under its own scope, with
     })),
   );
 
-  expect(panels).toHaveLength(themes.length + 1);
-
-  const plain = panels.find((panel) => panel.theme === "default");
-  expect(plain?.classes).toEqual([]);
+  expect(panels).toHaveLength(themes.length);
 
   for (const theme of themes) {
     const scope = themeScope(readFileSync(`${themesDir}/${theme}/theme.css`, "utf8"));
     const panel = panels.find((candidate) => candidate.theme === theme);
 
     expect(panel?.classes).toEqual([scope]);
-    expect(panel?.background).not.toBe(plain?.background);
+    expect(panel?.background).not.toBe("rgba(0, 0, 0, 0)");
   }
 });

@@ -6,8 +6,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./scope": "./src/scope.ts",
-    "./none": "./src/none.ts"
+    "./scope": "./src/scope.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

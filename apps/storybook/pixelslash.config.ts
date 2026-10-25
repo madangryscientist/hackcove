@@ -5,9 +5,8 @@
  */
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
-import { NONE } from "@hackcove/themes-shared/none";
 
-// Same list as the toolbar: the no-theme value, then one value per folder under themes/.
+// Same list as the toolbar: one value per folder under themes/.
 const themesDir = join(import.meta.dirname, "..", "..", "themes");
 const themes = readdirSync(themesDir, { withFileTypes: true })
   .filter((entry) => entry.isDirectory())
@@ -25,6 +24,6 @@ export default {
     command: `STATIC_DIR='${staticDir}' PORT=${port} bun '${join(import.meta.dirname, "e2e", "serve.ts")}'`,
     readyUrl: `${url}/iframe.html`,
   },
-  storybook: { url, globals: { theme: [NONE, ...themes] } },
+  storybook: { url, globals: { theme: themes } },
   variants: [{ name: "desktop", viewport: { width: 1280, height: 720 } }],
 };

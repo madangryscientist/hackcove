@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
-import { NONE, THEMES, themeNames, themeScope } from "@hackcove/themes-shared";
+import { THEMES, themeNames, themeScope } from "@hackcove/themes-shared";
 
-export { NONE, THEMES, themeNames };
+export { THEMES, themeNames };
 
 /**
- * Each theme remaps under its own scope class; `default` is the components' own Tailwind classes.
+ * Each theme remaps under its own scope class. A theme is required: there is no unthemed frame.
  * `bare` drops the frame's padding, for a story that is a whole page (the Layout stories).
  */
 export function ThemeFrame({

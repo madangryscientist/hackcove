@@ -1,9 +1,9 @@
-import { SCOPES } from "@hackcove/themes-shared";
+import { SCOPES, themeNames } from "@hackcove/themes-shared";
 import { THEME_KEY } from "./themeKey.js";
 
-/** The folder whose scope class is `scope` (the one the page ships with). */
+/** The folder whose scope class is `scope` (the one the page ships with), or the first theme. */
 export function folderOfScope(scope: string): string {
-  return Object.entries(SCOPES).find(([, value]) => value === scope)?.[0] ?? "";
+  return Object.entries(SCOPES).find(([, value]) => value === scope)?.[0] ?? themeNames[0] ?? "";
 }
 
 /**

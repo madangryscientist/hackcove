@@ -1,4 +1,3 @@
-import { NONE } from "./none.js";
 import { themeScope } from "./scope.js";
 
 // Every folder under themes/ ships a theme.css. Globbing them means a new theme appears in the
@@ -15,7 +14,7 @@ export const THEMES: Record<string, string> = Object.fromEntries(
 );
 export const themeNames = Object.keys(THEMES).toSorted();
 
-/** Folder name to the class its theme.css scopes under (`default` has none). */
+/** Folder name to the class its theme.css scopes under (every theme has one). */
 export const SCOPES: Record<string, string> = Object.fromEntries(
   Object.entries(THEMES).flatMap(([folder, css]) => {
     const scope = themeScope(css);
@@ -23,4 +22,4 @@ export const SCOPES: Record<string, string> = Object.fromEntries(
   }),
 );
 
-export { NONE, themeScope };
+export { themeScope };

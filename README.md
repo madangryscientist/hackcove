@@ -18,8 +18,8 @@ under the `@hackcove` scope (MIT, all `0.x`).
 | `apps/hack-cove-site` | (private) | The hack-cove.com website (Astro), built on the workspace components and the Mocha theme. |
 
 Each theme scopes under its own class, which goes on `<html>`: `.dark` for Mocha,
-`.thrifty-paper` for Thrifty Paper. With no theme, the look is the components' own default Tailwind
-classes; Storybook's `default` choice shows it.
+`.thrifty-paper` for Thrifty Paper. A theme is required: the components' stock Tailwind utilities
+are only what a theme remaps, never a look to ship.
 
 ## Use it
 

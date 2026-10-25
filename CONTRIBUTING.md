@@ -66,7 +66,9 @@ not disable a rule.
    `text-slate-900`, …) and never a `dark:` variant or a palette colour. A theme is the only place
    a palette lives; it remaps those utilities under its own scope class. The colour utilities a
    component may use are listed in `packages/ui/palette.json`. A new one is a palette change: add
-   it there and remap it in every theme in the same change.
+   it there and remap it in every theme in the same change. A theme is required: those stock
+   utilities are only what a theme remaps, never a look to ship, and Storybook offers no unthemed
+   choice.
 2. **A theme is a folder and nothing else registers it.** No theme name appears in code.
 3. **Almost no runtime dependencies.** `@hackcove/ui` has one approved dependency,
    `react-aria-components` (with `@internationalized/date`), for the date picker; its peers are react,
