@@ -1,6 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { Body, Breadcrumbs, Button, PageHeader, Tabs, type LinkRenderProps } from "@hackcove/ui";
+import {
+  Body,
+  Breadcrumbs,
+  Button,
+  NavTabs,
+  PageHeader,
+  Stack,
+  Tabs,
+  type LinkRenderProps,
+} from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Tabs" };
 export default meta;
@@ -11,6 +20,100 @@ const views = ["overview", "activity", "settings"].map((value) => ({
   label: value[0]?.toUpperCase() + value.slice(1),
   controls: "panel",
 }));
+
+/** `Tabs` switches a view in place; the panel it controls sits right under the row. */
+export const DoSwitchView: S = {
+  render: () => {
+    const [value, setValue] = useState("overview");
+    return (
+      <Stack>
+        <Tabs
+          label="Project views"
+          value={value}
+          onChange={setValue}
+          items={[
+            { value: "overview", label: "Overview", controls: "panel" },
+            { value: "activity", label: "Activity", controls: "panel" },
+            { value: "settings", label: "Settings", controls: "panel" },
+          ]}
+        />
+        <Body id="panel" role="tabpanel">
+          Showing {value}.
+        </Body>
+      </Stack>
+    );
+  },
+};
+
+/** Going to another page is not a tab: `NavTabs` are links, so the URL and history move. */
+export const DoSwitchPage: S = {
+  render: () => (
+    <NavTabs
+      label="Sections"
+      items={[
+        { label: "Quotes", href: "#quotes", active: true },
+        { label: "Invoices", href: "#invoices" },
+      ]}
+    />
+  ),
+};
+
+/** A `Tabs` row that only navigates leaves the URL, the back button and a new tab behind. */
+export const DontSwitchPage: S = {
+  render: () => {
+    const [value, setValue] = useState("quotes");
+    return (
+      <Tabs
+        label="Sections"
+        value={value}
+        onChange={(next) => {
+          setValue(next);
+          location.assign(`#${next}`);
+        }}
+        items={[
+          { value: "quotes", label: "Quotes" },
+          { value: "invoices", label: "Invoices" },
+        ]}
+      />
+    );
+  },
+};
+
+/** A `count` sits muted after the label and is read as part of the tab's name. */
+export const DoCount: S = {
+  render: () => {
+    const [value, setValue] = useState("shots");
+    return (
+      <Tabs
+        label="Assets"
+        value={value}
+        onChange={setValue}
+        items={[
+          { value: "shots", label: "Shots", count: 12 },
+          { value: "clips", label: "Clips", count: 3 },
+        ]}
+      />
+    );
+  },
+};
+
+/** A count typed into the label is plain text: it does not mute, and it cannot be styled the same. */
+export const DontCount: S = {
+  render: () => {
+    const [value, setValue] = useState("shots");
+    return (
+      <Tabs
+        label="Assets"
+        value={value}
+        onChange={setValue}
+        items={[
+          { value: "shots", label: "Shots (12)" },
+          { value: "clips", label: "Clips (3)" },
+        ]}
+      />
+    );
+  },
+};
 
 /** The caller owns `value`; click a tab, or Tab in and use the arrow keys, Home and End. */
 export const Default: S = {

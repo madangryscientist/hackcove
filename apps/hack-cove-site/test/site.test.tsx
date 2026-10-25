@@ -10,7 +10,7 @@ import { SiteNav } from "../src/components/SiteNav";
 import { Team } from "../src/components/Team";
 import { UiPage } from "../src/components/UiPage";
 import { type Person, type Project, site } from "../src/content/site";
-import { scopeClassOf, themes } from "../src/content/themes";
+import { themes } from "../src/content/themes";
 
 /* The point of these tests is that the words and the people survive rendering as
    REAL HTML — the reason the site is Astro-with-islands rather than an SPA. They
@@ -187,7 +187,8 @@ describe("the Hack Cove UI page", () => {
   test("it shows the install commands and the GitHub and npm links", () => {
     expect(html).toContain("bun add @hackcove/ui @hackcove/theme-catppuccin-mocha");
     for (const link of site.ui.links.items) expect(html).toContain(`href="${link.href}"`);
-    expect(html).toContain("Documentation for each component is coming soon.");
+    expect(html).toContain(site.ui.docs.text.replaceAll("'", "&#x27;"));
+    for (const link of site.ui.docs.links) expect(html).toContain(`href="${link.href}"`);
   });
 
   test("the theme list is the themes/* folders, read by the glob and not written in code", () => {
@@ -212,13 +213,5 @@ describe("the Hack Cove UI page", () => {
       expect(html).toContain(`<code`);
       expect(html).toContain(theme.scopeClass);
     }
-  });
-
-  test("the scope class is the first top-level class rule", () => {
-    expect(scopeClassOf("@custom-variant dark (&:is(.dark *));\n.dark {\n  --x: 1;\n}")).toBe(
-      "dark",
-    );
-    expect(scopeClassOf(".a-b {\n}\n.c {\n}")).toBe("a-b");
-    expect(scopeClassOf("body {}")).toBeUndefined();
   });
 });

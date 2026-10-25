@@ -9,6 +9,8 @@
    without touching a component.
    --------------------------------------------------------------------------- */
 
+import { componentPages } from "./components";
+
 export type Person = {
   /** First name only — how the team is introduced on this site. */
   name: string;
@@ -125,6 +127,7 @@ const ui = {
       },
       {
         text: "Import the theme in your CSS, after Tailwind, and point Tailwind at the components' build, since it skips node_modules:",
+        label: "css",
         code: [
           '@import "tailwindcss";',
           '@import "@hackcove/theme-catppuccin-mocha/theme.css";',
@@ -151,8 +154,12 @@ const ui = {
   },
   docs: {
     title: "Component docs",
-    status: "coming-soon" as const,
-    text: "Documentation for each component is coming soon.",
+    status: "available" as const,
+    text: "Each page leads with the one right way to use the component and its Do and Don't, then the usage rules, accessibility and every prop. The pages are written one component at a time. /ui/llms.txt is the same content as plain text, for agents.",
+    links: [
+      ...componentPages.map((page) => ({ label: page.name, href: `/ui/${page.slug}/` })),
+      { label: "llms.txt", href: "/ui/llms.txt" },
+    ],
   },
 };
 

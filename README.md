@@ -141,6 +141,7 @@ bunx nx run-many -t typecheck lint test build   # the gate
 bun run format:check                            # oxfmt, workspace-wide
 bunx nx run-many -t pack-check                  # npm pack --dry-run per package
 bunx nx e2e storybook                           # Playwright over the built Storybook (first time: bunx playwright install chromium)
+bunx nx e2e hack-cove-site                      # Playwright over the built site: the /ui/ pages under every theme
 bunx nx run storybook:storybook                 # http://localhost:6006
 bunx nx dev hack-cove-site                      # the website, http://localhost:4321
 ```

@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
-import { themeScope } from "../.storybook/scope";
+import { themeScope } from "@hackcove/themes-shared/scope";
 
 // Same source of truth as the toolbar switcher: one folder per theme under themes/.
 const themesDir = `${import.meta.dirname}/../../../themes`;

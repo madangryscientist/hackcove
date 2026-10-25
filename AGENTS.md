@@ -28,7 +28,8 @@ Consumers compose the parts and never restyle them.
 | `theme-catppuccin-mocha` | `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha`: one `theme.css`, shipped as-is. Dark; scope `.dark`. |
 | `theme-thrifty-paper` | `themes/thrifty-paper` | `@hackcove/theme-thrifty-paper`: one `theme.css`, shipped as-is. Light (Thrifty's cream paper); scope `.thrifty-paper`. |
 | `storybook` | `apps/storybook` | Storybook for the components; a toolbar switcher lists every `themes/*` folder. Its `e2e/` is the Playwright layer (`test:e2e`). Private. |
-| `hack-cove-site` | `apps/hack-cove-site` | The hack-cove.com Astro site. Builds `dist/` against the workspace `@hackcove/ui` and `@hackcove/theme-catppuccin-mocha` (`workspace:*`). `deploy.sh` direct-uploads to Cloudflare Pages; only Jacobus runs it. Private; not in `nx release`. |
+| `themes-shared` | `packages/themes-shared` | `@hackcove/themes-shared`: how Storybook and the docs find themes (the `themes/*/theme.css` glob and each theme's scope class). Private; not in `nx release`. |
+| `hack-cove-site` | `apps/hack-cove-site` | The hack-cove.com Astro site, with the `/ui/` component docs (pages built from the Storybook stories, a generated `props.json` and `/ui/llms.txt`). Builds `dist/` against the workspace `@hackcove/ui` and `@hackcove/theme-catppuccin-mocha` (`workspace:*`). `deploy.sh` direct-uploads to Cloudflare Pages; only Jacobus runs it. Private; not in `nx release`. |
 
 **One folder, one publishable package per theme.** Adding a theme is copying a folder
 (`README.md`, "How to add a theme"); nothing else registers it. **Each theme names its own scope
@@ -49,6 +50,7 @@ bunx nx run-many -t typecheck lint test build      # tsc strict · oxlint --type
 bun run format:check                               # oxfmt --check  (`bun run format` fixes)
 bunx nx run-many -t pack-check                     # npm pack --dry-run for every package
 bunx nx e2e storybook                              # Playwright: builds Storybook, serves it on 127.0.0.1:6007, flips every theme
+bunx nx e2e hack-cove-site                         # Playwright: builds the site, serves it on 127.0.0.1:4322, flips every theme on the /ui/ pages
 ```
 
 `bunx nx affected -t ...` for just what changed; `--skip-nx-cache` to force a rerun. Lint rules are

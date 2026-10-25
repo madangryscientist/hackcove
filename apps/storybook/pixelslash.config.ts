@@ -5,7 +5,7 @@
  */
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
-import { NONE } from "./.storybook/none";
+import { NONE } from "@hackcove/themes-shared/none";
 
 // Same list as the toolbar: the no-theme value, then one value per folder under themes/.
 const themesDir = join(import.meta.dirname, "..", "..", "themes");

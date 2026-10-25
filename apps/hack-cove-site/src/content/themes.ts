@@ -1,6 +1,8 @@
 /* The themes the /ui/ page lists, read from the repo's `themes/*` folders at build time. No theme is
    named here: a new folder with a `package.json` and a `theme.css` shows up on the next build. */
 
+import { THEMES, themeScope } from "@hackcove/themes-shared";
+
 export type Theme = {
   /** The folder under `themes/`, e.g. `catppuccin-mocha`. */
   folder: string;
@@ -17,11 +19,6 @@ const manifests = import.meta.glob<{ name: string; description: string }>(
   "../../../../themes/*/package.json",
   { eager: true, import: "default" },
 );
-const stylesheets = import.meta.glob<string>("../../../../themes/*/theme.css", {
-  eager: true,
-  query: "?raw",
-  import: "default",
-});
 
 const folderOf = (path: string) => path.split("/").slice(-2)[0] ?? path;
 
@@ -31,16 +28,6 @@ const titleOf = (folder: string) =>
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
-/** The class of the first top-level `.<class> { … }` rule, which is how each theme names its scope.
-    The same rule as `themeScope` in `apps/storybook/.storybook/scope.ts`: comments out, then a rule
-    that starts a line or follows `;` or `}`. */
-export const scopeClassOf = (css: string): string | undefined =>
-  /(?:^|[;}])\s*\.([\w-]+)\s*\{/.exec(css.replace(/\/\*[\s\S]*?\*\//g, ""))?.[1];
-
-const cssByFolder = new Map(
-  Object.entries(stylesheets).map(([path, css]) => [folderOf(path), css]),
-);
-
 export const themes: Theme[] = Object.entries(manifests)
   .map(([path, manifest]) => {
     const folder = folderOf(path);
@@ -49,7 +36,7 @@ export const themes: Theme[] = Object.entries(manifests)
       name: manifest.name,
       title: titleOf(folder),
       description: manifest.description,
-      scopeClass: scopeClassOf(cssByFolder.get(folder) ?? "") ?? "",
+      scopeClass: themeScope(THEMES[folder] ?? "") ?? "",
     };
   })
   .toSorted((a, b) => a.folder.localeCompare(b.folder));

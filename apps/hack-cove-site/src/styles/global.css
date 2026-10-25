@@ -8,3 +8,7 @@
 /* Tailwind skips node_modules, so tell it to scan the components' build for the
    utilities they use — otherwise their classes are absent from the bundle. */
 @source "../../node_modules/@hackcove/ui/dist";
+
+/* The docs pages render the Storybook stories (apps/storybook/src), whose layout classes (a
+   story's own `flex max-w-xl …`) are not in the components' build. */
+@source "../../../storybook/src";

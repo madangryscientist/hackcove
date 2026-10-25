@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Card, Empty, Pill } from "@hackcove/ui";
+import { Button, Card, Empty, Pill, Stack, SubsectionHeading } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Card" };
 export default meta;
@@ -25,6 +25,54 @@ function Table() {
     </table>
   );
 }
+
+/** `status` puts a Pill directly beside the title; `actions` stays at the far end. */
+export const DoStatus: S = {
+  render: () => (
+    <Card title="PixelSlash" status={<Pill tone="amber">Coming soon</Pill>}>
+      <Empty>Visual review for every pull request.</Empty>
+    </Card>
+  ),
+};
+
+/** A hand-built title row drifts from every other Card's: use `title` and `status`. */
+export const DontStatus: S = {
+  render: () => (
+    <Card>
+      <SubsectionHeading>PixelSlash</SubsectionHeading>
+      <Pill tone="amber">Coming soon</Pill>
+      <Empty>Visual review for every pull request.</Empty>
+    </Card>
+  ),
+};
+
+/** A `Stack` spaces the Cards; the gap is the one the whole library uses. */
+export const DoSpacing: S = {
+  render: () => (
+    <Stack>
+      <Card title="Open" count={3}>
+        <Empty>Three things to do.</Empty>
+      </Card>
+      <Card title="Done" count={12}>
+        <Empty>Twelve things finished.</Empty>
+      </Card>
+    </Stack>
+  ),
+};
+
+/** Cards with nothing between them butt together. Space them with `Stack` or `CardGrid`. */
+export const DontSpacing: S = {
+  render: () => (
+    <>
+      <Card title="Open" count={3}>
+        <Empty>Three things to do.</Empty>
+      </Card>
+      <Card title="Done" count={12}>
+        <Empty>Twelve things finished.</Empty>
+      </Card>
+    </>
+  ),
+};
 
 export const Default: S = {
   render: () => (

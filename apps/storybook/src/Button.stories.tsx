@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, ButtonLink, buttonClass, type LinkRenderProps } from "@hackcove/ui";
+import { Button, ButtonGroup, ButtonLink, buttonClass, type LinkRenderProps } from "@hackcove/ui";
 
 /** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
 function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
@@ -9,6 +9,64 @@ function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
 const meta: Meta = { title: "UI/Button" };
 export default meta;
 type S = StoryObj;
+
+/** One primary action per view, with the quieter variants beside it. */
+export const Default: S = {
+  render: () => (
+    <ButtonGroup label="Quote actions">
+      <Button>Save</Button>
+      <Button variant="outline">Cancel</Button>
+    </ButtonGroup>
+  ),
+};
+
+/** One primary action per view: the quieter variants carry the rest. */
+export const DoOnePrimary: S = {
+  render: () => (
+    <ButtonGroup>
+      <Button>Save</Button>
+      <Button variant="outline">Cancel</Button>
+    </ButtonGroup>
+  ),
+};
+
+/** Two primaries compete for the eye, and nobody can tell which action the view is about. */
+export const DontOnePrimary: S = {
+  render: () => (
+    <ButtonGroup>
+      <Button>Save</Button>
+      <Button>Save and close</Button>
+    </ButtonGroup>
+  ),
+};
+
+/** `disabledReason` greys the button and shows the reason on hover. */
+export const DoDisabledReason: S = {
+  render: () => <Button disabledReason="Pick a shop first">Save</Button>,
+};
+
+/** A bare `disabled` leaves the user guessing why nothing happens. */
+export const DontDisabledReason: S = {
+  render: () => <Button disabled>Save</Button>,
+};
+
+/** Going to another page is a link: `ButtonLink` keeps the anchor, middle-click and the URL. */
+export const DoNavigate: S = {
+  render: () => (
+    <ButtonLink href="#quotes" variant="outline">
+      Open quotes
+    </ButtonLink>
+  ),
+};
+
+/** A button that sets `location` loses middle-click, the status-bar URL and crawlability. */
+export const DontNavigate: S = {
+  render: () => (
+    <Button variant="outline" onClick={() => location.assign("#quotes")}>
+      Open quotes
+    </Button>
+  ),
+};
 
 export const Variants: S = {
   render: () => (

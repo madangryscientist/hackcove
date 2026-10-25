@@ -1,12 +1,4 @@
-import {
-  Body,
-  BulletList,
-  Card,
-  InlineLinks,
-  Pill,
-  SubsectionHeading,
-  TextLink,
-} from "@hackcove/ui";
+import { Body, BulletList, Card, InlineLinks, Pill, Stack, TextLink } from "@hackcove/ui";
 import type { Status } from "../content/site";
 
 const STATUS = {
@@ -16,8 +8,8 @@ const STATUS = {
 } as const;
 
 /**
- * A titled card with a status pill, an optional summary, a bulleted list and optional links: a
- * project on the home page, and each block of the PixelSlash page.
+ * A card titled with a status pill, an optional summary, a bulleted list and optional links: a
+ * project on the home page, a block of the PixelSlash page and the component docs on /ui/.
  */
 export function StatusCard({
   title,
@@ -34,34 +26,28 @@ export function StatusCard({
 }) {
   const { label, tone } = STATUS[status];
   return (
-    <Card as="article">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-        <SubsectionHeading>{title}</SubsectionHeading>
-        <Pill tone={tone}>{label}</Pill>
-      </div>
-      {summary && (
-        <Body as="p" className="mt-2">
-          {summary}
-        </Body>
-      )}
-      {items.length > 0 && (
-        <BulletList className="mt-3">
-          {items.map((item) => (
-            <Body as="li" key={item} color="secondary">
-              {item}
-            </Body>
-          ))}
-        </BulletList>
-      )}
-      {links && links.length > 0 && (
-        <InlineLinks separator="none" className="mt-4">
-          {links.map((link) => (
-            <TextLink key={link.href} href={link.href}>
-              {link.label}
-            </TextLink>
-          ))}
-        </InlineLinks>
-      )}
+    <Card as="article" title={title} status={<Pill tone={tone}>{label}</Pill>}>
+      <Stack gap="sm">
+        {summary && <Body as="p">{summary}</Body>}
+        {items.length > 0 && (
+          <BulletList>
+            {items.map((item) => (
+              <Body as="li" key={item} color="secondary">
+                {item}
+              </Body>
+            ))}
+          </BulletList>
+        )}
+        {links && links.length > 0 && (
+          <InlineLinks separator="none">
+            {links.map((link) => (
+              <TextLink key={link.href} href={link.href}>
+                {link.label}
+              </TextLink>
+            ))}
+          </InlineLinks>
+        )}
+      </Stack>
     </Card>
   );
 }

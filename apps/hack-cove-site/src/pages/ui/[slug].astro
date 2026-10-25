@@ -1,0 +1,21 @@
+---
+import { ComponentPage } from "../../components/ComponentPage";
+import { Contact } from "../../components/Contact";
+import { DocsFrame } from "../../components/DocsFrame";
+import { componentPageOf, componentPages } from "../../content/components";
+import { site } from "../../content/site";
+import Base from "../../layouts/Base.astro";
+
+export function getStaticPaths() {
+  return componentPages.map((page) => ({ params: { slug: page.slug } }));
+}
+
+const page = componentPageOf(Astro.params.slug ?? "");
+---
+
+<Base docs title={`${page.name} — Hack Cove UI — ${site.name}`} description={page.summary}>
+  <DocsFrame pathname={Astro.url.pathname}>
+    <ComponentPage page={page} />
+  </DocsFrame>
+  <Contact slot="footer" />
+</Base>

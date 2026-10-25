@@ -1,0 +1,35 @@
+{
+  "name": "@hackcove/themes-shared",
+  "version": "0.0.0",
+  "private": true,
+  "description": "How the repo's own apps (Storybook, the docs) find the themes: the themes/*/theme.css glob and the scope-class rule. Not published.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./scope": "./src/scope.ts",
+    "./none": "./src/none.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint -c ../../.oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/bun": "1.4.3",
+    "vite": "^8.3.4",
+    "vitest": "5.0.5"
+  },
+  "nx": {
+    "name": "themes-shared",
+    "tags": [
+      "kind:internal"
+    ],
+    "targets": {
+      "typecheck": {
+        "inputs": [
+          "default"
+        ]
+      }
+    }
+  }
+}

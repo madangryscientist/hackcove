@@ -13,6 +13,7 @@
     "visual:upload": "bun scripts/visual.ts --upload"
   },
   "dependencies": {
+    "@hackcove/themes-shared": "workspace:*",
     "@hackcove/ui": "workspace:*",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
@@ -37,6 +38,7 @@
         "inputs": [
           "default",
           "{workspaceRoot}/themes/*/theme.css",
+          "{workspaceRoot}/packages/themes-shared/src/**/*",
           "{workspaceRoot}/packages/ui/src/**/*"
         ],
         "outputs": [

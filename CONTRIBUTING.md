@@ -41,7 +41,8 @@ themes** shows every component in every theme on one page.
 | `packages/ui` | `@hackcove/ui` | The components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, react-dom, tailwindcss v4. No theme CSS. |
 | `themes/<name>` | `@hackcove/theme-<name>` | One `theme.css`, shipped as-is. |
 | `apps/storybook` | (private) | Storybook and the Playwright e2e. |
-| `apps/hack-cove-site` | (private) | The hack-cove.com Astro site; run it with `bunx nx dev hack-cove-site` (http://localhost:4321). |
+| `packages/themes-shared` | (private) | How Storybook and the docs find the themes: the `themes/*/theme.css` glob and each theme's scope class. |
+| `apps/hack-cove-site` | (private) | The hack-cove.com Astro site, including the `/ui/` component docs; run it with `bunx nx dev hack-cove-site` (http://localhost:4321). Its e2e is `bunx nx e2e hack-cove-site`. |
 
 ## The gate
 
@@ -53,6 +54,7 @@ bunx nx run-many -t typecheck lint test build   # tsc strict · oxlint + check-s
 bun run format:check                            # oxfmt --check (`bun run format` fixes)
 bunx nx run-many -t pack-check                  # npm pack --dry-run for every package
 bunx nx e2e storybook                           # Playwright: builds Storybook, flips every theme
+bunx nx e2e hack-cove-site                      # Playwright: builds the site, flips every theme on the /ui/ pages
 ```
 
 `bunx nx affected -t <target>` runs just what changed. Lint rules are all errors: fix the code, do

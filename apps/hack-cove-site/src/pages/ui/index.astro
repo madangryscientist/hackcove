@@ -1,0 +1,18 @@
+---
+import { Contact } from "../../components/Contact";
+import { DocsFrame } from "../../components/DocsFrame";
+import { UiPage } from "../../components/UiPage";
+import { sectionOf, site } from "../../content/site";
+import Base from "../../layouts/Base.astro";
+import { PageHeader } from "@hackcove/ui";
+
+const section = sectionOf("ui");
+---
+
+<Base docs title={`${section.name} — ${site.name}`} description={section.description}>
+  <DocsFrame pathname={Astro.url.pathname}>
+    <PageHeader title="Getting started" subtitle={site.ui.subtitle} />
+    <UiPage />
+  </DocsFrame>
+  <Contact slot="footer" />
+</Base>

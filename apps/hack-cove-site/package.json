@@ -3,16 +3,19 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev --port 4321",
+    "dev": "bun scripts/props.ts && astro dev --port 4321",
     "build": "astro build",
     "preview": "astro preview",
     "typecheck": "astro check --minimumFailingSeverity error",
     "lint": "oxlint -c ../../.oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
     "test": "vitest run",
-    "deploy": "./deploy.sh"
+    "deploy": "./deploy.sh",
+    "props": "bun scripts/props.ts",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@hackcove/theme-catppuccin-mocha": "workspace:*",
+    "@hackcove/themes-shared": "workspace:*",
     "@hackcove/ui": "workspace:*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
@@ -20,11 +23,14 @@
   "devDependencies": {
     "@astrojs/check": "0.9.11",
     "@astrojs/react": "7.1.0",
+    "@storybook/react": "^10.6.2",
     "@tailwindcss/vite": "^4.1.18",
     "@types/bun": "1.4.3",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "astro": "7.4.1",
+    "react-docgen-typescript": "^2.4.0",
+    "storybook": "^10.6.2",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.7.0",
     "vitest": "5.0.5",
@@ -41,10 +47,17 @@
           "default",
           "{workspaceRoot}/themes/*/theme.css",
           "{workspaceRoot}/themes/*/package.json",
-          "{workspaceRoot}/packages/ui/src/**/*"
+          "{workspaceRoot}/packages/ui/src/**/*",
+          "{workspaceRoot}/apps/storybook/src/**/*",
+          "{workspaceRoot}/packages/themes-shared/src/**/*",
+          "{projectRoot}/src/generated/props.json"
         ],
         "outputs": [
           "{projectRoot}/dist"
+        ],
+        "dependsOn": [
+          "props",
+          "^build"
         ]
       },
       "preview": {
@@ -68,11 +81,13 @@
       },
       "typecheck": {
         "dependsOn": [
+          "props",
           "^build"
         ]
       },
       "lint": {
         "dependsOn": [
+          "props",
           "^build"
         ]
       },
@@ -80,11 +95,39 @@
         "inputs": [
           "default",
           "{workspaceRoot}/themes/*/theme.css",
-          "{workspaceRoot}/themes/*/package.json"
+          "{workspaceRoot}/themes/*/package.json",
+          "{workspaceRoot}/apps/storybook/src/**/*",
+          "{workspaceRoot}/packages/themes-shared/src/**/*",
+          "{workspaceRoot}/packages/ui/src/**/*"
         ],
         "dependsOn": [
+          "props",
           "^build"
         ]
+      },
+      "props": {
+        "executor": "nx:run-script",
+        "options": {
+          "script": "props"
+        },
+        "inputs": [
+          "{projectRoot}/scripts/**/*",
+          "{workspaceRoot}/packages/ui/src/**/*",
+          "{workspaceRoot}/packages/ui/tsconfig*.json"
+        ],
+        "outputs": [
+          "{projectRoot}/src/generated/props.json"
+        ]
+      },
+      "e2e": {
+        "executor": "nx:run-script",
+        "options": {
+          "script": "test:e2e"
+        },
+        "dependsOn": [
+          "build"
+        ],
+        "cache": false
       }
     }
   }

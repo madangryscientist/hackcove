@@ -3,11 +3,13 @@ import { type Section, site } from "../content/site";
 
 const plain = (path: string) => (path.length > 1 ? path.replace(/\/+$/, "") : path);
 
-/** The section a path belongs to: its own page, or one of its `alsoPaths`. `/privacy` and `/` belong to none. */
+/** The section a path belongs to: its own page and the pages under it, or one of its `alsoPaths`. `/privacy` and `/` belong to none. */
 function sectionFor(pathname: string): Section | undefined {
   const here = plain(pathname);
   return site.sections.find((section) =>
-    [section.href, ...(section.alsoPaths ?? [])].some((path) => plain(path) === here),
+    [section.href, ...(section.alsoPaths ?? [])].some(
+      (path) => plain(path) === here || here.startsWith(`${plain(path)}/`),
+    ),
   );
 }
 

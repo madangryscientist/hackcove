@@ -11,11 +11,17 @@ import { SiteNav } from "./SiteNav";
 export function SiteShell({
   children,
   footer,
+  controls,
   pathname,
+  bleed = false,
   hideChromeInPrint = false,
 }: {
   children: ReactNode;
   footer?: ReactNode;
+  /** The header's end slot: the docs' theme picker. */
+  controls?: ReactNode;
+  /** Main without its Container, for a page that is a `SidebarLayout`. */
+  bleed?: boolean;
   /** The current path, so the nav can mark its section. */
   pathname: string;
   hideChromeInPrint?: boolean;
@@ -25,6 +31,8 @@ export function SiteShell({
       brand={<a href="/">{site.name}</a>}
       nav={<SiteNav pathname={pathname} />}
       footer={footer}
+      controls={controls}
+      bleed={bleed}
       hideChromeInPrint={hideChromeInPrint}
     >
       {children}
