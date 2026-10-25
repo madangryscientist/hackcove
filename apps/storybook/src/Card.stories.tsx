@@ -83,3 +83,12 @@ export const Dashed: S = {
     </div>
   ),
 };
+
+/** `dashed="filled"`: the dashed outline on a surface fill with more padding, for an empty state that reads as a panel. */
+export const DashedFilled: S = {
+  render: () => (
+    <div className="max-w-md">
+      <Card dashed="filled">No statements yet. Import one to get started.</Card>
+    </div>
+  ),
+};

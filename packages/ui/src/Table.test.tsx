@@ -35,6 +35,76 @@ describe("Table", () => {
   });
 });
 
+describe("Table plain", () => {
+  const plain = renderToStaticMarkup(
+    <Table variant="plain" caption="Quotes">
+      <TableHead>
+        <TableRow>
+          <TableHeaderCell>Ref</TableHeaderCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        <TableRow>
+          <TableCell>x</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>,
+  );
+
+  it("has no card border, fill or shadow, no header strip and no row hover", () => {
+    for (const c of [
+      "border-slate-200/70 bg-white",
+      "rounded-xl",
+      "shadow-sm",
+      "bg-slate-50",
+      "hover",
+    ]) {
+      expect(plain).not.toContain(c);
+    }
+    expect(plain).toContain('<div class="overflow-x-auto">');
+  });
+
+  it("keeps the row dividers and the head's small uppercase titles", () => {
+    expect(plain).toContain("[&amp;&gt;tr]:border-t [&amp;&gt;tr]:border-slate-200/70");
+    expect(plain).toContain("uppercase");
+  });
+});
+
+describe("rest props", () => {
+  it("every element passes id, data-* and aria-* through", () => {
+    const out = renderToStaticMarkup(
+      <Table id="t" data-a="1" aria-busy="true">
+        <TableHead id="h" data-a="2">
+          <TableRow id="hr" data-a="3">
+            <TableHeaderCell id="th" data-a="4">
+              x
+            </TableHeaderCell>
+          </TableRow>
+        </TableHead>
+        <TableBody id="b" data-a="5">
+          <TableRow id="r" data-a="6" aria-selected="true">
+            <TableCell id="td" data-a="7" colSpan={2}>
+              x
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
+    );
+    expect(out).toMatch(/<table[^>]*id="t"[^>]*data-a="1"[^>]*aria-busy="true"/);
+    for (const [tag, id, n] of [
+      ["thead", "h", "2"],
+      ["tr", "hr", "3"],
+      ["th", "th", "4"],
+      ["tbody", "b", "5"],
+      ["tr", "r", "6"],
+      ["td", "td", "7"],
+    ]) {
+      expect(out).toMatch(new RegExp(`<${tag}[^>]*id="${id}"[^>]*data-a="${n}"`));
+    }
+    expect(out).toContain('aria-selected="true"');
+  });
+});
+
 describe("TableHead", () => {
   it("is an uppercase, tracked, muted strip on a tinted fill", () => {
     const out = renderToStaticMarkup(
@@ -128,6 +198,21 @@ describe("TableCell", () => {
     expect(cell({ align: "end", children: "x" })).toContain("text-right");
     expect(cell({ numeric: true, children: "x" })).toContain("tabular-nums");
     expect(cell({ mono: true, children: "x" })).toContain("font-mono text-xs");
+  });
+});
+
+describe("TableCell secondary", () => {
+  it("draws a second muted line under the content", () => {
+    const out = cell({ children: "Naledi", secondary: "naledi@example.com" });
+    expect(out).toContain(
+      'Naledi<div class="text-xs font-normal text-slate-500">naledi@example.com</div>',
+    );
+  });
+
+  it("draws a second line of 0 and none for nothing", () => {
+    expect(cell({ children: "n", secondary: 0 })).toContain(">0</div>");
+    expect(cell({ children: "Naledi" })).not.toContain("font-normal");
+    expect(cell({ children: "Naledi", secondary: false })).not.toContain("font-normal");
   });
 });
 

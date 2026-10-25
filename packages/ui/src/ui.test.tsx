@@ -145,4 +145,27 @@ describe("Card", () => {
     expect(out).not.toContain("shadow-sm");
     expect(out).not.toContain("bg-white");
   });
+
+  it('dashed="filled" is the dashed shell on a surface fill with p-10; dashed stays p-8', () => {
+    const filled = renderToStaticMarkup(<Card dashed="filled">Nothing yet</Card>);
+    expect(filled).toContain("border-dashed");
+    expect(filled).toContain("bg-white");
+    expect(filled).toContain("p-10");
+    expect(filled).not.toContain("p-8");
+    expect(filled).not.toContain("shadow-sm");
+    const plain = renderToStaticMarkup(<Card dashed>Nothing yet</Card>);
+    expect(plain).toContain("p-8");
+    expect(plain).not.toContain("p-10");
+  });
+
+  it("passes id, data-* and aria-* to the root", () => {
+    const out = renderToStaticMarkup(
+      <Card id="empty" data-testid="c" aria-label="Empty" dashed>
+        x
+      </Card>,
+    );
+    expect(out).toMatch(/^<section[^>]*id="empty"/);
+    expect(out).toContain('data-testid="c"');
+    expect(out).toContain('aria-label="Empty"');
+  });
 });

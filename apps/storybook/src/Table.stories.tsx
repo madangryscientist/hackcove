@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
+  Card,
   Pill,
   rowLinkClass,
   Table,
@@ -62,5 +63,57 @@ export const Narrow: S = {
     <div className="max-w-xs">
       <QuotesTable />
     </div>
+  ),
+};
+
+/** `variant="plain"`: no card, no header strip, no row hover; only the row dividers. For a table inside a card. */
+export const Plain: S = {
+  render: () => (
+    <Card title="Quotes">
+      <Table variant="plain" caption="Quotes">
+        <TableHead>
+          <TableRow>
+            <TableHeaderCell>Client</TableHeaderCell>
+            <TableHeaderCell align="end">Premium</TableHeaderCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {quotes.map((q) => (
+            <TableRow key={q.ref}>
+              <TableCell tone="strong">{q.client}</TableCell>
+              <TableCell align="end" numeric>
+                {q.premium}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </Card>
+  ),
+};
+
+/** `secondary` is a second, muted line under the main content of a cell. */
+export const SecondLine: S = {
+  render: () => (
+    <Table caption="Clients">
+      <TableHead>
+        <TableRow>
+          <TableHeaderCell>Client</TableHeaderCell>
+          <TableHeaderCell align="end">Premium</TableHeaderCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {quotes.map((q) => (
+          <TableRow key={q.ref} data-ref={q.ref}>
+            <TableCell tone="strong" secondary={q.ref}>
+              {q.client}
+            </TableCell>
+            <TableCell align="end" numeric secondary="per month">
+              {q.premium}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   ),
 };

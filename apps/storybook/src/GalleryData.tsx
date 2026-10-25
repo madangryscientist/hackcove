@@ -15,7 +15,7 @@ import {
   TimelineItem,
 } from "@hackcove/ui";
 
-/** The Card variants (flush, header bar, dashed), the Callout actions and banner, the ListRow set, a Table with a stretched row link and a Timeline. */
+/** The Card variants (flush, header bar, dashed, dashed filled), the Callout actions and banner, the ListRow set, a Table with a stretched row link, a plain Table with a second-line cell and a Timeline. */
 export function GalleryData() {
   return (
     <div className="flex flex-col gap-4">
@@ -44,9 +44,25 @@ export function GalleryData() {
         </div>
       </Card>
       <Card dashed>No statements yet.</Card>
+      <Card dashed="filled">No quotes yet.</Card>
       <Callout tone="info" title="Heads up." actions={<Button size="sm">Retry</Button>}>
         The last import did not finish.
       </Callout>
+      <GalleryTables />
+      <Timeline label="Status history">
+        <TimelineItem title={<Pill tone="emerald">accepted</Pill>} time="12 Oct 2026, 09:14">
+          Client confirmed by phone.
+        </TimelineItem>
+        <TimelineItem title={<Pill tone="amber">sent</Pill>} time="10 Oct 2026, 16:02" />
+      </Timeline>
+    </div>
+  );
+}
+
+/** A Table with a stretched row link, then a plain Table with a second-line cell inside a Card. */
+function GalleryTables() {
+  return (
+    <>
       <Table caption="Quotes">
         <TableHead>
           <TableRow>
@@ -80,12 +96,26 @@ export function GalleryData() {
           </TableRow>
         </TableBody>
       </Table>
-      <Timeline label="Status history">
-        <TimelineItem title={<Pill tone="emerald">accepted</Pill>} time="12 Oct 2026, 09:14">
-          Client confirmed by phone.
-        </TimelineItem>
-        <TimelineItem title={<Pill tone="amber">sent</Pill>} time="10 Oct 2026, 16:02" />
-      </Timeline>
-    </div>
+      <Card title="Clients">
+        <Table variant="plain" caption="Clients">
+          <TableHead>
+            <TableRow>
+              <TableHeaderCell>Client</TableHeaderCell>
+              <TableHeaderCell align="end">Premium</TableHeaderCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell tone="strong" secondary="Q-1042">
+                Naledi Dlamini
+              </TableCell>
+              <TableCell align="end" numeric>
+                R 1 249.00
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </Card>
+    </>
   );
 }

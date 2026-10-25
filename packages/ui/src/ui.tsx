@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { cx } from "./cx.js";
 import { PageHeaderContent } from "./PageHeader.js";
 
@@ -55,24 +55,37 @@ function CardHeader({ heading, actions }: { heading: ReactNode; actions: ReactNo
 
 /** `dashed` stands alone; `bar` needs a title or actions to fill it. */
 function cardForm(
-  asked: { flush?: boolean | undefined; bar?: boolean | undefined; dashed?: boolean | undefined },
+  asked: {
+    flush?: boolean | undefined;
+    bar?: boolean | undefined;
+    dashed?: boolean | "filled" | undefined;
+  },
   hasHeader: boolean,
 ) {
-  const dashed = asked.dashed ?? false;
+  const dashed = Boolean(asked.dashed);
   return {
     flush: (asked.flush ?? false) && !dashed,
     bar: (asked.bar ?? false) && !dashed && hasHeader,
     dashed,
+    filled: asked.dashed === "filled",
   };
 }
 
-function cardClass(form: { flush: boolean; bar: boolean; dashed: boolean }): string {
-  const { flush, bar, dashed } = form;
+function cardClass(form: {
+  flush: boolean;
+  bar: boolean;
+  dashed: boolean;
+  filled: boolean;
+}): string {
+  const { flush, bar, dashed, filled } = form;
   const clipped = flush || bar;
-  const padding = dashed ? "p-8 text-center text-sm text-slate-500" : "p-5";
+  const padding = dashed
+    ? cx(filled ? "p-10" : "p-8", "text-center text-sm text-slate-500")
+    : "p-5";
   return cx(
     "rounded-xl border",
     dashed ? "border-dashed border-slate-300" : "border-slate-200/70 bg-white",
+    filled && "bg-white",
     !clipped && padding,
     !dashed && "shadow-sm",
     clipped && "overflow-hidden",
@@ -84,8 +97,9 @@ function cardClass(form: { flush: boolean; bar: boolean; dashed: boolean }): str
  * Three opt-in forms for data views: `flush` drops the padding and clips the corners, for a table
  * that runs edge to edge; `bar` puts the title, count and `actions` in a tinted strip across the
  * top, over the body; `dashed` is an empty-state shell, a dashed outline with centred muted text.
- * `dashed` stands alone: it ignores `flush` and `bar`. A flush card has no padding for a `title`,
- * so give it a `bar`.
+ * `dashed` stands alone: it ignores `flush` and `bar`; `dashed="filled"` is the same shell on a
+ * surface fill with more padding, for an empty state that must read as a panel. A flush card has no
+ * padding for a `title`, so give it a `bar`. Other props (`id`, `data-*`, `aria-*`) go on the root.
  */
 export function Card({
   title,
@@ -97,6 +111,7 @@ export function Card({
   as: Tag = "section",
   className,
   children,
+  ...rest
 }: {
   title?: string;
   count?: number;
@@ -106,18 +121,18 @@ export function Card({
   bar?: boolean;
   /** No padding and `overflow-hidden`: the body (a table, a list) fills the card. */
   flush?: boolean;
-  /** An empty-state shell: dashed outline, no shadow, no fill, centred muted text. */
-  dashed?: boolean;
+  /** An empty-state shell: dashed outline, no shadow, no fill, centred muted text. `"filled"` puts it on a surface fill with more padding. */
+  dashed?: boolean | "filled";
   as?: "section" | "article" | "div";
   className?: string;
   children: ReactNode;
-}) {
+} & Omit<ComponentPropsWithoutRef<"section">, "title" | "className" | "style" | "children">) {
   const form = cardForm({ flush, bar, dashed }, Boolean(title || actions));
   const heading = title && (
     <CardHeading title={title} count={count} bar={form.bar} spaced={!form.bar && !actions} />
   );
   return (
-    <Tag className={cx(cardClass(form), className)}>
+    <Tag {...rest} className={cx(cardClass(form), className)}>
       {form.bar ? (
         <>
           <CardBar heading={heading} actions={actions} />
