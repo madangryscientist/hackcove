@@ -141,7 +141,7 @@ for (const width of widths) {
 }
 
 for (const width of widths) {
-  test(`at ${width}px SidebarLayout fills the viewport; the rail stacks under md; the canvas keeps the Container's padding`, async ({
+  test(`at ${width}px SidebarLayout shares the header's grid; the rail stacks under md`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 800 });
@@ -151,24 +151,34 @@ for (const width of widths) {
     await title.waitFor();
     const railBox = await boxOf(rail, "rail");
     const titleBox = await boxOf(title, "title");
-    const { root, padding } = await page.evaluate(() => {
-      const row = document.querySelector("header nav")?.parentElement;
-      const box = document.querySelector("main > div")?.getBoundingClientRect();
+    const logoBox = await boxOf(page.locator("header a").first(), "logo");
+    const { contentRight, railFill } = await page.evaluate(() => {
+      const container = document.querySelector("main > div");
+      const style = container ? getComputedStyle(container) : null;
+      const aside = document.querySelector("aside");
+      const asideStyle = aside ? getComputedStyle(aside) : null;
       return {
-        root: { bottom: box?.bottom ?? 0 },
-        padding: row ? parseFloat(getComputedStyle(row).paddingLeft) : -1,
+        contentRight: container
+          ? container.getBoundingClientRect().right - parseFloat(style?.paddingRight ?? "0")
+          : -1,
+        railFill: asideStyle?.backgroundColor ?? "",
       };
     });
-    // No header height is written down: the layout is whatever the shell's column leaves.
-    expect(root.bottom).toBe(800);
+    // The rail is a list on the page background, at the header logo's x: no slab, no own edge.
+    expect(railBox.x).toBe(logoBox.x);
+    expect(railFill).toBe("rgba(0, 0, 0, 0)");
+    const canvasRight = await page.evaluate(() => {
+      const canvas = document.querySelector("aside + div");
+      return canvas ? canvas.getBoundingClientRect().right : -1;
+    });
+    expect(canvasRight).toBe(contentRight);
     if (width < 768) {
-      expect(railBox.width).toBe(width);
+      expect(railBox.width).toBe(contentRight - logoBox.x);
       expect(railBox.y + railBox.height).toBeLessThanOrEqual(titleBox.y);
-      expect(titleBox.x).toBe(padding);
+      expect(titleBox.x).toBe(logoBox.x);
     } else {
-      expect(railBox.width).toBe(240);
-      expect(railBox.y + railBox.height).toBe(800);
-      expect(titleBox.x).toBe(240 + padding);
+      expect(railBox.width).toBe(224);
+      expect(titleBox.x).toBeGreaterThan(railBox.x + railBox.width);
     }
   });
 

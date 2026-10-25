@@ -1,4 +1,5 @@
 ---
+import { Stack } from "@hackcove/ui";
 import { Contact } from "../components/Contact";
 import { PageIntro } from "../components/PageIntro";
 import { PixelSlashPage } from "../components/PixelSlashPage";
@@ -9,7 +10,9 @@ const section = sectionOf("pixelslash");
 ---
 
 <Base title={`${section.name} — ${site.name}`} description={section.description}>
-  <PageIntro title={section.name} subtitle={site.pixelslash.subtitle} />
-  <PixelSlashPage />
+  <Stack gap="section">
+    <PageIntro title={section.name} subtitle={site.pixelslash.subtitle} />
+    <PixelSlashPage />
+  </Stack>
   <Contact slot="footer" />
 </Base>

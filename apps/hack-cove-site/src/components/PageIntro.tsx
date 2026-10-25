@@ -1,10 +1,6 @@
-import { PageHeader, Stack } from "@hackcove/ui";
+import { PageHeader } from "@hackcove/ui";
 
-/** The title and subtitle that open a section page, at the site's reading measure. */
+/** The title and subtitle that open a section page; a child of the page's `Stack gap="section"`. */
 export function PageIntro({ title, subtitle }: { title: string; subtitle: string }) {
-  return (
-    <Stack width="narrow">
-      <PageHeader title={title} subtitle={subtitle} />
-    </Stack>
-  );
+  return <PageHeader title={title} subtitle={subtitle} />;
 }

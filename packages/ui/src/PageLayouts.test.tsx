@@ -1,4 +1,3 @@
-import { Container } from "./Container.js";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import {
@@ -114,7 +113,9 @@ describe("ProseLayout", () => {
 
   it("puts the header inside the column, then the blocks in a Stack", () => {
     expect(inOrder(out, ["Privacy", "Last updated", "PHOTO", "ONE", "TWO"])).toBe(true);
-    expect(out).toContain('<div class="flex flex-col gap-6">ONE<p>TWO</p></div>');
+    expect(out).toContain(
+      '<div class="flex flex-col gap-6 *:data-page-header:mb-0">ONE<p>TWO</p></div>',
+    );
   });
 
   it("takes a Stack gap", () => {
@@ -124,7 +125,7 @@ describe("ProseLayout", () => {
           x
         </ProseLayout>,
       ),
-    ).toContain('<div class="flex flex-col gap-8">x</div>');
+    ).toContain('<div class="flex flex-col gap-8 *:data-page-header:mb-0">x</div>');
   });
 });
 
@@ -148,19 +149,24 @@ describe("CardGrid", () => {
 describe("SidebarLayout", () => {
   const out = renderToStaticMarkup(<SidebarLayout rail="RAIL">CANVAS</SidebarLayout>);
 
-  it("fills the shell's flex column with no hard-coded height", () => {
-    expect(out).toMatch(/^<div class="flex min-h-0 flex-1 /);
-    expect(out).not.toMatch(/calc\(|100vh|57px|h-\[/);
+  it("lives in the shell's Container: no height, no full-bleed edge, no own padding", () => {
+    expect(out).not.toMatch(/calc\(|100vh|57px|h-\[|min-h-0|flex-1 flex-col/);
+    expect(out).not.toMatch(/\bpx-|\bpy-/);
   });
 
-  it("stacks the rail above the canvas below md and makes it w-60 from md", () => {
-    expect(out).toMatch(/^<div class="[^"]*flex-col md:flex-row/);
-    expect(out).toMatch(/<aside class="[^"]*w-full[^"]*md:w-60[^"]*">RAIL<\/aside>/);
+  it("stacks the rail above the canvas below md and makes it w-56 from md", () => {
+    expect(out).toMatch(/^<div class="[^"]*flex-col[^"]* md:flex-row/);
+    expect(out).toMatch(/<aside class="[^"]*w-full[^"]*md:w-56[^"]*">RAIL<\/aside>/);
     expect(inOrder(out, ["RAIL", "CANVAS"])).toBe(true);
   });
 
-  it("puts the canvas in a Container, so it keeps the shared padding", () => {
-    expect(out).toContain(renderToStaticMarkup(<Container className="py-8">CANVAS</Container>));
+  it("leaves the rail on the page background: no fill and no border", () => {
+    const aside = /<aside class="([^"]*)"/.exec(out)?.[1] ?? "";
+    expect(aside).not.toMatch(/\bbg-|\bborder/);
+  });
+
+  it("lets the canvas shrink so a wide table scrolls inside it", () => {
+    expect(out).toMatch(/<div class="min-w-0 flex-1">CANVAS<\/div>/);
   });
 });
 

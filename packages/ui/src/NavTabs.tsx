@@ -24,19 +24,31 @@ export function navTabClass(active: boolean, disabled = false): string {
   );
 }
 
-/** A row of pill links where the active one is filled. Plain <a> by default; a tab's `render` draws a router's Link. */
+/**
+ * A row of pill links where the active one is filled. Plain <a> by default; a tab's `render` draws a
+ * router's Link. `orientation="vertical"` stacks the same links in one column at the rail's width,
+ * for a `SidebarLayout` rail: the same pill, the same `aria-current`, one link per line.
+ */
 export function NavTabs({
   items,
   label,
+  orientation = "horizontal",
   className,
 }: {
   items: NavTab[];
   /** The accessible name of the nav landmark. */
   label: string;
+  orientation?: "horizontal" | "vertical";
   className?: string;
 }): ReactElement {
   return (
-    <nav aria-label={label} className={cx("flex flex-wrap gap-1 text-sm", className)}>
+    <nav
+      aria-label={label}
+      className={cx(
+        orientation === "vertical" ? "flex flex-col gap-1 text-sm" : "flex flex-wrap gap-1 text-sm",
+        className,
+      )}
+    >
       {items.map((item, index) => (
         <Tab key={item.href ?? index} item={item} />
       ))}

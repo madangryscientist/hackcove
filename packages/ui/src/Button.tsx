@@ -47,10 +47,17 @@ const BUSY = "cursor-progress opacity-85";
 
 /** Size, tone and variant: the look of a button, apart from its state. */
 export type ButtonLook = {
+  /** @default primary */
   variant?: ButtonVariant | undefined;
-  /** `sm` is compact, for table rows and toolbars. */
+  /**
+   * `sm` is compact, for table rows and toolbars.
+   * @default md
+   */
   size?: ButtonSize | undefined;
-  /** `danger` is red, for delete and clear. */
+  /**
+   * `danger` is red, for delete and clear.
+   * @default default
+   */
   tone?: ButtonTone | undefined;
 };
 

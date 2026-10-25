@@ -4,7 +4,7 @@ import { site } from "../content/site";
 /** The home page's way into the three sections: one card each, from `site.sections`. */
 export function SectionCards() {
   return (
-    <Section title="Explore" className="pb-16 sm:pb-24">
+    <Section title="Explore">
       <CardGrid>
         {site.sections.map((section) => (
           <Card key={section.slug} as="article" title={section.name}>

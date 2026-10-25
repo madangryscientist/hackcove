@@ -4,7 +4,7 @@ import { componentPages } from "../content/components";
 
 const plain = (path: string) => (path.length > 1 ? path.replace(/\/+$/, "") : path);
 
-/** The /ui/ pages' frame: the component list in the rail, the page in the canvas. */
+/** The /ui/ pages' frame: the component list as a vertical link rail on the page, the page beside it, in the same grid as the header. */
 export function DocsFrame({ pathname, children }: { pathname: string; children: ReactNode }) {
   const here = plain(pathname);
   const items: NavTab[] = [
@@ -16,6 +16,8 @@ export function DocsFrame({ pathname, children }: { pathname: string; children: 
     })),
   ];
   return (
-    <SidebarLayout rail={<NavTabs label="Components" items={items} />}>{children}</SidebarLayout>
+    <SidebarLayout rail={<NavTabs orientation="vertical" label="Components" items={items} />}>
+      {children}
+    </SidebarLayout>
   );
 }

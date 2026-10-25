@@ -10,7 +10,7 @@ export function Projects() {
   if (site.projects.length === 0) return null;
 
   return (
-    <Section title="Projects" width="narrow" className="pb-16 sm:pb-24">
+    <Section title="Projects">
       {site.projects.map((project) => (
         <StatusCard
           key={project.slug}

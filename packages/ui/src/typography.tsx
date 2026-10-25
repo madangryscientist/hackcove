@@ -172,14 +172,18 @@ export const Overline = typography(
 );
 
 /**
- * Default running text. `span` (inline; `as="p"` for a paragraph), text-sm/5 normal, secondary.
+ * Default running text. `span` (inline; `as="p"` for a paragraph), text-sm/5 normal, secondary. A
+ * block of it stops at a readable line length (`max-w-[72ch]`), wherever it sits.
  * `preserveNewlines` keeps the line breaks in the text (a user-typed note); runs of spaces still collapse.
  */
 export function Body<E extends ElementType = "span">({
   preserveNewlines,
   ...props
 }: TypographyProps<E> & { preserveNewlines?: boolean }): ReactElement {
-  const variant = cx(preserveNewlines && "whitespace-pre-line", "text-sm/5 font-normal");
+  const variant = cx(
+    preserveNewlines && "whitespace-pre-line",
+    "max-w-[72ch] text-sm/5 font-normal",
+  );
   return pinned("span", variant, "secondary", props);
 }
 

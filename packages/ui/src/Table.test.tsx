@@ -195,10 +195,16 @@ describe("TableCell", () => {
     const out = cell({ children: "x" });
     expect(out).toContain("<td");
     expect(out).toContain("text-left");
-    expect(out).toContain("whitespace-nowrap");
+    expect(out).not.toContain("whitespace-nowrap");
     expect(out).toContain("text-slate-700");
     expect(out).not.toContain("tabular-nums");
     expect(out).not.toContain("font-mono");
+  });
+
+  it("wraps prose at no less than min-w-48, and keeps a numeric or mono cell on one line", () => {
+    expect(cell({ children: "x" })).toContain("min-w-48");
+    expect(cell({ numeric: true, children: "1" })).toContain("whitespace-nowrap");
+    expect(cell({ mono: true, children: "x" })).toContain("whitespace-nowrap");
   });
 
   it("tone strong is medium slate-900 and muted is slate-500", () => {

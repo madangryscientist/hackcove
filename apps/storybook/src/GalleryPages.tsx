@@ -59,10 +59,11 @@ export function GalleryPages() {
       <PageBox label="CardGrid">
         <StatTiles columns={4} />
       </PageBox>
-      <PageBox label="SidebarLayout" bleed>
+      <PageBox label="SidebarLayout">
         <SidebarLayout
           rail={
             <NavTabs
+              orientation="vertical"
               label="Organisations"
               items={[
                 { label: "Hack Cove", href: "#hc", active: true },

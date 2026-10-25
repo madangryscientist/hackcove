@@ -2,9 +2,18 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { Section, Stack } from "./Stack.js";
 
+// Every Stack drops the bottom margin of a PageHeader that is its direct child.
+const DROP = "*:data-page-header:mb-0";
+
 describe("Stack", () => {
   it("is a flex column with the md gap by default", () => {
-    expect(renderToStaticMarkup(<Stack>x</Stack>)).toBe('<div class="flex flex-col gap-6">x</div>');
+    expect(renderToStaticMarkup(<Stack>x</Stack>)).toBe(
+      `<div class="flex flex-col gap-6 ${DROP}">x</div>`,
+    );
+  });
+
+  it("drops the bottom margin of a PageHeader child, so the gap is the only space under it", () => {
+    expect(renderToStaticMarkup(<Stack>x</Stack>)).toContain(DROP);
   });
 
   it("maps xs, sm and lg to gap-2, gap-4 and gap-8", () => {
@@ -15,7 +24,7 @@ describe("Stack", () => {
 
   it("maps section to the responsive page rhythm, gap-12 then sm:gap-16", () => {
     expect(renderToStaticMarkup(<Stack gap="section">x</Stack>)).toBe(
-      '<div class="flex flex-col gap-12 sm:gap-16">x</div>',
+      `<div class="flex flex-col gap-12 sm:gap-16 ${DROP}">x</div>`,
     );
   });
 
@@ -25,7 +34,7 @@ describe("Stack", () => {
     ["full", "w-full"],
   ] as const)("maps width %s to %s, left-aligned", (width, cls) => {
     const out = renderToStaticMarkup(<Stack width={width}>x</Stack>);
-    expect(out).toBe(`<div class="flex flex-col gap-6 ${cls}">x</div>`);
+    expect(out).toBe(`<div class="flex flex-col gap-6 ${cls} ${DROP}">x</div>`);
     expect(out).not.toContain("mx-auto");
   });
 });
@@ -39,7 +48,7 @@ describe("Section", () => {
     );
     const id = /<h2 [^>]*id="([^"]+)"/.exec(out)?.[1];
     expect(id).toBeDefined();
-    expect(out).toContain(`<section class="flex flex-col gap-4" aria-labelledby="${id}">`);
+    expect(out).toContain(`<section class="flex flex-col gap-4 ${DROP}" aria-labelledby="${id}">`);
     expect(out).toContain(">All</button>");
   });
 
@@ -50,12 +59,12 @@ describe("Section", () => {
           body
         </Section>,
       ),
-    ).toBe('<section class="flex flex-col gap-2 max-w-3xl">body</section>');
+    ).toBe(`<section class="flex flex-col gap-2 max-w-3xl ${DROP}">body</section>`);
   });
 
   it("renders no heading row and no label without a title or actions", () => {
     expect(renderToStaticMarkup(<Section>body</Section>)).toBe(
-      '<section class="flex flex-col gap-4">body</section>',
+      `<section class="flex flex-col gap-4 ${DROP}">body</section>`,
     );
   });
 });

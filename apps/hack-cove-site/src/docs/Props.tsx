@@ -1,17 +1,17 @@
 import {
   Body,
+  BodyStrong,
+  Caption,
+  Code,
+  Divider,
+  KeyValue,
+  KeyValueList,
   Stack,
   SubsectionHeading,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRow,
 } from "@hackcove/ui";
 import propsJson from "../generated/props.json";
 import { Prose } from "./Prose.js";
-import type { ComponentDoc, PropsJson } from "./types.js";
+import type { ComponentDoc, PropDoc, PropsJson } from "./types.js";
 
 const all: PropsJson = propsJson;
 
@@ -20,6 +20,35 @@ export function docOf(name: string): ComponentDoc {
   const doc = all[name];
   if (doc === undefined) throw new Error(`<Props of="${name}">: not in props.json`);
   return doc;
+}
+
+/** One prop: its name, what it does, then its type and default. Stacked, so it reads at any width. */
+function PropEntry({ prop }: { prop: PropDoc }) {
+  return (
+    <Stack gap="xs">
+      <div>
+        <BodyStrong>
+          <Code>{prop.name}</Code>
+        </BodyStrong>
+        {prop.required && <Caption> required</Caption>}
+      </div>
+      {prop.description && (
+        <Body as="p">
+          <Prose text={prop.description} />
+        </Body>
+      )}
+      <KeyValueList align="start">
+        <KeyValue label="Type">
+          <Code>{prop.type}</Code>
+        </KeyValue>
+        {prop.default !== undefined && (
+          <KeyValue label="Default">
+            <Code>{prop.default}</Code>
+          </KeyValue>
+        )}
+      </KeyValueList>
+    </Stack>
+  );
 }
 
 /** One component's props, read from its types and JSDoc in `packages/ui`. */
@@ -33,35 +62,12 @@ export function Props({ of }: { of: string }) {
           <Prose text={description.replace(/\s*\n\s*/g, " ")} />
         </Body>
       )}
-      {props.length > 0 && (
-        <Table caption={`${name} props`}>
-          <TableHead>
-            <TableRow>
-              <TableHeaderCell>Prop</TableHeaderCell>
-              <TableHeaderCell>Type</TableHeaderCell>
-              <TableHeaderCell>Default</TableHeaderCell>
-              <TableHeaderCell>Description</TableHeaderCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {props.map((prop) => (
-              <TableRow key={prop.name}>
-                <TableCell mono tone="strong">
-                  {prop.name}
-                  {prop.required && " *"}
-                </TableCell>
-                <TableCell mono>{prop.type}</TableCell>
-                <TableCell mono tone="muted">
-                  {prop.default ?? "—"}
-                </TableCell>
-                <TableCell>
-                  <Prose text={prop.description} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      )}
+      {props.map((prop) => (
+        <Stack key={prop.name} gap="sm">
+          <Divider />
+          <PropEntry prop={prop} />
+        </Stack>
+      ))}
     </Stack>
   );
 }

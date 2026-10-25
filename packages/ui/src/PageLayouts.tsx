@@ -1,6 +1,5 @@
 import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
 import { Card } from "./ui.js";
-import { Container } from "./Container.js";
 import { cx } from "./cx.js";
 import { PageHeader, PageHeaderContent, type PageHeaderProps } from "./PageHeader.js";
 import { STACK_WIDTH, Stack, type StackGap } from "./Stack.js";
@@ -127,13 +126,11 @@ export function CardGrid({
 }
 
 /**
- * A full-height `rail` beside the `children` canvas. Render it in `<AppShell bleed>`: it fills what
- * the shell's flex column leaves under the header, so no header height is written down. The rail is
- * `md:w-60` and stacks above the canvas below `md`; the canvas keeps the Container's padding.
- *
- * It deliberately breaks the shared left edge from `md` up: a full-height rail needs the viewport's
- * left edge, so the rail starts at x=0 and the canvas at the rail's width plus the Container's
- * padding (264 at 1280), not at the header logo's x. Below `md` every layout agrees.
+ * A `rail` of links beside the `children` canvas, in the Container the shell already gives every
+ * page (a plain `<AppShell>`, no `bleed`): the rail starts at the header logo's x and the canvas
+ * ends at the header's right edge. The rail has no background and no border, so it is a list of
+ * links on the page; a `NavTabs orientation="vertical"` is its content. From `md` it is `w-56` with
+ * the canvas filling the rest; below `md` it stacks above the canvas.
  */
 export function SidebarLayout({
   rail,
@@ -143,14 +140,9 @@ export function SidebarLayout({
   children: ReactNode;
 }): ReactElement {
   return (
-    <div className="flex min-h-0 flex-1 flex-col md:flex-row">
-      <aside className="w-full shrink-0 border-b border-slate-200 bg-slate-50 p-4 md:w-60 md:border-r md:border-b-0">
-        {rail}
-      </aside>
-      <div className="min-w-0 flex-1">
-        {/* py-8 is AppShell's own main padding: the canvas starts at the same y as a Container page. */}
-        <Container className="py-8">{children}</Container>
-      </div>
+    <div className="flex flex-col gap-8 md:flex-row md:gap-10">
+      <aside className="w-full shrink-0 md:w-56">{rail}</aside>
+      <div className="min-w-0 flex-1">{children}</div>
     </div>
   );
 }

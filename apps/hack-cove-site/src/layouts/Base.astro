@@ -1,30 +1,29 @@
 ---
 import "../styles/global.css";
 import { appShellRootClass } from "@hackcove/ui";
-import { THEMES } from "@hackcove/themes-shared";
+import { SCOPES, THEMES } from "@hackcove/themes-shared";
 import { themeScope } from "@hackcove/themes-shared/scope";
 import siteCss from "@hackcove/theme-catppuccin-mocha/theme.css?inline";
 import { SiteShell } from "../components/SiteShell";
 import { ThemePicker } from "../components/ThemePicker";
 import { site } from "../content/site";
+import { themes } from "../content/themes";
 import { folderOfScope, themeScript } from "../content/themeScript";
 
 type Props = {
   title?: string;
   description?: string;
   hideChromeInPrint?: boolean;
-  /** The /ui/ docs: a theme picker in the header and every theme's CSS on the page, main without a Container. */
-  docs?: boolean;
 };
 const {
   title = site.name,
   description = site.tagline,
   hideChromeInPrint = false,
-  docs = false,
 } = Astro.props;
 // The class the site ships with (the theme global.css imports), which the picker starts on.
 const siteScope = themeScope(siteCss) ?? "";
 const themeCss = Object.values(THEMES).join("\n");
+const pickerItems = themes.map((theme) => ({ value: theme.folder, label: theme.title }));
 const canonical = new URL(Astro.url.pathname, site.url).href;
 ---
 
@@ -43,14 +42,20 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary" />
-    {docs && <style set:html={themeCss} />}
-    {docs && <script is:inline set:html={themeScript} />}
+    <style set:html={themeCss} />
+    <script is:inline set:html={themeScript} />
   </head>
   <body>
-    <SiteShell pathname={Astro.url.pathname} hideChromeInPrint={hideChromeInPrint} bleed={docs}>
+    <SiteShell pathname={Astro.url.pathname} hideChromeInPrint={hideChromeInPrint}>
       <slot />
       {Astro.slots.has("footer") && <slot name="footer" slot="footer" />}
-      {docs && <ThemePicker slot="controls" selected={folderOfScope(siteScope)} />}
+      <ThemePicker
+        slot="controls"
+        client:load
+        items={pickerItems}
+        scopes={SCOPES}
+        selected={folderOfScope(siteScope)}
+      />
     </SiteShell>
   </body>
 </html>

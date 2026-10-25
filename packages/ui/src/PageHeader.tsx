@@ -13,7 +13,7 @@ export type PageHeaderProps = {
   tabs?: ReactNode;
 };
 
-/** The header block without its bottom margin; PageHeader adds the margin, PageTitle does not. */
+/** The header block without its bottom margin; PageHeader adds the margin (a `Stack` child drops it), PageTitle does not. */
 export function PageHeaderContent({
   breadcrumbs,
   title,
@@ -23,7 +23,7 @@ export function PageHeaderContent({
   className,
 }: PageHeaderProps & { className?: string }): ReactElement {
   return (
-    <div className={className}>
+    <div data-page-header="" className={className}>
       {breadcrumbs && <div className="mb-2">{breadcrumbs}</div>}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
@@ -37,7 +37,11 @@ export function PageHeaderContent({
   );
 }
 
-/** The top of a page: breadcrumbs, title, subtitle, actions and tabs. Its fixed bottom margin puts every page's first block at the same y. */
+/**
+ * The top of a page: breadcrumbs, title, subtitle, actions and tabs. Its fixed bottom margin puts
+ * every page's first block at the same y; as a direct child of a `Stack` it has none, so the Stack's
+ * gap is the only space under it.
+ */
 export function PageHeader({
   className,
   ...props

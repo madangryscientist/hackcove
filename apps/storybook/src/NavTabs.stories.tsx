@@ -19,6 +19,24 @@ export const Default: S = {
   ),
 };
 
+/** `orientation="vertical"`: one link per line, for a `SidebarLayout` rail. The same pills and `aria-current`. */
+export const Vertical: S = {
+  render: () => (
+    <div className="w-56">
+      <NavTabs
+        orientation="vertical"
+        label="Sections"
+        items={[
+          { label: "Overview", href: "/" },
+          { label: "Button", href: "/button", active: true },
+          { label: "Card", href: "/card" },
+          { label: "Tabs", href: "/tabs" },
+        ]}
+      />
+    </div>
+  ),
+};
+
 /** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
 function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
   return <a href={`#${to}`} {...rest} />;

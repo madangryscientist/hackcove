@@ -64,6 +64,13 @@ describe("a story's snippet", () => {
   });
 });
 
+const looksOf = (name: string) =>
+  Object.fromEntries(
+    docOf(name)
+      .props.filter((p) => ["variant", "size", "tone"].includes(p.name))
+      .map((p) => [p.name, p.default]),
+  );
+
 describe("props.json", () => {
   test("is current: it equals what react-docgen-typescript reads from packages/ui now", () => {
     const onDisk: unknown = JSON.parse(readFileSync(PROPS_JSON, "utf8"));
@@ -76,6 +83,11 @@ describe("props.json", () => {
       expect(names).not.toContain("className");
       expect(names).not.toContain("style");
     }
+  });
+
+  test("shows the same defaults for Button and ButtonLink, which share one look", () => {
+    expect(looksOf("Button")).toEqual(looksOf("ButtonLink"));
+    expect(looksOf("Button")["size"]).toBe("md");
   });
 });
 

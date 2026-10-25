@@ -1,4 +1,5 @@
 ---
+import { Stack } from "@hackcove/ui";
 import { Contact } from "../components/Contact";
 import { CvLink } from "../components/CvLink";
 import { PageIntro } from "../components/PageIntro";
@@ -10,8 +11,10 @@ const section = sectionOf("contracting");
 ---
 
 <Base title={`${section.name} — ${site.name}`} description={section.description}>
-  <PageIntro title={section.name} subtitle={site.intro} />
-  <Team />
-  <CvLink />
+  <Stack gap="section">
+    <PageIntro title={section.name} subtitle={site.intro} />
+    <Team />
+    <CvLink />
+  </Stack>
   <Contact slot="footer" />
 </Base>

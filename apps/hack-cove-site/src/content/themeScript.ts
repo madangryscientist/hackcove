@@ -1,35 +1,22 @@
 import { SCOPES } from "@hackcove/themes-shared";
-import { NONE } from "@hackcove/themes-shared/none";
+import { THEME_KEY } from "./themeKey.js";
 
-/** The folder whose scope class is `scope` (the one the page ships with), or `default`. */
+/** The folder whose scope class is `scope` (the one the page ships with). */
 export function folderOfScope(scope: string): string {
-  return Object.entries(SCOPES).find(([, value]) => value === scope)?.[0] ?? NONE;
+  return Object.entries(SCOPES).find(([, value]) => value === scope)?.[0] ?? "";
 }
 
 /**
- * The picker's whole script, as the text Astro inlines in `<head>`. It applies the remembered theme
- * before the first paint, then wires the `<select>`. Nothing else on the site runs JS.
+ * The text Astro inlines in `<head>`: it applies the remembered theme before the first paint, so a
+ * chosen theme does not flash the site's own. The picker island does the rest.
  */
 export const themeScript = `
   const scopes = ${JSON.stringify(SCOPES)};
-  const none = ${JSON.stringify(NONE)};
-  const KEY = "hackcove-theme";
-  const root = document.documentElement;
-  const apply = (folder) => {
-    for (const scope of Object.values(scopes)) root.classList.remove(scope);
-    if (scopes[folder]) root.classList.add(scopes[folder]);
-  };
   let saved = null;
-  try { saved = localStorage.getItem(KEY); } catch {}
-  const known = saved === none || (saved !== null && saved in scopes);
-  if (known) apply(saved);
-  document.addEventListener("DOMContentLoaded", () => {
-    const select = document.querySelector("[data-theme-picker]");
-    if (!select) return;
-    if (known) select.value = saved;
-    select.addEventListener("change", () => {
-      apply(select.value);
-      try { localStorage.setItem(KEY, select.value); } catch {}
-    });
-  });
+  try { saved = localStorage.getItem(${JSON.stringify(THEME_KEY)}); } catch {}
+  if (saved !== null && saved in scopes) {
+    const root = document.documentElement;
+    for (const scope of Object.values(scopes)) root.classList.remove(scope);
+    root.classList.add(scopes[saved]);
+  }
 `;

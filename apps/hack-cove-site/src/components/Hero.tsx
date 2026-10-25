@@ -1,15 +1,13 @@
-import { Display, Overline, Stack } from "@hackcove/ui";
+import { Display, Overline } from "@hackcove/ui";
 import { site } from "../content/site";
 
 export function Hero() {
-  // The Stack is only the reading measure. The header inside keeps normal block flow: the Overline
-  // is an inline span, and as a flex item it would lose its line box (8px) and move the hero.
+  // Plain block flow, not a Stack: the Overline is an inline span, and as a flex item it would lose
+  // its line box (8px) and move the hero.
   return (
-    <Stack width="narrow" className="pb-12 sm:pb-16">
-      <header>
-        <Overline>{site.legalName}</Overline>
-        <Display className="mt-4">{site.tagline}</Display>
-      </header>
-    </Stack>
+    <header>
+      <Overline>{site.legalName}</Overline>
+      <Display className="mt-4">{site.tagline}</Display>
+    </header>
   );
 }

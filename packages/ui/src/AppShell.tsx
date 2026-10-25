@@ -129,8 +129,9 @@ function HeaderSlots({
 /**
  * The page frame: a sticky one-row header, an optional second `subnav` row, the main area and an
  * optional footer. Header, main and footer each sit in a `Container`, so pages never set their own
- * width or padding. `bleed` drops main's Container (the header keeps its own). Main is a flex
- * column, so a full-height child (`SidebarLayout`) is `flex-1 min-h-0` and needs no header height.
+ * width or padding. `bleed` drops main's Container (the header keeps its own), for a layout that
+ * needs the whole width (`FullBleedLayout`). Main is a flex column. `SidebarLayout` needs no
+ * `bleed`: its rail and canvas share the header's Container.
  *
  * The header row is laid out by its slots, left to right: `brand`, `nav`, then `header` (anything
  * the slots do not cover), then `controls`, pushed to the end. An app writes no wrapper or

@@ -47,7 +47,16 @@ export function Stack({
   "aria-labelledby"?: string | undefined;
 }): ReactElement {
   return (
-    <Tag className={cx("flex flex-col", GAP[gap], STACK_WIDTH[width], className)} {...rest}>
+    <Tag
+      className={cx(
+        "flex flex-col",
+        GAP[gap],
+        STACK_WIDTH[width],
+        "*:data-page-header:mb-0",
+        className,
+      )}
+      {...rest}
+    >
       {children}
     </Tag>
   );

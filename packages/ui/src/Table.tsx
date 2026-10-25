@@ -142,9 +142,16 @@ export function TableHeaderCell({
   );
 }
 
+/** The wrapping rule: a figure or code never breaks; prose wraps, down to `min-w-48`. */
+function figureClass(numeric: boolean, mono: boolean): string {
+  if (!numeric && !mono) return "min-w-48";
+  return cx("whitespace-nowrap", numeric && "tabular-nums", mono && "font-mono text-xs");
+}
+
 /**
  * A `<td>`. `tone` is the text weight and colour; `numeric` sets tabular figures, `mono` a small mono
- * face. `secondary` is a second, muted line under the content.
+ * face. `secondary` is a second, muted line under the content. One rule for wrapping: prose wraps
+ * onto more lines (never narrower than `min-w-48`, so it scrolls the table before it becomes a sliver), and a `numeric` or `mono` cell (a figure, a code, a type) never breaks.
  */
 export function TableCell({
   align = "start",
@@ -163,16 +170,7 @@ export function TableCell({
   children?: ReactNode;
 } & Rest<"td", "align">): ReactElement {
   return (
-    <td
-      {...rest}
-      className={cx(
-        "whitespace-nowrap px-4 py-3",
-        ALIGN[align],
-        TONE[tone],
-        numeric && "tabular-nums",
-        mono && "font-mono text-xs",
-      )}
-    >
+    <td {...rest} className={cx("px-4 py-3", ALIGN[align], TONE[tone], figureClass(numeric, mono))}>
       {children}
       {secondary != null && secondary !== false && (
         <div className="text-xs font-normal text-slate-500">{secondary}</div>

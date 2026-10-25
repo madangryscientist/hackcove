@@ -37,6 +37,23 @@ describe("NavTabs", () => {
   });
 });
 
+describe("NavTabs orientation", () => {
+  it("is a wrapping row by default", () => {
+    const out = renderToStaticMarkup(<NavTabs items={items} label="Main" />);
+    expect(out).toContain("flex-wrap");
+    expect(out).not.toContain("flex-col");
+  });
+
+  it('stacks one link per line with orientation="vertical", with the same pills and aria-current', () => {
+    const out = renderToStaticMarkup(<NavTabs items={items} label="Main" orientation="vertical" />);
+    expect(out).toMatch(/<nav aria-label="Main" class="[^"]*flex-col/);
+    expect(out).not.toContain("flex-wrap");
+    expect(out.match(/<a /g)).toHaveLength(3);
+    expect(out.match(/aria-current="page"/g)).toHaveLength(1);
+    expect(out).toMatch(/<a href="\/stores"[^>]*aria-current="page"/);
+  });
+});
+
 describe("navTabClass", () => {
   it("gives an inactive tab a hover fill", () => {
     expect(navTabClass(false)).toContain("hover:bg-slate-100");

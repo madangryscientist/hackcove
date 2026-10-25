@@ -51,6 +51,11 @@ describe("typography", () => {
     expect(lg).not.toContain("size=");
   });
 
+  it("Body stops at a readable 72ch line length, as a paragraph or inline", () => {
+    expect(renderToStaticMarkup(<Body as="p">x</Body>)).toContain("max-w-[72ch]");
+    expect(renderToStaticMarkup(<Body>x</Body>)).toContain("max-w-[72ch]");
+  });
+
   it("Body `preserveNewlines` keeps a newline as a line break and is opt-in", () => {
     const out = renderToStaticMarkup(
       <Body as="p" preserveNewlines>

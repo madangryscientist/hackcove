@@ -22,7 +22,7 @@ function TeamMember({ person }: { person: Person }) {
 
 export function Team() {
   return (
-    <Section title="The team" width="narrow" className="pb-8">
+    <Section title="The team">
       <Card>
         <div className="grid gap-8 sm:grid-cols-2">
           {site.team.map((person) => (
