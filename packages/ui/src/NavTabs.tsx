@@ -15,11 +15,12 @@ export type NavTab = {
 
 const BASE = `rounded-lg px-3 py-1.5 transition ${focusRing}`;
 
-/** The classes of one tab, for a router's own <Link>. */
-export function navTabClass(active: boolean): string {
+/** The classes of one tab, for a router's own <Link>. A `disabled` one drops the hover fill. */
+export function navTabClass(active: boolean, disabled = false): string {
   return cx(
     BASE,
-    active ? "bg-slate-100 font-medium text-slate-900" : "text-slate-600 hover:bg-slate-100",
+    active ? "bg-slate-100 font-medium text-slate-900" : "text-slate-600",
+    !active && !disabled && "hover:bg-slate-100",
   );
 }
 

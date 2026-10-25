@@ -43,6 +43,60 @@ export const WithDisabledOption: S = {
   },
 };
 
+/** A disabled option keeps its `title` on hover as the reason; the arrow keys skip it. */
+export const WithDisabledReason: S = {
+  render: () => {
+    const [value, setValue] = useState("split");
+    return (
+      <SegmentedControl
+        label="Split"
+        items={[
+          { value: "split", label: "Split" },
+          { value: "even", label: "Even" },
+          { value: "custom", label: "Custom", disabled: true, title: "Needs two or more people" },
+        ]}
+        value={value}
+        onChange={setValue}
+      />
+    );
+  },
+};
+
+/** A `count` sits muted after the label and is part of the option's name ("Shots 12"). */
+export const WithCounts: S = {
+  render: () => {
+    const [value, setValue] = useState("shots");
+    return (
+      <SegmentedControl
+        label="Assets"
+        items={[
+          { value: "shots", label: "Shots", count: 12 },
+          { value: "clips", label: "Clips", count: 3 },
+          { value: "notes", label: "Notes", count: 0 },
+        ]}
+        value={value}
+        onChange={setValue}
+      />
+    );
+  },
+};
+
+/** `disabled` on the group disables every option, e.g. until the page has hydrated. */
+export const Disabled: S = {
+  render: () => (
+    <SegmentedControl
+      label="Range"
+      items={[
+        { value: "day", label: "Daily" },
+        { value: "week", label: "Weekly" },
+      ]}
+      value="week"
+      onChange={() => {}}
+      disabled
+    />
+  ),
+};
+
 /** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
 function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
   return <a href={`#${to}`} {...rest} />;

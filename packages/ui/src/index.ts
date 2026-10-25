@@ -61,7 +61,7 @@ export {
   type ColourScheme,
 } from "./colourScheme.js";
 export { NavTabs, navTabClass, type NavTab } from "./NavTabs.js";
-export { Tabs, type Tab } from "./Tabs.js";
+export { Tabs, type Tab, type TabsProps } from "./Tabs.js";
 export { SegmentedControl, type Segment } from "./SegmentedControl.js";
 export { ToggleChip } from "./ToggleChip.js";
 export { FilterGroup } from "./FilterGroup.js";

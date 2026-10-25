@@ -76,9 +76,80 @@ describe.each(kinds)("%s", (_name, { Component, group, role, selected }) => {
     const onChange = vi.fn<(value: string) => void>();
     const out = render("day", onChange);
     const dream = out.querySelectorAll("button")[2];
-    expect(dream?.disabled).toBe(true);
+    expect(dream?.getAttribute("aria-disabled")).toBe("true");
     act(() => dream?.click());
     expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("keeps a disabled option's title as its reason, in the page and out of the tab order", () => {
+    const out = mount(
+      <Component
+        items={[
+          { value: "a", label: "A" },
+          { value: "b", label: "B", disabled: true, title: "Needs a second shot" },
+        ]}
+        value="a"
+        onChange={() => {}}
+        label="Range"
+      />,
+    );
+    const [a, b] = [...out.querySelectorAll("button")];
+    expect(b?.getAttribute("title")).toBe("Needs a second shot");
+    expect(b?.getAttribute("aria-disabled")).toBe("true");
+    expect(b?.hasAttribute("disabled")).toBe(false);
+    expect(b?.getAttribute("tabindex")).toBe("-1");
+    expect(a?.hasAttribute("aria-disabled")).toBe(false);
+  });
+
+  it("puts a count after the label, in the accessible name", () => {
+    const out = mount(
+      <Component
+        items={[
+          { value: "a", label: "Shots", count: 12 },
+          { value: "b", label: "Clips", count: 0 },
+          { value: "c", label: "Notes" },
+        ]}
+        value="a"
+        onChange={() => {}}
+        label="Range"
+      />,
+    );
+    expect([...out.querySelectorAll("button")].map((button) => button.textContent)).toEqual([
+      "Shots 12",
+      "Clips 0",
+      "Notes",
+    ]);
+  });
+
+  it("disables every option with the group: no tab stop, no choice, no arrow movement", () => {
+    const onChange = vi.fn<(value: string) => void>();
+    const out = mount(
+      <Component items={items} value="day" onChange={onChange} label="Range" disabled />,
+    );
+    const buttons = [...out.querySelectorAll("button")];
+    expect(out.querySelector(`[role=${group}]`)?.getAttribute("aria-disabled")).toBe("true");
+    expect(buttons.map((button) => button.getAttribute("aria-disabled"))).toEqual([
+      "true",
+      "true",
+      "true",
+      "true",
+    ]);
+    expect(stops(out)).toEqual(["-1", "-1", "-1", "-1"]);
+    act(() => buttons[3]?.click());
+    press(buttons[0], "ArrowRight");
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it("gives a link option its title and count", () => {
+    const out = renderToStaticMarkup(
+      <Component
+        label="Range"
+        value="a"
+        items={[{ value: "a", label: "A", href: "/a", count: 3, title: "Three of them" }]}
+      />,
+    );
+    expect(out).toContain('title="Three of them"');
+    expect(out).toContain(">3</span>");
   });
 
   it("gives the current option the only tab stop, or the first enabled when none is current", () => {
@@ -172,6 +243,37 @@ describe("Tabs", () => {
     expect(out).toContain("border-b border-slate-200");
     expect(out.match(/border-violet-600/g)).toHaveLength(1);
     expect(out.match(/border-transparent/g)).toHaveLength(3);
+  });
+
+  it("fills the current tab as a pill, with no rule, for variant=pill", () => {
+    const out = renderToStaticMarkup(
+      <Tabs items={items} value="day" onChange={() => {}} label="Range" variant="pill" />,
+    );
+    expect(out).not.toContain("border-b");
+    expect(out).toContain("rounded-lg");
+    expect(out.match(/bg-slate-100 font-medium text-slate-900/g)).toHaveLength(1);
+    expect(out.match(/hover:bg-slate-100/g)).toHaveLength(2);
+  });
+
+  it("gives a disabled tab no hover look, in both variants", () => {
+    for (const variant of ["underline", "pill"] as const) {
+      const out = mount(
+        <Tabs
+          items={[
+            { value: "a", label: "A" },
+            { value: "b", label: "B", disabled: true },
+          ]}
+          value="a"
+          onChange={() => {}}
+          label="Range"
+          variant={variant}
+        />,
+      );
+      const [, b] = [...out.querySelectorAll("button")];
+      expect(b?.className).not.toContain("hover:");
+      expect(b?.className).toContain("opacity-50");
+      unmount();
+    }
   });
 
   it("points a tab at its panel with controls", () => {
