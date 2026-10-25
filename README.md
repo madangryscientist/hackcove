@@ -1,7 +1,13 @@
 # hackcove
 
-The Hack Cove design system, as an Nx + Bun-workspaces monorepo. Every package here is published
-on its own and is on npm under the `@hackcove` scope (MIT, all `0.x`).
+The Hack Cove design system: an opinionated, strict UI library that is fully integrated with its
+theming. The components and the themes are designed together, and every theme remaps every palette
+utility the components use, so switching theme reskins a whole site with no component change and
+nothing to configure. It fixes the look and feel so agents reliably build good-looking sites; it is
+not an extensible framework with every option in the world.
+
+It is an Nx + Bun-workspaces monorepo. Every package here is published on its own and is on npm
+under the `@hackcove` scope (MIT, all `0.x`).
 
 | Folder | Package | What it is |
 | --- | --- | --- |

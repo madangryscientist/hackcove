@@ -8,6 +8,18 @@ The Hack Cove design system: React components (`@hackcove/ui`) and one folder pe
 This file is the operating agreement for agents working here. Maintainers' tooling may load extra,
 private agent rules on top of it.
 
+## Purpose
+
+Hack Cove UI is an opinionated, strict UI library that is fully integrated with its theming. The
+components and the themes are designed together: every theme remaps every palette utility the
+components use (`palette.json`, each `theme.test.ts`), so switching theme reskins a whole site with
+no component change and nothing to configure. It fixes the look so agents reliably build good-looking
+sites. It is not an extensible framework.
+
+The default answer to a new prop, variant or escape hatch is **no**, unless it is the one right way
+to meet a need that recurs across consumers. Prefer fixed named choices over open styling.
+Consumers compose the parts and never restyle them.
+
 ## Layout
 
 | Project | Path | What it is |

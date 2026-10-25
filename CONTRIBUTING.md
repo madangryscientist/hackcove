@@ -11,6 +11,16 @@ Bug reports, questions and proposals are welcome as GitHub issues, and so are pu
 maintainer reads each issue and tracks the work in a private tracker; the issue stays open until
 the fix has landed, and is closed then. A small fix needs no issue first: open the pull request.
 
+## What belongs here
+
+Hack Cove UI is an opinionated, strict UI library that is fully integrated with its theming: the
+components and themes are designed together, and every theme remaps every palette utility the
+components use. It fixes the look and feel so agents reliably build good-looking sites; it is not an
+extensible framework. So the bar for a component ask is high. The default answer to a new prop,
+variant or escape hatch is no, unless it is the one right way to meet a need that recurs across
+consumers. We prefer fixed named choices to open styling, and consumers compose the parts without
+restyling them. When you propose something, say what recurring need it serves.
+
 ## Setup
 
 You need [Bun](https://bun.sh) and Node. Then:
