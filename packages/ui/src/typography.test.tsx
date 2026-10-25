@@ -1,6 +1,15 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { Body, Caption, PageHeading, SectionHeading, SubsectionHeading } from "./typography.js";
+import {
+  Body,
+  BodyStrong,
+  Caption,
+  Overline,
+  PageHeading,
+  SectionHeading,
+  SubsectionHeading,
+  type TextTone,
+} from "./typography.js";
 
 describe("typography", () => {
   it("renders the semantic default element and pinned classes", () => {
@@ -62,5 +71,95 @@ describe("typography", () => {
     expect(out).toContain("line one\nline two");
     expect(out).not.toContain("preserve");
     expect(renderToStaticMarkup(<Body>x</Body>)).not.toContain("whitespace-pre-line");
+  });
+});
+
+describe("typography inline roles: tone, numeric, mono, truncate", () => {
+  const roles = [
+    ["Body", Body],
+    ["BodyStrong", BodyStrong],
+    ["Caption", Caption],
+    ["Overline", Overline],
+  ] as const;
+
+  it.each(roles)("%s maps each tone to the cell tone's text utility", (_name, Role) => {
+    const cases: Array<[TextTone, string]> = [
+      ["muted", "text-slate-500"],
+      ["positive", "text-emerald-700"],
+      ["warn", "text-amber-700"],
+      ["danger", "text-red-700"],
+      ["info", "text-blue-700"],
+    ];
+    for (const [tone, utility] of cases) {
+      const out = renderToStaticMarkup(<Role tone={tone}>x</Role>);
+      expect(out).toContain(utility);
+      expect(out).not.toContain("tone=");
+    }
+  });
+
+  it("a tone replaces the role's colour, and wins over `color`", () => {
+    const out = renderToStaticMarkup(
+      <Body tone="danger" color="brand">
+        x
+      </Body>,
+    );
+    expect(out).toContain("text-red-700");
+    expect(out).not.toContain("text-violet-600");
+    expect(out).not.toContain("text-slate-600");
+    expect(renderToStaticMarkup(<Body>x</Body>)).toContain("text-slate-600");
+  });
+
+  it.each(roles)("%s `numeric` and `mono` are opt-in and not forwarded", (_name, Role) => {
+    const plain = renderToStaticMarkup(<Role>1</Role>);
+    expect(plain).not.toContain("tabular-nums");
+    expect(plain).not.toContain("font-mono");
+    const numeric = renderToStaticMarkup(<Role numeric>1</Role>);
+    expect(numeric).toContain("tabular-nums");
+    expect(numeric).not.toContain("numeric=");
+    const mono = renderToStaticMarkup(<Role mono>1</Role>);
+    expect(mono).toContain("font-mono");
+    expect(mono).not.toContain("mono=");
+  });
+
+  it.each(roles)(
+    "%s `truncate` cuts to one line and keeps the full text as the title",
+    (_name, Role) => {
+      const out = renderToStaticMarkup(<Role truncate>A long file name.txt</Role>);
+      expect(out).toContain("truncate");
+      expect(out).toContain("inline-block");
+      expect(out).toContain('title="A long file name.txt"');
+      expect(out).not.toContain("truncate=");
+      expect(renderToStaticMarkup(<Role>x</Role>)).not.toContain("truncate");
+      expect(renderToStaticMarkup(<Role>x</Role>)).not.toContain("title=");
+    },
+  );
+
+  it("truncate keeps a title the caller passed, and adds none for non-text children", () => {
+    expect(
+      renderToStaticMarkup(
+        <Caption truncate title="Own title">
+          text
+        </Caption>,
+      ),
+    ).toContain('title="Own title"');
+    expect(
+      renderToStaticMarkup(
+        <Caption truncate>
+          <b>bold</b>
+        </Caption>,
+      ),
+    ).not.toContain("title=");
+  });
+
+  it("works with `as` and Body's other props", () => {
+    const out = renderToStaticMarkup(
+      <Body as="p" tone="positive" preserveNewlines mono>
+        Saved.
+      </Body>,
+    );
+    expect(out).toMatch(/^<p /);
+    expect(out).toContain("text-emerald-700");
+    expect(out).toContain("whitespace-pre-line");
+    expect(out).toContain("font-mono");
   });
 });

@@ -86,7 +86,7 @@ export { KeyValue, KeyValueList } from "./KeyValueList.js";
 export { Select } from "./Select.js";
 export { Textarea } from "./Textarea.js";
 export { Video } from "./Video.js";
-export { linkClass, linkStretchClass, TextLink } from "./TextLink.js";
+export { linkClass, linkStretchClass, TextLink, type TextLinkSize } from "./TextLink.js";
 export {
   Body,
   BodyStrong,
@@ -100,6 +100,7 @@ export {
   SubsectionHeading,
   type SubsectionHeadingSize,
   Subtitle,
+  type TextTone,
   type TypographyColor,
   type TypographyProps,
 } from "./typography.js";

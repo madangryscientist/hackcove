@@ -15,7 +15,18 @@ export const linkClass = cx(
  */
 export const linkStretchClass = "after:absolute after:inset-0";
 
+export type TextLinkSize = "xs" | "sm";
+
+const SIZE: Record<TextLinkSize, string> = {
+  xs: "text-xs/4",
+  sm: "text-sm/5",
+};
+
 type TextLinkProps = {
+  /** The link's own type size. Left out, it takes the size of the text around it. */
+  size?: TextLinkSize | undefined;
+  /** The monospace face, for a path, an id or a command. */
+  mono?: boolean | undefined;
   /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
   external?: boolean | undefined;
   /** The link covers its nearest `relative` ancestor, so the whole row or card is the click target. */
@@ -29,8 +40,11 @@ type TextLinkProps = {
 /**
  * An inline text link in the accent colour. Every anchor prop goes on the `<a>`. With `render` it
  * draws the app's own router `<Link>` instead (`render={(p) => <Link to="/terms" {...p} />}`).
+ * `size` pins the type size (`xs` or `sm`) and `mono` sets the monospace face.
  */
 export function TextLink({
+  size,
+  mono = false,
   external = false,
   stretch = false,
   href,
@@ -43,7 +57,7 @@ export function TextLink({
     href,
     render,
     external,
-    className: cx(linkClass, stretch && linkStretchClass),
+    className: cx(linkClass, size && SIZE[size], mono && "font-mono", stretch && linkStretchClass),
     children,
   });
 }

@@ -35,6 +35,23 @@ export const Sizes: S = {
   ),
 };
 
+export const SizeAndMono: S = {
+  name: "size and mono",
+  render: () => (
+    <div className="flex flex-col items-start gap-2">
+      <TextLink href="#xs" size="xs">
+        size xs
+      </TextLink>
+      <TextLink href="#sm" size="sm">
+        size sm
+      </TextLink>
+      <TextLink href="#path" size="sm" mono>
+        packages/ui/src/TextLink.tsx
+      </TextLink>
+    </div>
+  ),
+};
+
 /** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
 function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
   return <a href={`#${to}`} {...rest} />;

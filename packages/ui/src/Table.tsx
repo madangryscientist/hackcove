@@ -3,6 +3,7 @@ import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
 import type { CalloutTone } from "./Callout.js";
 import { cx } from "./cx.js";
 import { linkClass, linkStretchClass } from "./TextLink.js";
+import { TEXT_TONE } from "./typography.js";
 
 type Align = "start" | "end";
 
@@ -18,12 +19,8 @@ export type CellTone = "default" | "strong" | "muted" | CalloutTone;
 const TONE: Record<CellTone, string> = {
   default: "text-slate-700",
   strong: "font-medium text-slate-900",
-  muted: "text-slate-500",
   neutral: "text-slate-600",
-  info: "text-blue-700",
-  positive: "text-emerald-700",
-  warn: "text-amber-700",
-  danger: "text-red-700",
+  ...TEXT_TONE,
 };
 
 type TableVariant = "card" | "plain";

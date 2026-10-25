@@ -12,6 +12,7 @@ import {
   SectionHeading,
   SubsectionHeading,
   Subtitle,
+  type TextTone,
   type TypographyColor,
 } from "@hackcove/ui";
 
@@ -106,6 +107,50 @@ export const BodyPreserveNewlines: S = {
   ),
 };
 
+export const BodyTone: S = {
+  name: "Body tone",
+  render: () => (
+    <div className="flex max-w-xl flex-col gap-1">
+      <Body as="p" tone="positive">
+        Saved.
+      </Body>
+      <Body as="p" tone="danger">
+        Could not save: the name is taken.
+      </Body>
+      <Body as="p" tone="warn">
+        This quote expires tomorrow.
+      </Body>
+      <Body as="p" tone="info">
+        Changes sync in the background.
+      </Body>
+      <Body as="p" tone="muted">
+        Nothing to show yet.
+      </Body>
+    </div>
+  ),
+};
+
+export const InlineFigures: S = {
+  name: "numeric, mono and truncate",
+  render: () => (
+    <div className="flex w-72 flex-col gap-2">
+      <Body as="p">
+        Amount <BodyStrong numeric>1,111.11</BodyStrong> vs{" "}
+        <BodyStrong numeric>8,888.88</BodyStrong> (tabular figures)
+      </Body>
+      <Body as="p">
+        Commit <Body mono>c870e81</Body> on <Caption mono>packages/ui/src/typography.tsx</Caption>
+      </Body>
+      <Body as="p" truncate>
+        A long line of body text that does not fit the width of its container and is cut off.
+      </Body>
+      <Caption as="p" truncate tone="muted">
+        packages/ui/src/some/very/deeply/nested/path/typography.test.tsx
+      </Caption>
+    </div>
+  ),
+};
+
 export const BodyStrongStory: S = {
   name: "BodyStrong",
   render: () => <BodyStrong>Emphasised body text</BodyStrong>,
@@ -187,6 +232,47 @@ export const ColorAxis: S = {
       </table>
     );
   },
+};
+
+// Tone axis: each inline role × each tone ----------------------------------
+
+const TONES: TextTone[] = ["muted", "positive", "warn", "danger", "info"];
+
+export const ToneAxis: S = {
+  name: "Tone axis (inline role × tone)",
+  render: () => (
+    <table className="border-separate border-spacing-x-6 border-spacing-y-3 text-left">
+      <thead>
+        <tr>
+          <th />
+          {TONES.map((t) => (
+            <th key={t}>
+              <Overline color="muted">{t}</Overline>
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {(
+          [
+            ["Body", (t: TextTone) => <Body tone={t}>Body</Body>],
+            ["BodyStrong", (t: TextTone) => <BodyStrong tone={t}>BodyStrong</BodyStrong>],
+            ["Caption", (t: TextTone) => <Caption tone={t}>Caption</Caption>],
+            ["Overline", (t: TextTone) => <Overline tone={t}>Overline</Overline>],
+          ] satisfies Array<[string, (t: TextTone) => ReactNode]>
+        ).map(([label, render]) => (
+          <tr key={label}>
+            <td>
+              <Caption color="muted">{label}</Caption>
+            </td>
+            {TONES.map((t) => (
+              <td key={t}>{render(t)}</td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  ),
 };
 
 // `as` override ------------------------------------------------------------

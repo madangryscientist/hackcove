@@ -103,3 +103,44 @@ describe("TextLink with a router Link", () => {
     expect(out).toContain('download="a.pdf"');
   });
 });
+
+describe("TextLink size and mono", () => {
+  it("takes the surrounding size unless `size` pins one", () => {
+    const plain = renderToStaticMarkup(<TextLink href="/a">a</TextLink>);
+    expect(plain).not.toMatch(/text-(xs|sm|base)/);
+    expect(plain).not.toContain("font-mono");
+    for (const [size, cls] of [
+      ["xs", "text-xs/4"],
+      ["sm", "text-sm/5"],
+    ] as const) {
+      const out = renderToStaticMarkup(
+        <TextLink href="/a" size={size}>
+          a
+        </TextLink>,
+      );
+      expect(out).toContain(cls);
+      expect(out).toContain(linkClass);
+      expect(out).not.toContain("size=");
+    }
+  });
+
+  it("`mono` sets the monospace face and is not forwarded", () => {
+    const out = renderToStaticMarkup(
+      <TextLink href="/a" mono size="xs">
+        src/a.ts
+      </TextLink>,
+    );
+    expect(out).toContain("font-mono");
+    expect(out).not.toContain("mono=");
+  });
+
+  it("reaches a router link through `render`", () => {
+    const out = renderToStaticMarkup(
+      <TextLink size="sm" mono render={(p) => <a href="#x" {...p} />}>
+        x
+      </TextLink>,
+    );
+    expect(out).toContain("text-sm/5");
+    expect(out).toContain("font-mono");
+  });
+});

@@ -16,6 +16,14 @@ export function GalleryLinks() {
         </TextLink>
         .
       </p>
+      <p className="flex gap-4">
+        <TextLink href="#xs" size="xs">
+          TextLink xs
+        </TextLink>
+        <TextLink href="#path" size="sm" mono>
+          TextLink sm mono
+        </TextLink>
+      </p>
       <InlineLinks>
         <TextLink href="#privacy">Privacy</TextLink>
         <TextLink href="#terms">Terms</TextLink>

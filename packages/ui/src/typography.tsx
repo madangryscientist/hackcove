@@ -1,4 +1,10 @@
-import type { ComponentPropsWithoutRef, ElementType, ReactElement, ReactNode } from "react";
+import {
+  Children,
+  type ComponentPropsWithoutRef,
+  type ElementType,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import { cx } from "./cx.js";
 
 /* ---------------------------------------------------------------------------
@@ -17,6 +23,10 @@ import { cx } from "./cx.js";
      tertiary  → text-slate-500 → #a6adc8  (Catppuccin `subtext0`)
      muted     → text-slate-400 → #9399b2  (Catppuccin `overlay2`)
      brand     → text-violet-600 → #cba6f7 (Catppuccin `mauve` — the accent)
+
+   Meaning axis — the inline roles (Body, BodyStrong, Caption, Overline) also take `tone`
+   (muted | positive | warn | danger | info), which wins over `color`, and the closed switches
+   `numeric`, `mono` and `truncate`.
 
    Element axis — every component has a semantic default element; the `as` prop
    overrides it (type-safe: the extra props follow the element you pass).
@@ -40,6 +50,22 @@ const COLOR: Record<TypographyColor, string> = {
   brand: "text-violet-600", // Catppuccin mauve    #cba6f7
 };
 
+/**
+ * The meaning of a run of inline text: the muted tone plus the Callout's, for "Saved." or an error
+ * message. Colour alone does not say it, so the words do too. Same names and text colours as a
+ * `Table` cell's `tone`.
+ */
+export type TextTone = "muted" | "positive" | "warn" | "danger" | "info";
+
+/** Tone → text utility. Shared with `Table`'s cell tones, so the two never drift. */
+export const TEXT_TONE: Record<TextTone, string> = {
+  muted: "text-slate-500",
+  info: "text-blue-700",
+  positive: "text-emerald-700",
+  warn: "text-amber-700",
+  danger: "text-red-700",
+};
+
 /** Own props shared by every typography component; the rest follow the rendered element. */
 type OwnProps = {
   /** Colour token; each component sets a sensible default. */
@@ -47,11 +73,29 @@ type OwnProps = {
   children?: ReactNode;
 };
 
+/** The opt-in props of the inline roles (`Body`, `BodyStrong`, `Caption`, `Overline`). */
+type InlineOwnProps = {
+  /** A meaning's colour (see `TextTone`). Wins over `color`. */
+  tone?: TextTone | undefined;
+  /** Tabular figures, so a column of amounts lines up. */
+  numeric?: boolean | undefined;
+  /** The monospace face, for an id, a path or a command. */
+  mono?: boolean | undefined;
+  /** One line, cut with an ellipsis where the container ends; the full text is the `title`. */
+  truncate?: boolean | undefined;
+};
+
+type Own = OwnProps & InlineOwnProps;
+
 /** Polymorphic props: own props + `as` + the intrinsic props of whichever element `as` selects. */
 export type TypographyProps<E extends ElementType> = OwnProps & { as?: E } & Omit<
     ComponentPropsWithoutRef<E>,
     keyof OwnProps | "as" | "className" | "style"
   >;
+
+/** The props of an inline role: `TypographyProps` plus `tone`, `numeric`, `mono` and `truncate`. */
+export type InlineTypographyProps<E extends ElementType> = InlineOwnProps &
+  Omit<TypographyProps<E>, keyof InlineOwnProps>;
 
 /**
  * Build a semantic component that pins `variantClass` (size + weight + tracking)
@@ -72,6 +116,20 @@ function typography<D extends ElementType>(
   return Typography;
 }
 
+/** `typography` for the inline roles, which also take `tone`, `numeric`, `mono` and `truncate`. */
+function inlineRole<D extends ElementType>(
+  displayName: string,
+  defaultAs: D,
+  variantClass: string,
+  defaultColor: TypographyColor,
+) {
+  function Inline<E extends ElementType = D>(props: InlineTypographyProps<E>) {
+    return pinned(defaultAs, variantClass, defaultColor, props);
+  }
+  Inline.displayName = displayName;
+  return Inline;
+}
+
 /**
  * The one place a pinned role renders. The few roles with an opt-in prop of their own are
  * written by hand, not by `typography`, and call this too.
@@ -80,14 +138,41 @@ function pinned(
   defaultAs: ElementType,
   variantClass: string,
   defaultColor: TypographyColor,
-  { as, color, children, ...rest }: OwnProps & { as?: ElementType | undefined },
+  {
+    as,
+    color,
+    tone,
+    numeric,
+    mono,
+    truncate,
+    children,
+    ...rest
+  }: Own & { as?: ElementType | undefined; title?: string | undefined },
 ): ReactElement {
   const Tag: ElementType = as ?? defaultAs;
   return (
-    <Tag {...rest} className={cx(variantClass, COLOR[color ?? defaultColor])}>
+    <Tag
+      {...rest}
+      {...(truncate ? { title: rest.title ?? plainText(children) } : {})}
+      className={cx(
+        variantClass,
+        tone ? TEXT_TONE[tone] : COLOR[color ?? defaultColor],
+        numeric && "tabular-nums",
+        mono && "font-mono",
+        truncate && "inline-block min-w-0 truncate align-bottom",
+      )}
+    >
       {children}
     </Tag>
   );
+}
+
+/** The text of `children` when it is all strings and numbers: what a truncated run shows on hover. */
+function plainText(children: ReactNode): string | undefined {
+  const parts = Children.toArray(children);
+  return parts.every((part) => typeof part === "string" || typeof part === "number")
+    ? parts.join("")
+    : undefined;
 }
 
 // --- Structural roles (block by default) -----------------------------------
@@ -162,8 +247,11 @@ export const Subtitle = typography("Subtitle", "p", "text-sm/5 font-normal", "se
 
 // --- Inline roles (inline by default) --------------------------------------
 
-/** Small all-caps label above a group. `span`, text-xs semibold uppercase, tertiary. */
-export const Overline = typography(
+/**
+ * Small all-caps label above a group. `span`, text-xs semibold uppercase, tertiary. `tone`,
+ * `numeric`, `mono` and `truncate` are opt-in, as on `Body`.
+ */
+export const Overline = inlineRole(
   "Overline",
   "span",
   "text-xs font-semibold uppercase tracking-wide",
@@ -174,11 +262,14 @@ export const Overline = typography(
  * Default running text. `span` (inline; `as="p"` for a paragraph), text-sm/5 normal, secondary. A
  * block of it stops at a readable line length (`max-w-[72ch]`), wherever it sits.
  * `preserveNewlines` keeps the line breaks in the text (a user-typed note); runs of spaces still collapse.
+ * `tone` colours it by meaning (`positive` for "Saved.", `danger` for an error; it wins over `color`),
+ * `numeric` sets tabular figures, `mono` the monospace face, and `truncate` cuts it to one line with an
+ * ellipsis (the full text becomes its `title`).
  */
 export function Body<E extends ElementType = "span">({
   preserveNewlines,
   ...props
-}: TypographyProps<E> & { preserveNewlines?: boolean }): ReactElement {
+}: InlineTypographyProps<E> & { preserveNewlines?: boolean }): ReactElement {
   const variant = cx(
     preserveNewlines && "whitespace-pre-line",
     "max-w-[72ch] text-sm/5 font-normal",
@@ -186,8 +277,8 @@ export function Body<E extends ElementType = "span">({
   return pinned("span", variant, "secondary", props);
 }
 
-/** Emphasised run of body text. `span`, text-sm/5 medium, primary text. */
-export const BodyStrong = typography("BodyStrong", "span", "text-sm/5 font-medium", "default");
+/** Emphasised run of body text. `span`, text-sm/5 medium, primary text. Takes `tone`, `numeric`, `mono` and `truncate` like `Body`. */
+export const BodyStrong = inlineRole("BodyStrong", "span", "text-sm/5 font-medium", "default");
 
-/** Fine print / metadata. `span` (inline; `as="p"` for a block), text-xs/4 normal, tertiary. */
-export const Caption = typography("Caption", "span", "text-xs/4 font-normal", "tertiary");
+/** Fine print / metadata. `span` (inline; `as="p"` for a block), text-xs/4 normal, tertiary. Takes `tone`, `numeric`, `mono` and `truncate` like `Body`. */
+export const Caption = inlineRole("Caption", "span", "text-xs/4 font-normal", "tertiary");
