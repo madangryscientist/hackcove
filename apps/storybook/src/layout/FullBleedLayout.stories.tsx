@@ -25,11 +25,13 @@ const canvas = (
 const panel = (
   <>
     <Overline as="h2">Snapshot</Overline>
-    <KeyValueList className="mt-3">
-      <KeyValue label="Story">Button / Primary</KeyValue>
-      <KeyValue label="Theme">default</KeyValue>
-      <KeyValue label="Changed">0.4%</KeyValue>
-    </KeyValueList>
+    <div className="mt-3">
+      <KeyValueList>
+        <KeyValue label="Story">Button / Primary</KeyValue>
+        <KeyValue label="Theme">default</KeyValue>
+        <KeyValue label="Changed">0.4%</KeyValue>
+      </KeyValueList>
+    </div>
   </>
 );
 

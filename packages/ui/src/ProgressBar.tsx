@@ -42,7 +42,6 @@ export function ProgressBar({
   label,
   tone = "accent",
   size = "sm",
-  className,
 }: {
   value: number;
   /** Defaults to 100. */
@@ -52,7 +51,6 @@ export function ProgressBar({
   tone?: BarTone;
   /** Defaults to "sm". */
   size?: BarSize;
-  className?: string;
 }): ReactElement {
   const share = sharePercent(value, max);
   return (
@@ -62,7 +60,7 @@ export function ProgressBar({
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={announcedPercent(value, max)}
-      className={cx("overflow-hidden rounded-full bg-slate-100", BAR_TRACK[size], className)}
+      className={cx("overflow-hidden rounded-full bg-slate-100", BAR_TRACK[size])}
     >
       <div className={cx("h-full", BAR_FILL[tone])} style={{ width: `${share}%` }} />
     </div>

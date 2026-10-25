@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactElement, ReactNode } from "react";
 import { cx } from "./cx.js";
+import type { Unstyled } from "./props.js";
 
 /** The colour family of a callout. */
 export type CalloutTone = "neutral" | "info" | "positive" | "warn" | "danger";
@@ -33,7 +34,6 @@ export function Callout({
   actions,
   banner = false,
   children,
-  className,
   ...rest
 }: {
   /** Defaults to "info". */
@@ -44,7 +44,7 @@ export function Callout({
   /** A button or link at the end of the row, beside the title and body. */
   actions?: ReactNode;
   children: ReactNode;
-} & Omit<HTMLAttributes<HTMLDivElement>, "title">): ReactElement {
+} & Unstyled<Omit<HTMLAttributes<HTMLDivElement>, "title">>): ReactElement {
   const content = title ? (
     <>
       <p className="font-semibold">{title}</p>
@@ -60,7 +60,6 @@ export function Callout({
         banner ? "border-b px-5 py-3 text-sm" : "rounded-xl border p-4 text-sm",
         TONE_SURFACE[tone],
         TONE_TEXT[tone],
-        className,
       )}
       {...rest}
     >

@@ -20,11 +20,7 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
   return (
     <ProseLayout
       gap="lg"
-      breadcrumbs={
-        <TextLink className="text-sm" href="/">
-          {site.name}
-        </TextLink>
-      }
+      breadcrumbs={<TextLink href="/">{site.name}</TextLink>}
       title={doc.title}
       subtitle={<>Last updated {doc.updated}</>}
     >
@@ -40,7 +36,7 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
 
       <footer className="mt-8">
         <Divider />
-        <Stack gap="xs" className="pt-8">
+        <Stack gap="xs">
           <Caption as="p">{site.legalName}</Caption>
           <InlineLinks>
             <TextLink href={`mailto:${site.contactEmail}`}>{site.contactEmail}</TextLink>

@@ -11,13 +11,8 @@ describe("Code", () => {
     expect(out).toContain(">bun install</code>");
   });
 
-  it("appends caller classes and forwards props", () => {
-    const out = renderToStaticMarkup(
-      <Code className="mx-1" title="command">
-        x
-      </Code>,
-    );
-    expect(out).toContain(" mx-1");
+  it("forwards props", () => {
+    const out = renderToStaticMarkup(<Code title="command">x</Code>);
     expect(out).toContain('title="command"');
   });
 });

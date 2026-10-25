@@ -20,12 +20,6 @@ describe("Checkbox", () => {
     expect(out.match(/<label[^>]*disabled/)).toBeNull();
   });
 
-  it("puts className on the label", () => {
-    const out = renderToStaticMarkup(<Checkbox label="Open now" className="mt-2" />);
-    expect(out).toMatch(/<label[^>]*class="[^"]*mt-2/);
-    expect(out).not.toMatch(/<input[^>]*mt-2/);
-  });
-
   it("centres the box on the label by default and puts it on the first line with align=start", () => {
     const centred = renderToStaticMarkup(<Checkbox label="Open now" />);
     expect(centred).toMatch(/<label[^>]*class="[^"]*items-center/);

@@ -45,12 +45,6 @@ describe("ProgressBar", () => {
     expect(renderToStaticMarkup(<ProgressBar value={1} label="x" size="md" />)).toContain("h-2");
     expect(renderToStaticMarkup(<ProgressBar value={1} label="x" size="lg" />)).toContain("h-3");
   });
-
-  it("appends className", () => {
-    expect(renderToStaticMarkup(<ProgressBar value={1} label="x" className="mt-2" />)).toContain(
-      "mt-2",
-    );
-  });
 });
 
 describe("percentages", () => {

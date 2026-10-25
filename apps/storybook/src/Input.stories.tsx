@@ -47,12 +47,11 @@ export const FixedWidths: S = {
     </div>
   ),
 };
-/** `auto` carries no width, so a `className` width is the only one. */
+/** `auto` carries no width class: the input is as wide as the browser makes it. */
 export const AutoWidth: S = {
   render: () => (
     <div className="flex flex-wrap items-center gap-2">
       <Input width="auto" aria-label="Natural" placeholder="Natural" />
-      <Input width="auto" className="w-24" aria-label="Own width" placeholder="w-24" />
       <Input
         width="md"
         size="sm"

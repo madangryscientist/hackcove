@@ -1,5 +1,5 @@
 import { type ReactElement, type ReactNode, useEffect, useRef } from "react";
-import { Container } from "./Container.js";
+import { ContainerFrame } from "./Container.js";
 import { schemeClass, type ColourScheme, type ColourSchemeClasses } from "./colourScheme.js";
 import { cx, focusRing } from "./cx.js";
 import { type LinkRender, renderLink } from "./link.js";
@@ -102,9 +102,12 @@ function ScrollRow({ className, children }: { className: string; children: React
     };
   });
   return (
-    <Container elementRef={(el) => void (row.current = el)} className={cx(ROW, FADE, className)}>
+    <ContainerFrame
+      elementRef={(el) => void (row.current = el)}
+      className={cx(ROW, FADE, className)}
+    >
       {children}
-    </Container>
+    </ContainerFrame>
   );
 }
 
@@ -199,12 +202,14 @@ export function AppShell({
         {bleed ? (
           children
         ) : (
-          <Container className={cx("py-8", hideChromeInPrint && "print:p-0")}>{children}</Container>
+          <ContainerFrame className={cx("py-8", hideChromeInPrint && "print:p-0")}>
+            {children}
+          </ContainerFrame>
         )}
       </main>
       {footer && (
         <footer className={cx("border-t border-slate-200", hideChromeInPrint && "print:hidden")}>
-          <Container className="py-6 text-sm text-slate-500">{footer}</Container>
+          <ContainerFrame className="py-6 text-sm text-slate-500">{footer}</ContainerFrame>
         </footer>
       )}
     </div>

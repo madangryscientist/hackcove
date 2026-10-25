@@ -19,7 +19,7 @@ components use. It fixes the look and feel so agents reliably build good-looking
 extensible framework. So the bar for a component ask is high. The default answer to a new prop,
 variant or escape hatch is no, unless it is the one right way to meet a need that recurs across
 consumers. We prefer fixed named choices to open styling, and consumers compose the parts without
-restyling them. When you propose something, say what recurring need it serves.
+restyling them: components take no `className` or `style`, and a consumer writes no styling. When you propose something, say what recurring need it serves.
 
 ## Setup
 
@@ -78,6 +78,11 @@ not disable a rule.
    because a `.tsx` specifier is emitted into the `.d.ts` and breaks consumers' types.
 5. **A new component** is exported from `packages/ui/src/index.ts`, has its own story, and appears
    in `apps/storybook/src/Gallery.tsx`.
+
+6. **No `className` or `style` on a component.** A public component has no styling prop and its
+   HTML props are typed `Unstyled<…>` (`packages/ui/src/props.ts`). If a story or a site needs a
+   look the component lacks, propose the prop or variant (say what recurring need it serves) or
+   drop the look. `noStyling.test.tsx` enforces it.
 
 ## Adding a theme
 

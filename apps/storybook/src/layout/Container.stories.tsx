@@ -15,15 +15,19 @@ export const InABleedShell: S = {
   render: () => (
     <DemoShell bleed>
       <div className="border-b border-slate-200 bg-slate-50">
-        <Container className="py-8">
-          <PageHeader
-            title="Full-bleed band"
-            subtitle="The band is edge to edge; its content is not."
-          />
+        <Container>
+          <div className="py-8">
+            <PageHeader
+              title="Full-bleed band"
+              subtitle="The band is edge to edge; its content is not."
+            />
+          </div>
         </Container>
       </div>
-      <Container className="py-8">
-        <Body as="p">Below the band, another Container.</Body>
+      <Container>
+        <div className="py-8">
+          <Body as="p">Below the band, another Container.</Body>
+        </div>
       </Container>
     </DemoShell>
   ),

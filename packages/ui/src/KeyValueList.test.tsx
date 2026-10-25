@@ -23,29 +23,27 @@ describe("KeyValueList", () => {
     expect(out).toContain('<dd class="text-right tabular-nums">0.4%</dd>');
   });
 
-  it("passes className and other props through to the dl and the row", () => {
+  it("passes other props through to the dl and the row", () => {
     const out = renderToStaticMarkup(
-      <KeyValueList className="mt-4" data-testid="list">
-        <KeyValue label="A" className="py-1" data-testid="row">
+      <KeyValueList data-testid="list">
+        <KeyValue label="A" data-testid="row">
           1
         </KeyValue>
       </KeyValueList>,
     );
-    expect(out).toContain('class="flex flex-col gap-1.5 text-sm mt-4"');
+    expect(out).toContain('class="flex flex-col gap-1.5 text-sm"');
     expect(out).toContain('data-testid="list"');
-    expect(out).toContain('class="flex justify-between gap-3 py-1"');
+    expect(out).toContain('class="flex justify-between gap-3"');
     expect(out).toContain('data-testid="row"');
   });
 
   it("align=start makes a grid with one label column and left-aligned values", () => {
     const out = renderToStaticMarkup(
-      <KeyValueList align="start" className="mt-4">
+      <KeyValueList align="start">
         <KeyValue label="Size">1280×720</KeyValue>
       </KeyValueList>,
     );
-    expect(out).toContain(
-      'class="grid grid-cols-[max-content_1fr] gap-x-3 gap-y-1.5 text-sm mt-4"',
-    );
+    expect(out).toContain('class="grid grid-cols-[max-content_1fr] gap-x-3 gap-y-1.5 text-sm"');
     expect(out).toContain('<div class="col-span-2 grid grid-cols-subgrid">');
     expect(out).toContain('<dd class="tabular-nums">1280×720</dd>');
     expect(out).not.toContain("text-right");

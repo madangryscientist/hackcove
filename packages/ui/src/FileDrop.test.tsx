@@ -16,13 +16,12 @@ describe("FileDrop", () => {
     expect(out).toMatch(/<input[^>]*class="[^"]*absolute inset-0 h-full w-full[^"]*opacity-0/);
   });
 
-  it("sends className to the label and everything else to the input", () => {
+  it("sends everything to the input", () => {
     const out = renderToStaticMarkup(
-      <FileDrop className="mt-4" accept=".csv" multiple name="statement">
+      <FileDrop accept=".csv" multiple name="statement">
         Drop
       </FileDrop>,
     );
-    expect(out).toMatch(/^<label[^>]*class="[^"]*mt-4/);
     expect(out).toContain('accept=".csv"');
     expect(out).toContain('multiple=""');
     expect(out).toContain('name="statement"');

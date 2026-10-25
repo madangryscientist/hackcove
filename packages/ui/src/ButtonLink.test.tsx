@@ -16,13 +16,13 @@ describe("ButtonLink", () => {
     expect(out).toBe(`<a href="/new" class="${buttonClass("primary")}">New</a>`);
   });
 
-  it("appends className and passes anchor props through", () => {
+  it("passes anchor props through", () => {
     const out = renderToStaticMarkup(
-      <ButtonLink href="/x" className="w-full" download="x.pdf">
+      <ButtonLink href="/x" download="x.pdf">
         X
       </ButtonLink>,
     );
-    expect(out).toContain(`${buttonClass("primary")} w-full`);
+    expect(out).toContain(buttonClass("primary"));
     expect(out).toContain('download="x.pdf"');
   });
 

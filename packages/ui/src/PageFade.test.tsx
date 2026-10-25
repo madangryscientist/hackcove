@@ -16,8 +16,8 @@ function stubMotion(reduce: boolean): void {
 
 describe("PageFade", () => {
   it("renders a div named for the transition, holding the children", () => {
-    const out = renderToStaticMarkup(<PageFade className="py-8">page</PageFade>);
-    expect(out).toContain('<div data-page-fade="hc-page" class="py-8">page</div>');
+    const out = renderToStaticMarkup(<PageFade>page</PageFade>);
+    expect(out).toContain('<div data-page-fade="hc-page">page</div>');
   });
 
   it("names the element in a stylesheet that carries no colour", () => {

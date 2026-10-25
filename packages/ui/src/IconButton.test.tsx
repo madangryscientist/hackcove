@@ -18,14 +18,4 @@ describe("IconButton", () => {
     );
     expect(submit).toContain('type="submit"');
   });
-
-  it("appends className after its own classes", () => {
-    const out = renderToStaticMarkup(
-      <IconButton label="a" className="ml-2">
-        x
-      </IconButton>,
-    );
-    expect(out).toContain("h-9 w-9");
-    expect(out).toMatch(/class="[^"]*ml-2"/);
-  });
 });

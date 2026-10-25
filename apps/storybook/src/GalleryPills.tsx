@@ -40,7 +40,7 @@ export function GalleryPills() {
         </div>
         <span className="relative inline-flex">
           <IconButton label="Alerts">{bellIcon}</IconButton>
-          <Badge count={3} className="absolute -right-1.5 -top-1.5" />
+          <Badge count={3} corner />
         </span>
       </div>
     </div>

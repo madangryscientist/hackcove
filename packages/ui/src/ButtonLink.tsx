@@ -1,12 +1,12 @@
 import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import { buttonClass, type ButtonLook } from "./Button.js";
-import { cx } from "./cx.js";
 import { type LinkRender, renderLink } from "./link.js";
+import type { Unstyled } from "./props.js";
 
 type ButtonLinkProps = ButtonLook & {
   /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
   external?: boolean | undefined;
-} & Omit<ComponentPropsWithoutRef<"a">, "href"> &
+} & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href">> &
   (
     | { href: string; render?: LinkRender | undefined }
     | { href?: string | undefined; render: LinkRender }
@@ -24,7 +24,6 @@ export function ButtonLink({
   href,
   render,
   external = false,
-  className,
   children,
   ...rest
 }: ButtonLinkProps): ReactElement {
@@ -33,7 +32,7 @@ export function ButtonLink({
     href,
     render,
     external,
-    className: cx(buttonClass(variant, { size, tone }), className),
+    className: buttonClass(variant, { size, tone }),
     children,
   });
 }

@@ -7,7 +7,7 @@ export function Hero() {
   return (
     <header>
       <Overline>{site.legalName}</Overline>
-      <Display className="mt-4">{site.tagline}</Display>
+      <Display>{site.tagline}</Display>
     </header>
   );
 }

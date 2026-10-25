@@ -1,5 +1,4 @@
 import { Children, type ReactElement, type ReactNode } from "react";
-import { cx } from "./cx.js";
 import { Caption } from "./typography.js";
 
 export type InlineLinksSeparator = "·" | "•" | "none";
@@ -10,15 +9,13 @@ export type InlineLinksSeparator = "·" | "•" | "none";
  */
 export function InlineLinks({
   separator = "·",
-  className,
   children,
 }: {
   separator?: InlineLinksSeparator;
-  className?: string;
   children: ReactNode;
 }): ReactElement {
   return (
-    <div className={cx("flex flex-wrap items-center gap-x-3 gap-y-1 text-sm", className)}>
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
       {Children.toArray(children).map((child, index) => (
         <span key={index} className="inline-flex items-center gap-x-3 whitespace-nowrap">
           {index > 0 && separator !== "none" && <Caption aria-hidden="true">{separator}</Caption>}

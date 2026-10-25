@@ -18,7 +18,7 @@
     display: none;
   }
 
-  .cv {
+  .cv > * {
     max-width: none;
     padding: 0 !important;
   }

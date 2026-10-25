@@ -34,21 +34,18 @@ export function NavTabs({
   items,
   label,
   orientation = "horizontal",
-  className,
 }: {
   items: NavTab[];
   /** The accessible name of the nav landmark. */
   label: string;
   orientation?: "horizontal" | "vertical";
-  className?: string;
 }): ReactElement {
   return (
     <nav
       aria-label={label}
-      className={cx(
-        orientation === "vertical" ? "flex flex-col gap-1 text-sm" : "flex flex-wrap gap-1 text-sm",
-        className,
-      )}
+      className={
+        orientation === "vertical" ? "flex flex-col gap-1 text-sm" : "flex flex-wrap gap-1 text-sm"
+      }
     >
       {items.map((item, index) => (
         <Tab key={item.href ?? index} item={item} />

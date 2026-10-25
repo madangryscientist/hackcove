@@ -16,13 +16,12 @@ describe("ListRow", () => {
 
   it("passes button props through, onClick aside", () => {
     const out = renderToStaticMarkup(
-      <ListRow disabled className="mt-1" aria-controls="rows">
+      <ListRow disabled aria-controls="rows">
         Rent
       </ListRow>,
     );
     expect(out).toContain("disabled");
     expect(out).toContain('aria-controls="rows"');
-    expect(out).toContain("mt-1");
   });
 
   it("expanded makes a collapsible header: aria-expanded and a chevron that turns when open", () => {
@@ -66,5 +65,18 @@ describe("ListRow size", () => {
     );
     expect(link).toContain("px-3 py-2");
     expect(link).not.toContain('size="sm"');
+  });
+
+  it("divided draws a hairline above the row, on a button and a link alike", () => {
+    const line = "border-t border-slate-200/70";
+    expect(renderToStaticMarkup(<ListRow divided>a</ListRow>)).toContain(line);
+    expect(renderToStaticMarkup(<ListRow>a</ListRow>)).not.toContain("border-t");
+    const link = renderToStaticMarkup(
+      <ListRow divided href="#x">
+        a
+      </ListRow>,
+    );
+    expect(link).toContain(line);
+    expect(link).not.toContain("divided");
   });
 });

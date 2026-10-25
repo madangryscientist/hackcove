@@ -17,8 +17,10 @@ describe("Badge", () => {
     expect(renderToStaticMarkup(<Badge count={99} />)).toContain(">99</span>");
   });
 
-  it("takes a positioning class", () => {
-    const markup = renderToStaticMarkup(<Badge count={2} className="absolute -right-1 -top-1" />);
-    expect(markup).toContain("absolute -right-1 -top-1");
+  it("`corner` pins it to the top-right of the nearest relative parent", () => {
+    expect(renderToStaticMarkup(<Badge count={2} corner />)).toContain(
+      "absolute -right-1.5 -top-1.5",
+    );
+    expect(renderToStaticMarkup(<Badge count={2} />)).not.toContain("absolute");
   });
 });

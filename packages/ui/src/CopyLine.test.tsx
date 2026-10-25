@@ -11,10 +11,8 @@ describe("CopyLine", () => {
   });
 
   it("passes data-testid and other div props to the root, not the <code>", () => {
-    const out = renderToStaticMarkup(
-      <CopyLine text="x" data-testid="install-line" className="mt-4" />,
-    );
-    expect(out).toMatch(/<div[^>]*data-testid="install-line"[^>]*class="[^"]*mt-4/);
+    const out = renderToStaticMarkup(<CopyLine text="x" data-testid="install-line" />);
+    expect(out).toMatch(/<div[^>]*data-testid="install-line"/);
     expect(out).toContain('<code class="min-w-0 break-words">x</code>');
   });
 });

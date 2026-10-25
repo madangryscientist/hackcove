@@ -23,14 +23,9 @@ describe("CodeBlock", () => {
     expect(renderToStaticMarkup(<CodeBlock>x</CodeBlock>)).not.toContain("figcaption");
   });
 
-  it("appends caller classes and forwards props to the root", () => {
-    const out = renderToStaticMarkup(
-      <CodeBlock className="mt-4" data-testid="install">
-        x
-      </CodeBlock>,
-    );
+  it("forwards props to the root", () => {
+    const out = renderToStaticMarkup(<CodeBlock data-testid="install">x</CodeBlock>);
     expect(out.startsWith("<figure")).toBe(true);
-    expect(out).toContain(" mt-4");
     expect(out).toContain('data-testid="install"');
   });
 });

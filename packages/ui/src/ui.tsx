@@ -159,7 +159,6 @@ export function Card({
   tone,
   size,
   as: Tag = "section",
-  className,
   children,
   ...rest
 }: {
@@ -180,7 +179,6 @@ export function Card({
   /** `sm` is dense padding on the body, heading and bar; a `dashed` shell keeps its own. Defaults to `md`. */
   size?: ControlSize;
   as?: "section" | "article" | "div";
-  className?: string;
   children: ReactNode;
 } & Omit<ComponentPropsWithoutRef<"section">, "title" | "className" | "style" | "children">) {
   const form = cardForm({ flush, bar, dashed, tone, size }, Boolean(title || actions));
@@ -195,7 +193,7 @@ export function Card({
     />
   );
   return (
-    <Tag {...rest} className={cx(cardClass(form), className)}>
+    <Tag {...rest} className={cardClass(form)}>
       {form.bar ? (
         <>
           <CardBar heading={heading} actions={actions} size={form.size} />

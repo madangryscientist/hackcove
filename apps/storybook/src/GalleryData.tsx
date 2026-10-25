@@ -38,10 +38,10 @@ export function GalleryData() {
         </Callout>
         <div>
           <ListRow trailing="R 9 500">Rent</ListRow>
-          <ListRow className="border-t border-slate-200/70" trailing="R 1 850">
+          <ListRow divided trailing="R 1 850">
             Transport
           </ListRow>
-          <ListRow className="border-t border-slate-200/70" href="#bills" trailing="3">
+          <ListRow divided href="#bills" trailing="3">
             A link row
           </ListRow>
         </div>

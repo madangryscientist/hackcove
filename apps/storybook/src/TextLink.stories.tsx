@@ -25,12 +25,12 @@ export const External: S = {
 export const Sizes: S = {
   render: () => (
     <div className="flex flex-col items-start gap-2">
-      <TextLink href="#small" className="text-sm">
-        Small link
-      </TextLink>
-      <TextLink href="#base" className="text-base">
-        Base link
-      </TextLink>
+      <p className="text-sm">
+        <TextLink href="#small">Small link</TextLink>
+      </p>
+      <p className="text-base">
+        <TextLink href="#base">Base link</TextLink>
+      </p>
     </div>
   ),
 };

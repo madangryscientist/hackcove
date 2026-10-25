@@ -14,13 +14,12 @@ describe("BulletList", () => {
     expect(out).toContain("<li>one</li><li>two</li>");
   });
 
-  it("appends caller classes and forwards props", () => {
+  it("forwards props", () => {
     const out = renderToStaticMarkup(
-      <BulletList className="mt-2" aria-label="Duties">
+      <BulletList aria-label="Duties">
         <li>x</li>
       </BulletList>,
     );
-    expect(out).toContain('class="list-disc space-y-1 pl-5 mt-2"');
     expect(out).toContain('aria-label="Duties"');
   });
 });

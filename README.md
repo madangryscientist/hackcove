@@ -54,6 +54,13 @@ export const Example = () => (
 `@hackcove/ui` has one runtime dependency, `react-aria-components` (with `@internationalized/date`),
 for the date picker. Any other dependency is a human decision.
 
+## No styling props
+
+No component takes `className` or `style`, and the HTML props they spread leave both out
+(`data-*`, `aria-*` and event props still pass). The look is fixed; a different one is a prop or
+variant on the component, or it does not exist. Consumers compose the parts and write no styling,
+which is what lets a theme reskin a whole site.
+
 ## Layout
 
 `AppShell` gives every page one content edge: a sticky one-row header, then main, both inside

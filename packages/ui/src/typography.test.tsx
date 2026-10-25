@@ -20,13 +20,9 @@ describe("typography", () => {
     expect(renderToStaticMarkup(<Caption color="muted">x</Caption>)).toContain("text-slate-400");
   });
 
-  it("keeps caller classes after the pinned ones and forwards element props", () => {
-    const out = renderToStaticMarkup(
-      <SectionHeading className="mt-4" id="s1">
-        x
-      </SectionHeading>,
-    );
-    expect(out).toContain('class="text-base/6 font-semibold text-slate-900 mt-4"');
+  it("forwards element props", () => {
+    const out = renderToStaticMarkup(<SectionHeading id="s1">x</SectionHeading>);
+    expect(out).toContain('class="text-base/6 font-semibold text-slate-900"');
     expect(out).toContain('id="s1"');
   });
 

@@ -1,10 +1,9 @@
 import type { HTMLAttributes, ReactElement } from "react";
-import { cx } from "./cx.js";
+import type { Unstyled } from "./props.js";
 
-/** A hairline rule in the theme's line colour: between a heading and its content, or above a footer. Spacing is the caller's, on `className`. */
-export function Divider({
-  className,
-  ...rest
-}: Omit<HTMLAttributes<HTMLHRElement>, "children">): ReactElement {
-  return <hr className={cx("border-t border-slate-200/70", className)} {...rest} />;
+/** A hairline rule in the theme's line colour: between a heading and its content, or above a footer. Space around it is the layout's. */
+export function Divider(
+  props: Unstyled<Omit<HTMLAttributes<HTMLHRElement>, "children">>,
+): ReactElement {
+  return <hr {...props} className="border-t border-slate-200/70" />;
 }

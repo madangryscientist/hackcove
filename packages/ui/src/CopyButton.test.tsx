@@ -19,9 +19,4 @@ describe("CopyButton", () => {
     expect(out).toContain('type="button"');
     expect(out).toContain('disabled=""');
   });
-
-  it("appends className after its own classes", () => {
-    const out = renderToStaticMarkup(<CopyButton text="x" className="ml-2" />);
-    expect(out).toMatch(/class="[^"]*ml-2"/);
-  });
 });

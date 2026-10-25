@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { cx } from "./cx.js";
+import type { Unstyled } from "./props.js";
 
 type KeyValueAlign = "end" | "start";
 
@@ -18,23 +19,21 @@ const AlignContext = createContext<KeyValueAlign>("end");
  */
 export function KeyValueList({
   align = "end",
-  className,
   children,
   ...rest
 }: {
   align?: KeyValueAlign;
   children: ReactNode;
-} & HTMLAttributes<HTMLDListElement>): ReactElement {
+} & Unstyled<HTMLAttributes<HTMLDListElement>>): ReactElement {
   return (
     <dl
+      {...rest}
       className={cx(
         align === "start"
           ? "grid grid-cols-[max-content_1fr] gap-x-3 gap-y-1.5"
           : "flex flex-col gap-1.5",
         "text-sm",
-        className,
       )}
-      {...rest}
     >
       <AlignContext.Provider value={align}>{children}</AlignContext.Provider>
     </dl>
@@ -45,20 +44,16 @@ export function KeyValueList({
 export function KeyValue({
   label,
   children,
-  className,
   ...rest
 }: {
   label: ReactNode;
   children: ReactNode;
-} & HTMLAttributes<HTMLDivElement>): ReactElement {
+} & Unstyled<HTMLAttributes<HTMLDivElement>>): ReactElement {
   const start = useContext(AlignContext) === "start";
   return (
     <div
-      className={cx(
-        start ? "col-span-2 grid grid-cols-subgrid" : "flex justify-between gap-3",
-        className,
-      )}
       {...rest}
+      className={start ? "col-span-2 grid grid-cols-subgrid" : "flex justify-between gap-3"}
     >
       <dt className="text-slate-600">{label}</dt>
       <dd className={start ? "tabular-nums" : "text-right tabular-nums"}>{children}</dd>

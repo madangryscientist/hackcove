@@ -8,7 +8,7 @@ import { site } from "../content/site";
  */
 export function Contact() {
   return (
-    <Stack width="narrow" gap="lg" className="pt-4 pb-14">
+    <Stack width="narrow" gap="lg">
       <Stack gap="xs">
         <SectionHeading>Get in touch</SectionHeading>
         <Subtitle>

@@ -40,7 +40,7 @@ describe.each(Object.entries(controls))("%s size and width", (_name, render) => 
     expect(classes.filter((c) => WIDTHS.includes(c))).toHaveLength(1);
   });
 
-  it("auto carries no width class, so a className width is the only one", () => {
+  it("auto carries no width class", () => {
     const classes = classOf(renderToStaticMarkup(render({ width: "auto" })));
     expect(classes.filter((c) => WIDTHS.includes(c))).toEqual([]);
   });
@@ -80,12 +80,6 @@ describe("native size and width are replaced", () => {
     expect(out).toContain('maxLength="4"');
     expect(out).not.toMatch(/\ssize=/);
     expect(out).not.toMatch(/\swidth=/);
-  });
-
-  it("keeps the caller's className after the width", () => {
-    expect(classOf(renderToStaticMarkup(<Input width="auto" className="w-24" />))).toContain(
-      "w-24",
-    );
   });
 });
 

@@ -1,5 +1,4 @@
 import type { ReactElement, ReactNode } from "react";
-import { cx } from "./cx.js";
 import { PageHeading, Subtitle } from "./typography.js";
 
 export type PageHeaderProps = {
@@ -28,7 +27,11 @@ export function PageHeaderContent({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <PageHeading>{title}</PageHeading>
-          {subtitle && <Subtitle className="mt-1">{subtitle}</Subtitle>}
+          {subtitle && (
+            <div className="mt-1">
+              <Subtitle>{subtitle}</Subtitle>
+            </div>
+          )}
         </div>
         {actions && <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>}
       </div>
@@ -42,9 +45,6 @@ export function PageHeaderContent({
  * every page's first block at the same y; as a direct child of a `Stack` it has none, so the Stack's
  * gap is the only space under it.
  */
-export function PageHeader({
-  className,
-  ...props
-}: PageHeaderProps & { className?: string }): ReactElement {
-  return <PageHeaderContent {...props} className={cx("mb-8", className)} />;
+export function PageHeader(props: PageHeaderProps): ReactElement {
+  return <PageHeaderContent {...props} className="mb-8" />;
 }

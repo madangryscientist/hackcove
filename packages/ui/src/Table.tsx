@@ -70,19 +70,17 @@ export const rowLinkClass = cx(linkClass, linkStretchClass);
  * from `TableHead`, `TableBody`, `TableFoot`, `TableRow`, `TableHeaderCell` and `TableCell`. `caption` names the
  * table for assistive tech and is not drawn. `variant="plain"` drops the card (its border, fill and
  * shadow), the head's tinted strip and the row hover, and keeps the row dividers; it is for a table
- * that sits inside a card of its own. `className` goes on the scrolling wrapper; the other props
- * (`id`, `data-*`, `aria-*`) on the `<table>`.
+ * that sits inside a card of its own. Other props
+ * (`id`, `data-*`, `aria-*`) go on the `<table>`.
  */
 export function Table({
   caption,
   variant = "card",
-  className,
   children,
   ...rest
 }: {
   caption?: string | undefined;
   variant?: TableVariant | undefined;
-  className?: string | undefined;
   children: ReactNode;
 } & Rest<"table">): ReactElement {
   return (
@@ -91,7 +89,6 @@ export function Table({
         className={cx(
           "overflow-x-auto",
           variant === "card" && "rounded-xl border border-slate-200/70 bg-white shadow-sm",
-          className,
         )}
       >
         <table {...rest} className="w-full text-left text-sm">

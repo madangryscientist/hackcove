@@ -41,13 +41,13 @@ describe("TextLink", () => {
     expect(own).not.toContain("noreferrer");
   });
 
-  it("appends className and passes other anchor props through", () => {
+  it("passes other anchor props through", () => {
     const out = renderToStaticMarkup(
-      <TextLink href="/cv.pdf" className="text-sm" download="cv.pdf">
+      <TextLink href="/cv.pdf" download="cv.pdf">
         PDF
       </TextLink>,
     );
-    expect(out).toContain(`class="${linkClass} text-sm"`);
+    expect(out).toContain(`class="${linkClass}"`);
     expect(out).toContain('download="cv.pdf"');
   });
 });
@@ -84,13 +84,13 @@ describe("TextLink with a router Link", () => {
     expect(out).not.toContain("href=");
   });
 
-  it("keeps stretch, className and external through render", () => {
+  it("keeps stretch and external through render", () => {
     const out = renderToStaticMarkup(
-      <TextLink stretch external className="text-sm" render={(p) => <Link to="/x" {...p} />}>
+      <TextLink stretch external render={(p) => <Link to="/x" {...p} />}>
         X
       </TextLink>,
     );
-    expect(out).toContain(`class="${linkClass} ${linkStretchClass} text-sm"`);
+    expect(out).toContain(`class="${linkClass} ${linkStretchClass}"`);
     expect(out).toContain('target="_blank"');
   });
 

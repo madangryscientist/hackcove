@@ -19,13 +19,17 @@ export const AboveAFooter: S = {
   render: () => (
     <div className="max-w-xl">
       <Body as="p">The last paragraph of a page.</Body>
-      <Divider className="mt-16" />
+      <div className="mt-16">
+        <Divider />
+      </div>
       <footer className="pt-8">
         <Caption as="p">Hack Cove (Pty) Ltd</Caption>
-        <InlineLinks className="mt-2">
-          <TextLink href="/privacy">Privacy</TextLink>
-          <TextLink href="/terms">Terms</TextLink>
-        </InlineLinks>
+        <div className="mt-2">
+          <InlineLinks>
+            <TextLink href="/privacy">Privacy</TextLink>
+            <TextLink href="/terms">Terms</TextLink>
+          </InlineLinks>
+        </div>
       </footer>
     </div>
   ),

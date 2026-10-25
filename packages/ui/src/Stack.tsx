@@ -35,26 +35,18 @@ export function Stack({
   gap = "md",
   width = "default",
   as: Tag = "div",
-  className,
   children,
   ...rest
 }: {
   gap?: StackGap | undefined;
   width?: StackWidth | undefined;
   as?: "div" | "section";
-  className?: string | undefined;
   children?: ReactNode;
   "aria-labelledby"?: string | undefined;
 }): ReactElement {
   return (
     <Tag
-      className={cx(
-        "flex flex-col",
-        GAP[gap],
-        STACK_WIDTH[width],
-        "*:data-page-header:mb-0",
-        className,
-      )}
+      className={cx("flex flex-col", GAP[gap], STACK_WIDTH[width], "*:data-page-header:mb-0")}
       {...rest}
     >
       {children}
@@ -68,25 +60,17 @@ export function Section({
   actions,
   gap = "sm",
   width,
-  className,
   children,
 }: {
   title?: ReactNode;
   actions?: ReactNode;
   gap?: StackGap | undefined;
   width?: StackWidth | undefined;
-  className?: string;
   children?: ReactNode;
 }): ReactElement {
   const titleId = useId();
   return (
-    <Stack
-      as="section"
-      gap={gap}
-      width={width}
-      className={className}
-      aria-labelledby={title ? titleId : undefined}
-    >
+    <Stack as="section" gap={gap} width={width} aria-labelledby={title ? titleId : undefined}>
       {(title || actions) && (
         <div className="flex items-center justify-between gap-4">
           {title && <SectionHeading id={titleId}>{title}</SectionHeading>}

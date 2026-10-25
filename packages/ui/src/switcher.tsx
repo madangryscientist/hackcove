@@ -45,7 +45,6 @@ type Shared = {
   value: string;
   /** The accessible name of the group. */
   label: string;
-  className?: string;
 };
 
 export type SwitchProps = Shared &
@@ -103,10 +102,9 @@ export function Switcher({
   onChange,
   disabled: groupDisabled,
   label,
-  className,
   parts,
 }: SwitchProps & { parts: Parts }): ReactElement {
-  const root = cx(parts.root, className);
+  const root = parts.root;
   if (isLinks(items)) {
     return (
       <nav aria-label={label} className={root}>

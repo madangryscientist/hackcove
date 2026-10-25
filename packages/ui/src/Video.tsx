@@ -1,5 +1,5 @@
 import type { ReactElement, VideoHTMLAttributes } from "react";
-import { cx } from "./cx.js";
+import type { Unstyled } from "./props.js";
 
 /**
  * A `<video>` with controls, full width and rounded; it loads metadata only, so the page does not
@@ -9,21 +9,14 @@ import { cx } from "./cx.js";
 export function Video({
   src,
   captions,
-  className,
   children,
   ...rest
 }: {
   src: string;
   captions?: string | undefined;
-} & Omit<VideoHTMLAttributes<HTMLVideoElement>, "src" | "controls">): ReactElement {
+} & Unstyled<Omit<VideoHTMLAttributes<HTMLVideoElement>, "src" | "controls">>): ReactElement {
   return (
-    <video
-      controls
-      preload="metadata"
-      src={src}
-      className={cx("w-full rounded-lg", className)}
-      {...rest}
-    >
+    <video controls preload="metadata" src={src} {...rest} className="w-full rounded-lg">
       {captions && <track kind="captions" src={captions} default />}
       {children}
     </video>

@@ -7,19 +7,23 @@ type S = StoryObj;
 
 export const Plain: S = {
   render: () => (
-    <BulletList className="max-w-xl text-sm text-slate-600">
-      <li>Moved the nightly build from cron to a queue.</li>
-      <li>Cut the cold start from nine seconds to two.</li>
-      <li>Wrote the runbook the team still uses.</li>
-    </BulletList>
+    <div className="max-w-xl">
+      <BulletList>
+        <li>Moved the nightly build from cron to a queue.</li>
+        <li>Cut the cold start from nine seconds to two.</li>
+        <li>Wrote the runbook the team still uses.</li>
+      </BulletList>
+    </div>
   ),
 };
 
 export const WithBody: S = {
   render: () => (
-    <BulletList className="max-w-xl">
-      <Body as="li">Items set in Body, as the site does.</Body>
-      <Body as="li">The list owns the discs, indent and gap.</Body>
-    </BulletList>
+    <div className="max-w-xl">
+      <BulletList>
+        <Body as="li">Items set in Body, as the site does.</Body>
+        <Body as="li">The list owns the discs, indent and gap.</Body>
+      </BulletList>
+    </div>
   ),
 };

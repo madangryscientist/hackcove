@@ -9,7 +9,7 @@ export function SectionCards() {
         {site.sections.map((section) => (
           <Card key={section.slug} as="article" title={section.name}>
             <Body as="p">{section.summary}</Body>
-            <Body as="p" className="mt-4">
+            <Body as="p">
               <TextLink href={section.href}>{section.cta}</TextLink>
             </Body>
           </Card>

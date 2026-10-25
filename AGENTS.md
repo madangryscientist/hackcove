@@ -18,7 +18,8 @@ sites. It is not an extensible framework.
 
 The default answer to a new prop, variant or escape hatch is **no**, unless it is the one right way
 to meet a need that recurs across consumers. Prefer fixed named choices over open styling.
-Consumers compose the parts and never restyle them.
+Consumers compose the parts and never restyle them: no component takes `className` or `style`, and
+a consumer writes no styling of its own.
 
 ## Layout
 
@@ -99,7 +100,14 @@ that touches only `packages/ui` bumps `@hackcove/ui`, and nothing else.
 4. **`packages/ui` source imports use `.js` specifiers** (`./ui.js`, resolved to the `.tsx`). A
    `.tsx` specifier is emitted into the `.d.ts` unchanged and points at a file `dist` does not
    have, which silently breaks consumers' types.
-5. **Only the Action publishes, and only maintainers push to `main`.** Nothing is published from
+5. **No styling escape hatch.** No component exported from `packages/ui/src/index.ts` accepts
+   `className` or `style`, as an own prop or through the HTML/ARIA props it spreads (those are typed
+   `Unstyled<…>` from `props.ts`; `data-*`, `aria-*` and event props still pass). A need for a
+   different look is a prop or a variant on the component, the one right way, or no. A class
+   inside `packages/ui` is internal. `ContainerFrame` and `PageHeaderContent` take a
+   `className` for the library's own layouts and are not exported from `index.ts`.
+   `noStyling.test.tsx` fails if a public component's props accept either.
+6. **Only the Action publishes, and only maintainers push to `main`.** Nothing is published from
    a laptop, a first publish included: `.github/workflows/publish.yml` (which runs `nx release`)
    is the only path, and Jacobus starts it. Never run `nx release publish`, a bare `npm publish`
    or `npm login`. A new package's first publish uses the workflow's `NPM_TOKEN` step

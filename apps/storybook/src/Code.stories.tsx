@@ -7,8 +7,10 @@ type S = StoryObj;
 
 export const Inline: S = {
   render: () => (
-    <Body as="p" className="max-w-xl">
-      Run <Code>bun install</Code> once, then <Code>bunx nx run-many -t test</Code> to check it.
-    </Body>
+    <div className="max-w-xl">
+      <Body as="p">
+        Run <Code>bun install</Code> once, then <Code>bunx nx run-many -t test</Code> to check it.
+      </Body>
+    </div>
   ),
 };

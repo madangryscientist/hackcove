@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactElement } from "react";
 import { cx } from "./cx.js";
+import type { Unstyled } from "./props.js";
 
 /** The identity colours, in hash order. Each is a stock background utility; a theme remaps them. */
 const COLOUR_CLASSES = [
@@ -49,7 +50,6 @@ export function Avatar({
   src,
   size = "md",
   ring = false,
-  className,
   ...rest
 }: {
   name: string;
@@ -58,7 +58,7 @@ export function Avatar({
   size?: AvatarSize;
   /** A ring in the page colour, for a stack of overlapping avatars. */
   ring?: boolean;
-} & Omit<HTMLAttributes<HTMLElement>, "children">): ReactElement {
+} & Unstyled<Omit<HTMLAttributes<HTMLElement>, "children">>): ReactElement {
   if (src) {
     return (
       <img
@@ -69,7 +69,6 @@ export function Avatar({
           "shrink-0 rounded-full object-cover",
           SIZE_CLASSES[size],
           ring && "-ml-1.5 border-2 border-slate-50 first:ml-0",
-          className,
         )}
         {...rest}
       />
@@ -84,7 +83,6 @@ export function Avatar({
         SIZE_CLASSES[size],
         avatarColourClass(name),
         ring && "-ml-1.5 border-2 border-slate-50 first:ml-0",
-        className,
       )}
       {...rest}
     >

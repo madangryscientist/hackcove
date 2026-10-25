@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactElement, ReactNode } from "react";
 import { flushSync } from "react-dom";
+import type { Unstyled } from "./props.js";
 
 const DEFAULT_NAME = "hc-page";
 
@@ -24,18 +25,17 @@ const css = (name: string): string =>
  */
 export function PageFade({
   name = DEFAULT_NAME,
-  className,
   children,
   ...rest
 }: {
   /** The view-transition name, a CSS identifier (letters, digits, `-`, `_`). */
   name?: string;
   children: ReactNode;
-} & HTMLAttributes<HTMLDivElement>): ReactElement {
+} & Unstyled<HTMLAttributes<HTMLDivElement>>): ReactElement {
   return (
     <>
       <style>{css(name)}</style>
-      <div data-page-fade={name} className={className} {...rest}>
+      <div {...rest} data-page-fade={name}>
         {children}
       </div>
     </>

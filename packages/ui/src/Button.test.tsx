@@ -15,15 +15,14 @@ describe("Button", () => {
     expect(out).not.toContain("bg-violet-600");
   });
 
-  it("passes type, disabled and className through", () => {
+  it("passes type and disabled through", () => {
     const out = renderToStaticMarkup(
-      <Button type="submit" disabled className="w-full">
+      <Button type="submit" disabled>
         Go
       </Button>,
     );
     expect(out).toContain('type="submit"');
     expect(out).toContain("disabled");
-    expect(out).toContain("w-full");
   });
 });
 

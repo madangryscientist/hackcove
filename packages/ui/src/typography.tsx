@@ -44,21 +44,20 @@ const COLOR: Record<TypographyColor, string> = {
 type OwnProps = {
   /** Colour token; each component sets a sensible default. */
   color?: TypographyColor;
-  className?: string;
   children?: ReactNode;
 };
 
 /** Polymorphic props: own props + `as` + the intrinsic props of whichever element `as` selects. */
 export type TypographyProps<E extends ElementType> = OwnProps & { as?: E } & Omit<
     ComponentPropsWithoutRef<E>,
-    keyof OwnProps | "as"
+    keyof OwnProps | "as" | "className" | "style"
   >;
 
 /**
  * Build a semantic component that pins `variantClass` (size + weight + tracking)
  * and a default colour. The scale/weight for each role therefore lives in exactly
- * one place (the call below), and callers can only vary the colour, element, and
- * layout classes — never the pinned size/weight.
+ * one place (the call below), and callers can only vary the colour and the element —
+ * never the pinned size/weight, and never with a class.
  */
 function typography<D extends ElementType>(
   displayName: string,
@@ -81,11 +80,11 @@ function pinned(
   defaultAs: ElementType,
   variantClass: string,
   defaultColor: TypographyColor,
-  { as, color, className, children, ...rest }: OwnProps & { as?: ElementType | undefined },
+  { as, color, children, ...rest }: OwnProps & { as?: ElementType | undefined },
 ): ReactElement {
   const Tag: ElementType = as ?? defaultAs;
   return (
-    <Tag className={cx(variantClass, COLOR[color ?? defaultColor], className)} {...rest}>
+    <Tag {...rest} className={cx(variantClass, COLOR[color ?? defaultColor])}>
       {children}
     </Tag>
   );

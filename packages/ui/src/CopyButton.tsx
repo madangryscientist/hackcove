@@ -1,5 +1,6 @@
 import { useState, type ComponentPropsWithoutRef, type MouseEvent, type ReactElement } from "react";
-import { cx, focusRing } from "./cx.js";
+import { focusRing } from "./cx.js";
+import type { Unstyled } from "./props.js";
 
 const BASE = `shrink-0 rounded px-1.5 py-0.5 font-sans text-xs text-slate-400 hover:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 ${focusRing}`;
 
@@ -9,19 +10,18 @@ export function CopyButton({
   label = "copy",
   copiedLabel = "copied",
   onClick,
-  className,
   ...rest
 }: {
   text: string;
   label?: string;
   copiedLabel?: string;
-} & Omit<ComponentPropsWithoutRef<"button">, "children">): ReactElement {
+} & Unstyled<Omit<ComponentPropsWithoutRef<"button">, "children">>): ReactElement {
   const [copied, setCopied] = useState(false);
   return (
     <button
       type="button"
       {...rest}
-      className={cx(BASE, className)}
+      className={BASE}
       onClick={(event: MouseEvent<HTMLButtonElement>) => {
         onClick?.(event);
         // The rejection is swallowed on purpose: a denied write is not an error the page can act on.

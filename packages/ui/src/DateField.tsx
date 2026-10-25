@@ -39,7 +39,6 @@ export type DateFieldProps = {
   error?: ReactNode;
   /** Marks the field invalid with no message of its own; pair it with `errorMessage`. */
   isInvalid?: boolean;
-  className?: string;
 } & Pick<
   AriaDateFieldProps<CalendarDate>,
   | "value"
@@ -184,7 +183,6 @@ export function DateField({
   errorMessage,
   error,
   isInvalid: invalidProp,
-  className,
   value,
   defaultValue,
   onChange,
@@ -212,7 +210,7 @@ export function DateField({
         onBlur={onLeft}
         granularity="day"
         shouldForceLeadingZeros
-        className={cx("flex flex-col gap-1.5", className)}
+        className="flex flex-col gap-1.5"
       >
         {({ isInvalid }) => (
           <>

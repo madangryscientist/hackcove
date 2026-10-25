@@ -44,11 +44,9 @@ describe("StatTile", () => {
     expect(renderToStaticMarkup(<StatTile label="A" value="1" hint={0} />)).toContain(">0</p>");
   });
 
-  it("appends className and passes other attributes through", () => {
-    const markup = renderToStaticMarkup(
-      <StatTile label="A" value="1" className="col-span-2" data-testid="tile" />,
-    );
-    expect(markup).toContain("shadow-sm col-span-2");
+  it("passes other attributes through", () => {
+    const markup = renderToStaticMarkup(<StatTile label="A" value="1" data-testid="tile" />);
+    expect(markup).toContain("shadow-sm");
     expect(markup).toContain('data-testid="tile"');
   });
 });

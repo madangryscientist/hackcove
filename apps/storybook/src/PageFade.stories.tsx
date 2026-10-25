@@ -28,9 +28,11 @@ export const Default: S = {
           value={value}
           onChange={(next) => startPageTransition(() => setValue(next))}
         />
-        <PageFade className="flex flex-col gap-2 rounded-lg border border-slate-200 p-4">
-          <Subtitle>{page?.label}</Subtitle>
-          <Body>{page?.text}</Body>
+        <PageFade>
+          <div className="flex flex-col gap-2 rounded-lg border border-slate-200 p-4">
+            <Subtitle>{page?.label}</Subtitle>
+            <Body>{page?.text}</Body>
+          </div>
         </PageFade>
       </div>
     );

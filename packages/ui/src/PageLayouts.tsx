@@ -3,6 +3,7 @@ import { Card } from "./ui.js";
 import { cx } from "./cx.js";
 import { PageHeader, PageHeaderContent, type PageHeaderProps } from "./PageHeader.js";
 import { STACK_WIDTH, Stack, type StackGap } from "./Stack.js";
+import type { Unstyled } from "./props.js";
 
 // Compositions of the layout foundation. None sets a page width or outer padding of its own; the
 // ones that narrow their content do it inside the Container they are rendered in.
@@ -42,7 +43,9 @@ export function DetailLayout({
     <>
       <PageHeader {...header} />
       <div className="grid gap-6 lg:grid-cols-3">
-        <Stack className="min-w-0 lg:col-span-2">{children}</Stack>
+        <div className="min-w-0 lg:col-span-2">
+          <Stack>{children}</Stack>
+        </div>
         <aside className="min-w-0">
           <Stack>{aside}</Stack>
         </aside>
@@ -59,16 +62,14 @@ export function FormLayout({
   title,
   subtitle,
   tabs,
-  className,
   ...form
-}: Omit<PageHeaderProps, "actions"> & { actions?: ReactNode; children: ReactNode } & Omit<
-    ComponentPropsWithoutRef<"form">,
-    "title"
+}: Omit<PageHeaderProps, "actions"> & { actions?: ReactNode; children: ReactNode } & Unstyled<
+    Omit<ComponentPropsWithoutRef<"form">, "title">
   >): ReactElement {
   return (
     <>
       <PageHeader breadcrumbs={breadcrumbs} title={title} subtitle={subtitle} tabs={tabs} />
-      <form className={cx("max-w-3xl", className)} {...form}>
+      <form {...form} className="max-w-3xl">
         <Stack>
           {children}
           {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -82,20 +83,18 @@ export function FormLayout({
  * A text page: header, then `children` stacked `gap` apart (`md` by default), all in one `narrow`
  * (`max-w-3xl`) reading column that starts at the Container's left edge (it is not re-centred, so
  * the title does not jump). Unlike `FormLayout` the header sits inside the column, so its `actions`
- * stay beside the text instead of at the Container's far edge. `className` goes on the column.
+ * stay beside the text instead of at the Container's far edge.
  */
 export function ProseLayout({
   gap,
-  className,
   children,
   ...header
 }: PageHeaderProps & {
   gap?: StackGap | undefined;
-  className?: string;
   children?: ReactNode;
 }): ReactElement {
   return (
-    <div className={cx(STACK_WIDTH.narrow, className)}>
+    <div className={STACK_WIDTH.narrow}>
       <PageHeader {...header} />
       <Stack gap={gap}>{children}</Stack>
     </div>
@@ -111,17 +110,13 @@ const COLUMNS = {
 /** A responsive grid of tiles: one column on a phone, two from `sm`, `columns` from `lg`. */
 export function CardGrid({
   columns = 3,
-  className,
   children,
 }: {
   columns?: keyof typeof COLUMNS;
-  className?: string;
   children: ReactNode;
 }): ReactElement {
   return (
-    <div className={cx("grid grid-cols-1 gap-4 sm:grid-cols-2", COLUMNS[columns], className)}>
-      {children}
-    </div>
+    <div className={cx("grid grid-cols-1 gap-4 sm:grid-cols-2", COLUMNS[columns])}>{children}</div>
   );
 }
 

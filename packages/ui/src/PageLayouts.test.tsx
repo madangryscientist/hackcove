@@ -59,7 +59,7 @@ describe("DetailLayout", () => {
 
   it("puts main in two thirds of a three-column grid from lg, and the aside in the rest", () => {
     expect(out).toMatch(/class="grid [^"]*lg:grid-cols-3"/);
-    expect(out).toMatch(/lg:col-span-2[^>]*>MAIN</);
+    expect(out).toMatch(/lg:col-span-2[^>]*><div[^>]*>MAIN</);
     expect(out).toMatch(/<aside [^>]*>.*SIDE/);
   });
 
@@ -80,15 +80,6 @@ describe("FormLayout", () => {
     expect(out).not.toContain("mx-auto");
   });
 
-  it("keeps max-w-3xl when the caller passes a className", () => {
-    const merged = renderToStaticMarkup(
-      <FormLayout title="t" className="extra">
-        x
-      </FormLayout>,
-    );
-    expect(merged).toContain('<form class="max-w-3xl extra">');
-  });
-
   it("puts the actions row after the fields", () => {
     expect(inOrder(out, ["New quote", "FIELDS", "SAVE"])).toBe(true);
   });
@@ -100,14 +91,14 @@ describe("FormLayout", () => {
 
 describe("ProseLayout", () => {
   const out = renderToStaticMarkup(
-    <ProseLayout title="Privacy" subtitle="Last updated" actions="PHOTO" className="doc">
+    <ProseLayout title="Privacy" subtitle="Last updated" actions="PHOTO">
       ONE
       <p>TWO</p>
     </ProseLayout>,
   );
 
-  it("is one left-aligned max-w-3xl column, with the caller's className on it", () => {
-    expect(out).toMatch(/^<div class="max-w-3xl doc">/);
+  it("is one left-aligned max-w-3xl column, with no class to add", () => {
+    expect(out).toMatch(/^<div class="max-w-3xl">/);
     expect(out).not.toContain("mx-auto");
   });
 

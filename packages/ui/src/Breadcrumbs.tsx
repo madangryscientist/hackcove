@@ -41,16 +41,10 @@ function CrumbContent({
  * `org / project / build / snapshot`: each crumb truncates, and the last is the current page. A
  * crumb is a node, or a `Crumb` object when it links.
  */
-export function Breadcrumbs({
-  crumbs,
-  className,
-}: {
-  crumbs: Array<Crumb | ReactNode>;
-  className?: string;
-}): ReactElement {
+export function Breadcrumbs({ crumbs }: { crumbs: Array<Crumb | ReactNode> }): ReactElement {
   const last = crumbs.length - 1;
   return (
-    <nav aria-label="Breadcrumb" className={cx("min-w-0", className)}>
+    <nav aria-label="Breadcrumb" className="min-w-0">
       <ol className="flex min-w-0 items-center gap-2 text-sm">
         {crumbs.map((crumb, index) => (
           <li

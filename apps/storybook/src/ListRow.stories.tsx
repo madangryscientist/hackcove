@@ -12,13 +12,10 @@ export const Rows: S = {
       <Card flush>
         <div>
           <ListRow trailing="R 9 500">Rent</ListRow>
-          <ListRow
-            className="border-t border-slate-200/70"
-            trailing={<Pill tone="amber">due</Pill>}
-          >
+          <ListRow divided trailing={<Pill tone="amber">due</Pill>}>
             Insurance
           </ListRow>
-          <ListRow className="border-t border-slate-200/70" href="#status" trailing="3">
+          <ListRow divided href="#status" trailing="3">
             A link row
           </ListRow>
         </div>
@@ -32,7 +29,7 @@ function Collapsible() {
   return (
     <Card flush>
       <ListRow
-        className="border-t border-slate-200/70"
+        divided
         expanded={open}
         aria-controls="monthly-plan"
         trailing="R 15 550"
@@ -67,10 +64,10 @@ export const Small: S = {
         <ListRow size="sm" trailing="R 9 500">
           Rent
         </ListRow>
-        <ListRow size="sm" className="border-t border-slate-200/70" trailing="R 1 850">
+        <ListRow size="sm" divided trailing="R 1 850">
           Transport
         </ListRow>
-        <ListRow size="sm" className="border-t border-slate-200/70" href="#status" trailing="3">
+        <ListRow size="sm" divided href="#status" trailing="3">
           A link row
         </ListRow>
       </Card>

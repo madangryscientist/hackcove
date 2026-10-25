@@ -2,14 +2,14 @@ import { focusRing } from "./cx.js";
 
 export type ControlSize = "md" | "sm";
 
-/** `full` fills the parent (the default); `auto` is as wide as the content, or as wide as a `className` width says; the rest are fixed. */
+/** `full` fills the parent (the default); `auto` is as wide as the content; the rest are fixed. */
 export type ControlWidth = "full" | "auto" | "xs" | "sm" | "md" | "lg";
 
 /** The props `Input`, `Select` and `Textarea` share. They replace the native `size` and `width`. */
 export type ControlProps = {
   /** `sm` is compact, `text-xs` with less padding, for dense forms and table rows. */
   size?: ControlSize | undefined;
-  /** `full` (default) fills the parent; `xs`, `sm`, `md`, `lg` are fixed; `auto` is as wide as its content, or its `className` width. */
+  /** `full` (default) fills the parent; `xs`, `sm`, `md`, `lg` are fixed; `auto` is as wide as its content. */
   width?: ControlWidth | undefined;
 };
 

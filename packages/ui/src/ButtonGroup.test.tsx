@@ -27,8 +27,4 @@ describe("ButtonGroup", () => {
     expect(out).toContain('role="group"');
     expect(out).toContain('aria-label="Quote actions"');
   });
-
-  it("appends className", () => {
-    expect(html(<ButtonGroup className="mt-4">x</ButtonGroup>)).toContain("gap-2 mt-4");
-  });
 });

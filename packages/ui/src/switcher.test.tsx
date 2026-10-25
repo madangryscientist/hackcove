@@ -189,13 +189,6 @@ describe.each(kinds)("%s", (_name, { Component, group, role, selected }) => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("appends className to the group", () => {
-    const out = renderToStaticMarkup(
-      <Component items={items} value="day" onChange={() => {}} label="Range" className="mt-4" />,
-    );
-    expect(out).toMatch(/<div[^>]*class="[^"]*mt-4"/);
-  });
-
   it("draws a link option as an <a> in a nav, with aria-current on the current one", () => {
     const out = renderToStaticMarkup(
       <Component

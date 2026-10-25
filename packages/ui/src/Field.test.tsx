@@ -42,13 +42,4 @@ describe("Field", () => {
     );
     expect(out).not.toContain("<p");
   });
-
-  it("appends className after the base classes", () => {
-    const out = renderToStaticMarkup(
-      <Field label="Name" htmlFor="name" className="max-w-xs">
-        <input id="name" />
-      </Field>,
-    );
-    expect(out).toContain('class="flex flex-col gap-1.5 max-w-xs"');
-  });
 });

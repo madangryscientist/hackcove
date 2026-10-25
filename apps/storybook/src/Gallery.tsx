@@ -207,7 +207,9 @@ function GalleryCopy() {
   return (
     <div className="flex max-w-sm flex-col gap-3">
       <CopyLine text="bun add @hackcove/ui" />
-      <CopyButton text="bun add @hackcove/ui" className="self-start" />
+      <div className="self-start">
+        <CopyButton text="bun add @hackcove/ui" />
+      </div>
     </div>
   );
 }

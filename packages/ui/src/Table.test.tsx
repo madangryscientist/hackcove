@@ -25,14 +25,13 @@ describe("Table", () => {
     expect(out).not.toContain("<caption");
   });
 
-  it("caption names the table and is screen-reader only; className goes on the card", () => {
+  it("caption names the table and is screen-reader only", () => {
     const out = renderToStaticMarkup(
-      <Table caption="Quotes" className="mt-4">
+      <Table caption="Quotes">
         <TableBody>{null}</TableBody>
       </Table>,
     );
     expect(out).toContain('<caption class="sr-only">Quotes</caption>');
-    expect(out).toContain("mt-4");
   });
 });
 

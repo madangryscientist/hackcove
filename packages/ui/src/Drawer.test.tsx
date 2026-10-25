@@ -105,9 +105,4 @@ describe("Drawer", () => {
     act(() => out.querySelector("h2")?.click());
     expect(onClose).not.toHaveBeenCalled();
   });
-
-  it("appends className", () => {
-    const out = renderToStaticMarkup(<Drawer title="t" className="z-50x" onClose={() => {}} />);
-    expect(out).toMatch(/class="[^"]*z-50x"/);
-  });
 });

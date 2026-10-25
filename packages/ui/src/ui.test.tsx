@@ -70,13 +70,7 @@ describe("Card", () => {
     expect(renderToStaticMarkup(<Card as="article">body</Card>)).toContain("<article");
   });
 
-  it("appends className after the built-in classes", () => {
-    expect(renderToStaticMarkup(<Card className="mt-4">body</Card>)).toContain(
-      'class="rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm mt-4"',
-    );
-  });
-
-  it("renders the same markup as before when as and className are off", () => {
+  it("renders the same markup as before when as is off", () => {
     expect(renderToStaticMarkup(<Card>body</Card>)).toBe(
       '<section class="rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm">body</section>',
     );

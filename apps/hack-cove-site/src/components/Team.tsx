@@ -7,14 +7,10 @@ function TeamMember({ person }: { person: Person }) {
       <Avatar name={person.name} src={person.photo} size="xl" />
       <div className="min-w-0">
         <SubsectionHeading>{person.name}</SubsectionHeading>
-        <Body as="p" className="mt-0.5" color="tertiary">
+        <Body as="p" color="tertiary">
           {person.role}
         </Body>
-        {person.bio && (
-          <Body as="p" className="mt-2">
-            {person.bio}
-          </Body>
-        )}
+        {person.bio && <Body as="p">{person.bio}</Body>}
       </div>
     </div>
   );

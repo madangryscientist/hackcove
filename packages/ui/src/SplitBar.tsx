@@ -22,7 +22,6 @@ export function SplitBar({
   toneA = "negative",
   toneB = "positive",
   size = "lg",
-  className,
 }: {
   a: number;
   b: number;
@@ -35,7 +34,6 @@ export function SplitBar({
   toneB?: BarTone;
   /** Defaults to "lg". */
   size?: BarSize;
-  className?: string;
 }): ReactElement {
   const shareA = sharePercent(a, a + b);
   const shareB = a + b > 0 ? 100 - shareA : 0;
@@ -45,7 +43,7 @@ export function SplitBar({
     <div
       role="img"
       aria-label={`${label}: ${names ? `${names[0]} ${percentA}%, ${names[1]} ${percentB}%` : `${percentA}% / ${percentB}%`}`}
-      className={cx("flex overflow-hidden rounded-full bg-slate-100", BAR_TRACK[size], className)}
+      className={cx("flex overflow-hidden rounded-full bg-slate-100", BAR_TRACK[size])}
     >
       <div className={BAR_FILL[toneA]} style={{ width: `${shareA}%` }} />
       <div className={BAR_FILL[toneB]} style={{ width: `${shareB}%` }} />

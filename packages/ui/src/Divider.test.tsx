@@ -9,9 +9,8 @@ describe("Divider", () => {
     expect(out).toContain('class="border-t border-slate-200/70"');
   });
 
-  it("keeps caller classes after the pinned ones and forwards props", () => {
-    const out = renderToStaticMarkup(<Divider className="mt-16" aria-hidden="true" />);
-    expect(out).toContain('class="border-t border-slate-200/70 mt-16"');
+  it("forwards props", () => {
+    const out = renderToStaticMarkup(<Divider aria-hidden="true" />);
     expect(out).toContain('aria-hidden="true"');
   });
 });

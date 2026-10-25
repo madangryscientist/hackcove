@@ -1,6 +1,7 @@
 import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import { cx, focusRing } from "./cx.js";
 import { type LinkRender, renderLink } from "./link.js";
+import type { Unstyled } from "./props.js";
 
 /** The classes of an inline text link, for a router's own <Link> that should look like one. */
 export const linkClass = cx(
@@ -19,7 +20,7 @@ type TextLinkProps = {
   external?: boolean | undefined;
   /** The link covers its nearest `relative` ancestor, so the whole row or card is the click target. */
   stretch?: boolean | undefined;
-} & Omit<ComponentPropsWithoutRef<"a">, "href"> &
+} & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href">> &
   (
     | { href: string; render?: LinkRender | undefined }
     | { href?: string | undefined; render: LinkRender }
@@ -34,7 +35,6 @@ export function TextLink({
   stretch = false,
   href,
   render,
-  className,
   children,
   ...rest
 }: TextLinkProps): ReactElement {
@@ -43,7 +43,7 @@ export function TextLink({
     href,
     render,
     external,
-    className: cx(linkClass, stretch && linkStretchClass, className),
+    className: cx(linkClass, stretch && linkStretchClass),
     children,
   });
 }

@@ -34,9 +34,8 @@ afterEach(() => {
 
 describe("ColourSchemeToggle", () => {
   it("renders the light state on the server, with no document to read", () => {
-    const out = renderToStaticMarkup(<ColourSchemeToggle className="ml-2" />);
+    const out = renderToStaticMarkup(<ColourSchemeToggle />);
     expect(out).toContain('aria-label="Switch to dark theme"');
-    expect(out).toMatch(/class="[^"]*ml-2"/);
     expect(out).toContain("<svg");
   });
 
@@ -127,12 +126,9 @@ describe("ColourSchemeToggle", () => {
   });
 
   it("puts id and data-* on the button, and leaves its own props alone", () => {
-    const button = buttonOf(
-      mount(<ColourSchemeToggle id="theme" data-testid="toggle" className="ml-2" />),
-    );
+    const button = buttonOf(mount(<ColourSchemeToggle id="theme" data-testid="toggle" />));
     expect(button.id).toBe("theme");
     expect(button.dataset["testid"]).toBe("toggle");
-    expect(button.className).toContain("ml-2");
     expect(button.getAttribute("aria-label")).toBe("Switch to dark theme");
     expect(button.hasAttribute("aria-pressed")).toBe(false);
   });

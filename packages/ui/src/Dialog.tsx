@@ -17,7 +17,6 @@ export type DialogProps = {
   size?: keyof typeof SIZE;
   /** Called when the dialog closes: Esc, a click on the backdrop, or a `<form method="dialog">` submit. */
   onClose: () => void;
-  className?: string;
 };
 
 /**
@@ -32,7 +31,6 @@ export function Dialog({
   footer,
   size = "md",
   onClose,
-  className,
 }: DialogProps): ReactElement {
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -47,11 +45,15 @@ export function Dialog({
       aria-labelledby={titleId}
       onClose={onClose}
       onClick={(event) => event.target === dialog.current && dialog.current?.close()}
-      className={cx(PANEL, SIZE[size], className)}
+      className={cx(PANEL, SIZE[size])}
     >
       <div className="p-5.5">
         <ModalHeading id={titleId}>{title}</ModalHeading>
-        {description && <Subtitle className="mt-1">{description}</Subtitle>}
+        {description && (
+          <div className="mt-1">
+            <Subtitle>{description}</Subtitle>
+          </div>
+        )}
         {children && <div className="mt-4">{children}</div>}
         {footer && <div className="mt-5 flex justify-end gap-2">{footer}</div>}
       </div>

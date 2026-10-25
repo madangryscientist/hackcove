@@ -30,11 +30,6 @@ describe("NavTabs", () => {
     const out = renderToStaticMarkup(<NavTabs items={items} label="Main" />);
     expect(out).toContain('<nav aria-label="Main"');
   });
-
-  it("appends a className to the nav", () => {
-    const out = renderToStaticMarkup(<NavTabs items={items} label="Main" className="mt-4" />);
-    expect(out).toContain("mt-4");
-  });
 });
 
 describe("NavTabs orientation", () => {

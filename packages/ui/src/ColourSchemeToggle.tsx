@@ -7,6 +7,7 @@ import {
   type ColourSchemeClasses,
 } from "./colourScheme.js";
 import { IconButton } from "./IconButton.js";
+import type { Unstyled } from "./props.js";
 
 const sun = (
   <svg
@@ -76,14 +77,12 @@ function subscribe(onChange: () => void): () => void {
  * writes it from `onChange`. Every other button prop (`id`, `data-*`, `aria-*`) goes on the button.
  */
 export function ColourSchemeToggle({
-  className,
   onChange,
   schemes = { light: "", dark: "dark" },
   initial,
   store = true,
   ...rest
 }: {
-  className?: string;
   onChange?: (scheme: ColourScheme) => void;
   /** The class each scheme puts on `<html>`. Default `{ light: "", dark: "dark" }`. */
   schemes?: ColourSchemeClasses | undefined;
@@ -91,9 +90,11 @@ export function ColourSchemeToggle({
   initial?: ColourScheme | undefined;
   /** Remember the choice in `localStorage`. `false` leaves persisting to `onChange`. Default `true`. */
   store?: boolean | undefined;
-} & Omit<
-  ComponentPropsWithoutRef<"button">,
-  "onChange" | "onClick" | "children" | "className" | "aria-label" | "title"
+} & Unstyled<
+  Omit<
+    ComponentPropsWithoutRef<"button">,
+    "onChange" | "onClick" | "children" | "aria-label" | "title"
+  >
 >): ReactElement {
   const scheme = useSyncExternalStore(
     subscribe,
@@ -105,7 +106,6 @@ export function ColourSchemeToggle({
     <IconButton
       {...rest}
       label={`Switch to ${next} theme`}
-      className={className}
       onClick={() => {
         applyColourScheme(next, document.documentElement, schemes);
         if (store) storeColourScheme(next);

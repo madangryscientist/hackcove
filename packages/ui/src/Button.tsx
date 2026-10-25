@@ -1,5 +1,6 @@
 import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import { cx, focusRing } from "./cx.js";
+import type { Unstyled } from "./props.js";
 
 export type ButtonVariant = "primary" | "outline" | "ghost" | "link" | "dashed";
 export type ButtonSize = "md" | "sm";
@@ -105,7 +106,7 @@ type ButtonProps = ButtonLook & {
   busy?: boolean | undefined;
   /** The label while `busy`, in place of the children. */
   busyLabel?: string | undefined;
-} & ComponentPropsWithoutRef<"button">;
+} & Unstyled<ComponentPropsWithoutRef<"button">>;
 
 type State = "blocked" | "busy" | "idle";
 
@@ -142,7 +143,6 @@ export function Button({
   disabledReason,
   busy = false,
   busyLabel,
-  className,
   children,
   title,
   disabled,
@@ -153,7 +153,7 @@ export function Button({
   return (
     <button
       type="button"
-      className={cx(stateClass({ variant, size, tone }, state), className)}
+      className={stateClass({ variant, size, tone }, state)}
       disabled={disabled || busy || blocked}
       aria-busy={busy || undefined}
       title={blocked ? disabledReason : title}

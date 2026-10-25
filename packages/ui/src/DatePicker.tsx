@@ -56,7 +56,6 @@ export function DatePicker({
   errorMessage,
   error,
   isInvalid: invalidProp,
-  className,
   value,
   defaultValue,
   onChange,
@@ -88,7 +87,7 @@ export function DatePicker({
         {...forcedInvalid({ impossible, isInvalid: invalidProp, error })}
         granularity="day"
         shouldForceLeadingZeros
-        className={cx("flex flex-col gap-1.5", className)}
+        className="flex flex-col gap-1.5"
       >
         {({ isInvalid }) => (
           <>

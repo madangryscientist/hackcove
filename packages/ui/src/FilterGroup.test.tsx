@@ -14,13 +14,4 @@ describe("FilterGroup", () => {
     expect(out).toContain("Type of shop");
     expect(out).toContain("<span>Charity</span>");
   });
-
-  it("lands className on the fieldset", () => {
-    const out = renderToStaticMarkup(
-      <FilterGroup legend="Type of shop" className="mt-4">
-        <span>Charity</span>
-      </FilterGroup>,
-    );
-    expect(out).toMatch(/<fieldset class="[^"]*mt-4[^"]*"/);
-  });
 });

@@ -27,11 +27,11 @@ export const OnAnIcon: S = {
     <div className="flex items-center gap-4">
       <span className="relative inline-flex">
         <IconButton label="Alerts">{bellIcon}</IconButton>
-        <Badge count={3} className="absolute -right-1.5 -top-1.5" />
+        <Badge count={3} corner />
       </span>
       <span className="relative inline-flex">
         <IconButton label="Alerts">{bellIcon}</IconButton>
-        <Badge count={120} className="absolute -right-2 -top-1.5" />
+        <Badge count={120} corner />
       </span>
     </div>
   ),

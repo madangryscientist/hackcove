@@ -39,12 +39,10 @@ describe("InlineLinks", () => {
     expect(none).not.toContain("aria-hidden");
   });
 
-  it("renders a single link bare, and appends className to the row", () => {
-    const out = renderToStaticMarkup(
-      <InlineLinks className="cv-screen-nav">{links.slice(0, 1)}</InlineLinks>,
-    );
+  it("renders a single link bare", () => {
+    const out = renderToStaticMarkup(<InlineLinks>{links.slice(0, 1)}</InlineLinks>);
     expect(out).not.toContain("aria-hidden");
-    expect(out).toContain("text-sm cv-screen-nav");
+    expect(out).toContain("text-sm");
   });
 
   it("ignores empty children", () => {

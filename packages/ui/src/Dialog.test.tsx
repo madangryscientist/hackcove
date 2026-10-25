@@ -69,11 +69,10 @@ describe("Dialog", () => {
     expect(out).not.toContain("mt-5");
   });
 
-  it("sizes the panel and appends className", () => {
+  it("sizes the panel", () => {
     const sm = renderToStaticMarkup(<Dialog title="t" size="sm" onClose={() => {}} />);
     expect(sm).toContain("w-80");
-    const md = renderToStaticMarkup(<Dialog title="t" className="mt-4x" onClose={() => {}} />);
+    const md = renderToStaticMarkup(<Dialog title="t" onClose={() => {}} />);
     expect(md).toContain("w-110");
-    expect(md).toMatch(/class="[^"]*mt-4x"/);
   });
 });

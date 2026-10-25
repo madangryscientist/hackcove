@@ -1,4 +1,5 @@
 import type { HTMLAttributes, ReactElement, ReactNode } from "react";
+import type { Unstyled } from "./props.js";
 import { cx } from "./cx.js";
 import { BAR_FILL } from "./ProgressBar.js";
 
@@ -28,7 +29,6 @@ export function StatTile({
   hint,
   tone = "neutral",
   accent = false,
-  className,
   ...rest
 }: {
   label: ReactNode;
@@ -37,14 +37,11 @@ export function StatTile({
   /** Defaults to "neutral". */
   tone?: StatTileTone;
   accent?: boolean;
-} & Omit<HTMLAttributes<HTMLDivElement>, "children">): ReactElement {
+} & Unstyled<Omit<HTMLAttributes<HTMLDivElement>, "children">>): ReactElement {
   return (
     <div
-      className={cx(
-        "relative overflow-hidden rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm",
-        className,
-      )}
       {...rest}
+      className="relative overflow-hidden rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm"
     >
       {accent && (
         <span aria-hidden="true" className={cx("absolute inset-x-0 top-0 h-1", BAR[tone])} />

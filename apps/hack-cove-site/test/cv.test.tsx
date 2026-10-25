@@ -142,6 +142,6 @@ describe("cv layout", () => {
   });
 
   test("a job's bullets are a BulletList", () => {
-    expect(html).toMatch(/<ul class="list-disc[^"]*mt-2">/);
+    expect(html).toMatch(/<ul class="list-disc[^"]*">/);
   });
 });

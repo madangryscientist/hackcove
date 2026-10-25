@@ -41,11 +41,12 @@ export function GalleryControls() {
         />
         <Checkbox size="sm" label="Paid" defaultChecked />
         <Checkbox size="sm" aria-label="Select row" />
-        <Checkbox
-          align="start"
-          label="Email me when a shop I follow posts a new find, and a weekly summary of the best ones"
-          className="max-w-xs"
-        />
+        <div className="max-w-xs">
+          <Checkbox
+            align="start"
+            label="Email me when a shop I follow posts a new find, and a weekly summary of the best ones"
+          />
+        </div>
       </div>
       <div className="flex flex-wrap items-center gap-2">
         {widths.map((width) => (

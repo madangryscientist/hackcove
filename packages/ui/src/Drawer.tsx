@@ -19,7 +19,6 @@ export type DrawerProps = {
   onClose: () => void;
   /** The accessible name of the close button. */
   closeLabel?: string;
-  className?: string;
 };
 
 /**
@@ -36,7 +35,6 @@ export function Drawer({
   size = "md",
   onClose,
   closeLabel = "Close",
-  className,
 }: DrawerProps): ReactElement {
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -55,7 +53,7 @@ export function Drawer({
       aria-labelledby={titleId}
       onClose={onClose}
       onClick={(event) => event.target === dialog.current && dialog.current?.close()}
-      className={cx(PANEL, SIZE[size], className)}
+      className={cx(PANEL, SIZE[size])}
     >
       <header className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 px-5.5 py-3.5">
         <ModalHeading id={titleId}>{title}</ModalHeading>

@@ -7,9 +7,9 @@ import { Container } from "./Container.js";
 const EDGE = "max-w-6xl px-4 sm:px-6";
 
 describe("Container", () => {
-  it("renders a div with the content width and side padding, then the caller's classes", () => {
-    expect(renderToStaticMarkup(<Container className="py-8">x</Container>)).toBe(
-      `<div class="mx-auto w-full ${EDGE} py-8">x</div>`,
+  it("renders a div with the content width and side padding, and no class of its own to add", () => {
+    expect(renderToStaticMarkup(<Container>x</Container>)).toBe(
+      `<div class="mx-auto w-full ${EDGE}">x</div>`,
     );
   });
 
