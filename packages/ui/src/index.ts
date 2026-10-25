@@ -17,6 +17,7 @@ export {
   ProseLayout,
   SidebarLayout,
 } from "./PageLayouts.js";
+export { ErrorPage, Forbidden, Maintenance, NotFound, Offline } from "./StatusPages.js";
 export { Section, Stack, type StackGap, type StackWidth } from "./Stack.js";
 export {
   Button,

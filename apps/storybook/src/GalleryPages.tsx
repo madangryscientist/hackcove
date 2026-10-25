@@ -3,8 +3,13 @@ import {
   Body,
   Button,
   CenteredLayout,
+  ErrorPage,
+  Forbidden,
   FullBleedLayout,
+  Maintenance,
   NavTabs,
+  NotFound,
+  Offline,
   Overline,
   SidebarLayout,
 } from "@hackcove/ui";
@@ -86,6 +91,21 @@ export function GalleryPages() {
         <CenteredLayout title="Sign in" subtitle="Use your Hack Cove account.">
           <Button>Continue</Button>
         </CenteredLayout>
+      </PageBox>
+      <PageBox label="NotFound">
+        <NotFound homeHref="#" />
+      </PageBox>
+      <PageBox label="ErrorPage">
+        <ErrorPage detail="Request 4f2a91 failed" onRetry={() => {}} homeHref="#" />
+      </PageBox>
+      <PageBox label="Offline">
+        <Offline onRetry={() => {}} />
+      </PageBox>
+      <PageBox label="Maintenance">
+        <Maintenance />
+      </PageBox>
+      <PageBox label="Forbidden">
+        <Forbidden homeHref="#" />
       </PageBox>
     </div>
   );
