@@ -84,6 +84,7 @@ export { FileDrop } from "./FileDrop.js";
 export { CopyButton } from "./CopyButton.js";
 export { CopyLine } from "./CopyLine.js";
 export { Field } from "./Field.js";
+export { FormGrid, FormRow, FormRowField, type FormRowSpan } from "./FormRow.js";
 export { FieldDialog, type FieldDialogProps } from "./FieldDialog.js";
 export { Input } from "./Input.js";
 export type { ControlAlign, ControlSize, ControlWidth } from "./control.js";

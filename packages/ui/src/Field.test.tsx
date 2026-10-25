@@ -2,6 +2,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { Field } from "./Field.js";
 
+const fieldWith = (span?: "full") =>
+  renderToStaticMarkup(
+    <Field label="Notes" htmlFor="notes" span={span}>
+      <input id="notes" />
+    </Field>,
+  );
+
 describe("Field", () => {
   it("points the label at the control through htmlFor", () => {
     const out = renderToStaticMarkup(
@@ -41,5 +48,10 @@ describe("Field", () => {
       </Field>,
     );
     expect(out).not.toContain("<p");
+  });
+
+  it("spans every column of a FormGrid with span=full, and takes one otherwise", () => {
+    expect(fieldWith("full")).toContain("col-span-full");
+    expect(fieldWith()).not.toContain("col-span");
   });
 });

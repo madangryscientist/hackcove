@@ -18,11 +18,9 @@ import {
   Display,
   Empty,
   EpicHeader,
-  Field,
   FieldDialog,
   FilterGroup,
   fromISODate,
-  Input,
   Kbd,
   KeyValue,
   KeyValueList,
@@ -47,6 +45,7 @@ import { GalleryBars } from "./GalleryBars";
 import { GalleryControls } from "./GalleryControls";
 import { GalleryButtons } from "./GalleryButtons";
 import { GalleryData } from "./GalleryData";
+import { GalleryForm, GalleryNameField } from "./GalleryForm";
 import { GalleryLayout } from "./GalleryLayout";
 import { GalleryPills } from "./GalleryPills";
 import { GallerySwitchers } from "./GallerySwitchers";
@@ -54,16 +53,6 @@ import { GalleryText } from "./GalleryText";
 import { GalleryLinks } from "./GalleryLinks";
 import { GalleryPages } from "./GalleryPages";
 import { samplePhoto } from "./samplePhoto";
-
-const searchIcon = (
-  <svg viewBox="0 0 20 20" fill="currentColor">
-    <path
-      fillRule="evenodd"
-      d="M9 3.5a5.5 5.5 0 1 0 3.4 9.8l3.15 3.15a.75.75 0 1 0 1.06-1.06l-3.15-3.15A5.5 5.5 0 0 0 9 3.5Zm-4 5.5a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z"
-      clipRule="evenodd"
-    />
-  </svg>
-);
 
 /** The page header block of the Gallery: a Display title, a PageTitle and a NavTabs row. */
 function GalleryHeader() {
@@ -241,7 +230,6 @@ function GalleryAvatars() {
 
 /** Every component in @hackcove/ui, once each. Colour comes from the components and the theme only. */
 export function Gallery() {
-  const nameId = useId();
   return (
     <div className="flex max-w-3xl flex-col gap-6">
       <GalleryHeader />
@@ -284,14 +272,7 @@ export function Gallery() {
       <GalleryCopy />
 
       <div className="flex max-w-sm flex-col gap-3">
-        <Field label="Display name" htmlFor={nameId} hint="Shown on your reviews.">
-          <Input
-            id={nameId}
-            type="search"
-            placeholder="Search by name, suburb or tag…"
-            icon={searchIcon}
-          />
-        </Field>
+        <GalleryNameField />
         <Textarea placeholder="What did you find? How were the prices?" />
         <Select defaultValue={5}>
           <option value={5}>★★★★★ (5)</option>
@@ -304,6 +285,8 @@ export function Gallery() {
         <DatePicker label="Date of birth" defaultValue={fromISODate("1990-05-17")} />
         <DateField label="Visited on" description="DD/MM/YYYY" />
       </div>
+
+      <GalleryForm />
 
       <GalleryControls />
 
