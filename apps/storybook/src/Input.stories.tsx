@@ -58,3 +58,15 @@ export const AutoWidth: S = {
 export const Disabled: S = {
   render: () => <Input placeholder="Your name" disabled />,
 };
+/** Once the field has a value, a themed "Clear search" button sits at the trailing edge. The browser's own cancel button is hidden. */
+export const SearchWithValue: S = {
+  render: () => (
+    <Input
+      type="search"
+      aria-label="Search"
+      defaultValue="Thrifty paper"
+      placeholder="Search by name, suburb or tag…"
+      icon={search}
+    />
+  ),
+};
