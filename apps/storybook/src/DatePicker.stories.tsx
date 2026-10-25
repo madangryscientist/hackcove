@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { DateField, DatePicker, fromISODate } from "@hackcove/ui";
-import { type ReactNode, useEffect, useRef } from "react";
+import { Button, DateField, DatePicker, Dialog, Drawer, fromISODate } from "@hackcove/ui";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 
 /**
  * The calendar popover portals to <body>, outside the toolbar's theme frame. An app puts its theme's
@@ -104,4 +104,43 @@ export const Open: S = {
 /** The field alone, with no calendar. */
 export const FieldOnly: S = {
   render: () => <DateField label="Date of birth" description="DD/MM/YYYY" />,
+};
+
+/** Open when the story loads; the button opens it again. */
+function Opened({ children }: { children: (close: () => void) => ReactNode }) {
+  const [open, setOpen] = useState(true);
+  return (
+    <div className="p-6">
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        Open
+      </Button>
+      {open && children(() => setOpen(false))}
+    </div>
+  );
+}
+
+/** A picker in a modal Dialog: the calendar must still open, take focus and pick a day. */
+export const InDialog: S = {
+  render: () => (
+    <Opened>
+      {(close) => (
+        <Dialog title="Mark as paid" onClose={close}>
+          <DatePicker label="Paid on" />
+        </Dialog>
+      )}
+    </Opened>
+  ),
+};
+
+/** A picker in a modal Drawer: the calendar must still open, take focus and pick a day. */
+export const InDrawer: S = {
+  render: () => (
+    <Opened>
+      {(close) => (
+        <Drawer title="Mark as paid" onClose={close}>
+          <DatePicker label="Paid on" />
+        </Drawer>
+      )}
+    </Opened>
+  ),
 };

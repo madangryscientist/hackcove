@@ -138,10 +138,15 @@ const cellClass = ({
   );
 };
 
-/** The picker's popover: header, a Monday-first month grid and a Clear footer. */
-export function CalendarPopover(): ReactElement {
+/**
+ * The picker's popover: header, a Monday-first month grid and a Clear footer. `container` is the
+ * modal `<dialog>` the picker sits in, if any: a modal makes everything outside it inert and paints
+ * above the body, so the popover renders inside it (which also keeps the theme's scope class).
+ */
+export function CalendarPopover({ container }: { container: Element | undefined }): ReactElement {
   return (
     <Popover
+      {...(container ? { UNSTABLE_portalContainer: container } : {})}
       placement="bottom start"
       className="rounded-xl border border-slate-200 bg-white p-3 text-slate-900 shadow-lg"
     >

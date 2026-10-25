@@ -1,5 +1,5 @@
 import type { CalendarDate } from "@internationalized/date";
-import { type ReactElement, type ReactNode, useContext } from "react";
+import { type ReactElement, type ReactNode, useCallback, useContext, useState } from "react";
 import {
   Button,
   DatePicker as AriaDatePicker,
@@ -72,10 +72,16 @@ export function DatePicker({
       maxValue: rest.maxValue,
       isRequired: rest.isRequired,
     });
+  const [dialog, setDialog] = useState<Element | undefined>(undefined);
+  const findDialog = useCallback(
+    (el: HTMLDivElement | null) => setDialog(el?.closest("dialog") ?? undefined),
+    [],
+  );
   return (
     <I18nProvider locale={LOCALE}>
       <AriaDatePicker<CalendarDate>
         {...rest}
+        ref={findDialog}
         value={inner}
         onChange={setInner}
         validate={validate}
@@ -110,7 +116,7 @@ export function DatePicker({
               impossible={impossible}
               isInvalid={isInvalid}
             />
-            <CalendarPopover />
+            <CalendarPopover container={dialog} />
           </>
         )}
       </AriaDatePicker>

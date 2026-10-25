@@ -3,7 +3,7 @@ import { cx } from "./cx.js";
 import { Subtitle, ModalHeading } from "./typography.js";
 
 const PANEL =
-  "mx-auto mt-28 max-w-[calc(100vw-2rem)] rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-2xl backdrop:bg-slate-900/35";
+  "mx-auto mt-28 max-w-[calc(100vw-2rem)] overflow-visible rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-2xl backdrop:bg-slate-900/35";
 const SIZE = { sm: "w-80", md: "w-110" } as const;
 
 export type DialogProps = {
