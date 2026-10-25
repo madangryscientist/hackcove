@@ -36,11 +36,14 @@ export { BulletList } from "./BulletList.js";
 export { Callout, type CalloutTone } from "./Callout.js";
 export { ListRow, type ListRowProps } from "./ListRow.js";
 export {
+  type CellTone,
   rowLinkClass,
   type RowTone,
   Table,
   TableBody,
   TableCell,
+  TableFoot,
+  TableGroupRow,
   TableHead,
   TableHeaderCell,
   TableRow,
