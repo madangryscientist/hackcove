@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Select } from "@hackcove/ui";
+import { Button, Select } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Select" };
 export default meta;
@@ -30,6 +30,17 @@ export const AutoWidth: S = {
     <Select width="auto" aria-label="Rating" defaultValue={5}>
       {rating}
     </Select>
+  ),
+};
+/** `width="fill"` grows to the room left in a row, so the button beside it stays on the line. */
+export const FillWidth: S = {
+  render: () => (
+    <div className="flex max-w-lg flex-wrap items-center gap-2">
+      <Select width="fill" aria-label="Rating" defaultValue={5}>
+        {rating}
+      </Select>
+      <Button>Apply</Button>
+    </div>
   ),
 };
 export const Disabled: S = {

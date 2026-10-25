@@ -9,12 +9,12 @@ import { Textarea } from "./Textarea.js";
 const classOf = (markup: string): string[] =>
   (/class="([^"]*)"/.exec(markup)?.[1] ?? "").split(" ").filter(Boolean);
 
-const WIDTHS = Object.values(CONTROL_WIDTH).filter((w): w is string => w !== undefined);
+const WIDTHS = Object.values(CONTROL_WIDTH).flatMap((w) => w?.split(" ") ?? []);
 
 const controls = {
-  Input: (props: { size?: "sm"; width?: "auto" | "md" }) => <Input {...props} />,
-  Select: (props: { size?: "sm"; width?: "auto" | "md" }) => <Select {...props} />,
-  Textarea: (props: { size?: "sm"; width?: "auto" | "md" }) => <Textarea {...props} />,
+  Input: (props: { size?: "sm"; width?: "auto" | "fill" | "md" }) => <Input {...props} />,
+  Select: (props: { size?: "sm"; width?: "auto" | "fill" | "md" }) => <Select {...props} />,
+  Textarea: (props: { size?: "sm"; width?: "auto" | "fill" | "md" }) => <Textarea {...props} />,
 };
 
 describe.each(Object.entries(controls))("%s size and width", (_name, render) => {
@@ -38,6 +38,11 @@ describe.each(Object.entries(controls))("%s size and width", (_name, render) => 
     expect(classes).toContain("w-36");
     expect(classes).not.toContain("w-full");
     expect(classes.filter((c) => WIDTHS.includes(c))).toHaveLength(1);
+  });
+
+  it("fill grows into the row and can shrink to nothing", () => {
+    const classes = classOf(renderToStaticMarkup(render({ width: "fill" })));
+    expect(classes).toEqual(expect.arrayContaining(["flex-1", "min-w-0", "w-full"]));
   });
 
   it("auto carries no width class", () => {
@@ -64,10 +69,38 @@ describe("Input with an icon", () => {
     expect(classes).not.toContain("w-48");
   });
 
+  it("puts fill on the wrapper and keeps the input full inside it", () => {
+    const out = renderToStaticMarkup(<Input icon={icon} width="fill" />);
+    expect(out.startsWith('<div class="relative w-full min-w-0 flex-1"')).toBe(true);
+    const classes = classOf(out.slice(out.indexOf("<input")));
+    expect(classes).toContain("w-full");
+    expect(classes).not.toContain("flex-1");
+  });
+
   it("auto sizes the wrapper to the input", () => {
     const out = renderToStaticMarkup(<Input icon={icon} width="auto" />);
     expect(out.startsWith('<div class="relative inline-block"')).toBe(true);
     expect(classOf(out.slice(out.indexOf("<input")))).not.toContain("w-full");
+  });
+});
+
+describe("Input align", () => {
+  const icon = <svg viewBox="0 0 20 20" />;
+
+  it("start is the default and adds no alignment class", () => {
+    expect(classOf(renderToStaticMarkup(<Input />))).not.toContain("text-right");
+  });
+
+  it("end right-aligns a plain field, an icon field, a search field and a prefixed field", () => {
+    for (const markup of [
+      renderToStaticMarkup(<Input align="end" />),
+      renderToStaticMarkup(<Input align="end" icon={icon} />),
+      renderToStaticMarkup(<Input align="end" type="search" />),
+    ]) {
+      expect(classOf(markup.slice(markup.indexOf("<input")))).toContain("text-right");
+    }
+    const prefixed = renderToStaticMarkup(<Input align="end" prefix="R" />);
+    expect(classOf(prefixed.slice(prefixed.indexOf("<input")))).toContain("text-right");
   });
 });
 

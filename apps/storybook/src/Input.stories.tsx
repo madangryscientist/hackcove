@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Input } from "@hackcove/ui";
+import { Button, Input } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Input" };
 export default meta;
@@ -76,5 +76,37 @@ export const SearchWithValue: S = {
       placeholder="Search by name, suburb or tag…"
       icon={search}
     />
+  ),
+};
+/** `width="fill"` grows to the room left in a row, so the buttons beside it stay on the line. */
+export const FillWidth: S = {
+  render: () => (
+    <div className="flex max-w-lg flex-wrap items-center gap-2">
+      <Input width="fill" aria-label="Note" placeholder="Fills the row" />
+      <Button>Save</Button>
+      <Button variant="outline">Cancel</Button>
+    </div>
+  ),
+};
+/** `align="end"` right-aligns the value, for a numeric field. */
+export const AlignEnd: S = {
+  render: () => (
+    <div className="flex max-w-lg flex-wrap items-center gap-2">
+      <Input
+        align="end"
+        inputMode="numeric"
+        aria-label="Quantity"
+        defaultValue="1 250"
+        width="md"
+      />
+      <Input
+        align="end"
+        prefix="R"
+        inputMode="decimal"
+        aria-label="Amount"
+        defaultValue="49.90"
+        width="fill"
+      />
+    </div>
   ),
 };

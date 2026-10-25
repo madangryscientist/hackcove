@@ -6,7 +6,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react";
-import { controlClass, type ControlProps } from "./control.js";
+import { CONTROL_ALIGN, controlClass, type ControlAlign, type ControlProps } from "./control.js";
 import { cx, focusRing } from "./cx.js";
 import { InputShell } from "./InputShell.js";
 import type { Unstyled } from "./props.js";
@@ -62,9 +62,10 @@ export function SearchInput({
   icon,
   size = "md",
   width = "full",
+  align = "start",
   onChange,
   ...rest
-}: { icon?: ReactNode } & ControlProps &
+}: { icon?: ReactNode; align?: ControlAlign | undefined } & ControlProps &
   Unstyled<Omit<ComponentPropsWithoutRef<"input">, "size" | "width">>): ReactElement {
   const inputRef = useRef<HTMLInputElement>(null);
   const [typed, setTyped] = useState(() => String(rest.value ?? rest.defaultValue ?? "") !== "");
@@ -83,6 +84,7 @@ export function SearchInput({
           controlClass(size, width === "auto" ? "auto" : "full"),
           SEARCH_PAD[size][icon === undefined ? "plain" : "icon"],
           SEARCH_RESET,
+          CONTROL_ALIGN[align],
         )}
       />
       {filled && !rest.disabled && !rest.readOnly && (

@@ -1,4 +1,5 @@
 import {
+  Button,
   Checkbox,
   DateField,
   DatePicker,
@@ -52,6 +53,15 @@ export function GalleryControls() {
         {widths.map((width) => (
           <Input key={width} width={width} aria-label={`Width ${width}`} placeholder={width} />
         ))}
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <Input width="fill" aria-label="Fill width" placeholder="Fill" />
+        <Select width="fill" aria-label="Fill select" defaultValue="monthly">
+          <option value="monthly">Monthly</option>
+          <option value="weekly">Weekly</option>
+        </Select>
+        <Input align="end" width="md" aria-label="Right-aligned" defaultValue="1 250" />
+        <Button>Save</Button>
       </div>
       <Textarea size="sm" rows={2} aria-label="Small textarea" placeholder="Small note" />
       <Input prefix="R" placeholder="0.00" aria-label="Amount" width="lg" />
