@@ -130,7 +130,9 @@ export function CardGrid({
  * page (a plain `<AppShell>`, no `bleed`): the rail starts at the header logo's x and the canvas
  * ends at the header's right edge. The rail has no background and no border, so it is a list of
  * links on the page; a `NavTabs orientation="vertical"` is its content. From `md` it is `w-56` with
- * the canvas filling the rest; below `md` it stacks above the canvas.
+ * the canvas filling the rest; below `md` it stacks above the canvas. Upgrading from 0.2: the rail
+ * no longer has a fill, a border or a fixed height, and it no longer sits beside the canvas on a
+ * phone.
  */
 export function SidebarLayout({
   rail,
