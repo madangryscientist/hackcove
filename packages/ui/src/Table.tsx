@@ -17,6 +17,9 @@ type TableVariant = "card" | "plain";
 
 const VariantContext = createContext<TableVariant>("card");
 
+/** Whether a `TableRow` sits in the body (a line above, a hover fill) or the head or nowhere (neither). */
+const SectionContext = createContext<"head" | "body" | undefined>(undefined);
+
 /** What an element passes through (`data-*`, `aria-*`, `id`, …): the layout and the children stay the component's. */
 type Rest<
   Tag extends "table" | "thead" | "tbody" | "tr" | "th" | "td",
@@ -78,7 +81,7 @@ export function TableHead({
       {...rest}
       className={cx("text-xs uppercase tracking-wide text-slate-500", !plain && "bg-slate-50")}
     >
-      {children}
+      <SectionContext.Provider value="head">{children}</SectionContext.Provider>
     </thead>
   );
 }
@@ -88,27 +91,32 @@ export function TableBody({
   children,
   ...rest
 }: { children: ReactNode } & Rest<"tbody">): ReactElement {
-  const plain = useContext(VariantContext) === "plain";
   return (
-    <tbody
-      {...rest}
-      className={cx(
-        "[&>tr]:border-t [&>tr]:border-slate-200/70",
-        !plain && "[&>tr:hover]:bg-slate-50",
-      )}
-    >
-      {children}
+    <tbody {...rest}>
+      <SectionContext.Provider value="body">{children}</SectionContext.Provider>
     </tbody>
   );
 }
 
-/** A `<tr>`, `relative`: the anchor a `rowLinkClass` link stretches to. Use it in the head and the body. */
+/**
+ * A `<tr>`, `relative`: the anchor a `rowLinkClass` link stretches to. Use it in the head and the
+ * body. In the body it also draws the line above the row and, unless the table is `plain`, the hover fill.
+ */
 export function TableRow({
   children,
   ...rest
 }: { children: ReactNode } & Rest<"tr">): ReactElement {
+  const body = useContext(SectionContext) === "body";
+  const plain = useContext(VariantContext) === "plain";
   return (
-    <tr {...rest} className="relative">
+    <tr
+      {...rest}
+      className={cx(
+        "relative",
+        body && "border-t border-slate-200/70",
+        body && !plain && "hover:bg-slate-50",
+      )}
+    >
       {children}
     </tr>
   );

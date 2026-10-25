@@ -65,7 +65,7 @@ describe("Table plain", () => {
   });
 
   it("keeps the row dividers and the head's small uppercase titles", () => {
-    expect(plain).toContain("[&amp;&gt;tr]:border-t [&amp;&gt;tr]:border-slate-200/70");
+    expect(plain).toContain('<tr class="relative border-t border-slate-200/70">');
     expect(plain).toContain("uppercase");
   });
 });
@@ -134,8 +134,20 @@ describe("TableBody and TableRow", () => {
         </TableBody>
       </table>,
     );
-    expect(out).toContain("[&amp;&gt;tr]:border-t");
-    expect(out).toContain("[&amp;&gt;tr:hover]:bg-slate-50");
+    expect(out).toContain('<tr class="relative border-t border-slate-200/70 hover:bg-slate-50">');
+    expect(out).not.toContain("[&amp;");
+  });
+
+  it("a head row is only relative: no line above, no hover", () => {
+    const out = renderToStaticMarkup(
+      <table>
+        <TableHead>
+          <TableRow>
+            <TableHeaderCell>Ref</TableHeaderCell>
+          </TableRow>
+        </TableHead>
+      </table>,
+    );
     expect(out).toContain('<tr class="relative">');
   });
 });

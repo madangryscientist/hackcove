@@ -23,3 +23,16 @@ it("uses no colour utility outside palette.json", () => {
   });
   expect(notInPalette).toEqual([]);
 });
+
+it("puts no colour utility behind an arbitrary [&…] variant, which no theme remaps", () => {
+  const sources = readdirSync(import.meta.dirname).filter(
+    (file) => file.endsWith(".tsx") && !file.endsWith(".test.tsx"),
+  );
+  expect(sources.length).toBeGreaterThan(0);
+  const behindArbitrary = new RegExp(`\\[[^\\]\\s]+\\]:(?:[a-z-]+:)*${COLOUR.source}`, "g");
+  const found = sources.flatMap((file) => {
+    const source = readFileSync(join(import.meta.dirname, file), "utf8");
+    return (source.match(behindArbitrary) ?? []).map((utility) => `${file}: ${utility}`);
+  });
+  expect(found).toEqual([]);
+});
