@@ -129,6 +129,19 @@ export const LinkedBrand: S = {
   ),
 };
 
+/** `collapse`: below the `sm` breakpoint only the logo shows; the label is visually hidden and still names the link. Narrow the viewport to see it. */
+export const CollapsedBrand: S = {
+  render: () => (
+    <DemoShell
+      brand={
+        <AppShellBrand href="#" logo={<Avatar name="Quotes" size="sm" />} label="Quotes" collapse />
+      }
+    >
+      <PageHeader title="Collapsed brand" subtitle="Logo only below sm." />
+    </DemoShell>
+  ),
+};
+
 /** The same brand drawn by the app's own router link, through `render` (here a stand-in `<a>`). */
 export const RouterBrand: S = {
   render: () => (

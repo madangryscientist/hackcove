@@ -11,11 +11,12 @@ import {
   TableHead,
   TableHeaderCell,
   TableRow,
+  TextLink,
   Timeline,
   TimelineItem,
 } from "@hackcove/ui";
 
-/** The Card variants (flush, header bar, dashed, dashed filled), the Callout actions and banner, the ListRow set, a Table with a stretched row link and toned rows, a plain Table with a second-line cell and a Timeline. */
+/** The Card variants (flush, header bar, dashed, dashed filled, dense, toned), the Callout actions, banner and link, the ListRow set, a Table with a stretched row link and toned rows, a plain Table with a second-line cell and a Timeline. */
 export function GalleryData() {
   return (
     <div className="flex flex-col gap-4">
@@ -46,6 +47,25 @@ export function GalleryData() {
       <Card title="PixelSlash" status={<Pill tone="amber">Coming soon</Pill>}>
         Status beside the title.
       </Card>
+      <Card size="sm" tone="positive" title="Forecast">
+        Dense and toned.
+      </Card>
+      <Card tone="warn">A toned data panel.</Card>
+      <Callout
+        tone="warn"
+        actions={
+          <TextLink stretch href="#bills">
+            Review
+          </TextLink>
+        }
+      >
+        A linked callout.
+      </Callout>
+      <Card flush size="sm">
+        <ListRow size="sm" trailing="R 9 500">
+          Dense row
+        </ListRow>
+      </Card>
       <Card dashed>No statements yet.</Card>
       <Card dashed="filled">No quotes yet.</Card>
       <Callout tone="info" title="Heads up." actions={<Button size="sm">Retry</Button>}>
@@ -53,7 +73,11 @@ export function GalleryData() {
       </Callout>
       <GalleryTables />
       <Timeline label="Status history">
-        <TimelineItem title={<Pill tone="emerald">accepted</Pill>} time="12 Oct 2026, 09:14">
+        <TimelineItem
+          tone="positive"
+          title={<Pill tone="emerald">accepted</Pill>}
+          time="12 Oct 2026, 09:14"
+        >
           Client confirmed by phone.
         </TimelineItem>
         <TimelineItem title={<Pill tone="amber">sent</Pill>} time="10 Oct 2026, 16:02" />

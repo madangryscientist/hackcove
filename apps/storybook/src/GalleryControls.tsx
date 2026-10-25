@@ -53,8 +53,12 @@ export function GalleryControls() {
         ))}
       </div>
       <Textarea size="sm" rows={2} aria-label="Small textarea" placeholder="Small note" />
+      <Input prefix="R" placeholder="0.00" aria-label="Amount" width="lg" />
       <FileDrop accept=".csv" aria-label="Statement">
         Drop a statement here or click to choose
+      </FileDrop>
+      <FileDrop size="sm" accept=".png" aria-label="Photo">
+        Add a photo
       </FileDrop>
       <DatePicker label="Paid on" error="That date is before the invoice." />
       <DateField label="Due on" isInvalid errorMessage="Pick a date." />

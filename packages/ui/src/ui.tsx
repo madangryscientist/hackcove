@@ -1,4 +1,6 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { type CalloutTone, TONE_SURFACE } from "./Callout.js";
+import type { ControlSize } from "./control.js";
 import { cx } from "./cx.js";
 import { PageHeaderContent } from "./PageHeader.js";
 
@@ -16,16 +18,24 @@ function CardHeading({
   status,
   bar,
   spaced,
+  size,
 }: {
   title: string;
   count: number | undefined;
   status: ReactNode;
   bar: boolean;
   spaced: boolean;
+  size: ControlSize;
 }) {
   const ink = bar ? "text-slate-500" : "text-slate-400";
   return (
-    <div className={cx("flex gap-2", status ? "items-center" : "items-baseline", spaced && "mb-3")}>
+    <div
+      className={cx(
+        "flex gap-2",
+        status ? "items-center" : "items-baseline",
+        spaced && (size === "sm" ? "mb-2" : "mb-3"),
+      )}
+    >
       <h2 className={cx("text-xs font-semibold uppercase tracking-wide", ink)}>{title}</h2>
       {count !== undefined && <span className={cx("text-xs font-medium", ink)}>{count}</span>}
       {status}
@@ -37,61 +47,92 @@ function CardActions({ children }: { children: ReactNode }) {
   return <div className="ml-auto flex items-center gap-2">{children}</div>;
 }
 
-function CardBar({ heading, actions }: { heading: ReactNode; actions: ReactNode }) {
+function CardBar({
+  heading,
+  actions,
+  size,
+}: {
+  heading: ReactNode;
+  actions: ReactNode;
+  size: ControlSize;
+}) {
   return (
-    <div className="flex items-center justify-between gap-3 border-b border-slate-200/70 bg-slate-50 px-5 py-3">
+    <div
+      className={cx(
+        "flex items-center justify-between gap-3 border-b border-slate-200/70 bg-slate-50",
+        size === "sm" ? "px-3 py-2" : "px-5 py-3",
+      )}
+    >
       {heading}
       {actions && <CardActions>{actions}</CardActions>}
     </div>
   );
 }
 
-function CardHeader({ heading, actions }: { heading: ReactNode; actions: ReactNode }) {
+function CardHeader({
+  heading,
+  actions,
+  size,
+}: {
+  heading: ReactNode;
+  actions: ReactNode;
+  size: ControlSize;
+}) {
   if (!actions) return heading;
   return (
-    <div className="mb-3 flex items-center justify-between gap-3">
+    <div className={cx("flex items-center justify-between gap-3", size === "sm" ? "mb-2" : "mb-3")}>
       {heading}
       <CardActions>{actions}</CardActions>
     </div>
   );
 }
 
-/** `dashed` stands alone; `bar` needs a title or actions to fill it. */
+/** `dashed` stands alone; `bar` needs a title or actions to fill it and has no tone. */
 function cardForm(
   asked: {
     flush?: boolean | undefined;
     bar?: boolean | undefined;
     dashed?: boolean | "filled" | undefined;
+    tone?: CalloutTone | undefined;
+    size?: ControlSize | undefined;
   },
   hasHeader: boolean,
 ) {
   const dashed = Boolean(asked.dashed);
+  const bar = (asked.bar ?? false) && !dashed && hasHeader;
   return {
     flush: (asked.flush ?? false) && !dashed,
-    bar: (asked.bar ?? false) && !dashed && hasHeader,
+    bar,
     dashed,
     filled: asked.dashed === "filled",
+    tone: dashed || bar ? undefined : asked.tone,
+    size: asked.size ?? "md",
   };
 }
 
-function cardClass(form: {
-  flush: boolean;
-  bar: boolean;
-  dashed: boolean;
-  filled: boolean;
-}): string {
-  const { flush, bar, dashed, filled } = form;
-  const clipped = flush || bar;
-  const padding = dashed
-    ? cx(filled ? "p-10" : "p-8", "text-center text-sm text-slate-500")
-    : "p-5";
+/** The padding of a card's body by `size`. */
+const BODY_PAD: Record<ControlSize, string> = { md: "p-5", sm: "p-3" };
+
+function cardBorder(form: ReturnType<typeof cardForm>): string {
+  if (form.dashed) return "border-dashed border-slate-300";
+  return form.tone ? TONE_SURFACE[form.tone] : "border-slate-200/70 bg-white";
+}
+
+function cardPadding(form: ReturnType<typeof cardForm>): string | false {
+  if (form.dashed) {
+    return cx(form.filled ? "p-10" : "p-8", "text-center text-sm text-slate-500");
+  }
+  return !form.flush && !form.bar && BODY_PAD[form.size];
+}
+
+function cardClass(form: ReturnType<typeof cardForm>): string {
   return cx(
     "rounded-xl border",
-    dashed ? "border-dashed border-slate-300" : "border-slate-200/70 bg-white",
-    filled && "bg-white",
-    !clipped && padding,
-    !dashed && "shadow-sm",
-    clipped && "overflow-hidden",
+    cardBorder(form),
+    form.filled && "bg-white",
+    cardPadding(form),
+    !form.dashed && !form.tone && "shadow-sm",
+    (form.flush || form.bar) && "overflow-hidden",
   );
 }
 
@@ -102,7 +143,10 @@ function cardClass(form: {
  * top, over the body; `dashed` is an empty-state shell, a dashed outline with centred muted text.
  * `dashed` stands alone: it ignores `flush` and `bar`; `dashed="filled"` is the same shell on a
  * surface fill with more padding, for an empty state that must read as a panel. A flush card has no
- * padding for a `title`, so give it a `bar`. Other props (`id`, `data-*`, `aria-*`) go on the root.
+ * padding for a `title`, so give it a `bar`. `size="sm"` is the dense padding, the same on a
+ * `ListRow` and a `FileDrop`. `tone` is the Callout's set, for a data panel that carries a status
+ * (a soft fill and border, no shadow); a message is still a `Callout`, and `bar` and `dashed` have
+ * no tone. Other props (`id`, `data-*`, `aria-*`) go on the root.
  */
 export function Card({
   title,
@@ -112,6 +156,8 @@ export function Card({
   bar,
   flush,
   dashed,
+  tone,
+  size,
   as: Tag = "section",
   className,
   children,
@@ -129,11 +175,15 @@ export function Card({
   flush?: boolean;
   /** An empty-state shell: dashed outline, no shadow, no fill, centred muted text. `"filled"` puts it on a surface fill with more padding. */
   dashed?: boolean | "filled";
+  /** A soft fill and border in the Callout's tones, for a data panel with a status. Ignored with `bar` and `dashed`. */
+  tone?: CalloutTone;
+  /** `sm` is dense padding on the body, heading and bar; a `dashed` shell keeps its own. Defaults to `md`. */
+  size?: ControlSize;
   as?: "section" | "article" | "div";
   className?: string;
   children: ReactNode;
 } & Omit<ComponentPropsWithoutRef<"section">, "title" | "className" | "style" | "children">) {
-  const form = cardForm({ flush, bar, dashed }, Boolean(title || actions));
+  const form = cardForm({ flush, bar, dashed, tone, size }, Boolean(title || actions));
   const heading = title && (
     <CardHeading
       title={title}
@@ -141,18 +191,19 @@ export function Card({
       status={status}
       bar={form.bar}
       spaced={!form.bar && !actions}
+      size={form.size}
     />
   );
   return (
     <Tag {...rest} className={cx(cardClass(form), className)}>
       {form.bar ? (
         <>
-          <CardBar heading={heading} actions={actions} />
-          <div className={form.flush ? undefined : "p-5"}>{children}</div>
+          <CardBar heading={heading} actions={actions} size={form.size} />
+          <div className={form.flush ? undefined : BODY_PAD[form.size]}>{children}</div>
         </>
       ) : (
         <>
-          <CardHeader heading={heading} actions={actions} />
+          <CardHeader heading={heading} actions={actions} size={form.size} />
           {children}
         </>
       )}

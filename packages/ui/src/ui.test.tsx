@@ -186,3 +186,49 @@ describe("Card", () => {
     expect(out).toContain('aria-label="Empty"');
   });
 });
+
+describe("Card size and tone", () => {
+  it("sm is dense padding, md the default", () => {
+    expect(renderToStaticMarkup(<Card size="sm">x</Card>)).toContain("p-3");
+    expect(renderToStaticMarkup(<Card>x</Card>)).toContain("p-5");
+    expect(
+      renderToStaticMarkup(
+        <Card size="sm" title="T">
+          x
+        </Card>,
+      ),
+    ).toContain("mb-2");
+    expect(
+      renderToStaticMarkup(
+        <Card size="sm" bar title="T">
+          x
+        </Card>,
+      ),
+    ).toContain("px-3 py-2");
+  });
+
+  it("tone is the Callout's soft fill and border, with no shadow", () => {
+    const out = renderToStaticMarkup(<Card tone="warn">x</Card>);
+    expect(out).toContain("border-amber-200");
+    expect(out).toContain("bg-amber-50");
+    expect(out).not.toContain("bg-white");
+    expect(out).not.toContain("shadow-sm");
+  });
+
+  it("ignores tone on a dashed card and on a bar", () => {
+    expect(
+      renderToStaticMarkup(
+        <Card dashed tone="warn">
+          x
+        </Card>,
+      ),
+    ).not.toContain("bg-amber-50");
+    expect(
+      renderToStaticMarkup(
+        <Card bar title="T" tone="warn">
+          x
+        </Card>,
+      ),
+    ).not.toContain("bg-amber-50 ");
+  });
+});

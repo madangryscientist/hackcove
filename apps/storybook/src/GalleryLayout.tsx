@@ -18,7 +18,12 @@ export function GalleryLayout() {
     <div className="h-80 overflow-y-auto rounded-xl border border-slate-200">
       <AppShell
         brand={
-          <AppShellBrand href="#" logo={<Avatar name="Hack Cove" size="sm" />} label="Hack Cove" />
+          <AppShellBrand
+            href="#"
+            logo={<Avatar name="Hack Cove" size="sm" />}
+            label="Hack Cove"
+            collapse
+          />
         }
         nav={
           <NavTabs

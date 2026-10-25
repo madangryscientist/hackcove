@@ -21,23 +21,35 @@ export function appShellRootClassFor(scheme: ColourScheme, schemes?: ColourSchem
 
 /**
  * The `brand` slot as one link: a logo and a label inside the same `<a>`, so the whole brand is the
- * way home. The label names the link; the logo is decoration and hidden from assistive tech. With
+ * way home. The label names the link; the logo is decoration and hidden from assistive tech.
+ * `collapse` shows only the logo below `sm`, the label staying in the accessible name. With
  * `render` it draws the app's own router `<Link>` (`render={(p) => <Link to="/" {...p} />}`).
  */
 export function AppShellBrand({
   logo,
   label,
+  collapse = false,
   href,
   render,
 }: {
-  /** The mark before the label, e.g. an `Avatar` or an `<img>`. */
-  logo?: ReactNode;
   /** The name beside the logo. It is the link's accessible name. */
   label: ReactNode;
 } & (
-  | { href: string; render?: LinkRender | undefined }
-  | { href?: string | undefined; render: LinkRender }
-)): ReactElement {
+  | {
+      /** The mark before the label, e.g. an `Avatar` or an `<img>`. */
+      logo?: ReactNode;
+      collapse?: false | undefined;
+    }
+  | {
+      logo: ReactNode;
+      /** Below `sm` only the logo shows; the label is visually hidden and still names the link. Needs a `logo`. */
+      collapse: true;
+    }
+) &
+  (
+    | { href: string; render?: LinkRender | undefined }
+    | { href?: string | undefined; render: LinkRender }
+  )): ReactElement {
   return renderLink({
     href,
     render,
@@ -49,7 +61,7 @@ export function AppShellBrand({
             {logo}
           </span>
         )}
-        <span>{label}</span>
+        <span className={collapse ? "sr-only sm:not-sr-only" : undefined}>{label}</span>
       </>
     ),
   });

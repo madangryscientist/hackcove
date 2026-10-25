@@ -55,3 +55,18 @@ describe("TimelineItem", () => {
     expect(out).toContain('aria-hidden="true"');
   });
 });
+
+const dot = (tone: "info" | "positive" | "warn" | "danger") =>
+  renderToStaticMarkup(<TimelineItem title="x" tone={tone} />);
+
+describe("TimelineItem tone", () => {
+  it("defaults to the neutral ring", () => {
+    expect(renderToStaticMarkup(<TimelineItem title="Sent" />)).toContain(
+      "border-slate-300 bg-white",
+    );
+  });
+
+  it("colours the dot with the Callout's tones", () => {
+    expect(dot("danger")).toContain("bg-current text-red-700");
+  });
+});

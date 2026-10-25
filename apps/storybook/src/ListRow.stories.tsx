@@ -58,3 +58,22 @@ export const CollapsibleHeader: S = {
     </div>
   ),
 };
+
+/** `size="sm"`: dense padding, for a list that must fit more rows. */
+export const Small: S = {
+  render: () => (
+    <div className="max-w-md">
+      <Card size="sm" flush>
+        <ListRow size="sm" trailing="R 9 500">
+          Rent
+        </ListRow>
+        <ListRow size="sm" className="border-t border-slate-200/70" trailing="R 1 850">
+          Transport
+        </ListRow>
+        <ListRow size="sm" className="border-t border-slate-200/70" href="#status" trailing="3">
+          A link row
+        </ListRow>
+      </Card>
+    </div>
+  ),
+};

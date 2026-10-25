@@ -21,6 +21,15 @@ export const Default: S = {
 export const WithIcon: S = {
   render: () => <Input type="search" placeholder="Search by name, suburb or tag…" icon={search} />,
 };
+/** `prefix`: short text inside the border, before the value, such as a currency symbol. */
+export const WithPrefix: S = {
+  render: () => (
+    <div className="flex flex-wrap items-center gap-2">
+      <Input prefix="R" inputMode="decimal" placeholder="0.00" aria-label="Amount" width="lg" />
+      <Input prefix="R" size="sm" placeholder="0.00" aria-label="Small amount" width="md" />
+    </div>
+  ),
+};
 /** `sm` is compact: `text-xs`, less padding. For dense forms and table rows. */
 export const Small: S = {
   render: () => <Input size="sm" placeholder="Qty" />,

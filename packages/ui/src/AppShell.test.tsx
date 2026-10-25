@@ -131,3 +131,18 @@ describe("AppShellBrand", () => {
     expect(out).toContain("<span>Quotes</span>");
   });
 });
+
+describe("AppShellBrand collapse", () => {
+  it("hides the label visually below sm and keeps it in the link", () => {
+    const out = renderToStaticMarkup(
+      <AppShellBrand href="/" logo={<i>L</i>} label="Quotes" collapse />,
+    );
+    expect(out).toContain('<span class="sr-only sm:not-sr-only">Quotes</span>');
+  });
+
+  it("shows the label by default", () => {
+    expect(
+      renderToStaticMarkup(<AppShellBrand href="/" logo={<i>L</i>} label="Quotes" />),
+    ).toContain("<span>Quotes</span>");
+  });
+});

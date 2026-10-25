@@ -15,3 +15,13 @@ export const Disabled: S = {
     </FileDrop>
   ),
 };
+/** `size="sm"`: a compact chip or tile, with dense padding. */
+export const Small: S = {
+  render: () => (
+    <div className="max-w-xs">
+      <FileDrop size="sm" accept=".jpg,.png">
+        Add a photo
+      </FileDrop>
+    </div>
+  ),
+};

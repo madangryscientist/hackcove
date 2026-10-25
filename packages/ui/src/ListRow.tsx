@@ -1,10 +1,15 @@
 import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
+import type { ControlSize } from "./control.js";
 import { cx, focusRing } from "./cx.js";
 import { type LinkRender, renderLink } from "./link.js";
 
-const ROW = `flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-slate-900 hover:bg-slate-50 disabled:pointer-events-none disabled:opacity-50 ${focusRing} focus-visible:-outline-offset-2`;
+const ROW = `flex w-full items-center gap-3 text-left text-sm text-slate-900 hover:bg-slate-50 disabled:pointer-events-none disabled:opacity-50 ${focusRing} focus-visible:-outline-offset-2`;
+
+const PAD: Record<ControlSize, string> = { md: "px-4 py-3", sm: "px-3 py-2" };
 
 type Shared = {
+  /** `sm` is dense padding. Defaults to `md`. */
+  size?: ControlSize | undefined;
   /** Content at the far end of the row: a value, a count, a Pill. */
   trailing?: ReactNode | undefined;
   children: ReactNode;
@@ -56,19 +61,28 @@ function Chevron({ open }: { open: boolean }): ReactElement {
  * them are the caller's (`border-t border-slate-200/70` on each row after the first).
  */
 export function ListRow(props: ListRowProps): ReactElement {
-  const { trailing, children, className } = props;
+  const { trailing, children, className, size = "md" } = props;
   const label = <span className="min-w-0 flex-1">{children}</span>;
   const end = trailing != null && (
     <span className="shrink-0 tabular-nums text-slate-500">{trailing}</span>
   );
   if (props.href !== undefined || props.render !== undefined) {
-    const { trailing: _t, expanded: _e, href, render, external, className: _c, ...rest } = props;
+    const {
+      trailing: _t,
+      expanded: _e,
+      size: _s,
+      href,
+      render,
+      external,
+      className: _c,
+      ...rest
+    } = props;
     return renderLink({
       ...rest,
       href,
       render,
       external,
-      className: cx(ROW, className),
+      className: cx(ROW, PAD[size], className),
       children: (
         <>
           {label}
@@ -77,13 +91,13 @@ export function ListRow(props: ListRowProps): ReactElement {
       ),
     });
   }
-  const { trailing: _t, expanded, href: _h, render: _r, className: _c, ...rest } = props;
+  const { trailing: _t, expanded, size: _s, href: _h, render: _r, className: _c, ...rest } = props;
   return (
     <button
       type="button"
       {...rest}
       {...(expanded === undefined ? {} : { "aria-expanded": expanded })}
-      className={cx(ROW, className)}
+      className={cx(ROW, PAD[size], className)}
     >
       {expanded !== undefined && <Chevron open={expanded} />}
       {label}

@@ -107,3 +107,24 @@ describe("Input clear button", () => {
     expect(clear(c)).not.toBeNull();
   });
 });
+
+describe("Input prefix", () => {
+  it("puts the prefix inside one bordered box with the field", () => {
+    const out = renderToStaticMarkup(<Input prefix="R" aria-label="Amount" />);
+    expect(out).toMatch(
+      /^<div class="[^"]*w-full[^"]*border border-slate-300[^"]*"><span[^>]*>R<\/span><input /,
+    );
+    expect(out).not.toContain('prefix="R"');
+    expect(out.match(/border-slate-300/g)).toHaveLength(1);
+  });
+
+  it("keeps the field's props, size and fixed width", () => {
+    const out = renderToStaticMarkup(
+      <Input prefix="R" size="sm" width="md" name="amount" disabled aria-label="Amount" />,
+    );
+    expect(out).toContain("w-36");
+    expect(out).toContain("text-xs");
+    expect(out).toContain('name="amount"');
+    expect(out).toContain("opacity-50");
+  });
+});

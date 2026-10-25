@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { Callout } from "./Callout.js";
+import { TextLink } from "./TextLink.js";
 
 describe("Callout", () => {
   it("defaults to the info tone", () => {
@@ -56,5 +57,25 @@ describe("Callout", () => {
     expect(out).toContain("border-b");
     expect(out).toContain("border-amber-200");
     expect(out).not.toContain("rounded");
+  });
+});
+
+describe("Callout link", () => {
+  it("is relative, so a stretched link in actions covers the whole callout", () => {
+    const out = renderToStaticMarkup(
+      <Callout
+        title="3 due."
+        actions={
+          <TextLink stretch href="/bills">
+            Review
+          </TextLink>
+        }
+      >
+        Sort them.
+      </Callout>,
+    );
+    expect(out).toMatch(/^<div class="relative /);
+    expect(out.match(/<a /g)).toHaveLength(1);
+    expect(out).toContain("after:absolute after:inset-0");
   });
 });

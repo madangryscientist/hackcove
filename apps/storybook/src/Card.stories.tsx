@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Card, Empty, Pill, Stack, SubsectionHeading } from "@hackcove/ui";
+import { Button, Card, Empty, ListRow, Pill, Stack, SubsectionHeading } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Card" };
 export default meta;
@@ -160,6 +160,41 @@ export const DashedFilled: S = {
   render: () => (
     <div className="max-w-md">
       <Card dashed="filled">No statements yet. Import one to get started.</Card>
+    </div>
+  ),
+};
+
+/** `size="sm"`: dense padding, the same word on `ListRow` and `FileDrop`. */
+export const Small: S = {
+  render: () => (
+    <div className="flex max-w-md flex-col gap-4">
+      <Card size="sm" title="Open" count={3}>
+        <p className="text-sm text-slate-700">A dense panel.</p>
+      </Card>
+      <Card size="sm" bar title="Notes" actions={<Button size="sm">Save</Button>}>
+        <p className="text-sm text-slate-700">A dense body under the strip.</p>
+      </Card>
+      <Card size="sm" dashed>
+        Nothing here yet.
+      </Card>
+    </div>
+  ),
+};
+
+/** `tone`: a soft fill and border in the Callout's set, for a data panel with a status. A message is still a `Callout`. */
+export const Tones: S = {
+  render: () => (
+    <div className="flex max-w-md flex-col gap-4">
+      {(["neutral", "info", "positive", "warn", "danger"] as const).map((tone) => (
+        <Card key={tone} tone={tone} title={tone} count={2}>
+          <p className="text-sm text-slate-700">R 12 400 forecast for the month.</p>
+        </Card>
+      ))}
+      <Card tone="warn" size="sm" flush>
+        <ListRow size="sm" trailing="R 1 850">
+          Transport
+        </ListRow>
+      </Card>
     </div>
   ),
 };

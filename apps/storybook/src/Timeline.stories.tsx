@@ -21,6 +21,23 @@ export const StatusHistory: S = {
   ),
 };
 
+/** `tone` colours the marker dot with the Callout's set; the default `neutral` is a plain ring. */
+export const Tones: S = {
+  render: () => (
+    <div className="max-w-md">
+      <Timeline label="Renovation">
+        <TimelineItem tone="positive" title="Paid" time="12 Oct 2026" />
+        <TimelineItem tone="info" title="Booked" time="10 Oct 2026" />
+        <TimelineItem tone="warn" title="Delayed" time="8 Oct 2026">
+          Waiting on the tiles.
+        </TimelineItem>
+        <TimelineItem tone="danger" title="Rejected" time="5 Oct 2026" />
+        <TimelineItem title="Planned" time="1 Oct 2026" />
+      </Timeline>
+    </div>
+  ),
+};
+
 export const Empty: S = {
   render: () => (
     <div className="max-w-md">

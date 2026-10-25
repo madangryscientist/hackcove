@@ -54,3 +54,17 @@ describe("ListRow", () => {
     expect(out).toContain("hover:bg-slate-50");
   });
 });
+
+describe("ListRow size", () => {
+  it("sm is dense padding, md the default, on a button and a link alike", () => {
+    expect(renderToStaticMarkup(<ListRow>a</ListRow>)).toContain("px-4 py-3");
+    expect(renderToStaticMarkup(<ListRow size="sm">a</ListRow>)).toContain("px-3 py-2");
+    const link = renderToStaticMarkup(
+      <ListRow size="sm" href="#x">
+        a
+      </ListRow>,
+    );
+    expect(link).toContain("px-3 py-2");
+    expect(link).not.toContain('size="sm"');
+  });
+});

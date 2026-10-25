@@ -34,3 +34,18 @@ describe("FileDrop", () => {
     expect(out).toContain('disabled=""');
   });
 });
+
+describe("FileDrop size", () => {
+  it("sm is a compact chip", () => {
+    expect(renderToStaticMarkup(<FileDrop size="sm">Drop</FileDrop>)).toMatch(
+      /^<label[^>]*class="[^"]*px-3 py-2/,
+    );
+    expect(renderToStaticMarkup(<FileDrop>Drop</FileDrop>)).toMatch(
+      /^<label[^>]*class="[^"]*px-4 py-6/,
+    );
+  });
+
+  it("does not leak size onto the input", () => {
+    expect(renderToStaticMarkup(<FileDrop size="sm">Drop</FileDrop>)).not.toContain('size="sm"');
+  });
+});
