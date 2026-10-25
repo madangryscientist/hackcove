@@ -1,3 +1,37 @@
+## 0.1.5 (2026-10-25)
+
+This was a version bump only for theme-thrifty-paper to align it with other projects, there were no code changes.
+
+## 0.3.0 (2026-10-25)
+
+### 🚀 Features
+
+- **HC-118:** Table totals, group rows, cell tones and truncation ([5da6461](https://github.com/madangryscientist/hackcove/commit/5da6461))
+- **HC-119:** Input prefix, Card tones, small sizes, Callout link and a collapsing AppShell brand ([7dd1cf7](https://github.com/madangryscientist/hackcove/commit/7dd1cf7))
+- **HC-114:** error and status pages: not found, error, offline, forbidden, maintenance ([44e8a8a](https://github.com/madangryscientist/hackcove/commit/44e8a8a))
+- **HC-117:** TableRow tone, dashed Button, item data-* and a toggle first frame ([f16997e](https://github.com/madangryscientist/hackcove/commit/f16997e))
+- ⚠️  **HC-122:** record SidebarLayout's bare, stacking rail as breaking ([fc692ad](https://github.com/madangryscientist/hackcove/commit/fc692ad))
+- **HC-116:** date picker stories inside Dialog and Drawer; keep the calendar unclipped in a Dialog ([03e0152](https://github.com/madangryscientist/hackcove/commit/03e0152))
+- **HC-121:** add CodeBlock, Card status and Stack gap="section" ([1a11e15](https://github.com/madangryscientist/hackcove/commit/1a11e15))
+
+### 🩹 Fixes
+
+- **HC-123:** make the default search input work: value, clear and icon ([5c614b1](https://github.com/madangryscientist/hackcove/commit/5c614b1))
+- **HC-125:** Table row hover and dividers use utilities every theme remaps ([c1e53fd](https://github.com/madangryscientist/hackcove/commit/c1e53fd))
+- **HC-92:** keep the Checkbox box its size when a centred label wraps ([2bf9bfb](https://github.com/madangryscientist/hackcove/commit/2bf9bfb))
+
+### ⚠️  Breaking Changes
+
+- **HC-122:** record SidebarLayout's bare, stacking rail as breaking  ([fc692ad](https://github.com/madangryscientist/hackcove/commit/fc692ad))
+  SidebarLayout's rail is bare (no fill, no border, no fixed height) and stacks
+  under md; its canvas shrinks so a wide table scrolls inside it.
+  Gated on land: bun install; nx run-many typecheck lint test build; format:check; pack-check; nx e2e storybook; storybook:visual 4 changed (video and overview noise), 684 unchanged vs origin/main.
+  State: landable
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
 ## 0.2.7 (2026-10-25)
 
 ### 🚀 Features

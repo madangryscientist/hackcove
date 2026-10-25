@@ -73,7 +73,7 @@
     },
     "packages/ui": {
       "name": "@hackcove/ui",
-      "version": "0.2.7",
+      "version": "0.3.0",
       "dependencies": {
         "@internationalized/date": "^3.12.4",
         "react-aria-components": "^1.22.1",
@@ -96,7 +96,7 @@
     },
     "themes/catppuccin-mocha": {
       "name": "@hackcove/theme-catppuccin-mocha",
-      "version": "0.2.5",
+      "version": "0.2.6",
       "devDependencies": {
         "@types/bun": "1.4.3",
         "tailwindcss": "^4.3.3",
@@ -108,7 +108,7 @@
     },
     "themes/thrifty-paper": {
       "name": "@hackcove/theme-thrifty-paper",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "devDependencies": {
         "@types/bun": "1.4.3",
         "tailwindcss": "^4.3.3",
