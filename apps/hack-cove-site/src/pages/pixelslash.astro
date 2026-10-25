@@ -1,0 +1,15 @@
+---
+import { Contact } from "../components/Contact";
+import { PageIntro } from "../components/PageIntro";
+import { PixelSlashPage } from "../components/PixelSlashPage";
+import { sectionOf, site } from "../content/site";
+import Base from "../layouts/Base.astro";
+
+const section = sectionOf("pixelslash");
+---
+
+<Base title={`${section.name} — ${site.name}`} description={section.description}>
+  <PageIntro title={section.name} subtitle={site.pixelslash.subtitle} />
+  <PixelSlashPage />
+  <Contact slot="footer" />
+</Base>

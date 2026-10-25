@@ -1,0 +1,17 @@
+---
+import { Contact } from "../components/Contact";
+import { CvLink } from "../components/CvLink";
+import { PageIntro } from "../components/PageIntro";
+import { Team } from "../components/Team";
+import { sectionOf, site } from "../content/site";
+import Base from "../layouts/Base.astro";
+
+const section = sectionOf("contracting");
+---
+
+<Base title={`${section.name} — ${site.name}`} description={section.description}>
+  <PageIntro title={section.name} subtitle={site.intro} />
+  <Team />
+  <CvLink />
+  <Contact slot="footer" />
+</Base>

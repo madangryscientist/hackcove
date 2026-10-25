@@ -28,12 +28,12 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
   <body>
     {
       Astro.slots.has("footer") ? (
-        <SiteShell hideChromeInPrint={hideChromeInPrint}>
+        <SiteShell pathname={Astro.url.pathname} hideChromeInPrint={hideChromeInPrint}>
           <slot />
           <slot name="footer" slot="footer" />
         </SiteShell>
       ) : (
-        <SiteShell hideChromeInPrint={hideChromeInPrint}>
+        <SiteShell pathname={Astro.url.pathname} hideChromeInPrint={hideChromeInPrint}>
           <slot />
         </SiteShell>
       )

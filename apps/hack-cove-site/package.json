@@ -39,7 +39,8 @@
       "build": {
         "inputs": [
           "default",
-          "{workspaceRoot}/themes/catppuccin-mocha/theme.css",
+          "{workspaceRoot}/themes/*/theme.css",
+          "{workspaceRoot}/themes/*/package.json",
           "{workspaceRoot}/packages/ui/src/**/*"
         ],
         "outputs": [
@@ -76,6 +77,11 @@
         ]
       },
       "test": {
+        "inputs": [
+          "default",
+          "{workspaceRoot}/themes/*/theme.css",
+          "{workspaceRoot}/themes/*/package.json"
+        ],
         "dependsOn": [
           "^build"
         ]
