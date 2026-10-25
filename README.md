@@ -77,7 +77,10 @@ scrolled to that end. A row that fits is untouched. Story: `Layout/AppShell › 
 The header row is laid out by slots, so an app writes no wrapper or `className` there: `brand`,
 `nav` and `controls` (`header` stays as a free node). `hideChromeInPrint` is opt-in: the header and
 footer are hidden on paper and main drops its padding, so the page margin is the app's `@page`.
-Stories: `Layout/AppShell › HeaderSlots` and `HiddenInPrint`.
+`AppShellBrand` makes the logo and the name one link (a router link through `render`), nothing in
+`controls` shrinks, and `appShellRootClassFor(scheme, schemes?)` gives `<html>` its scheme class and
+`appShellRootClass` together.
+Stories: `Layout/AppShell › HeaderSlots`, `LinkedBrand`, `RouterBrand` and `HiddenInPrint`.
 
 ## Dates
 

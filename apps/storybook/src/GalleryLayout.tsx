@@ -1,5 +1,7 @@
 import {
   AppShell,
+  AppShellBrand,
+  Avatar,
   Body,
   Button,
   ColourSchemeToggle,
@@ -15,7 +17,9 @@ export function GalleryLayout() {
   return (
     <div className="h-80 overflow-y-auto rounded-xl border border-slate-200">
       <AppShell
-        brand="Hack Cove"
+        brand={
+          <AppShellBrand href="#" logo={<Avatar name="Hack Cove" size="sm" />} label="Hack Cove" />
+        }
         nav={
           <NavTabs
             label="Gallery shell"

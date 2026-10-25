@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { AppShell } from "./AppShell.js";
+import { AppShell, AppShellBrand, appShellRootClass, appShellRootClassFor } from "./AppShell.js";
+import { schemeClass } from "./colourScheme.js";
 
 const EDGE = "max-w-6xl px-4 sm:px-6";
 
@@ -59,7 +60,7 @@ describe("AppShell", () => {
       '<div class="flex items-center gap-2 text-base font-bold tracking-tight text-slate-900"><a href="/">Logo</a></div>',
     );
     expect(out).toContain(
-      '<div class="ml-auto flex items-center gap-2"><button type="button">Theme</button></div>',
+      '<div class="ml-auto flex items-center gap-2 *:shrink-0 [&amp;&gt;.w-full]:w-auto"><button type="button">Theme</button></div>',
     );
     const order = ["Logo", 'aria-label="Main"', "extra", "Theme"].map((part) => out.indexOf(part));
     expect(order).toEqual(order.toSorted((a, b) => a - b));
@@ -90,5 +91,43 @@ describe("AppShell", () => {
     expect(out).toMatch(/<header class="[^"]*\bprint:hidden\b[^"]*">/);
     expect(out).toMatch(/<footer class="[^"]*\bprint:hidden\b[^"]*">/);
     expect(out).toContain(`<div class="mx-auto w-full ${EDGE} py-8 print:p-0">page</div>`);
+  });
+});
+
+describe("appShellRootClassFor", () => {
+  it("joins the scheme's class and the root class, for the default and the app's own schemes", () => {
+    const schemes = { light: "paper", dark: "night" };
+    expect(appShellRootClassFor("dark")).toBe(`dark ${appShellRootClass}`);
+    expect(appShellRootClassFor("light")).toBe(appShellRootClass);
+    expect(appShellRootClassFor("light", schemes)).toBe(
+      `${schemeClass("light", schemes)} ${appShellRootClass}`,
+    );
+    expect(appShellRootClassFor("dark", schemes)).toBe(`night ${appShellRootClass}`);
+  });
+});
+
+describe("AppShellBrand", () => {
+  it("puts the logo and the label inside one link, the logo hidden from assistive tech", () => {
+    const out = renderToStaticMarkup(<AppShellBrand href="/" logo={<i>L</i>} label="Quotes" />);
+    expect(out.match(/<a /g)).toHaveLength(1);
+    expect(out).toMatch(/^<a href="\/" class="[^"]*\bflex\b[^"]*">/);
+    expect(out).toContain(
+      '<span aria-hidden="true" class="flex shrink-0 items-center"><i>L</i></span>',
+    );
+    expect(out).toContain("<span>Quotes</span></a>");
+  });
+
+  it("has no logo wrapper when there is no logo", () => {
+    const out = renderToStaticMarkup(<AppShellBrand href="/" label="Quotes" />);
+    expect(out).not.toContain("aria-hidden");
+  });
+
+  it("draws the app's own link with render, with no href", () => {
+    const out = renderToStaticMarkup(
+      <AppShellBrand label="Quotes" render={(props) => <a data-router="/" {...props} />} />,
+    );
+    expect(out).toMatch(/^<a data-router="\/" class="[^"]*">/);
+    expect(out).not.toContain("href");
+    expect(out).toContain("<span>Quotes</span>");
   });
 });

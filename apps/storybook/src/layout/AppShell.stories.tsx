@@ -1,5 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Card, ColourSchemeToggle, NavTabs, PageHeader, Select, Stack } from "@hackcove/ui";
+import {
+  AppShellBrand,
+  Avatar,
+  Body,
+  Card,
+  ColourSchemeToggle,
+  NavTabs,
+  PageHeader,
+  Select,
+  Stack,
+} from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 /** Every story under `Layout/` is picked up by the no-jump e2e (e2e/layout.spec.ts) at 375, 768 and 1280. */
@@ -87,7 +97,8 @@ export const OverflowingSubnav: S = {
 /**
  * The three header slots, none with a wrapper or `className` from the app: `brand` is the logo and
  * name at the brand type with the logo gap, `nav` is a `NavTabs`, and `controls` sits at the end of
- * the row, gap-2 and vertically centred.
+ * the row, gap-2 and vertically centred. No child of `controls` shrinks, and the `Select` at its
+ * default `width="full"` sizes to its content, so the toggle keeps its square.
  */
 export const HeaderSlots: S = {
   render: () => (
@@ -103,6 +114,34 @@ export const HeaderSlots: S = {
       }
     >
       <PageHeader title="Header slots" subtitle="Brand, nav and controls." />
+    </DemoShell>
+  ),
+};
+
+/** `AppShellBrand`: a logo and a label inside one link, so the whole brand is the way home. */
+export const LinkedBrand: S = {
+  render: () => (
+    <DemoShell
+      brand={<AppShellBrand href="#" logo={<Avatar name="Quotes" size="sm" />} label="Quotes" />}
+    >
+      <PageHeader title="Linked brand" subtitle="Logo and label are one link." />
+    </DemoShell>
+  ),
+};
+
+/** The same brand drawn by the app's own router link, through `render` (here a stand-in `<a>`). */
+export const RouterBrand: S = {
+  render: () => (
+    <DemoShell
+      brand={
+        <AppShellBrand
+          logo={<Avatar name="Quotes" size="sm" />}
+          label="Quotes"
+          render={(props) => <a {...props} href="#router" data-router="/" />}
+        />
+      }
+    >
+      <PageHeader title="Router brand" subtitle="Drawn by render, no href of its own." />
     </DemoShell>
   ),
 };

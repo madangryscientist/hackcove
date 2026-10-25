@@ -12,6 +12,7 @@ const nav = ["Overview", "Builds", "Snapshots", "Reviews", "Projects", "Members"
 
 /** An app's shell: the brand and a long nav in their slots (it scrolls on a phone). Every Layout story renders inside it. */
 export function DemoShell({
+  brand,
   subnav,
   controls,
   footer,
@@ -19,6 +20,8 @@ export function DemoShell({
   hideChromeInPrint = false,
   children,
 }: {
+  /** Replaces the default brand link. */
+  brand?: ReactNode;
   subnav?: ReactNode;
   controls?: ReactNode;
   footer?: ReactNode;
@@ -29,9 +32,11 @@ export function DemoShell({
   return (
     <AppShell
       brand={
-        <a href="#" aria-label="Hack Cove">
-          Hack Cove
-        </a>
+        brand ?? (
+          <a href="#" aria-label="Hack Cove">
+            Hack Cove
+          </a>
+        )
       }
       nav={
         <NavTabs

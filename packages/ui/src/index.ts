@@ -4,7 +4,7 @@ export { StatTile, type StatTileTone } from "./StatTile.js";
 export { ProgressBar, type BarSize, type BarTone } from "./ProgressBar.js";
 export { SplitBar } from "./SplitBar.js";
 export { Markdown } from "./Markdown.js";
-export { AppShell, appShellRootClass } from "./AppShell.js";
+export { AppShell, AppShellBrand, appShellRootClass, appShellRootClassFor } from "./AppShell.js";
 export { Container } from "./Container.js";
 export { PageHeader, type PageHeaderProps } from "./PageHeader.js";
 export {

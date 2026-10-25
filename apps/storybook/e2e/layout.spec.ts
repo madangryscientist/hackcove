@@ -115,6 +115,18 @@ test("at 390px an overflowing subnav fades the side with more to scroll, and a f
   await expect.poll(state).toEqual({ start: false, end: false, mask: "none" });
 });
 
+test("at 1280px a full-width Select in controls sizes to its content and leaves the toggle square", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto(storyUrl("layout-appshell--header-slots"));
+  const toggle = page.getByRole("button", { name: /^Switch to / });
+  await toggle.waitFor();
+  const toggleBox = await boxOf(toggle, "toggle");
+  expect(toggleBox.width).toBeGreaterThanOrEqual(30);
+  expect(Math.abs(toggleBox.width - toggleBox.height)).toBeLessThanOrEqual(1);
+});
+
 for (const width of widths) {
   test(`at ${width}px the form's column starts at the title's x, as the list's rows do`, async ({
     page,

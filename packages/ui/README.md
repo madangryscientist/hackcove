@@ -40,7 +40,7 @@ export const Example = () => (
 ## What is exported
 
 - Primitives: `Card` (a bordered panel; `title` and `count` make a small heading; `flush` drops the padding and clips the corners, for a table that runs edge to edge; `bar` moves the title, count and `actions` into a tinted strip over the body; `dashed` is an empty-state shell with centred muted text; `as` is `section` (default), `article` or `div`),  `EpicHeader`, `Empty`, `PageTitle` (deprecated: use `PageHeader`), `Pill`, `groupByEpic`, `Markdown`.
-- Layout (see Layout): `AppShell`, `appShellRootClass`, `Container`, `PageHeader`, `Stack`, `Section`, and the page layouts `ListLayout`, `DetailLayout`, `FormLayout`, `ProseLayout`, `CardGrid`, `SidebarLayout`, `FullBleedLayout`, `CenteredLayout`.
+- Layout (see Layout): `AppShell`, `AppShellBrand`, `appShellRootClass`, `appShellRootClassFor`, `Container`, `PageHeader`, `Stack`, `Section`, and the page layouts `ListLayout`, `DetailLayout`, `FormLayout`, `ProseLayout`, `CardGrid`, `SidebarLayout`, `FullBleedLayout`, `CenteredLayout`.
 - Typography roles (each pins size + weight, takes a `color` and an `as`): `Display`, `Lead`,
   `PageHeading`, `SectionHeading`, `SubsectionHeading`, `ModalHeading`, `Subtitle`, `Overline`,
   `Body`, `BodyStrong`, `Caption`. Three opt-in props, none changing today's look: `SectionHeading rule`
@@ -137,9 +137,25 @@ import { AppShell, PageHeader, Section, Stack, appShellRootClass } from "@hackco
   with fixed `py-8`, and an optional `footer`. The header row is filled by slots, left to right:
   `brand` (logo and name, at the brand type with the logo gap), `nav` (a `NavTabs`), `header` (a
   free node, the escape hatch) and `controls` (end-aligned, `gap-2`, centred): no wrapper, no
-  `className`. `hideChromeInPrint` is opt-in: the header and footer are hidden in print and main
+  `className`. Nothing in `controls` shrinks, and a full-width control there (a `Select` at its
+  default `width="full"`) sizes to its content, so a `Select` next to a `ColourSchemeToggle` leaves
+  the toggle its square. `hideChromeInPrint` is opt-in: the header and footer are hidden in print and main
   drops its padding (the page margin is then your `@page`); without it a print is unchanged. `bleed` drops main's `Container` for a full-bleed
   page; the header keeps its own, so put a `Container` back around anything that should line up.
+- **`AppShellBrand`** is the `brand` slot as one link: `logo` and `label` inside the same `<a>`, so
+  the whole brand goes home (the label names the link; the logo is hidden from assistive tech). With
+  `render` it draws your router's `<Link>`, as `NavTabs`, `Breadcrumbs` and `TextLink` do:
+
+  ```tsx
+  <AppShell brand={<AppShellBrand logo={<Avatar name="Quotes" size="sm" />} label="Quotes"
+    render={(props) => <Link to="/" {...props} />} />} …>
+  ```
+
+  A plain node in `brand` still works. Stories: `Layout/AppShell › LinkedBrand`, `RouterBrand`.
+- **`appShellRootClassFor(scheme, schemes?)`** is what goes on `<html>` when the server knows the
+  scheme: that scheme's class and `appShellRootClass`, joined, so there is no string concatenation:
+  `<html className={appShellRootClassFor(scheme, schemes)}>`. `appShellRootClass` and `schemeClass`
+  stay exported.
 - **`Container`** is the only place the content width (`max-w-6xl`) and side padding
   (`px-4 sm:px-6`) are defined. **Pages never set their own width or outer padding**: no `max-w-*`,
   no `mx-auto`, no `px-*` on a page. AppShell already gives them the edge.

@@ -1,12 +1,59 @@
 import { type ReactElement, type ReactNode, useEffect, useRef } from "react";
 import { Container } from "./Container.js";
-import { cx } from "./cx.js";
+import { schemeClass, type ColourScheme, type ColourSchemeClasses } from "./colourScheme.js";
+import { cx, focusRing } from "./cx.js";
+import { type LinkRender, renderLink } from "./link.js";
 
 /**
  * The class an app puts on its own `<html>`: it always reserves the scrollbar, so centred content
  * does not shift between a short page and a long one. AppShell never touches `<html>` itself.
  */
 export const appShellRootClass = "overflow-y-scroll";
+
+/**
+ * Everything an app puts on its own `<html>` from the scheme the server knows: that scheme's class
+ * (`schemeClass`) and `appShellRootClass`, joined. `<html className={appShellRootClassFor(scheme,
+ * schemes)}>` replaces `schemeClass(scheme, schemes) + " " + appShellRootClass`.
+ */
+export function appShellRootClassFor(scheme: ColourScheme, schemes?: ColourSchemeClasses): string {
+  return cx(schemeClass(scheme, schemes), appShellRootClass);
+}
+
+/**
+ * The `brand` slot as one link: a logo and a label inside the same `<a>`, so the whole brand is the
+ * way home. The label names the link; the logo is decoration and hidden from assistive tech. With
+ * `render` it draws the app's own router `<Link>` (`render={(p) => <Link to="/" {...p} />}`).
+ */
+export function AppShellBrand({
+  logo,
+  label,
+  href,
+  render,
+}: {
+  /** The mark before the label, e.g. an `Avatar` or an `<img>`. */
+  logo?: ReactNode;
+  /** The name beside the logo. It is the link's accessible name. */
+  label: ReactNode;
+} & (
+  | { href: string; render?: LinkRender | undefined }
+  | { href?: string | undefined; render: LinkRender }
+)): ReactElement {
+  return renderLink({
+    href,
+    render,
+    className: cx("flex items-center gap-2 rounded", focusRing),
+    children: (
+      <>
+        {logo && (
+          <span aria-hidden="true" className="flex shrink-0 items-center">
+            {logo}
+          </span>
+        )}
+        <span>{label}</span>
+      </>
+    ),
+  });
+}
 
 // One fixed-height row that scrolls sideways and never wraps; its children keep their width.
 const ROW = "flex items-center gap-4 overflow-x-auto whitespace-nowrap *:shrink-0";
@@ -70,7 +117,11 @@ function HeaderSlots({
       )}
       {nav}
       {children}
-      {controls && <div className="ml-auto flex items-center gap-2">{controls}</div>}
+      {controls && (
+        <div className="ml-auto flex items-center gap-2 *:shrink-0 [&>.w-full]:w-auto">
+          {controls}
+        </div>
+      )}
     </>
   );
 }
@@ -96,11 +147,11 @@ export function AppShell({
   hideChromeInPrint = false,
   children,
 }: {
-  /** The brand: a logo and a name, in the header's brand type, with the gap between them. */
+  /** The brand: a logo and a name, in the header's brand type, with the gap between them. `AppShellBrand` makes both one link. */
   brand?: ReactNode;
   /** The main navigation, e.g. `NavTabs` (it is already a `<nav>`). */
   nav?: ReactNode;
-  /** The end of the row: a picker, a theme toggle. Gap-2, vertically centred. */
+  /** The end of the row: a picker, a theme toggle. Gap-2, vertically centred; no child shrinks, and a full-width control (a `Select` at its default) sizes to its content. */
   controls?: ReactNode;
   /** The escape hatch: a free node in the header row, after `brand` and `nav`. */
   header?: ReactNode;
