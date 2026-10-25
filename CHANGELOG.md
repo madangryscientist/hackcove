@@ -1,3 +1,15 @@
+## 0.2.7 (2026-10-25)
+
+### 🚀 Features
+
+- **HC-91:** ColourSchemeToggle rest props and store opt-out, Checkbox align start, LinkRenderProps spreads onto a router Link ([4945bba](https://github.com/madangryscientist/hackcove/commit/4945bba))
+- **HC-90:** Tabs pill variant, counts, and disabled items and groups for Tabs and SegmentedControl ([b7fa4dc](https://github.com/madangryscientist/hackcove/commit/b7fa4dc))
+- **HC-89:** Table rest props, plain variant and secondary cell; Card rest props and dashed="filled" ([dccbe5e](https://github.com/madangryscientist/hackcove/commit/dccbe5e))
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
 ## 0.2.6 (2026-10-25)
 
 ### 🚀 Features
