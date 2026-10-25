@@ -1,6 +1,21 @@
-import { Button, Callout, Card, ListRow } from "@hackcove/ui";
+import {
+  Button,
+  Callout,
+  Card,
+  ListRow,
+  Pill,
+  rowLinkClass,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+  Timeline,
+  TimelineItem,
+} from "@hackcove/ui";
 
-/** The Card variants (flush, header bar, dashed), the Callout actions and banner, and the ListRow set. */
+/** The Card variants (flush, header bar, dashed), the Callout actions and banner, the ListRow set, a Table with a stretched row link and a Timeline. */
 export function GalleryData() {
   return (
     <div className="flex flex-col gap-4">
@@ -32,6 +47,45 @@ export function GalleryData() {
       <Callout tone="info" title="Heads up." actions={<Button size="sm">Retry</Button>}>
         The last import did not finish.
       </Callout>
+      <Table caption="Quotes">
+        <TableHead>
+          <TableRow>
+            <TableHeaderCell>Reference</TableHeaderCell>
+            <TableHeaderCell>Client</TableHeaderCell>
+            <TableHeaderCell align="end">Premium</TableHeaderCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow>
+            <TableCell mono>
+              <a href="#Q-1042" className={rowLinkClass}>
+                Q-1042
+              </a>
+            </TableCell>
+            <TableCell tone="strong">Naledi Dlamini</TableCell>
+            <TableCell align="end" numeric>
+              R 1 249.00
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell mono>
+              <a href="#Q-1043" className={rowLinkClass}>
+                Q-1043
+              </a>
+            </TableCell>
+            <TableCell tone="muted">Pieter van Wyk</TableCell>
+            <TableCell align="end" numeric>
+              R 880.50
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+      <Timeline label="Status history">
+        <TimelineItem title={<Pill tone="emerald">accepted</Pill>} time="12 Oct 2026, 09:14">
+          Client confirmed by phone.
+        </TimelineItem>
+        <TimelineItem title={<Pill tone="amber">sent</Pill>} time="10 Oct 2026, 16:02" />
+      </Timeline>
     </div>
   );
 }
