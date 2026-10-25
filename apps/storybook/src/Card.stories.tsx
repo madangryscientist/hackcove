@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Card, Empty } from "@hackcove/ui";
+import { Button, Card, Empty, Pill } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Card" };
 export default meta;
@@ -31,6 +31,29 @@ export const Default: S = {
     <div className="max-w-md">
       <Card title="Open" count={3}>
         <Empty>Three things to do.</Empty>
+      </Card>
+    </div>
+  ),
+};
+
+/** `status` puts a Pill (or any node) directly beside the title; `actions` stays at the far end. */
+export const Status: S = {
+  render: () => (
+    <div className="flex max-w-md flex-col gap-4">
+      <Card title="Hack Cove UI" status={<Pill tone="emerald">Available</Pill>}>
+        <Empty>Components and themes, designed together.</Empty>
+      </Card>
+      <Card
+        bar
+        title="PixelSlash"
+        status={<Pill tone="amber">Coming soon</Pill>}
+        actions={
+          <Button size="sm" variant="outline">
+            Join
+          </Button>
+        }
+      >
+        <p className="text-sm text-slate-700">Status beside the title, action at the end.</p>
       </Card>
     </div>
   ),

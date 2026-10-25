@@ -13,6 +13,12 @@ describe("Stack", () => {
     expect(renderToStaticMarkup(<Stack gap="lg">x</Stack>)).toContain("gap-8");
   });
 
+  it("maps section to the responsive page rhythm, gap-12 then sm:gap-16", () => {
+    expect(renderToStaticMarkup(<Stack gap="section">x</Stack>)).toBe(
+      '<div class="flex flex-col gap-12 sm:gap-16">x</div>',
+    );
+  });
+
   it.each([
     ["narrow", "max-w-3xl"],
     ["wide", "max-w-5xl"],

@@ -45,6 +45,7 @@ export {
 } from "./Table.js";
 export { Timeline, TimelineItem } from "./Timeline.js";
 export { Code } from "./Code.js";
+export { CodeBlock } from "./CodeBlock.js";
 export { Divider } from "./Divider.js";
 export { PageFade, startPageTransition } from "./PageFade.js";
 export { Dialog, type DialogProps } from "./Dialog.js";

@@ -112,6 +112,23 @@ describe("Card", () => {
     expect(renderToStaticMarkup(<Card bar>body</Card>)).not.toContain("bg-slate-50");
   });
 
+  it("status sits right after the title and count, with actions at the far end", () => {
+    const out = renderToStaticMarkup(
+      <Card title="Hack Cove UI" count={2} status={<b>s</b>} actions={<i>a</i>}>
+        body
+      </Card>,
+    );
+    const at = (needle: string) => out.indexOf(needle);
+    expect(at(">Hack Cove UI</h2>")).toBeLessThan(at(">2</span>"));
+    expect(at(">2</span>")).toBeLessThan(at("<b>s</b>"));
+    expect(at("<b>s</b>")).toBeLessThan(at("ml-auto"));
+    expect(at("ml-auto")).toBeLessThan(at("<i>a</i>"));
+  });
+
+  it("renders no status without a title", () => {
+    expect(renderToStaticMarkup(<Card status={<b>s</b>}>body</Card>)).not.toContain("<b>s</b>");
+  });
+
   it("actions sit beside the title without bar", () => {
     const out = renderToStaticMarkup(
       <Card title="Bills" actions={<b>x</b>}>

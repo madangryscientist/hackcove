@@ -49,6 +49,14 @@ export function GalleryLayout() {
             <Body as="p">A Stack at gap xs, in a narrow (max-w-3xl) column.</Body>
           </Stack>
         </Stack>
+        <Stack gap="section" width="narrow" className="mt-8">
+          <Section title="Gap section">
+            <Body>The page rhythm between top-level blocks: gap-12, then sm:gap-16.</Body>
+          </Section>
+          <Section title="Next block">
+            <Body>Sections inside keep their own gap.</Body>
+          </Section>
+        </Stack>
       </AppShell>
     </div>
   );

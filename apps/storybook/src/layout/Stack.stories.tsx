@@ -42,6 +42,28 @@ export const StackAndSection: S = {
   ),
 };
 
+/** `section` (`gap-12`, `sm:gap-16`) between a page's top-level blocks: one page rhythm, no per-block `pb-*`. */
+export const SectionGap: S = {
+  render: () => (
+    <DemoShell>
+      <Stack gap="section">
+        <PageHeader title="Page" subtitle="Stack gap section: the step between a page's blocks." />
+        <Section title="Intro">
+          <Body as="p">First block of the page.</Body>
+        </Section>
+        <Section title="Details">
+          <Card>
+            <Body>Second block.</Body>
+          </Card>
+        </Section>
+        <Section title="Contact">
+          <Body as="p">Third block.</Body>
+        </Section>
+      </Stack>
+    </DemoShell>
+  ),
+};
+
 /** `xs` (8px) between lines of text, so a heading, the line under it and a paragraph take no `mt-*`. */
 export const TextBlock: S = {
   render: () => (

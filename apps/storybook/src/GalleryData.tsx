@@ -43,6 +43,9 @@ export function GalleryData() {
           </ListRow>
         </div>
       </Card>
+      <Card title="PixelSlash" status={<Pill tone="amber">Coming soon</Pill>}>
+        Status beside the title.
+      </Card>
       <Card dashed>No statements yet.</Card>
       <Card dashed="filled">No quotes yet.</Card>
       <Callout tone="info" title="Heads up." actions={<Button size="sm">Retry</Button>}>

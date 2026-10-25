@@ -2,9 +2,15 @@ import { useId, type ReactElement, type ReactNode } from "react";
 import { cx } from "./cx.js";
 import { SectionHeading } from "./typography.js";
 
-export type StackGap = "xs" | "sm" | "md" | "lg";
+export type StackGap = "xs" | "sm" | "md" | "lg" | "section";
 
-const GAP: Record<StackGap, string> = { xs: "gap-2", sm: "gap-4", md: "gap-6", lg: "gap-8" };
+const GAP: Record<StackGap, string> = {
+  xs: "gap-2",
+  sm: "gap-4",
+  md: "gap-6",
+  lg: "gap-8",
+  section: "gap-12 sm:gap-16",
+};
 
 export type StackWidth = "narrow" | "default" | "wide" | "full";
 
@@ -18,7 +24,8 @@ export const STACK_WIDTH: Record<StackWidth, string | undefined> = {
 
 /**
  * A vertical column of blocks a fixed `gap` apart: `xs` between lines of text (a heading and the
- * line under it), `sm` inside a group, `md` (default) between blocks, `lg` between groups.
+ * line under it), `sm` inside a group, `md` (default) between blocks, `lg` between groups, `section` between a page's top-level blocks
+ * (`gap-12`, `sm:gap-16`: the one responsive page rhythm).
  *
  * `width` caps the column: `narrow` is a reading measure (`max-w-3xl`), `wide` is `max-w-5xl`, `full`
  * is the parent's whole width and `default` sets nothing. A capped Stack starts at its parent's left

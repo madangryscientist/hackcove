@@ -13,19 +13,22 @@ export function PageTitle({ title, subtitle }: { title: string; subtitle?: strin
 function CardHeading({
   title,
   count,
+  status,
   bar,
   spaced,
 }: {
   title: string;
   count: number | undefined;
+  status: ReactNode;
   bar: boolean;
   spaced: boolean;
 }) {
   const ink = bar ? "text-slate-500" : "text-slate-400";
   return (
-    <div className={cx("flex items-baseline gap-2", spaced && "mb-3")}>
+    <div className={cx("flex gap-2", status ? "items-center" : "items-baseline", spaced && "mb-3")}>
       <h2 className={cx("text-xs font-semibold uppercase tracking-wide", ink)}>{title}</h2>
       {count !== undefined && <span className={cx("text-xs font-medium", ink)}>{count}</span>}
+      {status}
     </div>
   );
 }
@@ -93,7 +96,7 @@ function cardClass(form: {
 }
 
 /**
- * A bordered panel with an optional title and count; `as` picks the element (default `section`).
+ * A bordered panel with an optional title, count and status; `as` picks the element (default `section`).
  * Three opt-in forms for data views: `flush` drops the padding and clips the corners, for a table
  * that runs edge to edge; `bar` puts the title, count and `actions` in a tinted strip across the
  * top, over the body; `dashed` is an empty-state shell, a dashed outline with centred muted text.
@@ -104,6 +107,7 @@ function cardClass(form: {
 export function Card({
   title,
   count,
+  status,
   actions,
   bar,
   flush,
@@ -115,6 +119,8 @@ export function Card({
 }: {
   title?: string;
   count?: number;
+  /** A `Pill` (or any node) directly beside the title and count, not at the far end like `actions`. Needs a `title`. */
+  status?: ReactNode;
   /** Buttons or links at the end of the header: in the strip with `bar`, else beside the title. */
   actions?: ReactNode;
   /** Put the title, count and actions in a tinted strip above the body, edge to edge. */
@@ -129,7 +135,13 @@ export function Card({
 } & Omit<ComponentPropsWithoutRef<"section">, "title" | "className" | "style" | "children">) {
   const form = cardForm({ flush, bar, dashed }, Boolean(title || actions));
   const heading = title && (
-    <CardHeading title={title} count={count} bar={form.bar} spaced={!form.bar && !actions} />
+    <CardHeading
+      title={title}
+      count={count}
+      status={status}
+      bar={form.bar}
+      spaced={!form.bar && !actions}
+    />
   );
   return (
     <Tag {...rest} className={cx(cardClass(form), className)}>
