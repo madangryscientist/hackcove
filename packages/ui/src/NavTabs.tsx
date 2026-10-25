@@ -1,13 +1,14 @@
 import type { ReactElement, ReactNode } from "react";
 import { cx, focusRing } from "./cx.js";
-import { type LinkRender, renderLink } from "./link.js";
+import { type DataAttributes, dataAttributes, type LinkRender, renderLink } from "./link.js";
 
 /**
  * One pill link in a NavTabs row: a plain `<a href>`, or with `render` the app's own router
  * `<Link>` (`render: (p) => <Link to="/stores" {...p} />`, which gets the tab's classes and
- * `aria-current`; `href` is then not used). `external` opens in a new tab.
+ * `aria-current`; `href` is then not used). `external` opens in a new tab. A `data-*` key
+ * (`"data-testid": "tab-quotes"`) goes on the link.
  */
-export type NavTab = {
+export type NavTab = DataAttributes & {
   label: ReactNode;
   active?: boolean;
   external?: boolean;
@@ -58,6 +59,7 @@ export function NavTabs({
 
 function Tab({ item }: { item: NavTab }): ReactElement {
   return renderLink({
+    ...dataAttributes(item),
     href: item.href,
     render: item.render,
     external: item.external,

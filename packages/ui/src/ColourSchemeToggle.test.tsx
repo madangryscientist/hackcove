@@ -40,6 +40,31 @@ describe("ColourSchemeToggle", () => {
     expect(out).toContain("<svg");
   });
 
+  it("draws both icons and picks one from the class on <html>, so the first frame needs no hydration", () => {
+    const out = renderToStaticMarkup(<ColourSchemeToggle />);
+    expect(out).toContain('data-scheme-icon="sun"');
+    expect(out).toContain('data-scheme-icon="moon"');
+    // Light page: moon only. Dark page: sun only.
+    expect(out).toContain('<style>[data-scheme-icon="sun"]{display:none}');
+    expect(out.startsWith("<button")).toBe(true);
+    expect(out).toContain(':root[class~="dark"] [data-scheme-icon="sun"]{display:inline}');
+    expect(out).toContain(':root[class~="dark"] [data-scheme-icon="moon"]{display:none}');
+  });
+
+  it("keys the rule on the app's own dark class, or on the light class's absence when dark has none", () => {
+    const own = renderToStaticMarkup(
+      <ColourSchemeToggle schemes={{ light: "paper", dark: "ink" }} />,
+    );
+    expect(own).toContain(':root[class~="ink"] [data-scheme-icon="sun"]');
+    expect(own).not.toContain('"dark"');
+    const bare = renderToStaticMarkup(
+      <ColourSchemeToggle schemes={{ light: "paper", dark: "" }} />,
+    );
+    expect(bare).toContain(':root:not([class~="paper"]) [data-scheme-icon="sun"]{display:inline}');
+    const none = renderToStaticMarkup(<ColourSchemeToggle schemes={{ light: "", dark: "" }} />);
+    expect(none).not.toContain(":root");
+  });
+
   it("offers dark on a light page and flips the class, color-scheme and stored key on click", async () => {
     const onChange = vi.fn<(scheme: ColourScheme) => void>();
     const button = buttonOf(mount(<ColourSchemeToggle onChange={onChange} />));

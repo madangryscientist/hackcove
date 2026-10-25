@@ -229,3 +229,55 @@ describe("buttonClass options", () => {
     expect(out).toContain(buttonClass("ghost", { size: "sm", tone: "danger" }));
   });
 });
+
+describe("Button dashed variant", () => {
+  it("is a full-width dashed outline with muted text, lit with the accent on hover", () => {
+    const out = html(<Button variant="dashed">Add shot</Button>);
+    expect(out).toContain("w-full");
+    expect(out).toContain("border-dashed");
+    expect(out).toContain("border-slate-300");
+    expect(out).toContain("text-slate-500");
+    expect(out).toContain("hover:border-violet-400");
+    expect(out).toContain("hover:text-violet-700");
+    expect(out).not.toContain("bg-");
+  });
+
+  it("takes the size scale", () => {
+    expect(html(<Button variant="dashed">Add</Button>)).toContain("gap-2 px-4 py-2");
+    expect(
+      html(
+        <Button variant="dashed" size="sm">
+          Add
+        </Button>,
+      ),
+    ).toContain("gap-1.5 px-2.5 py-1");
+  });
+
+  it("has one look: the danger tone does not recolour it", () => {
+    const out = html(
+      <Button variant="dashed" tone="danger">
+        Add
+      </Button>,
+    );
+    expect(out).toBe(html(<Button variant="dashed">Add</Button>));
+  });
+
+  it("blocked stays dashed and full width; busy keeps the colour", () => {
+    const blocked = html(
+      <Button variant="dashed" disabledReason="No room">
+        Add
+      </Button>,
+    );
+    expect(blocked).toContain("border-dashed");
+    expect(blocked).toContain("w-full");
+    expect(blocked).toContain("cursor-not-allowed");
+    expect(blocked).not.toContain("hover:");
+    const busy = html(
+      <Button variant="dashed" busy>
+        Add
+      </Button>,
+    );
+    expect(busy).toContain("text-slate-500");
+    expect(busy).toContain("border-dashed");
+  });
+});

@@ -130,6 +130,21 @@ export const Default: S = {
   },
 };
 
+/** An item takes `data-*` attributes (a test id, an analytics hook) on its button or link, and nothing else: no class, no style. */
+export const WithDataAttributes: S = {
+  render: () => {
+    const [value, setValue] = useState("overview");
+    return (
+      <Tabs
+        label="Project views"
+        items={views.map((v) => ({ ...v, "data-testid": `tab-${v.value}` }))}
+        value={value}
+        onChange={setValue}
+      />
+    );
+  },
+};
+
 export const WithDisabledTab: S = {
   render: () => {
     const [value, setValue] = useState("overview");

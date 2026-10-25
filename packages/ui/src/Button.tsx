@@ -1,7 +1,7 @@
 import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import { cx, focusRing } from "./cx.js";
 
-export type ButtonVariant = "primary" | "outline" | "ghost" | "link";
+export type ButtonVariant = "primary" | "outline" | "ghost" | "link" | "dashed";
 export type ButtonSize = "md" | "sm";
 export type ButtonTone = "default" | "danger";
 
@@ -19,7 +19,7 @@ type Look = { color: string; hover: string };
 
 const LINK = "underline-offset-2";
 
-const TONE: Record<ButtonTone, Record<ButtonVariant, Look>> = {
+const TONE: Record<ButtonTone, Record<Exclude<ButtonVariant, "dashed">, Look>> = {
   default: {
     primary: {
       color: "border-violet-600 bg-violet-600 text-violet-50",
@@ -40,9 +40,25 @@ const TONE: Record<ButtonTone, Record<ButtonVariant, Look>> = {
   },
 };
 
+// The add row: Card dashed's outline and muted text, lit with the accent on hover. One look, so
+// `tone` does not apply to it.
+const DASHED: Look = {
+  color: "border-slate-300 text-slate-500",
+  hover: "hover:border-violet-400 hover:text-violet-700",
+};
+
+function lookOf(variant: ButtonVariant, tone: ButtonTone): Look {
+  return variant === "dashed" ? DASHED : TONE[tone][variant];
+}
+
 // Blocked replaces the variant's colour and hover rather than overriding them, so no `!` is needed.
 const BLOCKED = "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400";
+const BLOCKED_DASHED = "cursor-not-allowed border-slate-200 text-slate-400";
 const BLOCKED_LINK = "cursor-not-allowed border-transparent text-slate-400";
+const BLOCKED_BY_VARIANT: Partial<Record<ButtonVariant, string>> = {
+  link: BLOCKED_LINK,
+  dashed: BLOCKED_DASHED,
+};
 const BUSY = "cursor-progress opacity-85";
 
 /** Size, tone and variant: the look of a button, apart from its state. */
@@ -55,7 +71,7 @@ export type ButtonLook = {
    */
   size?: ButtonSize | undefined;
   /**
-   * `danger` is red, for delete and clear.
+   * `danger` is red, for delete and clear. Not for `dashed`, which has the one look.
    * @default default
    */
   tone?: ButtonTone | undefined;
@@ -63,7 +79,14 @@ export type ButtonLook = {
 
 function shape(variant: ButtonVariant, size: ButtonSize): string {
   const { box, text } = SIZE[size];
-  return cx(SHAPE, variant !== "link" && box, variant === "link" && "gap-1.5", text, focusRing);
+  return cx(
+    SHAPE,
+    variant !== "link" && box,
+    variant === "link" && "gap-1.5",
+    variant === "dashed" && "w-full border-dashed",
+    text,
+    focusRing,
+  );
 }
 
 /** The classes of a Button, for a router's own <Link> that should look like one. */
@@ -71,7 +94,7 @@ export function buttonClass(
   variant: ButtonVariant = "primary",
   { size = "md", tone = "default" }: Omit<ButtonLook, "variant"> = {},
 ): string {
-  const look = TONE[tone][variant];
+  const look = lookOf(variant, tone);
   return cx(shape(variant, size), DISABLED_PLAIN, look.color, look.hover);
 }
 
@@ -98,15 +121,17 @@ function stateClass(
   state: State,
 ): string {
   if (state === "blocked") {
-    return cx(shape(variant, size), variant === "link" ? BLOCKED_LINK : BLOCKED);
+    return cx(shape(variant, size), BLOCKED_BY_VARIANT[variant] ?? BLOCKED);
   }
-  if (state === "busy") return cx(shape(variant, size), TONE[tone][variant].color, BUSY);
+  if (state === "busy") return cx(shape(variant, size), lookOf(variant, tone).color, BUSY);
   return buttonClass(variant, { size, tone });
 }
 
 /**
- * A button in the primary, outline, ghost or link style (the link has no box: text with an
- * underline on hover, for an in-line action). `size="sm"` is compact; `tone="danger"` is red.
+ * A button in the primary, outline, ghost, link or dashed style (the link has no box: text with an
+ * underline on hover, for an in-line action; `dashed` is the full-width "add" row, a dashed
+ * outline with muted text that fills its container, with an optional leading icon in the
+ * children). `size="sm"` is compact; `tone="danger"` is red.
  * Defaults to `type="button"`. `disabledReason` and `busy` are the two disabled states that say
  * more than a plain `disabled`, which keeps its half-opacity look.
  */

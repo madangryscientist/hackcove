@@ -36,6 +36,7 @@ export { Callout, type CalloutTone } from "./Callout.js";
 export { ListRow, type ListRowProps } from "./ListRow.js";
 export {
   rowLinkClass,
+  type RowTone,
   Table,
   TableBody,
   TableCell,

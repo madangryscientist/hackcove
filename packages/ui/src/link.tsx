@@ -70,3 +70,14 @@ export function renderLink({
   if (render) return <>{render(all)}</>;
   return <a {...(href === undefined ? {} : { href })} {...all} />;
 }
+
+/**
+ * The `data-*` attributes an item may carry onto its button or link, so a caller keeps its test
+ * ids on a tab. Only `data-*`: there is no `className` or `style`.
+ */
+export type DataAttributes = { [name: `data-${string}`]: string | number | boolean | undefined };
+
+/** The `data-*` entries of `item`, ready to spread on the element it draws. */
+export function dataAttributes(item: object): DataAttributes {
+  return Object.fromEntries(Object.entries(item).filter(([name]) => name.startsWith("data-")));
+}

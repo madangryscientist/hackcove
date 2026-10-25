@@ -78,6 +78,23 @@ export const Variants: S = {
     </div>
   ),
 };
+/** `variant="dashed"`: a dashed outline in muted text that fills its container, like a dashed Card: the "add another" row at the foot of a list. A leading icon is just a child. */
+export const Dashed: S = {
+  render: () => (
+    <div className="flex max-w-sm flex-col gap-2">
+      <Button variant="dashed">Add a budget line</Button>
+      <Button variant="dashed" size="sm">
+        <span aria-hidden="true">+</span> Add a category
+      </Button>
+      <Button variant="dashed" disabledReason="Pick a month first">
+        Add a line
+      </Button>
+      <Button variant="dashed" busy busyLabel="Adding…">
+        Add a line
+      </Button>
+    </div>
+  ),
+};
 export const Small: S = {
   render: () => (
     <div className="flex flex-wrap items-center gap-2">

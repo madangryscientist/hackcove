@@ -15,6 +15,23 @@ const TONE = {
 
 type TableVariant = "card" | "plain";
 
+/**
+ * The status of a row: the Callout's tones, plus `muted`. A toned row gets a stripe on its leading
+ * edge and the tone's soft fill; `muted` fades the row instead, for one that matters less. The
+ * stripe takes the tone's text colour, which every theme already remaps, so no new palette entry.
+ */
+export type RowTone = "neutral" | "info" | "positive" | "warn" | "danger" | "muted";
+
+const ROW_TONE: Record<RowTone, string> = {
+  neutral: "bg-slate-50 text-slate-500",
+  info: "bg-blue-50 text-blue-700",
+  positive: "bg-emerald-50 text-emerald-700",
+  warn: "bg-amber-50 text-amber-700",
+  danger: "bg-red-50 text-red-700",
+  muted: "opacity-60",
+};
+const STRIPE = "shadow-[inset_4px_0_0_0_currentColor]";
+
 const VariantContext = createContext<TableVariant>("card");
 
 /** Whether a `TableRow` sits in the body (a line above, a hover fill) or the head or nowhere (neither). */
@@ -100,21 +117,29 @@ export function TableBody({
 
 /**
  * A `<tr>`, `relative`: the anchor a `rowLinkClass` link stretches to. Use it in the head and the
- * body. In the body it also draws the line above the row and, unless the table is `plain`, the hover fill.
+ * body. In the body it also draws the line above the row and, unless the table is `plain`, the hover
+ * fill. `tone` marks the row's status (see `RowTone`): a stripe on the leading edge and a soft fill,
+ * or `muted` to fade it. A toned row keeps its fill on hover (the status stays readable), so a
+ * linked row's link, not a hover fill, says it is clickable. Body rows only; colour alone does not say it, so name the status in a cell
+ * too (a `Pill`). A bold subtotal is not a tone.
  */
 export function TableRow({
+  tone,
   children,
   ...rest
-}: { children: ReactNode } & Rest<"tr">): ReactElement {
+}: { tone?: RowTone | undefined; children: ReactNode } & Rest<"tr">): ReactElement {
   const body = useContext(SectionContext) === "body";
   const plain = useContext(VariantContext) === "plain";
+  const toned = body && tone !== undefined;
   return (
     <tr
       {...rest}
       className={cx(
         "relative",
         body && "border-t border-slate-200/70",
-        body && !plain && "hover:bg-slate-50",
+        body && !plain && !(toned && tone !== "muted") && "hover:bg-slate-50",
+        toned && ROW_TONE[tone],
+        toned && tone !== "muted" && STRIPE,
       )}
     >
       {children}

@@ -1,8 +1,8 @@
 import { Fragment, type KeyboardEvent, type ReactElement, type ReactNode } from "react";
 import { cx } from "./cx.js";
-import { type LinkRender, renderLink } from "./link.js";
+import { type DataAttributes, dataAttributes, type LinkRender, renderLink } from "./link.js";
 
-type Option = {
+type Option = DataAttributes & {
   /** What `value` is set to when this option is current. */
   value: string;
   label: ReactNode;
@@ -10,6 +10,7 @@ type Option = {
   count?: number;
   /** A native tooltip; on a disabled option it is the reason. */
   title?: string;
+  // Any `data-*` key (`"data-testid": "tab-shots"`) is put on the option's button or link.
 };
 
 /** An option that is a button: it calls `onChange(value)`. */
@@ -112,6 +113,7 @@ export function Switcher({
         {items.map((item) => (
           <Fragment key={item.value}>
             {renderLink({
+              ...dataAttributes(item),
               href: item.href,
               render: item.render,
               external: item.external,
@@ -151,6 +153,7 @@ export function Switcher({
     >
       {items.map((item) => (
         <button
+          {...dataAttributes(item)}
           key={item.value}
           type="button"
           role={parts.item}

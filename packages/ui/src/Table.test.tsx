@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import {
+  type RowTone,
   rowLinkClass,
   Table,
   TableBody,
@@ -238,5 +239,66 @@ describe("rowLinkClass", () => {
   it("styles a link and stretches it over the row", () => {
     expect(rowLinkClass).toContain("text-violet-600");
     expect(rowLinkClass).toContain("after:absolute after:inset-0");
+  });
+});
+
+const toneRow = (tone: RowTone | undefined, section: "body" | "head" = "body"): string => {
+  const Section = section === "body" ? TableBody : TableHead;
+  return renderToStaticMarkup(
+    <table>
+      <Section>
+        <TableRow tone={tone}>
+          <TableCell>x</TableCell>
+        </TableRow>
+      </Section>
+    </table>,
+  );
+};
+
+describe("TableRow tone", () => {
+  it("has no stripe and no fill by default", () => {
+    const out = toneRow(undefined);
+    expect(out).not.toContain("shadow-");
+    expect(out).toContain("hover:bg-slate-50");
+  });
+
+  it("each Callout tone is a stripe on the leading edge in the tone's text colour, over its soft fill", () => {
+    const looks: Array<[Exclude<RowTone, "muted">, string, string]> = [
+      ["neutral", "bg-slate-50", "text-slate-500"],
+      ["info", "bg-blue-50", "text-blue-700"],
+      ["positive", "bg-emerald-50", "text-emerald-700"],
+      ["warn", "bg-amber-50", "text-amber-700"],
+      ["danger", "bg-red-50", "text-red-700"],
+    ];
+    for (const [tone, fill, text] of looks) {
+      const out = toneRow(tone);
+      for (const c of [fill, text, "shadow-[inset_4px_0_0_0_currentColor]"]) {
+        expect(out, `${tone} has ${c}`).toContain(c);
+      }
+      expect(out, `${tone} keeps the fill, no hover`).not.toContain("hover:");
+      expect(out).toContain("border-t border-slate-200/70");
+    }
+  });
+
+  it("muted fades the row: no stripe, no fill, keeps the hover", () => {
+    const out = toneRow("muted");
+    expect(out).toContain("opacity-60");
+    expect(out).not.toContain("shadow-");
+    expect(out).toContain("hover:bg-slate-50");
+  });
+
+  it("a tone in the head does nothing, and a plain table keeps the stripe but no hover", () => {
+    expect(toneRow("danger", "head")).not.toContain("shadow-");
+    const plain = renderToStaticMarkup(
+      <Table variant="plain">
+        <TableBody>
+          <TableRow tone="warn">
+            <TableCell>x</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>,
+    );
+    expect(plain).toContain("shadow-[inset_4px_0_0_0_currentColor]");
+    expect(plain).not.toContain("hover:");
   });
 });

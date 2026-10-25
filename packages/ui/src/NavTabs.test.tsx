@@ -121,3 +121,35 @@ describe("NavTabs external tabs", () => {
     expect(out).not.toContain("rel=");
   });
 });
+
+describe("NavTabs data-*", () => {
+  it("puts an item's data-* on its link, and no other item's", () => {
+    const out = renderToStaticMarkup(
+      <NavTabs
+        label="Sections"
+        items={[
+          { label: "Map", href: "/", "data-testid": "tab-map" },
+          { label: "Events", href: "/events" },
+        ]}
+      />,
+    );
+    expect(out).toMatch(/<a[^>]*data-testid="tab-map"/);
+    expect(out.match(/data-testid/g)).toHaveLength(1);
+  });
+
+  it("reaches a router's render", () => {
+    const out = renderToStaticMarkup(
+      <NavTabs
+        label="Sections"
+        items={[
+          {
+            label: "Map",
+            "data-testid": "tab-map",
+            render: (props: LinkRenderProps) => <a href="/" {...props} />,
+          },
+        ]}
+      />,
+    );
+    expect(out).toMatch(/<a[^>]*data-testid="tab-map"/);
+  });
+});

@@ -117,3 +117,37 @@ export const SecondLine: S = {
     </Table>
   ),
 };
+
+const lines = [
+  { name: "Groceries", spent: "R 4 120.00", tone: undefined },
+  { name: "Eating out", spent: "R 2 980.00", tone: "danger" as const },
+  { name: "Card payment", spent: "R 1 500.00", tone: "muted" as const },
+  { name: "Unmatched debit order", spent: "R 349.00", tone: "warn" as const },
+  { name: "Salary", spent: "R 38 000.00", tone: "positive" as const },
+  { name: "Note from the bank", spent: "R 0.00", tone: "info" as const },
+  { name: "Rounding", spent: "R 0.01", tone: "neutral" as const },
+];
+
+/** `tone` on a row marks its state with a stripe on the leading edge and a soft fill: the Callout tones, plus `muted` to fade a row that is not the point (a transfer). No class, no style. */
+export const RowTones: S = {
+  render: () => (
+    <Table caption="Budget">
+      <TableHead>
+        <TableRow>
+          <TableHeaderCell>Line</TableHeaderCell>
+          <TableHeaderCell align="end">Spent</TableHeaderCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {lines.map((l) => (
+          <TableRow key={l.name} tone={l.tone}>
+            <TableCell tone="strong">{l.name}</TableCell>
+            <TableCell align="end" numeric>
+              {l.spent}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  ),
+};

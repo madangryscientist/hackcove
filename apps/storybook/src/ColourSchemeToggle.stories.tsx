@@ -6,7 +6,7 @@ const meta: Meta = { title: "UI/ColourSchemeToggle" };
 export default meta;
 type S = StoryObj;
 
-// The snapshot is the light state; clicking is interactive-only.
+// The icon follows the class on <html>, so on a dark page it shows the sun from the first frame, with no `initial`; the story starts light. Clicking is interactive-only.
 export const Default: S = {
   beforeEach: resetColourScheme,
   render: () => <ColourSchemeToggle />,

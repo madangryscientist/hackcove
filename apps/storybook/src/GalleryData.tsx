@@ -15,7 +15,7 @@ import {
   TimelineItem,
 } from "@hackcove/ui";
 
-/** The Card variants (flush, header bar, dashed, dashed filled), the Callout actions and banner, the ListRow set, a Table with a stretched row link, a plain Table with a second-line cell and a Timeline. */
+/** The Card variants (flush, header bar, dashed, dashed filled), the Callout actions and banner, the ListRow set, a Table with a stretched row link and toned rows, a plain Table with a second-line cell and a Timeline. */
 export function GalleryData() {
   return (
     <div className="flex flex-col gap-4">
@@ -62,7 +62,7 @@ export function GalleryData() {
   );
 }
 
-/** A Table with a stretched row link, then a plain Table with a second-line cell inside a Card. */
+/** A Table with a stretched row link and toned rows (danger, warn, muted), then a plain Table with a second-line cell inside a Card. */
 function GalleryTables() {
   return (
     <>
@@ -86,7 +86,7 @@ function GalleryTables() {
               R 1 249.00
             </TableCell>
           </TableRow>
-          <TableRow>
+          <TableRow tone="danger">
             <TableCell mono>
               <a href="#Q-1043" className={rowLinkClass}>
                 Q-1043
@@ -95,6 +95,20 @@ function GalleryTables() {
             <TableCell tone="muted">Pieter van Wyk</TableCell>
             <TableCell align="end" numeric>
               R 880.50
+            </TableCell>
+          </TableRow>
+          <TableRow tone="warn">
+            <TableCell mono>Q-1044</TableCell>
+            <TableCell>Thandi Mokoena</TableCell>
+            <TableCell align="end" numeric>
+              R 2 310.00
+            </TableCell>
+          </TableRow>
+          <TableRow tone="muted">
+            <TableCell mono>Q-1045</TableCell>
+            <TableCell>Transfer</TableCell>
+            <TableCell align="end" numeric>
+              R 500.00
             </TableCell>
           </TableRow>
         </TableBody>

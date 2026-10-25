@@ -14,7 +14,7 @@ const moonIcon = (
   </svg>
 );
 
-/** The Button rows of the Gallery: the variants, the sizes and the danger tone, the blocked and busy states, a ButtonLink and a ButtonGroup, then an IconButton and the ColourSchemeToggle. */
+/** The Button rows of the Gallery: the variants, a full-width dashed one, the sizes and the danger tone, the blocked and busy states, a ButtonLink and a ButtonGroup, then an IconButton and the ColourSchemeToggle. */
 export function GalleryButtons() {
   return (
     <div className="flex flex-col gap-3">
@@ -50,6 +50,11 @@ export function GalleryButtons() {
         </Button>
         <Button size="sm" tone="danger" variant="link">
           Remove
+        </Button>
+      </div>
+      <div className="max-w-sm">
+        <Button variant="dashed">
+          <span aria-hidden="true">+</span> Add a line
         </Button>
       </div>
       <ButtonGroup

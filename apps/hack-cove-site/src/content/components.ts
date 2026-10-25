@@ -31,7 +31,7 @@ export const componentPages: ComponentPage[] = [
     whenToUse: "An action that changes something in place: save, cancel, delete, retry.",
     pairs: ["Button/OnePrimary", "Button/DisabledReason", "Button/Navigate"],
     usage: [
-      'Put one primary Button in a view. The other actions use `variant="outline"`, `"ghost"` or `"link"`.',
+      'Put one primary Button in a view. The other actions use `variant="outline"`, `"ghost"` or `"link"`; `variant="dashed"` is the full-width "add another" row at the foot of a list.',
       "Group the actions in a `ButtonGroup`, so the row spaces and wraps the same everywhere.",
       "Say why a button cannot be pressed with `disabledReason`; use `busy` while the work is in flight.",
       "Going to another page is a `ButtonLink`, not a Button.",
