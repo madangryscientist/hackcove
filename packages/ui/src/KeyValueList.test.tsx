@@ -36,4 +36,24 @@ describe("KeyValueList", () => {
     expect(out).toContain('class="flex justify-between gap-3 py-1"');
     expect(out).toContain('data-testid="row"');
   });
+
+  it("align=start makes a grid with one label column and left-aligned values", () => {
+    const out = renderToStaticMarkup(
+      <KeyValueList align="start" className="mt-4">
+        <KeyValue label="Size">1280×720</KeyValue>
+      </KeyValueList>,
+    );
+    expect(out).toContain(
+      'class="grid grid-cols-[max-content_1fr] gap-x-3 gap-y-1.5 text-sm mt-4"',
+    );
+    expect(out).toContain('<div class="col-span-2 grid grid-cols-subgrid">');
+    expect(out).toContain('<dd class="tabular-nums">1280×720</dd>');
+    expect(out).not.toContain("text-right");
+  });
+
+  it("a KeyValue outside a list keeps the right-aligned default", () => {
+    const out = renderToStaticMarkup(<KeyValue label="A">1</KeyValue>);
+    expect(out).toContain("justify-between");
+    expect(out).toContain("text-right");
+  });
 });

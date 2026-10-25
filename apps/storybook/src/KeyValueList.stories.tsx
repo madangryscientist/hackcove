@@ -34,3 +34,16 @@ export const WithKeys: S = {
     </div>
   ),
 };
+
+/** `align="start"`: the values sit left-aligned in one column beside the labels, which are as wide as the longest. */
+export const ValuesAtStart: S = {
+  render: () => (
+    <div className="max-w-sm">
+      <KeyValueList align="start">
+        <KeyValue label="Size">1280×720</KeyValue>
+        <KeyValue label="Changed pixels">0.4%</KeyValue>
+        <KeyValue label="Captured">2 min ago</KeyValue>
+      </KeyValueList>
+    </div>
+  ),
+};

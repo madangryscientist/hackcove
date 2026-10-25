@@ -46,6 +46,7 @@ export {
 export { Timeline, TimelineItem } from "./Timeline.js";
 export { Code } from "./Code.js";
 export { Divider } from "./Divider.js";
+export { PageFade, startPageTransition } from "./PageFade.js";
 export { Dialog, type DialogProps } from "./Dialog.js";
 export { Drawer, type DrawerProps } from "./Drawer.js";
 export { IconButton } from "./IconButton.js";

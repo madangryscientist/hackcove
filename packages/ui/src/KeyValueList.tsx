@@ -1,22 +1,47 @@
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  type HTMLAttributes,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import { cx } from "./cx.js";
 
-/** A definition list of label/value rows: each label on the left, its value right-aligned. */
+type KeyValueAlign = "end" | "start";
+
+const AlignContext = createContext<KeyValueAlign>("end");
+
+/**
+ * A definition list of label/value rows. By default each label is on the left and its value
+ * right-aligned. `align="start"` puts every value left-aligned in one column beside the labels,
+ * which are sized to the widest.
+ */
 export function KeyValueList({
+  align = "end",
   className,
   children,
   ...rest
 }: {
+  align?: KeyValueAlign;
   children: ReactNode;
 } & HTMLAttributes<HTMLDListElement>): ReactElement {
   return (
-    <dl className={cx("flex flex-col gap-1.5 text-sm", className)} {...rest}>
-      {children}
+    <dl
+      className={cx(
+        align === "start"
+          ? "grid grid-cols-[max-content_1fr] gap-x-3 gap-y-1.5"
+          : "flex flex-col gap-1.5",
+        "text-sm",
+        className,
+      )}
+      {...rest}
+    >
+      <AlignContext.Provider value={align}>{children}</AlignContext.Provider>
     </dl>
   );
 }
 
-/** One row of a KeyValueList: a label on the left, a right-aligned tabular value on the right. */
+/** One row of a KeyValueList: a label on the left, a tabular value on the right (or beside it, in an `align="start"` list). */
 export function KeyValue({
   label,
   children,
@@ -26,10 +51,17 @@ export function KeyValue({
   label: ReactNode;
   children: ReactNode;
 } & HTMLAttributes<HTMLDivElement>): ReactElement {
+  const start = useContext(AlignContext) === "start";
   return (
-    <div className={cx("flex justify-between gap-3", className)} {...rest}>
+    <div
+      className={cx(
+        start ? "col-span-2 grid grid-cols-subgrid" : "flex justify-between gap-3",
+        className,
+      )}
+      {...rest}
+    >
       <dt className="text-slate-600">{label}</dt>
-      <dd className="text-right tabular-nums">{children}</dd>
+      <dd className={start ? "tabular-nums" : "text-right tabular-nums"}>{children}</dd>
     </div>
   );
 }

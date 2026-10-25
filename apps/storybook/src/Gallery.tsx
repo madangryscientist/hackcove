@@ -31,11 +31,14 @@ import {
   ModalHeading,
   NavTabs,
   Overline,
+  PageFade,
   PageHeading,
   PageTitle,
+  SegmentedControl,
   Select,
   SectionHeading,
   SubsectionHeading,
+  startPageTransition,
   Subtitle,
   Textarea,
   ToggleChip,
@@ -107,16 +110,41 @@ function GalleryChips() {
   );
 }
 
-/** The KeyValueList block of the Gallery: a label/value row with a value and a Kbd key. */
+/** The KeyValueList block of the Gallery: a label/value row with a value and a Kbd key, then the left-aligned variant. */
 function GalleryKeyValues() {
   return (
-    <div className="max-w-sm">
+    <div className="flex max-w-sm flex-col gap-4">
       <KeyValueList>
         <KeyValue label="Size">1280×720</KeyValue>
         <KeyValue label="Next shot">
           <Kbd>j</Kbd>
         </KeyValue>
       </KeyValueList>
+      <KeyValueList align="start">
+        <KeyValue label="Size">1280×720</KeyValue>
+        <KeyValue label="Changed pixels">0.4%</KeyValue>
+      </KeyValueList>
+    </div>
+  );
+}
+
+/** The PageFade block of the Gallery: a content area that cross-fades when the page below it changes. */
+function GalleryPageFade() {
+  const [page, setPage] = useState("overview");
+  return (
+    <div className="flex max-w-sm flex-col gap-3">
+      <SegmentedControl
+        label="Page"
+        items={[
+          { value: "overview", label: "Overview" },
+          { value: "activity", label: "Activity" },
+        ]}
+        value={page}
+        onChange={(next) => startPageTransition(() => setPage(next))}
+      />
+      <PageFade>
+        <Body>The {page} page.</Body>
+      </PageFade>
     </div>
   );
 }
@@ -295,6 +323,8 @@ export function Gallery() {
       <GallerySwitchers />
 
       <GalleryKeyValues />
+
+      <GalleryPageFade />
 
       <GalleryDialogs />
 
