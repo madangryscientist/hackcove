@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { act } from "react";
+import { hydrateRoot } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ColourScheme } from "./colourScheme.js";
@@ -11,7 +12,7 @@ const root = document.documentElement;
 
 function reset(): void {
   localStorage.clear();
-  root.classList.remove("dark");
+  root.className = "";
   root.style.removeProperty("color-scheme");
 }
 
@@ -79,5 +80,61 @@ describe("ColourSchemeToggle", () => {
     await click(button);
     expect(root.classList.contains("dark")).toBe(true);
     expect(button.getAttribute("aria-label")).toBe("Switch to light theme");
+  });
+
+  it("takes its scheme classes from `schemes` and swaps them on click", async () => {
+    const schemes = { light: "paper", dark: "dark" };
+    root.classList.add("paper");
+    const onChange = vi.fn<(scheme: ColourScheme) => void>();
+    const button = buttonOf(mount(<ColourSchemeToggle schemes={schemes} onChange={onChange} />));
+    expect(button.getAttribute("aria-label")).toBe("Switch to dark theme");
+
+    await click(button);
+    expect([...root.classList]).toEqual(["dark"]);
+    expect(root.style.colorScheme).toBe("dark");
+    expect(onChange).toHaveBeenLastCalledWith("dark");
+    expect(button.getAttribute("aria-label")).toBe("Switch to light theme");
+
+    await click(button);
+    expect([...root.classList]).toEqual(["paper"]);
+    expect(root.style.colorScheme).toBe("light");
+    expect(button.getAttribute("aria-label")).toBe("Switch to dark theme");
+  });
+
+  describe("hydrating the server markup", () => {
+    /** Hydrate what the server rendered for `initial`, with `<html>` as the server left it. */
+    async function hydrate(initial: ColourScheme | undefined, htmlClass: string) {
+      const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+      const markup = renderToStaticMarkup(<ColourSchemeToggle schemes={paper} initial={initial} />);
+      root.className = htmlClass;
+      const container = document.createElement("div");
+      container.innerHTML = markup;
+      document.body.append(container);
+      const hydrated = await act(async () =>
+        hydrateRoot(container, <ColourSchemeToggle schemes={paper} initial={initial} />),
+      );
+      const label = buttonOf(container).getAttribute("aria-label");
+      act(() => hydrated.unmount());
+      container.remove();
+      return { label, errors: errors.mock.calls };
+    }
+    const paper = { light: "paper", dark: "dark" };
+
+    it("with `initial` set, matches the server on a dark cookie with no mismatch", async () => {
+      const { label, errors } = await hydrate("dark", "dark");
+      expect(errors).toEqual([]);
+      expect(label).toBe("Switch to light theme");
+    });
+
+    it("with `initial` set, matches the server on a light cookie with no mismatch", async () => {
+      const { label, errors } = await hydrate("light", "paper");
+      expect(errors).toEqual([]);
+      expect(label).toBe("Switch to dark theme");
+    });
+
+    it("without `initial`, a dark page still ends up showing dark once hydrated", async () => {
+      const { label } = await hydrate(undefined, "dark");
+      expect(label).toBe("Switch to light theme");
+    });
   });
 });

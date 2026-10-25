@@ -92,6 +92,32 @@ describe("DateField", () => {
     expect(errorOf(container)).not.toBe("");
   });
 
+  it("shows an error from outside in place of the description, as an alert, and marks the field invalid", () => {
+    const container = mount(
+      <DateField aria-label="Date" description="A hint." error="Date is in the past." />,
+    );
+    expect(errorOf(container)).toBe("Date is in the past.");
+    expect(container.querySelector('[role="alert"]')?.textContent).toBe("Date is in the past.");
+    expect(container.querySelector('[data-invalid="true"]')).not.toBeNull();
+    expect(container.querySelector('[aria-invalid="true"]')).not.toBeNull();
+    expect(container.textContent).not.toContain("A hint.");
+  });
+
+  it("marks a DatePicker invalid from outside with isInvalid and errorMessage", () => {
+    const container = mount(
+      <DatePicker aria-label="Date" isInvalid errorMessage="Pick another day." />,
+    );
+    expect(errorOf(container)).toBe("Pick another day.");
+    expect(container.querySelector('[aria-invalid="true"]')).not.toBeNull();
+  });
+
+  it("shows a DatePicker's error from outside too", () => {
+    const container = mount(<DatePicker aria-label="Date" description="Hint" error="Taken." />);
+    expect(errorOf(container)).toBe("Taken.");
+    expect(container.querySelector('[role="alert"]')).not.toBeNull();
+    expect(container.textContent).not.toContain("Hint");
+  });
+
   it("uses errorMessage in place of the built-in message", () => {
     const container = mount(<DateField aria-label="Date" errorMessage="Not a real birthday" />);
     const [day] = segmentsOf(container);

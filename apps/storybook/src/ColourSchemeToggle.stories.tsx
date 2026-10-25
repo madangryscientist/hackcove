@@ -11,3 +11,9 @@ export const Default: S = {
   beforeEach: resetColourScheme,
   render: () => <ColourSchemeToggle />,
 };
+
+/** An app whose light scheme has a class of its own passes `schemes`; clicking swaps the two. Same snapshot: the class is what changes. */
+export const CustomClasses: S = {
+  beforeEach: resetColourScheme,
+  render: () => <ColourSchemeToggle schemes={{ light: "paper", dark: "dark" }} />,
+};

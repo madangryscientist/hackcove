@@ -15,6 +15,7 @@ import {
   type DateFieldProps,
   FieldSegment,
   LOCALE,
+  forcedInvalid,
   Notes,
   frameClass,
   iconButtonClass,
@@ -53,6 +54,8 @@ export function DatePicker({
   label,
   description,
   errorMessage,
+  error,
+  isInvalid: invalidProp,
   className,
   value,
   defaultValue,
@@ -76,7 +79,7 @@ export function DatePicker({
         value={inner}
         onChange={setInner}
         validate={validate}
-        {...(impossible ? { isInvalid: true } : {})}
+        {...forcedInvalid({ impossible, isInvalid: invalidProp, error })}
         granularity="day"
         shouldForceLeadingZeros
         className={cx("flex flex-col gap-1.5", className)}
@@ -103,6 +106,7 @@ export function DatePicker({
             <Notes
               description={description}
               errorMessage={errorMessage}
+              error={error}
               impossible={impossible}
               isInvalid={isInvalid}
             />

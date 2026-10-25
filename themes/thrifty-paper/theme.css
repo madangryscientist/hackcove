@@ -125,6 +125,9 @@
 .thrifty-paper .focus-visible\:outline-violet-600:focus-visible {
   outline-color: #c2410c; /* accent */
 }
+.thrifty-paper .has-focus-visible\:outline-violet-600:has(:focus-visible) {
+  outline-color: #c2410c; /* accent */
+}
 .thrifty-paper .accent-violet-600 {
   accent-color: #c2410c; /* accent */
 }

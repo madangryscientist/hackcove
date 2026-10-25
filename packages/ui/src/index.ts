@@ -41,6 +41,8 @@ export { IconButton } from "./IconButton.js";
 export { ColourSchemeToggle } from "./ColourSchemeToggle.js";
 export {
   applyColourScheme,
+  schemeClass,
+  type ColourSchemeClasses,
   colourSchemeScript,
   readColourScheme,
   storeColourScheme,
@@ -50,11 +52,13 @@ export { NavTabs, navTabClass, type NavTab } from "./NavTabs.js";
 export { ToggleChip } from "./ToggleChip.js";
 export { FilterGroup } from "./FilterGroup.js";
 export { Checkbox } from "./Checkbox.js";
+export { FileDrop } from "./FileDrop.js";
 export { CopyButton } from "./CopyButton.js";
 export { CopyLine } from "./CopyLine.js";
 export { Field } from "./Field.js";
 export { FieldDialog, type FieldDialogProps } from "./FieldDialog.js";
 export { Input } from "./Input.js";
+export type { ControlSize, ControlWidth } from "./control.js";
 export { InlineLinks, type InlineLinksSeparator } from "./InlineLinks.js";
 export { Kbd } from "./Kbd.js";
 export { KeyValue, KeyValueList } from "./KeyValueList.js";

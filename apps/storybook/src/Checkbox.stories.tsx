@@ -11,6 +11,13 @@ export const Unchecked: S = {
 export const Checked: S = {
   render: () => <Checkbox label="Open now" defaultChecked />,
 };
+export const Small: S = {
+  render: () => <Checkbox label="Paid" size="sm" defaultChecked />,
+};
+/** No label, for a table cell: name it with `aria-label`. */
+export const Bare: S = {
+  render: () => <Checkbox aria-label="Select row" size="sm" />,
+};
 export const Disabled: S = {
   render: () => <Checkbox label="Open now" disabled />,
 };

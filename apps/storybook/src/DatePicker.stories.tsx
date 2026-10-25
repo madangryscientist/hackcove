@@ -77,6 +77,17 @@ export const Invalid: S = {
   },
 };
 
+/** An error from outside, a server's say: shown in place of the description, and the field is invalid. */
+export const ExternalError: S = {
+  render: () => (
+    <DatePicker
+      label="Paid on"
+      description="The day the money moved."
+      error="That date is before the invoice."
+    />
+  ),
+};
+
 export const Disabled: S = {
   render: () => <DatePicker label="Date of birth" defaultValue={birthday} isDisabled />,
 };

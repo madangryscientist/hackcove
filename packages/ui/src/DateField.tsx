@@ -35,6 +35,10 @@ export type DateFieldProps = {
   description?: ReactNode;
   /** Replaces the built-in error message (an impossible date, or one outside min/max). */
   errorMessage?: ReactNode;
+  /** An error from outside the field (a server's, say). Shown in place of the description, in red with `role="alert"`, and marks the field invalid. Like `Field`'s `error`. */
+  error?: ReactNode;
+  /** Marks the field invalid with no message of its own; pair it with `errorMessage`. */
+  isInvalid?: boolean;
   className?: string;
 } & Pick<
   AriaDateFieldProps<CalendarDate>,
@@ -123,15 +127,30 @@ export function frameClass({
   );
 }
 
+/** The props that force a field invalid: an impossible date, `isInvalid`, or an `error` from outside. Spread onto the React Aria field after the rest. */
+export function forcedInvalid({
+  impossible,
+  isInvalid,
+  error,
+}: {
+  impossible: string | null;
+  isInvalid: boolean | undefined;
+  error: ReactNode;
+}): { isInvalid?: true } {
+  return impossible || isInvalid || error ? { isInvalid: true } : {};
+}
+
 /** The label, the description or the error line: the shared outside of both components. */
 export function Notes({
   description,
   errorMessage,
+  error,
   impossible,
   isInvalid,
 }: {
   description: ReactNode;
   errorMessage: ReactNode;
+  error: ReactNode;
   impossible: string | null;
   isInvalid: boolean;
 }): ReactElement {
@@ -143,7 +162,13 @@ export function Notes({
         </Text>
       ) : null}
       <FieldError className="text-xs text-red-700">
-        {({ validationErrors }) => errorMessage ?? impossible ?? validationErrors.join(" ")}
+        {({ validationErrors }) =>
+          error ? (
+            <span role="alert">{error}</span>
+          ) : (
+            (errorMessage ?? impossible ?? validationErrors.join(" "))
+          )
+        }
       </FieldError>
     </>
   );
@@ -157,6 +182,8 @@ export function DateField({
   label,
   description,
   errorMessage,
+  error,
+  isInvalid: invalidProp,
   className,
   value,
   defaultValue,
@@ -180,7 +207,7 @@ export function DateField({
         value={inner}
         onChange={setInner}
         validate={validate}
-        {...(impossible ? { isInvalid: true } : {})}
+        {...forcedInvalid({ impossible, isInvalid: invalidProp, error })}
         isReadOnly={leaving}
         onBlur={onLeft}
         granularity="day"
@@ -201,6 +228,7 @@ export function DateField({
             <Notes
               description={description}
               errorMessage={errorMessage}
+              error={error}
               impossible={impossible}
               isInvalid={isInvalid}
             />

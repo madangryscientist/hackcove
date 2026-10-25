@@ -18,6 +18,20 @@ const rating = (
 export const Default: S = {
   render: () => <Select defaultValue={5}>{rating}</Select>,
 };
+export const Small: S = {
+  render: () => (
+    <Select size="sm" width="md" aria-label="Rating" defaultValue={5}>
+      {rating}
+    </Select>
+  ),
+};
+export const AutoWidth: S = {
+  render: () => (
+    <Select width="auto" aria-label="Rating" defaultValue={5}>
+      {rating}
+    </Select>
+  ),
+};
 export const Disabled: S = {
   render: () => (
     <Select defaultValue={5} disabled>

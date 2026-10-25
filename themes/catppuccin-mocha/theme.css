@@ -134,6 +134,9 @@
 .dark .focus-visible\:outline-violet-600:focus-visible {
   outline-color: #cba6f7; /* mauve */
 }
+.dark .has-focus-visible\:outline-violet-600:has(:focus-visible) {
+  outline-color: #cba6f7; /* mauve */
+}
 .dark .accent-violet-600 {
   accent-color: #cba6f7; /* mauve */
 }

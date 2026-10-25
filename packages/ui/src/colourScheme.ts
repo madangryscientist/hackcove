@@ -5,12 +5,36 @@ const DARK_QUERY = "(prefers-color-scheme: dark)";
 
 const isScheme = (value: unknown): value is ColourScheme => value === "light" || value === "dark";
 
-/** Put `scheme` on `root` (the `<html>` element by default): the `dark` class, and `color-scheme` so native controls and scrollbars follow. */
+/** The class each scheme puts on `<html>`: none for light and `dark` for dark, unless the app's theme says otherwise (a light theme with a scope class of its own). */
+export type ColourSchemeClasses = { light: string; dark: string };
+
+const DEFAULT_CLASSES: ColourSchemeClasses = { light: "", dark: "dark" };
+
+/** The class for `scheme`: what to render on `<html>` on the server so the first paint is right. `""` for the default light scheme. */
+export function schemeClass(
+  scheme: ColourScheme,
+  schemes: ColourSchemeClasses = DEFAULT_CLASSES,
+): string {
+  return schemes[scheme];
+}
+
+/** Which scheme `root` is in: dark when it carries the dark class, else light. */
+export function appliedColourScheme(
+  root: HTMLElement = document.documentElement,
+  schemes: ColourSchemeClasses = DEFAULT_CLASSES,
+): ColourScheme {
+  return schemes.dark !== "" && root.classList.contains(schemes.dark) ? "dark" : "light";
+}
+
+/** Put `scheme` on `root` (the `<html>` element by default): its class from `schemes` (default `dark` for dark and none for light), the other scheme's class taken off, and `color-scheme` so native controls and scrollbars follow. */
 export function applyColourScheme(
   scheme: ColourScheme,
   root: HTMLElement = document.documentElement,
+  schemes: ColourSchemeClasses = DEFAULT_CLASSES,
 ): void {
-  root.classList.toggle("dark", scheme === "dark");
+  const other = scheme === "dark" ? "light" : "dark";
+  if (schemes[other] !== "") root.classList.remove(schemes[other]);
+  if (schemes[scheme] !== "") root.classList.add(schemes[scheme]);
   root.style.colorScheme = scheme;
 }
 

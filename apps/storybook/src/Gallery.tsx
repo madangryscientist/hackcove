@@ -40,6 +40,7 @@ import {
   ToggleChip,
 } from "@hackcove/ui";
 import { GalleryBars } from "./GalleryBars";
+import { GalleryControls } from "./GalleryControls";
 import { GalleryButtons } from "./GalleryButtons";
 import { GalleryData } from "./GalleryData";
 import { GalleryLayout } from "./GalleryLayout";
@@ -258,6 +259,8 @@ export function Gallery() {
         <DatePicker label="Date of birth" defaultValue={fromISODate("1990-05-17")} />
         <DateField label="Visited on" description="DD/MM/YYYY" />
       </div>
+
+      <GalleryControls />
 
       <Breadcrumbs
         crumbs={[

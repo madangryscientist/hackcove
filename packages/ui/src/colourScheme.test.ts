@@ -2,9 +2,11 @@
 import { Script, runInNewContext } from "node:vm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  appliedColourScheme,
   applyColourScheme,
   colourSchemeScript,
   readColourScheme,
+  schemeClass,
   storeColourScheme,
   type ColourScheme,
 } from "./colourScheme.js";
@@ -24,7 +26,7 @@ function systemPrefers(dark: boolean | undefined): void {
 }
 
 function resetRoot(): void {
-  root.classList.remove("dark");
+  root.classList.remove("dark", "paper");
   root.style.removeProperty("color-scheme");
 }
 
@@ -65,6 +67,35 @@ describe("applyColourScheme", () => {
     expect(scoped.classList.contains("dark")).toBe(true);
     expect(scoped.style.colorScheme).toBe("dark");
     expect(root.classList.contains("dark")).toBe(false);
+  });
+});
+
+const paper = { light: "paper", dark: "dark" };
+
+describe("schemes with a light class of their own", () => {
+  it("schemeClass names the class for each scheme, with the default of dark and none", () => {
+    expect(schemeClass("dark")).toBe("dark");
+    expect(schemeClass("light")).toBe("");
+    expect(schemeClass("light", paper)).toBe("paper");
+    expect(schemeClass("dark", paper)).toBe("dark");
+  });
+
+  it("leaves other classes on <html> alone", () => {
+    root.classList.add("antialiased");
+    applyColourScheme("dark", root, paper);
+    applyColourScheme("light", root, paper);
+    expect(root.classList.contains("antialiased")).toBe(true);
+    root.classList.remove("antialiased");
+  });
+
+  it("appliedColourScheme reads which one <html> carries", () => {
+    expect(appliedColourScheme(root, paper)).toBe("light");
+    root.classList.add("dark");
+    expect(appliedColourScheme(root, paper)).toBe("dark");
+    root.classList.remove("dark");
+    root.classList.add("paper");
+    expect(appliedColourScheme(root, paper)).toBe("light");
+    root.classList.remove("paper");
   });
 });
 

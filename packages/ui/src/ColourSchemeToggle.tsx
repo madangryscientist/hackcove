@@ -1,5 +1,11 @@
 import { useSyncExternalStore, type ReactElement } from "react";
-import { applyColourScheme, storeColourScheme, type ColourScheme } from "./colourScheme.js";
+import {
+  appliedColourScheme,
+  applyColourScheme,
+  storeColourScheme,
+  type ColourScheme,
+  type ColourSchemeClasses,
+} from "./colourScheme.js";
 import { IconButton } from "./IconButton.js";
 
 const sun = (
@@ -31,35 +37,46 @@ const moon = (
   </svg>
 );
 
-// The `dark` class on <html> is the source of truth: the head script set it before React ran.
+// The scheme's class on <html> is the source of truth: the head script or the server set it before React ran.
 function subscribe(onChange: () => void): () => void {
   const observer = new MutationObserver(onChange);
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
   return () => observer.disconnect();
 }
 
-const current = (): ColourScheme =>
-  document.documentElement.classList.contains("dark") ? "dark" : "light";
-
-// What the server and the hydrating client both render; the real state follows right after.
-const server = (): ColourScheme => "light";
-
-/** A sun/moon button that switches `<html>` between light and dark and remembers the choice. It shows the scheme you would switch to. Pair it with `colourSchemeScript` in `<head>`. */
+/**
+ * A sun/moon button that switches `<html>` between light and dark and remembers the choice. It shows the scheme you would switch to. Pair it with `colourSchemeScript` in `<head>`, unless you pass `schemes` or `initial`: the script knows only the `dark` class and the stored choice, so an app that sets the scheme itself leaves it out.
+ *
+ * An app whose light scheme has a class of its own passes `schemes` (`{ light: "paper", dark: "dark" }`);
+ * the toggle swaps those classes, and `schemeClass` gives the same one for the server to render on `<html>`.
+ * An app that knows the scheme on the server (from a cookie) passes it as `initial`, so the server
+ * markup, the hydrating client and the `<html>` class agree; persist a change from `onChange`.
+ */
 export function ColourSchemeToggle({
   className,
   onChange,
+  schemes = { light: "", dark: "dark" },
+  initial,
 }: {
   className?: string;
   onChange?: (scheme: ColourScheme) => void;
+  /** The class each scheme puts on `<html>`. Default `{ light: "", dark: "dark" }`. */
+  schemes?: ColourSchemeClasses | undefined;
+  /** The scheme the server rendered. What the server and the hydrating client show; the real state follows right after. Default `"light"`. */
+  initial?: ColourScheme | undefined;
 }): ReactElement {
-  const scheme = useSyncExternalStore(subscribe, current, server);
+  const scheme = useSyncExternalStore(
+    subscribe,
+    () => appliedColourScheme(document.documentElement, schemes),
+    () => initial ?? "light",
+  );
   const next: ColourScheme = scheme === "dark" ? "light" : "dark";
   return (
     <IconButton
       label={`Switch to ${next} theme`}
       className={className}
       onClick={() => {
-        applyColourScheme(next);
+        applyColourScheme(next, document.documentElement, schemes);
         storeColourScheme(next);
         onChange?.(next);
       }}
