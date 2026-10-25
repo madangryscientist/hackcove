@@ -1,3 +1,28 @@
+## 0.4.0 (2026-10-25)
+
+### 🚀 Features
+
+- ⚠️  **HC-128:** remove every className and style escape hatch from @hackcove/ui ([7389a45](https://github.com/madangryscientist/hackcove/commit/7389a45))
+
+### ⚠️  Breaking Changes
+
+- **HC-128:** remove every className and style escape hatch from @hackcove/ui  ([7389a45](https://github.com/madangryscientist/hackcove/commit/7389a45))
+  `className` and `style` are removed from every component exported from
+  `@hackcove/ui`, and from the HTML props each one spreads. Replacements for consumers (pixelslash,
+  omnibus, advisor-quotes): `<Badge className="absolute …">` → `<Badge corner />`; the `border-t`
+  classes on a `ListRow` → `<ListRow divided>`; `Input`/`Select`/`Textarea` width classes → the
+  `width` prop (`xs`, `sm`, `md`, `lg`, `auto`); `Checkbox`, `FileDrop`, `InlineLinks`, `FilterGroup`,
+  `Divider`, `BulletList`, `Code`, `TextLink`, `Table`, `ColourSchemeToggle`, `ProseLayout`
+  layout or spacing classes → wrap the component in your own element, or drop the look. Pass the
+  `*Class` helpers' strings to your own element if you render it yourself.
+  Gated on land: bun install; nx run-many typecheck lint test build; format:check; pack-check; nx e2e storybook; storybook:visual 10 changed, 497 unchanged, 0 new, 0 removed vs origin/main.
+  State: landable
+  Approved by Jacobus 2026-10-23 (visual: 10 changed vs main, read: plain BulletList now its own default (larger, darker; story's text-sm slate-600 className gone), Badge corner identical, Input w-24 example dropped, Overview/Gallery reflow, video spinner noise. Gate 3/3 green at 7732248.).
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
 ## 0.1.5 (2026-10-25)
 
 This was a version bump only for theme-thrifty-paper to align it with other projects, there were no code changes.
