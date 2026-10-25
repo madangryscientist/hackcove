@@ -30,4 +30,31 @@ describe("Callout", () => {
     expect(out).not.toContain("<p");
     expect(out).toContain(">Body text.</div>");
   });
+
+  it("puts actions at the end of the row", () => {
+    const out = renderToStaticMarkup(
+      <Callout title="Heads up." actions={<button type="button">Fix</button>}>
+        Body.
+      </Callout>,
+    );
+    expect(out).toContain('<div class="min-w-0"><p class="font-semibold">Heads up.</p>');
+    expect(out).toContain('<div class="flex shrink-0 items-center gap-2"><button');
+  });
+
+  it("renders the same markup as before with no actions", () => {
+    expect(renderToStaticMarkup(<Callout>Body.</Callout>)).toBe(
+      '<div class="rounded-xl border p-4 text-sm border-blue-200 bg-blue-50 text-blue-800">Body.</div>',
+    );
+  });
+
+  it("banner is a flat strip with a bottom border and no radius", () => {
+    const out = renderToStaticMarkup(
+      <Callout banner tone="warn">
+        Body.
+      </Callout>,
+    );
+    expect(out).toContain("border-b");
+    expect(out).toContain("border-amber-200");
+    expect(out).not.toContain("rounded");
+  });
 });

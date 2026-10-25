@@ -41,6 +41,7 @@ import {
 } from "@hackcove/ui";
 import { GalleryBars } from "./GalleryBars";
 import { GalleryButtons } from "./GalleryButtons";
+import { GalleryData } from "./GalleryData";
 import { GalleryLayout } from "./GalleryLayout";
 import { GalleryPills } from "./GalleryPills";
 import { GalleryText } from "./GalleryText";
@@ -227,6 +228,8 @@ export function Gallery() {
           <Markdown md={"## What I did\n- **HC-42** shipped\n- plain item"} />
         </div>
       </Card>
+
+      <GalleryData />
 
       <GalleryButtons />
 

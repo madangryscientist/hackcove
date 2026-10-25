@@ -33,6 +33,7 @@ export { Avatar, avatarColourClass, initialsOf, type AvatarSize } from "./Avatar
 export { Breadcrumbs, crumbLinkClass, type Crumb } from "./Breadcrumbs.js";
 export { BulletList } from "./BulletList.js";
 export { Callout, type CalloutTone } from "./Callout.js";
+export { ListRow, type ListRowProps } from "./ListRow.js";
 export { Code } from "./Code.js";
 export { Divider } from "./Divider.js";
 export { Dialog, type DialogProps } from "./Dialog.js";

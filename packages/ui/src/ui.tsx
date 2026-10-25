@@ -10,31 +10,125 @@ export function PageTitle({ title, subtitle }: { title: string; subtitle?: strin
   return <PageHeaderContent title={title} subtitle={subtitle} />;
 }
 
-/** A bordered panel with an optional title and count; `as` picks the element (default `section`). */
+function CardHeading({
+  title,
+  count,
+  bar,
+  spaced,
+}: {
+  title: string;
+  count: number | undefined;
+  bar: boolean;
+  spaced: boolean;
+}) {
+  const ink = bar ? "text-slate-500" : "text-slate-400";
+  return (
+    <div className={cx("flex items-baseline gap-2", spaced && "mb-3")}>
+      <h2 className={cx("text-xs font-semibold uppercase tracking-wide", ink)}>{title}</h2>
+      {count !== undefined && <span className={cx("text-xs font-medium", ink)}>{count}</span>}
+    </div>
+  );
+}
+
+function CardActions({ children }: { children: ReactNode }) {
+  return <div className="ml-auto flex items-center gap-2">{children}</div>;
+}
+
+function CardBar({ heading, actions }: { heading: ReactNode; actions: ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-3 border-b border-slate-200/70 bg-slate-50 px-5 py-3">
+      {heading}
+      {actions && <CardActions>{actions}</CardActions>}
+    </div>
+  );
+}
+
+function CardHeader({ heading, actions }: { heading: ReactNode; actions: ReactNode }) {
+  if (!actions) return heading;
+  return (
+    <div className="mb-3 flex items-center justify-between gap-3">
+      {heading}
+      <CardActions>{actions}</CardActions>
+    </div>
+  );
+}
+
+/** `dashed` stands alone; `bar` needs a title or actions to fill it. */
+function cardForm(
+  asked: { flush?: boolean | undefined; bar?: boolean | undefined; dashed?: boolean | undefined },
+  hasHeader: boolean,
+) {
+  const dashed = asked.dashed ?? false;
+  return {
+    flush: (asked.flush ?? false) && !dashed,
+    bar: (asked.bar ?? false) && !dashed && hasHeader,
+    dashed,
+  };
+}
+
+function cardClass(form: { flush: boolean; bar: boolean; dashed: boolean }): string {
+  const { flush, bar, dashed } = form;
+  const clipped = flush || bar;
+  const padding = dashed ? "p-8 text-center text-sm text-slate-500" : "p-5";
+  return cx(
+    "rounded-xl border",
+    dashed ? "border-dashed border-slate-300" : "border-slate-200/70 bg-white",
+    !clipped && padding,
+    !dashed && "shadow-sm",
+    clipped && "overflow-hidden",
+  );
+}
+
+/**
+ * A bordered panel with an optional title and count; `as` picks the element (default `section`).
+ * Three opt-in forms for data views: `flush` drops the padding and clips the corners, for a table
+ * that runs edge to edge; `bar` puts the title, count and `actions` in a tinted strip across the
+ * top, over the body; `dashed` is an empty-state shell, a dashed outline with centred muted text.
+ * `dashed` stands alone: it ignores `flush` and `bar`. A flush card has no padding for a `title`,
+ * so give it a `bar`.
+ */
 export function Card({
   title,
   count,
+  actions,
+  bar,
+  flush,
+  dashed,
   as: Tag = "section",
   className,
   children,
 }: {
   title?: string;
   count?: number;
+  /** Buttons or links at the end of the header: in the strip with `bar`, else beside the title. */
+  actions?: ReactNode;
+  /** Put the title, count and actions in a tinted strip above the body, edge to edge. */
+  bar?: boolean;
+  /** No padding and `overflow-hidden`: the body (a table, a list) fills the card. */
+  flush?: boolean;
+  /** An empty-state shell: dashed outline, no shadow, no fill, centred muted text. */
+  dashed?: boolean;
   as?: "section" | "article" | "div";
   className?: string;
   children: ReactNode;
 }) {
+  const form = cardForm({ flush, bar, dashed }, Boolean(title || actions));
+  const heading = title && (
+    <CardHeading title={title} count={count} bar={form.bar} spaced={!form.bar && !actions} />
+  );
   return (
-    <Tag className={cx("rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm", className)}>
-      {title && (
-        <div className="mb-3 flex items-baseline gap-2">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-400">{title}</h2>
-          {count !== undefined && (
-            <span className="text-xs font-medium text-slate-400">{count}</span>
-          )}
-        </div>
+    <Tag className={cx(cardClass(form), className)}>
+      {form.bar ? (
+        <>
+          <CardBar heading={heading} actions={actions} />
+          <div className={form.flush ? undefined : "p-5"}>{children}</div>
+        </>
+      ) : (
+        <>
+          <CardHeader heading={heading} actions={actions} />
+          {children}
+        </>
       )}
-      {children}
     </Tag>
   );
 }

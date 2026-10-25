@@ -81,4 +81,68 @@ describe("Card", () => {
       '<section class="rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm">body</section>',
     );
   });
+
+  it("flush drops the padding and clips the corners", () => {
+    const out = renderToStaticMarkup(<Card flush>table</Card>);
+    expect(out).toContain("overflow-hidden");
+    expect(out).not.toContain("p-5");
+    expect(out).toContain("shadow-sm");
+  });
+
+  it("bar puts the title, count and actions in a tinted strip over a padded body", () => {
+    const out = renderToStaticMarkup(
+      <Card bar title="Open" count={3} actions={<a href="/all">All</a>}>
+        body
+      </Card>,
+    );
+    expect(out).toContain("bg-slate-50");
+    expect(out).toContain("border-b");
+    expect(out).toContain(">Open</h2>");
+    expect(out).toContain('<a href="/all">All</a>');
+    expect(out).toContain('<div class="p-5">body</div>');
+  });
+
+  it("bar with flush leaves the body unpadded, and no strip without a title or actions", () => {
+    const flush = renderToStaticMarkup(
+      <Card bar flush title="Open">
+        body
+      </Card>,
+    );
+    expect(flush).toContain("<div>body</div>");
+    expect(renderToStaticMarkup(<Card bar>body</Card>)).not.toContain("bg-slate-50");
+  });
+
+  it("actions sit beside the title without bar", () => {
+    const out = renderToStaticMarkup(
+      <Card title="Bills" actions={<b>x</b>}>
+        body
+      </Card>,
+    );
+    expect(out).toContain("<b>x</b>");
+    expect(out).not.toContain("bg-slate-50");
+  });
+
+  it("bar with no title or actions renders the plain padded card", () => {
+    const out = renderToStaticMarkup(<Card bar>body</Card>);
+    expect(out).toBe(renderToStaticMarkup(<Card>body</Card>));
+  });
+
+  it("dashed ignores flush and bar", () => {
+    const out = renderToStaticMarkup(
+      <Card dashed flush bar title="T">
+        Nothing yet
+      </Card>,
+    );
+    expect(out).toContain("p-8");
+    expect(out).not.toContain("overflow-hidden");
+    expect(out).not.toContain("bg-slate-50");
+  });
+
+  it("dashed is an unfilled, shadowless shell with centred muted text", () => {
+    const out = renderToStaticMarkup(<Card dashed>Nothing yet</Card>);
+    expect(out).toContain("border-dashed");
+    expect(out).toContain("text-center");
+    expect(out).not.toContain("shadow-sm");
+    expect(out).not.toContain("bg-white");
+  });
 });

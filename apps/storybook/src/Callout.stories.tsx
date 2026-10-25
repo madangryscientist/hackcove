@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Callout } from "@hackcove/ui";
+import { Button, Callout, Card } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Callout" };
 export default meta;
@@ -22,6 +22,38 @@ export const WithTitle: S = {
       <Callout tone="warn" title="Draft.">
         This page has not yet been reviewed by a lawyer.
       </Callout>
+    </div>
+  ),
+};
+export const WithActions: S = {
+  render: () => (
+    <div className="flex max-w-xl flex-col gap-3">
+      <Callout
+        tone="warn"
+        title="3 uncategorised."
+        actions={
+          <Button size="sm" variant="outline">
+            Review
+          </Button>
+        }
+      >
+        Sort them before the month closes.
+      </Callout>
+      <Callout tone="info" actions={<Button size="sm">Retry</Button>}>
+        The last import did not finish.
+      </Callout>
+    </div>
+  ),
+};
+export const Banner: S = {
+  render: () => (
+    <div className="max-w-xl">
+      <Card flush>
+        <Callout banner tone="warn" actions={<Button size="sm">Fix</Button>}>
+          Two bills have no due date.
+        </Callout>
+        <p className="p-5 text-sm text-slate-700">The card body sits under the strip.</p>
+      </Card>
     </div>
   ),
 };
