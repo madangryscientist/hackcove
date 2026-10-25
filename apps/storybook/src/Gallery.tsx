@@ -14,6 +14,7 @@ import {
   DateField,
   DatePicker,
   Dialog,
+  Drawer,
   Display,
   Empty,
   EpicHeader,
@@ -45,6 +46,7 @@ import { GalleryButtons } from "./GalleryButtons";
 import { GalleryData } from "./GalleryData";
 import { GalleryLayout } from "./GalleryLayout";
 import { GalleryPills } from "./GalleryPills";
+import { GallerySwitchers } from "./GallerySwitchers";
 import { GalleryText } from "./GalleryText";
 import { GalleryLinks } from "./GalleryLinks";
 import { GalleryPages } from "./GalleryPages";
@@ -119,9 +121,9 @@ function GalleryKeyValues() {
   );
 }
 
-/** The two dialogs, shut: each button opens one over the page (open, they make the page inert). */
+/** The two dialogs and the Drawer, shut: each button opens one over the page (open, they make the page inert). */
 function GalleryDialogs() {
-  const [open, setOpen] = useState<"dialog" | "field" | null>(null);
+  const [open, setOpen] = useState<"dialog" | "field" | "drawer" | null>(null);
   const close = () => setOpen(null);
   return (
     <div className="flex flex-wrap gap-2">
@@ -130,6 +132,9 @@ function GalleryDialogs() {
       </Button>
       <Button variant="outline" onClick={() => setOpen("field")}>
         Open FieldDialog
+      </Button>
+      <Button variant="outline" onClick={() => setOpen("drawer")}>
+        Open Drawer
       </Button>
       {open === "dialog" && (
         <Dialog
@@ -140,6 +145,14 @@ function GalleryDialogs() {
         >
           <Body>There is no undo.</Body>
         </Dialog>
+      )}
+      {open === "drawer" && (
+        <Drawer title="HC-65 · Tabs" onClose={close} footer={<Button onClick={close}>Save</Button>}>
+          <KeyValueList>
+            <KeyValue label="Status">In progress</KeyValue>
+            <KeyValue label="Owner">Jacobus</KeyValue>
+          </KeyValueList>
+        </Drawer>
       )}
       {open === "field" && (
         <FieldDialog
@@ -278,6 +291,8 @@ export function Gallery() {
       <GalleryLinks />
 
       <GalleryChips />
+
+      <GallerySwitchers />
 
       <GalleryKeyValues />
 

@@ -37,6 +37,7 @@ export { ListRow, type ListRowProps } from "./ListRow.js";
 export { Code } from "./Code.js";
 export { Divider } from "./Divider.js";
 export { Dialog, type DialogProps } from "./Dialog.js";
+export { Drawer, type DrawerProps } from "./Drawer.js";
 export { IconButton } from "./IconButton.js";
 export { ColourSchemeToggle } from "./ColourSchemeToggle.js";
 export {
@@ -49,6 +50,8 @@ export {
   type ColourScheme,
 } from "./colourScheme.js";
 export { NavTabs, navTabClass, type NavTab } from "./NavTabs.js";
+export { Tabs, type Tab } from "./Tabs.js";
+export { SegmentedControl, type Segment } from "./SegmentedControl.js";
 export { ToggleChip } from "./ToggleChip.js";
 export { FilterGroup } from "./FilterGroup.js";
 export { Checkbox } from "./Checkbox.js";
