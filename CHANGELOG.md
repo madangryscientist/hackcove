@@ -1,3 +1,13 @@
+## 0.2.6 (2026-10-25)
+
+### 🚀 Features
+
+- **HC-88:** AppShellBrand, appShellRootClassFor and controls that do not shrink ([4e9e0d2](https://github.com/madangryscientist/hackcove/commit/4e9e0d2))
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
 ## 0.1.4 (2026-10-25)
 
 ### 🚀 Features
