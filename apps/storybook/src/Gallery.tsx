@@ -131,6 +131,8 @@ function GalleryKeyValues() {
 /** The PageFade block of the Gallery: a content area that cross-fades when the page below it changes. */
 function GalleryPageFade() {
   const [page, setPage] = useState("overview");
+  // Overview / All themes draws the Gallery once per theme in one document: each needs its own name.
+  const name = `hc-page-gallery${useId().replace(/\W/g, "")}`;
   return (
     <div className="flex max-w-sm flex-col gap-3">
       <SegmentedControl
@@ -142,7 +144,7 @@ function GalleryPageFade() {
         value={page}
         onChange={(next) => startPageTransition(() => setPage(next))}
       />
-      <PageFade>
+      <PageFade name={name}>
         <Body>The {page} page.</Body>
       </PageFade>
     </div>

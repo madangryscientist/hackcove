@@ -17,15 +17,12 @@ function stubMotion(reduce: boolean): void {
 describe("PageFade", () => {
   it("renders a div named for the transition, holding the children", () => {
     const out = renderToStaticMarkup(<PageFade className="py-8">page</PageFade>);
-    expect(out.startsWith('<div data-page-fade="" class="py-8">')).toBe(true);
-    expect(out).toContain("page</div>");
+    expect(out).toContain('<div data-page-fade="hc-page" class="py-8">page</div>');
   });
 
-  it("styles the transition with a fade in and out, carrying no colour", () => {
+  it("names the element in a stylesheet that carries no colour", () => {
     const out = renderToStaticMarkup(<PageFade>x</PageFade>);
-    expect(out).toContain("view-transition-name:hc-page");
-    expect(out).toContain("::view-transition-old(hc-page)");
-    expect(out).toContain("::view-transition-new(hc-page)");
+    expect(out).toContain('[data-page-fade="hc-page"]{view-transition-name:hc-page}');
     expect(out).not.toMatch(/#[0-9a-f]{3}|rgb|hsl/i);
   });
 
@@ -34,21 +31,41 @@ describe("PageFade", () => {
     expect(out).toMatch(/@media \(prefers-reduced-motion:reduce\)\{[^}]*animation:none/);
   });
 
-  it("forwards props to the div", () => {
+  it("takes its own name, so two on a page do not collide", () => {
+    const out = renderToStaticMarkup(<PageFade name="side">x</PageFade>);
+    expect(out).toContain('[data-page-fade="side"]{view-transition-name:side}');
+    expect(out).toContain('<div data-page-fade="side">');
+  });
+
+  it("keeps the children the first child of the div, and forwards props", () => {
     const out = renderToStaticMarkup(<PageFade id="content">x</PageFade>);
     expect(out).toContain('id="content"');
+    expect(out).toMatch(/<div [^>]*>x<\/div>/);
   });
 });
 
 describe("startPageTransition", () => {
   it("runs the update inside a view transition when the browser has one", () => {
     stubMotion(false);
-    const start = vi.fn<(run: () => void) => void>((run) => run());
+    const start = vi.fn<(run: () => void) => { ready: Promise<void> }>((run) => {
+      run();
+      return { ready: Promise.resolve() };
+    });
     Reflect.set(document, "startViewTransition", start);
     const update = vi.fn<() => void>();
     startPageTransition(update);
     expect(start).toHaveBeenCalledOnce();
     expect(update).toHaveBeenCalledOnce();
+  });
+
+  it("swallows the rejection of a skipped transition", async () => {
+    stubMotion(false);
+    const ready = Promise.reject(new DOMException("skipped", "AbortError"));
+    const catchSpy = vi.spyOn(ready, "catch");
+    Reflect.set(document, "startViewTransition", () => ({ ready }));
+    startPageTransition(vi.fn<() => void>());
+    expect(catchSpy).toHaveBeenCalledOnce();
+    await ready.catch(() => {});
   });
 
   it("just runs the update where the browser has no View Transitions", () => {
