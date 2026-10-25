@@ -4,7 +4,10 @@ import {
   Avatar,
   Body,
   Button,
+  Cluster,
+  ClusterGrow,
   ColourSchemeToggle,
+  Input,
   NavTabs,
   PageHeader,
   Section,
@@ -12,7 +15,7 @@ import {
   SubsectionHeading,
 } from "@hackcove/ui";
 
-/** AppShell (its brand, nav and controls slots, and the Container inside it), PageHeader, Section and Stack, in a box that scrolls under the sticky header. */
+/** AppShell (its brand, nav and controls slots, and the Container inside it), PageHeader, Section, Stack and Cluster, in a box that scrolls under the sticky header. */
 export function GalleryLayout() {
   return (
     <div className="h-80 overflow-y-auto rounded-xl border border-slate-200">
@@ -53,6 +56,12 @@ export function GalleryLayout() {
             <SubsectionHeading>Text block</SubsectionHeading>
             <Body as="p">A Stack at gap xs, in a narrow (max-w-3xl) column.</Body>
           </Stack>
+          <Cluster>
+            <ClusterGrow>
+              <Input aria-label="Cluster input" placeholder="Cluster: the input grows" />
+            </ClusterGrow>
+            <Button>Save</Button>
+          </Cluster>
         </Stack>
         <div className="mt-8">
           <Stack gap="section" width="narrow">

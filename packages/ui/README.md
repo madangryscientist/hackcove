@@ -49,7 +49,7 @@ strings for an element you render yourself, such as a router link.
 ## What is exported
 
 - Primitives: `Card` (a bordered panel; `title` and `count` make a small heading, and `status` (a `Pill` or any node) sits right after them, where `actions` sits at the far end; `flush` drops the padding and clips the corners, for a table that runs edge to edge; `bar` moves the title, count and `actions` into a tinted strip over the body; `dashed` is an empty-state shell with centred muted text, and `dashed="filled"` the same on a surface fill with more padding; `as` is `section` (default), `article` or `div`; `id`, `data-*` and `aria-*` go on the root),  `EpicHeader`, `Empty`, `PageTitle` (deprecated: use `PageHeader`), `Pill`, `groupByEpic`, `Markdown`.
-- Layout (see Layout): `AppShell`, `AppShellBrand`, `appShellRootClass`, `appShellRootClassFor`, `Container`, `PageHeader`, `Stack`, `Section`, and the page layouts `ListLayout`, `DetailLayout`, `FormLayout`, `ProseLayout`, `CardGrid`, `SidebarLayout`, `FullBleedLayout`, `CenteredLayout`.
+- Layout (see Layout): `AppShell`, `AppShellBrand`, `appShellRootClass`, `appShellRootClassFor`, `Container`, `PageHeader`, `Stack`, `Section`, `Cluster`, `ClusterGrow`, and the page layouts `ListLayout`, `DetailLayout`, `FormLayout`, `ProseLayout`, `CardGrid`, `SidebarLayout`, `FullBleedLayout`, `CenteredLayout`.
 - Typography roles (each pins size + weight, takes a `color` and an `as`): `Display`, `Lead`,
   `PageHeading`, `SectionHeading`, `SubsectionHeading`, `ModalHeading`, `Subtitle`, `Overline`,
   `Body`, `BodyStrong`, `Caption`. Opt-in props, none changing today's look: `SectionHeading rule`
@@ -189,6 +189,15 @@ import { AppShell, PageHeader, Section, Stack, appShellRootClass } from "@hackco
   (nothing). A capped Stack starts at the Container's left edge and is never re-centred.
   **`Section`** is a `<section>` Stack (`sm` by default) with an optional `SectionHeading` `title`,
   `actions` beside it and the same `width`.
+- **`Cluster`** spaces items in a row, the counterpart of `Stack`: `gap` is `xs` (`gap-2`), `sm`
+  (`gap-4`, the default) or `md` (`gap-6`), `align` the cross axis (`center` (default), `baseline`,
+  `start` or `end`), `justify` the main axis (`start` (default), `between` or `end`), and `wrap`
+  lets the row flow onto more lines on a narrow screen (off by default). Wrap the one item that
+  should take the room left in **`ClusterGrow`**, an input beside its buttons say: it can shrink to
+  nothing, so the items beside it stay on the line. An empty `ClusterGrow` is a spacer that pushes
+  what follows it to the end. `ButtonGroup` stays the row for buttons; `Cluster` is any other row.
+  It is a separate part, not `Stack direction="row"`, because a row has no `lg`, `section` or
+  `width` and a column has no `align` or `justify`.
 
 ### Page layouts
 

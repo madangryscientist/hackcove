@@ -4,7 +4,7 @@ import { SectionHeading } from "./typography.js";
 
 export type StackGap = "xs" | "sm" | "md" | "lg" | "section";
 
-const GAP: Record<StackGap, string> = {
+export const STACK_GAP: Record<StackGap, string> = {
   xs: "gap-2",
   sm: "gap-4",
   md: "gap-6",
@@ -46,7 +46,7 @@ export function Stack({
 }): ReactElement {
   return (
     <Tag
-      className={cx("flex flex-col", GAP[gap], STACK_WIDTH[width], "*:data-page-header:mb-0")}
+      className={cx("flex flex-col", STACK_GAP[gap], STACK_WIDTH[width], "*:data-page-header:mb-0")}
       {...rest}
     >
       {children}
