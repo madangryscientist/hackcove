@@ -52,7 +52,7 @@ A change is ready when all of this passes:
 bun install
 bunx nx run-many -t typecheck lint test build   # tsc strict · oxlint + check-slop · Vitest · dist + Storybook build
 bun run format:check                            # oxfmt --check (`bun run format` fixes)
-bunx nx run-many -t pack-check                  # npm pack --dry-run for every package
+bunx nx run-many -t pack-check                  # npm pack --dry-run for every package; ui also typechecks its tarball in a consumer app
 bunx nx e2e storybook                           # Playwright: builds Storybook, flips every theme
 bunx nx e2e hack-cove-site                      # Playwright: builds the site, flips every theme on the /ui/ pages
 ```
@@ -72,7 +72,8 @@ not disable a rule.
 2. **A theme is a folder and nothing else registers it.** No theme name appears in code.
 3. **Almost no runtime dependencies.** `@hackcove/ui` has one approved dependency,
    `react-aria-components` (with `@internationalized/date`), for the date picker; its peers are react,
-   react-dom and tailwindcss v4. A theme has only the tailwindcss peer. A new dependency needs a
+   react-dom and tailwindcss v4, plus `@types/react` and `@types/react-dom` as optional peers (types only, so a consumer's
+   tsc resolves `react` under strict linkers). A theme has only the tailwindcss peer. A new dependency needs a
    maintainer's agreement first.
 4. **Source imports in `packages/ui` use `.js` specifiers** (`./ui.js`, resolved to the `.tsx`),
    because a `.tsx` specifier is emitted into the `.d.ts` and breaks consumers' types.

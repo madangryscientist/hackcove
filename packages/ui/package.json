@@ -44,7 +44,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "oxlint -c ../../.oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
     "test": "vitest run",
-    "pack-check": "npm pack --dry-run",
+    "pack-check": "npm pack --dry-run && bun scripts/consumer-types.ts",
     "prepack": "bun run build"
   },
   "dependencies": {
@@ -62,9 +62,19 @@
     "vitest": "5.0.5"
   },
   "peerDependencies": {
+    "@types/react": ">=18",
+    "@types/react-dom": ">=18",
     "react": ">=18",
     "react-dom": ">=18",
     "tailwindcss": "^4"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    },
+    "@types/react-dom": {
+      "optional": true
+    }
   },
   "nx": {
     "name": "ui",

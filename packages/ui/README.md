@@ -11,6 +11,7 @@ Status: `0.x`, published to npm. License: MIT.
 ```sh
 bun add @hackcove/ui
 # peers: react >= 18, react-dom >= 18, tailwindcss ^4
+# optional type peers: @types/react, @types/react-dom (install them in a TypeScript app)
 ```
 
 One runtime dependency comes with it: `react-aria-components` (and `@internationalized/date`),
@@ -338,5 +339,6 @@ A theme remaps every utility in `palette.json`; a component uses no colour utili
 ## Develop
 
 From the workspace root: `bunx nx run-many -t typecheck lint test build -p ui` and
-`bunx nx pack-check ui` (the tarball is `dist/` plus `package.json`, `README.md`, `LICENSE`).
+`bunx nx pack-check ui` (the tarball is `dist/` plus `package.json`, `README.md`, `LICENSE`; it also typechecks the tarball in a
+consumer app: `scripts/consumer-types.ts`).
 The stories live in `apps/storybook`.

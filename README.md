@@ -26,6 +26,7 @@ are only what a theme remaps, never a look to ship.
 ```sh
 bun add @hackcove/ui @hackcove/theme-catppuccin-mocha
 # peers: react >= 18, react-dom >= 18, tailwindcss ^4
+# optional type peers: @types/react, @types/react-dom (install them in a TypeScript app)
 ```
 
 ```css
@@ -146,7 +147,7 @@ Everything goes through Nx:
 bun install
 bunx nx run-many -t typecheck lint test build   # the gate
 bun run format:check                            # oxfmt, workspace-wide
-bunx nx run-many -t pack-check                  # npm pack --dry-run per package
+bunx nx run-many -t pack-check                  # npm pack --dry-run per package; ui also typechecks its tarball in a consumer app
 bunx nx e2e storybook                           # Playwright over the built Storybook (first time: bunx playwright install chromium)
 bunx nx e2e hack-cove-site                      # Playwright over the built site: the /ui/ pages under every theme
 bunx nx run storybook:storybook                 # http://localhost:6006

@@ -89,10 +89,16 @@
         "vitest": "5.0.5",
       },
       "peerDependencies": {
+        "@types/react": ">=18",
+        "@types/react-dom": ">=18",
         "react": ">=18",
         "react-dom": ">=18",
         "tailwindcss": "^4",
       },
+      "optionalPeers": [
+        "@types/react",
+        "@types/react-dom",
+      ],
     },
     "themes/catppuccin-mocha": {
       "name": "@hackcove/theme-catppuccin-mocha",

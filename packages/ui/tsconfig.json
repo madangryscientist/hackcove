@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.shared.json",
-  "include": ["src"],
+  "include": ["src", "scripts"],
   "compilerOptions": {
     // bun's global store links react-aria's .d.ts outside the repo, where no @types/react is in reach.
     "paths": {
