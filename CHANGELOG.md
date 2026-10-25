@@ -1,3 +1,36 @@
+## 0.1.4 (2026-10-25)
+
+### 🚀 Features
+
+- **HC-68:** size and width on Input, Select, Textarea; Checkbox sm and bare; FileDrop; date external error; toggle schemes and initial ([aa70e99](https://github.com/madangryscientist/hackcove/commit/aa70e99))
+- **ob 1861:** Pill violet and sky tones and a round shape; Badge, a small red count ([51f5058](https://github.com/madangryscientist/hackcove/commit/51f5058))
+- **ob 1856:** Button sm, danger and link look; ButtonGroup and ButtonLink; router-link render seam on NavTabs, Breadcrumbs, TextLink; TextLink stretch (1820, 1817) ([3463fe5](https://github.com/madangryscientist/hackcove/commit/3463fe5))
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
+## 0.2.5 (2026-10-25)
+
+### 🚀 Features
+
+- **HC-74:** PageFade content fade between pages; KeyValueList values at the start ([09f9f26](https://github.com/madangryscientist/hackcove/commit/09f9f26))
+- **HC-46:** Table family with a stretched row link; Timeline for a status history ([61c513c](https://github.com/madangryscientist/hackcove/commit/61c513c))
+- **HC-65:** Tabs and SegmentedControl for in-page switching; Drawer slide-over ([31a1489](https://github.com/madangryscientist/hackcove/commit/31a1489))
+- **HC-68:** size and width on Input, Select, Textarea; Checkbox sm and bare; FileDrop; date external error; toggle schemes and initial ([aa70e99](https://github.com/madangryscientist/hackcove/commit/aa70e99))
+- **HC-69:** Card flush, bar and dashed forms; Callout actions and banner; ListRow ([db07ec6](https://github.com/madangryscientist/hackcove/commit/db07ec6))
+- **ob 1853:** StatTile for a headline figure; ProgressBar and SplitBar ([04bf933](https://github.com/madangryscientist/hackcove/commit/04bf933))
+- **ob 1861:** Pill violet and sky tones and a round shape; Badge, a small red count ([51f5058](https://github.com/madangryscientist/hackcove/commit/51f5058))
+- **ob 1856:** Button sm, danger and link look; ButtonGroup and ButtonLink; router-link render seam on NavTabs, Breadcrumbs, TextLink; TextLink stretch (1820, 1817) ([3463fe5](https://github.com/madangryscientist/hackcove/commit/3463fe5))
+
+### 🩹 Fixes
+
+- **HC-74:** PageFade takes a name so two can share a page; a skipped transition is handled ([b1a1b9a](https://github.com/madangryscientist/hackcove/commit/b1a1b9a))
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
 ## 0.1.3 (2026-10-24)
 
 ### 🚀 Features
