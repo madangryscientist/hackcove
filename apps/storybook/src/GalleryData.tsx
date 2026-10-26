@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Button,
   Callout,
   Card,
@@ -18,7 +19,7 @@ import {
   TimelineItem,
 } from "@hackcove/ui";
 
-/** The Card variants (flush, header bar, dashed, dashed filled, dense, toned), the Callout actions, banner and link, the ListRow set, a link Card, a Table with a stretched row link and toned rows, a Table with a group row, cell tones, a truncated cell and a totals foot, a plain Table with a second-line cell and an `srLabel` actions column and a Timeline. */
+/** The Card variants (flush, header bar, dashed, dashed filled, dense, toned), the Callout actions, banner and link, the ListRow set (a static row with leading, selected and hover actions), a link Card, a Table with a stretched row link and toned rows, a Table with a group row, cell tones, a truncated cell and a totals foot, a plain Table with a second-line cell and an `srLabel` actions column and a Timeline. */
 export function GalleryData() {
   return (
     <div className="flex flex-col gap-4">
@@ -71,6 +72,7 @@ export function GalleryData() {
           Dense row
         </ListRow>
       </Card>
+      <GalleryStaticRows />
       <Card dashed>No statements yet.</Card>
       <Card dashed="filled">No quotes yet.</Card>
       <Callout tone="info" title="Heads up." actions={<Button size="sm">Retry</Button>}>
@@ -88,6 +90,26 @@ export function GalleryData() {
         <TimelineItem title={<Pill tone="amber">sent</Pill>} time="10 Oct 2026, 16:02" />
       </Timeline>
     </div>
+  );
+}
+
+/** A static ListRow with `leading`, `selected` and `revealOnHover` actions. */
+function GalleryStaticRows() {
+  return (
+    <Card flush>
+      <ListRow static selected leading={<Avatar name="Ada Lovelace" size="sm" />} trailing="admin">
+        Selected static row
+      </ListRow>
+      <ListRow
+        static
+        divided
+        revealOnHover
+        leading={<Avatar name="Grace Hopper" size="sm" />}
+        actions={<Button size="sm">Remove</Button>}
+      >
+        Static row, actions on hover
+      </ListRow>
+    </Card>
   );
 }
 

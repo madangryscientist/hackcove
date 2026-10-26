@@ -80,3 +80,96 @@ describe("ListRow size", () => {
     expect(link).not.toContain("divided");
   });
 });
+
+describe("ListRow leading and selected", () => {
+  it("leading sits before the label, on a button and a link alike", () => {
+    const button = renderToStaticMarkup(<ListRow leading={<i data-av />}>Ada</ListRow>);
+    expect(button).toMatch(
+      /<span class="shrink-0"><i data-av[^>]*><\/i><\/span><span class="min-w-0 flex-1">Ada/,
+    );
+    const link = renderToStaticMarkup(
+      <ListRow href="#a" leading="L">
+        Ada
+      </ListRow>,
+    );
+    expect(link.indexOf(">L<")).toBeLessThan(link.indexOf(">Ada<"));
+    expect(renderToStaticMarkup(<ListRow>Ada</ListRow>)).not.toContain('shrink-0"><');
+  });
+
+  it("selected fills the row violet and sets aria-current, on every form", () => {
+    for (const out of [
+      renderToStaticMarkup(<ListRow selected>a</ListRow>),
+      renderToStaticMarkup(
+        <ListRow selected href="#a">
+          a
+        </ListRow>,
+      ),
+      renderToStaticMarkup(
+        <ListRow selected static>
+          a
+        </ListRow>,
+      ),
+    ]) {
+      expect(out).toContain('aria-current="true"');
+      expect(out).toContain("bg-violet-50");
+      expect(out).not.toContain("hover:bg-slate-50");
+      expect(out).not.toContain("selected");
+    }
+    const plain = renderToStaticMarkup(<ListRow>a</ListRow>);
+    expect(plain).not.toContain("aria-current");
+    expect(plain).not.toContain("bg-violet-50");
+  });
+});
+
+describe("ListRow static", () => {
+  it("is a div, not a button or a link, with no hover fill and no static attribute", () => {
+    const out = renderToStaticMarkup(
+      <ListRow static leading="L" trailing="admin" actions={<button type="button">Remove</button>}>
+        Ada
+      </ListRow>,
+    );
+    expect(out.startsWith("<div")).toBe(true);
+    expect(out).not.toContain("<a ");
+    expect(out).toContain("w-full");
+    expect(out).not.toContain("hover:bg-slate-50");
+    expect(out).not.toContain("static");
+    expect(out.indexOf(">L<")).toBeLessThan(out.indexOf(">Ada<"));
+    expect(out.indexOf(">Ada<")).toBeLessThan(out.indexOf(">admin<"));
+    expect(out.indexOf(">admin<")).toBeLessThan(out.indexOf("Remove"));
+  });
+
+  it("actions are shown always, unless revealOnHover hides them until hover or focus", () => {
+    const shown = renderToStaticMarkup(
+      <ListRow static actions="X">
+        a
+      </ListRow>,
+    );
+    expect(shown).not.toContain("opacity-0");
+    const hidden = renderToStaticMarkup(
+      <ListRow static revealOnHover actions="X">
+        a
+      </ListRow>,
+    );
+    expect(hidden).toContain("opacity-0");
+    expect(hidden).toContain("group-hover/row:opacity-100");
+    expect(hidden).toContain("group-focus-within/row:opacity-100");
+    expect(hidden).toContain("any-pointer-coarse:opacity-100");
+    expect(hidden).toContain("group/row ");
+    expect(hidden).toContain("hover:bg-slate-50");
+    expect(hidden).not.toContain("revealOnHover");
+  });
+
+  it("takes size, divided, data-* and aria-*, and draws no empty slots", () => {
+    const out = renderToStaticMarkup(
+      <ListRow static size="sm" divided data-testid="row" aria-label="Ada">
+        a
+      </ListRow>,
+    );
+    expect(out).toContain("px-3 py-2");
+    expect(out).toContain("border-t border-slate-200/70");
+    expect(out).toContain('data-testid="row"');
+    expect(out).toContain('aria-label="Ada"');
+    expect(out).not.toContain("opacity");
+    expect(out.match(/<span/g)).toHaveLength(1);
+  });
+});
