@@ -109,7 +109,8 @@ that touches only `packages/ui` bumps `@hackcove/ui`, and nothing else.
    `noStyling.test.tsx` fails if a public component's props accept either.
 6. **Only the Action publishes, and only maintainers push to `main`.** Nothing is published from
    a laptop, a first publish included: `.github/workflows/publish.yml` (which runs `nx release`)
-   is the only path, and Jacobus starts it. Never run `nx release publish`, a bare `npm publish`
+   is the only path. Jacobus or the hackcove planner dispatches it; the `npm-publish` environment
+   has no approval step and accepts runs from `main` only. Never run `nx release publish`, a bare `npm publish`
    or `npm login`. A new package's first publish uses the workflow's `NPM_TOKEN` step
    (`docs/releasing.md`, "First publish of a new package"); Jacobus sets and deletes that secret.
    Agents and contributors do not push to `main`. Every package is MIT (a `LICENSE` in each

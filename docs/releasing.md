@@ -30,8 +30,10 @@ cannot do npm trusted publishing or prompt for an OTP. The release commit and ta
 the job's `GITHUB_TOKEN` (`contents: write`), so `main` must accept pushes from GitHub Actions.
 One-time setup, by hand:
 
-1. On GitHub, create an environment named `npm-publish` (Settings → Environments); add a required
-   reviewer if you want a gate on every publish.
+1. On GitHub, create an environment named `npm-publish` (Settings → Environments) and limit its
+   deployment branches to `main`. It has no required reviewer while the packages are `0.x`: a
+   dispatch from `main` publishes without an approval step. Add one if you want a gate on every
+   publish.
 2. On npmjs.com, for each published package (`@hackcove/ui`, `@hackcove/theme-catppuccin-mocha`,
    `@hackcove/theme-thrifty-paper`):
    Settings → Trusted Publisher → GitHub Actions, repository `madangryscientist/hackcove`, workflow
