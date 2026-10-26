@@ -139,6 +139,67 @@ export const Danger: S = {
     </div>
   ),
 };
+/** `tone="positive"` is green, for accept and approve. Pair it with a red-outline reject. */
+export const Positive: S = {
+  render: () => (
+    <div className="flex flex-wrap items-center gap-2">
+      <Button tone="positive">Accept</Button>
+      <Button tone="positive" variant="outline">
+        Accept
+      </Button>
+      <Button tone="positive" variant="ghost">
+        Accept
+      </Button>
+      <Button tone="positive" variant="link">
+        Accept
+      </Button>
+      <Button tone="positive" size="sm">
+        Accept
+      </Button>
+      <Button tone="positive" disabledReason="Nothing to accept">
+        Blocked
+      </Button>
+      <Button tone="positive" busy busyLabel="Accepting…">
+        Accept
+      </Button>
+    </div>
+  ),
+};
+/** The review bar: Accept and Reject side by side. */
+export const ReviewBar: S = {
+  render: () => (
+    <ButtonGroup label="Review">
+      <Button tone="positive" size="sm">
+        Accept
+      </Button>
+      <Button tone="danger" variant="outline" size="sm">
+        Reject
+      </Button>
+    </ButtonGroup>
+  ),
+};
+/** `pressed` makes a toggle: `aria-pressed` and a selected look in the tone's colour, on the outline and ghost variants. */
+export const Pressed: S = {
+  render: () => (
+    <div className="flex flex-wrap items-center gap-2">
+      <Button variant="outline" pressed={false}>
+        Flag
+      </Button>
+      <Button variant="outline" pressed>
+        Flag
+      </Button>
+      <Button variant="ghost" pressed>
+        Flag
+      </Button>
+      <Button variant="outline" tone="positive" pressed>
+        Accepted
+      </Button>
+      <Button variant="outline" tone="danger" pressed>
+        Rejected
+      </Button>
+    </div>
+  ),
+};
 /** No box: text with an underline on hover, for an action inside a sentence or a table cell. */
 export const LinkLook: S = {
   render: () => (

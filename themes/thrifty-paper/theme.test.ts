@@ -116,6 +116,13 @@ it("keeps the danger button's text at WCAG AA (4.5:1) on its fill, resting and h
   }
 });
 
+it("keeps the positive button's text at WCAG AA (4.5:1) on its fill, resting and hovered", () => {
+  for (const fill of ["bg-emerald-600", "hover:bg-emerald-700"]) {
+    const bg = colourOf(fill, "background-color");
+    expect(contrast("text-emerald-50", "color", bg)).toBeGreaterThanOrEqual(4.5);
+  }
+});
+
 it("keeps the violet and sky Pill text at WCAG AA (4.5:1) on its soft fill", () => {
   for (const [text, fill] of [
     ["text-violet-700", "bg-violet-50"],

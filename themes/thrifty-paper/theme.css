@@ -149,6 +149,20 @@
   background-color: #fef2f2; /* danger-soft */
 }
 
+/* Positive button (Button tone="positive"): solid, outline, ghost and the pressed tint */
+.thrifty-paper .hover\:bg-emerald-700:hover {
+  background-color: #065f46; /* positive-hover */
+}
+.thrifty-paper .text-emerald-50 {
+  color: #ffffff; /* text on the positive button */
+}
+.thrifty-paper .border-emerald-600 {
+  border-color: #047857; /* positive */
+}
+.thrifty-paper .hover\:bg-emerald-50:hover {
+  background-color: #ecfdf5; /* positive-soft */
+}
+
 /* Avatar identity colours — violet-600 is the accent above; the rest sit on the theme. */
 .thrifty-paper .bg-orange-600 {
   background-color: #8c5a2b; /* brown */

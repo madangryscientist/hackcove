@@ -158,6 +158,21 @@
   background-color: rgba(243, 139, 168, 0.14); /* red tint */
 }
 
+/* Positive button (Button tone="positive"): solid, outline, ghost and the pressed tint.
+   bg-emerald-600 is the green mapped below with the avatar colours. */
+.dark .hover\:bg-emerald-700:hover {
+  background-color: #94e2d5; /* teal */
+}
+.dark .text-emerald-50 {
+  color: #11111b; /* crust — text on the green button */
+}
+.dark .border-emerald-600 {
+  border-color: #a6e3a1; /* green */
+}
+.dark .hover\:bg-emerald-50:hover {
+  background-color: rgba(166, 227, 161, 0.14); /* green tint */
+}
+
 /* Avatar identity colours — violet-600 is the accent above; the rest sit on the theme. */
 .dark .bg-orange-600 {
   background-color: #fab387; /* peach */

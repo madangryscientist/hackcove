@@ -5,7 +5,7 @@ function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
   return <a href={`#${to}`} {...rest} />;
 }
 
-/** The links block of the Gallery: a TextLink in a sentence, an InlineLinks row, a router-Link TextLink and a row with a stretched link. */
+/** The links block of the Gallery: a TextLink in a sentence, toned TextLinks, an InlineLinks row, a router-Link TextLink and a row with a stretched link. */
 export function GalleryLinks() {
   return (
     <div className="flex flex-col gap-3">
@@ -22,6 +22,12 @@ export function GalleryLinks() {
         </TextLink>
         <TextLink href="#path" size="sm" mono>
           TextLink sm mono
+        </TextLink>
+        <TextLink href="#skipped" tone="warn">
+          TextLink warn
+        </TextLink>
+        <TextLink href="#failed" tone="danger">
+          TextLink danger
         </TextLink>
       </p>
       <InlineLinks>

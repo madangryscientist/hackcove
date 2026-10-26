@@ -29,3 +29,22 @@ export const Disabled: S = {
     </IconButton>
   ),
 };
+/** `variant="ghost"` has no border until the hover fill; `tone="danger"` is red. */
+export const GhostAndDanger: S = {
+  render: () => (
+    <div className="flex flex-wrap items-center gap-2">
+      <IconButton label="Switch to dark theme" variant="ghost">
+        {moon}
+      </IconButton>
+      <IconButton label="Delete" tone="danger">
+        {moon}
+      </IconButton>
+      <IconButton label="Delete" variant="ghost" tone="danger">
+        {moon}
+      </IconButton>
+      <IconButton label="Delete" variant="ghost" tone="danger" disabled>
+        {moon}
+      </IconButton>
+    </div>
+  ),
+};

@@ -52,6 +52,33 @@ export const SizeAndMono: S = {
   ),
 };
 
+/** `tone` gives the link a meaning's colour (the `TextTone` names), underlined on hover. */
+export const Tones: S = {
+  render: () => (
+    <p className="max-w-xl text-sm text-slate-700">
+      <TextLink href="#skipped" tone="warn">
+        3 skipped as flaky
+      </TextLink>
+      {" · "}
+      <TextLink href="#ok" tone="positive">
+        All passed
+      </TextLink>
+      {" · "}
+      <TextLink href="#failed" tone="danger">
+        2 failed
+      </TextLink>
+      {" · "}
+      <TextLink href="#info" tone="info">
+        What changed
+      </TextLink>
+      {" · "}
+      <TextLink href="#muted" tone="muted">
+        Details
+      </TextLink>
+    </p>
+  ),
+};
+
 /** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
 function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
   return <a href={`#${to}`} {...rest} />;

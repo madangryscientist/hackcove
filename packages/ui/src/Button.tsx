@@ -4,7 +4,7 @@ import type { Unstyled } from "./props.js";
 
 export type ButtonVariant = "primary" | "outline" | "ghost" | "link" | "dashed";
 export type ButtonSize = "md" | "sm";
-export type ButtonTone = "default" | "danger";
+export type ButtonTone = "default" | "positive" | "danger";
 
 const SHAPE = "inline-flex items-center justify-center rounded-lg border font-medium transition";
 // Size sets the padding and the text. The link variant has no box, so it takes the text size only.
@@ -33,6 +33,15 @@ const TONE: Record<ButtonTone, Record<Exclude<ButtonVariant, "dashed">, Look>> =
       hover: "hover:text-violet-700 hover:underline",
     },
   },
+  positive: {
+    primary: {
+      color: "border-emerald-600 bg-emerald-600 text-emerald-50",
+      hover: "hover:bg-emerald-700",
+    },
+    outline: { color: "border-emerald-200 text-emerald-700", hover: "hover:bg-emerald-50" },
+    ghost: { color: "border-transparent text-emerald-700", hover: "hover:bg-emerald-50" },
+    link: { color: `border-transparent text-emerald-700 ${LINK}`, hover: "hover:underline" },
+  },
   danger: {
     primary: { color: "border-red-600 bg-red-600 text-red-50", hover: "hover:bg-red-700" },
     outline: { color: "border-red-200 text-red-700", hover: "hover:bg-red-50" },
@@ -48,8 +57,23 @@ const DASHED: Look = {
   hover: "hover:border-violet-400 hover:text-violet-700",
 };
 
-function lookOf(variant: ButtonVariant, tone: ButtonTone): Look {
-  return variant === "dashed" ? DASHED : TONE[tone][variant];
+// The selected look of a pressed toggle: the tone's border and tint at rest. Only the boxed
+// outline and ghost variants show it; a primary is already filled, and link and dashed have no
+// selected state.
+const PRESSED: Record<ButtonTone, Look> = {
+  default: { color: "border-violet-600 bg-violet-50 text-violet-700", hover: "hover:bg-violet-50" },
+  positive: {
+    color: "border-emerald-600 bg-emerald-50 text-emerald-700",
+    hover: "hover:bg-emerald-50",
+  },
+  danger: { color: "border-red-600 bg-red-50 text-red-700", hover: "hover:bg-red-50" },
+};
+
+function lookOf(variant: ButtonVariant, tone: ButtonTone, pressed = false): Look {
+  if (variant === "dashed") return DASHED;
+  return pressed && (variant === "outline" || variant === "ghost")
+    ? PRESSED[tone]
+    : TONE[tone][variant];
 }
 
 // Blocked replaces the variant's colour and hover rather than overriding them, so no `!` is needed.
@@ -72,7 +96,8 @@ export type ButtonLook = {
    */
   size?: ButtonSize | undefined;
   /**
-   * `danger` is red, for delete and clear. Not for `dashed`, which has the one look.
+   * `positive` is green, for accept and approve; `danger` is red, for delete and clear. Not for
+   * `dashed`, which has the one look.
    * @default default
    */
   tone?: ButtonTone | undefined;
@@ -95,7 +120,16 @@ export function buttonClass(
   variant: ButtonVariant = "primary",
   { size = "md", tone = "default" }: Omit<ButtonLook, "variant"> = {},
 ): string {
-  const look = lookOf(variant, tone);
+  return idleClass(variant, size, tone, false);
+}
+
+function idleClass(
+  variant: ButtonVariant,
+  size: ButtonSize,
+  tone: ButtonTone,
+  pressed: boolean,
+): string {
+  const look = lookOf(variant, tone, pressed);
   return cx(shape(variant, size), DISABLED_PLAIN, look.color, look.hover);
 }
 
@@ -106,6 +140,12 @@ type ButtonProps = ButtonLook & {
   busy?: boolean | undefined;
   /** The label while `busy`, in place of the children. */
   busyLabel?: string | undefined;
+  /**
+   * A toggle: sets `aria-pressed`, and when `true` draws the selected look (the tone's border and
+   * tint) on the `outline` and `ghost` variants. Left out, the button is not a toggle and has no
+   * `aria-pressed`.
+   */
+  pressed?: boolean | undefined;
 } & Unstyled<ComponentPropsWithoutRef<"button">>;
 
 type State = "blocked" | "busy" | "idle";
@@ -120,19 +160,21 @@ function stateOf(busy: boolean, disabledReason: string | undefined): State {
 function stateClass(
   { variant = "primary", size = "md", tone = "default" }: ButtonLook,
   state: State,
+  pressed: boolean,
 ): string {
   if (state === "blocked") {
     return cx(shape(variant, size), BLOCKED_BY_VARIANT[variant] ?? BLOCKED);
   }
-  if (state === "busy") return cx(shape(variant, size), lookOf(variant, tone).color, BUSY);
-  return buttonClass(variant, { size, tone });
+  if (state === "busy") return cx(shape(variant, size), lookOf(variant, tone, pressed).color, BUSY);
+  return idleClass(variant, size, tone, pressed);
 }
 
 /**
  * A button in the primary, outline, ghost, link or dashed style (the link has no box: text with an
  * underline on hover, for an in-line action; `dashed` is the full-width "add" row, a dashed
  * outline with muted text that fills its container, with an optional leading icon in the
- * children). `size="sm"` is compact; `tone="danger"` is red.
+ * children). `size="sm"` is compact; `tone="positive"` is green and `tone="danger"` is red;
+ * `pressed` makes it a toggle with a selected look.
  * Defaults to `type="button"`. `disabledReason` and `busy` are the two disabled states that say
  * more than a plain `disabled`, which keeps its half-opacity look.
  */
@@ -143,6 +185,7 @@ export function Button({
   disabledReason,
   busy = false,
   busyLabel,
+  pressed,
   children,
   title,
   disabled,
@@ -153,9 +196,10 @@ export function Button({
   return (
     <button
       type="button"
-      className={stateClass({ variant, size, tone }, state)}
+      className={stateClass({ variant, size, tone }, state, pressed === true)}
       disabled={disabled || busy || blocked}
       aria-busy={busy || undefined}
+      aria-pressed={pressed}
       title={blocked ? disabledReason : title}
       {...rest}
     >

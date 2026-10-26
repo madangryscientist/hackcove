@@ -37,7 +37,17 @@
     "bg-pink-600",
     "bg-amber-600"
   ],
-  "positive": ["bg-emerald-50", "text-emerald-700", "text-emerald-800", "border-emerald-200"],
+  "positive": [
+    "bg-emerald-50",
+    "hover:bg-emerald-50",
+    "bg-emerald-600",
+    "hover:bg-emerald-700",
+    "text-emerald-50",
+    "text-emerald-700",
+    "text-emerald-800",
+    "border-emerald-200",
+    "border-emerald-600"
+  ],
   "warn": ["bg-amber-50", "text-amber-700", "text-amber-800", "border-amber-200"],
   "danger": [
     "bg-red-50",

@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import type { LinkRenderProps } from "./link.js";
 import { linkClass, linkStretchClass, TextLink } from "./TextLink.js";
+import { TEXT_TONE } from "./typography.js";
 
 describe("TextLink", () => {
   it("renders an anchor with the href, the children and the link classes", () => {
@@ -142,5 +143,30 @@ describe("TextLink size and mono", () => {
     );
     expect(out).toContain("text-sm/5");
     expect(out).toContain("font-mono");
+  });
+});
+
+describe("TextLink tone", () => {
+  it("is the accent colour until a tone is given", () => {
+    const out = renderToStaticMarkup(<TextLink href="/a">a</TextLink>);
+    expect(out).toContain("text-violet-600");
+    expect(out).not.toContain("hover:underline");
+  });
+
+  it("takes the colour of TEXT_TONE and underlines on hover, in place of the accent", () => {
+    for (const tone of ["muted", "info", "positive", "warn", "danger"] as const) {
+      const out = renderToStaticMarkup(
+        <TextLink href="/a" tone={tone}>
+          a
+        </TextLink>,
+      );
+      expect(out).toContain(TEXT_TONE[tone]);
+      expect(out).toContain("hover:underline");
+      expect(out).toContain("font-medium");
+      expect(out).toContain("focus-visible:outline-violet-600");
+      expect(out).not.toContain("text-violet-600");
+      expect(out).not.toContain("hover:text-violet-700");
+      expect(out).not.toContain("tone=");
+    }
   });
 });
