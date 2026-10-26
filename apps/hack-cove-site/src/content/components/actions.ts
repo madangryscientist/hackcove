@@ -89,6 +89,7 @@ export const actions: ComponentSection = {
         "Give the whole line as `text`; the box shows it and the button copies it.",
         "Several lines are a `CodeBlock`; `CopyLine` is one line.",
         "A long token wraps inside the box.",
+        "`disabled` disables the button, for a line shown before the page is interactive.",
       ],
       accessibility: [
         "The text is a `<code>` element, so a reader can select it by hand as well.",

@@ -38,3 +38,7 @@ export const LongToken: S = {
     <CopyLine text="hc_live_0b7f3c9a1e4d6f2a8b5c7e9d1f3a5b7c9e1d3f5a7b9c1e3d5f7a9b1c3e5d7f9a" />
   ),
 };
+/** `disabled` greys the copy button and stops it taking clicks, e.g. until hydration. */
+export const Disabled: S = {
+  render: () => <CopyLine text="bun add @hackcove/ui" disabled />,
+};

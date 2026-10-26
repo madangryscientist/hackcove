@@ -15,4 +15,11 @@ describe("CopyLine", () => {
     expect(out).toMatch(/<div[^>]*data-testid="install-line"/);
     expect(out).toContain('<code class="min-w-0 break-words">x</code>');
   });
+
+  it("disables its copy button with disabled, and only the button", () => {
+    const off = renderToStaticMarkup(<CopyLine text="x" disabled />);
+    expect(off).toMatch(/<button[^>]*disabled=""/);
+    expect(off).not.toMatch(/<div[^>]*disabled/);
+    expect(renderToStaticMarkup(<CopyLine text="x" />)).not.toContain('disabled=""');
+  });
 });
