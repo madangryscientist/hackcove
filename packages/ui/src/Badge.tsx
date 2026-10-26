@@ -6,7 +6,7 @@ import type { Unstyled } from "./props.js";
  * A small red count, 10px, for sitting on an icon. `corner` pins it to the top-right corner of its
  * `relative` parent (wrap the icon button and the badge in a `relative inline-flex` element); a
  * count above 99 reads `99+`. Name the control it sits on (`aria-label` on the button) for a
- * screen reader.
+ * screen reader. An `IconButton` takes `badge` itself and does all of this.
  */
 export function Badge({
   count,

@@ -18,7 +18,7 @@ import {
   TimelineItem,
 } from "@hackcove/ui";
 
-/** The Card variants (flush, header bar, dashed, dashed filled, dense, toned), the Callout actions, banner and link, the ListRow set, a Table with a stretched row link and toned rows, a Table with a group row, cell tones, a truncated cell and a totals foot, a plain Table with a second-line cell and an `srLabel` actions column and a Timeline. */
+/** The Card variants (flush, header bar, dashed, dashed filled, dense, toned), the Callout actions, banner and link, the ListRow set, a link Card, a Table with a stretched row link and toned rows, a Table with a group row, cell tones, a truncated cell and a totals foot, a plain Table with a second-line cell and an `srLabel` actions column and a Timeline. */
 export function GalleryData() {
   return (
     <div className="flex flex-col gap-4">
@@ -53,6 +53,9 @@ export function GalleryData() {
         Dense and toned.
       </Card>
       <Card tone="warn">A toned data panel.</Card>
+      <Card href="#shot" title="Dashboard" status={<Pill tone="amber">changed</Pill>}>
+        A card that is one link.
+      </Card>
       <Callout
         tone="warn"
         actions={

@@ -1,4 +1,5 @@
-export { Card, EpicHeader, Empty, PageTitle, Pill, groupByEpic, type PillTone } from "./ui.js";
+export { Card, EpicHeader, Empty, PageTitle, groupByEpic } from "./ui.js";
+export { Pill, type PillTone } from "./Pill.js";
 export { Badge } from "./Badge.js";
 export { StatTile, type StatTileTone } from "./StatTile.js";
 export { ProgressBar, type BarSize, type BarTone } from "./ProgressBar.js";

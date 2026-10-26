@@ -8,7 +8,7 @@ const bellIcon = (
   </svg>
 );
 
-/** The Pill and Badge rows of the Gallery: the seven tones plain, with a dot and round, then red counts alone and on an icon. */
+/** The Pill and Badge rows of the Gallery: the seven tones plain, with a dot and round, then red counts alone and on an icon, then a link Pill, a button Pill and a badged IconButton link and button. */
 export function GalleryPills() {
   return (
     <div className="flex flex-col gap-3">
@@ -42,6 +42,20 @@ export function GalleryPills() {
           <IconButton label="Alerts">{bellIcon}</IconButton>
           <Badge count={3} corner />
         </span>
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <Pill href="#flakes" tone="amber" round>
+          link
+        </Pill>
+        <Pill onClick={() => undefined} tone="sky" dot>
+          button
+        </Pill>
+        <IconButton href="#alerts" label="Alerts" badge={3}>
+          {bellIcon}
+        </IconButton>
+        <IconButton label="Alerts" variant="ghost" badge={120}>
+          {bellIcon}
+        </IconButton>
       </div>
     </div>
   );

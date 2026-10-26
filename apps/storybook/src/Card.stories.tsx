@@ -1,9 +1,24 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Card, Empty, ListRow, Pill, Stack, SubsectionHeading } from "@hackcove/ui";
+import {
+  Button,
+  Card,
+  CardGrid,
+  Empty,
+  ListRow,
+  Pill,
+  Stack,
+  SubsectionHeading,
+  type LinkRenderProps,
+} from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Card" };
 export default meta;
 type S = StoryObj;
+
+/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
+function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
+  return <a href={`#${to}`} {...rest} />;
+}
 
 const rows = [
   ["Rent", "R 9 500"],
@@ -194,6 +209,31 @@ export const Tones: S = {
         <ListRow size="sm" trailing="R 1 850">
           Transport
         </ListRow>
+      </Card>
+    </div>
+  ),
+};
+
+/** `href` makes the whole card one link: a hover border and the focus ring on the card itself. */
+export const Link: S = {
+  render: () => (
+    <CardGrid>
+      <Card href="#shot-1" title="Dashboard" status={<Pill tone="amber">changed</Pill>}>
+        <Empty>Open the diff for this shot.</Empty>
+      </Card>
+      <Card href="#shot-2" title="Settings">
+        <Empty>Unchanged.</Empty>
+      </Card>
+    </CardGrid>
+  ),
+};
+
+/** `render` draws the app's own router `<Link>`, already carrying the card's classes. */
+export const LinkRender: S = {
+  render: () => (
+    <div className="max-w-md">
+      <Card render={(p) => <FakeLink to="/shots/1" {...p} />} title="Dashboard">
+        <Empty>The router Link is the card.</Empty>
       </Card>
     </div>
   ),

@@ -1,5 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Card, Empty, EpicHeader, Markdown, PageTitle, Pill } from "@hackcove/ui";
+import {
+  Card,
+  Empty,
+  EpicHeader,
+  Markdown,
+  PageTitle,
+  Pill,
+  type LinkRenderProps,
+} from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Primitives" };
 export default meta;
@@ -15,6 +23,27 @@ export const Pills: S = {
       <Pill tone="red">red</Pill>
       <Pill tone="violet">violet</Pill>
       <Pill tone="sky">sky</Pill>
+    </div>
+  ),
+};
+/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
+function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
+  return <a href={`#${to}`} {...rest} />;
+}
+
+/** `href` makes a Pill a link, `render` the app's router `<Link>`, `onClick` a button: all with a hover dim and the focus ring. */
+export const PillsInteractive: S = {
+  render: () => (
+    <div className="flex items-center gap-2">
+      <Pill href="#flakes" tone="amber" round>
+        flaky
+      </Pill>
+      <Pill render={(p) => <FakeLink to="/flakes" {...p} />} tone="violet">
+        router link
+      </Pill>
+      <Pill onClick={() => undefined} tone="sky" dot>
+        button
+      </Pill>
     </div>
   ),
 };

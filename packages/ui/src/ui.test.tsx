@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { Card, Pill, groupByEpic } from "./ui.js";
+import { Pill } from "./Pill.js";
+import { Card, groupByEpic } from "./ui.js";
 
 describe("groupByEpic", () => {
   it("orders real epics by ref and puts 'no epic' last", () => {
@@ -72,7 +73,7 @@ describe("Card", () => {
 
   it("renders the same markup as before when as is off", () => {
     expect(renderToStaticMarkup(<Card>body</Card>)).toBe(
-      '<section class="rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm">body</section>',
+      '<section class="relative rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm">body</section>',
     );
   });
 

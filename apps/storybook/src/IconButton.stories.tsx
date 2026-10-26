@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { IconButton } from "@hackcove/ui";
+import { IconButton, type LinkRenderProps } from "@hackcove/ui";
+
+/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
+function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
+  return <a href={`#${to}`} {...rest} />;
+}
 
 const meta: Meta = { title: "UI/IconButton" };
 export default meta;
@@ -43,6 +48,37 @@ export const GhostAndDanger: S = {
         {moon}
       </IconButton>
       <IconButton label="Delete" variant="ghost" tone="danger" disabled>
+        {moon}
+      </IconButton>
+    </div>
+  ),
+};
+
+/** `href` draws a link with the button's look; `render` draws the app's router `<Link>`. */
+export const AsLink: S = {
+  render: () => (
+    <div className="flex items-center gap-2">
+      <IconButton href="#settings" label="Settings" variant="ghost">
+        {moon}
+      </IconButton>
+      <IconButton render={(p) => <FakeLink to="/settings" {...p} />} label="Settings">
+        {moon}
+      </IconButton>
+    </div>
+  ),
+};
+
+/** `badge` pins a red count to the corner, on a button or a link; `label` names the count for a screen reader. Not shown at 0. */
+export const Badged: S = {
+  render: () => (
+    <div className="flex items-center gap-4">
+      <IconButton label="Alerts" badge={3}>
+        {moon}
+      </IconButton>
+      <IconButton href="#alerts" label="Alerts" variant="ghost" badge={120}>
+        {moon}
+      </IconButton>
+      <IconButton href="#alerts" label="Alerts" badge={0}>
         {moon}
       </IconButton>
     </div>

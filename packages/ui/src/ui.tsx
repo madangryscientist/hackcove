@@ -1,9 +1,10 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
 import { type CalloutTone, TONE_SURFACE } from "./Callout.js";
 import type { ControlSize } from "./control.js";
-import { cx } from "./cx.js";
+import { cx, focusRing } from "./cx.js";
+import { type LinkRender, renderLink } from "./link.js";
 import { PageHeaderContent } from "./PageHeader.js";
-import type { Passthrough } from "./props.js";
+import type { Passthrough, Unstyled } from "./props.js";
 
 // Small presentational primitives written against Tailwind's slate-based class vocabulary
 // (remapped to Catppuccin Mocha in dark mode by theme.css).
@@ -132,13 +133,57 @@ function cardPadding(form: ReturnType<typeof cardForm>): string | false {
 
 function cardClass(form: ReturnType<typeof cardForm>): string {
   return cx(
-    "rounded-xl border",
+    "relative rounded-xl border",
     cardBorder(form),
     form.filled && "bg-white",
     cardPadding(form),
     !form.dashed && !form.tone && "shadow-sm",
     (form.flush || form.bar) && "overflow-hidden",
   );
+}
+
+type CardBase = {
+  title?: string;
+  count?: number;
+  /** A `Pill` (or any node) directly beside the title and count, not at the far end like `actions`. Needs a `title`. */
+  status?: ReactNode;
+  /** Put the title, count and actions in a tinted strip above the body, edge to edge. */
+  bar?: boolean;
+  /** No padding and `overflow-hidden`: the body (a table, a list) fills the card. */
+  flush?: boolean;
+  /** An empty-state shell: dashed outline, no shadow, no fill, centred muted text. `"filled"` puts it on a surface fill with more padding. */
+  dashed?: boolean | "filled";
+  /** A soft fill and border in the Callout's tones, for a data panel with a status. Ignored with `bar` and `dashed`. */
+  tone?: CalloutTone;
+  /** `sm` is dense padding on the body, heading and bar; a `dashed` shell keeps its own. Defaults to `md`. */
+  size?: ControlSize;
+  children: ReactNode;
+};
+
+type CardPanelProps = CardBase & {
+  /** Buttons or links at the end of the header: in the strip with `bar`, else beside the title. */
+  actions?: ReactNode;
+  as?: "section" | "article" | "div";
+  href?: undefined;
+  render?: undefined;
+  external?: undefined;
+} & Omit<ComponentPropsWithoutRef<"section">, "title" | "className" | "style" | "children">;
+
+type CardLinkProps = CardBase & {
+  /** A card that is a link has nothing else to click: no `actions`. */
+  actions?: undefined;
+  /** A card that is a link is the link: no `as`. */
+  as?: undefined;
+  /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
+  external?: boolean | undefined;
+} & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href" | "title" | "children">> &
+  (
+    | { href: string; render?: LinkRender | undefined }
+    | { href?: string | undefined; render: LinkRender }
+  );
+
+function isCardLink(props: CardPanelProps | CardLinkProps): props is CardLinkProps {
+  return props.href !== undefined || props.render !== undefined;
 }
 
 /**
@@ -151,42 +196,52 @@ function cardClass(form: ReturnType<typeof cardForm>): string {
  * padding for a `title`, so give it a `bar`. `size="sm"` is the dense padding, the same on a
  * `ListRow` and a `FileDrop`. `tone` is the Callout's set, for a data panel that carries a status
  * (a soft fill and border, no shadow); a message is still a `Callout`, and `bar` and `dashed` have
- * no tone. Other props (`id`, `data-*`, `aria-*`) go on the root.
+ * no tone. Other props (`id`, `data-*`, `aria-*`) go on the root. The root is `relative`, so a
+ * `TextLink stretch` inside it covers the card.
+ *
+ * `href` makes the whole card one link: the root is an `<a>` with a hover border and the focus ring,
+ * so it takes no `actions` and no `as`. With `render` it draws the app's own router `<Link>`
+ * (`render={(p) => <Link to="/shots/1" {...p} />}`). `external` opens it in a new tab.
  */
-export function Card({
-  title,
-  count,
-  status,
-  actions,
-  bar,
-  flush,
-  dashed,
-  tone,
-  size,
-  as: Tag = "section",
-  children,
-  ...rest
-}: {
-  title?: string;
-  count?: number;
-  /** A `Pill` (or any node) directly beside the title and count, not at the far end like `actions`. Needs a `title`. */
-  status?: ReactNode;
-  /** Buttons or links at the end of the header: in the strip with `bar`, else beside the title. */
-  actions?: ReactNode;
-  /** Put the title, count and actions in a tinted strip above the body, edge to edge. */
-  bar?: boolean;
-  /** No padding and `overflow-hidden`: the body (a table, a list) fills the card. */
-  flush?: boolean;
-  /** An empty-state shell: dashed outline, no shadow, no fill, centred muted text. `"filled"` puts it on a surface fill with more padding. */
-  dashed?: boolean | "filled";
-  /** A soft fill and border in the Callout's tones, for a data panel with a status. Ignored with `bar` and `dashed`. */
-  tone?: CalloutTone;
-  /** `sm` is dense padding on the body, heading and bar; a `dashed` shell keeps its own. Defaults to `md`. */
-  size?: ControlSize;
-  as?: "section" | "article" | "div";
-  children: ReactNode;
-} & Omit<ComponentPropsWithoutRef<"section">, "title" | "className" | "style" | "children">) {
+export function Card(props: CardPanelProps | CardLinkProps): ReactElement {
+  if (isCardLink(props)) {
+    const { title, count, status, actions, bar, flush, dashed, tone, size, children, ...link } =
+      props;
+    const form = cardForm({ flush, bar, dashed, tone, size }, Boolean(title));
+    return renderLink({
+      ...link,
+      external: link.external ?? false,
+      className: cx(cardClass(form), "block transition hover:border-violet-400", focusRing),
+      children: cardBody(form, { title, count, status, actions, children }),
+    });
+  }
+  const { title, count, status, actions, bar, flush, dashed, tone, size, children, ...panel } =
+    props;
+  const { as: Tag = "section", ...rest } = panel;
   const form = cardForm({ flush, bar, dashed, tone, size }, Boolean(title || actions));
+  return (
+    <Tag {...rest} className={cardClass(form)}>
+      {cardBody(form, { title, count, status, actions, children })}
+    </Tag>
+  );
+}
+
+function cardBody(
+  form: ReturnType<typeof cardForm>,
+  {
+    title,
+    count,
+    status,
+    actions,
+    children,
+  }: {
+    title: string | undefined;
+    count: number | undefined;
+    status: ReactNode;
+    actions: ReactNode;
+    children: ReactNode;
+  },
+): ReactNode {
   const heading = title && (
     <CardHeading
       title={title}
@@ -197,20 +252,19 @@ export function Card({
       size={form.size}
     />
   );
+  if (form.bar) {
+    return (
+      <>
+        <CardBar heading={heading} actions={actions} size={form.size} />
+        <div className={form.flush ? undefined : BODY_PAD[form.size]}>{children}</div>
+      </>
+    );
+  }
   return (
-    <Tag {...rest} className={cardClass(form)}>
-      {form.bar ? (
-        <>
-          <CardBar heading={heading} actions={actions} size={form.size} />
-          <div className={form.flush ? undefined : BODY_PAD[form.size]}>{children}</div>
-        </>
-      ) : (
-        <>
-          <CardHeader heading={heading} actions={actions} size={form.size} />
-          {children}
-        </>
-      )}
-    </Tag>
+    <>
+      <CardHeader heading={heading} actions={actions} size={form.size} />
+      {children}
+    </>
   );
 }
 
@@ -225,49 +279,6 @@ export function EpicHeader({
       <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
       <span className="text-sm font-semibold text-slate-700">{label}</span>
     </div>
-  );
-}
-
-export type PillTone = "slate" | "amber" | "emerald" | "blue" | "red" | "violet" | "sky";
-
-/**
- * A small tinted label; `dot` adds a leading dot in the pill's own text colour, `round` swaps the
- * rounded-md corners for a full pill shape.
- */
-export function Pill({
-  children,
-  tone = "slate",
-  dot = false,
-  round = false,
-  ...rest
-}: {
-  children: ReactNode;
-  tone?: PillTone;
-  dot?: boolean;
-  round?: boolean;
-} & Passthrough) {
-  const tones: Record<string, string> = {
-    slate: "bg-slate-100 text-slate-600",
-    amber: "bg-amber-50 text-amber-700",
-    emerald: "bg-emerald-50 text-emerald-700",
-    blue: "bg-blue-50 text-blue-700",
-    red: "bg-red-50 text-red-900",
-    violet: "bg-violet-50 text-violet-700",
-    sky: "bg-sky-50 text-sky-700",
-  };
-  return (
-    <span
-      {...rest}
-      className={cx(
-        round ? "rounded-full" : "rounded-md",
-        "px-1.5 py-0.5 text-xs font-medium",
-        tones[tone],
-        dot && "inline-flex items-center gap-1",
-      )}
-    >
-      {dot && <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-current" />}
-      {children}
-    </span>
   );
 }
 
