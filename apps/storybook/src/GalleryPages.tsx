@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import {
   Body,
   Button,
+  Card,
+  CardGrid,
   CenteredLayout,
   ErrorPage,
   Forbidden,
@@ -63,6 +65,21 @@ export function GalleryPages() {
       </PageBox>
       <PageBox label="CardGrid">
         <StatTiles columns={4} />
+      </PageBox>
+      <PageBox label="CardGrid columns auto, align start">
+        <CardGrid columns="auto" minWidth="sm" align="start">
+          <Card title="Dashboard">
+            <Body as="p">One line.</Body>
+          </Card>
+          <Card title="Settings">
+            <Body as="p">
+              A longer note that wraps onto a few lines, so this card is taller than its neighbours.
+            </Body>
+          </Card>
+          <Card title="Billing" footer={<Body as="p">Footer</Body>}>
+            <Body as="p">One line.</Body>
+          </Card>
+        </CardGrid>
       </PageBox>
       <PageBox label="SidebarLayout">
         <SidebarLayout

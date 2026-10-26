@@ -140,17 +140,45 @@ const COLUMNS = {
   4: "lg:grid-cols-4",
 } as const;
 
-/** A responsive grid of tiles: one column on a phone, two from `sm`, `columns` from `lg`. */
+/** `columns="auto"` fits as many cards per row as the width allows, none narrower than this. */
+const AUTO_MIN_WIDTH = {
+  sm: "grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]",
+  md: "grid-cols-[repeat(auto-fill,minmax(17rem,1fr))]",
+} as const;
+
+type CardGridProps = (
+  | { columns?: keyof typeof COLUMNS | undefined; minWidth?: undefined }
+  | { columns: "auto"; minWidth?: keyof typeof AUTO_MIN_WIDTH | undefined }
+) & {
+  /** `start` keeps each card its own height; the default stretches every card to the tallest in its row. */
+  align?: "stretch" | "start" | undefined;
+  children: ReactNode;
+} & Passthrough;
+
+/**
+ * A responsive grid of tiles: one column on a phone, two from `sm`, `columns` from `lg`.
+ * `columns="auto"` instead fits as many per row as the width allows, each at least `minWidth` wide:
+ * `md` (17rem, the default) or `sm` (12rem). `align="start"` keeps each card its own height
+ * instead of stretching it to the tallest in its row.
+ */
 export function CardGrid({
   columns = 3,
+  minWidth = "md",
+  align = "stretch",
   children,
   ...rest
-}: {
-  columns?: keyof typeof COLUMNS;
-  children: ReactNode;
-} & Passthrough): ReactElement {
+}: CardGridProps): ReactElement {
   return (
-    <div {...rest} className={cx("grid grid-cols-1 gap-4 sm:grid-cols-2", COLUMNS[columns])}>
+    <div
+      {...rest}
+      className={cx(
+        "grid gap-4",
+        columns === "auto"
+          ? AUTO_MIN_WIDTH[minWidth]
+          : cx("grid-cols-1 sm:grid-cols-2", COLUMNS[columns]),
+        align === "start" && "items-start",
+      )}
+    >
       {children}
     </div>
   );

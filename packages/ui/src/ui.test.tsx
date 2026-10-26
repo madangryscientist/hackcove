@@ -182,6 +182,48 @@ describe("Card", () => {
   });
 });
 
+const footer = (extra: object = {}) =>
+  renderToStaticMarkup(
+    <Card title="T" footer={<span>Total</span>} {...extra}>
+      body
+    </Card>,
+  );
+
+describe("Card footer", () => {
+  it("is a tinted strip under a hairline, after the body, inside the root", () => {
+    const out = footer();
+    expect(out).toContain("border-t border-slate-200/70 bg-slate-50");
+    expect(out.indexOf("body")).toBeLessThan(out.indexOf("Total"));
+    expect(out.endsWith("</div></section>")).toBe(true);
+  });
+
+  it("moves the padding to the body so the strip runs edge to edge, and pins to the foot", () => {
+    const out = footer();
+    expect(out).toMatch(/^<section class="[^"]*overflow-hidden flex flex-col"/);
+    expect(out.split('class="')[1]).not.toMatch(/\bp-5\b/);
+    expect(out).toContain('class="flex-1 p-5"');
+    expect(out).toContain("px-5 py-3");
+  });
+
+  it("follows size, bar and flush", () => {
+    expect(footer({ size: "sm" })).toContain("px-3 py-2");
+    expect(footer({ bar: true })).toContain('class="flex-1 p-5"');
+    expect(footer({ flush: true })).toContain('class="flex-1"');
+  });
+
+  it("is ignored on a dashed card and absent when empty", () => {
+    expect(footer({ dashed: true })).not.toContain("Total");
+    expect(
+      renderToStaticMarkup(
+        <Card title="T" footer={null}>
+          body
+        </Card>,
+      ),
+    ).toContain("p-5");
+    expect(renderToStaticMarkup(<Card title="T">body</Card>)).not.toContain("border-t");
+  });
+});
+
 describe("Card size and tone", () => {
   it("sm is dense padding, md the default", () => {
     expect(renderToStaticMarkup(<Card size="sm">x</Card>)).toContain("p-3");

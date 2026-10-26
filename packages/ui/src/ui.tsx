@@ -75,6 +75,19 @@ function CardBar({
   );
 }
 
+function CardFooter({ children, size }: { children: ReactNode; size: ControlSize }) {
+  return (
+    <div
+      className={cx(
+        "flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-slate-200/70 bg-slate-50",
+        size === "sm" ? "px-3 py-2" : "px-5 py-3",
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
 function CardHeader({
   heading,
   actions,
@@ -91,6 +104,11 @@ function CardHeader({
       <CardActions>{actions}</CardActions>
     </div>
   );
+}
+
+/** A card with a `footer`: a `dashed` card stands alone and has none. */
+function withFooter(form: ReturnType<typeof cardForm>, footer: ReactNode) {
+  return { ...form, footer: !form.dashed && Boolean(footer) };
 }
 
 /** `dashed` stands alone; `bar` needs a title or actions to fill it and has no tone. */
@@ -113,6 +131,7 @@ function cardForm(
     filled: asked.dashed === "filled",
     tone: dashed || bar ? undefined : asked.tone,
     size: asked.size ?? "md",
+    footer: false,
   };
 }
 
@@ -128,7 +147,7 @@ function cardPadding(form: ReturnType<typeof cardForm>): string | false {
   if (form.dashed) {
     return cx(form.filled ? "p-10" : "p-8", "text-center text-sm text-slate-500");
   }
-  return !form.flush && !form.bar && BODY_PAD[form.size];
+  return !form.flush && !form.bar && !form.footer && BODY_PAD[form.size];
 }
 
 function cardClass(form: ReturnType<typeof cardForm>): string {
@@ -138,7 +157,8 @@ function cardClass(form: ReturnType<typeof cardForm>): string {
     form.filled && "bg-white",
     cardPadding(form),
     !form.dashed && !form.tone && "shadow-sm",
-    (form.flush || form.bar) && "overflow-hidden",
+    (form.flush || form.bar || form.footer) && "overflow-hidden",
+    form.footer && "flex flex-col",
   );
 }
 
@@ -163,6 +183,8 @@ type CardBase = {
 type CardPanelProps = CardBase & {
   /** Buttons or links at the end of the header: in the strip with `bar`, else beside the title. */
   actions?: ReactNode;
+  /** A tinted strip across the bottom of the card, under a hairline, for the card's own actions or a total. It stays at the foot when the card is stretched in a `CardGrid`. Ignored with `dashed`. */
+  footer?: ReactNode;
   as?: "section" | "article" | "div";
   href?: undefined;
   render?: undefined;
@@ -172,6 +194,8 @@ type CardPanelProps = CardBase & {
 type CardLinkProps = CardBase & {
   /** A card that is a link has nothing else to click: no `actions`. */
   actions?: undefined;
+  /** A card that is a link has nothing else to click: no `footer`. */
+  footer?: undefined;
   /** A card that is a link is the link: no `as`. */
   as?: undefined;
   /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
@@ -199,6 +223,10 @@ function isCardLink(props: CardPanelProps | CardLinkProps): props is CardLinkPro
  * no tone. Other props (`id`, `data-*`, `aria-*`) go on the root. The root is `relative`, so a
  * `TextLink stretch` inside it covers the card.
  *
+ * `footer` is a tinted strip across the bottom, under a hairline, for the card's own actions or a
+ * total; in a `CardGrid` it stays at the foot of a card that is stretched to the row's height. It
+ * suits a panel, not a card that is a link, and `dashed` has none.
+ *
  * `href` makes the whole card one link: the root is an `<a>` with a hover border and the focus ring,
  * so it takes no `actions` and no `as`. With `render` it draws the app's own router `<Link>`
  * (`render={(p) => <Link to="/shots/1" {...p} />}`). `external` opens it in a new tab.
@@ -215,13 +243,29 @@ export function Card(props: CardPanelProps | CardLinkProps): ReactElement {
       children: cardBody(form, { title, count, status, actions, children }),
     });
   }
-  const { title, count, status, actions, bar, flush, dashed, tone, size, children, ...panel } =
-    props;
+  const {
+    title,
+    count,
+    status,
+    actions,
+    footer,
+    bar,
+    flush,
+    dashed,
+    tone,
+    size,
+    children,
+    ...panel
+  } = props;
   const { as: Tag = "section", ...rest } = panel;
-  const form = cardForm({ flush, bar, dashed, tone, size }, Boolean(title || actions));
+  const form = withFooter(
+    cardForm({ flush, bar, dashed, tone, size }, Boolean(title || actions)),
+    footer,
+  );
   return (
     <Tag {...rest} className={cardClass(form)}>
       {cardBody(form, { title, count, status, actions, children })}
+      {form.footer && <CardFooter size={form.size}>{footer}</CardFooter>}
     </Tag>
   );
 }
@@ -252,19 +296,26 @@ function cardBody(
       size={form.size}
     />
   );
+  const grow = form.footer && "flex-1";
   if (form.bar) {
     return (
       <>
         <CardBar heading={heading} actions={actions} size={form.size} />
-        <div className={form.flush ? undefined : BODY_PAD[form.size]}>{children}</div>
+        <div className={cx(grow, !form.flush && BODY_PAD[form.size]) || undefined}>{children}</div>
       </>
     );
   }
-  return (
+  const content = (
     <>
       <CardHeader heading={heading} actions={actions} size={form.size} />
       {children}
     </>
+  );
+  // With a footer the root has no padding, so the body pads itself and takes the room left over.
+  return form.footer ? (
+    <div className={cx(grow, !form.flush && BODY_PAD[form.size])}>{content}</div>
+  ) : (
+    content
   );
 }
 

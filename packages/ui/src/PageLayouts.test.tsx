@@ -135,6 +135,40 @@ describe("CardGrid", () => {
   it("defaults to three columns", () => {
     expect(classesOf(renderToStaticMarkup(<CardGrid>tiles</CardGrid>))).toContain("lg:grid-cols-3");
   });
+
+  it.each([
+    [undefined, "grid-cols-[repeat(auto-fill,minmax(17rem,1fr))]"],
+    ["md", "grid-cols-[repeat(auto-fill,minmax(17rem,1fr))]"],
+    ["sm", "grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]"],
+  ] as const)("with columns auto and minWidth %s fills by %s", (minWidth, fill) => {
+    const classes = classesOf(
+      renderToStaticMarkup(
+        <CardGrid columns="auto" minWidth={minWidth}>
+          tiles
+        </CardGrid>,
+      ),
+    );
+    expect(classes).toEqual(expect.arrayContaining(["grid", "gap-4", fill]));
+    expect(classes.join(" ")).not.toMatch(/\bgrid-cols-1\b|lg:grid-cols|sm:grid-cols/);
+  });
+
+  it("stretches the cards by default and keeps their own height with align start", () => {
+    expect(classesOf(renderToStaticMarkup(<CardGrid>tiles</CardGrid>))).not.toContain(
+      "items-start",
+    );
+    expect(classesOf(renderToStaticMarkup(<CardGrid align="start">tiles</CardGrid>))).toContain(
+      "items-start",
+    );
+    expect(
+      classesOf(
+        renderToStaticMarkup(
+          <CardGrid columns="auto" align="start">
+            tiles
+          </CardGrid>,
+        ),
+      ),
+    ).toContain("items-start");
+  });
 });
 
 describe("SidebarLayout", () => {

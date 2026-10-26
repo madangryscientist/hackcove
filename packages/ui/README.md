@@ -53,7 +53,7 @@ root (`DateField`, `DatePicker`) puts `data-*` on its wrapper and `aria-describe
 
 ## What is exported
 
-- Primitives: `Card` (a bordered panel; `title` and `count` make a small heading, and `status` (a `Pill` or any node) sits right after them, where `actions` sits at the far end; `flush` drops the padding and clips the corners, for a table that runs edge to edge; `bar` moves the title, count and `actions` into a tinted strip over the body; `dashed` is an empty-state shell with centred muted text, and `dashed="filled"` the same on a surface fill with more padding; `as` is `section` (default), `article` or `div`; `id`, `data-*` and `aria-*` go on the root),  `EpicHeader`, `Empty`, `PageTitle` (deprecated: use `PageHeader`), `Pill`, `groupByEpic`, `Markdown`.
+- Primitives: `Card` (a bordered panel; `title` and `count` make a small heading, and `status` (a `Pill` or any node) sits right after them, where `actions` sits at the far end; `flush` drops the padding and clips the corners, for a table that runs edge to edge; `bar` moves the title, count and `actions` into a tinted strip over the body; `dashed` is an empty-state shell with centred muted text, and `dashed="filled"` the same on a surface fill with more padding; `footer` puts a tinted strip under a hairline across the bottom, for the card's own actions or a total: it takes the padding off the root and gives it to the body, so the strip runs edge to edge and stays at the foot of a card stretched in a `CardGrid`; not on a `dashed` card or a card that is a link; `as` is `section` (default), `article` or `div`; `id`, `data-*` and `aria-*` go on the root),  `EpicHeader`, `Empty`, `PageTitle` (deprecated: use `PageHeader`), `Pill`, `groupByEpic`, `Markdown`.
 - Layout (see Layout): `AppShell`, `AppShellBrand`, `appShellRootClass`, `appShellRootClassFor`, `Container`, `PageHeader`, `Stack`, `Section`, `Cluster`, `ClusterGrow`, and the page layouts `ListLayout`, `DetailLayout`, `FormLayout`, `ProseLayout`, `CardGrid`, `SidebarLayout`, `FullBleedLayout`, `CenteredLayout`.
 - Typography roles (each pins size + weight, takes a `color` and an `as`): `Display`, `Lead`,
   `PageHeading`, `SectionHeading`, `SubsectionHeading`, `ModalHeading`, `Subtitle`, `Overline`,
@@ -235,7 +235,10 @@ except the last four.
   not jump): the header, then `children` in a `Stack` (`gap` prop, `md` by default). Unlike
   `FormLayout` the header sits inside the column, so its `actions` stay beside the text.
 - **`CardGrid`**: use this for stat tiles or a gallery of cards. `columns` is `2`, `3` (default) or
-  `4`: one column on a phone, two from `sm`, `columns` from `lg`.
+  `4`: one column on a phone, two from `sm`, `columns` from `lg`. `columns="auto"` instead fits as
+  many per row as the width allows, each at least `minWidth` wide: `md` (17rem, default) or `sm`
+  (12rem); `minWidth` is only for `auto`. `align="start"` keeps each card its own height; the
+  default stretches every card to the tallest in its row.
 - **`SidebarLayout`**: use this when a `rail` of navigation sits beside the content. Render it in
   `<AppShell bleed>`: it fills the height under the header with no header height written down
   (`AppShell`'s main is a flex column). The rail is `md:w-60` and stacks above the canvas below `md`;

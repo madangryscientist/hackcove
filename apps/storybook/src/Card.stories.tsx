@@ -238,3 +238,56 @@ export const LinkRender: S = {
     </div>
   ),
 };
+
+/** `footer` is a tinted strip under a hairline, for the card's own actions or a total. */
+export const Footer: S = {
+  render: () => (
+    <div className="flex max-w-md flex-col gap-4">
+      <Card
+        title="Invoice 2041"
+        footer={
+          <>
+            <span className="text-sm text-slate-500">Due 3 Nov</span>
+            <span className="ml-auto flex gap-2">
+              <Button size="sm" variant="outline">
+                Edit
+              </Button>
+              <Button size="sm">Send</Button>
+            </span>
+          </>
+        }
+      >
+        <p className="text-sm text-slate-700">Three line items, R 12 400.</p>
+      </Card>
+      <Card
+        bar
+        flush
+        title="Bills"
+        count={2}
+        footer={<span className="text-sm text-slate-500">Total R 11 350</span>}
+      >
+        <Table />
+      </Card>
+      <Card size="sm" footer={<span className="text-xs text-slate-500">Dense</span>}>
+        <p className="text-sm text-slate-700">The same strip at the dense padding.</p>
+      </Card>
+    </div>
+  ),
+};
+
+/** In a stretched `CardGrid` row the footer stays at the foot of the shorter card. */
+export const FooterInGrid: S = {
+  render: () => (
+    <CardGrid columns={2}>
+      <Card title="Short" footer={<Button size="sm">Open</Button>}>
+        <p className="text-sm text-slate-700">One line.</p>
+      </Card>
+      <Card title="Long" footer={<Button size="sm">Open</Button>}>
+        <p className="text-sm text-slate-700">
+          A longer body that wraps onto several lines so this card sets the height of the row, and
+          the footer beside it stays level at the bottom.
+        </p>
+      </Card>
+    </CardGrid>
+  ),
+};
