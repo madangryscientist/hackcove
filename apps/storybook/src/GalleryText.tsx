@@ -7,14 +7,17 @@ import {
   CodeBlock,
   CodeExample,
   Divider,
+  EmptyState,
   SectionHeading,
+  Step,
+  Steps,
   SubsectionHeading,
   Video,
 } from "@hackcove/ui";
 import { samplePhoto } from "./samplePhoto";
 import { sampleVideo } from "./sampleVideo";
 
-/** The text-level block of the Gallery: heading sizes, a ruled heading, preserved newlines, text tones with numeric, mono and truncate, a list, inline code, a CodeBlock, a CodeExample, a divider and a video. */
+/** The text-level block of the Gallery: heading sizes, a ruled heading, preserved newlines, text tones with numeric, mono and truncate, a list, an EmptyState with Steps, inline code, a CodeBlock, a CodeExample, a divider and a video. */
 export function GalleryText() {
   return (
     <div className="flex flex-col gap-3">
@@ -31,6 +34,15 @@ export function GalleryText() {
           </Body>
         </BulletList>
       </div>
+      <EmptyState title="EmptyState" actions={<Button size="sm">Action</Button>}>
+        <Body as="p">A body line under the title.</Body>
+        <Steps>
+          <Step title="Steps, numbered by CSS">
+            With a detail line and <Code>Code</Code>.
+          </Step>
+          <Step title="A second step" />
+        </Steps>
+      </EmptyState>
       <Body as="p" preserveNewlines>
         {"Body with preserveNewlines:\nthe second line of a note."}
       </Body>

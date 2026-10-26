@@ -120,4 +120,4 @@ export const Title: S = {
 export const MarkdownStory: S = {
   render: () => <Markdown md={"## What I did\n- **HC-42** shipped\n- plain item"} />,
 };
-export const EmptyState: S = { render: () => <Empty>nothing here yet</Empty> };
+export const EmptyLine: S = { render: () => <Empty>nothing here yet</Empty> };

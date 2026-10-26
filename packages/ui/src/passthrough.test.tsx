@@ -190,6 +190,9 @@ const CASES: Record<string, () => ReactElement> = {
       x
     </ui.TextLink>
   ),
+  EmptyState: () => <ui.EmptyState title="T" {...A} />,
+  Step: () => <ui.Step title="T" {...A} />,
+  Steps: () => <ui.Steps {...A}>{ITEMS}</ui.Steps>,
   Timeline: () => (
     <ui.Timeline label="L" {...A}>
       {ITEMS}
