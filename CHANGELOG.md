@@ -1,3 +1,18 @@
+## 0.4.2 (2026-10-26)
+
+### 🚀 Features
+
+- **HC-147:** CopyLine can be disabled ([3d58765](https://github.com/madangryscientist/hackcove/commit/3d58765))
+- **HC-145:** a docs page for every exported component ([71a5c55](https://github.com/madangryscientist/hackcove/commit/71a5c55))
+
+### 🩹 Fixes
+
+- **HC-146:** a ButtonGroup in a Card footer spans it, so end reaches the far edge ([e2e20fd](https://github.com/madangryscientist/hackcove/commit/e2e20fd))
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
 ## 0.1.6 (2026-10-26)
 
 ### 🚀 Features
