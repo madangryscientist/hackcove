@@ -3,7 +3,7 @@ import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
 import type { CalloutTone } from "./Callout.js";
 import { cx } from "./cx.js";
 import { linkClass, linkStretchClass } from "./TextLink.js";
-import { TEXT_TONE } from "./typography.js";
+import { TEXT_TONE, type TextTone } from "./typography.js";
 
 type Align = "start" | "end";
 
@@ -41,6 +41,11 @@ const ROW_TONE: Record<RowTone, string> = {
   muted: "opacity-60",
 };
 const STRIPE = "shadow-[inset_4px_0_0_0_currentColor]";
+
+/** The row's status mark: a `tone` (stripe and fill, or faded) or a `stripe` alone, never both. */
+type RowMark =
+  | { tone?: RowTone | undefined; stripe?: undefined }
+  | { stripe?: TextTone | undefined; tone?: undefined };
 
 const VariantContext = createContext<TableVariant>("card");
 
@@ -146,33 +151,38 @@ export function TableFoot({
  * body. In the body it also draws the line above the row and, unless the table is `plain`, the hover
  * fill. `tone` marks the row's status (see `RowTone`): a stripe on the leading edge and a soft fill,
  * or `muted` to fade it. A toned row keeps its fill on hover (the status stays readable), so a
- * linked row's link, not a hover fill, says it is clickable. Body rows only; colour alone does not say it, so name the status in a cell
- * too (a `Pill`). A bold subtotal is not a tone: it is a `TableFoot` row.
+ * linked row's link, not a hover fill, says it is clickable. `stripe` is the stripe alone, in the
+ * `TextTone` colours (the names a `StackedBar` segment takes), with no fill: the row keeps its hover
+ * and its own look. Give `tone` or `stripe`, not both. Body rows only; colour alone does not say it,
+ * so name the status in a cell too (a `Pill`). A bold subtotal is not a tone: it is a `TableFoot` row.
  */
 export function TableRow({
   tone,
+  stripe,
   children,
   ...rest
-}: { tone?: RowTone | undefined; children: ReactNode } & Rest<"tr">): ReactElement {
+}: RowMark & { children: ReactNode } & Rest<"tr">): ReactElement {
   const section = useContext(SectionContext);
   const plain = useContext(VariantContext) === "plain";
   return (
-    <tr {...rest} className={rowClass(section, plain, tone)}>
+    <tr {...rest} className={rowClass(section, plain, tone, stripe)}>
       {children}
     </tr>
   );
 }
 
-/** The classes of a row: a line above in the body and the foot, the hover fill and the tone's look in the body only. */
+/** The classes of a row: a line above in the body and the foot, the hover fill and the tone's or stripe's look in the body only. */
 function rowClass(
   section: "head" | "body" | "foot" | undefined,
   plain: boolean,
   tone: RowTone | undefined,
+  stripe: TextTone | undefined,
 ): string {
   if (section === "foot") return "relative border-t border-slate-300";
   if (section !== "body") return "relative";
   const line = "relative border-t border-slate-200/70";
   const hover = !plain && "hover:bg-slate-50";
+  if (stripe !== undefined) return cx(line, hover, TEXT_TONE[stripe], STRIPE);
   if (tone === undefined) return cx(line, hover);
   if (tone === "muted") return cx(line, hover, ROW_TONE.muted);
   return cx(line, ROW_TONE[tone], STRIPE);

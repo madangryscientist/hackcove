@@ -4,6 +4,7 @@ export { Badge } from "./Badge.js";
 export { StatTile, type StatTileTone } from "./StatTile.js";
 export { ProgressBar, type BarSize, type BarTone } from "./ProgressBar.js";
 export { SplitBar } from "./SplitBar.js";
+export { Legend, StackedBar, type LegendItem, type StackedSegment } from "./StackedBar.js";
 export { Markdown } from "./Markdown.js";
 export { AppShell, AppShellBrand, appShellRootClass, appShellRootClassFor } from "./AppShell.js";
 export { Container } from "./Container.js";

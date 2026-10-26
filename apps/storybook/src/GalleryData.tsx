@@ -149,6 +149,13 @@ function QuotesTable() {
             R 500.00
           </TableCell>
         </TableRow>
+        <TableRow stripe="info">
+          <TableCell mono>Q-1046</TableCell>
+          <TableCell>Lindiwe Khumalo</TableCell>
+          <TableCell align="end" numeric>
+            R 1 120.00
+          </TableCell>
+        </TableRow>
       </TableBody>
     </Table>
   );

@@ -160,8 +160,12 @@ const CASES: Record<string, () => ReactElement> = {
       x
     </ui.SidebarLayout>
   ),
+  Legend: () => <ui.Legend items={[{ label: "a", tone: "info" }]} {...A} />,
   SplitBar: () => <ui.SplitBar a={1} b={2} label="L" names={["a", "b"]} {...A} />,
   Stack: () => <ui.Stack {...A}>x</ui.Stack>,
+  StackedBar: () => (
+    <ui.StackedBar segments={[{ label: "a", value: 1, tone: "info" }]} label="L" {...A} />
+  ),
   StatTile: () => <ui.StatTile label="L" value="1" {...A} />,
   SubsectionHeading: () => <ui.SubsectionHeading {...A}>x</ui.SubsectionHeading>,
   Subtitle: () => <ui.Subtitle {...A}>x</ui.Subtitle>,
