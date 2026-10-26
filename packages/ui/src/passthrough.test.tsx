@@ -126,6 +126,7 @@ const CASES: Record<string, () => ReactElement> = {
   ListRow: () => <ui.ListRow {...A}>x</ui.ListRow>,
   Maintenance: () => <ui.Maintenance {...A} />,
   Markdown: () => <ui.Markdown md="x" {...A} />,
+  MetaList: () => <ui.MetaList {...A}>{ITEMS}</ui.MetaList>,
   ModalHeading: () => <ui.ModalHeading {...A}>x</ui.ModalHeading>,
   NavTabs: () => <ui.NavTabs label="L" items={[{ label: "A", href: "/a", active: true }]} {...A} />,
   NotFound: () => <ui.NotFound {...A} />,
