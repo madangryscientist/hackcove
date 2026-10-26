@@ -357,6 +357,7 @@ by role.
 
 | Role       | For                                                                   |
 | ---------- | --------------------------------------------------------------------- |
+| `canvas`   | The page behind the cards: `AppShell` paints it.                      |
 | `surface`  | Cards and panels: the main background.                                |
 | `subtle`   | A step off the surface: table stripes, hover rows.                    |
 | `inset`    | A step deeper: wells, chips, pressed fills.                           |

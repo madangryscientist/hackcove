@@ -4,6 +4,7 @@ import {
   Avatar,
   Body,
   Card,
+  Code,
   ColourSchemeToggle,
   NavTabs,
   PageHeader,
@@ -56,6 +57,24 @@ export const ShortPage: S = {
     <DemoShell>
       <PageHeader title="About" />
       <Body as="p">One short paragraph.</Body>
+    </DemoShell>
+  ),
+};
+
+/**
+ * The page canvas and the type face come from the theme: switch the toolbar theme and the page
+ * behind the card, the card that lifts off it and the sans and mono faces all follow, with no CSS in
+ * the app.
+ */
+export const ThemeCanvas: S = {
+  render: () => (
+    <DemoShell>
+      <PageHeader title="Canvas" subtitle="The page behind the cards." />
+      <Card title="On the canvas">
+        <Body as="p">
+          Body text in the theme's sans face, and <Code>mono_in_the_theme_face</Code> beside it.
+        </Body>
+      </Card>
     </DemoShell>
   ),
 };

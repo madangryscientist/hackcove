@@ -145,7 +145,8 @@ function HeaderSlots({
 }
 
 /**
- * The page frame: a sticky one-row header, an optional second `subnav` row, the main area and an
+ * The page frame: it paints the page canvas and sets the type face and ink, so an app writes no
+ * page-background or font rule of its own (a theme remaps the canvas and the font stacks). A sticky one-row header, an optional second `subnav` row, the main area and an
  * optional footer. Header, main and footer each sit in a `Container`, so pages never set their own
  * width or padding. `bleed` drops main's Container (the header keeps its own), for a layout that
  * needs the whole width (`FullBleedLayout`). Main is a flex column. `SidebarLayout` needs no
@@ -188,7 +189,7 @@ export function AppShell({
   children: ReactNode;
 } & Unstyled<Omit<HTMLAttributes<HTMLDivElement>, "children">>): ReactElement {
   return (
-    <div {...rest} className="flex min-h-dvh flex-col">
+    <div {...rest} className="flex min-h-dvh flex-col bg-gray-50 font-sans text-slate-900">
       <header
         className={cx(
           "sticky top-0 z-10 border-b border-slate-200 bg-white",

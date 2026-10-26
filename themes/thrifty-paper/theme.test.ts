@@ -131,3 +131,12 @@ it("keeps the violet and sky Pill text at WCAG AA (4.5:1) on its soft fill", () 
     expect(contrast(text, "color", colourOf(fill, "background-color"))).toBeGreaterThanOrEqual(4.5);
   }
 });
+
+it("owns the page canvas and the type faces", () => {
+  // AppShell paints `bg-gray-50` (the palette's canvas role) and sets `font-sans`.
+  expect(rules).toMatch(/\.thrifty-paper \.bg-gray-50\s*\{\s*background-color:\s*#fdfbf7;/);
+  const scope = /^\.thrifty-paper\s*\{([^{}]*)\}/m.exec(rules)?.[1] ?? "";
+  expect(scope).toMatch(/--font-sans:\s*Inter,/);
+  expect(scope).toMatch(/--font-mono:\s*ui-monospace,/);
+  expect(scope).toMatch(/font-family:\s*var\(--font-sans\)/);
+});

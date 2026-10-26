@@ -26,6 +26,12 @@ Put `class="thrifty-paper"` on `<html>`. The scope paints the cream canvas and t
 rules are unlayered, so they override Tailwind's layered utilities. The theme is light, so it
 declares no `dark` variant.
 
+The theme also owns the type faces: it sets `--font-sans` and `--font-mono` on the scope (Inter, then
+the system stack; the mono stack starts at `ui-monospace`). It ships no font file, so Inter shows
+only where the page loads or the machine has it. `AppShell` paints the canvas (`bg-gray-50`, which
+the theme remaps to the cream canvas) and sets `font-sans` and the ink, so an app ships no
+page-background or font CSS.
+
 ## Palette
 
 From Thrifty's light theme. Thrifty has no danger colour, so the red utilities keep Tailwind's own.

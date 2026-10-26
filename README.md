@@ -64,7 +64,8 @@ which is what lets a theme reskin a whole site.
 
 ## Layout
 
-`AppShell` gives every page one content edge: a sticky one-row header, then main, both inside
+`AppShell` paints the page canvas and sets the type face and ink (a theme remaps the canvas and owns
+the font stacks), so an app ships no page-background or font CSS. It gives every page one content edge: a sticky one-row header, then main, both inside
 `Container` (`max-w-6xl`, `px-4 sm:px-6`, defined there and nowhere else). Put `appShellRootClass`
 on your `<html>` so the scrollbar is always reserved and centred content does not shift between a
 short and a long page; no component touches `<html>`. Pages never set their own width or outer

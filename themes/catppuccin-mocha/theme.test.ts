@@ -5,6 +5,7 @@ const dir = import.meta.dirname;
 const read = (file: string): string => readFileSync(`${dir}/${file}`, "utf8");
 const pkg = JSON.parse(read("package.json"));
 const css = read("theme.css");
+const rules = css.replace(/\/\*[\s\S]*?\*\//g, "");
 
 it("exports theme.css and ships only files that exist", () => {
   expect(pkg.name).toBe("@hackcove/theme-catppuccin-mocha");
@@ -38,4 +39,13 @@ it("remaps every utility in @hackcove/ui's palette", () => {
       return !new RegExp(`${escaped}(?=[\\s,:{])`).test(css);
     });
   expect(missing).toEqual([]);
+});
+
+it("owns the page canvas and the type faces", () => {
+  // AppShell paints `bg-gray-50` (the palette's canvas role) and sets `font-sans`.
+  expect(rules).toMatch(/\.dark \.bg-gray-50\s*\{\s*background-color:\s*#181825;/);
+  const scope = /^\.dark\s*\{([^{}]*)\}/m.exec(rules)?.[1] ?? "";
+  expect(scope).toMatch(/--font-sans:\s*Inter,/);
+  expect(scope).toMatch(/--font-mono:\s*ui-monospace,/);
+  expect(scope).toMatch(/font-family:\s*var\(--font-sans\)/);
 });

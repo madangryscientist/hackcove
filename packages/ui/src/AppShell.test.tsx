@@ -15,6 +15,12 @@ describe("AppShell", () => {
     );
   });
 
+  it("paints the page canvas and sets the type face and ink, so an app needs no page rule", () => {
+    const out = renderToStaticMarkup(<AppShell header="h">page</AppShell>);
+    const root = /^<div class="([^"]*)">/.exec(out)?.[1]?.split(" ") ?? [];
+    expect(root).toEqual(expect.arrayContaining(["bg-gray-50", "font-sans", "text-slate-900"]));
+  });
+
   it("puts main in a Container with fixed vertical padding", () => {
     const out = renderToStaticMarkup(<AppShell header="h">page</AppShell>);
     expect(out).toContain(

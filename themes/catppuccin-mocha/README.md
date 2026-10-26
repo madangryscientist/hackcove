@@ -26,6 +26,12 @@ Put `class="dark"` on `<html>`. The scope paints the mantle canvas (`#181825`), 
 cards lift off it and the app needs no page-background rule of its own. The rules are unlayered, so
 they override Tailwind's layered utilities.
 
+The theme also owns the type faces: it sets `--font-sans` and `--font-mono` on the scope (Inter, then
+the system stack; the mono stack starts at `ui-monospace`). It ships no font file, so Inter shows
+only where the page loads or the machine has it. `AppShell` paints the canvas (`bg-gray-50`, which
+the theme remaps to mantle) and sets `font-sans` and the ink, so an app ships no page-background or
+font CSS.
+
 ## Palette and attribution
 
 The palette is [Catppuccin](https://github.com/catppuccin/catppuccin) Mocha, © 2021 Catppuccin, used under the MIT license. The full notice ships in this package as `NOTICE`, and a one-line credit sits at the top of `theme.css`. Tailwind's build drops that comment from a consumer's bundled CSS, so an app that wants the credit visible should add its own. This package's own license (MIT, see `LICENSE`) is separate.
