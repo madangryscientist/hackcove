@@ -1,3 +1,41 @@
+## 0.1.6 (2026-10-26)
+
+### 🚀 Features
+
+- **HC-143:** Themes set the page canvas and the font ([2d033a9](https://github.com/madangryscientist/hackcove/commit/2d033a9))
+- **HC-136:** Button tone="positive" and pressed; IconButton ghost and danger; TextLink tone ([ab3c0ae](https://github.com/madangryscientist/hackcove/commit/ab3c0ae))
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
+## 0.4.1 (2026-10-26)
+
+### 🚀 Features
+
+- **HC-143:** Themes set the page canvas and the font ([2d033a9](https://github.com/madangryscientist/hackcove/commit/2d033a9))
+- **HC-142:** EmptyState and numbered Steps ([b93d0d8](https://github.com/madangryscientist/hackcove/commit/b93d0d8))
+- **HC-141:** ListRow selected, a static row with leading, trailing and actions, revealOnHover ([d14c9cd](https://github.com/madangryscientist/hackcove/commit/d14c9cd))
+- **HC-140:** StackedBar with Legend, and a TableRow status stripe ([ff39c38](https://github.com/madangryscientist/hackcove/commit/ff39c38))
+- **HC-139:** MetaList, a muted row of facts joined by ·, with a mono option ([5a32824](https://github.com/madangryscientist/hackcove/commit/5a32824))
+- **OB-131:** CardGrid columns="auto" and align="start"; Card footer slot ([355e580](https://github.com/madangryscientist/hackcove/commit/355e580))
+- **HC-137:** href on Card, IconButton and Pill ([0f9d376](https://github.com/madangryscientist/hackcove/commit/0f9d376))
+- **HC-136:** Button tone="positive" and pressed; IconButton ghost and danger; TextLink tone ([ab3c0ae](https://github.com/madangryscientist/hackcove/commit/ab3c0ae))
+- **HC-134:** Stack as="form" | "ul" | "ol" ([0939ae9](https://github.com/madangryscientist/hackcove/commit/0939ae9))
+- **HC-133:** FormRow, an inline-edit row with proportional widths and a trailing action; FormGrid and Field span="full" ([c81bf4c](https://github.com/madangryscientist/hackcove/commit/c81bf4c))
+- **HC-132:** Cluster, a horizontal row layout part with a ClusterGrow child ([6223466](https://github.com/madangryscientist/hackcove/commit/6223466))
+- **HC-131:** width="fill" on Input, Select and Textarea; align="end" on Input ([3b16fbf](https://github.com/madangryscientist/hackcove/commit/3b16fbf))
+- **HC-130:** tone, numeric, mono and truncate on the inline text roles; size and mono on TextLink ([abe6000](https://github.com/madangryscientist/hackcove/commit/abe6000))
+
+### 🩹 Fixes
+
+- **HC-135:** every component passes data-* and aria-* through; TableHeaderCell srLabel ([6944dcc](https://github.com/madangryscientist/hackcove/commit/6944dcc))
+- **HC-129:** declare @types/react and @types/react-dom as optional peers of ui ([c870e81](https://github.com/madangryscientist/hackcove/commit/c870e81))
+
+### ❤️ Thank You
+
+- Jacobus Langner @madangryscientist
+
 ## 0.4.0 (2026-10-25)
 
 ### 🚀 Features
