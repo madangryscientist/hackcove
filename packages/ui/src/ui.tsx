@@ -79,7 +79,7 @@ function CardFooter({ children, size }: { children: ReactNode; size: ControlSize
   return (
     <div
       className={cx(
-        "flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-slate-200/70 bg-slate-50",
+        "flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-slate-200/70 bg-slate-50 [&>[data-button-group]]:grow",
         size === "sm" ? "px-3 py-2" : "px-5 py-3",
       )}
     >

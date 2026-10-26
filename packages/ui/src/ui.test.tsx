@@ -1,5 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { ButtonGroup } from "./ButtonGroup.js";
 import { Pill } from "./Pill.js";
 import { Card, groupByEpic } from "./ui.js";
 
@@ -209,6 +210,17 @@ describe("Card footer", () => {
     expect(footer({ size: "sm" })).toContain("px-3 py-2");
     expect(footer({ bar: true })).toContain('class="flex-1 p-5"');
     expect(footer({ flush: true })).toContain('class="flex-1"');
+  });
+
+  it("lets a ButtonGroup span the footer so its end item reaches the far edge", () => {
+    const out = renderToStaticMarkup(
+      <Card title="T" footer={<ButtonGroup end={<button>Edit</button>}>x</ButtonGroup>}>
+        body
+      </Card>,
+    );
+    const strip = out.match(/<div class="([^"]*border-t[^"]*)"/)?.[1] ?? "";
+    expect(strip).toContain("[&amp;&gt;[data-button-group]]:grow");
+    expect(out).toContain('data-button-group=""');
   });
 
   it("is ignored on a dashed card and absent when empty", () => {

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   Button,
+  ButtonGroup,
   Card,
   CardGrid,
   Empty,
@@ -270,6 +271,26 @@ export const Footer: S = {
       </Card>
       <Card size="sm" footer={<span className="text-xs text-slate-500">Dense</span>}>
         <p className="text-sm text-slate-700">The same strip at the dense padding.</p>
+      </Card>
+    </div>
+  ),
+};
+
+/** A `ButtonGroup` in the footer spans it, so `end` sits at the far edge, as it does in the body. */
+export const FooterWithButtonGroupEnd: S = {
+  name: "Footer with ButtonGroup end",
+  render: () => (
+    <div className="flex max-w-md flex-col gap-4">
+      <Card
+        title="Quote 118"
+        footer={
+          <ButtonGroup end={<Button variant="outline">Edit</Button>}>
+            <Button>Send</Button>
+            <Button variant="outline">Duplicate</Button>
+          </ButtonGroup>
+        }
+      >
+        <p className="text-sm text-slate-700">Edit is flush with the footer's right padding.</p>
       </Card>
     </div>
   ),
