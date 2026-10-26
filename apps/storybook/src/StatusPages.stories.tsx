@@ -73,6 +73,40 @@ export const CustomAction: S = {
   ),
 };
 
+/** A missing page is `NotFound`: the reader needs a way home, and a retry would load the same nothing. */
+export const DoPickPage: S = {
+  parameters: { bare: false },
+  render: () => <NotFound homeHref="#" />,
+};
+
+/** `ErrorPage` with a retry for a missing page promises that trying again helps, and it does not. */
+export const DontPickPage: S = {
+  parameters: { bare: false },
+  render: () => <ErrorPage onRetry={() => {}} homeHref="#" />,
+};
+
+/** `detail` is a request id or a short message the reader can quote, and `onRetry` offers another go. */
+export const DoErrorDetail: S = {
+  parameters: { bare: false },
+  render: () => (
+    <ErrorPage detail="Request 4f2a91 failed: upstream timed out" onRetry={() => {}} homeHref="#" />
+  ),
+};
+
+/** A stack trace shows the reader your internals and buries the one line they can act on. */
+export const DontErrorDetail: S = {
+  parameters: { bare: false },
+  render: () => (
+    <ErrorPage
+      detail={
+        "TypeError: Cannot read properties of undefined\n  at loadBuild (build.ts:42:9)\n  at async handler (route.ts:17:3)"
+      }
+      onRetry={() => {}}
+      homeHref="#"
+    />
+  ),
+};
+
 /** Without an AppShell: in a Container, as the whole page. */
 export const Standalone: S = {
   parameters: { bare: false },

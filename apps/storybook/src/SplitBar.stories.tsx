@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { SplitBar } from "@hackcove/ui";
+import { Caption, Cluster, SplitBar, Stack } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/SplitBar" };
 export default meta;
@@ -43,4 +43,22 @@ export const Edges: S = {
       <SplitBar a={10} b={0} label="All to the other" />
     </div>
   ),
+};
+
+/** Give `names` so a screen reader hears whose share is whose, and draw the names under the bar for everyone else. */
+export const DoParties: S = {
+  render: () => (
+    <Stack gap="xs">
+      <SplitBar a={35} b={65} label="Pot split" names={["Debt", "Renos"]} />
+      <Cluster justify="between">
+        <Caption>Debt 35%</Caption>
+        <Caption>Renos 65%</Caption>
+      </Cluster>
+    </Stack>
+  ),
+};
+
+/** No `names` and nothing under the bar: the two colours are never explained, and a screen reader hears two bare percentages. */
+export const DontParties: S = {
+  render: () => <SplitBar a={35} b={65} label="Pot split" />,
 };

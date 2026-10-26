@@ -5,6 +5,46 @@ const meta: Meta = { title: "UI/Breadcrumbs" };
 export default meta;
 type S = StoryObj;
 
+/** A parent crumb is `{ label, href }` and the last is plain text: the trail that leads back up, ending at the current page. */
+export const DoTrail: S = {
+  render: () => (
+    <Breadcrumbs
+      crumbs={[
+        { label: "Projects", href: "#projects" },
+        { label: "Launch film", href: "#launch-film" },
+        "Shots",
+      ]}
+    />
+  ),
+};
+
+/** Parents given as plain text look like the trail but lead nowhere, so a reader cannot go back up. */
+export const DontTrail: S = {
+  render: () => <Breadcrumbs crumbs={["Projects", "Launch film", "Shots"]} />,
+};
+
+/** Breadcrumbs show where the page sits in a hierarchy. */
+export const DoHierarchy: S = {
+  render: () => (
+    <Breadcrumbs
+      crumbs={[{ label: "Acme", href: "#acme" }, { label: "Quotes", href: "#quotes" }, "Quote 12"]}
+    />
+  ),
+};
+
+/** Siblings are not a hierarchy: switching between peer sections is `NavTabs`. */
+export const DontHierarchy: S = {
+  render: () => (
+    <Breadcrumbs
+      crumbs={[
+        { label: "Quotes", href: "#quotes" },
+        { label: "Invoices", href: "#invoices" },
+        "Receipts",
+      ]}
+    />
+  ),
+};
+
 const link = (href: string, label: string) => (
   <a href={href} className={crumbLinkClass}>
     {label}

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Kbd, KeyValue, KeyValueList } from "@hackcove/ui";
+import { Body, Cluster, Kbd, KeyValue, KeyValueList, Stack } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/KeyValueList" };
 export default meta;
@@ -45,5 +45,43 @@ export const ValuesAtStart: S = {
         <KeyValue label="Captured">2 min ago</KeyValue>
       </KeyValueList>
     </div>
+  ),
+};
+
+/** Label and value pairs are a `KeyValueList`: one row per fact, the label muted, the value in tabular figures. */
+export const DoFactsList: S = {
+  render: () => (
+    <KeyValueList>
+      <KeyValue label="Size">1280×720</KeyValue>
+      <KeyValue label="Changed pixels">0.4%</KeyValue>
+      <KeyValue label="Captured">2 min ago</KeyValue>
+    </KeyValueList>
+  ),
+};
+
+/** Rows built by hand from a `Cluster` and `Body` drift from the list's label colour and figures. Use `KeyValueList`. */
+export const DontFactsList: S = {
+  render: () => (
+    <Stack gap="xs">
+      <Cluster justify="between">
+        <Body>Size</Body>
+        <Body>1280×720</Body>
+      </Cluster>
+      <Cluster justify="between">
+        <Body>Changed pixels</Body>
+        <Body>0.4%</Body>
+      </Cluster>
+    </Stack>
+  ),
+};
+
+/** `align="start"` puts the values in one left-aligned column, for long values or a mix of short and long ones. */
+export const DoAlignStart: S = {
+  render: () => (
+    <KeyValueList align="start">
+      <KeyValue label="Branch">hc-145-docs-for-every-export</KeyValue>
+      <KeyValue label="Commit">83422a6</KeyValue>
+      <KeyValue label="Captured">2 min ago</KeyValue>
+    </KeyValueList>
   ),
 };

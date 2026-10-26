@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { IconButton, type LinkRenderProps } from "@hackcove/ui";
+import { Button, IconButton, type LinkRenderProps } from "@hackcove/ui";
 
 /** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
 function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
@@ -9,6 +9,121 @@ function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
 const meta: Meta = { title: "UI/IconButton" };
 export default meta;
 type S = StoryObj;
+
+/** `label` names the button for a screen reader and shows as its tooltip; the icon is only decoration. */
+export const DoLabel: S = {
+  render: () => (
+    <IconButton label="Delete quote" tone="danger" variant="ghost">
+      <svg
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        aria-hidden="true"
+      >
+        <path d="M6 6l12 12M18 6L6 18" />
+      </svg>
+    </IconButton>
+  ),
+};
+
+/** A `Button` holding a glyph has no accessible name, no tooltip and the wrong box; an icon-only action is an `IconButton`. */
+export const DontLabel: S = {
+  render: () => (
+    <Button variant="ghost" tone="danger" size="sm">
+      <span aria-hidden="true">x</span>
+    </Button>
+  ),
+};
+
+/** `badge` pins the count to the corner and adds it to the accessible name ("Alerts, 3"). */
+export const DoBadge: S = {
+  render: () => (
+    <IconButton label="Alerts" badge={3}>
+      <svg
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M18 16v-5a6 6 0 1 0-12 0v5l-2 2h16l-2-2ZM10 21h4" />
+      </svg>
+    </IconButton>
+  ),
+};
+
+/** A count typed into the label shows only in the tooltip, so a sighted user never sees it on the button. */
+export const DontBadge: S = {
+  render: () => (
+    <IconButton label="Alerts (3)">
+      <svg
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M18 16v-5a6 6 0 1 0-12 0v5l-2 2h16l-2-2ZM10 21h4" />
+      </svg>
+    </IconButton>
+  ),
+};
+
+/** Going to another page is `href`: the same look on a real anchor, with middle-click and the URL. */
+export const DoNavigate: S = {
+  render: () => (
+    <IconButton href="#settings" label="Settings" variant="ghost">
+      <svg
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        aria-hidden="true"
+      >
+        <path d="M4 8h10M18 8h2M4 16h2M10 16h10" />
+        <circle cx="16" cy="8" r="2" />
+        <circle cx="8" cy="16" r="2" />
+      </svg>
+    </IconButton>
+  ),
+};
+
+/** A button that sets `location` loses middle-click, the status-bar URL and crawlability. */
+export const DontNavigate: S = {
+  render: () => (
+    <IconButton label="Settings" variant="ghost" onClick={() => location.assign("#settings")}>
+      <svg
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        aria-hidden="true"
+      >
+        <path d="M4 8h10M18 8h2M4 16h2M10 16h10" />
+        <circle cx="16" cy="8" r="2" />
+        <circle cx="8" cy="16" r="2" />
+      </svg>
+    </IconButton>
+  ),
+};
 
 const moon = (
   <svg

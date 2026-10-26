@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Card, CardGrid, PageHeader } from "@hackcove/ui";
+import { Body, Card, CardGrid, PageHeader, Stack, StatTile } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { StatTiles } from "./pages";
 
@@ -73,3 +73,42 @@ export const AutoFillSmall: S = { render: () => <Shots minWidth="sm" /> };
 
 /** `align="start"` keeps each card its own height instead of stretching to the tallest in the row. */
 export const AlignStart: S = { render: () => <Shots align="start" /> };
+
+/** Tiles go in a `CardGrid`: one column on a phone, two from `sm`, `columns` from `lg`. */
+export const DoTiles: S = {
+  render: () => (
+    <CardGrid columns={3}>
+      <StatTile label="Open" value="12" />
+      <StatTile label="Won" value="8" tone="positive" />
+      <StatTile label="Lost" value="3" tone="negative" />
+    </CardGrid>
+  ),
+};
+
+/** A `Stack` is one column, so the tiles never sit side by side and the page runs long. Use a `CardGrid`. */
+export const DontTiles: S = {
+  render: () => (
+    <Stack>
+      <StatTile label="Open" value="12" />
+      <StatTile label="Won" value="8" tone="positive" />
+      <StatTile label="Lost" value="3" tone="negative" />
+    </Stack>
+  ),
+};
+
+/** For cards of any count, `columns="auto"` fits as many per row as the width allows. */
+export const DoAuto: S = {
+  render: () => (
+    <CardGrid columns="auto" minWidth="sm" align="start">
+      <Card title="Dashboard">
+        <Body as="p">Quotes and renewals this week.</Body>
+      </Card>
+      <Card title="Billing">
+        <Body as="p">Invoices and payments.</Body>
+      </Card>
+      <Card title="Members">
+        <Body as="p">Who can sign in.</Body>
+      </Card>
+    </CardGrid>
+  ),
+};

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Select } from "@hackcove/ui";
+import { Button, Field, Select } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Select" };
 export default meta;
@@ -48,5 +48,32 @@ export const Disabled: S = {
     <Select defaultValue={5} disabled>
       {rating}
     </Select>
+  ),
+};
+
+/** Choosing one of several is a `Select` in a `Field`. */
+export const DoChoice: S = {
+  render: () => (
+    <Field label="Category" htmlFor="do-category">
+      <Select id="do-category" defaultValue="books">
+        <option value="books">Books</option>
+        <option value="clothes">Clothes</option>
+        <option value="furniture">Furniture</option>
+        <option value="records">Records</option>
+        <option value="toys">Toys</option>
+      </Select>
+    </Field>
+  ),
+};
+
+/** A yes or no is not a choice from a list: it is a `Checkbox`. */
+export const DontChoice: S = {
+  render: () => (
+    <Field label="Open now" htmlFor="dont-open">
+      <Select id="dont-open" defaultValue="yes">
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </Select>
+    </Field>
   ),
 };

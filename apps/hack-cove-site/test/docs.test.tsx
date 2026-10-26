@@ -2,7 +2,12 @@ import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { ComponentPage } from "../src/components/ComponentPage";
-import { componentPageOf, componentPages } from "../src/content/components";
+import * as ui from "@hackcove/ui";
+import {
+  componentPageOf,
+  componentPages,
+  componentSections,
+} from "../src/content/components/index";
 import { site } from "../src/content/site";
 import { docOf } from "../src/docs/Props";
 import { renderLlms } from "../src/docs/llms";
@@ -12,9 +17,31 @@ import { GET } from "../src/pages/ui/llms.txt";
 import { generateProps, PROPS_JSON } from "../scripts/generate-props";
 
 describe("the component pages", () => {
-  test("the pilot pages are Button, Card and Tabs", () => {
-    expect(componentPages.map((p) => p.slug)).toEqual(["button", "card", "tabs"]);
+  test("a page is found by its slug, and an unknown slug fails", () => {
+    expect(componentPageOf("button").name).toBe("Button");
     expect(() => componentPageOf("nope")).toThrow(/nope/);
+  });
+
+  test("slugs are unique and every page is in exactly one section", () => {
+    const slugs = componentPages.map((p) => p.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
+    expect(componentSections.every((s) => s.pages.length > 0)).toBe(true);
+    expect(new Set(componentSections.map((s) => s.title)).size).toBe(componentSections.length);
+  });
+
+  // The docs equivalent of the Gallery rule: a new export with no page fails here.
+  test("every export of @hackcove/ui is on exactly one page, and a page names only real exports", () => {
+    const exported = Object.keys(ui).toSorted();
+    const documented = componentPages.flatMap((p) => [
+      ...p.api,
+      ...(p.functions ?? []).map((fn) => fn.name),
+    ]);
+    const missing = exported.filter((name) => !documented.includes(name));
+    expect(missing, `exported from packages/ui/src/index.ts but on no docs page`).toEqual([]);
+    const unknown = documented.filter((name) => !exported.includes(name));
+    expect(unknown, "on a docs page but not exported from @hackcove/ui").toEqual([]);
+    const twice = documented.filter((name, i) => documented.indexOf(name) !== i);
+    expect(twice, "on more than one docs page").toEqual([]);
   });
 
   test.each(componentPages)("$name: the right way and every Example resolve to a story", (page) => {
@@ -41,7 +68,7 @@ describe("the component pages", () => {
   });
 
   test.each(componentPages)("$name: every API name is in props.json", (page) => {
-    for (const name of page.api) expect(docOf(name).props.length).toBeGreaterThan(0);
+    for (const name of page.api) expect(docOf(name).name).toBe(name);
   });
 
   test("a Do story with no Dont is the only card and a missing story fails the build", () => {
@@ -105,6 +132,7 @@ describe("/ui/llms.txt", () => {
     expect(text).toContain("no custom CSS or Tailwind");
     for (const page of componentPages) {
       expect(text.match(new RegExp(`^## ${page.name}$`, "gm"))).toHaveLength(1);
+      for (const fn of page.functions ?? []) expect(text).toContain(`- ${fn.name}: `);
       expect(text).toContain(`When to use: ${page.whenToUse}`);
     }
   });

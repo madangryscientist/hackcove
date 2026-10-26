@@ -6,6 +6,8 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
  * Stories are found by title in Storybook's own index, so a new `Layout/…` story is checked with
  * no edit here.
  *
+ * The compact Do/Dont fragments the docs pages render are left out too.
+ *
  * Three layouts are left out of that check and asserted on their own terms further down:
  * `CenteredLayout` is a narrow centred card on purpose (the one exception to the shared left edge),
  * `SidebarLayout` puts a rail left of its canvas and `FullBleedLayout` has no page title or padding.
@@ -18,7 +20,10 @@ const ownTerms = new Set([
   "Layout/FullBleedLayout",
 ]);
 
-type IndexEntry = { id: string; title: string; type: string };
+type IndexEntry = { id: string; title: string; name: string; type: string };
+
+/** The docs' compact `Do …` / `Dont …` fragments are not pages: they have no title or header to align. */
+const isDocsFragment = (entry: IndexEntry) => /^Do(nt)? /.test(entry.name);
 
 async function layoutStories(page: Page): Promise<string[]> {
   const response = await page.request.get("/index.json");
@@ -26,7 +31,10 @@ async function layoutStories(page: Page): Promise<string[]> {
   return Object.values(entries)
     .filter(
       (entry) =>
-        entry.type === "story" && entry.title.startsWith("Layout/") && !ownTerms.has(entry.title),
+        entry.type === "story" &&
+        entry.title.startsWith("Layout/") &&
+        !ownTerms.has(entry.title) &&
+        !isDocsFragment(entry),
     )
     .map((entry) => entry.id)
     .toSorted();

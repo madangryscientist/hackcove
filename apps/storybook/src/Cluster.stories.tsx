@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   BodyStrong,
   Button,
+  ButtonGroup,
   Caption,
   Cluster,
   ClusterGrow,
@@ -101,5 +102,79 @@ export const Wraps: S = {
         <Pill>Void</Pill>
       </Cluster>
     </div>
+  ),
+};
+
+/** The one item that should take the room left goes in `ClusterGrow`: the input fills the row and the buttons keep their size. */
+export const DoFillRow: S = {
+  render: () => (
+    <Cluster>
+      <ClusterGrow>
+        <Input aria-label="Search" placeholder="Search invoices" />
+      </ClusterGrow>
+      <Button>Search</Button>
+    </Cluster>
+  ),
+};
+
+/** Without `ClusterGrow` the input keeps a fixed width and the rest of the row sits empty. Wrap the input in `ClusterGrow` instead. */
+export const DontFillRow: S = {
+  render: () => (
+    <Cluster>
+      <Input aria-label="Search" placeholder="Search invoices" width="sm" />
+      <Button>Search</Button>
+    </Cluster>
+  ),
+};
+
+/** A row of buttons is a `ButtonGroup`: it wraps on a phone and can pin one item to the end. */
+export const DoButtons: S = {
+  render: () => (
+    <ButtonGroup label="Invoice" end={<Button variant="outline">Back</Button>}>
+      <Button>Send</Button>
+      <Button variant="outline">Download</Button>
+    </ButtonGroup>
+  ),
+};
+
+/** `Cluster` is for every other row; a row of buttons in it does not wrap and has no end slot. */
+export const DontButtons: S = {
+  render: () => (
+    <Cluster>
+      <Button>Send</Button>
+      <Button variant="outline">Download</Button>
+      <Button variant="outline">Back</Button>
+    </Cluster>
+  ),
+};
+
+/** An empty `ClusterGrow` is a spacer: the title stays at the start and the actions go to the end. */
+export const DoSpacer: S = {
+  render: () => (
+    <Cluster>
+      <BodyStrong>Invoice 1042</BodyStrong>
+      <ClusterGrow />
+      <Button size="sm" variant="outline">
+        Edit
+      </Button>
+      <Button size="sm" variant="outline" tone="danger">
+        Remove
+      </Button>
+    </Cluster>
+  ),
+};
+
+/** `justify="between"` spreads three items evenly, so the middle one floats away from the group it belongs to. */
+export const DontSpacer: S = {
+  render: () => (
+    <Cluster justify="between">
+      <BodyStrong>Invoice 1042</BodyStrong>
+      <Button size="sm" variant="outline">
+        Edit
+      </Button>
+      <Button size="sm" variant="outline" tone="danger">
+        Remove
+      </Button>
+    </Cluster>
   ),
 };

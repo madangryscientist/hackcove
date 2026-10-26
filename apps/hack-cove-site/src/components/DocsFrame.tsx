@@ -1,22 +1,35 @@
-import { NavTabs, SidebarLayout, type NavTab } from "@hackcove/ui";
+import { NavTabs, Overline, SidebarLayout, Stack, type NavTab } from "@hackcove/ui";
 import type { ReactNode } from "react";
-import { componentPages } from "../content/components";
+import { componentSections } from "../content/components/index";
 
 const plain = (path: string) => (path.length > 1 ? path.replace(/\/+$/, "") : path);
 
-/** The /ui/ pages' frame: the component list as a vertical link rail on the page, the page beside it, in the same grid as the header. */
+/** The /ui/ pages' frame: Getting started, then the components grouped by section as vertical link rails on the page, the page beside them, in the same grid as the header. */
 export function DocsFrame({ pathname, children }: { pathname: string; children: ReactNode }) {
   const here = plain(pathname);
-  const items: NavTab[] = [
-    { label: "Getting started", href: "/ui/", active: here === "/ui" },
-    ...componentPages.map((page) => ({
-      label: page.name,
-      href: `/ui/${page.slug}/`,
-      active: here === `/ui/${page.slug}`,
-    })),
-  ];
+  const start: NavTab[] = [{ label: "Getting started", href: "/ui/", active: here === "/ui" }];
   return (
-    <SidebarLayout rail={<NavTabs orientation="vertical" label="Components" items={items} />}>
+    <SidebarLayout
+      rail={
+        <Stack gap="md">
+          <NavTabs orientation="vertical" label="Docs" items={start} />
+          {componentSections.map((section) => (
+            <Stack key={section.title} gap="xs">
+              <Overline>{section.title}</Overline>
+              <NavTabs
+                orientation="vertical"
+                label={section.title}
+                items={section.pages.map((page) => ({
+                  label: page.name,
+                  href: `/ui/${page.slug}/`,
+                  active: here === `/ui/${page.slug}`,
+                }))}
+              />
+            </Stack>
+          ))}
+        </Stack>
+      }
+    >
       {children}
     </SidebarLayout>
   );

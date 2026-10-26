@@ -1,0 +1,134 @@
+import type { ComponentSection } from "./types";
+
+export const feedback: ComponentSection = {
+  title: "Feedback",
+  description: "Status, notices and the layers over the page.",
+  pages: [
+    {
+      slug: "callout",
+      name: "Callout",
+      summary: "A tinted notice in the page, with an optional title and action.",
+      whenToUse: "A message the reader should see in the page, without being made to answer it.",
+      pairs: ["Callout/Tone", "Callout/Action"],
+      usage: [
+        "Pick the `tone` by how much the message matters: `neutral` for a note, `info` (the default) for something worth knowing, `positive` for a result, `warn` for a thing to check before going on, `danger` for a failure or something that cannot be undone. Keep `danger` for the real failure.",
+        "Add a `title` for a short bold lead-in; the body carries the detail.",
+        'Put the one action in `actions`, at the end of the row: a `Button size="sm"` or a `TextLink stretch`, which makes the whole callout the click target.',
+        "`banner` is the flat strip at the top of a `Card flush`; do not use it anywhere else.",
+        "A message that must be answered before the reader goes on is a `Dialog`; a field's own error is the `error` of its `Field`.",
+      ],
+      accessibility: [
+        "A Callout is a plain `<div>` with no role and no live region, so a screen reader does not announce it when it appears; the tone is colour and text, so say what happened in the words.",
+        "A `title` is a bold paragraph, not a heading, so it adds nothing to the heading outline.",
+        "Buttons and links in `actions` keep their own focus ring and keyboard behaviour.",
+      ],
+      api: ["Callout"],
+    },
+    {
+      slug: "empty-state",
+      name: "EmptyState",
+      summary: "What a page or list shows when there is nothing in it yet.",
+      whenToUse:
+        "A whole page or list with no content yet: say what belongs here and offer the first step.",
+      pairs: ["EmptyState/NextStep", "EmptyState/Inline"],
+      usage: [
+        'Give it a `title`, one `Body as="p"` that says what belongs here, and the first step as `actions`, with the primary `Button` first.',
+        "For a get-started list, put `Steps` after the `Body` in the children.",
+        "One muted line inside a card, for an empty table or list, is `Empty`, not an EmptyState.",
+        "Do not leave it as a title alone: a page with nothing in it and nothing to do is a dead end.",
+      ],
+      accessibility: [
+        "An EmptyState is a `<section>` named by its `title`, which is an `h2`, so it is a landmark region a screen reader can jump to.",
+        "The actions are ordinary buttons and links, in reading order after the explanation.",
+      ],
+      api: ["EmptyState"],
+    },
+    {
+      slug: "dialog",
+      name: "Dialog",
+      summary: "A modal that stops the page for one question.",
+      whenToUse: "A confirmation or a short form the reader must answer before they go on.",
+      pairs: ["Dialog/Confirm", "Dialog/Notice"],
+      usage: [
+        "Render it only while it is open: `{open && <Dialog … onClose={() => setOpen(false)} />}`. It opens itself on mount.",
+        'A `title` that names the action, a `description` with the consequence, and the actions in `footer`: Cancel as `variant="ghost"` first, then the one action, `tone="danger"` when it destroys something.',
+        '`size="sm"` is a short list; `md`, the default, holds a form. A submit button in the footer reaches a form in the body with its `form` attribute.',
+        "One text field is a `FieldDialog`. A record or a long form is a `Drawer`. A message that needs no answer is a `Callout`.",
+      ],
+      accessibility: [
+        "A Dialog is the browser's own `<dialog>` opened with `showModal()`: the page behind goes inert, focus stays inside it and Esc closes it.",
+        "It is named by its `title`, an `h2`, through `aria-labelledby`.",
+        'A click on the backdrop closes it, and so does a submit of a `<form method="dialog">`; every close calls `onClose`.',
+        "The browser focuses the first focusable element in it when it opens; put `autoFocus` on the button that should have focus first.",
+      ],
+      api: ["Dialog"],
+    },
+    {
+      slug: "drawer",
+      name: "Drawer",
+      summary: "A modal panel that slides in from the right edge.",
+      whenToUse:
+        "A record or a form the reader works on beside the page, with actions that stay in view.",
+      pairs: ["Drawer/Record", "Drawer/Footer"],
+      usage: [
+        "Render it only while it is open: `{open && <Drawer … onClose={() => setOpen(false)} />}`. It opens itself on mount.",
+        "Use it for a record to read or edit, or a form with several fields; a yes-or-no question is a `Dialog`.",
+        "The actions go in `footer`, pinned under the body, which scrolls between the header and the footer.",
+        "`size` is `sm`, `md` (the default) or `lg`; choose by the content, `sm` for one field and `lg` for a table.",
+        "Set `closeLabel` to the reader's language when the page is not in English.",
+      ],
+      accessibility: [
+        "A Drawer is the browser's own `<dialog>` opened with `showModal()`: the page behind goes inert, focus stays inside it and Esc closes it.",
+        "It is named by its `title`, an `h2`, through `aria-labelledby`.",
+        'The header\'s close button is an `IconButton` named by `closeLabel` ("Close" by default); a click on the scrim closes it too.',
+        "Closing, or unmounting it, hands focus back to the element that opened it.",
+        "The slide-in is switched off under `prefers-reduced-motion: reduce`.",
+      ],
+      api: ["Drawer"],
+    },
+    {
+      slug: "field-dialog",
+      name: "FieldDialog",
+      summary: "A Dialog that asks for one text value.",
+      whenToUse: "Asking for a single name or value: new project, rename, a label.",
+      pairs: ["FieldDialog/OneField"],
+      usage: [
+        "Render it only while it is open, and give every string it shows: `title`, `label`, `inputLabel`, `placeholder`, `hint`, `emptyReason`, `submit` and `busyLabel`.",
+        "`onSubmit` gets the trimmed value and returns a promise. Resolving closes the dialog; rejecting shows the error message under the field and keeps the dialog open.",
+        "More than one field is a `Dialog` with a `FormRow` or `Field`s, or a `Drawer`.",
+      ],
+      accessibility: [
+        "It is a `Dialog`: native `<dialog>`, page behind inert, focus kept inside, Esc closes, named by its `title`.",
+        "The input has focus when it opens and is named by `inputLabel`.",
+        "While the field is empty the submit button is disabled and its `emptyReason` is the button's title and the field's hint.",
+        'While `onSubmit` is pending the button is busy (`aria-busy`); a rejection shows in the field\'s error line, which is `role="alert"`.',
+      ],
+      api: ["FieldDialog"],
+    },
+    {
+      slug: "page-fade",
+      name: "PageFade",
+      summary: "The content area of a page, cross-faded when the route changes.",
+      whenToUse: "A site where the frame stays put and only the content between pages should fade.",
+      pairs: ["PageFade/ChangingArea", "PageFade/Transition"],
+      usage: [
+        "Wrap what changes between pages, once per page, and leave the header and footer outside it.",
+        "Start the change inside a view transition: `startPageTransition(() => setPage(next))` for a state change, or the router's own option (TanStack Router `viewTransition`, React Router's `viewTransition`, Astro's `ClientRouter`). Without one nothing fades.",
+        "Two PageFades on one page each need their own `name`.",
+        "Portal an overlay such as a dropdown to the body: the fading area is a stacking context, so an overlay inside it cannot rise above a sticky header outside it.",
+      ],
+      accessibility: [
+        "A PageFade is a plain `<div>` with no role, so it changes nothing for assistive technology.",
+        "Under `prefers-reduced-motion: reduce` the content swaps with no fade, and `startPageTransition` just runs the update.",
+        "Where the browser has no View Transitions it is a plain `<div>` and the content swaps.",
+      ],
+      api: ["PageFade"],
+      functions: [
+        {
+          name: "startPageTransition",
+          text: "runs a synchronous state change inside a view transition, so a PageFade cross-fades; call it from an event handler.",
+        },
+      ],
+    },
+  ],
+};

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { TextLink, type LinkRenderProps } from "@hackcove/ui";
+import { Body, Card, TextLink, type LinkRenderProps } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/TextLink" };
 export default meta;
@@ -101,5 +101,59 @@ export const Stretch: S = {
         </li>
       ))}
     </ul>
+  ),
+};
+
+/** A link in running text is a `TextLink` inside a `Body`. */
+export const DoInSentence: S = {
+  render: () => (
+    <Body as="p">
+      Questions? Email <TextLink href="mailto:hello@example.com">hello@example.com</TextLink>, or
+      read the <TextLink href="#terms">terms</TextLink> first.
+    </Body>
+  ),
+};
+
+/** A bare `<a>` has none of the theme's link colour, weight or focus ring. */
+export const DontInSentence: S = {
+  render: () => (
+    <Body as="p">
+      Questions? Email <a href="mailto:hello@example.com">hello@example.com</a>, or read the{" "}
+      <a href="#terms">terms</a> first.
+    </Body>
+  ),
+};
+
+/** `external` opens another site in a new tab and adds `rel="noreferrer"` with it. */
+export const DoExternal: S = {
+  render: () => (
+    <TextLink href="https://example.com" external>
+      example.com
+    </TextLink>
+  ),
+};
+
+/** `target="_blank"` by hand leaves out the `rel`. Say `external` and the link gets both. */
+export const DontExternal: S = {
+  render: () => (
+    <TextLink href="https://example.com" target="_blank">
+      example.com
+    </TextLink>
+  ),
+};
+
+/** In an app with a router, `render` draws the router's own `<Link>`; here an anchor stands in. */
+export const DoRouter: S = {
+  render: () => <TextLink render={(p) => <a href="#terms" {...p} />}>Read the terms</TextLink>,
+};
+
+/** `stretch` makes the whole of the nearest `relative` ancestor the click target: a `Card` here, a `TableRow` in a table. */
+export const DoStretch: S = {
+  render: () => (
+    <Card title="Quote 12">
+      <TextLink href="#quote-12" stretch>
+        Open the quote
+      </TextLink>
+    </Card>
   ),
 };

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { ProgressBar, type BarTone } from "@hackcove/ui";
+import { Body, Caption, Cluster, ProgressBar, Stack, type BarTone } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/ProgressBar" };
 export default meta;
@@ -43,4 +43,32 @@ export const Bounds: S = {
       <ProgressBar value={140} tone="positive" label="Over, held at full" />
     </div>
   ),
+};
+
+/** Say in words how far along it is, beside the bar. The bar shows the share and the words give the figures. */
+export const DoProgress: S = {
+  render: () => (
+    <Stack gap="xs">
+      <Cluster justify="between">
+        <Body>Kitchen funded</Body>
+        <Caption>R 45 000 of R 75 000</Caption>
+      </Cluster>
+      <ProgressBar value={45000} max={75000} label="Kitchen funded" />
+    </Stack>
+  ),
+};
+
+/** A bare bar: nobody can tell what it measures or how much it holds. */
+export const DontProgress: S = {
+  render: () => <ProgressBar value={60} label="Kitchen funded" />,
+};
+
+/** `value` is on the scale of `max` (100 unless you pass one): three of twelve is `value={3} max={12}`. */
+export const DoScale: S = {
+  render: () => <ProgressBar value={3} max={12} label="Months saved" />,
+};
+
+/** A fraction such as `0.25` is read as a quarter of one percent, not a quarter of the bar. */
+export const DontScale: S = {
+  render: () => <ProgressBar value={0.25} label="Months saved" />,
 };

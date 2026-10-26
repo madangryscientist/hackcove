@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Button, ButtonLink, Card, Code, EmptyState, Step, Steps } from "@hackcove/ui";
+import { Body, Button, ButtonLink, Card, Code, Empty, EmptyState, Step, Steps } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/EmptyState" };
 export default meta;
@@ -46,6 +46,40 @@ export const GetStarted: S = {
             Run <Code>pixelslash upload</Code> from CI or your laptop.
           </Step>
         </Steps>
+      </EmptyState>
+    </Card>
+  ),
+};
+
+/** An empty page says what belongs here and offers the first step as the primary action. */
+export const DoNextStep: S = {
+  render: () => (
+    <EmptyState title="No builds yet" actions={<Button>Create a project</Button>}>
+      <Body as="p">Builds appear here once a project has uploaded its first capture.</Body>
+    </EmptyState>
+  ),
+};
+
+/** A bare "Nothing here" is a dead end: it does not say what belongs here or what to do next. */
+export const DontNextStep: S = {
+  render: () => <EmptyState title="Nothing here" />,
+};
+
+/** An empty list inside a card is one muted line: `Empty`. */
+export const DoInline: S = {
+  render: () => (
+    <Card title="Builds">
+      <Empty>No builds yet.</Empty>
+    </Card>
+  ),
+};
+
+/** `EmptyState` is for a whole page or list; inside a small card it is a block that dwarfs the card. */
+export const DontInline: S = {
+  render: () => (
+    <Card title="Builds">
+      <EmptyState title="No builds yet">
+        <Body as="p">Builds appear here once a project has uploaded its first capture.</Body>
       </EmptyState>
     </Card>
   ),

@@ -9,8 +9,6 @@
    without touching a component.
    --------------------------------------------------------------------------- */
 
-import { componentPages } from "./components";
-
 export type Person = {
   /** First name only — how the team is introduced on this site. */
   name: string;
@@ -152,14 +150,15 @@ const ui = {
       { label: "npm", href: "https://www.npmjs.com/package/@hackcove/ui" },
     ],
   },
+  components: {
+    title: "Components",
+    intro: "Every component in @hackcove/ui has a page, in these groups.",
+  },
   docs: {
     title: "Component docs",
     status: "available" as const,
-    text: "Each page leads with the one right way to use the component and its Do and Don't, then the usage rules, accessibility and every prop. The pages are written one component at a time. /ui/llms.txt is the same content as plain text, for agents.",
-    links: [
-      ...componentPages.map((page) => ({ label: page.name, href: `/ui/${page.slug}/` })),
-      { label: "llms.txt", href: "/ui/llms.txt" },
-    ],
+    text: "Every component has a page. Each leads with the one right way to use it and its Do and Don't, then the usage rules, accessibility and every prop. /ui/llms.txt is the same content as plain text, for agents.",
+    links: [{ label: "llms.txt", href: "/ui/llms.txt" }],
   },
 };
 

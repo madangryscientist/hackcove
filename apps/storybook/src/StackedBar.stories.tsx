@@ -67,3 +67,32 @@ export const LegendOnly: S = {
     />
   ),
 };
+
+/** `legend` names every colour in words, with its value, under the bar. */
+export const DoLegend: S = {
+  render: () => (
+    <StackedBar
+      segments={[
+        { label: "Changed", value: 24, tone: "warn" },
+        { label: "New", value: 9, tone: "info" },
+        { label: "Same", value: 163, tone: "muted" },
+      ]}
+      label="Screenshots by status"
+      legend
+    />
+  ),
+};
+
+/** Without `legend` the colours are never named, so the bar cannot be read by anyone who cannot tell them apart. */
+export const DontLegend: S = {
+  render: () => (
+    <StackedBar
+      segments={[
+        { label: "Changed", value: 24, tone: "warn" },
+        { label: "New", value: 9, tone: "info" },
+        { label: "Same", value: 163, tone: "muted" },
+      ]}
+      label="Screenshots by status"
+    />
+  ),
+};

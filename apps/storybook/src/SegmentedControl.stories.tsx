@@ -115,3 +115,92 @@ export const WithRouterLink: S = {
     />
   ),
 };
+
+/** A mode or a range chosen in place: the caller owns `value`, and `label` names the group. */
+export const DoMode: S = {
+  render: () => {
+    const [value, setValue] = useState("week");
+    return (
+      <SegmentedControl
+        label="Range"
+        items={[
+          { value: "day", label: "Daily" },
+          { value: "week", label: "Weekly" },
+          { value: "month", label: "Monthly" },
+        ]}
+        value={value}
+        onChange={setValue}
+      />
+    );
+  },
+};
+
+/** An on/off setting is a `Checkbox`, not a two-option SegmentedControl. */
+export const DontMode: S = {
+  render: () => {
+    const [value, setValue] = useState("on");
+    return (
+      <SegmentedControl
+        label="Email me"
+        items={[
+          { value: "on", label: "On" },
+          { value: "off", label: "Off" },
+        ]}
+        value={value}
+        onChange={setValue}
+      />
+    );
+  },
+};
+
+/** An option that cannot be chosen yet stays in the group with a `title` that says why. */
+export const DoDisabledReason: S = {
+  render: () => {
+    const [value, setValue] = useState("split");
+    return (
+      <SegmentedControl
+        label="Split"
+        items={[
+          { value: "split", label: "Split" },
+          { value: "even", label: "Even" },
+          { value: "custom", label: "Custom", disabled: true, title: "Needs two or more people" },
+        ]}
+        value={value}
+        onChange={setValue}
+      />
+    );
+  },
+};
+
+/** A disabled option with no `title` leaves the person guessing why it is greyed out. */
+export const DontDisabledReason: S = {
+  render: () => {
+    const [value, setValue] = useState("split");
+    return (
+      <SegmentedControl
+        label="Split"
+        items={[
+          { value: "split", label: "Split" },
+          { value: "even", label: "Even" },
+          { value: "custom", label: "Custom", disabled: true },
+        ]}
+        value={value}
+        onChange={setValue}
+      />
+    );
+  },
+};
+
+/** Options that go to another page are links: `href` on each, and `value` marks the current page. */
+export const DoLinks: S = {
+  render: () => (
+    <SegmentedControl
+      label="Journal"
+      value="daily"
+      items={[
+        { value: "daily", label: "Daily", href: "#daily" },
+        { value: "weekly", label: "Weekly", href: "#weekly" },
+      ]}
+    />
+  ),
+};

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Checkbox } from "@hackcove/ui";
+import { Body, Checkbox, Cluster } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Checkbox" };
 export default meta;
@@ -36,4 +36,24 @@ export const MultiLine: S = {
       />
     </div>
   ),
+};
+
+/** A yes or no is a `Checkbox` with its `label`: the whole label is the click target. */
+export const DoLabel: S = {
+  render: () => <Checkbox label="Email me when a shop I follow posts" defaultChecked />,
+};
+
+/** A checkbox with the words beside it, not in it, names nothing: clicking the words does nothing. */
+export const DontLabel: S = {
+  render: () => (
+    <Cluster gap="sm">
+      <Checkbox />
+      <Body>Email me when a shop I follow posts</Body>
+    </Cluster>
+  ),
+};
+
+/** In a table cell there is no room for words: leave the `label` out, use `size="sm"` and name the box with `aria-label`. */
+export const DoRow: S = {
+  render: () => <Checkbox size="sm" aria-label="Select row" />,
 };

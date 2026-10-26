@@ -154,7 +154,7 @@ function HeaderSlots({
  *
  * The header row is laid out by its slots, left to right: `brand`, `nav`, then `header` (anything
  * the slots do not cover), then `controls`, pushed to the end. An app writes no wrapper or
- * `className` for any of them.
+ * styling for any of them.
  */
 export function AppShell({
   brand,

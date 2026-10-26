@@ -68,6 +68,26 @@ export const DontNavigate: S = {
   ),
 };
 
+/** A destructive action is `tone="danger"`, so the red says what the button does before it is read. */
+export const DoDestructive: S = {
+  render: () => (
+    <ButtonGroup>
+      <Button tone="danger">Delete quote</Button>
+      <Button variant="outline">Cancel</Button>
+    </ButtonGroup>
+  ),
+};
+
+/** A delete in the primary look reads as the safe, expected action; the tone is what warns. */
+export const DontDestructive: S = {
+  render: () => (
+    <ButtonGroup>
+      <Button>Delete quote</Button>
+      <Button variant="outline">Cancel</Button>
+    </ButtonGroup>
+  ),
+};
+
 export const Variants: S = {
   render: () => (
     <div className="flex flex-wrap gap-2">

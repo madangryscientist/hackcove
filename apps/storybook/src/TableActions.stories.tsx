@@ -42,3 +42,51 @@ export const ActionsColumn: S = {
     </Table>
   ),
 };
+
+/** A row's actions get a column of their own whose head has an `srLabel`: the head keeps its column and a screen reader hears "Actions". */
+export const DoActionsColumn: S = {
+  render: () => (
+    <Table caption="Clients">
+      <TableHead>
+        <TableRow>
+          <TableHeaderCell>Client</TableHeaderCell>
+          <TableHeaderCell align="end" srLabel="Actions" />
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        <TableRow>
+          <TableCell tone="strong">Naledi Dlamini</TableCell>
+          <TableCell align="end">
+            <Button variant="outline" size="sm">
+              Open
+            </Button>
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  ),
+};
+
+/** An empty header cell leaves the column with no name, so a screen reader hears a column of unlabelled buttons. */
+export const DontActionsColumn: S = {
+  render: () => (
+    <Table caption="Clients">
+      <TableHead>
+        <TableRow>
+          <TableHeaderCell>Client</TableHeaderCell>
+          <TableHeaderCell align="end" />
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        <TableRow>
+          <TableCell tone="strong">Naledi Dlamini</TableCell>
+          <TableCell align="end">
+            <Button variant="outline" size="sm">
+              Open
+            </Button>
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  ),
+};

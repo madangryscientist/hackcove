@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, CodeExample } from "@hackcove/ui";
+import { Button, CodeBlock, CodeExample, Stack } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/CodeExample" };
 export default meta;
@@ -49,5 +49,24 @@ export const LongCode: S = {
         </Button>
       </CodeExample>
     </div>
+  ),
+};
+
+/** `CodeExample` frames a rendered part with the code that makes it, in one box. */
+export const DoPreview: S = {
+  render: () => (
+    <CodeExample code={'<Button variant="primary">Save</Button>'}>
+      <Button variant="primary">Save</Button>
+    </CodeExample>
+  ),
+};
+
+/** A loose preview with a `CodeBlock` under it is two unrelated things: no shared frame, and they drift apart. */
+export const DontPreview: S = {
+  render: () => (
+    <Stack gap="sm">
+      <Button variant="primary">Save</Button>
+      <CodeBlock>{'<Button variant="primary">Save</Button>'}</CodeBlock>
+    </Stack>
   ),
 };

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Callout, Card, TextLink } from "@hackcove/ui";
+import { Button, Callout, Card, Stack, TextLink } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Callout" };
 export default meta;
@@ -87,5 +87,55 @@ export const Linked: S = {
         The last import finished.
       </Callout>
     </div>
+  ),
+};
+
+/** The tone matches how much the message matters: `warn` for a thing to check before going on. */
+export const DoTone: S = {
+  render: () => (
+    <Stack gap="sm">
+      <Callout tone="info">The import runs overnight.</Callout>
+      <Callout tone="warn" title="3 uncategorised.">
+        Sort them before the month closes.
+      </Callout>
+    </Stack>
+  ),
+};
+
+/** `danger` on a plain note cries wolf: when everything is red, a real failure no longer stands out. */
+export const DontTone: S = {
+  render: () => (
+    <Stack gap="sm">
+      <Callout tone="danger">The import runs overnight.</Callout>
+      <Callout tone="danger" title="3 uncategorised.">
+        Sort them before the month closes.
+      </Callout>
+    </Stack>
+  ),
+};
+
+/** The action goes in `actions`, at the end of the row, so every callout puts it in the same place. */
+export const DoAction: S = {
+  render: () => (
+    <Callout
+      tone="warn"
+      title="Import failed."
+      actions={
+        <Button size="sm" variant="outline">
+          Retry
+        </Button>
+      }
+    >
+      The last file did not finish.
+    </Callout>
+  ),
+};
+
+/** A button inside the body drops under the text and leaves the row without its action. */
+export const DontAction: S = {
+  render: () => (
+    <Callout tone="warn" title="Import failed.">
+      The last file did not finish. <Button size="sm">Retry</Button>
+    </Callout>
   ),
 };

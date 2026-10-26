@@ -1,5 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, DateField, DatePicker, Dialog, Drawer, fromISODate } from "@hackcove/ui";
+import {
+  Button,
+  Caption,
+  DateField,
+  DatePicker,
+  Dialog,
+  Drawer,
+  fromISODate,
+  Input,
+  Stack,
+  toISODate,
+} from "@hackcove/ui";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
 /**
@@ -143,4 +154,48 @@ export const InDrawer: S = {
       )}
     </Opened>
   ),
+};
+
+/** A date is a `DatePicker`: DD/MM/YYYY segments the person can type, and a calendar button for the rest. */
+export const DoDate: S = {
+  render: () => <DatePicker label="Date of birth" description="As on your ID document." />,
+};
+
+/** A text input takes any characters, so 17/5/90, 1990-05-17 and "May" all arrive, and nothing says which is meant. */
+export const DontDate: S = {
+  render: () => <Input aria-label="Date of birth" placeholder="DD/MM/YYYY" />,
+};
+
+/** A message from outside the field, a server's say, is `error`: it replaces the description and is announced as an alert. */
+export const DoError: S = {
+  render: () => (
+    <DatePicker
+      label="Paid on"
+      description="The day the money moved."
+      error="That date is before the invoice."
+    />
+  ),
+};
+
+/** `isInvalid` alone turns the field red and says nothing about why. */
+export const DontError: S = {
+  render: () => <DatePicker label="Paid on" description="The day the money moved." isInvalid />,
+};
+
+/** The value is a `CalendarDate`. `fromISODate` reads a stored `YYYY-MM-DD`, `toISODate` writes it back, and `name` posts the same string in a form. */
+export const DoValue: S = {
+  render: () => {
+    const [paid, setPaid] = useState(fromISODate("2026-10-26"));
+    return (
+      <Stack gap="xs">
+        <DatePicker label="Paid on" name="paidOn" value={paid} onChange={setPaid} />
+        <Caption>Stored as {toISODate(paid) || "nothing yet"}.</Caption>
+      </Stack>
+    );
+  },
+};
+
+/** `DateField` is the same input without the calendar button, for a date the person knows by heart. */
+export const DoTypedOnly: S = {
+  render: () => <DateField label="Date of birth" description="DD/MM/YYYY" />,
 };

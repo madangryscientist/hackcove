@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { ToggleChip } from "@hackcove/ui";
+import { Cluster, ToggleChip } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/ToggleChip" };
 export default meta;
@@ -46,4 +46,41 @@ function InteractiveChips() {
 
 export const Interactive: S = {
   render: () => <InteractiveChips />,
+};
+
+/** A filter is a `ToggleChip`: `pressed` shows whether it is on, and the caller toggles it in `onClick`. */
+export const DoToggle: S = {
+  render: () => {
+    const [on, setOn] = useState(["Vintage"]);
+    const toggle = (name: string) =>
+      setOn((now) => (now.includes(name) ? now.filter((n) => n !== name) : [...now, name]));
+    return (
+      <Cluster gap="xs" wrap>
+        {["Charity", "Vintage", "Books"].map((name) => (
+          <ToggleChip key={name} pressed={on.includes(name)} onClick={() => toggle(name)}>
+            {name}
+          </ToggleChip>
+        ))}
+      </Cluster>
+    );
+  },
+};
+
+/** A chip that does something once, such as clearing the filters, is an action: use a `Button`. */
+export const DontToggle: S = {
+  render: () => <ToggleChip pressed={false}>Clear filters</ToggleChip>,
+};
+
+/** `dot` is a category colour before the label, so a chip matches its marker elsewhere. */
+export const DoDot: S = {
+  render: () => (
+    <Cluster gap="xs" wrap>
+      <ToggleChip pressed dot="#7c3aed">
+        Vintage
+      </ToggleChip>
+      <ToggleChip pressed={false} dot="#0891b2">
+        Books
+      </ToggleChip>
+    </Cluster>
+  ),
 };

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState, type ReactNode } from "react";
-import { Body, Button, Dialog, Kbd, KeyValue, KeyValueList } from "@hackcove/ui";
+import { Body, Button, Callout, Dialog, Kbd, KeyValue, KeyValueList, Stack } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Dialog" };
 export default meta;
@@ -79,4 +79,92 @@ export const Small: S = {
 
 export const TitleOnly: S = {
   render: () => <Opened>{(close) => <Dialog title="Saved" onClose={close} />}</Opened>,
+};
+
+/** A confirmation is a title that names the action, one line of consequence, and Cancel beside the action. It is rendered only while open. */
+export const DoConfirm: S = {
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button variant="outline" onClick={() => setOpen(true)}>
+          Delete build
+        </Button>
+        {open && (
+          <Dialog
+            title="Delete build"
+            description="This removes the build and every snapshot in it."
+            onClose={() => setOpen(false)}
+            footer={
+              <>
+                <Button variant="ghost" onClick={() => setOpen(false)}>
+                  Cancel
+                </Button>
+                <Button tone="danger" onClick={() => setOpen(false)}>
+                  Delete
+                </Button>
+              </>
+            }
+          />
+        )}
+      </>
+    );
+  },
+};
+
+/** With no Cancel and no consequence, the only way out of the dialog is the one button that destroys the build. */
+export const DontConfirm: S = {
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button variant="outline" onClick={() => setOpen(true)}>
+          Delete build
+        </Button>
+        {open && (
+          <Dialog
+            title="Are you sure?"
+            onClose={() => setOpen(false)}
+            footer={
+              <Button tone="danger" onClick={() => setOpen(false)}>
+                Delete
+              </Button>
+            }
+          />
+        )}
+      </>
+    );
+  },
+};
+
+/** A result that needs no answer is a `Callout` in the page, where it does not take the page away. */
+export const DoNotice: S = {
+  render: () => (
+    <Stack gap="sm">
+      <Button variant="outline">Save</Button>
+      <Callout tone="positive">Your review is saved.</Callout>
+    </Stack>
+  ),
+};
+
+/** A modal for a message makes the reader dismiss it before they can carry on. */
+export const DontNotice: S = {
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button variant="outline" onClick={() => setOpen(true)}>
+          Save
+        </Button>
+        {open && (
+          <Dialog
+            title="Saved"
+            description="Your review is saved."
+            onClose={() => setOpen(false)}
+            footer={<Button onClick={() => setOpen(false)}>OK</Button>}
+          />
+        )}
+      </>
+    );
+  },
 };

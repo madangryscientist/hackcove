@@ -9,6 +9,7 @@ import { SectionCards } from "../src/components/SectionCards";
 import { SiteNav } from "../src/components/SiteNav";
 import { Team } from "../src/components/Team";
 import { UiPage } from "../src/components/UiPage";
+import { componentPages, componentSections } from "../src/content/components/index";
 import { type Person, type Project, site } from "../src/content/site";
 import { themes } from "../src/content/themes";
 
@@ -189,6 +190,11 @@ describe("the Hack Cove UI page", () => {
     for (const link of site.ui.links.items) expect(html).toContain(`href="${link.href}"`);
     expect(html).toContain(site.ui.docs.text.replaceAll("'", "&#x27;"));
     for (const link of site.ui.docs.links) expect(html).toContain(`href="${link.href}"`);
+  });
+
+  test("it links the full component list: every section and every component page", () => {
+    for (const section of componentSections) expect(html).toContain(section.title);
+    for (const { slug } of componentPages) expect(html).toContain(`href="/ui/${slug}/"`);
   });
 
   test("the theme list is the themes/* folders, read by the glob and not written in code", () => {

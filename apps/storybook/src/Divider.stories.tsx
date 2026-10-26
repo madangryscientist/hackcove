@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Caption, Divider, InlineLinks, TextLink } from "@hackcove/ui";
+import { Body, Caption, Card, Divider, InlineLinks, Stack, TextLink } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Divider" };
 export default meta;
@@ -32,5 +32,45 @@ export const AboveAFooter: S = {
         </div>
       </footer>
     </div>
+  ),
+};
+
+/** A `Divider` is one hairline between two parts of a page, here the content and its footer. The space around it is the `Stack`'s. */
+export const DoFooter: S = {
+  render: () => (
+    <Stack gap="lg">
+      <Body as="p">The last paragraph of a page.</Body>
+      <Divider />
+      <Caption as="p">Hack Cove (Pty) Ltd</Caption>
+    </Stack>
+  ),
+};
+
+/** Bordered blocks need no rule between them: the Stack's gap separates them. */
+export const DoCards: S = {
+  render: () => (
+    <Stack>
+      <Card title="Build 412">
+        <Body>3 changed</Body>
+      </Card>
+      <Card title="Build 411">
+        <Body>No changes</Body>
+      </Card>
+    </Stack>
+  ),
+};
+
+/** A `Divider` between two Cards is a second line on top of their borders and the gap. */
+export const DontCards: S = {
+  render: () => (
+    <Stack>
+      <Card title="Build 412">
+        <Body>3 changed</Body>
+      </Card>
+      <Divider />
+      <Card title="Build 411">
+        <Body>No changes</Body>
+      </Card>
+    </Stack>
   ),
 };

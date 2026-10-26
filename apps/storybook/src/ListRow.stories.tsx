@@ -162,3 +162,62 @@ export const RevealOnHover: S = {
     </div>
   ),
 };
+
+/** Rows sit in a `Card flush`, and `divided` draws the line between them on every row after the first. */
+export const DoList: S = {
+  render: () => (
+    <Card flush>
+      <ListRow trailing="R 9 500">Rent</ListRow>
+      <ListRow divided trailing="R 1 850">
+        Transport
+      </ListRow>
+      <ListRow divided href="#bills" trailing="3">
+        Bills
+      </ListRow>
+    </Card>
+  ),
+};
+
+/** Rows in a Card that is not `flush` sit inside its padding, so the hover fill stops short of the edges and the lines do not run across. */
+export const DontList: S = {
+  render: () => (
+    <Card>
+      <ListRow trailing="R 9 500">Rent</ListRow>
+      <ListRow divided trailing="R 1 850">
+        Transport
+      </ListRow>
+    </Card>
+  ),
+};
+
+/** A row that holds its own buttons is `static`, and the buttons go in `actions`. */
+export const DoRowActions: S = {
+  render: () => (
+    <Card flush>
+      <ListRow
+        static
+        actions={
+          <>
+            <Button size="sm" variant="outline">
+              Reject
+            </Button>
+            <Button size="sm">Accept</Button>
+          </>
+        }
+      >
+        Grace Hopper
+      </ListRow>
+    </Card>
+  ),
+};
+
+/** A button inside a link row is a control inside a control: the row opens a page and the button does something else, and a click can only mean one. */
+export const DontRowActions: S = {
+  render: () => (
+    <Card flush>
+      <ListRow href="#grace" trailing={<Button size="sm">Accept</Button>}>
+        Grace Hopper
+      </ListRow>
+    </Card>
+  ),
+};

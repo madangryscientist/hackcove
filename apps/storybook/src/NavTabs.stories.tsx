@@ -1,9 +1,41 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { NavTabs, type LinkRenderProps } from "@hackcove/ui";
+import { ButtonLink, NavTabs, Stack, type LinkRenderProps } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/NavTabs" };
 export default meta;
 type S = StoryObj;
+
+/** A rail of links is `NavTabs` with `orientation="vertical"`: one nav landmark, the current page marked. */
+export const DoRail: S = {
+  render: () => (
+    <NavTabs
+      orientation="vertical"
+      label="Sections"
+      items={[
+        { label: "Overview", href: "#overview" },
+        { label: "Button", href: "#button", active: true },
+        { label: "Card", href: "#card" },
+      ]}
+    />
+  ),
+};
+
+/** A stack of ghost `ButtonLink`s is not a nav landmark, and nothing marks the current page. */
+export const DontRail: S = {
+  render: () => (
+    <Stack gap="xs">
+      <ButtonLink href="#overview" variant="ghost">
+        Overview
+      </ButtonLink>
+      <ButtonLink href="#button" variant="ghost">
+        Button
+      </ButtonLink>
+      <ButtonLink href="#card" variant="ghost">
+        Card
+      </ButtonLink>
+    </Stack>
+  ),
+};
 
 export const Default: S = {
   render: () => (

@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
 import { themeScope } from "@hackcove/themes-shared/scope";
-import { componentPages } from "../src/content/components";
+import { componentPages } from "../src/content/components/index";
 
 // Same source of truth as the picker: one folder per theme under themes/.
 const themesDir = `${import.meta.dirname}/../../../themes`;
@@ -68,13 +68,7 @@ test("each theme reskins the page: its page paint differs from the stock compone
   }
 });
 
-const everyPage = [
-  "/",
-  "/contracting/",
-  "/pixelslash/",
-  ...pages.map(({ path }) => path),
-  "/ui/button/",
-];
+const everyPage = ["/", "/contracting/", "/pixelslash/", ...pages.map(({ path }) => path)];
 
 test("the theme picker is in the header of every page, and a choice carries to the next", async ({
   page,
@@ -92,6 +86,7 @@ test("the theme picker is in the header of every page, and a choice carries to t
 test("at 390px no page scrolls sideways, the picker is inside the viewport and no prop is clipped", async ({
   page,
 }) => {
+  test.setTimeout(180_000);
   await page.setViewportSize({ width: 390, height: 900 });
   for (const path of new Set(everyPage)) {
     await page.goto(path);
@@ -147,12 +142,12 @@ test("at 1440px a Do/Don't pair starts at the same top and a lone Do spans both 
   expect(doSide?.y).toBe(dontSide?.y);
 });
 
-test("/ui/llms.txt is served as plain text, one section per pilot component", async ({
+test("/ui/llms.txt is served as plain text, one section per component page", async ({
   request,
 }) => {
   const response = await request.get("/ui/llms.txt");
   expect(response.headers()["content-type"]).toContain("text/plain");
   const text = await response.text();
   expect(text).toContain("fully integrated with its theming");
-  for (const name of ["Button", "Card", "Tabs"]) expect(text).toContain(`\n## ${name}\n`);
+  for (const { name } of componentPages) expect(text).toContain(`\n## ${name}\n`);
 });

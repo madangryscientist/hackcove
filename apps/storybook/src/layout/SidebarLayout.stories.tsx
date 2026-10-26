@@ -18,7 +18,7 @@ type S = StoryObj;
 
 const orgs = ["Hack Cove", "Acme", "Northwind", "Initech"];
 
-const rail = (
+const orgRail = (
   <NavTabs
     orientation="vertical"
     label="Organisations"
@@ -29,7 +29,7 @@ const rail = (
 export const Orgs: S = {
   render: () => (
     <DemoShell>
-      <SidebarLayout rail={rail}>
+      <SidebarLayout rail={orgRail}>
         <PageHeader
           title="Hack Cove"
           subtitle="3 projects"
@@ -42,5 +42,52 @@ export const Orgs: S = {
         </Stack>
       </SidebarLayout>
     </DemoShell>
+  ),
+};
+
+/** A vertical `NavTabs` is the rail: a short list of sections beside the page. */
+export const DoSections: S = {
+  render: () => (
+    <SidebarLayout
+      rail={
+        <NavTabs
+          orientation="vertical"
+          label="Settings"
+          items={[
+            { label: "Profile", href: "#profile", active: true },
+            { label: "Billing", href: "#billing" },
+            { label: "Team", href: "#team" },
+          ]}
+        />
+      }
+    >
+      <PageHeader title="Profile" subtitle="Your name and email." />
+      <Card title="Account">
+        <Body as="p">Naledi Mokoena, naledi@example.com</Body>
+      </Card>
+    </SidebarLayout>
+  ),
+};
+
+/** The default, horizontal `NavTabs` wraps into a ragged block in the rail. Give the rail `orientation="vertical"`. */
+export const DontSections: S = {
+  render: () => (
+    <SidebarLayout
+      rail={
+        <NavTabs
+          label="Settings"
+          items={[
+            { label: "Profile", href: "#profile", active: true },
+            { label: "Billing", href: "#billing" },
+            { label: "Team", href: "#team" },
+          ]}
+        />
+      }
+    >
+      <PageHeader title="Profile" subtitle="Your name and email." />
+      <Card title="Account">
+        <Body as="p">Naledi Mokoena, naledi@example.com</Body>
+      </Card>
+    </SidebarLayout>
   ),
 };

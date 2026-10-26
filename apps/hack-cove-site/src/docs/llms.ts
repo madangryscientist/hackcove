@@ -1,9 +1,9 @@
 /**
  * `/ui/llms.txt`: the component docs as plain text for agents, one section per component. It is
- * made from the same sources as the pages (`content/components.ts`, the stories and
+ * made from the same sources as the pages (`content/components/`, the stories and
  * `generated/props.json`), so the two cannot drift.
  */
-import { componentPages, type ComponentPage } from "../content/components.js";
+import { componentPages, sectionOfPage, type ComponentPage } from "../content/components/index.js";
 import { site } from "../content/site.js";
 import { pairOf } from "./pairs.js";
 import { docOf } from "./Props.js";
@@ -33,18 +33,27 @@ function propsOf(name: string): string {
   return [`### ${name}`, description.replace(/\s*\n\s*/g, " "), ...lines].join("\n");
 }
 
+function functionsOf(page: ComponentPage): string[] {
+  const { functions = [] } = page;
+  return functions.length === 0
+    ? []
+    : [`### Functions\n${functions.map((fn) => `- ${fn.name}: ${fn.text}`).join("\n")}`];
+}
+
 function sectionOf(page: ComponentPage): string {
   const [lead] = page.pairs;
   const right = lead === undefined ? undefined : pairOf(lead).do;
   if (right === undefined) throw new Error(`llms.txt: ${page.name} has no Do story to lead with`);
   return [
     `## ${page.name}`,
+    `Group: ${sectionOfPage(page.slug).title}`,
     `When to use: ${page.whenToUse}`,
     `### The one right way\n${captioned(right)}`,
     `### Do\n${page.usage.map((rule) => `- ${rule}`).join("\n")}`,
     `### Don't\n${dontsOf(page)}`,
     `### Accessibility\n${page.accessibility.map((rule) => `- ${rule}`).join("\n")}`,
     `### Props\n${page.api.map(propsOf).join("\n\n")}`,
+    ...functionsOf(page),
   ].join("\n\n");
 }
 

@@ -39,3 +39,18 @@ export const LongLine: S = {
     </div>
   ),
 };
+
+/** A few lines to read or copy go in one `CodeBlock`, with `label` naming the language or file. */
+export const DoSnippet: S = {
+  render: () => (
+    <CodeBlock
+      label="bash"
+      lines={["bun add @hackcove/ui", "bun add @hackcove/theme-catppuccin-mocha"]}
+    />
+  ),
+};
+
+/** One line a reader copies is a `CopyLine`, which has the copy button. A `CodeBlock` of one line has none. */
+export const DontSnippet: S = {
+  render: () => <CodeBlock>bun add @hackcove/ui</CodeBlock>,
+};

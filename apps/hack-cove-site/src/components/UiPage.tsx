@@ -9,6 +9,7 @@ import {
   Stack,
   TextLink,
 } from "@hackcove/ui";
+import { componentSections } from "../content/components/index";
 import { site } from "../content/site";
 import { themes } from "../content/themes";
 import { StatusCard } from "./StatusCard";
@@ -55,6 +56,30 @@ function Themes() {
   );
 }
 
+function Components() {
+  return (
+    <Section title={ui.components.title} gap="md">
+      <Body as="p">{ui.components.intro}</Body>
+      <CardGrid columns={2}>
+        {componentSections.map((section) => (
+          <Card key={section.title} as="article" title={section.title} count={section.pages.length}>
+            <Stack gap="sm">
+              <Body as="p">{section.description}</Body>
+              <InlineLinks>
+                {section.pages.map((page) => (
+                  <TextLink key={page.slug} href={`/ui/${page.slug}/`}>
+                    {page.name}
+                  </TextLink>
+                ))}
+              </InlineLinks>
+            </Stack>
+          </Card>
+        ))}
+      </CardGrid>
+    </Section>
+  );
+}
+
 /** Getting started: the purpose, install, themes, the component docs and where to find it. */
 export function UiPage() {
   return (
@@ -68,6 +93,7 @@ export function UiPage() {
       </Stack>
       <Install />
       <Themes />
+      <Components />
       <StatusCard
         title={ui.docs.title}
         status={ui.docs.status}

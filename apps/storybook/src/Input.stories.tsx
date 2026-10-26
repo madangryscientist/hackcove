@@ -110,3 +110,47 @@ export const AlignEnd: S = {
     </div>
   ),
 };
+
+/** An amount takes a `prefix` for the currency, `inputMode="decimal"` for the phone keypad and `align="end"` so the digits line up. */
+export const DoAmount: S = {
+  render: () => (
+    <Input
+      prefix="R"
+      inputMode="decimal"
+      align="end"
+      width="md"
+      aria-label="Amount"
+      defaultValue="49.90"
+    />
+  ),
+};
+
+/** A currency typed into the placeholder is gone as soon as the person types, and nothing keeps the digits aligned. */
+export const DontAmount: S = {
+  render: () => <Input placeholder="R 0.00" width="md" aria-label="Amount" />,
+};
+
+/** A search box is `type="search"` with an `icon`: the browser's own look is dropped and a clear button appears once there is a value. */
+export const DoSearch: S = {
+  render: () => (
+    <Input
+      type="search"
+      aria-label="Search shops"
+      placeholder="Search by name or suburb…"
+      icon={
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <path
+            fillRule="evenodd"
+            d="M9 3.5a5.5 5.5 0 1 0 3.4 9.8l3.15 3.15a.75.75 0 1 0 1.06-1.06l-3.15-3.15A5.5 5.5 0 0 0 9 3.5Zm-4 5.5a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z"
+            clipRule="evenodd"
+          />
+        </svg>
+      }
+    />
+  ),
+};
+
+/** A plain text input used for search has no icon and no way to clear it. */
+export const DontSearch: S = {
+  render: () => <Input aria-label="Search shops" placeholder="Search by name or suburb…" />,
+};

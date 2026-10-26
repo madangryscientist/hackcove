@@ -1,5 +1,13 @@
-import { Body, BulletList, PageHeader, Section, Stack, SubsectionHeading } from "@hackcove/ui";
-import type { ComponentPage as Page } from "../content/components";
+import {
+  Body,
+  BulletList,
+  Code,
+  PageHeader,
+  Section,
+  Stack,
+  SubsectionHeading,
+} from "@hackcove/ui";
+import type { ComponentPage as Page } from "../content/components/index";
 import { DoDont } from "../docs/DoDont";
 import { Props } from "../docs/Props";
 import { Prose } from "../docs/Prose";
@@ -51,6 +59,18 @@ export function ComponentPage({ page }: { page: Page }) {
         {page.api.map((name) => (
           <Props key={name} of={name} />
         ))}
+        {page.functions !== undefined && page.functions.length > 0 && (
+          <Stack gap="sm">
+            <SubsectionHeading>Functions</SubsectionHeading>
+            <BulletList>
+              {page.functions.map((fn) => (
+                <Body as="li" key={fn.name}>
+                  <Code>{fn.name}</Code> <Prose text={fn.text} />
+                </Body>
+              ))}
+            </BulletList>
+          </Stack>
+        )}
       </Section>
     </Stack>
   );

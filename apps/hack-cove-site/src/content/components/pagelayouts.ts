@@ -1,0 +1,170 @@
+import type { ComponentSection } from "./types";
+
+export const pagelayouts: ComponentSection = {
+  title: "Page layouts",
+  description:
+    "The whole-page templates: pick the one for the kind of page, and it fixes the width and the rhythm.",
+  pages: [
+    {
+      slug: "list-layout",
+      name: "ListLayout",
+      summary: "A page that lists things: header, filters, then the items.",
+      whenToUse:
+        "An index of quotes, builds, members or any other collection; a single record is `DetailLayout`.",
+      pairs: ["ListLayout/Rows", "ListLayout/NothingYet"],
+      usage: [
+        "Put the page's title, subtitle and primary `actions` in the header props; `breadcrumbs` and `tabs` go there too.",
+        "`filters` sit between the header and the list: a `FilterGroup` of `ToggleChip`s.",
+        "The items are the `children`, one `Card` per item, or a `Table`; the layout spaces them.",
+        "Set `isEmpty` and give `empty` an `EmptyState` that says what is missing and what to do next; `isEmpty` without `empty` is a blank page.",
+        "Do not build the header and the list by hand with `PageHeader` and `Stack`: the layout is the one right header, filters and list.",
+      ],
+      accessibility: [
+        "The title is the page's `h1`.",
+        "`filters` and `children` render as given, so each filter group keeps its own `fieldset` and legend.",
+        "`data-*` and `aria-*` go on the list's wrapper.",
+      ],
+      api: ["ListLayout"],
+    },
+    {
+      slug: "detail-layout",
+      name: "DetailLayout",
+      summary: "A page about one record: its content beside the facts about it.",
+      whenToUse:
+        "One quote, build or member, with its content in the main column and its facts in the aside.",
+      pairs: ["DetailLayout/Record"],
+      usage: [
+        "The record's content is the `children`, in the main two thirds; they are spaced as a `Stack`, so give each block its own `Card`.",
+        "The facts about the record go in `aside`, in the third beside it: a `Card` with a `KeyValueList`, a status, the people on it.",
+        "Both columns are required: with nothing for the aside, use `ListLayout`.",
+        "From `lg` the aside sits beside the content; below it, it stacks under the content.",
+        "The header props are the same as `ListLayout`: `breadcrumbs`, `title`, `subtitle`, `actions`, `tabs`.",
+      ],
+      accessibility: [
+        "The title is the page's `h1`.",
+        "The aside is an `<aside>`, a complementary landmark; the main column is a plain `div`.",
+        "In the DOM the content comes first and the aside second, so that is the reading and tab order on every screen.",
+      ],
+      api: ["DetailLayout"],
+    },
+    {
+      slug: "form-layout",
+      name: "FormLayout",
+      summary: "A page that is one form: header, fields, then the actions.",
+      whenToUse: "Creating or editing a record on a page of its own.",
+      pairs: ["FormLayout/Form"],
+      usage: [
+        "The fields are the `children`, grouped in `Card`s; the layout spaces them in a reading-width column.",
+        'Save and Cancel go in `actions`, at the end of the form: a `type="submit"` Button first, then a ghost Cancel. The header has no `actions` here.',
+        "Handle the submit with `onSubmit`: other props go on the `<form>` itself.",
+        "A form in a small panel is a `Dialog` or `FieldDialog`; a sign-in is `CenteredLayout`.",
+        "Do not put Save in the header of a `ListLayout`: that is not a form.",
+      ],
+      accessibility: [
+        'The root is a real `<form>`: Enter in a field submits it, and a `type="submit"` Button submits it.',
+        "The title is the page's `h1`.",
+        "Give each control a `Field` with `htmlFor`, so every input has a label.",
+      ],
+      api: ["FormLayout"],
+    },
+    {
+      slug: "prose-layout",
+      name: "ProseLayout",
+      summary: "A page of text: one reading column with the header inside it.",
+      whenToUse: "Privacy, terms, help or any page that is mostly paragraphs.",
+      pairs: ["ProseLayout/Article"],
+      usage: [
+        'The text is the `children`: `SectionHeading`s and `Body as="p"` paragraphs, spaced `md` apart.',
+        "`gap` picks another spacing from the same scale (`xs` to `section`) for the whole page; the default is right for most pages.",
+        "The header sits inside the column, so its `actions` stay beside the text.",
+        "Data or cards in a grid are not prose: use `ListLayout` or `CardGrid`.",
+      ],
+      accessibility: [
+        "The title is the page's `h1`.",
+        "Use `SectionHeading` for sections so the outline runs h1 then h2.",
+        "`data-*` and `aria-*` go on the column's wrapper.",
+      ],
+      api: ["ProseLayout"],
+    },
+    {
+      slug: "card-grid",
+      name: "CardGrid",
+      summary: "A responsive grid of cards or tiles.",
+      whenToUse:
+        "Several cards or `StatTile`s of the same weight that should sit side by side on a wide screen.",
+      pairs: ["CardGrid/Tiles", "CardGrid/Auto"],
+      usage: [
+        "Use `columns` 2, 3 or 4 when you know how many; it is one column on a phone, two from `sm` and `columns` from `lg`.",
+        'Use `columns="auto"` when the count varies: it fits as many per row as the width allows, none narrower than `minWidth` (`md`, the default, or `sm`).',
+        '`align="start"` keeps each card its own height; by default every card stretches to the tallest in its row.',
+        "`CardGrid` goes inside a page layout; it sets no page width of its own.",
+        "A single column of blocks is a `Stack`, not a one-column `CardGrid`.",
+      ],
+      accessibility: [
+        "The grid is a plain `div` with no role: the cards keep their own order and semantics.",
+        "The order is the DOM order, so the tab order follows the reading order.",
+      ],
+      api: ["CardGrid"],
+    },
+    {
+      slug: "sidebar-layout",
+      name: "SidebarLayout",
+      summary: "A rail of links beside the page.",
+      whenToUse:
+        "A section with several sub-pages, such as settings, where the rail is the way between them.",
+      pairs: ["SidebarLayout/Sections"],
+      usage: [
+        'The `rail` is a `NavTabs` with `orientation="vertical"`, one link per section and the current one `active`.',
+        "The `children` are the section's page: its `PageHeader`, then the content.",
+        "From `md` the rail is a fixed width beside the page; below it, the rail stacks above the page.",
+        "The rail has no background or border: it is a list of links on the page. Keep it to a short list.",
+        "Facts about one record go in `DetailLayout`'s aside, not a rail.",
+      ],
+      accessibility: [
+        "The rail is an `<aside>` holding the `NavTabs`, which is a `<nav>` named by its `label`.",
+        'The current link has `aria-current="page"`.',
+        "In the DOM the rail comes first, so it is first in the tab order.",
+      ],
+      api: ["SidebarLayout"],
+    },
+    {
+      slug: "full-bleed-layout",
+      name: "FullBleedLayout",
+      summary: "A canvas that fills the width, with an optional panel.",
+      whenToUse:
+        "A viewer that needs the whole width, such as a snapshot, a canvas or a player; an ordinary page is not.",
+      pairs: ["FullBleedLayout/Viewer"],
+      usage: [
+        "Render it in an `AppShell` with `bleed`; the canvas starts at the left edge of the viewport.",
+        "It adds no padding and has no page title; the canvas is the `children`.",
+        "Put the facts about what is shown in `panel`, a `KeyValueList` under an `Overline`. From `lg` the panel is a fixed-width column on the right; below it, it stacks under the canvas.",
+        "Omit `panel` when the canvas stands alone.",
+        "A page with a title and content is `ListLayout` or `DetailLayout`.",
+      ],
+      accessibility: [
+        'The panel is an `<aside>`, a complementary landmark; give it a heading with `Overline as="h2"`.',
+        "The canvas comes first in the DOM, then the panel.",
+      ],
+      api: ["FullBleedLayout"],
+    },
+    {
+      slug: "centered-layout",
+      name: "CenteredLayout",
+      summary: "One narrow card, centred on the page.",
+      whenToUse: "Sign-in, a landing page, or a not-found or error page.",
+      pairs: ["CenteredLayout/Page"],
+      usage: [
+        "Give it a `title` and a `subtitle`; the `children` are the card's content: a `Field` or two and a `Button`.",
+        "It is the one layout that does not share the left edge: it is centred, at a fixed offset from the top.",
+        "A form inside the app is `FormLayout`, not this.",
+        "The ready-made status pages (not found, forbidden, offline, error, maintenance) are already built on it.",
+      ],
+      accessibility: [
+        "The title is the page's `h1`.",
+        "The card is a plain `div`, not a landmark; the shell's `main` holds it.",
+        "Give each control a `Field` with `htmlFor`, so every input has a label.",
+      ],
+      api: ["CenteredLayout"],
+    },
+  ],
+};

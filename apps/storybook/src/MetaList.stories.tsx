@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Code, MetaList, TextLink } from "@hackcove/ui";
+import { Caption, Code, MetaList, TextLink } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/MetaList" };
 export default meta;
@@ -46,4 +46,20 @@ export const Wraps: S = {
       </MetaList>
     </div>
   ),
+};
+
+/** A row of facts is a `MetaList`; an item is text, a `Code` or a `TextLink`. */
+export const DoFacts: S = {
+  render: () => (
+    <MetaList>
+      <TextLink href="#hc-145">hc-145</TextLink>
+      <Code>0f9d376</Code>
+      <span>26 Oct 2026</span>
+    </MetaList>
+  ),
+};
+
+/** Dots typed into one string are one item to a screen reader and can wrap onto the end of a line. */
+export const DontFacts: S = {
+  render: () => <Caption as="p">hc-145 · 0f9d376 · 26 Oct 2026</Caption>,
 };
