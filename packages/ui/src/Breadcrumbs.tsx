@@ -1,6 +1,7 @@
 import { isValidElement, type ReactElement, type ReactNode } from "react";
 import { cx, focusRing } from "./cx.js";
 import { type LinkRender, renderLink } from "./link.js";
+import type { Passthrough } from "./props.js";
 
 /** The classes of a crumb that links somewhere, for a router's own <Link>. The current page is plain text, not a link. */
 export const crumbLinkClass = cx("rounded text-slate-500 hover:underline", focusRing);
@@ -41,10 +42,13 @@ function CrumbContent({
  * `org / project / build / snapshot`: each crumb truncates, and the last is the current page. A
  * crumb is a node, or a `Crumb` object when it links.
  */
-export function Breadcrumbs({ crumbs }: { crumbs: Array<Crumb | ReactNode> }): ReactElement {
+export function Breadcrumbs({
+  crumbs,
+  ...rest
+}: { crumbs: Array<Crumb | ReactNode> } & Passthrough): ReactElement {
   const last = crumbs.length - 1;
   return (
-    <nav aria-label="Breadcrumb" className="min-w-0">
+    <nav {...rest} aria-label="Breadcrumb" className="min-w-0">
       <ol className="flex min-w-0 items-center gap-2 text-sm">
         {crumbs.map((crumb, index) => (
           <li

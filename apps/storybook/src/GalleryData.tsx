@@ -18,7 +18,7 @@ import {
   TimelineItem,
 } from "@hackcove/ui";
 
-/** The Card variants (flush, header bar, dashed, dashed filled, dense, toned), the Callout actions, banner and link, the ListRow set, a Table with a stretched row link and toned rows, a Table with a group row, cell tones, a truncated cell and a totals foot, a plain Table with a second-line cell and a Timeline. */
+/** The Card variants (flush, header bar, dashed, dashed filled, dense, toned), the Callout actions, banner and link, the ListRow set, a Table with a stretched row link and toned rows, a Table with a group row, cell tones, a truncated cell and a totals foot, a plain Table with a second-line cell and an `srLabel` actions column and a Timeline. */
 export function GalleryData() {
   return (
     <div className="flex flex-col gap-4">
@@ -197,6 +197,7 @@ function ClientsCard() {
           <TableRow>
             <TableHeaderCell>Client</TableHeaderCell>
             <TableHeaderCell align="end">Premium</TableHeaderCell>
+            <TableHeaderCell align="end" srLabel="Actions" />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -207,6 +208,11 @@ function ClientsCard() {
             <TableCell align="end" numeric>
               R 1 249.00
             </TableCell>
+            <TableCell align="end">
+              <Button variant="outline" size="sm">
+                Open
+              </Button>
+            </TableCell>
           </TableRow>
         </TableBody>
         <TableFoot>
@@ -215,6 +221,7 @@ function ClientsCard() {
             <TableCell align="end" numeric>
               R 1 249.00
             </TableCell>
+            <TableCell>{null}</TableCell>
           </TableRow>
         </TableFoot>
       </Table>

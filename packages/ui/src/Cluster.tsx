@@ -1,5 +1,6 @@
 import type { ReactElement, ReactNode } from "react";
 import { cx } from "./cx.js";
+import type { Passthrough } from "./props.js";
 import { STACK_GAP, type StackGap } from "./Stack.js";
 
 /** The first three steps of `Stack`'s scale: `xs` between items in a line, `sm` inside a group, `md` between blocks. */
@@ -37,15 +38,17 @@ export function Cluster({
   justify = "start",
   wrap = false,
   children,
+  ...rest
 }: {
   gap?: ClusterGap | undefined;
   align?: ClusterAlign | undefined;
   justify?: ClusterJustify | undefined;
   wrap?: boolean | undefined;
   children?: ReactNode;
-}): ReactElement {
+} & Passthrough): ReactElement {
   return (
     <div
+      {...rest}
       className={cx("flex", STACK_GAP[gap], ALIGN[align], JUSTIFY[justify], wrap && "flex-wrap")}
     >
       {children}
@@ -58,6 +61,13 @@ export function Cluster({
  * (`min-w-0`), so the items beside it stay on the line and a long value truncates instead of
  * pushing them out. Empty, it is a spacer.
  */
-export function ClusterGrow({ children }: { children?: ReactNode }): ReactElement {
-  return <div className="min-w-0 flex-1">{children}</div>;
+export function ClusterGrow({
+  children,
+  ...rest
+}: { children?: ReactNode } & Passthrough): ReactElement {
+  return (
+    <div {...rest} className="min-w-0 flex-1">
+      {children}
+    </div>
+  );
 }

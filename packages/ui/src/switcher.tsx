@@ -1,5 +1,6 @@
 import { Fragment, type KeyboardEvent, type ReactElement, type ReactNode } from "react";
 import { cx } from "./cx.js";
+import type { Passthrough } from "./props.js";
 import { type DataAttributes, dataAttributes, type LinkRender, renderLink } from "./link.js";
 
 type Option = DataAttributes & {
@@ -45,7 +46,7 @@ type Shared = {
   value: string;
   /** The accessible name of the group. */
   label: string;
-};
+} & Passthrough;
 
 export type SwitchProps = Shared &
   (
@@ -103,11 +104,12 @@ export function Switcher({
   disabled: groupDisabled,
   label,
   parts,
+  ...rest
 }: SwitchProps & { parts: Parts }): ReactElement {
   const root = parts.root;
   if (isLinks(items)) {
     return (
-      <nav aria-label={label} className={root}>
+      <nav {...rest} aria-label={label} className={root}>
         {items.map((item) => (
           <Fragment key={item.value}>
             {renderLink({
@@ -143,6 +145,7 @@ export function Switcher({
 
   return (
     <div
+      {...rest}
       role={parts.group}
       aria-label={label}
       {...(groupDisabled ? { "aria-disabled": true } : {})}

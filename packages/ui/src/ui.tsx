@@ -3,13 +3,18 @@ import { type CalloutTone, TONE_SURFACE } from "./Callout.js";
 import type { ControlSize } from "./control.js";
 import { cx } from "./cx.js";
 import { PageHeaderContent } from "./PageHeader.js";
+import type { Passthrough } from "./props.js";
 
 // Small presentational primitives written against Tailwind's slate-based class vocabulary
 // (remapped to Catppuccin Mocha in dark mode by theme.css).
 
 /** @deprecated use PageHeader */
-export function PageTitle({ title, subtitle }: { title: string; subtitle?: string }) {
-  return <PageHeaderContent title={title} subtitle={subtitle} />;
+export function PageTitle({
+  title,
+  subtitle,
+  ...rest
+}: { title: string; subtitle?: string } & Passthrough) {
+  return <PageHeaderContent {...rest} title={title} subtitle={subtitle} />;
 }
 
 function CardHeading({
@@ -210,9 +215,13 @@ export function Card({
 }
 
 /** A coloured epic header row: a dot in the epic's colour + its label. */
-export function EpicHeader({ color, label }: { color: string; label: string }) {
+export function EpicHeader({
+  color,
+  label,
+  ...rest
+}: { color: string; label: string } & Passthrough) {
   return (
-    <div className="mb-1.5 mt-3 flex items-center gap-2 first:mt-0">
+    <div {...rest} className="mb-1.5 mt-3 flex items-center gap-2 first:mt-0">
       <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
       <span className="text-sm font-semibold text-slate-700">{label}</span>
     </div>
@@ -230,12 +239,13 @@ export function Pill({
   tone = "slate",
   dot = false,
   round = false,
+  ...rest
 }: {
   children: ReactNode;
   tone?: PillTone;
   dot?: boolean;
   round?: boolean;
-}) {
+} & Passthrough) {
   const tones: Record<string, string> = {
     slate: "bg-slate-100 text-slate-600",
     amber: "bg-amber-50 text-amber-700",
@@ -247,6 +257,7 @@ export function Pill({
   };
   return (
     <span
+      {...rest}
       className={cx(
         round ? "rounded-full" : "rounded-md",
         "px-1.5 py-0.5 text-xs font-medium",
@@ -260,8 +271,12 @@ export function Pill({
   );
 }
 
-export function Empty({ children }: { children: ReactNode }) {
-  return <p className="text-sm text-slate-400">{children}</p>;
+export function Empty({ children, ...rest }: { children: ReactNode } & Passthrough) {
+  return (
+    <p {...rest} className="text-sm text-slate-400">
+      {children}
+    </p>
+  );
 }
 
 function compareEpics(a: string | null, b: string | null): number {

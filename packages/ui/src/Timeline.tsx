@@ -1,6 +1,7 @@
 import { Children, type ReactElement, type ReactNode } from "react";
 import type { CalloutTone } from "./Callout.js";
 import { cx } from "./cx.js";
+import type { Passthrough } from "./props.js";
 
 // The marker's colour is the tone's text colour, which every theme already remaps, drawn as a
 // solid dot; `neutral` is the ring.
@@ -20,18 +21,19 @@ export function Timeline({
   label,
   empty,
   children,
+  ...rest
 }: {
   /** Names the list (`aria-label`), e.g. "Status history". */
   label: string;
   /** Drawn in place of the list when there are no items. */
   empty?: ReactNode;
   children?: ReactNode;
-}): ReactElement | null {
+} & Passthrough): ReactElement | null {
   if (Children.toArray(children).length === 0) {
     return empty == null ? null : <>{empty}</>;
   }
   return (
-    <ol aria-label={label} className="flex flex-col">
+    <ol {...rest} aria-label={label} className="flex flex-col">
       {children}
     </ol>
   );
@@ -46,15 +48,19 @@ export function TimelineItem({
   time,
   tone = "neutral",
   children,
+  ...rest
 }: {
   title: ReactNode;
   time?: ReactNode;
   /** The marker dot's colour. Defaults to `neutral`, a plain ring. */
   tone?: CalloutTone;
   children?: ReactNode;
-}): ReactElement {
+} & Passthrough): ReactElement {
   return (
-    <li className="relative border-l border-slate-300 pb-5 pl-5 last:border-transparent last:pb-0">
+    <li
+      {...rest}
+      className="relative border-l border-slate-300 pb-5 pl-5 last:border-transparent last:pb-0"
+    >
       <span
         aria-hidden="true"
         className={cx("absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full border-2", DOT[tone])}

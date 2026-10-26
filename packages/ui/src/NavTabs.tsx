@@ -1,5 +1,6 @@
 import type { ReactElement, ReactNode } from "react";
 import { cx, focusRing } from "./cx.js";
+import type { Passthrough } from "./props.js";
 import { type DataAttributes, dataAttributes, type LinkRender, renderLink } from "./link.js";
 
 /**
@@ -34,14 +35,16 @@ export function NavTabs({
   items,
   label,
   orientation = "horizontal",
+  ...rest
 }: {
   items: NavTab[];
   /** The accessible name of the nav landmark. */
   label: string;
   orientation?: "horizontal" | "vertical";
-}): ReactElement {
+} & Passthrough): ReactElement {
   return (
     <nav
+      {...rest}
       aria-label={label}
       className={
         orientation === "vertical" ? "flex flex-col gap-1 text-sm" : "flex flex-wrap gap-1 text-sm"

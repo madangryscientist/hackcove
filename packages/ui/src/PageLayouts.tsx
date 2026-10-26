@@ -3,7 +3,7 @@ import { Card } from "./ui.js";
 import { cx } from "./cx.js";
 import { PageHeader, PageHeaderContent, type PageHeaderProps } from "./PageHeader.js";
 import { STACK_WIDTH, Stack, type StackGap } from "./Stack.js";
-import type { Unstyled } from "./props.js";
+import type { Passthrough, Unstyled } from "./props.js";
 
 // Compositions of the layout foundation. None sets a page width or outer padding of its own; the
 // ones that narrow their content do it inside the Container they are rendered in.
@@ -14,18 +14,29 @@ export function ListLayout({
   empty,
   isEmpty = false,
   children,
-  ...header
+  breadcrumbs,
+  title,
+  subtitle,
+  actions,
+  tabs,
+  ...rest
 }: PageHeaderProps & {
   filters?: ReactNode;
   /** Shown in place of `children` when `isEmpty`. */
   empty?: ReactNode;
   isEmpty?: boolean;
   children?: ReactNode;
-}): ReactElement {
+} & Passthrough): ReactElement {
   return (
     <>
-      <PageHeader {...header} />
-      <Stack>
+      <PageHeader
+        breadcrumbs={breadcrumbs}
+        title={title}
+        subtitle={subtitle}
+        actions={actions}
+        tabs={tabs}
+      />
+      <Stack {...rest}>
         {filters}
         {isEmpty ? empty : children}
       </Stack>
@@ -37,12 +48,23 @@ export function ListLayout({
 export function DetailLayout({
   aside,
   children,
-  ...header
-}: PageHeaderProps & { aside: ReactNode; children: ReactNode }): ReactElement {
+  breadcrumbs,
+  title,
+  subtitle,
+  actions,
+  tabs,
+  ...rest
+}: PageHeaderProps & { aside: ReactNode; children: ReactNode } & Passthrough): ReactElement {
   return (
     <>
-      <PageHeader {...header} />
-      <div className="grid gap-6 lg:grid-cols-3">
+      <PageHeader
+        breadcrumbs={breadcrumbs}
+        title={title}
+        subtitle={subtitle}
+        actions={actions}
+        tabs={tabs}
+      />
+      <div {...rest} className="grid gap-6 lg:grid-cols-3">
         <div className="min-w-0 lg:col-span-2">
           <Stack>{children}</Stack>
         </div>
@@ -88,14 +110,25 @@ export function FormLayout({
 export function ProseLayout({
   gap,
   children,
-  ...header
+  breadcrumbs,
+  title,
+  subtitle,
+  actions,
+  tabs,
+  ...rest
 }: PageHeaderProps & {
   gap?: StackGap | undefined;
   children?: ReactNode;
-}): ReactElement {
+} & Passthrough): ReactElement {
   return (
-    <div className={STACK_WIDTH.narrow}>
-      <PageHeader {...header} />
+    <div {...rest} className={STACK_WIDTH.narrow}>
+      <PageHeader
+        breadcrumbs={breadcrumbs}
+        title={title}
+        subtitle={subtitle}
+        actions={actions}
+        tabs={tabs}
+      />
       <Stack gap={gap}>{children}</Stack>
     </div>
   );
@@ -111,12 +144,15 @@ const COLUMNS = {
 export function CardGrid({
   columns = 3,
   children,
+  ...rest
 }: {
   columns?: keyof typeof COLUMNS;
   children: ReactNode;
-}): ReactElement {
+} & Passthrough): ReactElement {
   return (
-    <div className={cx("grid grid-cols-1 gap-4 sm:grid-cols-2", COLUMNS[columns])}>{children}</div>
+    <div {...rest} className={cx("grid grid-cols-1 gap-4 sm:grid-cols-2", COLUMNS[columns])}>
+      {children}
+    </div>
   );
 }
 
@@ -132,12 +168,13 @@ export function CardGrid({
 export function SidebarLayout({
   rail,
   children,
+  ...rest
 }: {
   rail: ReactNode;
   children: ReactNode;
-}): ReactElement {
+} & Passthrough): ReactElement {
   return (
-    <div className="flex flex-col gap-8 md:flex-row md:gap-10">
+    <div {...rest} className="flex flex-col gap-8 md:flex-row md:gap-10">
       <aside className="w-full shrink-0 md:w-56">{rail}</aside>
       <div className="min-w-0 flex-1">{children}</div>
     </div>
@@ -153,12 +190,13 @@ export function SidebarLayout({
 export function FullBleedLayout({
   panel,
   children,
+  ...rest
 }: {
   panel?: ReactNode;
   children: ReactNode;
-}): ReactElement {
+} & Passthrough): ReactElement {
   return (
-    <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+    <div {...rest} className="flex min-h-0 flex-1 flex-col lg:flex-row">
       <div className="min-w-0 flex-1">{children}</div>
       {panel && (
         <aside className="w-full shrink-0 border-t border-slate-200 bg-slate-50 p-4 lg:w-72 lg:border-t-0 lg:border-l">
@@ -174,13 +212,14 @@ export function CenteredLayout({
   title,
   subtitle,
   children,
+  ...rest
 }: {
   title: ReactNode;
   subtitle?: ReactNode;
   children?: ReactNode;
-}): ReactElement {
+} & Passthrough): ReactElement {
   return (
-    <div className="mx-auto w-full max-w-md pt-16">
+    <div {...rest} className="mx-auto w-full max-w-md pt-16">
       <Card as="div">
         <Stack>
           <PageHeaderContent title={title} subtitle={subtitle} />

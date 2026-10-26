@@ -1,4 +1,5 @@
 import type { ReactElement, ReactNode } from "react";
+import type { Passthrough } from "./props.js";
 import { PageHeading, Subtitle } from "./typography.js";
 
 export type PageHeaderProps = {
@@ -20,9 +21,10 @@ export function PageHeaderContent({
   actions,
   tabs,
   className,
-}: PageHeaderProps & { className?: string }): ReactElement {
+  ...rest
+}: PageHeaderProps & Passthrough & { className?: string }): ReactElement {
   return (
-    <div data-page-header="" className={className}>
+    <div {...rest} data-page-header="" className={className}>
       {breadcrumbs && <div className="mb-2">{breadcrumbs}</div>}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
@@ -45,6 +47,6 @@ export function PageHeaderContent({
  * every page's first block at the same y; as a direct child of a `Stack` it has none, so the Stack's
  * gap is the only space under it.
  */
-export function PageHeader(props: PageHeaderProps): ReactElement {
+export function PageHeader(props: PageHeaderProps & Passthrough): ReactElement {
   return <PageHeaderContent {...props} className="mb-8" />;
 }

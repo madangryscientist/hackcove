@@ -1,8 +1,9 @@
-import { type ReactElement, type ReactNode, useEffect, useRef } from "react";
+import { type HTMLAttributes, type ReactElement, type ReactNode, useEffect, useRef } from "react";
 import { ContainerFrame } from "./Container.js";
 import { schemeClass, type ColourScheme, type ColourSchemeClasses } from "./colourScheme.js";
 import { cx, focusRing } from "./cx.js";
 import { type LinkRender, renderLink } from "./link.js";
+import type { Passthrough, Unstyled } from "./props.js";
 
 /**
  * The class an app puts on its own `<html>`: it always reserves the scrollbar, so centred content
@@ -31,26 +32,28 @@ export function AppShellBrand({
   collapse = false,
   href,
   render,
-}: {
+  ...rest
+}: Passthrough & {
   /** The name beside the logo. It is the link's accessible name. */
   label: ReactNode;
 } & (
-  | {
-      /** The mark before the label, e.g. an `Avatar` or an `<img>`. */
-      logo?: ReactNode;
-      collapse?: false | undefined;
-    }
-  | {
-      logo: ReactNode;
-      /** Below `sm` only the logo shows; the label is visually hidden and still names the link. Needs a `logo`. */
-      collapse: true;
-    }
-) &
+    | {
+        /** The mark before the label, e.g. an `Avatar` or an `<img>`. */
+        logo?: ReactNode;
+        collapse?: false | undefined;
+      }
+    | {
+        logo: ReactNode;
+        /** Below `sm` only the logo shows; the label is visually hidden and still names the link. Needs a `logo`. */
+        collapse: true;
+      }
+  ) &
   (
     | { href: string; render?: LinkRender | undefined }
     | { href?: string | undefined; render: LinkRender }
   )): ReactElement {
   return renderLink({
+    ...rest,
     href,
     render,
     className: cx("flex items-center gap-2 rounded", focusRing),
@@ -162,6 +165,7 @@ export function AppShell({
   bleed = false,
   hideChromeInPrint = false,
   children,
+  ...rest
 }: {
   /** The brand: a logo and a name, in the header's brand type, with the gap between them. `AppShellBrand` makes both one link. */
   brand?: ReactNode;
@@ -182,9 +186,9 @@ export function AppShell({
    */
   hideChromeInPrint?: boolean;
   children: ReactNode;
-}): ReactElement {
+} & Unstyled<Omit<HTMLAttributes<HTMLDivElement>, "children">>): ReactElement {
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div {...rest} className="flex min-h-dvh flex-col">
       <header
         className={cx(
           "sticky top-0 z-10 border-b border-slate-200 bg-white",

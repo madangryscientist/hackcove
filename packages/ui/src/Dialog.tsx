@@ -1,5 +1,6 @@
 import { type ReactElement, type ReactNode, useEffect, useId, useRef } from "react";
 import { cx } from "./cx.js";
+import type { Passthrough } from "./props.js";
 import { Subtitle, ModalHeading } from "./typography.js";
 
 const PANEL =
@@ -17,7 +18,7 @@ export type DialogProps = {
   size?: keyof typeof SIZE;
   /** Called when the dialog closes: Esc, a click on the backdrop, or a `<form method="dialog">` submit. */
   onClose: () => void;
-};
+} & Passthrough;
 
 /**
  * A modal on the browser's own `<dialog>`: it is opened with `showModal()` on mount, so render it
@@ -31,6 +32,7 @@ export function Dialog({
   footer,
   size = "md",
   onClose,
+  ...rest
 }: DialogProps): ReactElement {
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -41,6 +43,7 @@ export function Dialog({
 
   return (
     <dialog
+      {...rest}
       ref={dialog}
       aria-labelledby={titleId}
       onClose={onClose}

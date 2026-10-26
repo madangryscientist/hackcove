@@ -204,22 +204,27 @@ export function TableGroupRow({
   );
 }
 
-/** A column title, `<th scope="col">`. */
+/**
+ * A column title, `<th scope="col">`. A column with nothing to show in its head (a row's actions)
+ * takes `srLabel` instead of `children`: the name a screen reader hears ("Actions"), visually
+ * hidden so the head keeps its column.
+ */
 export function TableHeaderCell({
   align = "start",
   children,
+  srLabel,
   ...rest
 }: {
   align?: Align | undefined;
-  children?: ReactNode;
-} & Rest<"th", "align" | "scope">): ReactElement {
+} & ({ children?: ReactNode; srLabel?: undefined } | { children?: undefined; srLabel: string }) &
+  Rest<"th", "align" | "scope">): ReactElement {
   return (
     <th
       {...rest}
       scope="col"
       className={cx("whitespace-nowrap px-4 py-2.5 font-medium", ALIGN[align])}
     >
-      {children}
+      {srLabel === undefined ? children : <span className="sr-only">{srLabel}</span>}
     </th>
   );
 }

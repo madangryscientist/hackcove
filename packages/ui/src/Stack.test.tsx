@@ -108,4 +108,10 @@ describe("Section", () => {
       `<section class="flex flex-col gap-4 ${DROP}">body</section>`,
     );
   });
+
+  it("keeps a consumer's aria-labelledby when it has no title of its own", () => {
+    expect(renderToStaticMarkup(<Section aria-labelledby="h">body</Section>)).toContain(
+      'aria-labelledby="h"',
+    );
+  });
 });

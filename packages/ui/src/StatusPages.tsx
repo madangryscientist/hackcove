@@ -4,6 +4,7 @@ import { ButtonLink } from "./ButtonLink.js";
 import { CodeBlock } from "./CodeBlock.js";
 import { type LinkRender } from "./link.js";
 import { CenteredLayout } from "./PageLayouts.js";
+import type { Passthrough } from "./props.js";
 
 // Whole pages for the states every site has: not found, failed, offline, down for maintenance,
 // not allowed. Each is a CenteredLayout card with fixed copy, so they look the same on every site
@@ -20,7 +21,7 @@ type StatusPageProps = {
   homeHref?: string;
   /** Draws the home link with the app's own router `<Link>`, as on `ButtonLink`. */
   renderHome?: LinkRender;
-};
+} & Passthrough;
 
 type Copy = { title: string; body: string };
 
@@ -52,10 +53,11 @@ function StatusPage({
   homeHref,
   renderHome,
   extra,
+  ...rest
 }: StatusPageProps & { copy: Copy; extra?: ReactNode }): ReactElement {
   const home = homeLink(action === undefined ? "primary" : "outline", homeHref, renderHome);
   return (
-    <CenteredLayout title={title ?? copy.title} subtitle={children ?? copy.body}>
+    <CenteredLayout {...rest} title={title ?? copy.title} subtitle={children ?? copy.body}>
       {extra}
       {(action || home) && (
         <div className="flex flex-wrap items-center gap-2">

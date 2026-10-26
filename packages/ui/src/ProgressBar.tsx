@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import { cx } from "./cx.js";
+import type { Passthrough } from "./props.js";
 
 /** The colour of a bar's fill. */
 export type BarTone = "accent" | "positive" | "warn" | "negative";
@@ -42,6 +43,7 @@ export function ProgressBar({
   label,
   tone = "accent",
   size = "sm",
+  ...rest
 }: {
   value: number;
   /** Defaults to 100. */
@@ -51,10 +53,11 @@ export function ProgressBar({
   tone?: BarTone;
   /** Defaults to "sm". */
   size?: BarSize;
-}): ReactElement {
+} & Passthrough): ReactElement {
   const share = sharePercent(value, max);
   return (
     <div
+      {...rest}
       role="progressbar"
       aria-label={label}
       aria-valuemin={0}

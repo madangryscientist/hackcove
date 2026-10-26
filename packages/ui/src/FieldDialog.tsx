@@ -3,6 +3,7 @@ import { Button } from "./Button.js";
 import { Dialog } from "./Dialog.js";
 import { Field } from "./Field.js";
 import { Input } from "./Input.js";
+import type { Passthrough } from "./props.js";
 
 export type FieldDialogProps = {
   title: string;
@@ -20,7 +21,7 @@ export type FieldDialogProps = {
   /** Gets the trimmed value. Resolving closes the dialog; a rejection shows its message in it. */
   onSubmit: (value: string) => Promise<unknown>;
   onClose: () => void;
-};
+} & Passthrough;
 
 /** The field's value and its in-flight state; `send` is the form's submit handler. */
 function useFieldSubmit(onSubmit: (value: string) => Promise<unknown>, onClose: () => void) {
@@ -54,6 +55,7 @@ export function FieldDialog({
   busyLabel,
   onSubmit,
   onClose,
+  ...rest
 }: FieldDialogProps): ReactElement {
   const id = useId();
   const formId = `${id}-form`;
@@ -61,6 +63,7 @@ export function FieldDialog({
 
   return (
     <Dialog
+      {...rest}
       title={title}
       description={description}
       onClose={onClose}

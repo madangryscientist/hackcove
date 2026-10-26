@@ -7,6 +7,7 @@ import {
   TableCell,
   TableFoot,
   TableGroupRow,
+  TableHeaderCell,
   TableRow,
 } from "./Table.js";
 
@@ -169,5 +170,21 @@ describe("TableCell truncate", () => {
   it("keeps the second line outside the truncated box", () => {
     const out = cell({ truncate: true, children: "Naledi", secondary: "second" });
     expect(out).toContain('title="Naledi">Naledi</div><div class="text-xs font-normal');
+  });
+});
+
+describe("TableHeaderCell srLabel", () => {
+  it("is a visually hidden column name in place of the children", () => {
+    const out = renderToStaticMarkup(
+      <table>
+        <thead>
+          <tr>
+            <TableHeaderCell align="end" srLabel="Actions" />
+          </tr>
+        </thead>
+      </table>,
+    );
+    expect(out).toContain('<th scope="col"');
+    expect(out).toContain('<span class="sr-only">Actions</span>');
   });
 });

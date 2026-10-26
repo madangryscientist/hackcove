@@ -1,6 +1,7 @@
 import { type ReactElement, type ReactNode, useLayoutEffect, useId, useRef } from "react";
 import { cx } from "./cx.js";
 import { IconButton } from "./IconButton.js";
+import type { Passthrough } from "./props.js";
 import { ModalHeading } from "./typography.js";
 
 const PANEL =
@@ -19,7 +20,7 @@ export type DrawerProps = {
   onClose: () => void;
   /** The accessible name of the close button. */
   closeLabel?: string;
-};
+} & Passthrough;
 
 /**
  * A modal slide-over anchored to the right edge, on the browser's own `<dialog>`: it is opened
@@ -35,6 +36,7 @@ export function Drawer({
   size = "md",
   onClose,
   closeLabel = "Close",
+  ...rest
 }: DrawerProps): ReactElement {
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -49,6 +51,7 @@ export function Drawer({
 
   return (
     <dialog
+      {...rest}
       ref={dialog}
       aria-labelledby={titleId}
       onClose={onClose}

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { Passthrough } from "./props.js";
 
 // A minimal, SAFE markdown renderer (headings / bullets / bold). No
 // dangerouslySetInnerHTML — text is rendered as React nodes, so it can't inject HTML.
@@ -14,7 +15,7 @@ function inline(text: string): ReactNode[] {
   );
 }
 
-export function Markdown({ md }: { md: string }) {
+export function Markdown({ md, ...rest }: { md: string } & Passthrough) {
   const out: ReactNode[] = [];
   let bullets: ReactNode[] = [];
   const flush = () => {
@@ -64,5 +65,9 @@ export function Markdown({ md }: { md: string }) {
     }
   });
   flush();
-  return <div className="space-y-1">{out}</div>;
+  return (
+    <div {...rest} className="space-y-1">
+      {out}
+    </div>
+  );
 }

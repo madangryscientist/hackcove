@@ -1,5 +1,6 @@
 import type { ReactElement, ReactNode } from "react";
 import { cx } from "./cx.js";
+import type { Passthrough } from "./props.js";
 
 /** The line under a control or a row: an error (`role="alert"`) replaces the hint; neither draws nothing. */
 export function fieldNote(hint: ReactNode, error: ReactNode): ReactElement | null {
@@ -27,6 +28,7 @@ export function Field({
   error,
   span,
   children,
+  ...rest
 }: {
   label: ReactNode;
   /** The id of the control inside; the label's htmlFor. */
@@ -37,9 +39,9 @@ export function Field({
   /** `full` spans every column of a `FormGrid`; unset takes one. It does nothing outside a `FormGrid`. */
   span?: "full" | undefined;
   children: ReactNode;
-}): ReactElement {
+} & Passthrough): ReactElement {
   return (
-    <div className={cx("flex flex-col gap-1.5", span === "full" && "col-span-full")}>
+    <div {...rest} className={cx("flex flex-col gap-1.5", span === "full" && "col-span-full")}>
       <label htmlFor={htmlFor} className="text-sm font-medium text-slate-700">
         {label}
       </label>

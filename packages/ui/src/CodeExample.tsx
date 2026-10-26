@@ -1,4 +1,5 @@
 import type { ReactElement, ReactNode } from "react";
+import type { Passthrough } from "./props.js";
 
 /**
  * One framed example: the rendered `children` on top and the `code` that makes them attached
@@ -11,15 +12,16 @@ export function CodeExample({
   code,
   caption,
   children,
+  ...rest
 }: {
   /** The source shown under the preview, newlines kept. */
   code: string;
   /** One note on the example, under the code. */
   caption?: ReactNode;
   children: ReactNode;
-}): ReactElement {
+} & Passthrough): ReactElement {
   return (
-    <figure className="overflow-hidden rounded-lg border border-slate-200 bg-white">
+    <figure {...rest} className="overflow-hidden rounded-lg border border-slate-200 bg-white">
       <div className="min-h-24 overflow-x-auto p-5">{children}</div>
       <pre className="overflow-x-auto border-t border-slate-200 bg-slate-50 px-3 py-2.5 font-mono text-[12.5px] whitespace-pre text-slate-900">
         <code>{code}</code>

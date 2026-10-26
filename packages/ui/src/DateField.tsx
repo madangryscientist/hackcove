@@ -17,6 +17,7 @@ import {
 } from "react-aria-components";
 import { cx, focusRing } from "./cx.js";
 import { toISODate } from "./isoDate.js";
+import type { DataAttributes } from "./link.js";
 import { ShownInput, useShownDate } from "./shownDate.js";
 
 /** Fixed, whatever the browser's locale: DD/MM/YYYY and Monday-first weeks. */
@@ -39,18 +40,22 @@ export type DateFieldProps = {
   error?: ReactNode;
   /** Marks the field invalid with no message of its own; pair it with `errorMessage`. */
   isInvalid?: boolean;
-} & Pick<
-  AriaDateFieldProps<CalendarDate>,
-  | "value"
-  | "defaultValue"
-  | "onChange"
-  | "minValue"
-  | "maxValue"
-  | "isDisabled"
-  | "isRequired"
-  | "name"
-  | "aria-label"
->;
+} & DataAttributes &
+  Pick<
+    AriaDateFieldProps<CalendarDate>,
+    | "value"
+    | "defaultValue"
+    | "onChange"
+    | "minValue"
+    | "maxValue"
+    | "isDisabled"
+    | "isRequired"
+    | "name"
+    | "aria-label"
+    | "aria-labelledby"
+    | "aria-describedby"
+    | "aria-details"
+  >;
 
 /** What the segments show, as the day segment reports it to the field. */
 export type Read = {

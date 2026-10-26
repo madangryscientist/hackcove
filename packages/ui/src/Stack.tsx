@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { cx } from "./cx.js";
-import type { Unstyled } from "./props.js";
+import type { Passthrough, Unstyled } from "./props.js";
 import { SectionHeading } from "./typography.js";
 
 export type StackGap = "xs" | "sm" | "md" | "lg" | "section";
@@ -83,7 +83,7 @@ type StackBase = {
 
 type StackProps = StackBase &
   (
-    | { as?: "div" | "section"; "aria-labelledby"?: string | undefined }
+    | ({ as?: "div" | "section" } & Passthrough)
     | ({ as: "form" } & Unstyled<Omit<ComponentPropsWithoutRef<"form">, "children">>)
     | ({ as: "ul" } & Unstyled<Omit<ComponentPropsWithoutRef<"ul">, "children">>)
     | ({ as: "ol" } & Unstyled<Omit<ComponentPropsWithoutRef<"ol">, "children">>)
@@ -96,16 +96,23 @@ export function Section({
   gap = "sm",
   width,
   children,
+  ...rest
 }: {
   title?: ReactNode;
   actions?: ReactNode;
   gap?: StackGap | undefined;
   width?: StackWidth | undefined;
   children?: ReactNode;
-}): ReactElement {
+} & Passthrough): ReactElement {
   const titleId = useId();
   return (
-    <Stack as="section" gap={gap} width={width} aria-labelledby={title ? titleId : undefined}>
+    <Stack
+      as="section"
+      {...rest}
+      gap={gap}
+      width={width}
+      aria-labelledby={title ? titleId : rest["aria-labelledby"]}
+    >
       {(title || actions) && (
         <div className="flex items-center justify-between gap-4">
           {title && <SectionHeading id={titleId}>{title}</SectionHeading>}

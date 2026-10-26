@@ -8,6 +8,7 @@ import {
   type BarSize,
   type BarTone,
 } from "./ProgressBar.js";
+import type { Passthrough } from "./props.js";
 
 /**
  * A bar split between two parties, `a` on the left and `b` on the right, each sized by its share of
@@ -22,6 +23,7 @@ export function SplitBar({
   toneA = "negative",
   toneB = "positive",
   size = "lg",
+  ...rest
 }: {
   a: number;
   b: number;
@@ -34,13 +36,14 @@ export function SplitBar({
   toneB?: BarTone;
   /** Defaults to "lg". */
   size?: BarSize;
-}): ReactElement {
+} & Passthrough): ReactElement {
   const shareA = sharePercent(a, a + b);
   const shareB = a + b > 0 ? 100 - shareA : 0;
   const percentA = announcedPercent(a, a + b);
   const percentB = a + b > 0 ? 100 - percentA : 0;
   return (
     <div
+      {...rest}
       role="img"
       aria-label={`${label}: ${names ? `${names[0]} ${percentA}%, ${names[1]} ${percentB}%` : `${percentA}% / ${percentB}%`}`}
       className={cx("flex overflow-hidden rounded-full bg-slate-100", BAR_TRACK[size])}
