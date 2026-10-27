@@ -126,7 +126,7 @@ export function stylingPropsRule(file: ReviewFile): Finding[] {
 }
 
 function duplicateMessage(name: string): string {
-  return `Local component \`${name}\` has the name of an @hackcove/ui export. Import the Hack Cove one; if it does not fit, ask hackcove for what is missing instead of building a look-alike.`;
+  return `Local component \`${name}\` has the same name as an @hackcove/ui export. If it does the same job, import the Hack Cove one, and if that one does not fit, ask hackcove for what is missing rather than building a look-alike. If it is a different thing, rename it so it is not mistaken for the Hack Cove one.`;
 }
 
 export function duplicateComponents(file: ReviewFile, ctx: Context): Finding[] {
