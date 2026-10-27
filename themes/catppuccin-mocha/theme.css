@@ -193,6 +193,17 @@
   background-color: rgba(166, 227, 161, 0.14); /* green tint */
 }
 
+/* A plain-disabled solid Button (every tone). Half opacity on a pastel fill goes muddy under the
+   dark crust label, so it flattens to the same look as a blocked Button (surface1 fill, overlay2
+   label) instead. `.disabled\:opacity-50` is the plain-disabled marker: busy keeps its colour and
+   blocked is already flat. */
+.dark .disabled\:opacity-50:disabled:is(.bg-violet-600, .bg-emerald-600, .bg-red-600) {
+  opacity: 1;
+  background-color: #45475a; /* surface1 */
+  border-color: #313244; /* surface0 */
+  color: #9399b2; /* overlay2 */
+}
+
 /* Avatar identity colours — violet-600 is the accent above; the rest sit on the theme. */
 .dark .bg-orange-600 {
   background-color: #fab387; /* peach */
