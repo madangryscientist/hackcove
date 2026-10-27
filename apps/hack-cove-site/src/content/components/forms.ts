@@ -93,7 +93,7 @@ export const forms: ComponentSection = {
         'In a table cell leave the `label` out, use `size="sm"` and name the box with `aria-label`.',
         '`align="start"` puts the box on the first line of a label that wraps onto several; the default centres it.',
         "Do not wrap a `Checkbox` in a `Field`; it is its own label.",
-        "Choosing one of several is a `Select` or a `SegmentedControl`, not a row of checkboxes.",
+        "Choosing one of several is a `RadioGroup`, a `Select` or a `SegmentedControl`, not a row of checkboxes.",
       ],
       accessibility: [
         'A native `<input type="checkbox">` inside a `<label>`, so clicking the text toggles it and the label is its name.',
@@ -101,6 +101,29 @@ export const forms: ComponentSection = {
         "The focus ring comes from the component.",
       ],
       api: ["Checkbox"],
+    },
+    {
+      slug: "radio-group",
+      name: "RadioGroup",
+      summary: "One choice from a few options, all in view.",
+      whenToUse:
+        "A setting or answer with two to five options the person should see side by side: a visibility, a delivery method, a type.",
+      pairs: ["RadioGroup/Choice"],
+      usage: [
+        "Give the `RadioGroup` a `label` that names the question, and a `Radio` per option with its own `label` and a `value`.",
+        "Keep the choice with `defaultValue`, or control it with `value` and `onChange(value)`. `name` posts it in a form.",
+        "A `description` on a `Radio` is a muted line under its label, for the option that needs a sentence.",
+        "An `error` on the group is a red line under the options and marks every circle red; it is the same wording rule as `Field`'s.",
+        "`isDisabled` on the group disables every option; on a `Radio` it disables that one.",
+        "More than five options, or a list that grows, is a `Select`. Several ticks are `Checkbox`es. Switching a view in place is a `SegmentedControl`.",
+      ],
+      accessibility: [
+        'The group is a `role="radiogroup"` named by its label; each `Radio` is a native `<input type="radio">` inside its `<label>`, so clicking the words chooses it.',
+        "The group is one tab stop. The arrow keys move between the options and choose, wrapping at each end and skipping a disabled one.",
+        'An `error` is a `role="alert"` line and the group is `aria-invalid`; a `description` is the option\'s `aria-describedby`.',
+        "The focus ring is drawn round the option that has focus, by the component.",
+      ],
+      api: ["RadioGroup", "Radio"],
     },
     {
       slug: "file-drop",

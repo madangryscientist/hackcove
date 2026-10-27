@@ -44,6 +44,7 @@ import {
 import { GalleryBars } from "./GalleryBars";
 import { GalleryControls } from "./GalleryControls";
 import { GalleryButtons } from "./GalleryButtons";
+import { GalleryChoice } from "./GalleryChoice";
 import { GalleryData } from "./GalleryData";
 import { GalleryForm, GalleryNameField } from "./GalleryForm";
 import { GalleryLayout } from "./GalleryLayout";
@@ -290,6 +291,8 @@ export function Gallery() {
       <GalleryForm />
 
       <GalleryControls />
+
+      <GalleryChoice />
 
       <Breadcrumbs
         crumbs={[

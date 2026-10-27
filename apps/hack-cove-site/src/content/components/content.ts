@@ -195,6 +195,27 @@ export const content: ComponentSection = {
       api: ["Timeline", "TimelineItem"],
     },
     {
+      slug: "disclosure",
+      name: "Disclosure",
+      summary: "A summary line that opens and closes a body under it.",
+      whenToUse:
+        "Detail the person may not need on first sight: a history, an FAQ answer, the fine print.",
+      pairs: ["Disclosure/Secondary", "Disclosure/Essential"],
+      usage: [
+        "Give it a `summary` that says what is inside; the `children` are the body. It starts closed; `defaultOpen` starts it open.",
+        "It keeps its own state. Several in a column are independent of each other.",
+        "Do not hide what the person must read to carry on, such as an error or the one thing the page is for.",
+        "A collapsible section header in a list of rows is a `ListRow` with `expanded`, where the caller owns the state.",
+        "It replaces `<details>` and `<summary>`.",
+      ],
+      accessibility: [
+        "The summary is a real `<button>` with `aria-expanded` and `aria-controls`; Enter and Space toggle it.",
+        'The body is a `role="group"` named by the summary, and hidden from assistive tech while closed.',
+        "The chevron is decorative. The focus ring comes from the component.",
+      ],
+      api: ["Disclosure"],
+    },
+    {
       slug: "key-value-list",
       name: "KeyValueList",
       summary: "Labelled facts, one per row.",
