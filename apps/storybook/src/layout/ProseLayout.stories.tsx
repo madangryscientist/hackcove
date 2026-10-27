@@ -1,5 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Card, ListLayout, ProseLayout, SectionHeading } from "@hackcove/ui";
+import {
+  AppShell,
+  Body,
+  Card,
+  ListLayout,
+  NavTabs,
+  ProseLayout,
+  SectionHeading,
+} from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { ProsePage } from "./pages";
 
@@ -11,6 +19,31 @@ const meta: Meta = {
 };
 export default meta;
 type S = StoryObj;
+
+/** A whole text page: the shell with its brand and nav, then one reading column with the header inside it. */
+export const FullPage: S = {
+  render: () => (
+    <AppShell
+      brand={<a href="#">Hack Cove</a>}
+      nav={
+        <NavTabs
+          label="Main"
+          items={[
+            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Clients", href: "#clients" },
+          ]}
+        />
+      }
+    >
+      <ProseLayout title="Privacy" subtitle="How we handle your data.">
+        <SectionHeading>What we keep</SectionHeading>
+        <Body as="p">We keep your account details and the quotes you send, and nothing else.</Body>
+        <SectionHeading>Who sees it</SectionHeading>
+        <Body as="p">Only you and the people you invite to your organisation.</Body>
+      </ProseLayout>
+    </AppShell>
+  ),
+};
 
 export const Privacy: S = {
   render: () => (

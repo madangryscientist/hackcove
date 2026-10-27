@@ -23,7 +23,11 @@ function Install() {
         <Stack key={step.text} gap="xs">
           <Body as="p">{step.text}</Body>
           {step.code !== undefined && (
-            <CodeBlock lines={[step.code].flat()} label={step.label ?? "bash"} />
+            <CodeBlock
+              lines={[step.code].flat()}
+              label={step.label ?? "bash"}
+              language={step.language}
+            />
           )}
         </Stack>
       ))}
@@ -65,7 +69,7 @@ function Components() {
           <Card key={section.title} as="article" title={section.title} count={section.pages.length}>
             <Stack gap="sm">
               <Body as="p">{section.description}</Body>
-              <InlineLinks>
+              <InlineLinks separator="none">
                 {section.pages.map((page) => (
                   <TextLink key={page.slug} href={`/ui/${page.slug}/`}>
                     {page.name}

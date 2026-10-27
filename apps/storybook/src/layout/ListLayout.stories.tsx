@@ -1,11 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
+  AppShell,
   Body,
+  BodyStrong,
   Button,
   Card,
   EmptyState,
   FilterGroup,
   ListLayout,
+  NavTabs,
   PageHeader,
   Pill,
   Stack,
@@ -22,6 +25,50 @@ const meta: Meta = {
 };
 export default meta;
 type S = StoryObj;
+
+/** A whole list page: the shell with its brand and nav, then the layout with its filters and rows. */
+export const FullPage: S = {
+  render: () => (
+    <AppShell
+      brand={<a href="#">Hack Cove</a>}
+      nav={
+        <NavTabs
+          label="Main"
+          items={[
+            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Clients", href: "#clients" },
+          ]}
+        />
+      }
+    >
+      <ListLayout
+        title="Quotes"
+        subtitle="Every quote you have sent."
+        actions={<Button>New quote</Button>}
+        filters={
+          <FilterGroup legend="Status">
+            <ToggleChip pressed>All</ToggleChip>
+            <ToggleChip pressed={false}>Sent</ToggleChip>
+            <ToggleChip pressed={false}>Accepted</ToggleChip>
+          </FilterGroup>
+        }
+      >
+        <Card as="article">
+          <BodyStrong as="p">Naledi Mokoena</BodyStrong>
+          <Body as="p" color="secondary">
+            Q-1042 · R 1 240 / mo
+          </Body>
+        </Card>
+        <Card as="article">
+          <BodyStrong as="p">Pieter van Wyk</BodyStrong>
+          <Body as="p" color="secondary">
+            Q-1041 · R 860 / mo
+          </Body>
+        </Card>
+      </ListLayout>
+    </AppShell>
+  ),
+};
 
 export const WithRows: S = {
   render: () => (

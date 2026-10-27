@@ -59,6 +59,9 @@ function bodyText(fn: ts.ArrowFunction, raw: string): string {
   return [first, ...dedent(rest.join("\n")).split("\n")].join("\n");
 }
 
+/** The longest one-line import the docs frame shows without a sideways scroll. */
+const IMPORT_WIDTH = 90;
+
 /** `import { A, B } from "mod";` for the names a snippet uses, from every package import. */
 function importsFor(file: ts.SourceFile, snippet: string): string {
   const used = (name: string) => new RegExp(`\\b${name}\\b`).test(snippet);
@@ -68,7 +71,12 @@ function importsFor(file: ts.SourceFile, snippet: string): string {
     if (spec.startsWith(".") || spec.startsWith("@storybook") || named === undefined) return [];
     if (!ts.isNamedImports(named)) return [];
     const names = named.elements.map((e) => e.name.text).filter(used);
-    return names.length === 0 ? [] : [`import { ${names.join(", ")} } from "${spec}";`];
+    if (names.length === 0) return [];
+    const line = `import { ${names.join(", ")} } from "${spec}";`;
+    // Past the width the frame shows without scrolling, one name per line.
+    return [
+      line.length <= IMPORT_WIDTH ? line : `import {\n  ${names.join(",\n  ")},\n} from "${spec}";`,
+    ];
   });
   return lines.join("\n");
 }

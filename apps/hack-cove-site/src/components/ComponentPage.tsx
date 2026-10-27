@@ -9,6 +9,7 @@ import {
 } from "@hackcove/ui";
 import type { ComponentPage as Page } from "../content/components/index";
 import { DoDont } from "../docs/DoDont";
+import { Example } from "../docs/Example";
 import { Props } from "../docs/Props";
 import { Prose } from "../docs/Prose";
 
@@ -32,7 +33,7 @@ function Rules({ items }: { items: string[] }) {
 
 /**
  * A component's page, from its entry in `content/components.ts`: the one right way and its Do/Don'ts
- * first, then Usage, Accessibility and the API. `/ui/llms.txt` is made from the same entry.
+ * first, then a layout's full page, Usage, Accessibility and the API. `/ui/llms.txt` is made from the same entry.
  */
 export function ComponentPage({ page }: { page: Page }) {
   return (
@@ -49,6 +50,11 @@ export function ComponentPage({ page }: { page: Page }) {
           </Stack>
         ))}
       </Section>
+      {page.fullPage !== undefined && (
+        <Section title="Full page" gap="md">
+          <Example of={page.fullPage} />
+        </Section>
+      )}
       <Section title="Usage" gap="md">
         <Rules items={page.usage} />
       </Section>

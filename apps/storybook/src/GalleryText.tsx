@@ -63,7 +63,7 @@ export function GalleryText() {
           </Body>
         </div>
       </div>
-      <CodeBlock label="bash" lines={["bun add @hackcove/ui", "bun install"]} />
+      <CodeBlock label="bash" language="bash" lines={["bun add @hackcove/ui", "bun install"]} />
       <CodeExample code={"<Button>Save</Button>"}>
         <Button>Save</Button>
       </CodeExample>

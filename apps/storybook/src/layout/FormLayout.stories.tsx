@@ -1,5 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Card, Field, FormLayout, Input, ListLayout, Stack } from "@hackcove/ui";
+import {
+  AppShell,
+  Button,
+  Card,
+  Field,
+  FormLayout,
+  Input,
+  ListLayout,
+  NavTabs,
+  Stack,
+} from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { FormPage } from "./pages";
 
@@ -11,6 +21,47 @@ const meta: Meta = {
 };
 export default meta;
 type S = StoryObj;
+
+/** A whole form page: the shell with its brand and nav, then the layout with the fields in `children` and Save and Cancel in `actions`. */
+export const FullPage: S = {
+  render: () => (
+    <AppShell
+      brand={<a href="#">Hack Cove</a>}
+      nav={
+        <NavTabs
+          label="Main"
+          items={[
+            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Clients", href: "#clients" },
+          ]}
+        />
+      }
+    >
+      <FormLayout
+        title="New client"
+        subtitle="Who is the quote for?"
+        onSubmit={(event) => event.preventDefault()}
+        actions={
+          <>
+            <Button type="submit">Save client</Button>
+            <Button variant="ghost">Cancel</Button>
+          </>
+        }
+      >
+        <Card title="Client">
+          <Stack>
+            <Field label="Full name" htmlFor="full-page-name">
+              <Input id="full-page-name" placeholder="Naledi Mokoena" />
+            </Field>
+            <Field label="Email" htmlFor="full-page-email">
+              <Input id="full-page-email" type="email" />
+            </Field>
+          </Stack>
+        </Card>
+      </FormLayout>
+    </AppShell>
+  ),
+};
 
 export const NewQuote: S = {
   render: () => (

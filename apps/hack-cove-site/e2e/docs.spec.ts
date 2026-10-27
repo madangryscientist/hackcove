@@ -122,24 +122,53 @@ for (const width of [1440, 390]) {
   });
 }
 
-test("at 1440px a Do/Don't pair starts at the same top and a lone Do spans both columns", async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/ui/tabs/");
-  const frames = page.locator("main figure");
-  await frames.first().waitFor();
-  const boxes = await frames.evaluateAll((els) =>
-    els.map((el) => {
-      const { x, y, width } = el.getBoundingClientRect();
-      return { x: Math.round(x), y: Math.round(y), width: Math.round(width) };
-    }),
-  );
-  const [lone, doSide, dontSide] = boxes;
-  expect(boxes.length).toBeGreaterThanOrEqual(3);
-  // The first topic has only a Do: it is as wide as the pair is together (two frames and a gap).
-  expect(lone?.width).toBeGreaterThan((doSide?.width ?? 0) * 1.9);
-  expect(doSide?.y).toBe(dontSide?.y);
+for (const width of [1440, 1280]) {
+  test(`at ${width}px a Do/Don't pair stacks, Do above Don't, each frame as wide as a lone Do`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/ui/tabs/");
+    const frames = page.locator("main figure");
+    await frames.first().waitFor();
+    const [lone, doSide, dontSide] = await frames.evaluateAll((els) =>
+      els.map((el) => {
+        const box = el.getBoundingClientRect();
+        return { x: box.x, bottom: box.bottom, top: box.top, wide: box.width };
+      }),
+    );
+    // The first topic has only a Do; every frame is the content column wide, one under another.
+    expect([doSide?.wide, dontSide?.wide, dontSide?.x]).toEqual([
+      lone?.wide,
+      lone?.wide,
+      doSide?.x,
+    ]);
+    expect(dontSide?.top).toBeGreaterThan(doSide?.bottom ?? Infinity);
+  });
+
+  test(`at ${width}px no example's code is clipped on any component page`, async ({ page }) => {
+    test.setTimeout(180_000);
+    await page.setViewportSize({ width, height: 900 });
+    for (const { path } of pages) {
+      await page.goto(path);
+      const clipped = await page
+        .locator("main pre")
+        .evaluateAll((els) => els.filter((el) => el.scrollWidth > el.clientWidth + 1).length);
+      expect(clipped, `${path}: code that scrolls sideways`).toBe(0);
+    }
+  });
+}
+
+test("at 390px the component rail is folded and the page comes first", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 900 });
+  await page.goto("/ui/button/");
+  const heading = page.getByRole("heading", { level: 1 });
+  await heading.waitFor();
+  const nav = page.getByRole("complementary").getByRole("link", { name: "Getting started" });
+  const summary = page.getByText("All components");
+  await expect(summary).toBeVisible();
+  await expect(nav).toBeHidden();
+  const box = await heading.boundingBox();
+  expect(box?.y).toBeLessThan(250);
 });
 
 test("/ui/llms.txt is served as plain text, one section per component page", async ({

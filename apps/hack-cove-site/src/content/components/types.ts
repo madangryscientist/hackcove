@@ -17,6 +17,8 @@ export type ComponentPage = {
   whenToUse: string;
   /** Do/Don't pairs, `<File>/<Topic>`: the stories `Do<Topic>` and `Dont<Topic>`. The first is the one right way. */
   pairs: string[];
+  /** A page layout's whole page, in its shell: the story `<File>/<Topic>`, shown under Overview. */
+  fullPage?: string;
   usage: string[];
   accessibility: string[];
   /** The components whose props the API table lists. */

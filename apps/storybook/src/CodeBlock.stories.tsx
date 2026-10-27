@@ -8,17 +8,20 @@ type S = StoryObj;
 export const Default: S = {
   render: () => (
     <div className="max-w-xl">
-      <CodeBlock>{"bun add @hackcove/ui\nbun add @hackcove/theme-catppuccin-mocha"}</CodeBlock>
+      <CodeBlock language="bash">
+        {"bun add @hackcove/ui\nbun add @hackcove/theme-catppuccin-mocha"}
+      </CodeBlock>
     </div>
   ),
 };
 
-/** `label` names the language or file in a caption; `lines` is one entry per line. */
+/** `label` names the language or file in a caption, `language` says what to colour, and `lines` is one entry per line. */
 export const Labelled: S = {
   render: () => (
     <div className="max-w-xl">
       <CodeBlock
         label="css"
+        language="css"
         lines={[
           '@import "tailwindcss";',
           '@import "@hackcove/theme-catppuccin-mocha/theme.css";',
@@ -33,7 +36,7 @@ export const Labelled: S = {
 export const LongLine: S = {
   render: () => (
     <div className="max-w-sm">
-      <CodeBlock label="bash">
+      <CodeBlock label="bash" language="bash">
         bunx nx run-many -t typecheck lint test build --skip-nx-cache --output-style=stream
       </CodeBlock>
     </div>
@@ -45,6 +48,7 @@ export const DoSnippet: S = {
   render: () => (
     <CodeBlock
       label="bash"
+      language="bash"
       lines={["bun add @hackcove/ui", "bun add @hackcove/theme-catppuccin-mocha"]}
     />
   ),
@@ -52,5 +56,5 @@ export const DoSnippet: S = {
 
 /** One line a reader copies is a `CopyLine`, which has the copy button. A `CodeBlock` of one line has none. */
 export const DontSnippet: S = {
-  render: () => <CodeBlock>bun add @hackcove/ui</CodeBlock>,
+  render: () => <CodeBlock language="bash">bun add @hackcove/ui</CodeBlock>,
 };

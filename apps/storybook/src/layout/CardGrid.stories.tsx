@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Card, CardGrid, PageHeader, Stack, StatTile } from "@hackcove/ui";
+import { AppShell, Body, Card, CardGrid, NavTabs, PageHeader, Stack, StatTile } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { StatTiles } from "./pages";
 
@@ -11,6 +11,33 @@ const meta: Meta = {
 };
 export default meta;
 type S = StoryObj;
+
+/** A whole dashboard page: the shell with its brand and nav, then a `PageHeader` and a `CardGrid` of tiles. */
+export const FullPage: S = {
+  render: () => (
+    <AppShell
+      brand={<a href="#">Hack Cove</a>}
+      nav={
+        <NavTabs
+          label="Main"
+          items={[
+            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Clients", href: "#clients" },
+          ]}
+        />
+      }
+    >
+      <Stack gap="section">
+        <PageHeader title="Business" subtitle="This month at a glance." />
+        <CardGrid columns={3}>
+          <StatTile label="Open" value="12" />
+          <StatTile label="Won" value="8" tone="positive" />
+          <StatTile label="Lost" value="3" tone="negative" />
+        </CardGrid>
+      </Stack>
+    </AppShell>
+  ),
+};
 
 export const FourColumns: S = {
   render: () => (

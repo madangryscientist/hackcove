@@ -22,7 +22,7 @@ export const DontCommand: S = {
 
 /** Several lines are a `CodeBlock`; it keeps the line breaks. */
 export const DoBlock: S = {
-  render: () => <CodeBlock label="bash" lines={["bun install", "bun run build"]} />,
+  render: () => <CodeBlock label="bash" language="bash" lines={["bun install", "bun run build"]} />,
 };
 
 /** `CopyLine` is one line of text: a newline in it collapses into a space and the box runs on. */

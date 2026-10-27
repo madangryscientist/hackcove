@@ -12,6 +12,7 @@ export const pagelayouts: ComponentSection = {
       whenToUse:
         "An index of quotes, builds, members or any other collection; a single record is `DetailLayout`.",
       pairs: ["ListLayout/Rows", "ListLayout/NothingYet"],
+      fullPage: "ListLayout/FullPage",
       usage: [
         "Put the page's title, subtitle and primary `actions` in the header props; `breadcrumbs` and `tabs` go there too.",
         "`filters` sit between the header and the list: a `FilterGroup` of `ToggleChip`s.",
@@ -33,6 +34,7 @@ export const pagelayouts: ComponentSection = {
       whenToUse:
         "One quote, build or member, with its content in the main column and its facts in the aside.",
       pairs: ["DetailLayout/Record"],
+      fullPage: "DetailLayout/FullPage",
       usage: [
         "The record's content is the `children`, in the main two thirds; they are spaced as a `Stack`, so give each block its own `Card`.",
         "The facts about the record go in `aside`, in the third beside it: a `Card` with a `KeyValueList`, a status, the people on it.",
@@ -53,6 +55,7 @@ export const pagelayouts: ComponentSection = {
       summary: "A page that is one form: header, fields, then the actions.",
       whenToUse: "Creating or editing a record on a page of its own.",
       pairs: ["FormLayout/Form"],
+      fullPage: "FormLayout/FullPage",
       usage: [
         "The fields are the `children`, grouped in `Card`s; the layout spaces them in a reading-width column.",
         'Save and Cancel go in `actions`, at the end of the form: a `type="submit"` Button first, then a ghost Cancel. The header has no `actions` here.',
@@ -73,6 +76,7 @@ export const pagelayouts: ComponentSection = {
       summary: "A page of text: one reading column with the header inside it.",
       whenToUse: "Privacy, terms, help or any page that is mostly paragraphs.",
       pairs: ["ProseLayout/Article"],
+      fullPage: "ProseLayout/FullPage",
       usage: [
         'The text is the `children`: `SectionHeading`s and `Body as="p"` paragraphs, spaced `md` apart.',
         "`gap` picks another spacing from the same scale (`xs` to `section`) for the whole page; the default is right for most pages.",
@@ -93,6 +97,7 @@ export const pagelayouts: ComponentSection = {
       whenToUse:
         "Several cards or `StatTile`s of the same weight that should sit side by side on a wide screen.",
       pairs: ["CardGrid/Tiles", "CardGrid/Auto"],
+      fullPage: "CardGrid/FullPage",
       usage: [
         "Use `columns` 2, 3 or 4 when you know how many; it is one column on a phone, two from `sm` and `columns` from `lg`.",
         'Use `columns="auto"` when the count varies: it fits as many per row as the width allows, none narrower than `minWidth` (`md`, the default, or `sm`).',
@@ -113,17 +118,20 @@ export const pagelayouts: ComponentSection = {
       whenToUse:
         "A section with several sub-pages, such as settings, where the rail is the way between them.",
       pairs: ["SidebarLayout/Sections"],
+      fullPage: "SidebarLayout/FullPage",
       usage: [
         'The `rail` is a `NavTabs` with `orientation="vertical"`, one link per section and the current one `active`.',
         "The `children` are the section's page: its `PageHeader`, then the content.",
         "From `md` the rail is a fixed width beside the page; below it, the rail stacks above the page.",
-        "The rail has no background or border: it is a list of links on the page. Keep it to a short list.",
+        "The rail has no background or border: it is a list of links on the page.",
+        "A long rail sets `railLabel`: below `md` it folds behind a closed disclosure of that name, so the page comes first on a phone; from `md` it is the same rail. A short rail leaves it out.",
         "Facts about one record go in `DetailLayout`'s aside, not a rail.",
       ],
       accessibility: [
         "The rail is an `<aside>` holding the `NavTabs`, which is a `<nav>` named by its `label`.",
         'The current link has `aria-current="page"`.',
-        "In the DOM the rail comes first, so it is first in the tab order.",
+        "In the DOM the rail comes first, so it is first in the tab order; folded, the summary is that first stop and the links are skipped until it is opened.",
+        "With `railLabel` the rail is a native `<details>` disclosure: its `<summary>` is the toggle, on the keyboard like any button.",
       ],
       api: ["SidebarLayout"],
     },
@@ -134,6 +142,7 @@ export const pagelayouts: ComponentSection = {
       whenToUse:
         "A viewer that needs the whole width, such as a snapshot, a canvas or a player; an ordinary page is not.",
       pairs: ["FullBleedLayout/Viewer"],
+      fullPage: "FullBleedLayout/FullPage",
       usage: [
         "Render it in an `AppShell` with `bleed`; the canvas starts at the left edge of the viewport.",
         "It adds no padding and has no page title; the canvas is the `children`.",
@@ -153,6 +162,7 @@ export const pagelayouts: ComponentSection = {
       summary: "One narrow card, centred on the page.",
       whenToUse: "Sign-in, a landing page, or a not-found or error page.",
       pairs: ["CenteredLayout/Page"],
+      fullPage: "CenteredLayout/FullPage",
       usage: [
         "Give it a `title` and a `subtitle`; the `children` are the card's content: a `Field` or two and a `Button`.",
         "It is the one layout that does not share the left edge: it is centred, at a fixed offset from the top.",

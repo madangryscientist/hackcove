@@ -1,4 +1,4 @@
-import { CardGrid, Pill, Stack } from "@hackcove/ui";
+import { Pill, Stack } from "@hackcove/ui";
 import { Example } from "./Example.js";
 import { pairOf } from "./pairs.js";
 import type { DocStory } from "./stories.js";
@@ -21,9 +21,9 @@ function Side({ story, tone }: { story: DocStory; tone: "emerald" | "red" }) {
 }
 
 /**
- * The right way and the wrong way side by side, from the stories `Do<Topic>` and `Dont<Topic>` of
- * `of="<File>/<Topic>"`. A topic with only one side shows it across the full width, not half of an
- * empty pair. A topic with neither fails the build.
+ * The right way, then the wrong way under it, each at the page's full width so neither example nor
+ * its code clips or wraps, from the stories `Do<Topic>` and `Dont<Topic>` of
+ * `of="<File>/<Topic>"`. A topic with only one side shows just that one. A topic with neither fails the build.
  */
 export function DoDont({ of }: { of: string }) {
   const { do: right, dont: wrong } = pairOf(of);
@@ -38,9 +38,9 @@ export function DoDont({ of }: { of: string }) {
     );
   }
   return (
-    <CardGrid columns={2}>
+    <Stack gap="md">
       <Side story={right} tone="emerald" />
       <Side story={wrong} tone="red" />
-    </CardGrid>
+    </Stack>
   );
 }
