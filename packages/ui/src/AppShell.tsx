@@ -4,6 +4,7 @@ import { schemeClass, type ColourScheme, type ColourSchemeClasses } from "./colo
 import { cx, focusRing } from "./cx.js";
 import { type LinkRender, renderLink } from "./link.js";
 import type { Passthrough, Unstyled } from "./props.js";
+import type { Size } from "./size.js";
 
 /**
  * The class an app puts on its own `<html>`: it always reserves the scrollbar, so centred content
@@ -26,8 +27,11 @@ export function appShellRootClassFor(scheme: ColourScheme, schemes?: ColourSchem
  * `collapse` shows only the logo below `sm`, the label staying in the accessible name. With
  * `render` it draws the app's own router `<Link>` (`render={(p) => <Link to="/" {...p} />}`).
  */
+const LOGO_BOX: Record<Size, string> = { sm: "size-5", md: "size-6", lg: "size-8" };
+
 export function AppShellBrand({
   logo,
+  logoSize = "md",
   label,
   collapse = false,
   href,
@@ -36,6 +40,8 @@ export function AppShellBrand({
 }: Passthrough & {
   /** The name beside the logo. It is the link's accessible name. */
   label: ReactNode;
+  /** The logo slot's box: sm 20px, md 24px (the default, an `Avatar size="sm"`), lg 32px. An `<img>` or `<svg>` logo fills it. */
+  logoSize?: Size;
 } & (
     | {
         /** The mark before the label, e.g. an `Avatar` or an `<img>`. */
@@ -60,7 +66,13 @@ export function AppShellBrand({
     children: (
       <>
         {logo && (
-          <span aria-hidden="true" className="flex shrink-0 items-center">
+          <span
+            aria-hidden="true"
+            className={cx(
+              "flex shrink-0 items-center justify-center [&>img]:size-full [&>svg]:size-full",
+              LOGO_BOX[logoSize],
+            )}
+          >
             {logo}
           </span>
         )}
@@ -189,7 +201,14 @@ export function AppShell({
   children: ReactNode;
 } & Unstyled<Omit<HTMLAttributes<HTMLDivElement>, "children">>): ReactElement {
   return (
-    <div {...rest} className="flex min-h-dvh flex-col bg-gray-50 font-sans text-slate-900">
+    <div
+      {...rest}
+      className={cx(
+        "flex min-h-dvh flex-col bg-gray-50 font-sans text-slate-900",
+        // The sticky header's height (its rows and the bottom border), for a bar that sticks under it.
+        subnav ? "[--app-header:calc(6.5rem+1px)]" : "[--app-header:calc(3.5rem+1px)]",
+      )}
+    >
       <header
         className={cx(
           "sticky top-0 z-10 border-b border-slate-200 bg-white",

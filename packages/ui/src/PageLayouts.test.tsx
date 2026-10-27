@@ -263,6 +263,28 @@ describe("FullBleedLayout", () => {
   it("renders no panel without one", () => {
     expect(renderToStaticMarkup(<FullBleedLayout>VIEW</FullBleedLayout>)).not.toContain("<aside");
   });
+
+  it("puts a `bar` full width above children and panel, sticky under the AppShell header", () => {
+    const out = renderToStaticMarkup(
+      <FullBleedLayout bar="BAR" panel="PANEL">
+        VIEW
+      </FullBleedLayout>,
+    );
+    expect(out).toMatch(/^<div class="flex min-h-0 flex-1 flex-col">/);
+    expect(out).toMatch(/<div class="sticky top-\[var\(--app-header,0px\)\][^"]*">BAR<\/div>/);
+    expect(inOrder(out, ["BAR", "VIEW", "PANEL"])).toBe(true);
+    expect(out).toContain("lg:flex-row");
+  });
+
+  it("with a `bar`, padded pads only the content below it", () => {
+    const out = renderToStaticMarkup(
+      <FullBleedLayout bar="BAR" padded>
+        VIEW
+      </FullBleedLayout>,
+    );
+    expect(inOrder(out, ["BAR", "px-4 py-8 sm:px-6", "VIEW"])).toBe(true);
+    expect(out.match(/py-8/g)).toHaveLength(1);
+  });
 });
 
 describe("CenteredLayout", () => {

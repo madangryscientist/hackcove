@@ -290,6 +290,9 @@
 .dark .border-amber-300 {
   border-color: rgba(249, 226, 175, 0.4);
 }
+.dark .border-amber-600 {
+  border-color: #f9e2af; /* yellow — the strong warn edge (Card attention) */
+}
 .dark .border-red-200 {
   border-color: rgba(243, 139, 168, 0.45);
 }

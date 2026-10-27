@@ -117,8 +117,8 @@ describe("AppShellBrand", () => {
     const out = renderToStaticMarkup(<AppShellBrand href="/" logo={<i>L</i>} label="Quotes" />);
     expect(out.match(/<a /g)).toHaveLength(1);
     expect(out).toMatch(/^<a href="\/" class="[^"]*\bflex\b[^"]*">/);
-    expect(out).toContain(
-      '<span aria-hidden="true" class="flex shrink-0 items-center"><i>L</i></span>',
+    expect(out).toMatch(
+      /<span aria-hidden="true" class="flex shrink-0 items-center[^"]*"><i>L<\/i><\/span>/,
     );
     expect(out).toContain("<span>Quotes</span></a>");
   });
@@ -135,6 +135,39 @@ describe("AppShellBrand", () => {
     expect(out).toMatch(/^<a data-router="\/" class="[^"]*">/);
     expect(out).not.toContain("href");
     expect(out).toContain("<span>Quotes</span>");
+  });
+});
+
+const box = (out: string) => out.match(/<span aria-hidden="true" class="([^"]*)"/)?.[1] ?? "";
+
+describe("AppShellBrand logoSize", () => {
+  it("boxes the logo at 24px by default (an Avatar sm), 20px at sm and 32px at lg", () => {
+    expect(
+      box(renderToStaticMarkup(<AppShellBrand href="/" logo={<i>L</i>} label="Q" />)),
+    ).toContain("size-6");
+    expect(
+      box(renderToStaticMarkup(<AppShellBrand href="/" logo={<i>L</i>} logoSize="sm" label="Q" />)),
+    ).toContain("size-5");
+    expect(
+      box(renderToStaticMarkup(<AppShellBrand href="/" logo={<i>L</i>} logoSize="lg" label="Q" />)),
+    ).toContain("size-8");
+  });
+
+  it("makes an <img> or <svg> logo fill the box", () => {
+    const out = box(renderToStaticMarkup(<AppShellBrand href="/" logo={<svg />} label="Q" />));
+    expect(out).toContain("[&amp;&gt;img]:size-full");
+    expect(out).toContain("[&amp;&gt;svg]:size-full");
+  });
+});
+
+describe("AppShell header height", () => {
+  it("publishes the sticky header's height for a bar that sticks under it", () => {
+    expect(renderToStaticMarkup(<AppShell>x</AppShell>)).toContain(
+      "[--app-header:calc(3.5rem+1px)]",
+    );
+    expect(renderToStaticMarkup(<AppShell subnav="S">x</AppShell>)).toContain(
+      "[--app-header:calc(6.5rem+1px)]",
+    );
   });
 });
 

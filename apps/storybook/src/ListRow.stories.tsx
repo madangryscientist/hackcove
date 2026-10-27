@@ -266,3 +266,31 @@ export const Sizes: S = {
     </div>
   ),
 };
+
+/** `active` marks the row a pointer or the keyboard is on, so a list can follow both with one state: here the pointer and Tab move the same mark. */
+export const ActiveFollowsPointerAndKeyboard: S = {
+  render: function Render() {
+    const names = ["Dashboard", "Settings", "Billing"];
+    const [active, setActive] = useState<string | undefined>(undefined);
+    return (
+      <div className="max-w-md">
+        <Card flush>
+          {names.map((name, index) => (
+            <ListRow
+              key={name}
+              href={`#${name}`}
+              divided={index > 0}
+              active={active === name}
+              onPointerEnter={() => setActive(name)}
+              onPointerLeave={() => setActive(undefined)}
+              onFocus={() => setActive(name)}
+              trailing={active === name ? "Open" : undefined}
+            >
+              {name}
+            </ListRow>
+          ))}
+        </Card>
+      </div>
+    );
+  },
+};

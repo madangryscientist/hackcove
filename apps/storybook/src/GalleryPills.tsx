@@ -1,4 +1,4 @@
-import { Badge, IconButton, Pill, type PillTone } from "@hackcove/ui";
+import { Badge, Icon, IconButton, Pill, type PillTone } from "@hackcove/ui";
 
 const tones: PillTone[] = ["slate", "amber", "emerald", "blue", "red", "violet", "sky"];
 
@@ -8,7 +8,7 @@ const bellIcon = (
   </svg>
 );
 
-/** The Pill and Badge rows of the Gallery: the seven tones plain, with a dot and round, then red counts alone and on an icon, then a link Pill, a button Pill and a badged IconButton link and button. */
+/** The Pill and Badge rows of the Gallery: the seven tones plain, with a dot and round, then red counts alone and on an icon, then a link Pill, a button Pill and a badged IconButton link and button, then Icon in its sizes and tones. */
 export function GalleryPills() {
   return (
     <div className="flex flex-col gap-3">
@@ -56,6 +56,18 @@ export function GalleryPills() {
         <IconButton label="Alerts" variant="ghost" badge={120}>
           {bellIcon}
         </IconButton>
+      </div>
+      <div className="flex flex-wrap items-center gap-3">
+        {(["sm", "md", "lg"] as const).map((size) => (
+          <Icon key={size} size={size}>
+            {bellIcon}
+          </Icon>
+        ))}
+        {(["muted", "positive", "warn", "danger", "info"] as const).map((tone) => (
+          <Icon key={tone} tone={tone}>
+            {bellIcon}
+          </Icon>
+        ))}
       </div>
     </div>
   );

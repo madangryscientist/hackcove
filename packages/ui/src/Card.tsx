@@ -1,5 +1,6 @@
 import { type ComponentPropsWithoutRef, type ReactElement, type ReactNode, useId } from "react";
 import { type CalloutTone, TONE_SURFACE } from "./Callout.js";
+import { CardBadge } from "./CardBadge.js";
 import { cx, focusRing, liftInteractive } from "./cx.js";
 import { type LinkRender, renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
@@ -111,6 +112,7 @@ function cardForm(
     bar?: boolean | undefined;
     dashed?: boolean | "filled" | undefined;
     tone?: CalloutTone | undefined;
+    attention?: boolean | undefined;
     size: Size;
   },
   hasHeader: boolean,
@@ -123,6 +125,7 @@ function cardForm(
     dashed,
     filled: asked.dashed === "filled",
     tone: dashed || bar ? undefined : asked.tone,
+    attention: (asked.attention ?? false) && !dashed,
     size: asked.size,
     footer: false,
   };
@@ -133,7 +136,11 @@ const BODY_PAD: Record<Size, string> = { sm: "p-3", md: "p-5", lg: "p-6" };
 
 function cardBorder(form: ReturnType<typeof cardForm>): string {
   if (form.dashed) return "border-dashed border-slate-300";
-  return form.tone ? TONE_SURFACE[form.tone] : "border-slate-200/70 bg-white";
+  const surface = form.tone ? TONE_SURFACE[form.tone] : "border-slate-200/70 bg-white";
+  if (!form.attention) return surface;
+  // The warn tone's strong edge in place of the border colour; the fill stays.
+  const fill = surface.split(" ").filter((c) => c.startsWith("bg-"));
+  return cx("border-amber-600", ...fill);
 }
 
 function cardPadding(form: ReturnType<typeof cardForm>): string | false {
@@ -169,6 +176,10 @@ type CardBase = {
   dashed?: boolean | "filled";
   /** A soft fill and border in the Callout's tones, for a data panel with a status. Ignored with `bar` and `dashed`. */
   tone?: CalloutTone;
+  /** A `Pill` (or any small node) pinned in the top-right corner, over the content and inside the radius, with no change to the layout. On a card that is a link it is part of the link's name, and a link or button in it is clickable on its own. */
+  badge?: ReactNode;
+  /** The warn tone's strong border in place of the card's own, for the one card in a set that needs a look (a run that differed). It keeps the card's fill. Ignored with `dashed`. */
+  attention?: boolean;
   /**
    * `sm` is dense padding on the body, heading and bar, `lg` one step roomier than `md`; a
    * `dashed` shell keeps its own.
@@ -244,19 +255,22 @@ export function Card(props: CardPanelProps | CardLinkProps): ReactElement {
     flush,
     dashed,
     tone,
+    badge,
+    attention,
     size = "md",
     children,
     ...panel
   } = props;
   const { as: Tag = "section", ...rest } = panel;
   const form = withFooter(
-    cardForm({ flush, bar, dashed, tone, size }, Boolean(title || actions)),
+    cardForm({ flush, bar, dashed, tone, attention, size }, Boolean(title || actions)),
     footer,
   );
   return (
     <Tag {...rest} className={cardClass(form)}>
       {cardBody(form, { title, count, status, actions, children })}
       {form.footer && <CardFooter size={form.size}>{footer}</CardFooter>}
+      {badge && <CardBadge size={form.size}>{badge}</CardBadge>}
     </Tag>
   );
 }
@@ -272,11 +286,13 @@ function LinkCard(props: CardLinkProps): ReactElement {
     flush,
     dashed,
     tone,
+    badge,
+    attention,
     size = "md",
     children,
     ...link
   } = props;
-  const form = cardForm({ flush, bar, dashed, tone, size }, Boolean(title));
+  const form = cardForm({ flush, bar, dashed, tone, attention, size }, Boolean(title));
   const cardId = useId();
   return (
     <div id={cardId} className={cx(cardClass(form), "transition hover:border-violet-400")}>
@@ -292,6 +308,7 @@ function LinkCard(props: CardLinkProps): ReactElement {
         children: null,
       })}
       {cardBody(form, { title, count, status, actions, children })}
+      {badge && <CardBadge size={form.size}>{badge}</CardBadge>}
     </div>
   );
 }

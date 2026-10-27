@@ -1,5 +1,6 @@
 import { type ReactElement, type ReactNode, useLayoutEffect, useId, useRef } from "react";
 import { cx } from "./cx.js";
+import { Icon } from "./Icon.js";
 import { IconButton } from "./IconButton.js";
 import type { Passthrough } from "./props.js";
 import { ModalHeading } from "./typography.js";
@@ -61,9 +62,11 @@ export function Drawer({
       <header className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 px-5.5 py-3.5">
         <ModalHeading id={titleId}>{title}</ModalHeading>
         <IconButton label={closeLabel} onClick={() => dialog.current?.close()}>
-          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="h-4 w-4">
-            <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L8.94 10l-4.72 4.72a.75.75 0 1 0 1.06 1.06L10 11.06l4.72 4.72a.75.75 0 1 0 1.06-1.06L11.06 10l4.72-4.72a.75.75 0 0 0-1.06-1.06L10 8.94 5.28 4.22Z" />
-          </svg>
+          <Icon>
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L8.94 10l-4.72 4.72a.75.75 0 1 0 1.06 1.06L10 11.06l4.72 4.72a.75.75 0 1 0 1.06-1.06L11.06 10l4.72-4.72a.75.75 0 0 0-1.06-1.06L10 8.94 5.28 4.22Z" />
+            </svg>
+          </Icon>
         </IconButton>
       </header>
       <div className="min-h-0 flex-1 overflow-y-auto px-5.5 py-4">{children}</div>

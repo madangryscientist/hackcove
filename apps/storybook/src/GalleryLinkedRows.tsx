@@ -5,6 +5,7 @@ import {
   Cluster,
   Empty,
   ListRow,
+  Pill,
   rowLinkClass,
   Stack,
   Table,
@@ -16,7 +17,7 @@ import {
   TextLink,
 } from "@hackcove/ui";
 
-/** A linked ListRow, a linked TableRow and a link Card, each holding its own link and button above the stretched link. */
+/** A linked ListRow (and an `active` one), a linked TableRow and a link Card, each holding its own link and button above the stretched link, then a badged link Card and an `attention` Card. */
 export function GalleryLinkedRows() {
   return (
     <div className="flex flex-col gap-4">
@@ -31,6 +32,9 @@ export function GalleryLinkedRows() {
           }
         >
           Linked row with a link and a button
+        </ListRow>
+        <ListRow href="#ada" divided active>
+          Active row
         </ListRow>
       </Card>
       <Table caption="Linked rows">
@@ -68,6 +72,12 @@ export function GalleryLinkedRows() {
               Accept
             </Button>
           </Stack>
+        </Card>
+        <Card href="#shot-10" title="Dashboard" badge={<Pill tone="amber">Flaky</Pill>}>
+          <Empty>A link card with a badge.</Empty>
+        </Card>
+        <Card title="Flaky" attention>
+          <Empty>A card that needs a look.</Empty>
         </Card>
       </CardGrid>
     </div>
