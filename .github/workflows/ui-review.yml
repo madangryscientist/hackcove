@@ -1,0 +1,155 @@
+name: UI review
+
+# Reusable: checks that a pull request builds its UI the Hack Cove way. A consumer repo calls it:
+#
+#   on: pull_request
+#   jobs:
+#     ui-review:
+#       permissions: { contents: read, pull-requests: write }
+#       uses: madangryscientist/hackcove/.github/workflows/ui-review.yml@main
+#       secrets: inherit
+#
+# Layer 1 (`rules`) is deterministic and has no model: it reads the lines the pull request adds
+# and fails with file:line annotations. Layer 2 (`review`) is an advisory model review through
+# OpenCode Zen; it never fails the pull request, and is skipped when `OPENCODE_API_KEY` is unset.
+# It uses the plain `pull_request` event, so a fork's pull request has no secrets and layer 2 is
+# skipped. Never run it on `pull_request_target`: it checks out and reads untrusted code.
+on:
+  workflow_call:
+    inputs:
+      paths:
+        description: >-
+          Globs of the app code to review, one per line; a leading `!` excludes. Empty means every
+          source, markup and style file outside node_modules and dist.
+        type: string
+        default: ""
+      hackcove-repo:
+        description: The repository that holds the Hack Cove tools, AGENTS.md and palette.
+        type: string
+        default: madangryscientist/hackcove
+      hackcove-ref:
+        description: The branch, tag or sha of hackcove to read the rules and the rubric from.
+        type: string
+        default: main
+      self:
+        description: The caller is the hackcove repository itself, so read it from the checkout.
+        type: boolean
+        default: false
+      build-rubric:
+        description: >-
+          Build /ui/llms.txt from the hackcove checkout instead of fetching `llms-url`. Slower, and
+          exact for the ref.
+        type: boolean
+        default: false
+      llms-url:
+        description: The published component reference the model reviews against.
+        type: string
+        default: https://hack-cove.com/ui/llms.txt
+    secrets:
+      OPENCODE_API_KEY:
+        description: OpenCode Zen key for layer 2. Without it the model review is skipped.
+        required: false
+      HACKCOVE_READ_TOKEN:
+        description: A token that can read `hackcove-repo`, while that repository is private.
+        required: false
+
+permissions:
+  contents: read
+
+env:
+  PATHS: ${{ inputs.paths }}
+  HACKCOVE_DIR: ${{ inputs.self && '.' || '.hackcove' }}
+  BASE_SHA: ${{ github.event.pull_request.base.sha }}
+  HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
+jobs:
+  rules:
+    name: Hack Cove rules
+    runs-on: ubuntu-latest
+    steps:
+      # The pull request's head, not the merge commit, so line numbers match what the diff shows.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        if: ${{ !inputs.self }}
+        with:
+          repository: ${{ inputs.hackcove-repo }}
+          ref: ${{ inputs.hackcove-ref }}
+          token: ${{ secrets.HACKCOVE_READ_TOKEN || github.token }}
+          path: .hackcove
+          persist-credentials: false
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.2
+
+      - name: Check the added lines
+        run: bun "$HACKCOVE_DIR/tools/ui-review/src/check.ts" --base "$BASE_SHA" --head "$HEAD_SHA" --hackcove "$HACKCOVE_DIR"
+
+  review:
+    name: Hack Cove model review (advisory)
+    runs-on: ubuntu-latest
+    # Advisory: a failure here must never turn the pull request red.
+    continue-on-error: true
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      KEY_SET: ${{ secrets.OPENCODE_API_KEY != '' }}
+    steps:
+      - name: Say when the review is skipped
+        if: ${{ env.KEY_SET != 'true' }}
+        run: echo "::notice title=Hack Cove UI review::OPENCODE_API_KEY is not set; the model review is skipped."
+
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        if: ${{ env.KEY_SET == 'true' }}
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        if: ${{ env.KEY_SET == 'true' && !inputs.self }}
+        with:
+          repository: ${{ inputs.hackcove-repo }}
+          ref: ${{ inputs.hackcove-ref }}
+          token: ${{ secrets.HACKCOVE_READ_TOKEN || github.token }}
+          path: .hackcove
+          persist-credentials: false
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        if: ${{ env.KEY_SET == 'true' }}
+        with:
+          bun-version: 1.4.2
+
+      # The rubric: the same generated component reference the docs publish, never a copy.
+      - name: Get the component reference
+        id: rubric
+        if: ${{ env.KEY_SET == 'true' }}
+        env:
+          BUILD_RUBRIC: ${{ inputs.build-rubric }}
+          LLMS_URL: ${{ inputs.llms-url }}
+        run: |
+          if [ "$BUILD_RUBRIC" = "true" ]; then
+            (cd "$HACKCOVE_DIR" && bun install --frozen-lockfile && bunx nx run hack-cove-site:build) \
+              && echo "path=$HACKCOVE_DIR/apps/hack-cove-site/dist/ui/llms.txt" >> "$GITHUB_OUTPUT" \
+              || echo "::warning title=Hack Cove UI review::could not build the component reference; the model review is skipped."
+          elif curl --fail --silent --show-error --location "$LLMS_URL" --output "$RUNNER_TEMP/llms.txt"; then
+            echo "path=$RUNNER_TEMP/llms.txt" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning title=Hack Cove UI review::could not fetch $LLMS_URL; the model review is skipped."
+          fi
+
+      - name: Review the pull request
+        if: ${{ env.KEY_SET == 'true' && steps.rubric.outputs.path != '' }}
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+          LLMS_PATH: ${{ steps.rubric.outputs.path }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: bun "$HACKCOVE_DIR/tools/ui-review/src/review.ts" --base "$BASE_SHA" --head "$HEAD_SHA" --hackcove "$HACKCOVE_DIR" --llms "$LLMS_PATH" --pr "$PR_NUMBER" --repo "$REPO"

@@ -132,6 +132,53 @@ cp -r themes/catppuccin-mocha themes/<name>
 There is nothing else to register. Storybook finds `themes/*/theme.css` on its own, so the new
 theme is in the toolbar the next time it starts. It also appears as a panel in **Overview / All themes**, with no code edit.
 
+## UI review
+
+A pull request in a repo that uses Hack Cove can be checked for building its UI the Hack Cove way.
+Add this workflow to the repo:
+
+```yaml
+on: pull_request
+jobs:
+  ui-review:
+    permissions: { contents: read, pull-requests: write }
+    uses: madangryscientist/hackcove/.github/workflows/ui-review.yml@main
+    secrets: inherit
+```
+
+It runs two layers on the lines the pull request adds:
+
+- **Rules (no model).** Fails the check with a `file:line` annotation on a new CSS file or
+  `<style>` block, a raw palette utility (`bg-slate-800`), a `dark:` variant, a `className` or
+  `style` on an `@hackcove/ui` component, and a local component that duplicates a Hack Cove export.
+  The palette and the export list are read from `@hackcove/ui` itself, never copied.
+- **Model review (advisory).** An OpenCode Zen model (`opencode/deepseek-v4.1-flash`) reads the diff
+  against the Hack Cove purpose and the generated `/ui/llms.txt`, and posts inline comments plus one
+  summary. A part Hack Cove lacks is reported as "ask hackcove for X", never "build it locally". It
+  is not a required check, and an API failure is a warning, never a red pull request. The diff is
+  sent to OpenCode Zen.
+
+What it needs:
+
+| Needs | For |
+| --- | --- |
+| `OPENCODE_API_KEY` secret | The model review. Without it that layer is skipped with a notice; the rules still run. |
+| `HACKCOVE_READ_TOKEN` secret | Reading this repository's tools while it is private (a fine-grained token with read access to contents). |
+| `pull-requests: write` permission | Posting the comments. |
+
+Inputs: `paths` (globs of the app code, one per line, `!` excludes; the default is every source,
+markup and style file outside `node_modules` and `dist`), `hackcove-ref`, `build-rubric`
+(build `llms.txt` from the checkout instead of fetching `llms-url`). A fork's pull request has no
+secrets, so only the rules run on it.
+
+Locally, `tools/ui-review` is dev tooling only (no published package depends on it):
+
+```bash
+bun tools/ui-review/src/check.ts --base origin/main --hackcove .            # the rules
+bun tools/ui-review/src/review.ts --base origin/main --hackcove . \
+  --llms apps/hack-cove-site/dist/ui/llms.txt --dry-run                     # prints the prompt, sends nothing
+```
+
 ## Publish
 
 Releases are change-driven: `nx release` reads the conventional commits since each package's last

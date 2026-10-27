@@ -43,6 +43,7 @@ themes** shows every component in every theme on one page.
 | `apps/storybook` | (private) | Storybook and the Playwright e2e. |
 | `packages/themes-shared` | (private) | How Storybook and the docs find the themes: the `themes/*/theme.css` glob and each theme's scope class. |
 | `apps/hack-cove-site` | (private) | The hack-cove.com Astro site, including the `/ui/` component docs; run it with `bunx nx dev hack-cove-site` (http://localhost:4321). Its e2e is `bunx nx e2e hack-cove-site`. |
+| `tools/ui-review` | (private) | Dev tooling for the `ui-review.yml` reusable workflow: a deterministic check of a pull request's added lines and an advisory model review. Not published; no package depends on it. |
 
 ## The gate
 
