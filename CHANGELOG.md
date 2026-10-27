@@ -1,3 +1,33 @@
+## 0.1.7 (2026-10-27)
+
+### 🚀 Features
+
+- **ui:** small prop gaps from the pixelslash adoption (HC-151) ([f10eb6f](https://github.com/madangryscientist/hackcove/commit/f10eb6f))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
+## 0.2.8 (2026-10-27)
+
+### 🚀 Features
+
+- **ui:** small prop gaps from the pixelslash adoption (HC-151) ([f10eb6f](https://github.com/madangryscientist/hackcove/commit/f10eb6f))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
+## 0.4.4 (2026-10-27)
+
+### 🚀 Features
+
+- **ui:** small prop gaps from the pixelslash adoption (HC-151) ([f10eb6f](https://github.com/madangryscientist/hackcove/commit/f10eb6f))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.4.3 (2026-10-27)
 
 ### 🚀 Features
