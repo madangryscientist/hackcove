@@ -98,6 +98,19 @@ export const WithoutPanel: S = {
   ),
 };
 
+/** `padded` gives the canvas and panel the same page padding as the other layouts, for a full-height body that is not a viewer. */
+export const Padded: S = {
+  render: () => (
+    <DemoShell bleed>
+      <FullBleedLayout padded panel={snapshotPanel}>
+        <Card title="Quotes">
+          <Body as="p">Every quote you have sent.</Body>
+        </Card>
+      </FullBleedLayout>
+    </DemoShell>
+  ),
+};
+
 /** A viewer that needs the whole width (a snapshot, a canvas, a player) fills it, with the facts in the `panel`. */
 export const DoViewer: S = {
   render: () => (
@@ -119,7 +132,7 @@ export const DoViewer: S = {
   ),
 };
 
-/** `FullBleedLayout` adds no padding, so an ordinary page lands on the screen edge. A page with a title is a `ListLayout` or `DetailLayout`. */
+/** `FullBleedLayout` adds no padding unless `padded`, so an ordinary page lands on the screen edge. A page with a title is a `ListLayout` or `DetailLayout`. */
 export const DontViewer: S = {
   render: () => (
     <FullBleedLayout>

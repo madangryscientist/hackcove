@@ -10,6 +10,8 @@ type PillBase = {
   tone?: PillTone;
   dot?: boolean;
   round?: boolean;
+  /** The tooltip on hover, for a pill whose text is short or cut off: the full status, a date. */
+  title?: string | undefined;
 };
 
 type PillProps = PillBase &
@@ -60,7 +62,8 @@ function pillClass(
  * A small tinted label; `dot` adds a leading dot in the pill's own text colour, `round` swaps the
  * rounded-md corners for a full pill shape. `href` makes it a link (a plain `<a>`, or with `render`
  * the app's own router `<Link>`: `render={(p) => <Link to="/flakes" {...p} />}`; `external` opens a
- * new tab) and `onClick` makes it a button, each with a hover dim and the focus ring.
+ * new tab) and `onClick` makes it a button, each with a hover dim and the focus ring. `title` is
+ * the native tooltip.
  */
 export function Pill({
   children,

@@ -8,7 +8,7 @@ describe("ListRow", () => {
     expect(out).toContain('<button type="button"');
     expect(out).toContain("w-full");
     expect(out).toContain("hover:bg-slate-50");
-    expect(out).toContain('<span class="min-w-0 flex-1">Rent</span>');
+    expect(out).toContain('<div class="min-w-0 flex-1">Rent</div>');
     expect(out).toContain(">R 4 250</span>");
     expect(out).not.toContain("aria-expanded");
     expect(out).not.toContain("<svg");
@@ -85,7 +85,7 @@ describe("ListRow leading and selected", () => {
   it("leading sits before the label, on a button and a link alike", () => {
     const button = renderToStaticMarkup(<ListRow leading={<i data-av />}>Ada</ListRow>);
     expect(button).toMatch(
-      /<span class="shrink-0"><i data-av[^>]*><\/i><\/span><span class="min-w-0 flex-1">Ada/,
+      /<span class="shrink-0"><i data-av[^>]*><\/i><\/span><div class="min-w-0 flex-1">Ada/,
     );
     const link = renderToStaticMarkup(
       <ListRow href="#a" leading="L">
@@ -170,6 +170,63 @@ describe("ListRow static", () => {
     expect(out).toContain('data-testid="row"');
     expect(out).toContain('aria-label="Ada"');
     expect(out).not.toContain("opacity");
-    expect(out.match(/<span/g)).toHaveLength(1);
+    expect(out.match(/<span/g)).toBeNull();
+    expect(out.match(/<div/g)).toHaveLength(2);
+  });
+});
+
+describe("ListRow focused and leadingWidth", () => {
+  it("focused draws an inset violet ring on every form, without a focused attribute", () => {
+    const ring = "outline-2 -outline-offset-2 outline-violet-600";
+    for (const out of [
+      renderToStaticMarkup(<ListRow focused>a</ListRow>),
+      renderToStaticMarkup(
+        <ListRow focused href="#a">
+          a
+        </ListRow>,
+      ),
+      renderToStaticMarkup(
+        <ListRow focused static>
+          a
+        </ListRow>,
+      ),
+    ]) {
+      expect(out).toContain(ring);
+      expect(out).not.toContain("focused");
+    }
+    expect(renderToStaticMarkup(<ListRow>a</ListRow>)).not.toContain("outline-2 -outline-offset-2");
+  });
+
+  it("focused is independent of selected: a row can be both", () => {
+    const out = renderToStaticMarkup(
+      <ListRow focused selected>
+        a
+      </ListRow>,
+    );
+    expect(out).toContain("outline-violet-600");
+    expect(out).toContain("bg-violet-50");
+  });
+
+  it('leadingWidth="thumbnail" gives the leading slot a w-32 box that sizes an image to it', () => {
+    const out = renderToStaticMarkup(
+      <ListRow leading={<img alt="" src="/s.png" />} leadingWidth="thumbnail">
+        Shot
+      </ListRow>,
+    );
+    expect(out).toContain('<span class="shrink-0 block w-32 ');
+    expect(out).toContain('w-full"><img');
+    expect(out).not.toContain("leadingWidth");
+    const plain = renderToStaticMarkup(<ListRow leading={<i />}>Shot</ListRow>);
+    expect(plain).toContain('<span class="shrink-0"><i');
+    expect(plain).not.toContain("w-32");
+  });
+
+  it("the label takes block children: it is a div, so a div or a paragraph inside is valid", () => {
+    const out = renderToStaticMarkup(
+      <ListRow static>
+        <div>Title</div>
+      </ListRow>,
+    );
+    expect(out).toContain('<div class="min-w-0 flex-1"><div>Title</div></div>');
   });
 });

@@ -37,6 +37,17 @@ export const DontScale: S = {
   ),
 };
 
+/** `truncate` cuts a `SubsectionHeading` that is too long for its column to one line with an ellipsis, and keeps the full text as its tooltip. */
+export const Truncated: S = {
+  render: () => (
+    <div className="w-60">
+      <SubsectionHeading truncate>
+        Awaiting a reply from the customer about the revised scope
+      </SubsectionHeading>
+    </div>
+  ),
+};
+
 /** `Display` is the one headline at the top of a public page, with a `Lead` under it. */
 export const DoHero: S = {
   render: () => (

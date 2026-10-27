@@ -104,6 +104,13 @@ export function GalleryPages() {
           </div>
         </FullBleedLayout>
       </PageBox>
+      <PageBox label="FullBleedLayout padded" bleed>
+        <FullBleedLayout padded panel={<Body as="p">Panel</Body>}>
+          <Card title="Padded canvas">
+            <Body as="p">Given the other layouts' page padding.</Body>
+          </Card>
+        </FullBleedLayout>
+      </PageBox>
       <PageBox label="CenteredLayout">
         <CenteredLayout title="Sign in" subtitle="Use your Hack Cove account.">
           <Button>Continue</Button>

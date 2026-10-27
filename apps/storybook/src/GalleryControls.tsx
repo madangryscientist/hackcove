@@ -42,6 +42,7 @@ export function GalleryControls() {
         />
         <Checkbox size="sm" label="Paid" defaultChecked />
         <Checkbox size="sm" aria-label="Select row" />
+        <Checkbox label="With description" description="A muted line under the label." />
         <div className="max-w-xs">
           <Checkbox
             align="start"

@@ -38,6 +38,21 @@ export const MultiLine: S = {
   ),
 };
 
+/** `description` is a muted line under the label that the box is described by; the box sits on the label's first line. */
+export const WithDescription: S = {
+  render: () => (
+    <div className="flex w-72 flex-col gap-4">
+      <Checkbox
+        label="Weekly summary"
+        description="One email on Mondays with the best finds from the shops you follow."
+        defaultChecked
+      />
+      <Checkbox size="sm" label="Price drops" description="Only for items on your watchlist." />
+      <Checkbox label="Weekly summary" description="Paused while you are away." disabled />
+    </div>
+  ),
+};
+
 /** A yes or no is a `Checkbox` with its `label`: the whole label is the click target. */
 export const DoLabel: S = {
   render: () => <Checkbox label="Email me when a shop I follow posts" defaultChecked />,

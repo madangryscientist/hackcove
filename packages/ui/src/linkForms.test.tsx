@@ -21,7 +21,9 @@ describe("Card href", () => {
         body
       </Card>,
     );
-    expect(out.startsWith('<a href="/shots/1" class="relative rounded-xl border')).toBe(true);
+    expect(
+      out.startsWith('<a href="/shots/1" class="relative scroll-mt-28 rounded-xl border'),
+    ).toBe(true);
     expect(out).toContain('href="/shots/1"');
     expect(out).toContain("block");
     expect(out).toContain("hover:border-violet-400");

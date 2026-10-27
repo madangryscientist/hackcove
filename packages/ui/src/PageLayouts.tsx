@@ -1,4 +1,10 @@
-import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
+import {
+  Children,
+  type ComponentPropsWithoutRef,
+  isValidElement,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import { Card } from "./ui.js";
 import { cx, focusRing } from "./cx.js";
 import { PageHeader, PageHeaderContent, type PageHeaderProps } from "./PageHeader.js";
@@ -152,6 +158,8 @@ type CardGridProps = (
 ) & {
   /** `start` keeps each card its own height; the default stretches every card to the tallest in its row. */
   align?: "stretch" | "start" | undefined;
+  /** `ul` makes the grid a list: each child is wrapped in an `<li>`. Default `div`. */
+  as?: "div" | "ul" | undefined;
   children: ReactNode;
 } & Passthrough;
 
@@ -159,18 +167,21 @@ type CardGridProps = (
  * A responsive grid of tiles: one column on a phone, two from `sm`, `columns` from `lg`.
  * `columns="auto"` instead fits as many per row as the width allows, each at least `minWidth` wide:
  * `md` (17rem, the default) or `sm` (12rem). `align="start"` keeps each card its own height
- * instead of stretching it to the tallest in its row.
+ * instead of stretching it to the tallest in its row. `as="ul"` makes it a list of cards for a
+ * screen reader: the grid is a `<ul>` and each child is wrapped in an `<li>`, still stretched.
  */
 export function CardGrid({
   columns = 3,
   minWidth = "md",
   align = "stretch",
+  as: Tag = "div",
   children,
   ...rest
 }: CardGridProps): ReactElement {
   return (
-    <div
+    <Tag
       {...rest}
+      {...(Tag === "ul" ? { role: "list" } : {})}
       className={cx(
         "grid gap-4",
         columns === "auto"
@@ -179,8 +190,15 @@ export function CardGrid({
         align === "start" && "items-start",
       )}
     >
-      {children}
-    </div>
+      {Tag === "ul"
+        ? Children.toArray(children).map((child, index) => (
+            // A grid, so the one child (a Card) fills the item's height as it does in a plain grid.
+            <li key={isValidElement(child) ? child.key : index} className="grid">
+              {child}
+            </li>
+          ))
+        : children}
+    </Tag>
   );
 }
 
@@ -247,19 +265,23 @@ export function SidebarLayout({
  * Edge-to-edge `children` with an optional right `panel` (`lg:w-72`) that stacks below on a smaller
  * screen. Render it in `<AppShell bleed>`. It deliberately breaks the shared left edge: a viewer
  * that needs the whole width has no Container of its own, so `children` start at the viewport's
- * left edge and add their own padding.
+ * left edge. `padded` gives them the Container's padding instead (`px-4`, `sm:px-6`, `py-8`), for
+ * a page of ordinary content beside a full-height `panel`.
  */
 export function FullBleedLayout({
   panel,
+  padded = false,
   children,
   ...rest
 }: {
   panel?: ReactNode;
+  /** Pads `children` as the Container pads every other page. Off, they run to the viewport's edges. */
+  padded?: boolean | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {
   return (
     <div {...rest} className="flex min-h-0 flex-1 flex-col lg:flex-row">
-      <div className="min-w-0 flex-1">{children}</div>
+      <div className={cx("min-w-0 flex-1", padded && "px-4 py-8 sm:px-6")}>{children}</div>
       {panel && (
         <aside className="w-full shrink-0 border-t border-slate-200 bg-slate-50 p-4 lg:w-72 lg:border-t-0 lg:border-l">
           {panel}

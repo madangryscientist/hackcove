@@ -18,6 +18,7 @@ export const content: ComponentSection = {
         "`footer` is a strip across the bottom for the card's own actions or a total; it stays at the foot of a stretched card in a `CardGrid`.",
         '`CardGrid` takes `columns` 2, 3 or 4, or `columns="auto"` with `minWidth` `sm` or `md` to fill by width; `align="start"` stops cards stretching to the tallest in their row.',
         "`dashed` is the empty state.",
+        "A Card with an `id` is an anchor target: a link to `#id` scrolls it clear of the sticky header and outlines it in violet while it is the target.",
       ],
       accessibility: [
         "A Card is a `<section>` by default and its `title` names it; `as` picks another element, e.g. `article`.",
@@ -144,6 +145,7 @@ export const content: ComponentSection = {
         "Choose `tone` by meaning: `emerald` for done or good, `amber` for waiting or at risk, `red` for failed, `slate` for neutral or draft; `blue`, `sky` and `violet` for kinds and categories.",
         "`dot` adds a leading dot in the Pill's colour; `round` swaps the rounded-square corners for a full pill shape. Use one look across a view.",
         "A Pill that goes somewhere takes `href` (or `render` for your router's `Link`, `external` for a new tab); one that does something takes `onClick`.",
+        "`title` is a native tooltip for detail the short label leaves out; it is not shown on touch or to a keyboard, so never put anything a reader needs only there.",
         "A Pill beside a card's title is the Card's `status`, not a hand-built row.",
         "A message to read is a `Callout`, and an action is a `Button`.",
       ],

@@ -24,6 +24,9 @@ export function GalleryText() {
       <div className="flex flex-col gap-1">
         <SubsectionHeading size="base">SubsectionHeading base</SubsectionHeading>
         <SubsectionHeading size="lg">SubsectionHeading lg</SubsectionHeading>
+        <div className="w-40">
+          <SubsectionHeading truncate>SubsectionHeading truncated to one line</SubsectionHeading>
+        </div>
       </div>
       <div>
         <SectionHeading rule>SectionHeading rule</SectionHeading>

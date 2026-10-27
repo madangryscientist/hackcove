@@ -40,6 +40,20 @@ export const DontStatus: S = {
   ),
 };
 
+/** `title` is the native tooltip, for the detail a short label leaves out. It is not a place for anything a reader must see: touch screens and keyboards do not show it. */
+export const WithTitle: S = {
+  render: () => (
+    <Cluster>
+      <Pill tone="emerald" dot title="Accepted on 12 Oct by Ada Lovelace">
+        Accepted
+      </Pill>
+      <Pill href="#flakes" tone="amber" round title="3 stories changed between the last two builds">
+        3 flaky
+      </Pill>
+    </Cluster>
+  ),
+};
+
 /** A Pill that goes somewhere takes `href`: it dims on hover and carries the focus ring. */
 export const DoLink: S = {
   render: () => (

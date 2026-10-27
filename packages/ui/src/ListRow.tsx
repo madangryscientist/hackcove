@@ -12,6 +12,12 @@ const STATIC = "group/row flex w-full items-center gap-3 text-sm text-slate-900"
 const FILL = "hover:bg-slate-50";
 const SELECTED = "bg-violet-50 hover:bg-violet-50";
 
+/** The keyboard cursor: the focus ring, drawn inside the row, on a row that does not hold DOM focus. */
+const FOCUSED = "outline-2 -outline-offset-2 outline-violet-600";
+
+/** A thumbnail's width. A direct-child image fills it. */
+const THUMBNAIL = "block w-32 [&>img]:block [&>img]:h-auto [&>img]:w-full";
+
 /** Hidden until the row is hovered or has focus inside it; always shown where any pointer is coarse (a touch screen, hybrids included). */
 const REVEAL =
   "opacity-0 group-hover/row:opacity-100 group-focus-within/row:opacity-100 any-pointer-coarse:opacity-100";
@@ -32,6 +38,17 @@ type Shared = {
    * Set it on one row of a list.
    */
   selected?: boolean | undefined;
+  /**
+   * Marks the row the keyboard cursor is on, for a list moved with the arrow keys or `j`/`k` while
+   * focus stays on the list: the focus ring, drawn inside the row. It says nothing to a screen
+   * reader (move real focus for that) and combines with `selected`.
+   */
+  focused?: boolean | undefined;
+  /**
+   * A fixed width for `leading`, for a thumbnail (an `<img>` fills it), so the labels of rows with
+   * and without a picture still line up. Without it `leading` is as wide as its content.
+   */
+  leadingWidth?: "thumbnail" | undefined;
   children: ReactNode;
 };
 
@@ -85,21 +102,29 @@ export type ListRowProps = ListRowButtonProps | ListRowLinkProps | ListRowStatic
 
 type Pieces = { start: ReactNode; label: ReactNode; end: ReactNode };
 
+/** The row's background: the selected fill, else the hover fill unless a plain static row has none. */
+function fillOf(props: ListRowProps): string | undefined {
+  if (props.selected) return SELECTED;
+  return props.static && !props.revealOnHover ? undefined : FILL;
+}
+
 function look(props: ListRowProps): string {
-  const { size = "md", divided = false, selected = false } = props;
-  const fill = props.static && !props.revealOnHover ? undefined : FILL;
+  const { size = "md", divided = false, focused = false } = props;
   return cx(
     props.static ? STATIC : ROW,
     PAD[size],
     divided && "border-t border-slate-200/70",
-    selected ? SELECTED : fill,
+    fillOf(props),
+    focused && FOCUSED,
   );
 }
 
 function StaticRow(props: ListRowStaticProps & Pieces): ReactElement {
   const {
     leading: _l,
+    leadingWidth: _lw,
     trailing: _t,
+    focused: _f,
     selected,
     size: _s,
     divided: _d,
@@ -135,7 +160,9 @@ function StaticRow(props: ListRowStaticProps & Pieces): ReactElement {
 function LinkRow(props: ListRowLinkProps & Pieces): ReactElement {
   const {
     leading: _l,
+    leadingWidth: _lw,
     trailing: _t,
+    focused: _f,
     selected,
     expanded: _e,
     size: _s,
@@ -165,7 +192,9 @@ function LinkRow(props: ListRowLinkProps & Pieces): ReactElement {
 function ButtonRow(props: ListRowButtonProps & Pieces): ReactElement {
   const {
     leading: _l,
+    leadingWidth: _lw,
     trailing: _t,
+    focused: _f,
     selected,
     expanded,
     size: _s,
@@ -202,15 +231,19 @@ function ButtonRow(props: ListRowButtonProps & Pieces): ReactElement {
  * collapsible section: `aria-expanded` and a chevron. Rows sit in a `Card flush`; `divided` draws
  * the line between them, on each row after the first.
  *
- * `leading` is content before the label, and `selected` marks the row in view. `static` makes the
+ * `leading` is content before the label (`leadingWidth="thumbnail"` gives it a fixed picture width),
+ * `selected` marks the row in view and `focused` the one the keyboard cursor is on. The label is a
+ * `<div>`, so it can hold block content (a name over a path). `static` makes the
  * row a plain `<div>` for one that holds its own buttons (a button cannot sit inside a button or a
  * link): `actions` follow `trailing`, and `revealOnHover` shows them only on hover or focus.
  */
 export function ListRow(props: ListRowProps): ReactElement {
-  const { leading, trailing, children } = props;
+  const { leading, leadingWidth, trailing, children } = props;
   const pieces: Pieces = {
-    start: leading != null && <span className="shrink-0">{leading}</span>,
-    label: <span className="min-w-0 flex-1">{children}</span>,
+    start: leading != null && (
+      <span className={cx("shrink-0", leadingWidth === "thumbnail" && THUMBNAIL)}>{leading}</span>
+    ),
+    label: <div className="min-w-0 flex-1">{children}</div>,
     end: trailing != null && (
       <span className="shrink-0 tabular-nums text-slate-500">{trailing}</span>
     ),

@@ -152,7 +152,7 @@ function cardPadding(form: ReturnType<typeof cardForm>): string | false {
 
 function cardClass(form: ReturnType<typeof cardForm>): string {
   return cx(
-    "relative rounded-xl border",
+    "relative scroll-mt-28 rounded-xl border target:outline-2 target:outline-violet-600",
     cardBorder(form),
     form.filled && "bg-white",
     cardPadding(form),
@@ -221,7 +221,9 @@ function isCardLink(props: CardPanelProps | CardLinkProps): props is CardLinkPro
  * `ListRow` and a `FileDrop`. `tone` is the Callout's set, for a data panel that carries a status
  * (a soft fill and border, no shadow); a message is still a `Callout`, and `bar` and `dashed` have
  * no tone. Other props (`id`, `data-*`, `aria-*`) go on the root. The root is `relative`, so a
- * `TextLink stretch` inside it covers the card.
+ * `TextLink stretch` inside it covers the card. A card with an `id` is an anchor target: `#id`
+ * scrolls it clear of the sticky header (and a `subnav`) and outlines it in the accent colour while
+ * it is the target.
  *
  * `footer` is a tinted strip across the bottom, under a hairline, for the card's own actions or a
  * total; in a `CardGrid` it stays at the foot of a card that is stretched to the row's height. It

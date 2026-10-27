@@ -1,5 +1,17 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Button, ButtonLink, Card, Code, Empty, EmptyState, Step, Steps } from "@hackcove/ui";
+import {
+  Body,
+  Button,
+  ButtonLink,
+  Card,
+  Code,
+  Empty,
+  EmptyState,
+  SectionHeading,
+  Stack,
+  Step,
+  Steps,
+} from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/EmptyState" };
 export default meta;
@@ -10,6 +22,18 @@ export const TitleAndBody: S = {
     <EmptyState title="No builds yet">
       <Body as="p">Builds appear here once a project has uploaded its first capture.</Body>
     </EmptyState>
+  ),
+};
+
+/** `level` is the heading level of the title and the look stays the same: under a page's `h2` section it is `3`, so the outline does not skip or repeat. Default `2`. */
+export const Level: S = {
+  render: () => (
+    <Stack gap="section">
+      <SectionHeading as="h2">Builds</SectionHeading>
+      <EmptyState title="No builds yet" level={3}>
+        <Body as="p">Builds appear here once a project has uploaded its first capture.</Body>
+      </EmptyState>
+    </Stack>
   ),
 };
 

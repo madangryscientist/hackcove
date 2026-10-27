@@ -14,7 +14,7 @@ export const text: ComponentSection = {
       usage: [
         "A page has one title: `PageHeading` for an app page, `Display` for the headline of a public page. A `PageHeader` already draws the `PageHeading` and its subtitle, so use it for the top of a page.",
         "Name the parts of a page with `SectionHeading`; `rule` puts the hairline under it, with the space either side built in.",
-        "Name what is inside a part with `SubsectionHeading`: `size` `sm` (default) is a form-group caption, `base` a card title in a header bar, `lg` a drawer title.",
+        "Name what is inside a part with `SubsectionHeading`: `size` `sm` (default) is a form-group caption, `base` a card title in a header bar, `lg` a drawer title. `truncate` cuts one that is too long for its column to a single line.",
         "`ModalHeading` is the title of a dialog or drawer, and `Dialog` and `Drawer` draw it from their `title`. Do not place one on a page.",
         "Put a `Lead` under a `Display`, and a `Subtitle` under any other heading.",
         "Pick the heading for its place in the outline, never for its size. `Display` is not a big `SectionHeading`.",
