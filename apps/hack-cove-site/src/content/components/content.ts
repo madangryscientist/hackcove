@@ -19,6 +19,7 @@ export const content: ComponentSection = {
         "`footer` is a strip across the bottom for the card's own actions or a total; it stays at the foot of a stretched card in a `CardGrid`.",
         '`CardGrid` takes `columns` 2, 3 or 4, or `columns="auto"` with `minWidth` `sm` or `md` to fill by width; `align="start"` stops cards stretching to the tallest in their row.',
         "`dashed` is the empty state.",
+        "`size` sets the padding: `sm` for a dense dashboard, `md` (default), `lg` for a card that stands alone.",
         "A Card with an `id` is an anchor target: a link to `#id` scrolls it clear of the sticky header and outlines it in violet while it is the target.",
       ],
       accessibility: [

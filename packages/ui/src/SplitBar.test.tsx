@@ -53,8 +53,9 @@ describe("SplitBar", () => {
     expect(tuned).not.toContain("bg-red-600");
   });
 
-  it("is lg by default and sm when asked", () => {
-    expect(renderToStaticMarkup(<SplitBar a={1} b={1} label="x" />)).toContain("h-3");
+  it("is md by default, and sm or lg when asked", () => {
+    expect(renderToStaticMarkup(<SplitBar a={1} b={1} label="x" />)).toContain("h-2");
+    expect(renderToStaticMarkup(<SplitBar a={1} b={1} label="x" size="lg" />)).toContain("h-3");
     expect(renderToStaticMarkup(<SplitBar a={1} b={1} label="x" size="sm" />)).toContain("h-1.5");
   });
 });

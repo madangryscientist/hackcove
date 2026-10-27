@@ -44,3 +44,20 @@ export const DontLongText: S = {
     </Field>
   ),
 };
+
+/** `sm`, `md` (the default) and `lg`. */
+export const Sizes: S = {
+  render: () => (
+    <div className="flex flex-col gap-2">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <Textarea
+          key={size}
+          size={size}
+          rows={2}
+          placeholder={`A note, ${size}`}
+          aria-label={`Note ${size}`}
+        />
+      ))}
+    </div>
+  ),
+};

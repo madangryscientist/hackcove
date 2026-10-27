@@ -63,8 +63,8 @@ export const SubsectionHeadingSizes: S = {
   name: "SubsectionHeading size",
   render: () => (
     <div className="flex flex-col gap-2">
-      <SubsectionHeading size="sm">sm (default): form-group caption</SubsectionHeading>
-      <SubsectionHeading size="base">base: card title in a header bar</SubsectionHeading>
+      <SubsectionHeading size="sm">sm: form-group caption</SubsectionHeading>
+      <SubsectionHeading size="md">md (default): card title in a header bar</SubsectionHeading>
       <SubsectionHeading size="lg">lg: drawer title</SubsectionHeading>
     </div>
   ),

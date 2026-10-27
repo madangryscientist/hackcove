@@ -89,10 +89,10 @@ export const layout: ComponentSection = {
         "Any blocks that follow each other: space is a Stack's `gap`, never a margin on a block.",
       pairs: ["StackDocs/Gap", "StackDocs/SectionTitle", "StackDocs/List"],
       usage: [
-        "`gap` is a scale: `xs` between lines of text, `sm` inside a group, `md` (default) between blocks, `lg` between groups, `section` between a page's top-level blocks (the one responsive page rhythm).",
+        "`gap` is a scale: `xs` between lines of text, `sm` inside a group, `md` (default) between blocks, `lg` between groups, `xl` between a page's top-level blocks (the one responsive page rhythm).",
         "`width` caps the column at the left edge: `narrow` (a reading measure), `wide`, `full`, or `default` for the parent's width. It is never re-centred.",
         '`as` is `div` (default), `section`, `form`, `ul` or `ol`. `as="form"` takes the form props and spaces its fields; `as="ul"` and `as="ol"` draw no markers and their children are `<li>`s.',
-        "A titled group is a `Section`: `title`, `actions` beside it, then the blocks, at gap `sm`. It takes `gap` and `width` as `Stack` does.",
+        "A titled group is a `Section`: `title`, `actions` beside it, then the blocks, at gap `md` (default). It takes `gap` and `width` as `Stack` does.",
         "A row of items is a `Cluster`, not a Stack.",
       ],
       accessibility: [
@@ -112,7 +112,7 @@ export const layout: ComponentSection = {
         "Items in a line that are not buttons: a label beside a value, an input beside its actions, a row of pills.",
       pairs: ["Cluster/FillRow", "Cluster/Buttons", "Cluster/Spacer"],
       usage: [
-        "`gap` is `xs`, `sm` (default) or `md`, the first steps of the `Stack` scale.",
+        "`gap` is `xs` (default), `sm` or `md`, the first steps of the `Stack` scale. Cluster is the one row whose default is not `md`: most rows are a label and its chips, which sit tight.",
         "`align` is the cross axis: `center` (default), `baseline` for mixed text sizes, `start` or `end`. `justify` is the main axis: `start` (default), `between` for the two ends, `end`.",
         "`wrap` lets the items flow onto more lines on a phone; without it the row stays on one line.",
         "Wrap the one item that should fill the row in `ClusterGrow`; it can shrink to nothing, so a long value truncates and the others stay.",

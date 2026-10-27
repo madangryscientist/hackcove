@@ -1,16 +1,18 @@
 import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import { cx, focusRing } from "./cx.js";
 import type { Unstyled } from "./props.js";
+import type { Size } from "./size.js";
 
 export type ButtonVariant = "primary" | "outline" | "ghost" | "link" | "dashed";
-export type ButtonSize = "md" | "sm";
+export type ButtonSize = Size;
 export type ButtonTone = "default" | "positive" | "danger";
 
 const SHAPE = "inline-flex items-center justify-center rounded-lg border font-medium transition";
 // Size sets the padding and the text. The link variant has no box, so it takes the text size only.
 const SIZE: Record<ButtonSize, { box: string; text: string }> = {
-  md: { box: "gap-2 px-4 py-2", text: "text-sm" },
   sm: { box: "gap-1.5 px-2.5 py-1", text: "text-xs" },
+  md: { box: "gap-2 px-4 py-2", text: "text-sm" },
+  lg: { box: "gap-2 px-5 py-2.5", text: "text-base" },
 };
 // A plain `disabled` washes out and ignores the pointer. Blocked and busy buttons are disabled too,
 // but they keep pointer events (the title shows, the cursor says why) and do not take this.
@@ -91,7 +93,7 @@ export type ButtonLook = {
   /** @default primary */
   variant?: ButtonVariant | undefined;
   /**
-   * `sm` is compact, for table rows and toolbars.
+   * `sm` is compact, for table rows and toolbars; `lg` is larger, for a hero call to action.
    * @default md
    */
   size?: ButtonSize | undefined;
@@ -173,7 +175,7 @@ function stateClass(
  * A button in the primary, outline, ghost, link or dashed style (the link has no box: text with an
  * underline on hover, for an in-line action; `dashed` is the full-width "add" row, a dashed
  * outline with muted text that fills its container, with an optional leading icon in the
- * children). `size="sm"` is compact; `tone="positive"` is green and `tone="danger"` is red;
+ * children). `size="sm"` is compact and `size="lg"` larger; `tone="positive"` is green and `tone="danger"` is red;
  * `pressed` makes it a toggle with a selected look.
  * Defaults to `type="button"`. `disabledReason` and `busy` are the two disabled states that say
  * more than a plain `disabled`, which keeps its half-opacity look.

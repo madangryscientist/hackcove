@@ -1,6 +1,20 @@
 import type { ReactElement, ReactNode } from "react";
-import { CONTROL_WIDTH, type ControlProps, controlClass } from "./control.js";
+import { CONTROL_WIDTH, type ControlProps, type ControlSize, controlClass } from "./control.js";
 import { cx } from "./cx.js";
+
+/** Where a leading icon sits, and its size, by the control's size. */
+const ICON: Record<ControlSize, string> = {
+  sm: "left-2 [&>svg]:h-3.5 [&>svg]:w-3.5",
+  md: "left-3 [&>svg]:h-4 [&>svg]:w-4",
+  lg: "left-4 [&>svg]:h-5 [&>svg]:w-5",
+};
+
+/** The prefix text's inset and size, by the control's size. */
+const PREFIX: Record<ControlSize, string> = {
+  sm: "pl-2 text-xs",
+  md: "pl-3 text-sm",
+  lg: "pl-4 text-base",
+};
 
 /** The relative wrapper of an `Input` that holds more than the field: a leading `icon` and, for search, the clear button. Not exported from the package. */
 export function InputShell({
@@ -22,7 +36,7 @@ export function InputShell({
           aria-hidden="true"
           className={cx(
             "pointer-events-none absolute top-1/2 -translate-y-1/2 text-slate-400",
-            size === "sm" ? "left-2 [&>svg]:h-3.5 [&>svg]:w-3.5" : "left-3 [&>svg]:h-4 [&>svg]:w-4",
+            ICON[size],
           )}
         >
           {icon}
@@ -57,14 +71,7 @@ export function PrefixShell({
         disabled && "opacity-50",
       )}
     >
-      <span
-        className={cx(
-          "shrink-0 select-none text-slate-500",
-          size === "sm" ? "pl-2 text-xs" : "pl-3 text-sm",
-        )}
-      >
-        {prefix}
-      </span>
+      <span className={cx("shrink-0 select-none text-slate-500", PREFIX[size])}>{prefix}</span>
       {children}
     </div>
   );

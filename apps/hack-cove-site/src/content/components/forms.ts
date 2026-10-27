@@ -34,7 +34,7 @@ export const forms: ComponentSection = {
         "Put an `Input` in a `Field`. Without one, name it with `aria-label`.",
         'A search box is `type="search"` with an `icon`; the clear button appears by itself.',
         '`prefix` is short text inside the border before the value, such as a currency symbol. It is for a plain field, not one with an `icon` or `type="search"`. Pair it with `align="end"` and `inputMode="decimal"` for an amount.',
-        '`size="sm"` is for a dense form or a table row.',
+        '`size="sm"` is for a dense form or a table row, `size="lg"` for a sign-in or search form that stands alone; `md` is the default.',
         "`width` is `full` by default; `xs`, `sm`, `md` and `lg` are fixed widths for a short value; `fill` grows to the room beside other items in a row; `auto` is as wide as the browser makes it.",
         "A paragraph is a `Textarea`; a choice from a list is a `Select`; a date is a `DatePicker`.",
       ],
@@ -90,7 +90,7 @@ export const forms: ComponentSection = {
       pairs: ["Checkbox/Label", "Checkbox/Row"],
       usage: [
         "Give a `Checkbox` a `label`; the whole label is the click target.",
-        'In a table cell leave the `label` out, use `size="sm"` and name the box with `aria-label`.',
+        'In a table cell leave the `label` out, use `size="sm"` and name the box with `aria-label`. `size="lg"` matches a large `Input`.',
         '`align="start"` puts the box on the first line of a label that wraps onto several; the default centres it.',
         "A `description` is a muted line under the label for an option that needs a sentence; the box sits on the label's first line and is described by it.",
         "Do not wrap a `Checkbox` in a `Field`; it is its own label.",
@@ -117,6 +117,7 @@ export const forms: ComponentSection = {
         "A `description` on a `Radio` is a muted line under its label, for the option that needs a sentence.",
         "An `error` on the group is a red line under the options and marks every circle red; it is the same wording rule as `Field`'s.",
         "`isDisabled` on the group disables every option; on a `Radio` it disables that one.",
+        "`size` (`sm`, `md` the default, `lg`) sets every circle and label, to match the `Input`s around it.",
         "More than five options, or a list that grows, is a `Select`. Several ticks are `Checkbox`es. Switching a view in place is a `SegmentedControl`.",
       ],
       accessibility: [
@@ -136,7 +137,7 @@ export const forms: ComponentSection = {
       usage: [
         "Say what the zone wants in its children, and restrict the type with `accept`.",
         "Show the chosen file's name in the children from `onChange`; the zone does not do it for you.",
-        '`size="sm"` is a compact chip or tile.',
+        '`size="sm"` is a compact chip or tile, `size="lg"` a roomy drop zone; `md` is the default.',
         "`multiple`, `name` and `disabled` go on the zone like any file input.",
         "Put a `FileDrop` in a `Field` when it needs a label of its own above it.",
       ],
@@ -181,6 +182,7 @@ export const forms: ComponentSection = {
         "A message from outside, a server's say, is `error`; it replaces the description. An impossible date, such as 31/02/1990, shows its own message. `isInvalid` alone marks the field with no reason, so pair it with `errorMessage`.",
         "The value is a `CalendarDate` (`value`, `defaultValue`, `onChange`, `minValue`, `maxValue`). `fromISODate` reads a stored `YYYY-MM-DD` and `toISODate` writes one.",
         "`name` posts the date as `YYYY-MM-DD` in a form, or an empty string.",
+        "`size` is `sm`, `md` (default) or `lg`, the same heights as `Input`.",
       ],
       accessibility: [
         'The label names a `role="group"`; each of day, month and year is its own editable segment (`role="spinbutton"`), so a person can type digits or use the arrow keys.',
@@ -209,6 +211,7 @@ export const forms: ComponentSection = {
       pairs: ["SegmentedControl/Mode", "SegmentedControl/DisabledReason", "SegmentedControl/Links"],
       usage: [
         "Two to five short options. The caller owns `value` and `onChange`; `label` names the group.",
+        "`size` is `sm`, `md` (default) or `lg`, the heights of a `Button`.",
         "An on/off setting is a `Checkbox`; a long list is a `Select`.",
         "Switching the panel under a row of headings is `Tabs`.",
         "A `count` sits muted after the label.",
@@ -234,6 +237,7 @@ export const forms: ComponentSection = {
         "`pressed` is the state; the caller flips it in `onClick`.",
         "Put chips that filter one thing in a `FilterGroup`, so the set has a name.",
         "`dot` is a category colour before the label, for a chip that matches a marker elsewhere.",
+        "`size` is `sm` by default, the one control that is: chips sit in rows of filters. `md` and `lg` match a `Button` beside them.",
         "An action is a `Button`; a setting in a form is a `Checkbox`.",
       ],
       accessibility: [

@@ -114,7 +114,7 @@ export function FormLayout({
  * stay beside the text instead of at the Container's far edge.
  */
 export function ProseLayout({
-  gap,
+  gap = "md",
   children,
   breadcrumbs,
   title,

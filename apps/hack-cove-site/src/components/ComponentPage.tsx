@@ -37,7 +37,7 @@ function Rules({ items }: { items: string[] }) {
  */
 export function ComponentPage({ page }: { page: Page }) {
   return (
-    <Stack gap="section">
+    <Stack gap="xl">
       <PageHeader title={page.name} subtitle={page.summary} />
       <Section title="Overview" gap="md">
         <Body as="p">

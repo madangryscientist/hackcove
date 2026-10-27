@@ -19,6 +19,7 @@ import { cx, focusRing } from "./cx.js";
 import { toISODate } from "./isoDate.js";
 import type { DataAttributes } from "./link.js";
 import { ShownInput, useShownDate } from "./shownDate.js";
+import type { Size } from "./size.js";
 
 /** Fixed, whatever the browser's locale: DD/MM/YYYY and Monday-first weeks. */
 export const LOCALE = "en-GB";
@@ -40,6 +41,12 @@ export type DateFieldProps = {
   error?: ReactNode;
   /** Marks the field invalid with no message of its own; pair it with `errorMessage`. */
   isInvalid?: boolean;
+  /**
+   * The field's height and text, on the same scale as an `Input`: `sm` is `text-xs`, `lg` is
+   * `text-base`.
+   * @default md
+   */
+  size?: Size;
 } & DataAttributes &
   Pick<
     AriaDateFieldProps<CalendarDate>,
@@ -125,7 +132,7 @@ export function frameClass({
   if (isInvalid) tone = "border-red-200 bg-red-50 text-red-700";
   else if (isFocusWithin) tone = "border-violet-600 bg-white text-slate-900";
   return cx(
-    "flex w-full items-center rounded-lg border py-2 pl-2.5 text-sm transition",
+    "flex w-full items-center rounded-lg border transition",
     tone,
     isDisabled && "opacity-50",
   );
@@ -178,8 +185,17 @@ export function Notes({
   );
 }
 
+/** A `DateField`'s padding and text, by `size`: the heights of an `Input`. */
+const FIELD_SIZE: Record<Size, string> = {
+  sm: "py-1 pl-2 pr-2 text-xs",
+  md: "py-2 pl-2.5 pr-2.5 text-sm",
+  lg: "py-2.5 pl-3 pr-3 text-base",
+};
+
 export const labelClass = "text-sm font-medium text-slate-700";
-export const iconButtonClass = `inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 disabled:opacity-50 ${focusRing}`;
+/** A small icon button inside a date field or calendar, without its box size. */
+export const iconButtonLook = `inline-flex shrink-0 items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 disabled:opacity-50 ${focusRing}`;
+export const iconButtonClass = `${iconButtonLook} h-7 w-7`;
 
 /** A segmented DD / MM / YYYY date input. Values are `CalendarDate`s; `name` posts it as `YYYY-MM-DD`. */
 export function DateField({
@@ -192,6 +208,7 @@ export function DateField({
   defaultValue,
   onChange,
   name,
+  size = "md",
   ...rest
 }: DateFieldProps): ReactElement {
   const { inner, setInner, shown, impossible, onRead, validate, leaving, onBlurCapture, onLeft } =
@@ -221,7 +238,7 @@ export function DateField({
           <>
             {label ? <Label className={labelClass}>{label}</Label> : null}
             <div className="contents" onBlurCapture={onBlurCapture}>
-              <DateInput className={(state) => cx(frameClass(state), "pr-2.5")}>
+              <DateInput className={(state) => cx(frameClass(state), FIELD_SIZE[size])}>
                 {(segment) => (
                   <FieldSegment segment={segment} {...(segment.type === "day" ? { onRead } : {})} />
                 )}

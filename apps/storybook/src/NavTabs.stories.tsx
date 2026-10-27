@@ -87,3 +87,22 @@ export const WithRouterLink: S = {
     />
   ),
 };
+
+/** `sm`, `md` (the default, 38px) and `lg`: the control scale. */
+export const Sizes: S = {
+  render: () => (
+    <Stack gap="sm">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <NavTabs
+          key={size}
+          size={size}
+          label={`Main, ${size}`}
+          items={[
+            { label: "Map", href: "/" },
+            { label: "Directory", href: "/stores", active: true },
+          ]}
+        />
+      ))}
+    </Stack>
+  ),
+};

@@ -204,3 +204,24 @@ export const DoLinks: S = {
     />
   ),
 };
+
+/** `sm`, `md` (the default, 38px) and `lg`: the control scale. */
+export const Sizes: S = {
+  render: () => (
+    <div className="flex flex-col items-start gap-3">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <SegmentedControl
+          key={size}
+          size={size}
+          label={`Range, ${size}`}
+          items={[
+            { value: "day", label: "Daily" },
+            { value: "week", label: "Weekly" },
+          ]}
+          value="week"
+          onChange={() => {}}
+        />
+      ))}
+    </div>
+  ),
+};

@@ -39,13 +39,16 @@ export const SizeAndMono: S = {
   name: "size and mono",
   render: () => (
     <div className="flex flex-col items-start gap-2">
-      <TextLink href="#xs" size="xs">
-        size xs
-      </TextLink>
       <TextLink href="#sm" size="sm">
         size sm
       </TextLink>
-      <TextLink href="#path" size="sm" mono>
+      <TextLink href="#md" size="md">
+        size md
+      </TextLink>
+      <TextLink href="#lg" size="lg">
+        size lg
+      </TextLink>
+      <TextLink href="#path" size="md" mono>
         packages/ui/src/TextLink.tsx
       </TextLink>
     </div>

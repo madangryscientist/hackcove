@@ -27,7 +27,7 @@ export const FullPage: S = {
         />
       }
     >
-      <Stack gap="section">
+      <Stack gap="xl">
         <PageHeader title="Business" subtitle="This month at a glance." />
         <CardGrid columns={3}>
           <StatTile label="Open" value="12" />

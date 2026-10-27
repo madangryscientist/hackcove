@@ -96,6 +96,7 @@ export { FormGrid, FormRow, FormRowField, type FormRowSpan } from "./FormRow.js"
 export { FieldDialog, type FieldDialogProps } from "./FieldDialog.js";
 export { Input } from "./Input.js";
 export type { ControlAlign, ControlSize, ControlWidth } from "./control.js";
+export type { Size } from "./size.js";
 export { InlineLinks, type InlineLinksSeparator } from "./InlineLinks.js";
 export { MetaList } from "./MetaList.js";
 export { Kbd } from "./Kbd.js";

@@ -298,3 +298,22 @@ export const WithRouterLink: S = {
     />
   ),
 };
+
+/** The pill variant takes `size`: `sm`, `md` (the default, 38px) or `lg`. */
+export const PillSizes: S = {
+  render: () => (
+    <Stack gap="sm">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <Tabs
+          key={size}
+          variant="pill"
+          size={size}
+          label={`Project views, ${size}`}
+          items={views.map(({ value, label }) => ({ value, label }))}
+          value="overview"
+          onChange={() => {}}
+        />
+      ))}
+    </Stack>
+  ),
+};

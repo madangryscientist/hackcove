@@ -29,8 +29,9 @@ export const Tones: S = {
 export const Sizes: S = {
   render: () => (
     <div className="flex max-w-sm flex-col gap-3">
-      <SplitBar a={40} b={60} size="sm" label="Thin" />
-      <SplitBar a={40} b={60} label="Thicker" />
+      <SplitBar a={40} b={60} size="sm" label="sm, 6px" />
+      <SplitBar a={40} b={60} label="md, 8px (the default)" />
+      <SplitBar a={40} b={60} size="lg" label="lg, 12px" />
     </div>
   ),
 };

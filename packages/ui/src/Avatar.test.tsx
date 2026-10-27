@@ -42,7 +42,8 @@ describe("Avatar", () => {
   });
 
   it("is md by default and sizes by class", () => {
-    expect(renderToStaticMarkup(<Avatar name="a" />)).toContain("size-7");
+    expect(renderToStaticMarkup(<Avatar name="a" />)).toContain("size-8");
+    expect(renderToStaticMarkup(<Avatar name="a" size="sm" />)).toContain("size-6");
     expect(renderToStaticMarkup(<Avatar name="a" size="lg" />)).toContain("size-10");
   });
 

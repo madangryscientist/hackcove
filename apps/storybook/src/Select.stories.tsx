@@ -77,3 +77,16 @@ export const DontChoice: S = {
     </Field>
   ),
 };
+
+/** `sm`, `md` (the default) and `lg`. */
+export const Sizes: S = {
+  render: () => (
+    <div className="flex flex-wrap items-center gap-2">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <Select key={size} size={size} width="md" aria-label={`Rating ${size}`} defaultValue={5}>
+          {rating}
+        </Select>
+      ))}
+    </div>
+  ),
+};

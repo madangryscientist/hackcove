@@ -56,12 +56,12 @@ describe("typography", () => {
     );
   });
 
-  it("SubsectionHeading `size` steps the scale, and sm is today's default", () => {
+  it("SubsectionHeading `size` steps the scale, and md is the default", () => {
     const plain = renderToStaticMarkup(<SubsectionHeading>x</SubsectionHeading>);
-    expect(plain).toContain('class="text-sm/5 font-semibold text-slate-900"');
-    expect(renderToStaticMarkup(<SubsectionHeading size="sm">x</SubsectionHeading>)).toBe(plain);
-    expect(renderToStaticMarkup(<SubsectionHeading size="base">x</SubsectionHeading>)).toContain(
-      "text-base/6 font-bold",
+    expect(plain).toContain('class="text-base/6 font-semibold text-slate-900"');
+    expect(renderToStaticMarkup(<SubsectionHeading size="md">x</SubsectionHeading>)).toBe(plain);
+    expect(renderToStaticMarkup(<SubsectionHeading size="sm">x</SubsectionHeading>)).toContain(
+      "text-sm/5 font-semibold",
     );
     const lg = renderToStaticMarkup(<SubsectionHeading size="lg">x</SubsectionHeading>);
     expect(lg).toContain("text-lg/7 font-semibold");

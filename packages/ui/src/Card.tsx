@@ -1,9 +1,15 @@
 import { type ComponentPropsWithoutRef, type ReactElement, type ReactNode, useId } from "react";
 import { type CalloutTone, TONE_SURFACE } from "./Callout.js";
-import type { ControlSize } from "./control.js";
 import { cx, focusRing, liftInteractive } from "./cx.js";
 import { type LinkRender, renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
+import type { Size } from "./size.js";
+
+/** The space under a card's heading, by `size`. */
+const HEADING_GAP: Record<Size, string> = { sm: "mb-2", md: "mb-3", lg: "mb-4" };
+
+/** The padding of a card's bar and footer strips, by `size`. */
+const STRIP_PAD: Record<Size, string> = { sm: "px-3 py-2", md: "px-5 py-3", lg: "px-6 py-4" };
 
 function CardHeading({
   title,
@@ -18,7 +24,7 @@ function CardHeading({
   status: ReactNode;
   bar: boolean;
   spaced: boolean;
-  size: ControlSize;
+  size: Size;
 }) {
   const ink = bar ? "text-slate-500" : "text-slate-400";
   return (
@@ -26,7 +32,7 @@ function CardHeading({
       className={cx(
         "flex gap-2",
         status ? "items-center" : "items-baseline",
-        spaced && (size === "sm" ? "mb-2" : "mb-3"),
+        spaced && HEADING_GAP[size],
       )}
     >
       <h2 className={cx("text-xs font-semibold uppercase tracking-wide", ink)}>{title}</h2>
@@ -47,13 +53,13 @@ function CardBar({
 }: {
   heading: ReactNode;
   actions: ReactNode;
-  size: ControlSize;
+  size: Size;
 }) {
   return (
     <div
       className={cx(
         "flex items-center justify-between gap-3 border-b border-slate-200/70 bg-slate-50",
-        size === "sm" ? "px-3 py-2" : "px-5 py-3",
+        STRIP_PAD[size],
       )}
     >
       {heading}
@@ -62,12 +68,12 @@ function CardBar({
   );
 }
 
-function CardFooter({ children, size }: { children: ReactNode; size: ControlSize }) {
+function CardFooter({ children, size }: { children: ReactNode; size: Size }) {
   return (
     <div
       className={cx(
         "flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-slate-200/70 bg-slate-50 [&>[data-button-group]]:grow",
-        size === "sm" ? "px-3 py-2" : "px-5 py-3",
+        STRIP_PAD[size],
       )}
     >
       {children}
@@ -82,11 +88,11 @@ function CardHeader({
 }: {
   heading: ReactNode;
   actions: ReactNode;
-  size: ControlSize;
+  size: Size;
 }) {
   if (!actions) return heading;
   return (
-    <div className={cx("flex items-center justify-between gap-3", size === "sm" ? "mb-2" : "mb-3")}>
+    <div className={cx("flex items-center justify-between gap-3", HEADING_GAP[size])}>
       {heading}
       <CardActions>{actions}</CardActions>
     </div>
@@ -105,7 +111,7 @@ function cardForm(
     bar?: boolean | undefined;
     dashed?: boolean | "filled" | undefined;
     tone?: CalloutTone | undefined;
-    size?: ControlSize | undefined;
+    size: Size;
   },
   hasHeader: boolean,
 ) {
@@ -117,13 +123,13 @@ function cardForm(
     dashed,
     filled: asked.dashed === "filled",
     tone: dashed || bar ? undefined : asked.tone,
-    size: asked.size ?? "md",
+    size: asked.size,
     footer: false,
   };
 }
 
 /** The padding of a card's body by `size`. */
-const BODY_PAD: Record<ControlSize, string> = { md: "p-5", sm: "p-3" };
+const BODY_PAD: Record<Size, string> = { sm: "p-3", md: "p-5", lg: "p-6" };
 
 function cardBorder(form: ReturnType<typeof cardForm>): string {
   if (form.dashed) return "border-dashed border-slate-300";
@@ -163,8 +169,12 @@ type CardBase = {
   dashed?: boolean | "filled";
   /** A soft fill and border in the Callout's tones, for a data panel with a status. Ignored with `bar` and `dashed`. */
   tone?: CalloutTone;
-  /** `sm` is dense padding on the body, heading and bar; a `dashed` shell keeps its own. Defaults to `md`. */
-  size?: ControlSize;
+  /**
+   * `sm` is dense padding on the body, heading and bar, `lg` one step roomier than `md`; a
+   * `dashed` shell keeps its own.
+   * @default md
+   */
+  size?: Size;
   children: ReactNode;
 };
 
@@ -205,8 +215,8 @@ function isCardLink(props: CardPanelProps | CardLinkProps): props is CardLinkPro
  * top, over the body; `dashed` is an empty-state shell, a dashed outline with centred muted text.
  * `dashed` stands alone: it ignores `flush` and `bar`; `dashed="filled"` is the same shell on a
  * surface fill with more padding, for an empty state that must read as a panel. A flush card has no
- * padding for a `title`, so give it a `bar`. `size="sm"` is the dense padding, the same on a
- * `ListRow` and a `FileDrop`. `tone` is the Callout's set, for a data panel that carries a status
+ * padding for a `title`, so give it a `bar`. `size="sm"` is the dense padding and `size="lg"` the
+ * roomy one, the same on a `ListRow` and a `FileDrop`. `tone` is the Callout's set, for a data panel that carries a status
  * (a soft fill and border, no shadow); a message is still a `Callout`, and `bar` and `dashed` have
  * no tone. Other props (`id`, `data-*`, `aria-*`) go on the root. The root is `relative`, so a
  * `TextLink stretch` inside it covers the card. A card with an `id` is an anchor target: `#id`
@@ -234,7 +244,7 @@ export function Card(props: CardPanelProps | CardLinkProps): ReactElement {
     flush,
     dashed,
     tone,
-    size,
+    size = "md",
     children,
     ...panel
   } = props;
@@ -253,8 +263,19 @@ export function Card(props: CardPanelProps | CardLinkProps): ReactElement {
 
 /** A card that is a link: a `div` with the link stretched over it as an empty overlay, so the card's own links and buttons are not nested in it. */
 function LinkCard(props: CardLinkProps): ReactElement {
-  const { title, count, status, actions, bar, flush, dashed, tone, size, children, ...link } =
-    props;
+  const {
+    title,
+    count,
+    status,
+    actions,
+    bar,
+    flush,
+    dashed,
+    tone,
+    size = "md",
+    children,
+    ...link
+  } = props;
   const form = cardForm({ flush, bar, dashed, tone, size }, Boolean(title));
   const cardId = useId();
   return (

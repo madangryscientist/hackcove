@@ -15,7 +15,7 @@ const COLOUR_CLASSES = [
 
 const SIZE_CLASSES = {
   sm: "size-6 text-xs",
-  md: "size-7 text-xs",
+  md: "size-8 text-xs",
   lg: "size-10 text-base",
   xl: "size-14 text-xl",
   "2xl": "size-24 text-3xl",

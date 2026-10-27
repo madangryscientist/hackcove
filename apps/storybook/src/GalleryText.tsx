@@ -22,7 +22,7 @@ export function GalleryText() {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-1">
-        <SubsectionHeading size="base">SubsectionHeading base</SubsectionHeading>
+        <SubsectionHeading size="md">SubsectionHeading md</SubsectionHeading>
         <SubsectionHeading size="lg">SubsectionHeading lg</SubsectionHeading>
         <div className="w-40">
           <SubsectionHeading truncate>SubsectionHeading truncated to one line</SubsectionHeading>

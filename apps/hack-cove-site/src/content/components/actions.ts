@@ -21,7 +21,7 @@ export const actions: ComponentSection = {
         "Group the actions in a `ButtonGroup`, so the row spaces and wraps the same everywhere; `end` pushes one item, such as a Back link, to the far side, and `label` names the group.",
         "Say why a button cannot be pressed with `disabledReason`; use `busy` while the work is in flight.",
         "Going to another page is a `ButtonLink`, not a Button.",
-        'A destructive action is `tone="danger"`, an accept is `tone="positive"`; `size="sm"` is for a button inside a row or a card header.',
+        'A destructive action is `tone="danger"`, an accept is `tone="positive"`; `size="sm"` is for a button inside a row or a card header, `size="lg"` for the one action of a hero or a sign-in form.',
         "`pressed` makes a toggle; `busyLabel` replaces the label while `busy`.",
         "An icon-only action is an `IconButton`, not a Button holding a glyph.",
       ],
@@ -48,6 +48,7 @@ export const actions: ComponentSection = {
       usage: [
         "Always give the `label`: it is the accessible name and the tooltip, and the icon is only decoration.",
         '`variant="ghost"` is the quiet one for a row or a toolbar; `tone="danger"` is for delete and clear.',
+        "`size` is `sm` (26px) inside a row or a chip, `md` (default, 38px, the height of a `Button`) or `lg` beside a large `Button`.",
         "An unread count is `badge`, never part of the label; it is not shown at 0.",
         "Going to another page is `href` (or `render` for the app's router link), which draws the same button as a link.",
         "An action that needs a word is a `Button`.",
@@ -105,6 +106,7 @@ export const actions: ComponentSection = {
       pairs: ["ColourSchemeToggle/Switch", "ColourSchemeToggle/Schemes"],
       usage: [
         "Use one `ColourSchemeToggle` per site. It switches `<html>` between light and dark and remembers the choice in `localStorage`.",
+        "`size` is `sm`, `md` (default) or `lg`, the same squares as `IconButton`.",
         "Put `colourSchemeScript` inline in `<head>`, so the stored or system scheme is on `<html>` before first paint and a light visitor never sees a dark flash. It knows only the `dark` class.",
         'A light theme with a class of its own (thrifty-paper\'s `paper`) passes `schemes={{ light: "paper", dark: "dark" }}`; render the same class on `<html>` on the server with `schemeClass`.',
         "An app that knows the scheme on the server (from a cookie) passes `initial`, sets `store={false}` and persists from `onChange`. It then leaves the head script out.",

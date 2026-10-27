@@ -199,3 +199,17 @@ export const DoValue: S = {
 export const DoTypedOnly: S = {
   render: () => <DateField label="Date of birth" description="DD/MM/YYYY" />,
 };
+
+/** `sm`, `md` (the default) and `lg`, on the picker and the bare field. */
+export const Sizes: S = {
+  render: () => (
+    <>
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <DatePicker key={size} label={`Picker, ${size}`} size={size} defaultValue={birthday} />
+      ))}
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <DateField key={size} label={`Field, ${size}`} size={size} defaultValue={birthday} />
+      ))}
+    </>
+  ),
+};

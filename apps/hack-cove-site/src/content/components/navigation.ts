@@ -15,6 +15,7 @@ export const navigation: ComponentSection = {
         "Going to another page is `NavTabs`: links, so the URL, the back button and a new tab all work.",
         "A `count` sits muted after the label and is read as part of the tab's name.",
         '`variant="pill"` fills the current tab, for under a `PageHeader`.',
+        "`size` (`sm`, `md` the default, `lg`) sets a pill row and `NavTabs` on the control scale, so they line up with a `Button` of the same size.",
         "A disabled tab keeps a `title` as the reason.",
         '`NavTabs` with `orientation="vertical"` is the rail of a `SidebarLayout`: one link per line.',
       ],
