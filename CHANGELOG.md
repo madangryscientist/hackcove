@@ -1,3 +1,14 @@
+## 0.4.3 (2026-10-27)
+
+### 🚀 Features
+
+- **ui:** RadioGroup and Disclosure parts (HC-150) ([d9df25d](https://github.com/madangryscientist/hackcove/commit/d9df25d))
+- **HC-149:** colour code samples, full-page layout examples, docs pages wrap less ([05ec236](https://github.com/madangryscientist/hackcove/commit/05ec236))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.4.2 (2026-10-26)
 
 ### 🚀 Features
