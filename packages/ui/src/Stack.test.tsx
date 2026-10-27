@@ -23,7 +23,7 @@ describe("Stack", () => {
   });
 
   it("maps section to the responsive page rhythm, gap-12 then sm:gap-16", () => {
-    expect(renderToStaticMarkup(<Stack gap="section">x</Stack>)).toBe(
+    expect(renderToStaticMarkup(<Stack gap="xl">x</Stack>)).toBe(
       `<div class="flex flex-col gap-12 sm:gap-16 ${DROP}">x</div>`,
     );
   });
@@ -89,7 +89,7 @@ describe("Section", () => {
     );
     const id = /<h2 [^>]*id="([^"]+)"/.exec(out)?.[1];
     expect(id).toBeDefined();
-    expect(out).toContain(`<section class="flex flex-col gap-4 ${DROP}" aria-labelledby="${id}">`);
+    expect(out).toContain(`<section class="flex flex-col gap-6 ${DROP}" aria-labelledby="${id}">`);
     expect(out).toContain(">All</button>");
   });
 
@@ -103,9 +103,9 @@ describe("Section", () => {
     ).toBe(`<section class="flex flex-col gap-2 max-w-3xl ${DROP}">body</section>`);
   });
 
-  it("renders no heading row and no label without a title or actions", () => {
+  it("renders no heading row and no label without a title or actions, gap md by default", () => {
     expect(renderToStaticMarkup(<Section>body</Section>)).toBe(
-      `<section class="flex flex-col gap-4 ${DROP}">body</section>`,
+      `<section class="flex flex-col gap-6 ${DROP}">body</section>`,
     );
   });
 

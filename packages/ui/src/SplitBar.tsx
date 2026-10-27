@@ -22,7 +22,7 @@ export function SplitBar({
   names,
   toneA = "negative",
   toneB = "positive",
-  size = "lg",
+  size = "md",
   ...rest
 }: {
   a: number;
@@ -34,7 +34,10 @@ export function SplitBar({
   toneA?: BarTone;
   /** Defaults to "positive". */
   toneB?: BarTone;
-  /** Defaults to "lg". */
+  /**
+   * The bar's height: `sm` 6px, `md` 8px, `lg` 12px.
+   * @default md
+   */
   size?: BarSize;
 } & Passthrough): ReactElement {
   const shareA = sharePercent(a, a + b);

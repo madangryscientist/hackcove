@@ -67,7 +67,7 @@ export const data: ComponentSection = {
         "`selected` marks the one row whose detail is open; set it on a single row of a list. `focused` marks the row the keyboard cursor is on in a list you move through yourself: an inset violet ring, apart from `selected`'s fill.",
         '`leadingWidth="thumbnail"` gives `leading` a fixed width that sizes an image to it, for a row that shows a screenshot. The label may hold block content, such as a title over a caption.',
         "A link row (`href` or `render`) can hold its own link or button in `trailing`: it sits above the row's link and takes its own click, with no class from you. A row that is a `<button>` cannot hold a button, so a row with buttons of its own is `static`: the buttons go in `actions`, after `trailing`. `revealOnHover` shows them only on hover or focus, so a long list is not a wall of buttons.",
-        'Never put a button or a link inside a button or link row. `size="sm"` is the dense padding for a list that must fit more rows.',
+        'Never put a button or a link inside a button or link row. `size="sm"` is the dense padding for a list that must fit more rows, `size="lg"` the roomy one for a short list of big targets; `md` is the default.',
         "Records with several columns to compare are a `Table`, not rows.",
       ],
       accessibility: [
@@ -108,7 +108,7 @@ export const data: ComponentSection = {
         "`value` is on the scale of `max`, which is 100 unless you pass one: three of twelve is `value={3} max={12}`. A fraction such as `0.25` is read as a quarter of one percent. A value past `max` is held at full.",
         "`label` is required and names what the bar measures.",
         "Say the figures in words beside the bar; the bar draws none.",
-        "`tone` is `accent`, `positive`, `warn` or `negative`; `size` is `sm` (default), `md` or `lg`.",
+        "`tone` is `accent`, `positive`, `warn` or `negative`; `size` is `sm`, `md` (default) or `lg`.",
         "A share between two parties is a `SplitBar`; the parts of one whole are a `StackedBar`.",
       ],
       accessibility: [
@@ -127,7 +127,7 @@ export const data: ComponentSection = {
       usage: [
         "`a` is the left party and `b` the right; each is sized by its share of `a + b`.",
         "Give `names` as `[left, right]`, and draw the same names under the bar yourself; the bar draws no text.",
-        "`toneA` defaults to `negative` and `toneB` to `positive`. Set both when neither side is good or bad, e.g. `accent` and `warn`. `size` is `sm`, `md` or `lg` (default).",
+        "`toneA` defaults to `negative` and `toneB` to `positive`. Set both when neither side is good or bad, e.g. `accent` and `warn`. `size` is `sm`, `md` (default) or `lg`.",
         "More than two parts are a `StackedBar`; progress toward a total is a `ProgressBar`.",
       ],
       accessibility: [
@@ -148,7 +148,7 @@ export const data: ComponentSection = {
         "`segments` are `{ label, value, tone }` in the order to draw; `tone` is `muted`, `positive`, `warn`, `danger` or `info`, and you map your own roles onto them.",
         "Set `legend` so every colour is named in words under the bar, with its value.",
         "`Legend` alone is the key for colours drawn elsewhere, such as a `TableRow` `stripe`.",
-        "`size` is `sm`, `md` or `lg` (default). A part with no value is zero wide.",
+        "`size` is `sm`, `md` (default) or `lg`. A part with no value is zero wide.",
         "Two parties are a `SplitBar`; progress toward a total is a `ProgressBar`.",
       ],
       accessibility: [

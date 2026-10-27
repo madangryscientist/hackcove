@@ -87,7 +87,7 @@ function Components() {
 /** Getting started: the purpose, install, themes, the component docs and where to find it. */
 export function UiPage() {
   return (
-    <Stack gap="section">
+    <Stack gap="xl">
       <Stack gap="md">
         {ui.intro.map((paragraph) => (
           <Body as="p" key={paragraph}>

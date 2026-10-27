@@ -9,7 +9,7 @@ describe("PageHeader in a Stack", () => {
     const alone = renderToStaticMarkup(<PageHeader title="Builds" />);
     expect(alone).toContain("mb-8");
     const inStack = renderToStaticMarkup(
-      <Stack gap="section">
+      <Stack gap="xl">
         <PageHeader title="Builds" />
       </Stack>,
     );

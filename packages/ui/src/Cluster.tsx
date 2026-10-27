@@ -22,7 +22,7 @@ const JUSTIFY: Record<ClusterJustify, string> = {
 };
 
 /**
- * A horizontal row of items a fixed `gap` apart: the row counterpart of `Stack`. `align` is the
+ * A horizontal row of items a fixed `gap` apart (`xs` by default): the row counterpart of `Stack`. `align` is the
  * cross axis (`center` default, `baseline` for mixed text sizes, `start`, `end`) and `justify` the
  * main one (`start` default, `between` to push the first and last items to the two ends, `end`).
  * `wrap` lets the items flow onto further lines on a narrow viewport (off by default, so a row
@@ -36,7 +36,7 @@ const JUSTIFY: Record<ClusterJustify, string> = {
  */
 export function Cluster({
   as: Tag = "div",
-  gap = "sm",
+  gap = "xs",
   align = "center",
   justify = "start",
   wrap = false,
@@ -45,6 +45,11 @@ export function Cluster({
 }: {
   /** The element. `span` for a row inside a `<p>` or other phrasing content; default `div`. */
   as?: "div" | "span" | undefined;
+  /**
+   * The space between items. Defaults to `xs`, not `md`, one of the library's two exceptions to the
+   * `md` default: the items of a row sit closer than the blocks of a column.
+   * @default xs
+   */
   gap?: ClusterGap | undefined;
   align?: ClusterAlign | undefined;
   justify?: ClusterJustify | undefined;

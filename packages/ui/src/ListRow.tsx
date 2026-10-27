@@ -1,9 +1,9 @@
 import { type ComponentPropsWithoutRef, type ReactElement, type ReactNode, useId } from "react";
-import type { ControlSize } from "./control.js";
 import { Chevron } from "./Chevron.js";
 import { cx, focusRing, liftInteractive } from "./cx.js";
 import { type LinkRender, renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
+import type { Size } from "./size.js";
 
 const ROW_LOOK =
   "flex w-full items-center gap-3 text-left text-sm text-slate-900 disabled:pointer-events-none disabled:opacity-50";
@@ -32,11 +32,14 @@ const THUMBNAIL = "block w-32 [&>img]:block [&>img]:h-auto [&>img]:w-full";
 const REVEAL =
   "opacity-0 group-hover/row:opacity-100 group-focus-within/row:opacity-100 any-pointer-coarse:opacity-100";
 
-const PAD: Record<ControlSize, string> = { md: "px-4 py-3", sm: "px-3 py-2" };
+const PAD: Record<Size, string> = { sm: "px-3 py-2", md: "px-4 py-3", lg: "px-5 py-4" };
 
 type Shared = {
-  /** `sm` is dense padding. Defaults to `md`. */
-  size?: ControlSize | undefined;
+  /**
+   * `sm` is dense padding, `lg` one step roomier than `md`.
+   * @default md
+   */
+  size?: Size | undefined;
   /** A hairline above the row: set it on every row after the first. */
   divided?: boolean | undefined;
   /** Content before the label: an Avatar, a thumbnail, an icon. */

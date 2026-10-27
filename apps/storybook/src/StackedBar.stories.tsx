@@ -33,8 +33,9 @@ export const WithLegend: S = {
 export const Sizes: S = {
   render: () => (
     <div className="flex max-w-md flex-col gap-3">
-      <StackedBar segments={snapshot} size="sm" label="Thin" />
-      <StackedBar segments={snapshot} label="Thicker" />
+      <StackedBar segments={snapshot} size="sm" label="sm, 6px" />
+      <StackedBar segments={snapshot} label="md, 8px (the default)" />
+      <StackedBar segments={snapshot} size="lg" label="lg, 12px" />
     </div>
   ),
 };

@@ -14,7 +14,7 @@ export const text: ComponentSection = {
       usage: [
         "A page has one title: `PageHeading` for an app page, `Display` for the headline of a public page. A `PageHeader` already draws the `PageHeading` and its subtitle, so use it for the top of a page.",
         "Name the parts of a page with `SectionHeading`; `rule` puts the hairline under it, with the space either side built in.",
-        "Name what is inside a part with `SubsectionHeading`: `size` `sm` (default) is a form-group caption, `base` a card title in a header bar, `lg` a drawer title. `truncate` cuts one that is too long for its column to a single line.",
+        "Name what is inside a part with `SubsectionHeading`: `size` `sm` is a form-group caption, `md` (default) a card title in a header bar, `lg` a drawer title. `truncate` cuts one that is too long for its column to a single line.",
         "`ModalHeading` is the title of a dialog or drawer, and `Dialog` and `Drawer` draw it from their `title`. Do not place one on a page.",
         "Put a `Lead` under a `Display`, and a `Subtitle` under any other heading.",
         "Pick the heading for its place in the outline, never for its size. `Display` is not a big `SectionHeading`.",
@@ -139,7 +139,7 @@ export const text: ComponentSection = {
         "Use `TextLink` for every link in running text. Never a bare `<a>`.",
         '`external` is for another site: it opens a new tab with `rel="noreferrer"`.',
         'In an app with a router, `render` draws the router\'s own `<Link>`: `render={(p) => <Link to="/terms" {...p} />}`. The library has no router.',
-        "`size` pins the type size to `xs` or `sm`; left out, the link takes the size of its text. `mono` sets the monospace face for a path or an id.",
+        "`size` pins the type size to `sm`, `md` or `lg`; left out, the link takes the size of its text. `mono` sets the monospace face for a path or an id.",
         '`tone` gives the link a meaning\'s colour (`warn`, `danger`, `positive`, `info`, `muted`), underlined on hover. Use it for a link that is the message, like "3 failed".',
         "`stretch` makes the nearest `relative` ancestor the click target: a `Card` or a `TableRow`. Put it on the one link in that row; any other link or button in the row sits above it and is clickable on its own.",
         "A router's own `<Link>` that must look like a `TextLink` takes `linkClass`, and a stretched one `linkStretchClass` as well.",

@@ -18,10 +18,18 @@ import {
   forcedInvalid,
   Notes,
   frameClass,
-  iconButtonClass,
+  iconButtonLook,
   labelClass,
 } from "./DateField.js";
 import { ShownInput, useShownDate } from "./shownDate.js";
+import type { Size } from "./size.js";
+
+/** The picker's padding, text and calendar button, by `size`. The button sets the height, so the padding is less than a `DateField`'s. */
+const PICKER_SIZE: Record<Size, { frame: string; button: string }> = {
+  sm: { frame: "py-0.5 pl-2 pr-0.5 text-xs", button: "h-5 w-5" },
+  md: { frame: "py-2 pl-2.5 pr-1 text-sm", button: "h-7 w-7" },
+  lg: { frame: "py-1.5 pl-3 pr-1.5 text-base", button: "h-8 w-8" },
+};
 
 export type DatePickerProps = DateFieldProps & {
   /** Open the calendar on mount. */
@@ -60,6 +68,7 @@ export function DatePicker({
   defaultValue,
   onChange,
   name,
+  size = "md",
   ...rest
 }: DatePickerProps): ReactElement {
   const { inner, setInner, shown, impossible, onRead, validate, leaving, onBlurCapture, onLeft } =
@@ -92,7 +101,7 @@ export function DatePicker({
         {({ isInvalid }) => (
           <>
             {label ? <Label className={labelClass}>{label}</Label> : null}
-            <Group className={(state) => cx(frameClass(state), "gap-1 pr-1")}>
+            <Group className={(state) => cx(frameClass(state), "gap-1", PICKER_SIZE[size].frame)}>
               <div className="contents" onBlurCapture={onBlurCapture}>
                 <PickerInput leaving={leaving} onLeft={onLeft}>
                   <DateInput className="flex flex-1">
@@ -105,7 +114,9 @@ export function DatePicker({
                   </DateInput>
                 </PickerInput>
               </div>
-              <Button className={iconButtonClass}>{calendarIcon}</Button>
+              <Button className={cx(iconButtonLook, PICKER_SIZE[size].button)}>
+                {calendarIcon}
+              </Button>
             </Group>
             <ShownInput name={name} shown={shown} isDisabled={rest.isDisabled} />
             <Notes

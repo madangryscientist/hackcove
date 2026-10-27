@@ -8,6 +8,7 @@ import {
 } from "./colourScheme.js";
 import { IconButton } from "./IconButton.js";
 import type { Unstyled } from "./props.js";
+import type { Size } from "./size.js";
 
 const sun = (
   <svg
@@ -81,8 +82,14 @@ export function ColourSchemeToggle({
   schemes = { light: "", dark: "dark" },
   initial,
   store = true,
+  size = "md",
   ...rest
 }: {
+  /**
+   * The button's height, as an `IconButton`'s.
+   * @default md
+   */
+  size?: Size | undefined;
   onChange?: (scheme: ColourScheme) => void;
   /** The class each scheme puts on `<html>`. Default `{ light: "", dark: "dark" }`. */
   schemes?: ColourSchemeClasses | undefined;
@@ -105,6 +112,7 @@ export function ColourSchemeToggle({
   return (
     <IconButton
       {...rest}
+      size={size}
       label={`Switch to ${next} theme`}
       onClick={() => {
         applyColourScheme(next, document.documentElement, schemes);

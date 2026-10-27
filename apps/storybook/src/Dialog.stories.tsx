@@ -168,3 +168,32 @@ export const DontNotice: S = {
     );
   },
 };
+
+/** `size="lg"` (640px): a wider form or a table. `sm` is 320px and `md`, the default, 440px. */
+export const Large: S = {
+  render: () => (
+    <Opened>
+      {(close) => (
+        <Dialog
+          title="Import statement"
+          description="Check the rows before they are added."
+          size="lg"
+          onClose={close}
+          footer={
+            <>
+              <Button variant="ghost" onClick={close}>
+                Cancel
+              </Button>
+              <Button onClick={close}>Import</Button>
+            </>
+          }
+        >
+          <KeyValueList>
+            <KeyValue label="Rows">42</KeyValue>
+            <KeyValue label="Skipped">3</KeyValue>
+          </KeyValueList>
+        </Dialog>
+      )}
+    </Opened>
+  ),
+};

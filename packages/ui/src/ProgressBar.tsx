@@ -1,12 +1,13 @@
 import type { ReactElement } from "react";
 import { cx } from "./cx.js";
 import type { Passthrough } from "./props.js";
+import type { Size } from "./size.js";
 
 /** The colour of a bar's fill. */
 export type BarTone = "accent" | "positive" | "warn" | "negative";
 
 /** 6px, 8px or 12px tall. */
-export type BarSize = "sm" | "md" | "lg";
+export type BarSize = Size;
 
 export const BAR_FILL: Record<BarTone, string> = {
   accent: "bg-violet-600",
@@ -42,7 +43,7 @@ export function ProgressBar({
   max = 100,
   label,
   tone = "accent",
-  size = "sm",
+  size = "md",
   ...rest
 }: {
   value: number;
@@ -51,7 +52,10 @@ export function ProgressBar({
   label: string;
   /** Defaults to "accent". */
   tone?: BarTone;
-  /** Defaults to "sm". */
+  /**
+   * The bar's height: `sm` 6px, `md` 8px, `lg` 12px.
+   * @default md
+   */
   size?: BarSize;
 } & Passthrough): ReactElement {
   const share = sharePercent(value, max);

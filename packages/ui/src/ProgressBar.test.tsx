@@ -38,11 +38,11 @@ describe("ProgressBar", () => {
     );
   });
 
-  it("is 6px by default, 8px at md and 12px at lg, with a slate track", () => {
-    const thin = renderToStaticMarkup(<ProgressBar value={1} label="x" />);
-    expect(thin).toContain("h-1.5");
-    expect(thin).toContain("bg-slate-100");
-    expect(renderToStaticMarkup(<ProgressBar value={1} label="x" size="md" />)).toContain("h-2");
+  it("is 8px by default (md), 6px at sm and 12px at lg, with a slate track", () => {
+    const plain = renderToStaticMarkup(<ProgressBar value={1} label="x" />);
+    expect(plain).toContain("h-2");
+    expect(plain).toContain("bg-slate-100");
+    expect(renderToStaticMarkup(<ProgressBar value={1} label="x" size="sm" />)).toContain("h-1.5");
     expect(renderToStaticMarkup(<ProgressBar value={1} label="x" size="lg" />)).toContain("h-3");
   });
 });

@@ -9,14 +9,14 @@ import { cx } from "./cx.js";
 import type { Passthrough, Unstyled } from "./props.js";
 import { SectionHeading } from "./typography.js";
 
-export type StackGap = "xs" | "sm" | "md" | "lg" | "section";
+export type StackGap = "xs" | "sm" | "md" | "lg" | "xl";
 
 export const STACK_GAP: Record<StackGap, string> = {
   xs: "gap-2",
   sm: "gap-4",
   md: "gap-6",
   lg: "gap-8",
-  section: "gap-12 sm:gap-16",
+  xl: "gap-12 sm:gap-16",
 };
 
 export type StackWidth = "narrow" | "default" | "wide" | "full";
@@ -31,7 +31,7 @@ export const STACK_WIDTH: Record<StackWidth, string | undefined> = {
 
 /**
  * A vertical column of blocks a fixed `gap` apart: `xs` between lines of text (a heading and the
- * line under it), `sm` inside a group, `md` (default) between blocks, `lg` between groups, `section` between a page's top-level blocks
+ * line under it), `sm` inside a group, `md` (default) between blocks, `lg` between groups, `xl` between a page's top-level blocks
  * (`gap-12`, `sm:gap-16`: the one responsive page rhythm).
  *
  * `width` caps the column: `narrow` is a reading measure (`max-w-3xl`), `wide` is `max-w-5xl`, `full`
@@ -89,12 +89,15 @@ type StackProps = StackBase &
     | ({ as: "ol" } & Unstyled<Omit<ComponentPropsWithoutRef<"ol">, "children">>)
   );
 
-/** A `<section>` Stack with an optional `SectionHeading` title (which names it) and `actions` beside it. */
+/**
+ * A `<section>` Stack with an optional `SectionHeading` title (which names it) and `actions` beside
+ * it. Its blocks are `gap` apart, `md` by default as in a `Stack`.
+ */
 export function Section({
   title,
   actions,
-  gap = "sm",
-  width,
+  gap = "md",
+  width = "default",
   children,
   ...rest
 }: {

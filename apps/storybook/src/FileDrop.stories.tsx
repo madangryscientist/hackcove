@@ -43,3 +43,16 @@ export const DoChosen: S = {
 export const DontChosen: S = {
   render: () => <FileDrop>Drop here</FileDrop>,
 };
+
+/** `sm`, `md` (the default) and `lg`: the zone's padding. */
+export const Sizes: S = {
+  render: () => (
+    <div className="flex max-w-md flex-col gap-3">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <FileDrop key={size} size={size} accept=".csv">
+          Drop a bank statement here, {size}
+        </FileDrop>
+      ))}
+    </div>
+  ),
+};

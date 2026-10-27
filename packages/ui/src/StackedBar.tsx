@@ -50,14 +50,17 @@ export function StackedBar({
   segments,
   label,
   legend = false,
-  size = "lg",
+  size = "md",
   ...rest
 }: {
   segments: readonly StackedSegment[];
   label: string;
   /** Draw the key under the bar. Defaults to false. */
   legend?: boolean;
-  /** Defaults to "lg". */
+  /**
+   * The bar's height: `sm` 6px, `md` 8px, `lg` 12px.
+   * @default md
+   */
   size?: BarSize;
 } & Passthrough): ReactElement {
   const total = segments.reduce((sum, s) => sum + Math.max(0, s.value), 0);

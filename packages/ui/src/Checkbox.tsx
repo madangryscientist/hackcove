@@ -1,7 +1,14 @@
 import { type ComponentPropsWithoutRef, type ReactElement, type ReactNode, useId } from "react";
-import type { ControlSize } from "./control.js";
 import { cx, focusRing } from "./cx.js";
 import type { Unstyled } from "./props.js";
+import type { Size } from "./size.js";
+
+/** The label's gap and text, the box, and the box's drop onto the first line, by `size`. */
+const SIZE: Record<Size, { label: string; box: string; start: string }> = {
+  sm: { label: "gap-1.5 text-xs", box: "h-3.5 w-3.5", start: "mt-px" },
+  md: { label: "gap-2 text-sm", box: "h-4 w-4", start: "mt-0.5" },
+  lg: { label: "gap-2.5 text-base", box: "h-5 w-5", start: "mt-0.5" },
+};
 
 /** The label, with its muted description under it when there is one. */
 function Words({
@@ -33,7 +40,8 @@ function useDescription(description: ReactNode, describedBy: string | undefined)
 
 /**
  * A native checkbox with its label. Every prop but the label goes on the input.
- * `size="sm"` is `text-xs` and a smaller box, for a dense row. Leave `label` out for a bare box in
+ * `size="sm"` is `text-xs` and a smaller box, for a dense row; `size="lg"` is `text-base` and a
+ * larger box. Leave `label` out for a bare box in
  * a table cell, and name it with `aria-label`. `align="start"` puts the box on the label's first
  * line, for a label that wraps onto several; the default centres it on the whole label. The box
  * keeps its size either way. `description` is a muted line under the label that says more, like a
@@ -51,10 +59,13 @@ export function Checkbox({
   label?: ReactNode;
   /** A muted line under the label that says more. It is the box's `aria-describedby`. */
   description?: ReactNode;
-  size?: ControlSize | undefined;
+  /**
+   * The label's text size and the box with it.
+   * @default md
+   */
+  size?: Size | undefined;
   align?: "center" | "start" | undefined;
 } & Unstyled<Omit<ComponentPropsWithoutRef<"input">, "type" | "size" | "width">>): ReactElement {
-  const small = size === "sm";
   const { descriptionId, describedIds } = useDescription(description, describedBy);
   const start = align === "start" || descriptionId !== undefined;
   return (
@@ -62,15 +73,15 @@ export function Checkbox({
       className={cx(
         "inline-flex cursor-pointer text-slate-700",
         start ? "items-start" : "items-center",
-        small ? "gap-1.5 text-xs" : "gap-2 text-sm",
+        SIZE[size].label,
       )}
     >
       <input
         type="checkbox"
         className={cx(
-          small ? "h-3.5 w-3.5" : "h-4 w-4",
+          SIZE[size].box,
           "shrink-0",
-          start && (small ? "mt-px" : "mt-0.5"),
+          start && SIZE[size].start,
           "accent-violet-600",
           focusRing,
         )}

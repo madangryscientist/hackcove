@@ -199,3 +199,21 @@ export const Badged: S = {
     </div>
   ),
 };
+
+/** `sm` 26px, `md` 38px (the default) and `lg` 46px: each as tall as a `Button` of the size. */
+export const Sizes: S = {
+  render: () => (
+    <div className="flex flex-col gap-2">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <div key={size} className="flex items-center gap-2">
+          <IconButton size={size} label={`Switch to dark theme, ${size}`}>
+            {moon}
+          </IconButton>
+          <Button size={size} variant="outline">
+            Button {size}
+          </Button>
+        </div>
+      ))}
+    </div>
+  ),
+};

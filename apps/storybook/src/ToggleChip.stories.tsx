@@ -84,3 +84,21 @@ export const DoDot: S = {
     </Cluster>
   ),
 };
+
+/** `sm` is the default, a chip in a filter row; `md` and `lg` sit beside controls of their size. */
+export const Sizes: S = {
+  render: () => (
+    <div className="flex flex-col gap-2">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <div key={size} className="flex flex-wrap gap-1.5">
+          <ToggleChip size={size} pressed={false}>
+            Charity {size}
+          </ToggleChip>
+          <ToggleChip size={size} pressed>
+            Vintage {size}
+          </ToggleChip>
+        </div>
+      ))}
+    </div>
+  ),
+};

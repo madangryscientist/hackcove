@@ -251,3 +251,18 @@ export const DoRowActions: S = {
     </Card>
   ),
 };
+
+/** `sm`, `md` (the default) and `lg`: the row's padding and type. */
+export const Sizes: S = {
+  render: () => (
+    <div className="max-w-md">
+      <Card flush>
+        {(["sm", "md", "lg"] as const).map((size, i) => (
+          <ListRow key={size} size={size} divided={i > 0} trailing="R 9 500">
+            Rent, {size}
+          </ListRow>
+        ))}
+      </Card>
+    </div>
+  ),
+};

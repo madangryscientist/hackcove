@@ -50,3 +50,15 @@ export const CustomClasses: S = {
   beforeEach: resetColourScheme,
   render: () => <ColourSchemeToggle schemes={{ light: "paper", dark: "dark" }} />,
 };
+
+/** `sm`, `md` (the default) and `lg`, the `IconButton` sizes. */
+export const Sizes: S = {
+  beforeEach: resetColourScheme,
+  render: () => (
+    <div className="flex items-center gap-2">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <ColourSchemeToggle key={size} size={size} />
+      ))}
+    </div>
+  ),
+};

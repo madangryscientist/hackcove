@@ -72,3 +72,14 @@ export const DontLabel: S = {
 export const DoRow: S = {
   render: () => <Checkbox size="sm" aria-label="Select row" />,
 };
+
+/** `sm`, `md` (the default) and `lg`: the box grows with the label. */
+export const Sizes: S = {
+  render: () => (
+    <div className="flex flex-col gap-2">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <Checkbox key={size} size={size} label={`Paid, ${size}`} defaultChecked />
+      ))}
+    </div>
+  ),
+};

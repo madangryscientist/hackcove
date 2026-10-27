@@ -99,7 +99,7 @@ describe("IconButton href", () => {
     expect(out).toContain('href="/settings"');
     expect(out).toContain('aria-label="Settings"');
     expect(out).toContain('title="Settings"');
-    expect(out).toContain("h-9 w-9");
+    expect(out).toContain("size-9.5");
     expect(out).toContain("border-transparent");
     expect(out).toContain(focusRing);
     expect(out).not.toContain("type=");

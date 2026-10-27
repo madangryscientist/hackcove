@@ -2,6 +2,7 @@ import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import { cx, focusRing } from "./cx.js";
 import { type LinkRender, renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
+import type { Size } from "./size.js";
 import { TEXT_TONE, type TextTone } from "./typography.js";
 
 const LINK = "rounded font-medium underline-offset-2 transition-colors";
@@ -22,15 +23,19 @@ const toneClass = (tone: TextTone): string =>
  */
 export const linkStretchClass = "link-stretch after:absolute after:inset-0";
 
-export type TextLinkSize = "xs" | "sm";
+export type TextLinkSize = Size;
 
 const SIZE: Record<TextLinkSize, string> = {
-  xs: "text-xs/4",
-  sm: "text-sm/5",
+  sm: "text-xs/4",
+  md: "text-sm/5",
+  lg: "text-base/6",
 };
 
 type TextLinkProps = {
-  /** The link's own type size. Left out, it takes the size of the text around it. */
+  /**
+   * The link's own type size: `sm` is `text-xs`, `md` `text-sm` and `lg` `text-base`. Left out, it
+   * takes the size of the text around it: a link inside prose has no default size.
+   */
   size?: TextLinkSize | undefined;
   /**
    * A meaning's colour, as on the inline roles: `warn` for a warning link, `danger`, `positive`,
@@ -52,7 +57,7 @@ type TextLinkProps = {
 /**
  * An inline text link in the accent colour. Every anchor prop goes on the `<a>`. With `render` it
  * draws the app's own router `<Link>` instead (`render={(p) => <Link to="/terms" {...p} />}`).
- * `size` pins the type size (`xs` or `sm`), `tone` gives it a meaning's colour and `mono` sets the
+ * `size` pins the type size (`sm`, `md` or `lg`), `tone` gives it a meaning's colour and `mono` sets the
  * monospace face.
  */
 export function TextLink({

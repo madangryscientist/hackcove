@@ -16,7 +16,7 @@ const meta: Meta = { title: "UI/Cluster" };
 export default meta;
 type S = StoryObj;
 
-/** A horizontal row a fixed gap apart: `xs`, `sm` (default) or `md`, the `Stack` scale. */
+/** A horizontal row a fixed gap apart: `xs` (the default), `sm` or `md`, the `Stack` scale. */
 export const Default: S = {
   render: () => (
     <Stack>

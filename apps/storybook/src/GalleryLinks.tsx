@@ -17,11 +17,11 @@ export function GalleryLinks() {
         .
       </p>
       <p className="flex gap-4">
-        <TextLink href="#xs" size="xs">
-          TextLink xs
+        <TextLink href="#sm" size="sm">
+          TextLink sm
         </TextLink>
-        <TextLink href="#path" size="sm" mono>
-          TextLink sm mono
+        <TextLink href="#path" size="md" mono>
+          TextLink md mono
         </TextLink>
         <TextLink href="#skipped" tone="warn">
           TextLink warn

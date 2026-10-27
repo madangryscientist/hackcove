@@ -28,8 +28,8 @@ export const Tones: S = {
 export const Sizes: S = {
   render: () => (
     <div className="flex max-w-sm flex-col gap-3">
-      <ProgressBar value={45} label="sm, 6px" />
-      <ProgressBar value={45} size="md" label="md, 8px" />
+      <ProgressBar value={45} size="sm" label="sm, 6px" />
+      <ProgressBar value={45} label="md, 8px (the default)" />
       <ProgressBar value={45} size="lg" label="lg, 12px" />
     </div>
   ),

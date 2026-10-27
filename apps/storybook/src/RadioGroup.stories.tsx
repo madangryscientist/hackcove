@@ -104,3 +104,23 @@ export const DontChoice: S = {
     </Stack>
   ),
 };
+
+/** `size` on the group sizes every `Radio` in it: `sm`, `md` (the default) or `lg`. */
+export const Sizes: S = {
+  render: () => (
+    <div className="flex flex-wrap gap-8">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <RadioGroup
+          key={size}
+          label={`Shop type, ${size}`}
+          name={`shop-${size}`}
+          size={size}
+          defaultValue="books"
+        >
+          <Radio value="vintage" label="Vintage" />
+          <Radio value="books" label="Books" />
+        </RadioGroup>
+      ))}
+    </div>
+  ),
+};

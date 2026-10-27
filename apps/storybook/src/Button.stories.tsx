@@ -308,3 +308,21 @@ export const WithRouterLink: S = {
     <ButtonLink render={(props) => <FakeLink to="/quotes" {...props} />}>New quote</ButtonLink>
   ),
 };
+
+/** `sm`, `md` (the default) and `lg`: the one size scale every control shares. */
+export const Sizes: S = {
+  render: () => (
+    <div className="flex flex-wrap items-center gap-2">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <Button key={size} size={size}>
+          Save {size}
+        </Button>
+      ))}
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <ButtonLink key={size} href="#quotes" size={size} variant="outline">
+          Quotes {size}
+        </ButtonLink>
+      ))}
+    </div>
+  ),
+};

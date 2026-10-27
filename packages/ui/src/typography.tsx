@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { cx } from "./cx.js";
+import type { Size } from "./size.js";
 
 /* ---------------------------------------------------------------------------
    Typography system
@@ -215,23 +216,27 @@ export function SectionHeading<E extends ElementType = "h2">({
   return pinned("h2", variant, "default", props);
 }
 
-export type SubsectionHeadingSize = "sm" | "base" | "lg";
+export type SubsectionHeadingSize = Size;
 
 const SUBSECTION_SIZE: Record<SubsectionHeadingSize, string> = {
   sm: "text-sm/5 font-semibold",
-  base: "text-base/6 font-bold",
+  md: "text-base/6 font-semibold",
   lg: "text-lg/7 font-semibold",
 };
 
 /**
- * Nested header. `h3`, text-sm/5 semibold, primary text. `size` steps it up for
- * a card, drawer or form-group title: `sm` (default), `base` (bold) or `lg`. `truncate` keeps it on
+ * Nested header. `h3`, text-base/6 semibold, primary text. `size` steps it down for a dense card
+ * or up for a drawer or form-group title: `sm` (text-sm), `md` (default) or `lg`. `truncate` keeps it on
  * one line and cuts it with an ellipsis where its container ends, the full text as the `title`.
  */
 export function SubsectionHeading<E extends ElementType = "h3">({
-  size = "sm",
+  size = "md",
   ...props
 }: TypographyProps<E> & {
+  /**
+   * The heading's type size: `sm` is text-sm/5, `md` text-base/6 and `lg` text-lg/7.
+   * @default md
+   */
   size?: SubsectionHeadingSize;
   truncate?: boolean | undefined;
 }): ReactElement {

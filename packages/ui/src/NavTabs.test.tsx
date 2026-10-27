@@ -92,7 +92,7 @@ describe("NavTabs with a router Link", () => {
     const out = renderToStaticMarkup(
       <NavTabs items={[tabs[0]!, { label: "Docs", href: "/docs" }]} label="Main" />,
     );
-    expect(out).toContain("flex flex-wrap gap-1 text-sm");
+    expect(out).toContain('class="flex flex-wrap gap-1"');
     expect(out).toContain('<a href="/docs"');
   });
 });

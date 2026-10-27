@@ -111,8 +111,9 @@ describe("TextLink size and mono", () => {
     expect(plain).not.toMatch(/text-(xs|sm|base)/);
     expect(plain).not.toContain("font-mono");
     for (const [size, cls] of [
-      ["xs", "text-xs/4"],
-      ["sm", "text-sm/5"],
+      ["sm", "text-xs/4"],
+      ["md", "text-sm/5"],
+      ["lg", "text-base/6"],
     ] as const) {
       const out = renderToStaticMarkup(
         <TextLink href="/a" size={size}>
@@ -127,7 +128,7 @@ describe("TextLink size and mono", () => {
 
   it("`mono` sets the monospace face and is not forwarded", () => {
     const out = renderToStaticMarkup(
-      <TextLink href="/a" mono size="xs">
+      <TextLink href="/a" mono size="sm">
         src/a.ts
       </TextLink>,
     );
@@ -137,7 +138,7 @@ describe("TextLink size and mono", () => {
 
   it("reaches a router link through `render`", () => {
     const out = renderToStaticMarkup(
-      <TextLink size="sm" mono render={(p) => <a href="#x" {...p} />}>
+      <TextLink size="md" mono render={(p) => <a href="#x" {...p} />}>
         x
       </TextLink>,
     );

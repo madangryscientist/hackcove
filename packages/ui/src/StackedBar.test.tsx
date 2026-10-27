@@ -43,9 +43,13 @@ describe("StackedBar", () => {
     expect(none).toContain('aria-label="x: A 0%"');
   });
 
-  it("is sm when asked", () => {
+  it("is md by default, and sm or lg when asked", () => {
+    expect(renderToStaticMarkup(<StackedBar segments={parts} label="x" />)).toContain("h-2");
     expect(renderToStaticMarkup(<StackedBar segments={parts} label="x" size="sm" />)).toContain(
       "h-1.5",
+    );
+    expect(renderToStaticMarkup(<StackedBar segments={parts} label="x" size="lg" />)).toContain(
+      "h-3",
     );
   });
 

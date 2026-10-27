@@ -156,3 +156,32 @@ export const DoSearch: S = {
 export const DontSearch: S = {
   render: () => <Input aria-label="Search shops" placeholder="Search by name or suburb…" />,
 };
+
+/** `sm`, `md` (the default) and `lg`, plain and with an icon: the heights match a `Button` of the size. */
+export const Sizes: S = {
+  render: () => (
+    <div className="flex flex-col gap-2">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <div key={size} className="flex flex-wrap items-center gap-2">
+          <Input size={size} width="md" placeholder={`Name, ${size}`} aria-label={`Name ${size}`} />
+          <Input
+            size={size}
+            width="md"
+            type="search"
+            placeholder="Find…"
+            icon={search}
+            aria-label={`Find ${size}`}
+          />
+          <Input
+            size={size}
+            width="sm"
+            prefix="R"
+            placeholder="0.00"
+            aria-label={`Amount ${size}`}
+          />
+          <Button size={size}>Save</Button>
+        </div>
+      ))}
+    </div>
+  ),
+};

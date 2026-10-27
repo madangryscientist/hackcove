@@ -91,16 +91,6 @@ export const DontSpacing: S = {
   ),
 };
 
-export const Default: S = {
-  render: () => (
-    <div className="max-w-md">
-      <Card title="Open" count={3}>
-        <Empty>Three things to do.</Empty>
-      </Card>
-    </div>
-  ),
-};
-
 /** `status` puts a Pill (or any node) directly beside the title; `actions` stays at the far end. */
 export const Status: S = {
   render: () => (
@@ -326,5 +316,18 @@ export const FooterInGrid: S = {
         </p>
       </Card>
     </CardGrid>
+  ),
+};
+
+/** `sm`, `md` (the default) and `lg`: the padding of the body and the header bar. */
+export const Sizes: S = {
+  render: () => (
+    <div className="flex max-w-md flex-col gap-4">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <Card key={size} size={size} title={`Open, ${size}`} count={3}>
+          <Empty>Three things to do.</Empty>
+        </Card>
+      ))}
+    </div>
   ),
 };

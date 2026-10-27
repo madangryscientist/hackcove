@@ -6,7 +6,13 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react";
-import { CONTROL_ALIGN, controlClass, type ControlAlign, type ControlProps } from "./control.js";
+import {
+  CONTROL_ALIGN,
+  controlClass,
+  type ControlAlign,
+  type ControlProps,
+  type ControlSize,
+} from "./control.js";
 import { cx, focusRing } from "./cx.js";
 import { InputShell } from "./InputShell.js";
 import type { Unstyled } from "./props.js";
@@ -16,9 +22,17 @@ const SEARCH_RESET =
   "appearance-none [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden";
 
 /** A search field's padding: the leading side as a plain field or with an icon, the trailing side clear of the clear button. */
-const SEARCH_PAD = {
-  md: { plain: "pl-3 pr-9", icon: "pl-9 pr-9" },
+const SEARCH_PAD: Record<ControlSize, { plain: string; icon: string }> = {
   sm: { plain: "pl-2 pr-7", icon: "pl-7 pr-7" },
+  md: { plain: "pl-3 pr-9", icon: "pl-9 pr-9" },
+  lg: { plain: "pl-4 pr-11", icon: "pl-11 pr-11" },
+};
+
+/** The clear button's place and box, and its icon, by the field's size. */
+const CLEAR_SIZE: Record<ControlSize, { box: string; icon: string }> = {
+  sm: { box: "right-1 h-5 w-5", icon: "h-3 w-3" },
+  md: { box: "right-2 h-6 w-6", icon: "h-3.5 w-3.5" },
+  lg: { box: "right-2.5 h-7 w-7", icon: "h-4 w-4" },
 };
 
 const CLEAR_BUTTON = `absolute top-1/2 -translate-y-1/2 inline-flex items-center justify-center rounded text-slate-500 hover:bg-slate-100 ${focusRing}`;
@@ -36,20 +50,20 @@ function clearValue(input: HTMLInputElement): void {
   input.focus();
 }
 
-function ClearButton({ small, onClear }: { small: boolean; onClear: () => void }): ReactElement {
+function ClearButton({ size, onClear }: { size: ControlSize; onClear: () => void }): ReactElement {
   return (
     <button
       type="button"
       aria-label="Clear search"
       title="Clear search"
       onClick={onClear}
-      className={cx(CLEAR_BUTTON, small ? "right-1 h-5 w-5" : "right-2 h-6 w-6")}
+      className={cx(CLEAR_BUTTON, CLEAR_SIZE[size].box)}
     >
       <svg
         viewBox="0 0 20 20"
         fill="currentColor"
         aria-hidden="true"
-        className={small ? "h-3 w-3" : "h-3.5 w-3.5"}
+        className={CLEAR_SIZE[size].icon}
       >
         <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L8.94 10l-4.72 4.72a.75.75 0 1 0 1.06 1.06L10 11.06l4.72 4.72a.75.75 0 1 0 1.06-1.06L11.06 10l4.72-4.72a.75.75 0 0 0-1.06-1.06L10 8.94 5.28 4.22Z" />
       </svg>
@@ -70,7 +84,6 @@ export function SearchInput({
   const inputRef = useRef<HTMLInputElement>(null);
   const [typed, setTyped] = useState(() => String(rest.value ?? rest.defaultValue ?? "") !== "");
   const filled = rest.value !== undefined ? String(rest.value) !== "" : typed;
-  const small = size === "sm";
   return (
     <InputShell icon={icon} size={size} width={width}>
       <input
@@ -88,10 +101,7 @@ export function SearchInput({
         )}
       />
       {filled && !rest.disabled && !rest.readOnly && (
-        <ClearButton
-          small={small}
-          onClear={() => inputRef.current && clearValue(inputRef.current)}
-        />
+        <ClearButton size={size} onClear={() => inputRef.current && clearValue(inputRef.current)} />
       )}
     </InputShell>
   );

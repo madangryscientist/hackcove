@@ -3,9 +3,9 @@ import { describe, expect, it } from "vitest";
 import { Cluster, ClusterGrow } from "./Cluster.js";
 
 describe("Cluster", () => {
-  it("is a one-line flex row, gap sm, centred, packed at the start by default", () => {
+  it("is a one-line flex row, gap xs, centred, packed at the start by default", () => {
     expect(renderToStaticMarkup(<Cluster>x</Cluster>)).toBe(
-      '<div class="flex gap-4 items-center justify-start">x</div>',
+      '<div class="flex gap-2 items-center justify-start">x</div>',
     );
   });
 
@@ -35,7 +35,7 @@ describe("Cluster", () => {
   it("is a div by default and a span with as=span, for phrasing content", () => {
     expect(renderToStaticMarkup(<Cluster>x</Cluster>)).toMatch(/^<div /);
     expect(renderToStaticMarkup(<Cluster as="span">x</Cluster>)).toBe(
-      '<span class="flex gap-4 items-center justify-start">x</span>',
+      '<span class="flex gap-2 items-center justify-start">x</span>',
     );
     expect(renderToStaticMarkup(<Cluster as="span" data-testid="c" />)).toContain(
       'data-testid="c"',

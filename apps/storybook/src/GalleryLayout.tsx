@@ -84,7 +84,7 @@ export function GalleryLayout() {
           </Cluster>
         </Stack>
         <div className="mt-8">
-          <Stack gap="section" width="narrow">
+          <Stack gap="xl" width="narrow">
             <Section title="Gap section">
               <Body>The page rhythm between top-level blocks: gap-12, then sm:gap-16.</Body>
             </Section>

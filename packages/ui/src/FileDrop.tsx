@@ -1,7 +1,9 @@
 import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
-import type { ControlSize } from "./control.js";
 import { cx } from "./cx.js";
 import type { Unstyled } from "./props.js";
+import type { Size } from "./size.js";
+
+const PAD: Record<Size, string> = { sm: "px-3 py-2", md: "px-4 py-6", lg: "px-5 py-8" };
 
 /**
  * A dashed drop zone around a file input. The input covers the whole zone, invisible, so a click
@@ -14,8 +16,11 @@ export function FileDrop({
   children,
   ...rest
 }: {
-  /** `sm` is a compact chip or tile: dense padding. Defaults to `md`. */
-  size?: ControlSize;
+  /**
+   * `sm` is a compact chip or tile: dense padding; `lg` is one step roomier than `md`.
+   * @default md
+   */
+  size?: Size;
   children: ReactNode;
 } & Unstyled<
   Omit<ComponentPropsWithoutRef<"input">, "type" | "children" | "size" | "width">
@@ -24,7 +29,7 @@ export function FileDrop({
     <label
       className={cx(
         "relative flex items-center justify-center rounded-lg border border-dashed border-slate-300 text-center text-sm text-slate-500 transition hover:border-violet-400 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-violet-600",
-        size === "sm" ? "px-3 py-2" : "px-4 py-6",
+        PAD[size],
         rest.disabled && "opacity-50",
       )}
     >

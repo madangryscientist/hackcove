@@ -56,7 +56,7 @@ export const StackAndSection: S = {
 export const SectionGap: S = {
   render: () => (
     <DemoShell>
-      <Stack gap="section">
+      <Stack gap="xl">
         <PageHeader title="Page" subtitle="Stack gap section: the step between a page's blocks." />
         <Section title="Intro">
           <Body as="p">First block of the page.</Body>
