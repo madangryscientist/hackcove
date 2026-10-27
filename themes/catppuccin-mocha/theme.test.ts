@@ -49,3 +49,12 @@ it("owns the page canvas and the type faces", () => {
   expect(scope).toMatch(/--font-mono:\s*ui-monospace,/);
   expect(scope).toMatch(/font-family:\s*var\(--font-sans\)/);
 });
+
+it("flattens a plain-disabled solid Button instead of fading it", () => {
+  // Half opacity on a pastel fill is muddy under the crust label (HC-148). The rule is keyed on the
+  // plain-disabled marker, so busy (keeps its colour) and blocked (already flat) are untouched.
+  const rule = /\.dark \.disabled\\:opacity-50:disabled:is\(([^)]*)\)\s*\{([^}]*)\}/.exec(rules);
+  expect(rule?.[1]).toBe(".bg-violet-600, .bg-emerald-600, .bg-red-600");
+  expect(rule?.[2]).toMatch(/opacity:\s*1;/);
+  expect(rule?.[2]).toMatch(/background-color:\s*#45475a;/);
+});

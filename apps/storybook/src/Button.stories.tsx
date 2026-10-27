@@ -239,14 +239,23 @@ export const LinkLook: S = {
 };
 export const Disabled: S = {
   render: () => (
-    <div className="flex flex-wrap gap-2">
-      <Button disabled>Save</Button>
-      <Button variant="outline" disabled>
-        Cancel
-      </Button>
-      <Button variant="ghost" disabled>
-        Skip
-      </Button>
+    <div className="flex flex-col gap-3">
+      {(["default", "positive", "danger"] as const).map((tone) => (
+        <div key={tone} className="flex flex-wrap items-center gap-2">
+          <Button tone={tone} disabled>
+            Save
+          </Button>
+          <Button tone={tone} variant="outline" disabled>
+            Cancel
+          </Button>
+          <Button tone={tone} variant="ghost" disabled>
+            Skip
+          </Button>
+          <Button tone={tone} variant="link" disabled>
+            Edit
+          </Button>
+        </div>
+      ))}
     </div>
   ),
 };
