@@ -81,43 +81,19 @@ that touches only `packages/ui` bumps `@hackcove/ui`, and nothing else.
 
 ## Landing: through a pull request
 
-Decided by Jacobus 2026-10-27: hackcove and pixelslash merge through pull requests, so the
-PixelSlash GitHub check can be seen working on a real PR. **The builder opens the PR and hands it
-back; the planner gates and merges it.** Tickets dispatched before this rule (up to HC-144 and
-HC-148) land through a PR the planner opens from its gated squash on `land/<branch>`.
+hackcove lands through pull requests (Jacobus, 2026-10-27). Who opens and who merges is the
+global rule; what is particular to hackcove:
 
-1. A builder commits on its own branch, ending the message with one of `State: landable`,
-   `State: needs-human`, `State: blocked` or `State: partial`.
-2. On `landable` or `needs-human`, the builder rebases on `origin/main`, pushes its branch and
-   opens the PR, then hands off with the PR URL:
-
-   ```bash
-   git fetch origin && git rebase origin/main
-   git push -u origin <branch>
-   gh pr create --base main --head <branch> --title "<type>(<scope>): <title>" --body-file <msg>
-   ```
-
-   The PR body is the commit body: what changed, how it was gated, the `State:` line. The
-   builder never merges, never pushes to `main`, and never opens a PR for `blocked` or
-   `partial`.
-3. The planner gates the PR's head in a land worktree, reads the PixelSlash report, uploads the
-   screenshots for that commit (`nx run storybook:visual-upload`), and only on a green gate
-   merges it. Merging is the planner's step and only the planner's:
-
-   ```bash
-   gh pr checks <pr> --watch
-   gh pr merge <pr> --squash --delete-branch --subject "<squash subject>" --body-file <msg>
-   ```
-
-   The squash subject keeps the conventional form above, because `nx release` reads it. If
-   `main` moved and the PR no longer rebases cleanly, the planner sends it back to the builder
-   to rebase; it does not resolve the builder's conflicts itself.
-
-Nothing on GitHub blocks a merge: `main` has no branch protection, because the release workflow
-pushes its release commit straight to `main`. The planner enforces the rule instead. Do not
-merge a PR while CI or the PixelSlash check is failing or pending, unless the PR changes nothing
-a screenshot can see and says so. No commit, PR title or PR body carries a `Co-Authored-By` or
-any other AI attribution line.
+- **Screenshots before the merge.** The planner gates the PR's head, reads the PixelSlash
+  report, and uploads that commit's screenshots (`nx run storybook:visual-upload`) before it
+  merges.
+- **The squash subject stays conventional** (`gh pr merge <pr> --squash --subject "…"`),
+  because `nx release` reads it.
+- **No branch protection.** `publish.yml` pushes its release commit straight to `main`, so
+  nothing on GitHub blocks a merge and the planner enforces the rule: no merge while CI or the
+  PixelSlash check is failing or pending, unless the PR changes nothing a screenshot can see and
+  says so.
+- No commit, PR title or PR body carries a `Co-Authored-By` or any other AI attribution line.
 
 ## Repo invariants
 
