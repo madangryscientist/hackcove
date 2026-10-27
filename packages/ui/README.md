@@ -53,12 +53,12 @@ root (`DateField`, `DatePicker`) puts `data-*` on its wrapper and `aria-describe
 
 ## What is exported
 
-- Primitives: `Card` (a bordered panel; `title` and `count` make a small heading, and `status` (a `Pill` or any node) sits right after them, where `actions` sits at the far end; `flush` drops the padding and clips the corners, for a table that runs edge to edge; `bar` moves the title, count and `actions` into a tinted strip over the body; `dashed` is an empty-state shell with centred muted text, and `dashed="filled"` the same on a surface fill with more padding; `footer` puts a tinted strip under a hairline across the bottom, for the card's own actions or a total: it takes the padding off the root and gives it to the body, so the strip runs edge to edge and stays at the foot of a card stretched in a `CardGrid`; not on a `dashed` card or a card that is a link; `as` is `section` (default), `article` or `div`; `id`, `data-*` and `aria-*` go on the root),  `EpicHeader`, `Empty`, `PageTitle` (deprecated: use `PageHeader`), `Pill`, `groupByEpic`, `Markdown`.
+- Primitives: `Card` (a bordered panel; `title` and `count` make a small heading, and `status` (a `Pill` or any node) sits right after them, where `actions` sits at the far end; `flush` drops the padding and clips the corners, for a table that runs edge to edge; `bar` moves the title, count and `actions` into a tinted strip over the body; `dashed` is an empty-state shell with centred muted text, and `dashed="filled"` the same on a surface fill with more padding; `footer` puts a tinted strip under a hairline across the bottom, for the card's own actions or a total: it takes the padding off the root and gives it to the body, so the strip runs edge to edge and stays at the foot of a card stretched in a `CardGrid`; not on a `dashed` card or a card that is a link; `as` is `section` (default), `article` or `div`; `id`, `data-*` and `aria-*` go on the root; a Card with an `id` is an anchor target, scrolled clear of the sticky header and outlined in violet while it is the `:target`),  `EpicHeader`, `Empty`, `PageTitle` (deprecated: use `PageHeader`), `Pill`, `groupByEpic`, `Markdown`.
 - Layout (see Layout): `AppShell`, `AppShellBrand`, `appShellRootClass`, `appShellRootClassFor`, `Container`, `PageHeader`, `Stack`, `Section`, `Cluster`, `ClusterGrow`, and the page layouts `ListLayout`, `DetailLayout`, `FormLayout`, `ProseLayout`, `CardGrid`, `SidebarLayout`, `FullBleedLayout`, `CenteredLayout`.
 - Typography roles (each pins size + weight, takes a `color` and an `as`): `Display`, `Lead`,
   `PageHeading`, `SectionHeading`, `SubsectionHeading`, `ModalHeading`, `Subtitle`, `Overline`,
   `Body`, `BodyStrong`, `Caption`. Opt-in props, none changing today's look: `SectionHeading rule`
-  (a hairline under it, with its spacing), `SubsectionHeading size` (`sm` default, `base` bold, `lg`),
+  (a hairline under it, with its spacing), `SubsectionHeading size` (`sm` default, `base` bold, `lg`) and `truncate` (one line with an ellipsis),
   `Body preserveNewlines` (keeps a note's line breaks). The four inline roles (`Body`, `BodyStrong`,
   `Caption`, `Overline`) also take `tone` (`muted`, `positive`, `warn`, `danger` or `info`: the same
   text colours as a `TableCell` tone, winning over `color`; pair the colour with a word, as in "Saved."),
@@ -245,13 +245,14 @@ except the last four.
   the canvas keeps the Container's padding.
 - **`FullBleedLayout`**: use this for a viewer that needs the whole width. Render it in
   `<AppShell bleed>`; `children` fill the width, and an optional `panel` takes `lg:w-72` on the
-  right and stacks below under `lg`.
+  right and stacks below under `lg`. It adds no padding, so a viewer fills the width; set `padded`
+  for a body that is not a viewer, which gives the canvas the other layouts' page padding.
 
   **`SidebarLayout` and `FullBleedLayout` deliberately break the shared left edge from `md` and
   `lg` up.** A full-height rail and an edge-to-edge viewer need the viewport's edges, so they cannot
   sit inside the Container the header uses. At 1280 px the header logo and every other layout start
   at x=88, `SidebarLayout`'s rail at x=0 and its canvas at x=264 (rail 240 + the Container's 24
-  padding), `FullBleedLayout`'s `children` at x=0 (they add their own padding). Below `md` (`lg` for
+  padding), `FullBleedLayout`'s `children` at x=0 (unless `padded`). Below `md` (`lg` for
   `FullBleedLayout`) everything stacks and all layouts agree at the Container's padding. To avoid
   the shift between pages, give a whole section of an app the same layout (every page under a
   project on `SidebarLayout`) rather than mixing it with `ListLayout` pages that a user moves

@@ -136,6 +136,12 @@
 .thrifty-paper .hover\:border-violet-400:hover {
   border-color: #c2410c; /* accent: 5.18:1 on white, darker than the resting edge (was accent/40, 1.85:1) */
 }
+.thrifty-paper .outline-violet-600 {
+  outline-color: #c2410c; /* accent */
+}
+.thrifty-paper .target\:outline-violet-600:target {
+  outline-color: #c2410c; /* accent */
+}
 .thrifty-paper .focus-visible\:outline-violet-600:focus-visible {
   outline-color: #c2410c; /* accent */
 }

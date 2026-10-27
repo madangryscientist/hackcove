@@ -104,9 +104,10 @@ export const pagelayouts: ComponentSection = {
         '`align="start"` keeps each card its own height; by default every card stretches to the tallest in its row.',
         "`CardGrid` goes inside a page layout; it sets no page width of its own.",
         "A single column of blocks is a `Stack`, not a one-column `CardGrid`.",
+        '`as="ul"` makes the grid a list and wraps each child in a list item, for a set of like tiles a screen reader should count. The look is the same.',
       ],
       accessibility: [
-        "The grid is a plain `div` with no role: the cards keep their own order and semantics.",
+        'The grid is a plain `div` with no role: the cards keep their own order and semantics. With `as="ul"` it is a list, and each child is a list item.',
         "The order is the DOM order, so the tab order follows the reading order.",
       ],
       api: ["CardGrid"],
@@ -145,7 +146,7 @@ export const pagelayouts: ComponentSection = {
       fullPage: "FullBleedLayout/FullPage",
       usage: [
         "Render it in an `AppShell` with `bleed`; the canvas starts at the left edge of the viewport.",
-        "It adds no padding and has no page title; the canvas is the `children`.",
+        "It adds no padding and has no page title; the canvas is the `children`. Set `padded` when the body is not a viewer and should have the other layouts' page padding.",
         "Put the facts about what is shown in `panel`, a `KeyValueList` under an `Overline`. From `lg` the panel is a fixed-width column on the right; below it, it stacks under the canvas.",
         "Omit `panel` when the canvas stands alone.",
         "A page with a title and content is `ListLayout` or `DetailLayout`.",

@@ -34,11 +34,12 @@ export const feedback: ComponentSection = {
       usage: [
         'Give it a `title`, one `Body as="p"` that says what belongs here, and the first step as `actions`, with the primary `Button` first.',
         "For a get-started list, put `Steps` after the `Body` in the children.",
+        "`level` is the title's heading level, 2 to 6 and `2` by default; the look does not change. Set it so the outline does not skip or repeat: `3` under a page's `h2`.",
         "One muted line inside a card, for an empty table or list, is `Empty`, not an EmptyState.",
         "Do not leave it as a title alone: a page with nothing in it and nothing to do is a dead end.",
       ],
       accessibility: [
-        "An EmptyState is a `<section>` named by its `title`, which is an `h2`, so it is a landmark region a screen reader can jump to.",
+        "An EmptyState is a `<section>` named by its `title`, which is an `h2` unless `level` says otherwise, so it is a landmark region a screen reader can jump to.",
         "The actions are ordinary buttons and links, in reading order after the explanation.",
       ],
       api: ["EmptyState"],

@@ -1,7 +1,9 @@
 import {
   Avatar,
+  Body,
   Button,
   Callout,
+  Caption,
   Card,
   ListRow,
   Pill,
@@ -18,6 +20,7 @@ import {
   Timeline,
   TimelineItem,
 } from "@hackcove/ui";
+import { samplePhoto } from "./samplePhoto";
 
 /** The Card variants (flush, header bar, dashed, dashed filled, dense, toned), the Callout actions, banner and link, the ListRow set (a static row with leading, selected and hover actions), a link Card, a Table with a stretched row link and toned rows, a Table with a group row, cell tones, a truncated cell and a totals foot, a plain Table with a second-line cell and an `srLabel` actions column and a Timeline. */
 export function GalleryData() {
@@ -93,7 +96,7 @@ export function GalleryData() {
   );
 }
 
-/** A static ListRow with `leading`, `selected` and `revealOnHover` actions. */
+/** A static ListRow with `leading`, `selected` and `revealOnHover` actions, a `focused` row, and a thumbnail row with a block label. */
 function GalleryStaticRows() {
   return (
     <Card flush>
@@ -108,6 +111,19 @@ function GalleryStaticRows() {
         actions={<Button size="sm">Remove</Button>}
       >
         Static row, actions on hover
+      </ListRow>
+      <ListRow divided focused trailing="R 1 850">
+        Focused row
+      </ListRow>
+      <ListRow
+        divided
+        href="#dashboard"
+        leadingWidth="thumbnail"
+        leading={<img alt="" src={samplePhoto} />}
+        trailing={<Pill tone="amber">changed</Pill>}
+      >
+        <Body as="p">Thumbnail row</Body>
+        <Caption as="p">A block label under the title.</Caption>
       </ListRow>
     </Card>
   );

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
+  Body,
   BodyStrong,
   Button,
   ButtonGroup,
@@ -102,6 +103,21 @@ export const Wraps: S = {
         <Pill>Void</Pill>
       </Cluster>
     </div>
+  ),
+};
+
+/** `as="span"` is for a Cluster inside a paragraph, where a `div` is not allowed: the row sits on the paragraph's line. Its items must be phrasing content, so no `ClusterGrow`. */
+export const InsideAParagraph: S = {
+  render: () => (
+    <Body as="p">
+      <Cluster as="span" gap="xs">
+        <Pill tone="emerald" dot>
+          Paid
+        </Pill>
+        <Caption>12 Oct</Caption>
+        <Caption>Invoice 1042</Caption>
+      </Cluster>
+    </Body>
   ),
 };
 

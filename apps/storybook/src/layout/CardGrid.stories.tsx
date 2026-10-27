@@ -101,6 +101,20 @@ export const AutoFillSmall: S = { render: () => <Shots minWidth="sm" /> };
 /** `align="start"` keeps each card its own height instead of stretching to the tallest in the row. */
 export const AlignStart: S = { render: () => <Shots align="start" /> };
 
+/** `as="ul"` makes the grid a list and each child a list item, for tiles that are a set of like things a screen reader should count. The look is the same. */
+export const AsList: S = {
+  render: () => (
+    <DemoShell>
+      <PageHeader title="Business" subtitle="This month at a glance." />
+      <CardGrid as="ul" columns={3} aria-label="This month">
+        <StatTile label="Open" value="12" />
+        <StatTile label="Won" value="8" tone="positive" />
+        <StatTile label="Lost" value="3" tone="negative" />
+      </CardGrid>
+    </DemoShell>
+  ),
+};
+
 /** Tiles go in a `CardGrid`: one column on a phone, two from `sm`, `columns` from `lg`. */
 export const DoTiles: S = {
   render: () => (

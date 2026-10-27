@@ -32,6 +32,16 @@ describe("Cluster", () => {
     expect(renderToStaticMarkup(<Cluster justify={justify}>x</Cluster>)).toContain(cls);
   });
 
+  it("is a div by default and a span with as=span, for phrasing content", () => {
+    expect(renderToStaticMarkup(<Cluster>x</Cluster>)).toMatch(/^<div /);
+    expect(renderToStaticMarkup(<Cluster as="span">x</Cluster>)).toBe(
+      '<span class="flex gap-4 items-center justify-start">x</span>',
+    );
+    expect(renderToStaticMarkup(<Cluster as="span" data-testid="c" />)).toContain(
+      'data-testid="c"',
+    );
+  });
+
   it("wraps only when asked to", () => {
     expect(renderToStaticMarkup(<Cluster>x</Cluster>)).not.toContain("flex-wrap");
     expect(renderToStaticMarkup(<Cluster wrap>x</Cluster>)).toContain("flex-wrap");

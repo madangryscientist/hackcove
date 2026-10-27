@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { Avatar, Button, Card, IconButton, ListRow, Pill } from "@hackcove/ui";
+import { Avatar, Body, Button, Caption, Card, IconButton, ListRow, Pill } from "@hackcove/ui";
+import { samplePhoto } from "./samplePhoto";
 
 const meta: Meta = { title: "UI/ListRow" };
 export default meta;
@@ -94,6 +95,46 @@ export const LeadingAndSelected: S = {
         <ListRow divided href="#linus" leading={<Avatar name="Linus T" size="sm" />}>
           Linus T
         </ListRow>
+      </Card>
+    </div>
+  ),
+};
+
+/** `focused` marks the row the keyboard cursor is on in a list the app moves through itself (arrow keys): an inset violet ring, apart from `selected`'s fill. */
+export const Focused: S = {
+  render: () => (
+    <div className="max-w-md">
+      <Card flush>
+        <ListRow trailing="R 9 500">Rent</ListRow>
+        <ListRow divided focused trailing="R 1 850">
+          Transport
+        </ListRow>
+        <ListRow divided selected focused trailing="R 4 100">
+          Groceries
+        </ListRow>
+      </Card>
+    </div>
+  ),
+};
+
+/** `leadingWidth="thumbnail"` gives `leading` a fixed 8rem box that sizes its image to it, for a row that shows a screenshot. The label may be a block: a title over a caption. */
+export const Thumbnail: S = {
+  render: () => (
+    <div className="max-w-md">
+      <Card flush>
+        {["Dashboard", "Settings"].map((name, index) => (
+          <ListRow
+            key={name}
+            divided={index > 0}
+            href={`#${name.toLowerCase()}`}
+            leadingWidth="thumbnail"
+            leading={<img alt="" src={samplePhoto} />}
+            trailing={<Pill tone="amber">changed</Pill>}
+          >
+            <Body as="p">{name}</Body>
+            <Caption as="p">0.4% of pixels differ</Caption>
+          </ListRow>
+        ))}
       </Card>
     </div>
   ),

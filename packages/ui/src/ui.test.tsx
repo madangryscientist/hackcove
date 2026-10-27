@@ -43,6 +43,27 @@ describe("Pill", () => {
     expect(markup).not.toContain("rounded-md");
   });
 
+  it("title is the native tooltip on a plain, link and button pill, and absent without it", () => {
+    expect(renderToStaticMarkup(<Pill title="Accepted on 12 Oct">x</Pill>)).toBe(
+      '<span title="Accepted on 12 Oct" class="rounded-md px-1.5 py-0.5 text-xs font-medium bg-slate-100 text-slate-600">x</span>',
+    );
+    expect(
+      renderToStaticMarkup(
+        <Pill href="#a" title="T">
+          x
+        </Pill>,
+      ),
+    ).toContain('title="T"');
+    expect(
+      renderToStaticMarkup(
+        <Pill onClick={() => undefined} title="T">
+          x
+        </Pill>,
+      ),
+    ).toContain('title="T"');
+    expect(renderToStaticMarkup(<Pill>x</Pill>)).not.toContain("title");
+  });
+
   it("adds a leading dot in the text colour when dot is on", () => {
     const markup = renderToStaticMarkup(
       <Pill tone="amber" dot>
@@ -74,7 +95,7 @@ describe("Card", () => {
 
   it("renders the same markup as before when as is off", () => {
     expect(renderToStaticMarkup(<Card>body</Card>)).toBe(
-      '<section class="relative rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm">body</section>',
+      '<section class="relative scroll-mt-28 rounded-xl border target:outline-2 target:outline-violet-600 border-slate-200/70 bg-white p-5 shadow-sm">body</section>',
     );
   });
 
@@ -169,6 +190,20 @@ describe("Card", () => {
     const plain = renderToStaticMarkup(<Card dashed>Nothing yet</Card>);
     expect(plain).toContain("p-8");
     expect(plain).not.toContain("p-10");
+  });
+
+  it("is an anchor target: it scrolls clear of the sticky header and outlines itself when targeted", () => {
+    const panel = renderToStaticMarkup(<Card id="billing">x</Card>);
+    expect(panel).toContain("scroll-mt-28");
+    expect(panel).toContain("target:outline-2 target:outline-violet-600");
+    const link = renderToStaticMarkup(
+      <Card href="#x" id="billing">
+        x
+      </Card>,
+    );
+    expect(link).toContain("scroll-mt-28");
+    expect(link).toContain("target:outline-violet-600");
+    expect(renderToStaticMarkup(<Card dashed>x</Card>)).toContain("target:outline-violet-600");
   });
 
   it("passes id, data-* and aria-* to the root", () => {

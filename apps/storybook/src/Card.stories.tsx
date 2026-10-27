@@ -8,6 +8,7 @@ import {
   ListRow,
   Pill,
   Stack,
+  TextLink,
   SubsectionHeading,
   type LinkRenderProps,
 } from "@hackcove/ui";
@@ -227,6 +228,21 @@ export const Link: S = {
       </Card>
     </CardGrid>
   ),
+};
+
+/** A Card with an `id` is an anchor target: a link to `#billing` scrolls it clear of the sticky header and outlines it in violet while it is the target. */
+export const AnchorTarget: S = {
+  render: () => (
+    <div className="flex max-w-md flex-col gap-4">
+      <TextLink href="#billing">Jump to billing</TextLink>
+      <Card id="billing" title="Billing">
+        <Empty>This card is the target of the link above.</Empty>
+      </Card>
+    </div>
+  ),
+  play: () => {
+    window.location.hash = "billing";
+  },
 };
 
 /** `render` draws the app's own router `<Link>`, already carrying the card's classes. */

@@ -30,9 +30,12 @@ const JUSTIFY: Record<ClusterJustify, string> = {
  *
  * Put one `ClusterGrow` around the item that takes the room left over, an input beside its
  * buttons, say. An empty `ClusterGrow` is a spacer that pushes what follows it to the end.
- * `ButtonGroup` is the row for buttons; use `Cluster` for any other row.
+ * `ButtonGroup` is the row for buttons; use `Cluster` for any other row. `as="span"` is for a row
+ * inside phrasing content, such as a `PageHeader` subtitle (a `<p>`): its items must be phrasing
+ * content too, so no `ClusterGrow`.
  */
 export function Cluster({
+  as: Tag = "div",
   gap = "sm",
   align = "center",
   justify = "start",
@@ -40,6 +43,8 @@ export function Cluster({
   children,
   ...rest
 }: {
+  /** The element. `span` for a row inside a `<p>` or other phrasing content; default `div`. */
+  as?: "div" | "span" | undefined;
   gap?: ClusterGap | undefined;
   align?: ClusterAlign | undefined;
   justify?: ClusterJustify | undefined;
@@ -47,12 +52,12 @@ export function Cluster({
   children?: ReactNode;
 } & Passthrough): ReactElement {
   return (
-    <div
+    <Tag
       {...rest}
       className={cx("flex", STACK_GAP[gap], ALIGN[align], JUSTIFY[justify], wrap && "flex-wrap")}
     >
       {children}
-    </div>
+    </Tag>
   );
 }
 

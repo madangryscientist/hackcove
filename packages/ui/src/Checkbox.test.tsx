@@ -37,4 +37,28 @@ describe("Checkbox", () => {
       /<input[^>]*class="[^"]*mt-px/,
     );
   });
+
+  it("description is a muted line under the label and the box's aria-describedby", () => {
+    const out = renderToStaticMarkup(
+      <Checkbox label="Weekly summary" description="One email on Mondays" />,
+    );
+    const id = out.match(/aria-describedby="([^"]+)"/)?.[1];
+    expect(id).toBeTruthy();
+    expect(out).toMatch(new RegExp(`<span id="${id}" class="text-xs text-slate-500">One email`));
+    expect(out.indexOf("Weekly summary")).toBeLessThan(out.indexOf("One email on Mondays"));
+    // The box sits on the label's first line beside a two-line label.
+    expect(out).toMatch(/<label[^>]*class="[^"]*items-start/);
+    expect(out).not.toContain("items-center");
+  });
+
+  it("description keeps a caller's aria-describedby and draws nothing without it", () => {
+    const out = renderToStaticMarkup(
+      <Checkbox label="L" description="D" aria-describedby="other" />,
+    );
+    expect(out).toMatch(/aria-describedby="other [^"]+"/);
+    const plain = renderToStaticMarkup(<Checkbox label="L" />);
+    expect(plain).not.toContain("aria-describedby");
+    expect(plain).not.toContain("text-slate-500");
+    expect(plain).toMatch(/<\/input>?L<\/label>|\/>L<\/label>/);
+  });
 });

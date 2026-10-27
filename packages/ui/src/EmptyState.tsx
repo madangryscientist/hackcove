@@ -6,15 +6,19 @@ import { SectionHeading } from "./typography.js";
  * What a list or a page shows when there is nothing in it yet: a centred `title`, the `children`
  * as the explanation under it (a `Body as="p"`, then `Steps` for a "get started" list), and
  * `actions` (buttons, links) in a centred row at the bottom. A named `<section>`. For one muted
- * line inside a card, use `Empty`.
+ * line inside a card, use `Empty`. `level` is the title's heading level (default 2): one below the
+ * page's own heading, so the empty state inside a `SectionHeading` section is a 3.
  */
 export function EmptyState({
   title,
+  level = 2,
   children,
   actions,
   ...rest
 }: {
   title: ReactNode;
+  /** The title's heading level, 2 to 6. It does not change how the title looks. */
+  level?: 2 | 3 | 4 | 5 | 6 | undefined;
   children?: ReactNode;
   actions?: ReactNode;
 } & Passthrough): ReactElement {
@@ -25,7 +29,9 @@ export function EmptyState({
       aria-labelledby={titleId}
       className="mx-auto flex w-full max-w-xl flex-col items-center gap-4 py-8 text-center"
     >
-      <SectionHeading id={titleId}>{title}</SectionHeading>
+      <SectionHeading as={`h${level}`} id={titleId}>
+        {title}
+      </SectionHeading>
       {children != null && (
         <div className="flex w-full flex-col items-center gap-5">{children}</div>
       )}

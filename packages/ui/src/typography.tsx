@@ -225,12 +225,16 @@ const SUBSECTION_SIZE: Record<SubsectionHeadingSize, string> = {
 
 /**
  * Nested header. `h3`, text-sm/5 semibold, primary text. `size` steps it up for
- * a card, drawer or form-group title: `sm` (default), `base` (bold) or `lg`.
+ * a card, drawer or form-group title: `sm` (default), `base` (bold) or `lg`. `truncate` keeps it on
+ * one line and cuts it with an ellipsis where its container ends, the full text as the `title`.
  */
 export function SubsectionHeading<E extends ElementType = "h3">({
   size = "sm",
   ...props
-}: TypographyProps<E> & { size?: SubsectionHeadingSize }): ReactElement {
+}: TypographyProps<E> & {
+  size?: SubsectionHeadingSize;
+  truncate?: boolean | undefined;
+}): ReactElement {
   return pinned("h3", SUBSECTION_SIZE[size], "default", props);
 }
 

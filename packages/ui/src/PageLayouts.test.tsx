@@ -207,12 +207,57 @@ describe("SidebarLayout", () => {
   });
 });
 
+describe("CardGrid as=ul", () => {
+  it("is a list whose every child is a grid item, and a div without it", () => {
+    const out = renderToStaticMarkup(
+      <CardGrid as="ul">
+        <p>One</p>
+        <p>Two</p>
+      </CardGrid>,
+    );
+    expect(out).toMatch(/^<ul role="list" class="[^"]*grid-cols-1/);
+    expect(out.match(/<li class="grid">/g)).toHaveLength(2);
+    expect(out).toContain('<li class="grid"><p>One</p></li><li class="grid"><p>Two</p></li>');
+    expect(out).not.toContain(" as=");
+    const plain = renderToStaticMarkup(
+      <CardGrid>
+        <p>One</p>
+      </CardGrid>,
+    );
+    expect(plain).toMatch(/^<div class=/);
+    expect(plain).not.toContain("<li");
+    expect(plain).not.toContain("role=");
+  });
+
+  it("keeps the columns, data-* and aria-*, and skips empty children", () => {
+    const out = renderToStaticMarkup(
+      <CardGrid as="ul" columns={4} data-testid="g" aria-label="Stats">
+        {false}
+        <p>One</p>
+        {null}
+      </CardGrid>,
+    );
+    expect(out).toContain("lg:grid-cols-4");
+    expect(out).toContain('data-testid="g"');
+    expect(out).toContain('aria-label="Stats"');
+    expect(out.match(/<li/g)).toHaveLength(1);
+  });
+});
+
 describe("FullBleedLayout", () => {
   it("fills the width with children and puts the panel at lg:w-72 after them", () => {
     const out = renderToStaticMarkup(<FullBleedLayout panel="PANEL">VIEW</FullBleedLayout>);
     expect(out).toMatch(/^<div class="[^"]*flex-col lg:flex-row/);
     expect(out).toMatch(/<aside class="[^"]*lg:w-72[^"]*">PANEL<\/aside>/);
     expect(inOrder(out, ["VIEW", "PANEL"])).toBe(true);
+  });
+
+  it("has no page padding by default and padded gives the canvas the other layouts' edge", () => {
+    expect(renderToStaticMarkup(<FullBleedLayout>VIEW</FullBleedLayout>)).not.toContain("px-4");
+    const padded = renderToStaticMarkup(<FullBleedLayout padded>VIEW</FullBleedLayout>);
+    expect(padded).toContain("px-4 py-8 sm:px-6");
+    expect(padded).not.toContain("padded");
+    expect(inOrder(padded, ["px-4 py-8 sm:px-6", "VIEW"])).toBe(true);
   });
 
   it("renders no panel without one", () => {

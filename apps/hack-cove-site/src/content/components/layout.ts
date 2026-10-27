@@ -119,9 +119,10 @@ export const layout: ComponentSection = {
         "An empty `ClusterGrow` is a spacer: what follows it goes to the end.",
         "A row of buttons is a `ButtonGroup`, which wraps on a phone and can pin an item to the end. Use `Cluster` for every other row.",
         '`justify="between"` is for two items; with more, the middle one floats, so use a spacer.',
+        '`as="span"` makes the row a `span`, for inside a paragraph where a `div` is not allowed; its items must then be phrasing content, so no `ClusterGrow`.',
       ],
       accessibility: [
-        "A `Cluster` is a `div` and adds no role; the reading and tab order is the source order of its children.",
+        'A `Cluster` is a `div` (or a `span` with `as="span"`) and adds no role; the reading and tab order is the source order of its children.',
         "`ClusterGrow` is a `div` too: put the labelled control inside it, with its own `aria-label` or `Field`.",
       ],
       api: ["Cluster", "ClusterGrow"],

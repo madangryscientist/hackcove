@@ -12,6 +12,15 @@ describe("EmptyState", () => {
     expect(out).toContain("No builds yet");
   });
 
+  it("level sets the title's heading level, h2 by default", () => {
+    for (const level of [2, 3, 4, 5, 6] as const) {
+      const out = renderToStaticMarkup(<EmptyState title="T" level={level} />);
+      expect(out).toMatch(new RegExp(`<h${level} id="[^"]+"[^>]*>T</h${level}>`));
+      expect(out).not.toContain("level=");
+    }
+    expect(renderToStaticMarkup(<EmptyState title="T" />)).toContain("<h2 ");
+  });
+
   it("draws the children under the title and the actions after them, in a centred row", () => {
     const out = renderToStaticMarkup(
       <EmptyState title="T" actions={<button type="button">Create</button>}>

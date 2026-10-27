@@ -44,6 +44,18 @@ describe("typography", () => {
     expect(renderToStaticMarkup(<SectionHeading>x</SectionHeading>)).not.toContain("border-b");
   });
 
+  it("SubsectionHeading `truncate` cuts a long title to one line and keeps the text as its title", () => {
+    const out = renderToStaticMarkup(
+      <SubsectionHeading truncate>A very long section title</SubsectionHeading>,
+    );
+    expect(out).toContain("truncate");
+    expect(out).toContain('title="A very long section title"');
+    expect(out).not.toContain("truncate=");
+    expect(renderToStaticMarkup(<SubsectionHeading>x</SubsectionHeading>)).not.toContain(
+      "truncate",
+    );
+  });
+
   it("SubsectionHeading `size` steps the scale, and sm is today's default", () => {
     const plain = renderToStaticMarkup(<SubsectionHeading>x</SubsectionHeading>);
     expect(plain).toContain('class="text-sm/5 font-semibold text-slate-900"');
