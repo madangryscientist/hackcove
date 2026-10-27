@@ -60,6 +60,11 @@ const CASES: Record<string, () => ReactElement> = {
   ),
   Dialog: () => <ui.Dialog title="T" onClose={noop} {...A} />,
   Display: () => <ui.Display {...A}>x</ui.Display>,
+  Disclosure: () => (
+    <ui.Disclosure summary="S" {...A}>
+      x
+    </ui.Disclosure>
+  ),
   Divider: () => <ui.Divider {...A} />,
   Drawer: () => <ui.Drawer title="T" onClose={noop} {...A} />,
   EpicHeader: () => <ui.EpicHeader color="#000" label="Epic" {...A} />,
@@ -136,6 +141,16 @@ const CASES: Record<string, () => ReactElement> = {
   PageHeader: () => <ui.PageHeader title="T" {...A} />,
   PageHeading: () => <ui.PageHeading {...A}>x</ui.PageHeading>,
   PageTitle: () => <ui.PageTitle title="T" {...A} />,
+  Radio: () => (
+    <ui.RadioGroup label="L">
+      <ui.Radio value="a" label="A" {...A} />
+    </ui.RadioGroup>
+  ),
+  RadioGroup: () => (
+    <ui.RadioGroup label="L" {...A}>
+      <ui.Radio value="a" label="A" />
+    </ui.RadioGroup>
+  ),
   Pill: () => <ui.Pill {...A}>x</ui.Pill>,
   ProgressBar: () => <ui.ProgressBar value={1} label="L" {...A} />,
   ProseLayout: () => (
@@ -214,9 +229,10 @@ function probes(): Element[] {
 
 /**
  * React Aria's date field puts `data-*` on its wrapper and `aria-describedby` on the field group
- * (merging the id with its own description), so the description is asserted inside the probe.
+ * (merging the id with its own description), so the description is asserted inside the probe. A
+ * `Radio` does the same: `data-*` on its label, the description on the input inside it.
  */
-const SPLIT = new Set(["DateField", "DatePicker"]);
+const SPLIT = new Set(["DateField", "DatePicker", "Radio"]);
 
 describe("every exported component passes data-* and aria-* through", () => {
   beforeEach(stubDialog);
