@@ -1,3 +1,27 @@
+## 0.1.8 (2026-10-27)
+
+This was a version bump only for theme-thrifty-paper to align it with other projects, there were no code changes.
+
+## 0.2.9 (2026-10-27)
+
+### 🩹 Fixes
+
+- **HC-148:** a disabled solid Button reads flat, not washed out ([61d4d91](https://github.com/madangryscientist/hackcove/commit/61d4d91))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
+## 0.4.5 (2026-10-27)
+
+### 🚀 Features
+
+- **ui:** links and buttons inside a linked row or card (HC-152) ([95db8ed](https://github.com/madangryscientist/hackcove/commit/95db8ed))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.1.7 (2026-10-27)
 
 ### 🚀 Features
