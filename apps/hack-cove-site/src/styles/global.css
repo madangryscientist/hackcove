@@ -12,3 +12,36 @@
 /* The docs pages render the Storybook stories (apps/storybook/src), whose layout classes (a
    story's own `flex max-w-xl …`) are not in the components' build. */
 @source "../../../storybook/src";
+
+/* The Logo's halo (HC-144): the LG TV theme's pulse, opacity and scale only, on a 4s ease-in-out
+   alternate loop. Static at rest under prefers-reduced-motion. Flagged in README, "Custom, by design". */
+/* The logo is one fixed brand blue in every theme (HC-144): a custom property of the site, used
+   through `currentColor` by the ink and the halo. It is not a palette utility and no theme.css
+   remaps it, so the theme picker never recolours it. */
+:root {
+  --logo: #4f86f7;
+}
+.logo,
+.logo-glow {
+  color: var(--logo);
+}
+.logo-glow {
+  opacity: 0.6;
+  transform: translateZ(0);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .logo-glow {
+    opacity: 0.35;
+    animation: logo-pulse 4s ease-in-out infinite alternate;
+  }
+}
+@keyframes logo-pulse {
+  from {
+    opacity: 0.35;
+    transform: translateZ(0) scale(1);
+  }
+  to {
+    opacity: 0.9;
+    transform: translateZ(0) scale(1.04);
+  }
+}

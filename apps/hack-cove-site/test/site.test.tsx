@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Contact } from "../src/components/Contact";
 import { Hero } from "../src/components/Hero";
+import { Logo } from "../src/components/Logo";
 import { PixelSlashPage } from "../src/components/PixelSlashPage";
 import { Projects } from "../src/components/Projects";
 import { SectionCards } from "../src/components/SectionCards";
@@ -30,6 +31,30 @@ describe("content", () => {
       "Erin — Design Engineer",
       "Silindile — Client Service agent",
     ]);
+  });
+});
+
+describe("logo", () => {
+  test("is named Hack Cove, with the halo hidden from assistive tech", () => {
+    const html = renderToStaticMarkup(<Logo />);
+    expect(html).toContain(`role="img" aria-label="${site.name}"`);
+    expect(html).toContain('class="logo-glow');
+    expect(html).toContain('aria-hidden="true"');
+  });
+
+  test("is one fixed #4f86f7 that no theme remaps, favicon included", () => {
+    const css = readFileSync(`${import.meta.dirname}/../src/styles/global.css`, "utf8");
+    expect(css).toMatch(/:root\s*{\s*--logo:\s*#4f86f7;/);
+    expect(readFileSync(`${import.meta.dirname}/../public/favicon.svg`, "utf8")).toContain(
+      'fill="#4f86f7"',
+    );
+    for (const { folder } of themes) {
+      const theme = readFileSync(
+        `${import.meta.dirname}/../../../themes/${folder}/theme.css`,
+        "utf8",
+      );
+      expect(theme).not.toMatch(/--logo|4f86f7/i);
+    }
   });
 });
 

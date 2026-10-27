@@ -1,6 +1,6 @@
 import { AppShell } from "@hackcove/ui";
 import type { ReactNode } from "react";
-import { site } from "../content/site";
+import { Logo } from "./Logo";
 import { SiteNav } from "./SiteNav";
 
 /**
@@ -26,7 +26,11 @@ export function SiteShell({
 }) {
   return (
     <AppShell
-      brand={<a href="/">{site.name}</a>}
+      brand={
+        <a href="/">
+          <Logo />
+        </a>
+      }
       subnav={<SiteNav pathname={pathname} />}
       footer={footer}
       controls={controls}

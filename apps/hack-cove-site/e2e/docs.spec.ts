@@ -180,3 +180,21 @@ test("/ui/llms.txt is served as plain text, one section per component page", asy
   expect(text).toContain("fully integrated with its theming");
   for (const { name } of componentPages) expect(text).toContain(`\n## ${name}\n`);
 });
+
+test("the logo ink and halo are the same fixed blue under every theme's scope class", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const colours = () =>
+    page.evaluate(() =>
+      [".logo", ".logo-glow"].map((sel) => {
+        const el = document.querySelector(sel);
+        return el ? getComputedStyle(el).color : "";
+      }),
+    );
+  for (const folder of folders) {
+    await choose(page, folder);
+    expect(await scopeClasses(page)).toEqual([scopeOf(folder)]);
+    expect(await colours()).toEqual(["rgb(79, 134, 247)", "rgb(79, 134, 247)"]);
+  }
+});
