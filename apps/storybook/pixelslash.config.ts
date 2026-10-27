@@ -26,4 +26,10 @@ export default {
   },
   storybook: { url, globals: { theme: themes } },
   variants: [{ name: "desktop", viewport: { width: 1280, height: 720 } }],
+  // PS-230: pixelslash cannot pause or seek media, so the <video>'s loading spinner is captured at a
+  // random rotation and every shot with a video flakes (ui-video-*, overview-gallery,
+  // overview-all-themes). The selector is measured on the live page at capture time, so it covers
+  // exactly the <video> element (not its card), in every theme and on every shot that has one, and
+  // every other pixel is still compared.
+  ignore: ["video"],
 };
