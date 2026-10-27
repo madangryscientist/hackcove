@@ -1,3 +1,121 @@
+## 0.5.0 (2026-10-27)
+
+### 🚀 Features
+
+- ⚠️  **ui:** one size scale, sm/md/lg with md the default (HC-160) ([#12](https://github.com/madangryscientist/hackcove/pull/12))
+
+### ⚠️  Breaking Changes
+
+- **ui:** one size scale, sm/md/lg with md the default (HC-160)  ([#12](https://github.com/madangryscientist/hackcove/pull/12))
+  one size scale, sm/md/lg with md the default.
+    TextLink size="xs"               -> size="sm"
+    TextLink size="sm"               -> size="md"
+    SubsectionHeading size="base"    -> size="md" (now the default)
+    Stack/Section/PageLayout gap="section" -> gap="xl"
+    SubsectionHeading default sm     -> md (pin size="sm" for the old look)
+    Section gap default sm           -> md (pin gap="sm")
+    Cluster gap default sm           -> xs (pin gap="sm")
+    ProgressBar default sm           -> md (pin size="sm")
+    SplitBar, StackedBar default lg  -> md (pin size="lg")
+    Avatar md 28px                   -> 32px
+    IconButton, ColourSchemeToggle 36px -> 38px (md)
+    NavTabs, Tabs pill 32px          -> 38px (md)
+  See packages/ui/MIGRATING.md.
+  State: landable
+  Gated by the planner on 80fce05: typecheck, lint, 261 tests, build, format, pack-check, e2e 42, PixelSlash visual 309 changed / 34 new / 2 removed (read: md defaults, nav tabs align with the header controls at 38px)."
+  M	apps/hack-cove-site/README.md
+  M	apps/hack-cove-site/src/components/ComponentPage.tsx
+  M	apps/hack-cove-site/src/components/PageIntro.tsx
+  M	apps/hack-cove-site/src/components/UiPage.tsx
+  M	apps/hack-cove-site/src/content/components/actions.ts
+  M	apps/hack-cove-site/src/content/components/content.ts
+  M	apps/hack-cove-site/src/content/components/data.ts
+  M	apps/hack-cove-site/src/content/components/forms.ts
+  M	apps/hack-cove-site/src/content/components/layout.ts
+  M	apps/hack-cove-site/src/content/components/navigation.ts
+  M	apps/hack-cove-site/src/content/components/pagelayouts.ts
+  M	apps/hack-cove-site/src/content/components/text.ts
+  M	apps/hack-cove-site/src/pages/contracting.astro
+  M	apps/hack-cove-site/src/pages/index.astro
+  M	apps/hack-cove-site/src/pages/pixelslash.astro
+  M	apps/hack-cove-site/src/pages/ui/index.astro
+  M	apps/storybook/src/Button.stories.tsx
+  M	apps/storybook/src/Card.stories.tsx
+  M	apps/storybook/src/Checkbox.stories.tsx
+  M	apps/storybook/src/Cluster.stories.tsx
+  M	apps/storybook/src/ColourSchemeToggle.stories.tsx
+  M	apps/storybook/src/DatePicker.stories.tsx
+  M	apps/storybook/src/Dialog.stories.tsx
+  M	apps/storybook/src/EmptyState.stories.tsx
+  M	apps/storybook/src/FileDrop.stories.tsx
+  M	apps/storybook/src/GalleryLayout.tsx
+  M	apps/storybook/src/GalleryLinks.tsx
+  M	apps/storybook/src/GalleryText.tsx
+  M	apps/storybook/src/IconButton.stories.tsx
+  M	apps/storybook/src/Input.stories.tsx
+  M	apps/storybook/src/ListRow.stories.tsx
+  M	apps/storybook/src/NavTabs.stories.tsx
+  M	apps/storybook/src/ProgressBar.stories.tsx
+  M	apps/storybook/src/RadioGroup.stories.tsx
+  M	apps/storybook/src/SegmentedControl.stories.tsx
+  M	apps/storybook/src/Select.stories.tsx
+  M	apps/storybook/src/SplitBar.stories.tsx
+  M	apps/storybook/src/StackedBar.stories.tsx
+  M	apps/storybook/src/Tabs.stories.tsx
+  M	apps/storybook/src/TextLink.stories.tsx
+  M	apps/storybook/src/Textarea.stories.tsx
+  M	apps/storybook/src/ToggleChip.stories.tsx
+  M	apps/storybook/src/layout/CardGrid.stories.tsx
+  M	apps/storybook/src/layout/Stack.stories.tsx
+  M	apps/storybook/src/typography.stories.tsx
+  A	packages/ui/MIGRATING.md
+  M	packages/ui/README.md
+  M	packages/ui/src/Avatar.test.tsx
+  M	packages/ui/src/Avatar.tsx
+  M	packages/ui/src/Button.tsx
+  M	packages/ui/src/Card.tsx
+  M	packages/ui/src/Checkbox.tsx
+  M	packages/ui/src/Cluster.test.tsx
+  M	packages/ui/src/Cluster.tsx
+  M	packages/ui/src/ColourSchemeToggle.tsx
+  M	packages/ui/src/DateField.tsx
+  M	packages/ui/src/DatePicker.tsx
+  M	packages/ui/src/Dialog.tsx
+  M	packages/ui/src/FileDrop.tsx
+  M	packages/ui/src/IconButton.tsx
+  M	packages/ui/src/InputShell.tsx
+  M	packages/ui/src/ListRow.tsx
+  M	packages/ui/src/NavTabs.test.tsx
+  M	packages/ui/src/NavTabs.tsx
+  M	packages/ui/src/PageHeader.test.tsx
+  M	packages/ui/src/PageLayouts.tsx
+  M	packages/ui/src/ProgressBar.test.tsx
+  M	packages/ui/src/ProgressBar.tsx
+  M	packages/ui/src/RadioGroup.tsx
+  M	packages/ui/src/SearchInput.tsx
+  M	packages/ui/src/SegmentedControl.tsx
+  M	packages/ui/src/SplitBar.test.tsx
+  M	packages/ui/src/SplitBar.tsx
+  M	packages/ui/src/Stack.test.tsx
+  M	packages/ui/src/Stack.tsx
+  M	packages/ui/src/StackedBar.test.tsx
+  M	packages/ui/src/StackedBar.tsx
+  M	packages/ui/src/Tabs.tsx
+  M	packages/ui/src/TextLink.test.tsx
+  M	packages/ui/src/TextLink.tsx
+  M	packages/ui/src/ToggleChip.tsx
+  M	packages/ui/src/control.ts
+  M	packages/ui/src/index.ts
+  M	packages/ui/src/linkForms.test.tsx
+  A	packages/ui/src/size.test.tsx
+  A	packages/ui/src/size.ts
+  M	packages/ui/src/typography.test.tsx
+  M	packages/ui/src/typography.tsx
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.1.8 (2026-10-27)
 
 This was a version bump only for theme-thrifty-paper to align it with other projects, there were no code changes.
