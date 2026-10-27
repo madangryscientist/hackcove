@@ -1,5 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { lifted } from "./lift.harness.js";
 import {
   type CellTone,
   Table,
@@ -32,7 +33,7 @@ describe("TableFoot", () => {
     for (const variant of ["card", "plain"] as const) {
       const out = inSection("foot", variant);
       expect(out).toContain("<tfoot>");
-      expect(out).toContain('<tr class="relative border-t border-slate-300">');
+      expect(out).toContain(`<tr class="relative border-t border-slate-300 ${lifted}">`);
       expect(out).not.toContain("hover:");
     }
   });

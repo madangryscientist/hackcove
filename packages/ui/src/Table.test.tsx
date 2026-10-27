@@ -1,5 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { lifted } from "./lift.harness.js";
 import {
   type RowTone,
   rowLinkClass,
@@ -65,7 +66,7 @@ describe("Table plain", () => {
   });
 
   it("keeps the row dividers and the head's small uppercase titles", () => {
-    expect(plain).toContain('<tr class="relative border-t border-slate-200/70">');
+    expect(plain).toContain(`<tr class="relative border-t border-slate-200/70 ${lifted}">`);
     expect(plain).toContain("uppercase");
   });
 });
@@ -134,8 +135,9 @@ describe("TableBody and TableRow", () => {
         </TableBody>
       </table>,
     );
-    expect(out).toContain('<tr class="relative border-t border-slate-200/70 hover:bg-slate-50">');
-    expect(out).not.toContain("[&amp;");
+    expect(out).toContain(
+      `<tr class="relative border-t border-slate-200/70 ${lifted} hover:bg-slate-50">`,
+    );
   });
 
   it("a head row is only relative: no line above, no hover", () => {
@@ -148,7 +150,7 @@ describe("TableBody and TableRow", () => {
         </TableHead>
       </table>,
     );
-    expect(out).toContain('<tr class="relative">');
+    expect(out).toContain(`<tr class="relative ${lifted}">`);
   });
 });
 

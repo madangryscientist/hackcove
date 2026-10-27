@@ -1,11 +1,21 @@
-import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
+import { type ComponentPropsWithoutRef, type ReactElement, type ReactNode, useId } from "react";
 import type { ControlSize } from "./control.js";
 import { Chevron } from "./Chevron.js";
-import { cx, focusRing } from "./cx.js";
+import { cx, focusRing, liftInteractive } from "./cx.js";
 import { type LinkRender, renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
 
-const ROW = `flex w-full items-center gap-3 text-left text-sm text-slate-900 disabled:pointer-events-none disabled:opacity-50 ${focusRing} focus-visible:-outline-offset-2`;
+const ROW_LOOK =
+  "flex w-full items-center gap-3 text-left text-sm text-slate-900 disabled:pointer-events-none disabled:opacity-50";
+
+const INSET_RING = `${focusRing} focus-visible:-outline-offset-2`;
+
+const ROW = `${ROW_LOOK} ${INSET_RING}`;
+
+/** A linked row is a `relative` box; its link is an empty overlay, so the row's own links and buttons are not nested in it. */
+const LINK_ROW = `relative ${ROW_LOOK} ${liftInteractive}`;
+
+const OVERLAY = `link-stretch absolute inset-0 ${INSET_RING}`;
 
 const STATIC = "group/row flex w-full items-center gap-3 text-sm text-slate-900";
 
@@ -108,10 +118,15 @@ function fillOf(props: ListRowProps): string | undefined {
   return props.static && !props.revealOnHover ? undefined : FILL;
 }
 
+function rowBase(props: ListRowProps): string {
+  if (props.static) return STATIC;
+  return props.href !== undefined || props.render !== undefined ? LINK_ROW : ROW;
+}
+
 function look(props: ListRowProps): string {
   const { size = "md", divided = false, focused = false } = props;
   return cx(
-    props.static ? STATIC : ROW,
+    rowBase(props),
     PAD[size],
     divided && "border-t border-slate-200/70",
     fillOf(props),
@@ -175,18 +190,21 @@ function LinkRow(props: ListRowLinkProps & Pieces): ReactElement {
     end,
     ...rest
   } = props;
-  return renderLink({
-    ...rest,
-    ...(selected ? { "aria-current": "true" as const } : {}),
-    className: look(props),
-    children: (
-      <>
-        {start}
-        {label}
-        {end}
-      </>
-    ),
-  });
+  const rowId = useId();
+  return (
+    <div id={rowId} className={look(props)}>
+      {renderLink({
+        ...(rest["aria-label"] === undefined ? { "aria-labelledby": rowId } : {}),
+        ...rest,
+        ...(selected ? { "aria-current": "true" as const } : {}),
+        className: OVERLAY,
+        children: null,
+      })}
+      {start}
+      {label}
+      {end}
+    </div>
+  );
 }
 
 function ButtonRow(props: ListRowButtonProps & Pieces): ReactElement {
@@ -227,7 +245,9 @@ function ButtonRow(props: ListRowButtonProps & Pieces): ReactElement {
 
 /**
  * A full-width row that is a `<button>` (or, with `href` or `render`, a link) with a hover fill, a
- * left-aligned label and `trailing` content at the far end. With `expanded` it is the header of a
+ * left-aligned label and `trailing` content at the far end. A linked row is a `<div>` with the link
+ * stretched over it, so the whole row opens the link; a `TextLink`, `Button` or `Checkbox` in the
+ * row sits above the link and is clickable on its own. With `expanded` it is the header of a
  * collapsible section: `aria-expanded` and a chevron. Rows sit in a `Card flush`; `divided` draws
  * the line between them, on each row after the first.
  *

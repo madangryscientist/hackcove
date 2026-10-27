@@ -5,7 +5,7 @@ import { IconButton } from "./IconButton.js";
 import type { LinkRenderProps } from "./link.js";
 import { focusRing } from "./cx.js";
 import { Pill } from "./Pill.js";
-import { Card } from "./ui.js";
+import { Card } from "./Card.js";
 
 // `href` (and `render`, the router hook TextLink and ButtonLink use) makes the whole part the link:
 // Card, IconButton and Pill. Pill also has a button form.
@@ -15,21 +15,21 @@ function Router({ to, ...rest }: { to: string } & LinkRenderProps) {
 }
 
 describe("Card href", () => {
-  it("is one anchor: the root, with the hover border, the focus ring and the body inside", () => {
+  it("is a card with the link stretched over it: the card holds the hover border and the body, the empty link the focus ring", () => {
     const out = renderToStaticMarkup(
       <Card href="/shots/1" title="Shot" count={3}>
         body
       </Card>,
     );
-    expect(
-      out.startsWith('<a href="/shots/1" class="relative scroll-mt-28 rounded-xl border'),
-    ).toBe(true);
-    expect(out).toContain('href="/shots/1"');
-    expect(out).toContain("block");
+    expect(out.startsWith('<div id="')).toBe(true);
+    expect(out).toContain("relative scroll-mt-28 rounded-xl border");
     expect(out).toContain("hover:border-violet-400");
+    expect(out).toMatch(/<a [^>]*href="\/shots\/1"[^>]*class="link-stretch absolute inset-0 /);
+    expect(out).toContain('aria-labelledby="');
     expect(out).toContain(focusRing);
+    expect(out).toContain("></a>");
     expect(out).toContain("<h2");
-    expect(out.endsWith("body</a>")).toBe(true);
+    expect(out.endsWith("body</div>")).toBe(true);
     expect(out).not.toContain("<section");
   });
 
@@ -40,6 +40,7 @@ describe("Card href", () => {
     expect(out).toContain('data-router="yes"');
     expect(out).toContain('href="/app/shots/1"');
     expect(out).toContain("rounded-xl border");
+    expect(out).toContain("link-stretch");
   });
 
   it("opens a new tab when external, and passes data-* and aria-* to the anchor", () => {

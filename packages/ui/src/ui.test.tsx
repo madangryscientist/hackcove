@@ -2,7 +2,9 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { ButtonGroup } from "./ButtonGroup.js";
 import { Pill } from "./Pill.js";
-import { Card, groupByEpic } from "./ui.js";
+import { Card } from "./Card.js";
+import { lifted } from "./lift.harness.js";
+import { groupByEpic } from "./ui.js";
 
 describe("groupByEpic", () => {
   it("orders real epics by ref and puts 'no epic' last", () => {
@@ -95,7 +97,7 @@ describe("Card", () => {
 
   it("renders the same markup as before when as is off", () => {
     expect(renderToStaticMarkup(<Card>body</Card>)).toBe(
-      '<section class="relative scroll-mt-28 rounded-xl border target:outline-2 target:outline-violet-600 border-slate-200/70 bg-white p-5 shadow-sm">body</section>',
+      `<section class="relative scroll-mt-28 rounded-xl border target:outline-2 target:outline-violet-600 ${lifted} border-slate-200/70 bg-white p-5 shadow-sm">body</section>`,
     );
   });
 

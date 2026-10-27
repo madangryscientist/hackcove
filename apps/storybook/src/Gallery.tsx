@@ -51,6 +51,7 @@ import { GalleryLayout } from "./GalleryLayout";
 import { GalleryPills } from "./GalleryPills";
 import { GallerySwitchers } from "./GallerySwitchers";
 import { GalleryText } from "./GalleryText";
+import { GalleryLinkedRows } from "./GalleryLinkedRows";
 import { GalleryLinks } from "./GalleryLinks";
 import { GalleryPages } from "./GalleryPages";
 import { samplePhoto } from "./samplePhoto";
@@ -308,6 +309,8 @@ export function Gallery() {
       </Callout>
 
       <GalleryLinks />
+
+      <GalleryLinkedRows />
 
       <GalleryChips />
 

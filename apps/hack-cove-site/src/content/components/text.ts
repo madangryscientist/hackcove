@@ -141,7 +141,7 @@ export const text: ComponentSection = {
         'In an app with a router, `render` draws the router\'s own `<Link>`: `render={(p) => <Link to="/terms" {...p} />}`. The library has no router.',
         "`size` pins the type size to `xs` or `sm`; left out, the link takes the size of its text. `mono` sets the monospace face for a path or an id.",
         '`tone` gives the link a meaning\'s colour (`warn`, `danger`, `positive`, `info`, `muted`), underlined on hover. Use it for a link that is the message, like "3 failed".',
-        "`stretch` makes the nearest `relative` ancestor the click target: a `Card` or a `TableRow`. Put it on the one link in that row.",
+        "`stretch` makes the nearest `relative` ancestor the click target: a `Card` or a `TableRow`. Put it on the one link in that row; any other link or button in the row sits above it and is clickable on its own.",
         "A router's own `<Link>` that must look like a `TextLink` takes `linkClass`, and a stretched one `linkStretchClass` as well.",
       ],
       accessibility: [

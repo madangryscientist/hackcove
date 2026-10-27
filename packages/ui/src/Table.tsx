@@ -1,7 +1,7 @@
 import { Children, createContext, useContext } from "react";
 import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
 import type { CalloutTone } from "./Callout.js";
-import { cx } from "./cx.js";
+import { cx, liftInteractive } from "./cx.js";
 import { linkClass, linkStretchClass } from "./TextLink.js";
 import { TEXT_TONE, type TextTone } from "./typography.js";
 
@@ -147,7 +147,9 @@ export function TableFoot({
 }
 
 /**
- * A `<tr>`, `relative`: the anchor a `rowLinkClass` link stretches to. Use it in the head and the
+ * A `<tr>`, `relative`: the anchor a `rowLinkClass` link stretches to. Any other link, button or
+ * control in the row (a `TextLink`, a `Button`, a `Checkbox`) sits above that link and is clickable
+ * on its own, with no class from the caller. Use it in the head and the
  * body. In the body it also draws the line above the row and, unless the table is `plain`, the hover
  * fill. `tone` marks the row's status (see `RowTone`): a stripe on the leading edge and a soft fill,
  * or `muted` to fade it. A toned row keeps its fill on hover (the status stays readable), so a
@@ -178,9 +180,9 @@ function rowClass(
   tone: RowTone | undefined,
   stripe: TextTone | undefined,
 ): string {
-  if (section === "foot") return "relative border-t border-slate-300";
-  if (section !== "body") return "relative";
-  const line = "relative border-t border-slate-200/70";
+  if (section === "foot") return cx("relative border-t border-slate-300", liftInteractive);
+  if (section !== "body") return cx("relative", liftInteractive);
+  const line = cx("relative border-t border-slate-200/70", liftInteractive);
   const hover = !plain && "hover:bg-slate-50";
   if (stripe !== undefined) return cx(line, hover, TEXT_TONE[stripe], STRIPE);
   if (tone === undefined) return cx(line, hover);
