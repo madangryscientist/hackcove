@@ -82,27 +82,36 @@ that touches only `packages/ui` bumps `@hackcove/ui`, and nothing else.
 ## Landing: through a pull request
 
 Decided by Jacobus 2026-10-27: hackcove and pixelslash merge through pull requests, so the
-PixelSlash GitHub check can be seen working on a real PR. Work still happens on a branch, and the
-planner still gates the squash before anything reaches `main`. Only the last step changed: the
-squash goes through a PR instead of a direct push to `main`.
+PixelSlash GitHub check can be seen working on a real PR. **The builder opens the PR and hands it
+back; the planner gates and merges it.** Tickets dispatched before this rule (up to HC-144 and
+HC-148) land through a PR the planner opens from its gated squash on `land/<branch>`.
 
 1. A builder commits on its own branch, ending the message with one of `State: landable`,
-   `State: needs-human`, `State: blocked` or `State: partial`. A builder never pushes and never
-   merges.
-2. The planner squashes the branch onto `origin/main` in a land worktree, runs the gate there,
-   and reads the PixelSlash report.
-3. The planner commits the squash on `land/<branch>`, uploads its screenshots to PixelSlash for
-   that commit (`nx run storybook:visual-upload`), then opens the PR and merges it. This is the
-   only step that touches the remote:
+   `State: needs-human`, `State: blocked` or `State: partial`.
+2. On `landable` or `needs-human`, the builder rebases on `origin/main`, pushes its branch and
+   opens the PR, then hands off with the PR URL:
 
    ```bash
-   git push -u origin land/<branch>
-   gh pr create --base main --head land/<branch> --title "<squash subject>" --body-file <msg>
+   git fetch origin && git rebase origin/main
+   git push -u origin <branch>
+   gh pr create --base main --head <branch> --title "<type>(<scope>): <title>" --body-file <msg>
+   ```
+
+   The PR body is the commit body: what changed, how it was gated, the `State:` line. The
+   builder never merges, never pushes to `main`, and never opens a PR for `blocked` or
+   `partial`.
+3. The planner gates the PR's head in a land worktree, reads the PixelSlash report, uploads the
+   screenshots for that commit (`nx run storybook:visual-upload`), and only on a green gate
+   merges it. Merging is the planner's step and only the planner's:
+
+   ```bash
    gh pr checks <pr> --watch
    gh pr merge <pr> --squash --delete-branch --subject "<squash subject>" --body-file <msg>
    ```
 
-   The squash subject keeps the conventional form above, because `nx release` reads it.
+   The squash subject keeps the conventional form above, because `nx release` reads it. If
+   `main` moved and the PR no longer rebases cleanly, the planner sends it back to the builder
+   to rebase; it does not resolve the builder's conflicts itself.
 
 Nothing on GitHub blocks a merge: `main` has no branch protection, because the release workflow
 pushes its release commit straight to `main`. The planner enforces the rule instead. Do not
