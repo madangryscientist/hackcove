@@ -17,8 +17,10 @@ const toneClass = (tone: TextTone): string =>
 /**
  * Stretches a link's hit area over its nearest `relative` ancestor (a table row, a card), so the
  * whole of it opens the link. Add it to the one link in the row; the ancestor needs `relative`.
+ * `link-stretch` marks the link, so a `TableRow` or `Card` that lifts its other links and buttons
+ * above it leaves this one alone.
  */
-export const linkStretchClass = "after:absolute after:inset-0";
+export const linkStretchClass = "link-stretch after:absolute after:inset-0";
 
 export type TextLinkSize = "xs" | "sm";
 

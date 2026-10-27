@@ -60,7 +60,7 @@ const Link = ({ to, ...rest }: { to: string } & LinkRenderProps): ReactElement =
 
 describe("TextLink stretch", () => {
   it("covers the nearest relative ancestor with the link's ::after", () => {
-    expect(linkStretchClass).toBe("after:absolute after:inset-0");
+    expect(linkStretchClass).toBe("link-stretch after:absolute after:inset-0");
     const out = renderToStaticMarkup(
       <TextLink href="/q/1" stretch>
         Quote 1

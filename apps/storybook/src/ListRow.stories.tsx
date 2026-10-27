@@ -251,14 +251,3 @@ export const DoRowActions: S = {
     </Card>
   ),
 };
-
-/** A button inside a link row is a control inside a control: the row opens a page and the button does something else, and a click can only mean one. */
-export const DontRowActions: S = {
-  render: () => (
-    <Card flush>
-      <ListRow href="#grace" trailing={<Button size="sm">Accept</Button>}>
-        Grace Hopper
-      </ListRow>
-    </Card>
-  ),
-};

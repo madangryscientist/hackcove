@@ -15,6 +15,7 @@ export const content: ComponentSection = {
         "`actions` sit at the far end of the header; use `bar` to put the header in a tinted strip.",
         "Space several Cards with a `Stack` or a `CardGrid`; never stack them with nothing between.",
         "`flush` is for a table that runs edge to edge, and it needs a `bar` for its title.",
+        "A Card with `href` is one link; a `TextLink` or `Button` inside it sits above that link and is clickable on its own, and a click elsewhere on the card follows the link.",
         "`footer` is a strip across the bottom for the card's own actions or a total; it stays at the foot of a stretched card in a `CardGrid`.",
         '`CardGrid` takes `columns` 2, 3 or 4, or `columns="auto"` with `minWidth` `sm` or `md` to fill by width; `align="start"` stops cards stretching to the tallest in their row.',
         "`dashed` is the empty state.",

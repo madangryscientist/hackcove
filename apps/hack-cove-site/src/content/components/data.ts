@@ -66,7 +66,7 @@ export const data: ComponentSection = {
         "`expanded` makes the row the header of a collapsible section: you own the state and the section, and pass `aria-controls` to name it.",
         "`selected` marks the one row whose detail is open; set it on a single row of a list. `focused` marks the row the keyboard cursor is on in a list you move through yourself: an inset violet ring, apart from `selected`'s fill.",
         '`leadingWidth="thumbnail"` gives `leading` a fixed width that sizes an image to it, for a row that shows a screenshot. The label may hold block content, such as a title over a caption.',
-        "A row that holds its own buttons is `static`: the buttons go in `actions`, after `trailing`. `revealOnHover` shows them only on hover or focus, so a long list is not a wall of buttons.",
+        "A link row (`href` or `render`) can hold its own link or button in `trailing`: it sits above the row's link and takes its own click, with no class from you. A row that is a `<button>` cannot hold a button, so a row with buttons of its own is `static`: the buttons go in `actions`, after `trailing`. `revealOnHover` shows them only on hover or focus, so a long list is not a wall of buttons.",
         'Never put a button or a link inside a button or link row. `size="sm"` is the dense padding for a list that must fit more rows.',
         "Records with several columns to compare are a `Table`, not rows.",
       ],
