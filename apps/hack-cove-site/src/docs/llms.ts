@@ -7,6 +7,7 @@ import { componentPages, sectionOfPage, type ComponentPage } from "../content/co
 import { site } from "../content/site.js";
 import { pairOf } from "./pairs.js";
 import { docOf } from "./Props.js";
+import { findStory } from "./stories.js";
 
 const fence = (code: string) => `\`\`\`tsx\n${code}\n\`\`\``;
 
@@ -40,6 +41,13 @@ function functionsOf(page: ComponentPage): string[] {
     : [`### Functions\n${functions.map((fn) => `- ${fn.name}: ${fn.text}`).join("\n")}`];
 }
 
+function fullPageOf(page: ComponentPage): string[] {
+  if (page.fullPage === undefined) return [];
+  const story = findStory(page.fullPage);
+  if (story === undefined) throw new Error(`llms.txt: ${page.name} has no story ${page.fullPage}`);
+  return [`### Full page\n${captioned(story)}`];
+}
+
 function sectionOf(page: ComponentPage): string {
   const [lead] = page.pairs;
   const right = lead === undefined ? undefined : pairOf(lead).do;
@@ -49,6 +57,7 @@ function sectionOf(page: ComponentPage): string {
     `Group: ${sectionOfPage(page.slug).title}`,
     `When to use: ${page.whenToUse}`,
     `### The one right way\n${captioned(right)}`,
+    ...fullPageOf(page),
     `### Do\n${page.usage.map((rule) => `- ${rule}`).join("\n")}`,
     `### Don't\n${dontsOf(page)}`,
     `### Accessibility\n${page.accessibility.map((rule) => `- ${rule}`).join("\n")}`,

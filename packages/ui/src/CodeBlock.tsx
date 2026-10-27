@@ -1,21 +1,28 @@
 import type { ComponentPropsWithoutRef, ReactElement } from "react";
+import { CodeText } from "./CodeText.js";
+import type { CodeLanguage } from "./highlight.js";
 import type { Unstyled } from "./props.js";
 
 /** Exactly one of `children` (a string, newlines kept) or `lines` (one array entry per line). */
 type CodeBlockSource = { children: string; lines?: never } | { lines: string[]; children?: never };
 
 /**
- * A static multi-line block of code: mono, in a bordered inset box, long lines wrap. No client JS and
- * no syntax highlighting; for install snippets and docs. Give the text as `children` or as `lines`.
- * `label` names the language or file (`bash`, `css`) in a caption above the code. Every other figure prop goes on the root `<figure>`. For one line a reader copies, use `CopyLine`.
+ * A static multi-line block of code: mono, in a bordered inset box, long lines wrap. No client JS;
+ * `language` colours it, and `label` names the language or file (`bash`, `css`) in a caption above
+ * the code. `text` (the default) leaves the code in one colour, for a block that is not a language.
+ * Give the text as `children` or as `lines`. Every other figure prop goes on the root `<figure>`.
+ * For one line a reader copies, use `CopyLine`.
  */
 export function CodeBlock({
   label,
+  language = "text",
   children,
   lines,
   ...rest
 }: {
   label?: string;
+  /** What the code is written in; `text` (the default) colours nothing. */
+  language?: CodeLanguage;
 } & CodeBlockSource &
   Unstyled<Omit<ComponentPropsWithoutRef<"figure">, "children">>): ReactElement {
   return (
@@ -29,7 +36,7 @@ export function CodeBlock({
         </figcaption>
       )}
       <pre className="whitespace-pre-wrap break-words px-3 py-2.5">
-        <code>{lines ? lines.join("\n") : children}</code>
+        <CodeText code={lines ? lines.join("\n") : children} language={language} />
       </pre>
     </figure>
   );

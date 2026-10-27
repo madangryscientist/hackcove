@@ -1,5 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Card, FullBleedLayout, KeyValue, KeyValueList, Overline } from "@hackcove/ui";
+import {
+  AppShell,
+  Body,
+  Card,
+  EmptyState,
+  FullBleedLayout,
+  KeyValue,
+  KeyValueList,
+  NavTabs,
+  Overline,
+} from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 /**
@@ -13,6 +23,43 @@ const meta: Meta = {
 };
 export default meta;
 type S = StoryObj;
+
+/** A whole viewer page: the shell with `bleed`, then the layout with the viewer in `children` and the facts in `panel`. The `EmptyState` stands in for the app's own viewer. */
+export const FullPage: S = {
+  render: () => (
+    <AppShell
+      brand={<a href="#">Hack Cove</a>}
+      nav={
+        <NavTabs
+          label="Main"
+          items={[
+            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Clients", href: "#clients" },
+          ]}
+        />
+      }
+      bleed
+    >
+      <FullBleedLayout
+        panel={
+          <>
+            <Overline as="h2">Snapshot</Overline>
+            <KeyValueList>
+              <KeyValue label="Story">Button / Primary</KeyValue>
+              <KeyValue label="Changed">0.4%</KeyValue>
+            </KeyValueList>
+          </>
+        }
+      >
+        <EmptyState title="Snapshot viewer">
+          <Body as="p" color="secondary">
+            Your viewer goes here and fills the width.
+          </Body>
+        </EmptyState>
+      </FullBleedLayout>
+    </AppShell>
+  ),
+};
 
 const snapshotCanvas = (
   <div className="flex h-96 items-center justify-center bg-slate-100">

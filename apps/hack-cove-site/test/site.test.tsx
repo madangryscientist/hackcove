@@ -186,7 +186,10 @@ describe("the Hack Cove UI page", () => {
   });
 
   test("it shows the install commands and the GitHub and npm links", () => {
-    expect(html).toContain("bun add @hackcove/ui @hackcove/theme-catppuccin-mocha");
+    // The command is coloured, so its runs sit in spans: compare the text, not the markup.
+    const text = html.replace(/<[^>]+>/g, "").replaceAll("&quot;", '"');
+    expect(text).toContain("bun add @hackcove/ui @hackcove/theme-catppuccin-mocha");
+    expect(text).toContain('@import "tailwindcss";');
     for (const link of site.ui.links.items) expect(html).toContain(`href="${link.href}"`);
     expect(html).toContain(site.ui.docs.text.replaceAll("'", "&#x27;"));
     for (const link of site.ui.docs.links) expect(html).toContain(`href="${link.href}"`);

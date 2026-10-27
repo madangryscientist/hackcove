@@ -13,8 +13,10 @@ describe("CodeExample", () => {
     expect(out.indexOf("PREVIEW")).toBeLessThan(out.indexOf("<pre"));
   });
 
-  it("escapes the code and keeps its newlines", () => {
-    expect(out).toContain("<code>&lt;Button&gt;\n  Save\n&lt;/Button&gt;</code>");
+  it("escapes the code, keeps its newlines, and colours it as TSX", () => {
+    const code = out.slice(out.indexOf("<code>"), out.indexOf("</code>") + 7);
+    expect(code.replace(/<[^>]+>/g, "")).toBe("&lt;Button&gt;\n  Save\n&lt;/Button&gt;");
+    expect(code).toContain('<span class="text-red-700">Button</span>');
   });
 
   it("keeps the preview its own height: a shared minimum, never grown to fill a cell", () => {

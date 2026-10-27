@@ -64,9 +64,9 @@ export const text: ComponentSection = {
       usage: [
         "Use `Code` for one short run inside a sentence. It takes the text colour and size around it, and keeps no line breaks.",
         "Use `CodeBlock` for several lines. Give the text as `children`, or as `lines` with one entry per line.",
-        "`label` names the language or file (`bash`, `css`) in a caption above the code.",
+        "`label` names the language or file (`bash`, `css`) in a caption above the code; `language` says what to colour, from `bash`, `css`, `tsx`, `ts` and `json`.",
         "A line a reader copies is a `CopyLine`, not a one-line `CodeBlock`. A rendered part shown with its code is a `CodeExample`.",
-        "There is no syntax highlighting and no scrolling: a long line in a `CodeBlock` wraps.",
+        "Without a `language` the code is one colour (`text`), which suits an error or a log; a long line wraps rather than scrolling.",
       ],
       accessibility: [
         "`Code` renders a `<code>`. `CodeBlock` renders a `<figure>` with the code in `<pre><code>`, so the line breaks are kept.",

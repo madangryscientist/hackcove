@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, CenteredLayout, Field, FormLayout, Input } from "@hackcove/ui";
+import { AppShell, Button, CenteredLayout, Field, FormLayout, Input, NavTabs } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 /** The one layout whose width differs on purpose, so the no-jump title check skips it (e2e/layout.spec.ts). */
@@ -10,6 +10,31 @@ const meta: Meta = {
 };
 export default meta;
 type S = StoryObj;
+
+/** A whole sign-in page: the shell with its brand and nav, then one narrow card, centred. */
+export const FullPage: S = {
+  render: () => (
+    <AppShell
+      brand={<a href="#">Hack Cove</a>}
+      nav={
+        <NavTabs
+          label="Main"
+          items={[
+            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Clients", href: "#clients" },
+          ]}
+        />
+      }
+    >
+      <CenteredLayout title="Sign in" subtitle="Use your Hack Cove account.">
+        <Field label="Email" htmlFor="full-page-email">
+          <Input id="full-page-email" type="email" placeholder="you@example.com" />
+        </Field>
+        <Button>Continue</Button>
+      </CenteredLayout>
+    </AppShell>
+  ),
+};
 
 export const SignIn: S = {
   render: () => (

@@ -62,6 +62,7 @@ export { Step, Steps } from "./Steps.js";
 export { Timeline, TimelineItem } from "./Timeline.js";
 export { Code } from "./Code.js";
 export { CodeBlock } from "./CodeBlock.js";
+export type { CodeLanguage } from "./highlight.js";
 export { CodeExample } from "./CodeExample.js";
 export { Divider } from "./Divider.js";
 export { PageFade, startPageTransition } from "./PageFade.js";

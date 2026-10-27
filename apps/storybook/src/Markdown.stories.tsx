@@ -10,7 +10,8 @@ export const DoSummary: S = {
   render: () => (
     <Markdown
       md={
-        "## What I did\n- **HC-142** shipped the EmptyState\n- Fixed the Pill label wrap\n\n### Next\nReview the Steps copy."
+        "## What I did\n- **HC-142** shipped the EmptyState\n- Fixed the Pill label wrap\n\n" +
+        "### Next\nReview the Steps copy."
       }
     />
   ),
@@ -21,7 +22,8 @@ export const DontSummary: S = {
   render: () => (
     <Markdown
       md={
-        "# What I did\n1. Shipped the EmptyState\n2. Fixed the Pill\n\nSee [the ticket](https://example.com) and `bun install`."
+        "# What I did\n1. Shipped the EmptyState\n2. Fixed the Pill\n\n" +
+        "See [the ticket](https://example.com) and `bun install`."
       }
     />
   ),

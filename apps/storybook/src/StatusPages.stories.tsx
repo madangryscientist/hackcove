@@ -99,7 +99,8 @@ export const DontErrorDetail: S = {
   render: () => (
     <ErrorPage
       detail={
-        "TypeError: Cannot read properties of undefined\n  at loadBuild (build.ts:42:9)\n  at async handler (route.ts:17:3)"
+        "TypeError: Cannot read properties of undefined\n  at loadBuild (build.ts:42:9)\n" +
+        "  at async handler (route.ts:17:3)"
       }
       onRetry={() => {}}
       homeHref="#"

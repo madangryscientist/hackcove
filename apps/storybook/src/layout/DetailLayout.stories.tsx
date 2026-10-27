@@ -1,5 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Button, Card, DetailLayout, KeyValue, KeyValueList, ListLayout } from "@hackcove/ui";
+import {
+  AppShell,
+  Body,
+  Button,
+  Card,
+  DetailLayout,
+  KeyValue,
+  KeyValueList,
+  ListLayout,
+  NavTabs,
+} from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { DetailPage } from "./pages";
 
@@ -11,6 +21,45 @@ const meta: Meta = {
 };
 export default meta;
 type S = StoryObj;
+
+/** A whole record page: the shell with its brand and nav, then the layout with the record in `children` and its facts in `aside`. */
+export const FullPage: S = {
+  render: () => (
+    <AppShell
+      brand={<a href="#">Hack Cove</a>}
+      nav={
+        <NavTabs
+          label="Main"
+          items={[
+            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Clients", href: "#clients" },
+          ]}
+        />
+      }
+    >
+      <DetailLayout
+        title="Quote Q-1042"
+        subtitle="Naledi Mokoena"
+        actions={<Button variant="outline">Edit</Button>}
+        aside={
+          <Card title="Details">
+            <KeyValueList>
+              <KeyValue label="Status">Sent</KeyValue>
+              <KeyValue label="Premium">R 1 240 / mo</KeyValue>
+            </KeyValueList>
+          </Card>
+        }
+      >
+        <Card title="Cover">
+          <Body as="p">Life cover of R 1 500 000, to age 65.</Body>
+        </Card>
+        <Card title="Notes">
+          <Body as="p">The client asked to be debited on the 25th.</Body>
+        </Card>
+      </DetailLayout>
+    </AppShell>
+  ),
+};
 
 export const MainAndAside: S = {
   render: () => (

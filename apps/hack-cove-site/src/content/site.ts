@@ -121,11 +121,13 @@ const ui = {
     steps: [
       {
         text: "Add the components and a theme. React, React DOM and Tailwind CSS v4 are peers.",
+        language: "bash" as const,
         code: "bun add @hackcove/ui @hackcove/theme-catppuccin-mocha",
       },
       {
         text: "Import the theme in your CSS, after Tailwind, and point Tailwind at the components' build, since it skips node_modules:",
         label: "css",
+        language: "css" as const,
         code: [
           '@import "tailwindcss";',
           '@import "@hackcove/theme-catppuccin-mocha/theme.css";',

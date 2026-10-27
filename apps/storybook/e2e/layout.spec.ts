@@ -190,6 +190,27 @@ for (const width of widths) {
     }
   });
 
+  test(`at ${width}px a SidebarLayout with railLabel folds the rail below md and shows it from md`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto(storyUrl("layout-sidebarlayout--long-rail"));
+    const title = page.getByRole("heading", { level: 1 });
+    await title.waitFor();
+    const nav = page.getByRole("navigation", { name: "Sections" });
+    const summary = page.getByText("All sections");
+    if (width < 768) {
+      await expect(nav).toBeHidden();
+      await expect(summary).toBeVisible();
+      expect((await boxOf(title, "title")).y).toBeLessThan(200);
+      await summary.click();
+      await expect(nav).toBeVisible();
+    } else {
+      await expect(summary).toBeHidden();
+      await expect(nav).toBeVisible();
+    }
+  });
+
   test(`at ${width}px FullBleedLayout's canvas fills the width and its panel stacks under lg`, async ({
     page,
   }) => {

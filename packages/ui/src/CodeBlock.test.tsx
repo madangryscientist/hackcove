@@ -16,6 +16,17 @@ describe("CodeBlock", () => {
     expect(fromLines).toBe(renderToStaticMarkup(<CodeBlock>{"a\nb\nc"}</CodeBlock>));
   });
 
+  it("colours the code when it is given a language, and leaves it plain otherwise", () => {
+    const plain = renderToStaticMarkup(<CodeBlock label="bash">bun install</CodeBlock>);
+    expect(plain).toContain("<code>bun install</code>");
+    const coloured = renderToStaticMarkup(
+      <CodeBlock language="bash" lines={["bun install", "# then"]} />,
+    );
+    expect(coloured).toContain('<span class="text-blue-700">bun</span>');
+    expect(coloured).toContain('<span class="text-slate-500 italic"># then</span>');
+    expect(coloured.replace(/<[^>]+>/g, "")).toContain("bun install\n# then");
+  });
+
   it("shows the label as a caption above the code, and none without it", () => {
     const labelled = renderToStaticMarkup(<CodeBlock label="bash">x</CodeBlock>);
     expect(labelled).toContain(">bash</figcaption>");

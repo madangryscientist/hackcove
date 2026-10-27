@@ -193,6 +193,18 @@ describe("SidebarLayout", () => {
   it("lets the canvas shrink so a wide table scrolls inside it", () => {
     expect(out).toMatch(/<div class="min-w-0 flex-1">CANVAS<\/div>/);
   });
+
+  it("folds a long rail behind a closed disclosure, summary first, only with railLabel", () => {
+    const folded = renderToStaticMarkup(
+      <SidebarLayout rail="RAIL" railLabel="All sections">
+        CANVAS
+      </SidebarLayout>,
+    );
+    expect(folded).toContain("<details");
+    expect(folded).not.toContain("<details open");
+    expect(inOrder(folded, ["All sections", "RAIL", "CANVAS"])).toBe(true);
+    expect(out).not.toContain("<details");
+  });
 });
 
 describe("FullBleedLayout", () => {
