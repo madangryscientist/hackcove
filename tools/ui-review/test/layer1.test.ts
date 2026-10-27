@@ -138,6 +138,12 @@ describe("duplicate-component", () => {
     expect(found).toEqual([expect.objectContaining({ rule: "duplicate-component", line: 1 })]);
   });
 
+  it("leaves the author both outcomes: import ours, or rename a different thing", () => {
+    const found = run(diffOf({ path: "src/mine.tsx", lines: ["export function Card() {}"] }));
+    expect(found[0]?.message).toContain("import the Hack Cove one");
+    expect(found[0]?.message).toContain("rename it");
+  });
+
   it("flags an arrow component and a new file named after an export", () => {
     const arrow = run(
       diffOf({ path: "src/mine.tsx", lines: ["const Badge = ({ label }) => <b>{label}</b>;"] }),
