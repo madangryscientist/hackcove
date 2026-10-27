@@ -2,9 +2,11 @@ import {
   Button,
   Card,
   CardGrid,
+  Cluster,
   Empty,
   ListRow,
   rowLinkClass,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -22,10 +24,10 @@ export function GalleryLinkedRows() {
         <ListRow
           href="#grace"
           trailing={
-            <>
+            <Cluster as="span">
               <TextLink href="#grace-notes">Notes</TextLink>
               <Button size="sm">Accept</Button>
-            </>
+            </Cluster>
           }
         >
           Linked row with a link and a button
@@ -59,11 +61,13 @@ export function GalleryLinkedRows() {
       </Table>
       <CardGrid>
         <Card href="#shot-9" title="Settings">
-          <Empty>A link card with its own link and button.</Empty>
-          <TextLink href="#shot-9-history">History</TextLink>
-          <Button size="sm" variant="outline">
-            Accept
-          </Button>
+          <Stack>
+            <Empty>A link card with its own link and button.</Empty>
+            <TextLink href="#shot-9-history">History</TextLink>
+            <Button size="sm" variant="outline">
+              Accept
+            </Button>
+          </Stack>
         </Card>
       </CardGrid>
     </div>
