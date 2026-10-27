@@ -79,6 +79,37 @@ The type is honest because it drives the version bump:
 Which packages a commit bumps is decided by the files it touches, not by its scope. A `feat(ui)`
 that touches only `packages/ui` bumps `@hackcove/ui`, and nothing else.
 
+## Landing: through a pull request
+
+Decided by Jacobus 2026-10-27: hackcove and pixelslash merge through pull requests, so the
+PixelSlash GitHub check can be seen working on a real PR. Work still happens on a branch, and the
+planner still gates the squash before anything reaches `main`. Only the last step changed: the
+squash goes through a PR instead of a direct push to `main`.
+
+1. A builder commits on its own branch, ending the message with one of `State: landable`,
+   `State: needs-human`, `State: blocked` or `State: partial`. A builder never pushes and never
+   merges.
+2. The planner squashes the branch onto `origin/main` in a land worktree, runs the gate there,
+   and reads the PixelSlash report.
+3. The planner commits the squash on `land/<branch>`, uploads its screenshots to PixelSlash for
+   that commit (`nx run storybook:visual-upload`), then opens the PR and merges it. This is the
+   only step that touches the remote:
+
+   ```bash
+   git push -u origin land/<branch>
+   gh pr create --base main --head land/<branch> --title "<squash subject>" --body-file <msg>
+   gh pr checks <pr> --watch
+   gh pr merge <pr> --squash --delete-branch --subject "<squash subject>" --body-file <msg>
+   ```
+
+   The squash subject keeps the conventional form above, because `nx release` reads it.
+
+Nothing on GitHub blocks a merge: `main` has no branch protection, because the release workflow
+pushes its release commit straight to `main`. The planner enforces the rule instead. Do not
+merge a PR while CI or the PixelSlash check is failing or pending, unless the PR changes nothing
+a screenshot can see and says so. No commit, PR title or PR body carries a `Co-Authored-By` or
+any other AI attribution line.
+
 ## Repo invariants
 
 1. **`@hackcove/ui` carries no theme.** Components are written against stock Tailwind utilities
@@ -107,11 +138,11 @@ that touches only `packages/ui` bumps `@hackcove/ui`, and nothing else.
    inside `packages/ui` is internal. `ContainerFrame` and `PageHeaderContent` take a
    `className` for the library's own layouts and are not exported from `index.ts`.
    `noStyling.test.tsx` fails if a public component's props accept either.
-6. **Only the Action publishes, and only maintainers push to `main`.** Nothing is published from
+6. **Only the Action publishes, and changes reach `main` only through a merged PR.** Nothing is published from
    a laptop, a first publish included: `.github/workflows/publish.yml` (which runs `nx release`)
    is the only path. Jacobus or the hackcove planner dispatches it; the `npm-publish` environment
    has no approval step and accepts runs from `main` only. Never run `nx release publish`, a bare `npm publish`
    or `npm login`. A new package's first publish uses the workflow's `NPM_TOKEN` step
    (`docs/releasing.md`, "First publish of a new package"); Jacobus sets and deletes that secret.
-   Agents and contributors do not push to `main`. Every package is MIT (a `LICENSE` in each
+   Nobody pushes to `main` directly; the release workflow's release commit is the one exception. Every package is MIT (a `LICENSE` in each
    package and at the root); versions stay `0.x`.
