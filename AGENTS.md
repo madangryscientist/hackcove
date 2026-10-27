@@ -31,6 +31,7 @@ a consumer writes no styling of its own.
 | `storybook` | `apps/storybook` | Storybook for the components; a toolbar switcher lists every `themes/*` folder. Its `e2e/` is the Playwright layer (`test:e2e`). Private. |
 | `themes-shared` | `packages/themes-shared` | `@hackcove/themes-shared`: how Storybook and the docs find themes (the `themes/*/theme.css` glob and each theme's scope class). Private; not in `nx release`. |
 | `hack-cove-site` | `apps/hack-cove-site` | The hack-cove.com Astro site, with the `/ui/` component docs (pages built from the Storybook stories, a generated `props.json` and `/ui/llms.txt`). Builds `dist/` against the workspace `@hackcove/ui` and `@hackcove/theme-catppuccin-mocha` (`workspace:*`). `deploy.sh` direct-uploads to Cloudflare Pages; only Jacobus runs it. Private; not in `nx release`. |
+| `ui-review` | `tools/ui-review` | `@hackcove/ui-review`: the engine behind the `ui-review.yml` reusable workflow (consumer pull requests are checked for building their UI the Hack Cove way: a deterministic layer, then an advisory model layer). Dev tooling; private; not in `nx release`. |
 
 **One folder, one publishable package per theme.** Adding a theme is copying a folder
 (`README.md`, "How to add a theme"); nothing else registers it. **Each theme names its own scope

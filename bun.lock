@@ -124,6 +124,14 @@
         "tailwindcss": "^4",
       },
     },
+    "tools/ui-review": {
+      "name": "@hackcove/ui-review",
+      "version": "0.0.0",
+      "devDependencies": {
+        "@types/bun": "1.4.3",
+        "vitest": "5.0.5",
+      },
+    },
   },
   "packages": {
     "@adobe/css-tools": ["@adobe/css-tools@4.5.0", "", {}, "sha512-6OzddxPio9UiWTCemp4N8cYLV2ZN1ncRnV1cVGtve7dhPOtRkleRyx32GQCYSwDYgaHU3USMm84tNsvKzRCa1Q=="],
@@ -507,6 +515,8 @@
     "@hackcove/themes-shared": ["@hackcove/themes-shared@workspace:packages/themes-shared"],
 
     "@hackcove/ui": ["@hackcove/ui@workspace:packages/ui"],
+
+    "@hackcove/ui-review": ["@hackcove/ui-review@workspace:tools/ui-review"],
 
     "@img/colour": ["@img/colour@1.1.0", "", {}, "sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ=="],
 

@@ -1,0 +1,32 @@
+name: UI review (self)
+
+# hackcove reviews its own site with the reusable workflow, so the check is exercised on every
+# pull request that touches the app. The site composes @hackcove/ui and a theme and nothing of
+# its own (AGENTS.md), so that is the code reviewed.
+on:
+  pull_request:
+    paths:
+      - apps/hack-cove-site/src/**
+      - tools/ui-review/**
+      - .github/workflows/ui-review*.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ui-review-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ui-review:
+    permissions:
+      contents: read
+      pull-requests: write
+    uses: ./.github/workflows/ui-review.yml
+    with:
+      self: true
+      build-rubric: true
+      paths: |
+        apps/hack-cove-site/src/**
+    secrets:
+      OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}

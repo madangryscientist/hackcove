@@ -1,0 +1,24 @@
+{
+  "name": "@hackcove/ui-review",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The PR UI reviewer behind .github/workflows/ui-review.yml: a deterministic diff check (layer 1) and an advisory model review (layer 2). Dev tooling, not published.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint -c ../../.oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
+    "test": "vitest run",
+    "check": "bun src/check.ts",
+    "review": "bun src/review.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "1.4.3",
+    "vitest": "5.0.5"
+  },
+  "nx": {
+    "name": "ui-review",
+    "tags": [
+      "kind:internal"
+    ]
+  }
+}
