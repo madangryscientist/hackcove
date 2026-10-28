@@ -1,7 +1,8 @@
-import { type ReactElement, type ReactNode, useLayoutEffect, useId, useRef } from "react";
+import { type ReactElement, type ReactNode, useId, useRef } from "react";
 import { cx } from "./cx.js";
 import { Icon } from "./Icon.js";
 import { IconButton } from "./IconButton.js";
+import { useModal } from "./modal.js";
 import type { Passthrough } from "./props.js";
 import { SectionHeading } from "./typography.js";
 
@@ -42,13 +43,7 @@ export function Drawer({
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
-  // Closing on unmount (not just on Esc or the scrim) hands focus back to the opener when the
-  // parent unmounts the drawer, and keeps StrictMode's second mount from reopening an open dialog.
-  useLayoutEffect(() => {
-    const el = dialog.current;
-    el?.showModal();
-    return () => el?.close();
-  }, []);
+  useModal(dialog);
 
   return (
     <dialog

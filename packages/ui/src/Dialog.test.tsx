@@ -14,6 +14,15 @@ describe("Dialog", () => {
     expect(showModal).toHaveBeenCalledExactlyOnceWith(dialogOf(out));
   });
 
+  it("closes the dialog when the parent unmounts it, so no open modal or inert page is left behind", () => {
+    const dialog = dialogOf(mount(<Dialog title="Rename" onClose={() => {}} />));
+    expect(dialog.hasAttribute("open")).toBe(true);
+    unmount();
+    expect(dialog.hasAttribute("open")).toBe(false);
+    expect(document.querySelector("dialog[open]")).toBeNull();
+    expect(document.querySelector("[inert]")).toBeNull();
+  });
+
   it("is named by its title and shows the description, body and footer", () => {
     const out = mount(
       <Dialog

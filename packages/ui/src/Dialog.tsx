@@ -1,5 +1,6 @@
-import { type ReactElement, type ReactNode, useEffect, useId, useRef } from "react";
+import { type ReactElement, type ReactNode, useId, useRef } from "react";
 import { cx } from "./cx.js";
+import { useModal } from "./modal.js";
 import type { Passthrough } from "./props.js";
 import type { Size } from "./size.js";
 import { HeaderText, SectionHeading } from "./typography.js";
@@ -43,9 +44,7 @@ export function Dialog({
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
-  useEffect(() => {
-    dialog.current?.showModal();
-  }, []);
+  useModal(dialog);
 
   return (
     <dialog
