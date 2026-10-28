@@ -27,7 +27,7 @@ import type { Size } from "./size.js";
 /** The picker's padding, text and calendar button, by `size`. The button sets the height, so the padding is less than a `DateField`'s. */
 const PICKER_SIZE: Record<Size, { frame: string; button: string }> = {
   sm: { frame: "py-0.5 pl-2 pr-0.5 text-xs", button: "h-5 w-5" },
-  md: { frame: "py-2 pl-2.5 pr-1 text-sm", button: "h-7 w-7" },
+  md: { frame: "py-1 pl-2.5 pr-1 text-sm", button: "h-7 w-7" },
   lg: { frame: "py-1.5 pl-3 pr-1.5 text-base", button: "h-8 w-8" },
 };
 

@@ -237,7 +237,7 @@ describe("Card footer", () => {
 
   it("moves the padding to the body so the strip runs edge to edge, and pins to the foot", () => {
     const out = footer();
-    expect(out).toMatch(/^<section class="[^"]*overflow-hidden flex flex-col"/);
+    expect(out).toMatch(/^<section[^>]* class="[^"]*overflow-hidden flex flex-col"/);
     expect(out.split('class="')[1]).not.toMatch(/\bp-5\b/);
     expect(out).toContain('class="flex-1 p-5"');
     expect(out).toContain("px-5 py-3");

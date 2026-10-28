@@ -251,7 +251,7 @@ describe("sized react-aria controls", () => {
   });
 
   it.each([
-    [undefined, "py-2 pl-2.5 pr-1 text-sm", "h-7 w-7"],
+    [undefined, "py-1 pl-2.5 pr-1 text-sm", "h-7 w-7"],
     ["sm", "py-0.5 pl-2 pr-0.5 text-xs", "h-5 w-5"],
     ["lg", "py-1.5 pl-3 pr-1.5 text-base", "h-8 w-8"],
   ] as const)("DatePicker size %s is %s with a %s button", (size, frame, button) => {

@@ -259,6 +259,19 @@ describe("every exported component passes data-* and aria-* through", () => {
     });
   }
 
+  it("a Card that is a link puts both on the card root, not on the link inside it", () => {
+    mount(
+      <ui.Card href="/x" title="T" {...A}>
+        x
+      </ui.Card>,
+    );
+    const found = probes();
+    expect(found).toHaveLength(1);
+    expect(found[0]?.tagName).toBe("DIV");
+    expect(found[0]?.getAttribute("aria-describedby")).toBe("described");
+    expect(found[0]?.querySelector("a")?.hasAttribute("aria-describedby")).toBe(false);
+  });
+
   for (const name of SPLIT) {
     it(`${name} puts data-* on its wrapper and the description on the field inside`, () => {
       mount(CASES[name]?.() ?? <div />);

@@ -25,8 +25,8 @@ export const content: ComponentSection = {
         "A Card with an `id` is an anchor target: a link to `#id` scrolls it clear of the sticky header and outlines it in violet while it is the target.",
       ],
       accessibility: [
-        "A Card is a `<section>` by default and its `title` names it; `as` picks another element, e.g. `article`.",
-        "`id`, `data-*` and `aria-*` go on the root element.",
+        "A Card is a `<section>` by default and its `title` names it (`aria-labelledby` points at the heading); `as` picks another element, e.g. `article`. Your own `aria-label` or `aria-labelledby` wins.",
+        "`id`, `data-*` and `aria-*` go on the root element. On a link card too: the link inside it keeps only its own `aria-label`, `aria-labelledby` and `aria-current`, and is named by the card's text.",
         "On a link card the `badge` is inside the link, so it is part of the link's name; on a panel it is read after the content.",
         "`attention` is colour only: say why in the card's title or text.",
       ],
