@@ -1,7 +1,9 @@
 /**
  * Layer 2: an advisory model review of the pull request's UI, from the library's own rubric
- * (AGENTS.md `## Purpose` plus the generated `/ui/llms.txt`). It never fails the pull request: a
- * missing key, a model error or a GitHub error is a warning and exit 0.
+ * (AGENTS.md `## Purpose` plus the generated `/ui/llms.txt`). The findings are advisory and never
+ * fail the pull request. A review that did not happen does: a model crash, an unparsable reply, a
+ * timeout or a GitHub error is an `::error` annotation, a step summary and exit 1. Skipping for
+ * no key, no app files, or `--dry-run` is a success.
  *
  *   bun tools/ui-review/src/review.ts --base <sha> --llms <llms.txt> [--pr N --repo owner/name] [--dry-run]
  *
@@ -16,6 +18,7 @@ import { bodyOf, parseReply, place } from "./findings.js";
 import { selectPaths } from "./glob.js";
 import { post } from "./github.js";
 import { DEFAULT_PATHS, gitDiff } from "./layer1.js";
+import { didNotRun } from "./failure.js";
 import { ask, commandFor } from "./opencode.js";
 import { buildPrompt, purposeOf } from "./prompt.js";
 
@@ -91,10 +94,7 @@ async function run(): Promise<void> {
 run().then(
   () => process.exit(0),
   (error: unknown) => {
-    const message = error instanceof Error ? error.message : String(error);
-    say(
-      `::warning title=Hack Cove UI review::the model review did not run: ${message.replaceAll("\n", " ")}`,
-    );
-    process.exit(0);
+    say(didNotRun(error instanceof Error ? error.message : String(error), process.env));
+    process.exit(1);
   },
 );

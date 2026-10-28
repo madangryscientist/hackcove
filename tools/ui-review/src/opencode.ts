@@ -20,9 +20,13 @@ const CONFIG = JSON.stringify({
   autoupdate: false,
 });
 
-/** The command a run would execute, for the dry run and for the run itself. */
+/**
+ * The command a run would execute, for the dry run and for the run itself. The message comes
+ * first: `--file` takes every argument after it, so a message placed after the file is read as a
+ * second file and opencode fails with `File not found`.
+ */
 export function commandFor(promptFile: string): string[] {
-  return ["bunx", OPENCODE_PACKAGE, "run", "--model", MODEL, "--file", promptFile, MESSAGE];
+  return ["bunx", OPENCODE_PACKAGE, "run", MESSAGE, "--model", MODEL, "--file", promptFile];
 }
 
 /** Runs opencode over `prompt` and returns its reply. Rejects on a non-zero exit or after `timeoutMs`. */
@@ -35,7 +39,13 @@ export async function ask(prompt: string, apiKey: string, timeoutMs = 600_000): 
     return await new Promise<string>((resolve, reject) => {
       const child = spawn(command, args, {
         cwd: dir,
-        env: { ...process.env, OPENCODE_API_KEY: apiKey, OPENCODE_CONFIG_CONTENT: CONFIG },
+        // XDG_CONFIG_HOME is the empty temp dir, so a global opencode config cannot change the run.
+        env: {
+          ...process.env,
+          OPENCODE_API_KEY: apiKey,
+          OPENCODE_CONFIG_CONTENT: CONFIG,
+          XDG_CONFIG_HOME: dir,
+        },
         stdio: ["ignore", "pipe", "pipe"],
         timeout: timeoutMs,
       });
@@ -44,11 +54,12 @@ export async function ask(prompt: string, apiKey: string, timeoutMs = 600_000): 
       child.stdout.on("data", (chunk: Buffer) => (out += chunk.toString()));
       child.stderr.on("data", (chunk: Buffer) => (err += chunk.toString()));
       child.on("error", reject);
-      child.on("close", (code) =>
-        code === 0
-          ? resolve(out)
-          : reject(new Error(`opencode exited ${code}: ${err.trim().slice(-400)}`)),
-      );
+      child.on("close", (code, signal) => {
+        if (code === 0) resolve(out);
+        else if (signal !== null)
+          reject(new Error(`opencode was stopped by ${signal} (timeout ${timeoutMs} ms)`));
+        else reject(new Error(`opencode exited ${code}: ${err.trim().slice(-400)}`));
+      });
     });
   } finally {
     rmSync(dir, { recursive: true, force: true });

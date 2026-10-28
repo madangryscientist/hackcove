@@ -1,7 +1,9 @@
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { onlyFiles, parseDiff } from "../src/diff.js";
+import { didNotRun } from "../src/failure.js";
 import { bodyOf, parseReply, place, summaryOf } from "../src/findings.js";
 import { commandFor } from "../src/opencode.js";
 import { MAX_DIFF_CHARS, MODEL, buildPrompt, purposeOf } from "../src/prompt.js";
@@ -94,4 +96,38 @@ it("onlyFiles keeps the chunks of the kept files", () => {
   const diff = diffOf({ path: "a.tsx", lines: ["1"] }, { path: "b.tsx", lines: ["2"] });
   expect(onlyFiles(diff, new Set(["b.tsx"]))).toContain("b.tsx");
   expect(onlyFiles(diff, new Set(["b.tsx"]))).not.toContain("a.tsx");
+});
+
+describe("opencode command", () => {
+  it("puts the message before --file, which takes every argument after it", () => {
+    const command = commandFor("prompt.md");
+    const file = command.indexOf("--file");
+    expect(file).toBeGreaterThan(command.indexOf("run"));
+    expect(command.slice(file)).toEqual(["--file", "prompt.md"]);
+    expect(command[command.indexOf("run") + 1]).toMatch(/^Follow the instructions/);
+  });
+});
+
+describe("a review that did not run", () => {
+  it("is an ::error annotation and a step summary, on one line", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ui-review-failure-"));
+    const summary = join(dir, "summary.md");
+    try {
+      const annotation = didNotRun("opencode exited 1:\nFile not found: x", {
+        GITHUB_STEP_SUMMARY: summary,
+      });
+      expect(annotation).toBe(
+        "::error title=Hack Cove UI review::the model review did not run: opencode exited 1: File not found: x",
+      );
+      const text = readFileSync(summary, "utf8");
+      expect(text).toContain("did not run");
+      expect(text).toContain("File not found: x");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("still returns the annotation with no step summary", () => {
+    expect(didNotRun("boom", {})).toMatch(/^::error /);
+  });
 });

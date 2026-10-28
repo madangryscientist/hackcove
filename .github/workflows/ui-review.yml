@@ -10,10 +10,14 @@ name: UI review
 #       secrets: inherit
 #
 # Layer 1 (`rules`) is deterministic and has no model: it reads the lines the pull request adds
-# and fails with file:line annotations. Layer 2 (`review`) is an advisory model review through
-# OpenCode Zen; it never fails the pull request, and is skipped when `OPENCODE_API_KEY` is unset.
-# It uses the plain `pull_request` event, so a fork's pull request has no secrets and layer 2 is
-# skipped. Never run it on `pull_request_target`: it checks out and reads untrusted code.
+# and fails with file:line annotations. Layer 2 (`review`) is a model review through OpenCode Zen.
+# Its findings are advisory and never fail the pull request. A review that did not happen does:
+# if the model run crashes, times out or returns a reply that cannot be parsed, or the component
+# reference or the GitHub comments cannot be had, the step writes an `::error` and a step summary
+# and exits 1, so the check is red. It is skipped, and green, only when `OPENCODE_API_KEY` is unset
+# or no app file changed. It uses the plain `pull_request` event, so a fork's pull request has no
+# secrets and layer 2 is skipped. Never run it on `pull_request_target`: it checks out and reads
+# untrusted code.
 on:
   workflow_call:
     inputs:
@@ -93,8 +97,8 @@ jobs:
   review:
     name: Hack Cove model review (advisory)
     runs-on: ubuntu-latest
-    # Advisory: a failure here must never turn the pull request red.
-    continue-on-error: true
+    # No `continue-on-error`: it would report a crash as green. The findings are advisory (the step
+    # exits 0 with them); only "the review did not run" turns this red.
     permissions:
       contents: read
       pull-requests: write
@@ -137,11 +141,17 @@ jobs:
           if [ "$BUILD_RUBRIC" = "true" ]; then
             (cd "$HACKCOVE_DIR" && bun install --frozen-lockfile && bunx nx run hack-cove-site:build) \
               && echo "path=$HACKCOVE_DIR/apps/hack-cove-site/dist/ui/llms.txt" >> "$GITHUB_OUTPUT" \
-              || echo "::warning title=Hack Cove UI review::could not build the component reference; the model review is skipped."
+              || {
+                echo "::error title=Hack Cove UI review::could not build the component reference; the model review did not run."
+                printf '## Hack Cove UI review\n\n**The model review did not run**: could not build the component reference.\n' >> "$GITHUB_STEP_SUMMARY"
+                exit 1
+              }
           elif curl --fail --silent --show-error --location "$LLMS_URL" --output "$RUNNER_TEMP/llms.txt"; then
             echo "path=$RUNNER_TEMP/llms.txt" >> "$GITHUB_OUTPUT"
           else
-            echo "::warning title=Hack Cove UI review::could not fetch $LLMS_URL; the model review is skipped."
+            echo "::error title=Hack Cove UI review::could not fetch $LLMS_URL; the model review did not run."
+            printf '## Hack Cove UI review\n\n**The model review did not run**: could not fetch %s.\n' "$LLMS_URL" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
           fi
 
       - name: Review the pull request
