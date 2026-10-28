@@ -1,3 +1,33 @@
+## 0.1.9 (2026-10-28)
+
+### 🚀 Features
+
+- **ui:** Icon, logo size, Card badge, ListRow pointer, FullBleedLayout bar, strong warn border (HC-159) ([eccaa55](https://github.com/madangryscientist/hackcove/commit/eccaa55))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
+## 0.2.10 (2026-10-28)
+
+### 🚀 Features
+
+- **ui:** Icon, logo size, Card badge, ListRow pointer, FullBleedLayout bar, strong warn border (HC-159) ([eccaa55](https://github.com/madangryscientist/hackcove/commit/eccaa55))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
+## 0.5.1 (2026-10-28)
+
+### 🚀 Features
+
+- **ui:** Icon, logo size, Card badge, ListRow pointer, FullBleedLayout bar, strong warn border (HC-159) ([eccaa55](https://github.com/madangryscientist/hackcove/commit/eccaa55))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.5.0 (2026-10-27)
 
 ### 🚀 Features
