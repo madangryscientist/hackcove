@@ -1,3 +1,13 @@
+## 0.6.2 (2026-10-28)
+
+### 🚀 Features
+
+- **ui:** Dialog and Drawer animate out on close, Dialog closes on unmount (HC-168) ([d1a61c6](https://github.com/madangryscientist/hackcove/commit/d1a61c6))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.6.1 (2026-10-28)
 
 ### 🚀 Features
