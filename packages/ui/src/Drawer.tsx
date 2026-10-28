@@ -7,7 +7,7 @@ import type { Passthrough } from "./props.js";
 import { SectionHeading } from "./typography.js";
 
 const PANEL =
-  "fixed inset-y-0 right-0 left-auto m-0 h-dvh max-h-none max-w-full flex-col overflow-hidden border-l border-slate-200 bg-white p-0 text-slate-900 shadow-2xl backdrop:bg-slate-900/35 open:flex transition-transform duration-200 starting:open:translate-x-full motion-reduce:transition-none";
+  "fixed inset-y-0 right-0 left-auto m-0 h-dvh max-h-none max-w-full flex-col overflow-hidden border-l border-slate-200 bg-white p-0 text-slate-900 shadow-2xl translate-x-full transition-[translate,overlay,display] transition-discrete duration-200 open:flex open:translate-x-0 starting:open:translate-x-full backdrop:bg-slate-900/35 backdrop:opacity-0 backdrop:transition-[opacity,overlay,display] backdrop:transition-discrete backdrop:duration-200 open:backdrop:opacity-100 starting:open:backdrop:opacity-0 motion-reduce:transition-none motion-reduce:backdrop:transition-none";
 const SIZE = { sm: "w-80", md: "w-110", lg: "w-160" } as const;
 
 export type DrawerProps = {
@@ -43,14 +43,14 @@ export function Drawer({
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
-  useModal(dialog);
+  const closed = useModal(dialog, onClose);
 
   return (
     <dialog
       {...rest}
       ref={dialog}
       aria-labelledby={titleId}
-      onClose={onClose}
+      onClose={closed}
       onClick={(event) => event.target === dialog.current && dialog.current?.close()}
       className={cx(PANEL, SIZE[size])}
     >

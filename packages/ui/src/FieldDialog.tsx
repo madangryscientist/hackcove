@@ -31,7 +31,7 @@ export type FieldDialogProps = {
 } & Passthrough;
 
 /** The field's value and its in-flight state; `send` is the form's submit handler. */
-function useFieldSubmit(onSubmit: (value: string) => Promise<unknown>, onClose: () => void) {
+function useFieldSubmit(onSubmit: (value: string) => Promise<unknown>) {
   const [value, setValue] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,12 +39,17 @@ function useFieldSubmit(onSubmit: (value: string) => Promise<unknown>, onClose: 
   const send = (event: FormEvent) => {
     event.preventDefault();
     if (empty || busy) return;
+    // Close the <dialog> itself, so it animates out before `onClose` unmounts it.
+    const dialog = event.currentTarget.closest("dialog");
     setError(null);
     setBusy(true);
-    void onSubmit(value.trim()).then(onClose, (e: unknown) => {
-      setBusy(false);
-      setError(e instanceof Error ? e.message : String(e));
-    });
+    void onSubmit(value.trim()).then(
+      () => dialog?.close(),
+      (e: unknown) => {
+        setBusy(false);
+        setError(e instanceof Error ? e.message : String(e));
+      },
+    );
   };
   return { value, setValue, busy, error, empty, send };
 }
@@ -66,7 +71,7 @@ export function FieldDialog({
 }: FieldDialogProps): ReactElement {
   const id = useId();
   const formId = `${id}-form`;
-  const { value, setValue, busy, error, empty, send } = useFieldSubmit(onSubmit, onClose);
+  const { value, setValue, busy, error, empty, send } = useFieldSubmit(onSubmit);
 
   return (
     <Dialog

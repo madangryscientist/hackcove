@@ -137,10 +137,10 @@ describe("FieldDialog", () => {
     expect(out.querySelector('[role="alert"]')?.textContent).toBe("nope");
   });
 
-  it("closes through the dialog on Cancel", () => {
+  it("closes through the dialog on Cancel", async () => {
     const onClose = vi.fn<() => void>();
     const out = mount(() => Promise.resolve(), onClose);
-    act(() => button(out, "Cancel").click());
+    await act(async () => button(out, "Cancel").click());
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 });
