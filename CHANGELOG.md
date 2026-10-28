@@ -1,3 +1,33 @@
+## 0.1.10 (2026-10-28)
+
+### 🩹 Fixes
+
+- **ui:** DatePicker md at the control height, a titled Card names its section, Mocha .link scoped (HC-164) ([735929b](https://github.com/madangryscientist/hackcove/commit/735929b))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
+## 0.2.11 (2026-10-28)
+
+### 🩹 Fixes
+
+- **ui:** DatePicker md at the control height, a titled Card names its section, Mocha .link scoped (HC-164) ([735929b](https://github.com/madangryscientist/hackcove/commit/735929b))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
+## 0.5.2 (2026-10-28)
+
+### 🩹 Fixes
+
+- **ui:** DatePicker md at the control height, a titled Card names its section, Mocha .link scoped (HC-164) ([735929b](https://github.com/madangryscientist/hackcove/commit/735929b))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.1.9 (2026-10-28)
 
 ### 🚀 Features
