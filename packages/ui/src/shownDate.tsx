@@ -8,12 +8,12 @@ import {
   useState,
 } from "react";
 import { flushSync } from "react-dom";
-import type { DateFieldProps, Read } from "./DateField.js";
+import type { FieldProps, Read } from "./DateField.js";
 import { fromISODate, toISODate } from "./isoDate.js";
 
 type ValueKeys = "value" | "defaultValue" | "onChange" | "minValue" | "maxValue" | "isRequired";
 /** The value props, each of which may be passed as `undefined`. */
-type ValueProps = { [K in ValueKeys]?: DateFieldProps[K] | undefined };
+type ValueProps = { [K in ValueKeys]?: FieldProps[K] | undefined };
 
 /** `iso` when it is a date within min/max, else `""`. */
 function withinRange(iso: string, { minValue, maxValue }: ValueProps): string {

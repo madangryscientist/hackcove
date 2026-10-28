@@ -43,7 +43,7 @@ for (const theme of themes) {
         .filter(([, height]) => height !== HEIGHT.get(row.size ?? ""))
         .map(([control, height]) => `${control} at ${row.size ?? "?"}: ${String(height)}`),
     );
-    expect(Object.keys(heights[0]?.controls ?? {})).toHaveLength(10);
+    expect(Object.keys(heights[0]?.controls ?? {})).toHaveLength(9);
     expect(off).toEqual([]);
   });
 }

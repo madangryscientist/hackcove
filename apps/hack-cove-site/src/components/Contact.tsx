@@ -1,4 +1,4 @@
-import { Caption, InlineLinks, SectionHeading, Stack, Text, TextLink } from "@hackcove/ui";
+import { Caption, MetaList, SectionHeading, Stack, Text, TextLink } from "@hackcove/ui";
 import { site } from "../content/site";
 
 /**
@@ -17,10 +17,10 @@ export function Contact() {
       </Stack>
       <Stack gap="xs">
         <Caption as="p">{site.legalName}</Caption>
-        <InlineLinks>
+        <MetaList nowrap>
           <TextLink href="/privacy">Privacy</TextLink>
           <TextLink href="/terms">Terms</TextLink>
-        </InlineLinks>
+        </MetaList>
       </Stack>
     </Stack>
   );

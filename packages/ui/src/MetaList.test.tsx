@@ -65,3 +65,32 @@ describe("MetaList", () => {
     expect(one).not.toContain("aria-hidden");
   });
 });
+
+const links = [
+  <TextLink key="p" href="/privacy">
+    Privacy
+  </TextLink>,
+  <TextLink key="t" href="/terms">
+    Terms
+  </TextLink>,
+  <TextLink key="e" href="mailto:a@b.c">
+    Email
+  </TextLink>,
+];
+
+describe("MetaList separator and nowrap", () => {
+  it("takes a bullet, or none", () => {
+    const bullet = renderToStaticMarkup(<MetaList separator="•">{links}</MetaList>);
+    expect(bullet.match(/•/g)).toHaveLength(2);
+    expect(bullet).not.toContain("·");
+    const none = renderToStaticMarkup(<MetaList separator="none">{links}</MetaList>);
+    expect(none).not.toContain("aria-hidden");
+  });
+
+  it("keeps each item on one line with nowrap, and wraps inside one without", () => {
+    expect(
+      renderToStaticMarkup(<MetaList nowrap>{links}</MetaList>).match(/whitespace-nowrap/g),
+    ).toHaveLength(3);
+    expect(renderToStaticMarkup(<MetaList>{links}</MetaList>)).not.toContain("whitespace-nowrap");
+  });
+});

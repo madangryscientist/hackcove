@@ -2,7 +2,6 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { PageHeader } from "./PageHeader.js";
 import { Stack } from "./Stack.js";
-import { PageTitle } from "./ui.js";
 
 describe("PageHeader in a Stack", () => {
   it("keeps its own mb-8 elsewhere and loses it as a Stack child, so the gap is not doubled", () => {
@@ -44,15 +43,5 @@ describe("PageHeader", () => {
     expect(order.every((at) => at >= 0)).toBe(true);
     expect(order).toEqual(order.toSorted((a, b) => a - b));
     expect(out).toContain("sm:flex-row");
-  });
-});
-
-describe("PageTitle", () => {
-  it("renders through the PageHeader content: semibold, no margin", () => {
-    const out = renderToStaticMarkup(<PageTitle title="Status" subtitle="now" />);
-    expect(out).toContain("font-semibold");
-    expect(out).not.toContain("font-bold");
-    expect(out).not.toContain("mb-8");
-    expect(out).toContain(">now</p>");
   });
 });

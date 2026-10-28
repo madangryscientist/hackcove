@@ -15,7 +15,7 @@ export const forms: ComponentSection = {
         "A `hint` is the one line of help under the control.",
         "A validation message is `error`, not `hint`: it replaces the hint, in red.",
         'Inside a `FormGrid` a `Field` takes one column; `span="full"` runs it across both.',
-        "A `Checkbox` and a `DatePicker` draw their own `label`; do not wrap them in a `Field`.",
+        "A `Checkbox` and a `DateField` draw their own `label`; do not wrap them in a `Field`.",
       ],
       accessibility: [
         "The label is a real `<label>` tied to the control by `htmlFor`, so clicking the text focuses the control and a screen reader reads it as the control's name.",
@@ -36,7 +36,7 @@ export const forms: ComponentSection = {
         '`prefix` is short text inside the border before the value, such as a currency symbol. It is for a plain field, not one with an `icon` or `type="search"`. Pair it with `align="end"` and `inputMode="decimal"` for an amount.',
         '`size="sm"` is for a dense form or a table row, `size="lg"` for a sign-in or search form that stands alone; `md` is the default.',
         "`width` is `full` by default; `xs`, `sm`, `md` and `lg` are fixed widths for a short value; `fill` grows to the room beside other items in a row; `auto` is as wide as the browser makes it.",
-        "A paragraph is a `Textarea`; a choice from a list is a `Select`; a date is a `DatePicker`.",
+        "A paragraph is a `Textarea`; a choice from a list is a `Select`; a date is a `DateField`.",
       ],
       accessibility: [
         "An `Input` is a native `<input>`: it takes `type`, `inputMode`, `autoComplete`, `required`, `disabled` and the `aria-*` and `data-*` props.",
@@ -171,15 +171,17 @@ export const forms: ComponentSection = {
       api: ["FormRow", "FormRowField", "FormGrid"],
     },
     {
-      slug: "date-picker",
-      name: "DatePicker",
-      summary: "A date in DD/MM/YYYY segments, with a calendar to pick from.",
-      whenToUse: "Any date a person enters; use `DateField` when a calendar is not wanted.",
-      pairs: ["DatePicker/Date", "DatePicker/Error", "DatePicker/Value", "DatePicker/TypedOnly"],
+      slug: "date-field",
+      name: "DateField",
+      summary:
+        "A date in DD/MM/YYYY segments, with a calendar to pick from when `calendar` is set.",
+      whenToUse:
+        "Any date a person enters; leave `calendar` off for a date the person knows by heart.",
+      pairs: ["DateField/Date", "DateField/Error", "DateField/Value", "DateField/TypedOnly"],
       usage: [
-        "A date is a `DatePicker` or a `DateField`, never an `Input`. The format is always DD/MM/YYYY and weeks start on Monday, whatever the browser's locale.",
-        "`DatePicker` adds a calendar button; `DateField` is the same input without it, for a date the person knows by heart (a birthday).",
-        "These two draw their own label: give them `label` and `description`, and do not wrap them in a `Field`.",
+        "A date is a `DateField`, never an `Input`. The format is always DD/MM/YYYY and weeks start on Monday, whatever the browser's locale.",
+        "`calendar` adds a calendar button, and `defaultOpen` opens it on mount; without `calendar` the field is typed only, for a date the person knows by heart (a birthday).",
+        "It draws its own label: give them `label` and `description`, and do not wrap them in a `Field`.",
         "A message from outside, a server's say, is `error`; it replaces the description. An impossible date, such as 31/02/1990, shows its own message. `isInvalid` alone marks the field with no reason, so pair it with `errorMessage`.",
         "The value is a `CalendarDate` (`value`, `defaultValue`, `onChange`, `minValue`, `maxValue`). `fromISODate` reads a stored `YYYY-MM-DD` and `toISODate` writes one.",
         "`name` posts the date as `YYYY-MM-DD` in a form, or an empty string.",
@@ -188,11 +190,11 @@ export const forms: ComponentSection = {
       accessibility: [
         'The label names a `role="group"`; each of day, month and year is its own editable segment (`role="spinbutton"`), so a person can type digits or use the arrow keys.',
         'The `description` is the field\'s `aria-describedby`; the `error` and the built-in messages replace it, and an `error` is `role="alert"`.',
-        'The calendar button is labelled "Calendar" and opens a popover dialog, with a Month and a Year select, arrow-key movement across days and a Clear button.',
+        'With `calendar`, the calendar button is labelled "Calendar" and opens a popover dialog, with a Month and a Year select, arrow-key movement across days and a Clear button.',
         "Inside a `Dialog` or `Drawer` the calendar opens inside it, so it still takes focus.",
         "The focus ring comes from the component.",
       ],
-      api: ["DatePicker", "DateField"],
+      api: ["DateField"],
       functions: [
         {
           name: "fromISODate",
@@ -229,35 +231,15 @@ export const forms: ComponentSection = {
       api: ["SegmentedControl"],
     },
     {
-      slug: "toggle-chip",
-      name: "ToggleChip",
-      summary: "An on/off pill button for filters.",
-      whenToUse: "A filter the person switches on and off, usually one of several side by side.",
-      pairs: ["ToggleChip/Toggle", "ToggleChip/Dot"],
-      usage: [
-        "`pressed` is the state; the caller flips it in `onClick`.",
-        "Put chips that filter one thing in a `FilterGroup`, so the set has a name.",
-        "`dot` is a category colour before the label, for a chip that matches a marker elsewhere.",
-        "`size` is `sm` by default, the one control that is: chips sit in rows of filters. `md` and `lg` match a `Button` beside them.",
-        "An action is a `Button`; a setting in a form is a `Checkbox`.",
-      ],
-      accessibility: [
-        'A native `<button type="button">` with `aria-pressed`, so a screen reader announces it as a toggle button and its state.',
-        "The `dot` is decorative and hidden from assistive tech.",
-        "The focus ring comes from the component.",
-      ],
-      api: ["ToggleChip"],
-    },
-    {
       slug: "filter-group",
       name: "FilterGroup",
       summary: "A named set of filter chips.",
-      whenToUse: "Two or more `ToggleChip`s that filter the same thing.",
+      whenToUse: "Two or more pressed-toggle `Button`s that filter the same thing.",
       pairs: ["FilterGroup/Legend", "FilterGroup/Facets"],
       usage: [
         "The `legend` names the set, such as the type of shop; the chips below wrap onto further lines when they run out of room.",
         "One `FilterGroup` per facet; stack several in a `Stack`.",
-        "The children are `ToggleChip`s.",
+        'The children are `Button`s with `variant="outline"`, `size="sm"` and `pressed`.',
       ],
       accessibility: [
         "A `<fieldset>` with a `<legend>`, so a screen reader announces the group's name on entering it.",

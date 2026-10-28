@@ -2,7 +2,6 @@ import {
   Button,
   Checkbox,
   DateField,
-  DatePicker,
   FileDrop,
   Input,
   Select,
@@ -72,7 +71,7 @@ export function GalleryControls() {
       <FileDrop size="sm" accept=".png" aria-label="Photo">
         Add a photo
       </FileDrop>
-      <DatePicker label="Paid on" error="That date is before the invoice." />
+      <DateField calendar label="Paid on" error="That date is before the invoice." />
       <DateField label="Due on" isInvalid errorMessage="Pick a date." />
     </div>
   );

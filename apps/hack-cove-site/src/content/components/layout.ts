@@ -12,7 +12,7 @@ export const layout: ComponentSection = {
         "Every page of an app sits in one `AppShell`; it is the only place the page canvas, the font and the header live.",
       pairs: ["AppShellDocs/Brand", "AppShellDocs/RouterBrand"],
       usage: [
-        "Fill the slots and write no wrapper: `brand`, `nav` (a `NavTabs`), `controls` (a picker, a `ColourSchemeToggle`), then an optional `subnav` row and `footer`.",
+        "Fill the slots and write no wrapper: `brand`, `nav` (pill `Tabs` of links), `controls` (a picker, a `ColourSchemeToggle`), then an optional `subnav` row and `footer`.",
         '`brand` is an `AppShellBrand`: logo and label in one link. `collapse` leaves only the logo below `sm`. `logoSize` is `sm` (20px), `md` (24px, the default, an `Avatar size="sm"`) or `lg` (32px); an `<img>` or `<svg>` logo fills it.',
         "With a router, give `AppShellBrand` a `render` that draws the app's own `<Link>` instead of an `href`.",
         "Header, main and footer each sit in a `Container`, so a page never sets its own width or padding. Do not add a `Container` inside the shell.",
@@ -26,17 +26,13 @@ export const layout: ComponentSection = {
         "The header is a `<header>` (the banner landmark), main is `<main>` and the footer is `<footer>`.",
         "`AppShellBrand` is one link named by its `label`; the logo is `aria-hidden`. With `collapse` the label is visually hidden below `sm` and still names the link.",
         "A header row that is wider than the screen (a long nav) scrolls sideways and never wraps; a link that takes focus scrolls into view, and the side with more to reach fades out.",
-        "Give `nav` and `subnav` a `NavTabs` so each is a labelled `<nav>`.",
+        "Give `nav` and `subnav` pill `Tabs` of links, so each is a labelled `<nav>`.",
       ],
       api: ["AppShell", "AppShellBrand"],
       functions: [
         {
-          name: "appShellRootClass",
-          text: "The class for the app's own `<html>` that always reserves the scrollbar, so centred content does not shift between a short page and a long one.",
-        },
-        {
           name: "appShellRootClassFor",
-          text: "Everything the app's `<html>` takes from the scheme the server knows: that scheme's class and `appShellRootClass`, joined.",
+          text: "Everything the app's `<html>` takes from the scheme the server knows: that scheme's class and the class that always reserves the scrollbar, so centred content does not shift between a short page and a long one.",
         },
       ],
     },
@@ -71,13 +67,13 @@ export const layout: ComponentSection = {
       usage: [
         "Pass `title`, and `subtitle`, `breadcrumbs`, `actions` and `tabs` as needed; never build a title row from a heading and a `Cluster`.",
         "`actions` sit beside the title from `sm` up and under it on a phone: a `Button` or two, one primary.",
-        "`breadcrumbs` take a `Breadcrumbs`; `tabs` take a `NavTabs` (links to pages).",
+        "`breadcrumbs` take a `Breadcrumbs`; `tabs` take pill `Tabs` of links to pages.",
         "Its fixed bottom margin gives every page the same first-block position. As a direct child of a `Stack` it has none and the Stack's `gap` is the only space, so do not wrap it in another element.",
         "One `PageHeader` per page: it holds the page's `<h1>`.",
       ],
       accessibility: [
         "The title is the page's `<h1>`; the subtitle is a paragraph.",
-        '`Breadcrumbs` is a `<nav>` named Breadcrumb, with the last crumb marked `aria-current="page"`. Give `NavTabs` a `label`.',
+        '`Breadcrumbs` is a `<nav>` named Breadcrumb, with the last crumb marked `aria-current="page"`. Give the `Tabs` a `label`.',
         "On a narrow screen the actions move below the title.",
       ],
       api: ["PageHeader"],

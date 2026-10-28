@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { AppShell, Button, CenteredLayout, Field, FormLayout, Input, NavTabs } from "@hackcove/ui";
+import { AppShell, Button, CenteredLayout, Field, FormLayout, Input, Tabs } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 /** The one layout whose width differs on purpose, so the no-jump title check skips it (e2e/layout.spec.ts). */
@@ -17,7 +17,8 @@ export const FullPage: S = {
     <AppShell
       brand={<a href="#">Hack Cove</a>}
       nav={
-        <NavTabs
+        <Tabs
+          variant="pill"
           label="Main"
           items={[
             { label: "Quotes", href: "#quotes", active: true },

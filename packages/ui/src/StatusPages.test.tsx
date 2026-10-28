@@ -1,7 +1,7 @@
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { ButtonLink } from "./ButtonLink.js";
+import { Button } from "./Button.js";
 import { ErrorPage, Forbidden, Maintenance, NotFound, Offline } from "./StatusPages.js";
 import type { LinkRenderProps } from "./link.js";
 
@@ -29,9 +29,9 @@ describe.each(pages)("%s", (_name, Page, heading) => {
 
 const home = (variant: "primary" | "outline"): string =>
   renderToStaticMarkup(
-    <ButtonLink href="/" variant={variant}>
+    <Button href="/" variant={variant}>
       Back to home
-    </ButtonLink>,
+    </Button>,
   );
 
 describe("the shared props", () => {

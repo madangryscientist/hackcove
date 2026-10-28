@@ -67,7 +67,7 @@ which is what lets a theme reskin a whole site.
 
 `AppShell` paints the page canvas and sets the type face and ink (a theme remaps the canvas and owns
 the font stacks), so an app ships no page-background or font CSS. It gives every page one content edge: a sticky one-row header, then main, both inside
-`Container` (`max-w-6xl`, `px-4 sm:px-6`, defined there and nowhere else). Put `appShellRootClass`
+`Container` (`max-w-6xl`, `px-4 sm:px-6`, defined there and nowhere else). Put `appShellRootClassFor(scheme)`
 on your `<html>` so the scrollbar is always reserved and centred content does not shift between a
 short and a long page; no component touches `<html>`. Pages never set their own width or outer
 padding: they start with `PageHeader` and space their blocks with `Stack` (`xs` between lines of text,
@@ -96,13 +96,12 @@ The header row is laid out by slots, so an app writes no wrapper or `className` 
 footer are hidden on paper and main drops its padding, so the page margin is the app's `@page`.
 `AppShellBrand` makes the logo and the name one link (a router link through `render`), nothing in
 `controls` shrinks, and `appShellRootClassFor(scheme, schemes?)` gives `<html>` its scheme class and
-`appShellRootClass` together.
+the scrollbar class together.
 Stories: `Layout/AppShell › HeaderSlots`, `LinkedBrand`, `RouterBrand` and `HiddenInPrint`.
 
 ## Dates
 
-`DatePicker` is a segmented DD/MM/YYYY field with a calendar popover; `DateField` is the field on its
-own. Values are `CalendarDate`s; `toISODate` and `fromISODate` convert to and from `"1990-05-17"`.
+`DateField` is a segmented DD/MM/YYYY field; `calendar` adds a calendar popover. Values are `CalendarDate`s; `toISODate` and `fromISODate` convert to and from `"1990-05-17"`.
 See [`packages/ui/README.md`](packages/ui/README.md#dates).
 
 ## Light and dark

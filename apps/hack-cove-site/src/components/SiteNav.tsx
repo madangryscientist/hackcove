@@ -1,4 +1,4 @@
-import { NavTabs, type NavTab } from "@hackcove/ui";
+import { Tabs } from "@hackcove/ui";
 import { type Section, site } from "../content/site";
 
 const plain = (path: string) => (path.length > 1 ? path.replace(/\/+$/, "") : path);
@@ -16,10 +16,10 @@ function sectionFor(pathname: string): Section | undefined {
 /** The header nav: one tab per section, the current one marked with `aria-current`. */
 export function SiteNav({ pathname }: { pathname: string }) {
   const current = sectionFor(pathname);
-  const items: NavTab[] = site.sections.map((section) => ({
+  const items = site.sections.map((section) => ({
     label: section.navLabel,
     href: section.href,
     active: section === current,
   }));
-  return <NavTabs items={items} label="Sections" />;
+  return <Tabs variant="pill" items={items} label="Sections" />;
 }

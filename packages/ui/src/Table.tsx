@@ -2,7 +2,6 @@ import { Children, createContext, useContext } from "react";
 import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
 import type { CalloutTone } from "./Callout.js";
 import { cx, liftInteractive } from "./cx.js";
-import { linkClass, linkStretchClass } from "./TextLink.js";
 import { TEXT_TONE, type TextTone } from "./typography.js";
 
 type Align = "start" | "end";
@@ -70,12 +69,6 @@ type Rest<
   Tag extends "table" | "thead" | "tbody" | "tfoot" | "tr" | "th" | "td",
   Own extends string = never,
 > = Omit<ComponentPropsWithoutRef<Tag>, "className" | "style" | "children" | Own>;
-
-/**
- * The classes of the one link in a row whose hit area covers the row, so the whole row is the
- * click target. For a router's own `<Link>`; `TableRow` is the `relative` ancestor it stretches to.
- */
-export const rowLinkClass = cx(linkClass, linkStretchClass);
 
 /**
  * A list of records in a rounded, bordered card that scrolls sideways on a narrow screen. Compose it
@@ -162,7 +155,7 @@ export function TableFoot({
 }
 
 /**
- * A `<tr>`, `relative`: the anchor a `rowLinkClass` link stretches to. Any other link, button or
+ * A `<tr>`, `relative`: the anchor a `TextLink stretch` (with `href`, or `render` for a router `<Link>`) stretches to. Any other link, button or
  * control in the row (a `TextLink`, a `Button`, a `Checkbox`) sits above that link and is clickable
  * on its own, with no class from the caller. Use it in the head and the
  * body. In the body it also draws the line above the row and, unless the table is `plain`, the hover

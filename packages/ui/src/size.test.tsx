@@ -4,20 +4,17 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it } from "vitest";
 import { Avatar } from "./Avatar.js";
 import { Button } from "./Button.js";
-import { ButtonLink } from "./ButtonLink.js";
 import { Card } from "./Card.js";
 import { Checkbox } from "./Checkbox.js";
 import { Cluster } from "./Cluster.js";
 import { ColourSchemeToggle } from "./ColourSchemeToggle.js";
 import { DateField } from "./DateField.js";
-import { DatePicker } from "./DatePicker.js";
 import { Dialog } from "./Dialog.js";
 import { mount, unmount } from "./dom.harness.js";
 import { FileDrop } from "./FileDrop.js";
 import { IconButton } from "./IconButton.js";
 import { Input } from "./Input.js";
 import { ListRow } from "./ListRow.js";
-import { NavTabs } from "./NavTabs.js";
 import { Radio, RadioGroup } from "./RadioGroup.js";
 import { SearchInput } from "./SearchInput.js";
 import { SegmentedControl } from "./SegmentedControl.js";
@@ -27,7 +24,6 @@ import { Section, Stack } from "./Stack.js";
 import { Tabs } from "./Tabs.js";
 import { Textarea } from "./Textarea.js";
 import { TextLink } from "./TextLink.js";
-import { ToggleChip } from "./ToggleChip.js";
 import { SubsectionHeading } from "./typography.js";
 
 afterEach(unmount);
@@ -48,11 +44,11 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
     { sm: "px-2.5 py-1", md: "px-4 py-2", lg: "px-5 py-2.5" },
   ],
   [
-    "ButtonLink",
+    "Button href",
     (size) => (
-      <ButtonLink href="/a" {...at(size)}>
+      <Button href="/a" {...at(size)}>
         Go
-      </ButtonLink>
+      </Button>
     ),
     { sm: "px-2.5 py-1", md: "px-4 py-2", lg: "px-5 py-2.5" },
   ],
@@ -114,8 +110,8 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
     { sm: "px-2.5 py-1 text-xs", md: "px-3 py-2 text-sm", lg: "px-4 py-2.5 text-base" },
   ],
   [
-    "NavTabs",
-    (size) => <NavTabs items={[{ label: "A", href: "/a" }]} label="x" {...at(size)} />,
+    "Tabs pill links",
+    (size) => <Tabs variant="pill" items={[{ label: "A", href: "/a" }]} label="x" {...at(size)} />,
     { sm: "px-2.5 py-1 text-xs", md: "px-3 py-2 text-sm", lg: "px-4 py-2.5 text-base" },
   ],
   [
@@ -156,12 +152,6 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
 
 const SIZES = ["sm", "md", "lg"] as const;
 
-const chip = (size?: Size) => (
-  <ToggleChip pressed={false} onChange={() => {}} {...at(size)}>
-    x
-  </ToggleChip>
-);
-
 // The Dialog panel's own classes.
 const panel = (size?: Size) => {
   const out = renderToStaticMarkup(
@@ -191,13 +181,6 @@ describe("one size scale: sm, md and lg, md the default", () => {
     expect(renderToStaticMarkup(<Cluster>x</Cluster>)).toBe(
       renderToStaticMarkup(<Cluster gap="xs">x</Cluster>),
     );
-  });
-
-  it("ToggleChip defaults to sm, its documented exception, and takes md and lg", () => {
-    expect(renderToStaticMarkup(chip())).toBe(renderToStaticMarkup(chip("sm")));
-    expect(renderToStaticMarkup(chip("sm"))).toContain("px-2.5 py-1 text-xs");
-    expect(renderToStaticMarkup(chip("md"))).toContain("px-3 py-2 text-sm");
-    expect(renderToStaticMarkup(chip("lg"))).toContain("px-4 py-2.5 text-base");
   });
 
   it("TextLink inherits with no size, and pins sm, md or lg", () => {
@@ -254,8 +237,8 @@ describe("sized react-aria controls", () => {
     [undefined, "py-1 pl-2.5 pr-1 text-sm", "h-7 w-7"],
     ["sm", "py-0.5 pl-2 pr-0.5 text-xs", "h-5 w-5"],
     ["lg", "py-1.5 pl-3 pr-1.5 text-base", "h-8 w-8"],
-  ] as const)("DatePicker size %s is %s with a %s button", (size, frame, button) => {
-    const html = mount(<DatePicker aria-label="x" {...at(size)} />).innerHTML;
+  ] as const)("DateField calendar size %s is %s with a %s button", (size, frame, button) => {
+    const html = mount(<DateField calendar aria-label="x" {...at(size)} />).innerHTML;
     expect(html).toContain(frame);
     expect(html).toContain(button);
   });

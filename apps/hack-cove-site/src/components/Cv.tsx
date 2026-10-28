@@ -3,7 +3,7 @@ import {
   BulletList,
   Caption,
   Card,
-  InlineLinks,
+  MetaList,
   ProseLayout,
   SectionHeading,
   SubsectionHeading,
@@ -89,12 +89,12 @@ export function Cv() {
       <ProseLayout
         breadcrumbs={
           <div className="cv-screen-nav">
-            <InlineLinks>
+            <MetaList nowrap>
               <TextLink href="/">{site.name}</TextLink>
               <TextLink href={cv.pdf} download="jacobus.pdf">
                 Download PDF
               </TextLink>
-            </InlineLinks>
+            </MetaList>
           </div>
         }
         title={cv.name}
@@ -105,13 +105,13 @@ export function Cv() {
         }
         actions={<Avatar name={cv.name} src={cv.photo} size="2xl" />}
         tabs={
-          <InlineLinks separator="•">
+          <MetaList nowrap separator="•">
             {cv.links.map((link) => (
               <TextLink key={link.href} href={link.href}>
                 {link.label}
               </TextLink>
             ))}
-          </InlineLinks>
+          </MetaList>
         }
       >
         {/* One block, so the sections keep their own mt-12 rhythm: no Stack gap is 48px. */}

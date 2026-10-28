@@ -106,8 +106,8 @@ const ONE_HALF: Record<string, string> = {
   "Tabs/SwitchView":
     "Its wrong ways are the other Tabs topics; this one shows the panel under the row.",
   "Checkbox/Row": "A feature: `ButtonGroup` spaces a row of checkboxes and buttons.",
-  "DatePicker/TypedOnly": "A feature: `DateField` is the picker without the calendar.",
-  "DatePicker/Value": "A feature: the `CalendarDate` value and the ISO helpers.",
+  "DateField/TypedOnly": "A feature: `DateField` without `calendar` is typed only.",
+  "DateField/Value": "A feature: the `CalendarDate` value and the ISO helpers.",
   "Disclosure/Secondary":
     "Its wrong way is `Disclosure/Essential`'s Don't: hiding what must be read.",
   "FilterGroup/Facets": "A feature: one group per facet.",
@@ -115,7 +115,6 @@ const ONE_HALF: Record<string, string> = {
   "ListRow/RowActions": "The wrong way does not compile: a button or link row takes no `actions`.",
   "TextLink/Stretch": "A feature: the `stretch` prop.",
   "Timeline/NoEvents": "A feature: the `empty` prop.",
-  "ToggleChip/Dot": "A feature: the `dot` prop.",
 };
 
 const story = (render: string) =>
@@ -149,8 +148,7 @@ describe("props.json", () => {
     }
   });
 
-  test("shows the same defaults for Button and ButtonLink, which share one look", () => {
-    expect(looksOf("Button")).toEqual(looksOf("ButtonLink"));
+  test("shows Button's look defaults, which a button and a link share", () => {
     expect(looksOf("Button")["size"]).toBe("md");
   });
 

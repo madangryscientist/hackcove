@@ -6,7 +6,7 @@ import {
   Cluster,
   ListRow,
   Pill,
-  rowLinkClass,
+  TextLink,
   Stack,
   Table,
   TableBody,
@@ -15,7 +15,6 @@ import {
   TableHeaderCell,
   TableRow,
   Text,
-  TextLink,
 } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Linked controls" };
@@ -51,7 +50,7 @@ const quotes = [
   { ref: "Q-1043", client: "Pieter van Wyk" },
 ];
 
-/** A link and a button in a linked table row sit above the row's `rowLinkClass` link and take their own click; the rest of the row still follows it. */
+/** A link and a button in a linked table row sit above the row's stretched `TextLink` and take their own click; the rest of the row still follows it. */
 export const TableRowWithControls: S = {
   render: () => (
     <Table caption="Quotes">
@@ -66,9 +65,9 @@ export const TableRowWithControls: S = {
         {quotes.map((q) => (
           <TableRow key={q.ref}>
             <TableCell mono>
-              <a href={`#${q.ref}`} className={rowLinkClass}>
+              <TextLink href={`#${q.ref}`} stretch>
                 {q.ref}
-              </a>
+              </TextLink>
             </TableCell>
             <TableCell tone="strong">
               <TextLink href={`#${q.ref}-client`}>{q.client}</TextLink>

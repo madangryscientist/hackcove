@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, ButtonGroup, ButtonLink } from "@hackcove/ui";
+import { Button, ButtonGroup } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/ButtonGroup" };
 export default meta;
@@ -11,9 +11,9 @@ export const DoRow: S = {
     <ButtonGroup
       label="Quote actions"
       end={
-        <ButtonLink href="#quotes" variant="ghost">
+        <Button href="#quotes" variant="ghost">
           Back
-        </ButtonLink>
+        </Button>
       }
     >
       <Button>Save</Button>
@@ -28,9 +28,9 @@ export const DontRow: S = {
     <div>
       <Button>Save</Button>
       <Button variant="outline">Preview</Button>
-      <ButtonLink href="#quotes" variant="ghost">
+      <Button href="#quotes" variant="ghost">
         Back
-      </ButtonLink>
+      </Button>
     </div>
   ),
 };
@@ -53,9 +53,9 @@ export const WithEnd: S = {
     <ButtonGroup
       label="Quote actions"
       end={
-        <ButtonLink href="#" variant="ghost">
+        <Button href="#" variant="ghost">
           Back
-        </ButtonLink>
+        </Button>
       }
     >
       <Button>Save</Button>
@@ -70,9 +70,9 @@ export const Wraps: S = {
     <div className="w-60">
       <ButtonGroup
         end={
-          <ButtonLink href="#" variant="ghost">
+          <Button href="#" variant="ghost">
             Back
-          </ButtonLink>
+          </Button>
         }
       >
         <Button>Save</Button>

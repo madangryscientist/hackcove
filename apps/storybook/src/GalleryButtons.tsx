@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, ButtonLink, ColourSchemeToggle, IconButton } from "@hackcove/ui";
+import { Button, ButtonGroup, ColourSchemeToggle, IconButton } from "@hackcove/ui";
 
 const moonIcon = (
   <svg
@@ -14,7 +14,7 @@ const moonIcon = (
   </svg>
 );
 
-/** The Button rows of the Gallery: the variants, a full-width dashed one, the sizes, the positive and danger tones, a pressed toggle, the blocked and busy states, a ButtonLink and a ButtonGroup, then an IconButton (ghost, danger) and the ColourSchemeToggle. */
+/** The Button rows of the Gallery: the variants, a full-width dashed one, the sizes, the positive and danger tones, a pressed toggle, the blocked and busy states, a Button that is a link and a ButtonGroup, then an IconButton (ghost, danger) and the ColourSchemeToggle. */
 export function GalleryButtons() {
   return (
     <div className="flex flex-col gap-3">
@@ -79,18 +79,18 @@ export function GalleryButtons() {
       <ButtonGroup
         label="Quote actions"
         end={
-          <ButtonLink href="#back" variant="ghost">
+          <Button href="#back" variant="ghost">
             Back
-          </ButtonLink>
+          </Button>
         }
       >
-        <ButtonLink href="#new">New quote</ButtonLink>
-        <ButtonLink href="#export" variant="outline" size="sm">
+        <Button href="#new">New quote</Button>
+        <Button href="#export" variant="outline" size="sm">
           Export
-        </ButtonLink>
-        <ButtonLink href="#discard" variant="outline" tone="danger" size="sm">
+        </Button>
+        <Button href="#discard" variant="outline" tone="danger" size="sm">
           Discard
-        </ButtonLink>
+        </Button>
       </ButtonGroup>
     </div>
   );

@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import { lifted } from "./lift.harness.js";
 import {
   type RowTone,
-  rowLinkClass,
   Table,
   TableBody,
   TableCell,
@@ -233,13 +232,6 @@ describe("TableCell secondary", () => {
     expect(cell({ children: "n", secondary: 0 })).toContain(">0</div>");
     expect(cell({ children: "Naledi" })).not.toContain("font-normal");
     expect(cell({ children: "Naledi", secondary: false })).not.toContain("font-normal");
-  });
-});
-
-describe("rowLinkClass", () => {
-  it("styles a link and stretches it over the row", () => {
-    expect(rowLinkClass).toContain("text-violet-600");
-    expect(rowLinkClass).toContain("after:absolute after:inset-0");
   });
 });
 

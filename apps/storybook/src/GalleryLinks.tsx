@@ -1,11 +1,11 @@
-import { Code, InlineLinks, MetaList, TextLink, type LinkRenderProps } from "@hackcove/ui";
+import { Code, MetaList, TextLink, type LinkRenderProps } from "@hackcove/ui";
 
 /** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
 function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
   return <a href={`#${to}`} {...rest} />;
 }
 
-/** The links block of the Gallery: a TextLink in a sentence, toned TextLinks, an InlineLinks row, MetaList rows (a mixed one and a mono one), a router-Link TextLink and a row with a stretched link. */
+/** The links block of the Gallery: a TextLink in a sentence, toned TextLinks, MetaList rows (a row of links (then a mixed one and a mono one), a router-Link TextLink and a row with a stretched link. */
 export function GalleryLinks() {
   return (
     <div className="flex flex-col gap-3">
@@ -30,11 +30,11 @@ export function GalleryLinks() {
           TextLink danger
         </TextLink>
       </p>
-      <InlineLinks>
+      <MetaList nowrap>
         <TextLink href="#privacy">Privacy</TextLink>
         <TextLink href="#terms">Terms</TextLink>
         <TextLink render={(p) => <FakeLink to="/contact" {...p} />}>Contact</TextLink>
-      </InlineLinks>
+      </MetaList>
       <MetaList>
         <TextLink href="#branch">hc-139</TextLink>
         <Code>0f9d376</Code>

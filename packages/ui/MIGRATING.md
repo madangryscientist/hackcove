@@ -1,6 +1,6 @@
 # Migrating @hackcove/ui
 
-## 0.5 → 0.6: one Text role
+## 0.5 → 0.6: one Text role, paired parts folded
 
 `Body` is now `Text`, and `Text strong` takes over from `BodyStrong`. `Subtitle`, `Empty` and
 `ModalHeading` were near-copies of other parts and are gone with no alias: each is one of the
@@ -21,6 +21,36 @@ A block of `Text` stops at a readable line length (`max-w-[72ch]`), as `Body` di
 The small labels of `Card`, `FilterGroup` and `StatTile` now render as an `Overline`. The `Card`
 title looks the same; a `FilterGroup` legend is semibold (it was medium) and a `StatTile` label's
 letter spacing is `tracking-wide` (it was `tracking-wider`).
+
+### Paired parts folded into one (HC-169)
+
+Each pair below was one look drawn by two exports. The survivor takes a prop, the other is gone with
+no alias, and the class-string helpers are no longer exported: a router link is drawn through
+`render`, never by copying a class. A swap keeps the look unless its row says otherwise.
+
+| Removed or renamed | Write instead |
+| --- | --- |
+| `<ButtonLink href="/new">New</ButtonLink>` | `<Button href="/new">New</Button>` (same `variant`, `size`, `tone`, `external`) |
+| `<ButtonLink render={(p) => <Link to="/new" {...p} />}>New</ButtonLink>` | `<Button render={(p) => <Link to="/new" {...p} />}>New</Button>` |
+| `<DatePicker label="Due" value={d} onChange={setD} />` | `<DateField calendar label="Due" value={d} onChange={setD} />` (`defaultOpen` opens the calendar on mount) |
+| `type DatePickerProps` | `type DateFieldProps` |
+| `<InlineLinks>{links}</InlineLinks>` | `<MetaList nowrap>{links}</MetaList>` |
+| `<InlineLinks separator="•">{links}</InlineLinks>` | `<MetaList nowrap separator="•">{links}</MetaList>` (`"none"` as before) |
+| `type InlineLinksSeparator` | `type MetaListSeparator` |
+| `<NavTabs label="Main" items={nav} />` | `<Tabs variant="pill" label="Main" items={nav} />` (each item `{ label, href \| render, active? }`, as before) |
+| `<NavTabs orientation="vertical" label="Docs" items={nav} />` | `<Tabs variant="pill" orientation="vertical" label="Docs" items={nav} />` |
+| `type NavTab` | none: let the `items` array infer, or type it as `Tab[]` only for buttons |
+| `navTabClass(active)` on a router link | a link item with `render={(p) => <Link to="/x" {...p} />}` |
+| `<PageTitle title="Builds" subtitle="…" />` | `<PageHeader title="Builds" subtitle="…" />` (adds `PageHeader`'s bottom margin, none as a `Stack` child) |
+| `<ToggleChip pressed={on} onClick={flip}>Open</ToggleChip>` | `<Button variant="outline" size="sm" pressed={on} onClick={flip}>Open</Button>` (the chip keeps its colours, neutral off and filled on; only the corner radius changes, to a `Button`'s; `dot` has no swap, name the category in the label) |
+| `buttonClass(variant, opts)` on a router link | `<Button variant={variant} render={(p) => <Link to="/x" {...p} />}>…</Button>` |
+| `crumbLinkClass` on a router link | a crumb `{ label, href }` or `{ label, render }` |
+| `<Link className={rowLinkClass}>` in a row's first cell | `<TextLink stretch render={(p) => <Link to="/x" {...p} />}>…</TextLink>` |
+| `<Link className={linkClass}>` | `<TextLink render={(p) => <Link to="/x" {...p} />}>…</TextLink>` |
+| `<Link className={cx(linkClass, linkStretchClass)}>` | `<TextLink stretch render={(p) => <Link to="/x" {...p} />}>…</TextLink>` |
+| `<html className={cx(schemeClass(s), appShellRootClass)}>` | `<html className={appShellRootClassFor(s)}>` (or `appShellRootClassFor("light")` for no scheme) |
+
+`SegmentedControl` stays. `startPageTransition` stays exported: `PageFade` pages call it.
 
 ## 0.4 → 0.5: one size scale
 

@@ -6,12 +6,11 @@ import {
   EmptyState,
   FilterGroup,
   ListLayout,
-  NavTabs,
+  Tabs,
   PageHeader,
   Pill,
   Stack,
   Text,
-  ToggleChip,
 } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { ListPage } from "./pages";
@@ -31,7 +30,8 @@ export const FullPage: S = {
     <AppShell
       brand={<a href="#">Hack Cove</a>}
       nav={
-        <NavTabs
+        <Tabs
+          variant="pill"
           label="Main"
           items={[
             { label: "Quotes", href: "#quotes", active: true },
@@ -46,9 +46,15 @@ export const FullPage: S = {
         actions={<Button>New quote</Button>}
         filters={
           <FilterGroup legend="Status">
-            <ToggleChip pressed>All</ToggleChip>
-            <ToggleChip pressed={false}>Sent</ToggleChip>
-            <ToggleChip pressed={false}>Accepted</ToggleChip>
+            <Button variant="outline" size="sm" pressed>
+              All
+            </Button>
+            <Button variant="outline" size="sm" pressed={false}>
+              Sent
+            </Button>
+            <Button variant="outline" size="sm" pressed={false}>
+              Accepted
+            </Button>
           </FilterGroup>
         }
       >
@@ -99,8 +105,12 @@ export const DoRows: S = {
       actions={<Button>New quote</Button>}
       filters={
         <FilterGroup legend="Status">
-          <ToggleChip pressed>All</ToggleChip>
-          <ToggleChip pressed={false}>Sent</ToggleChip>
+          <Button variant="outline" size="sm" pressed>
+            All
+          </Button>
+          <Button variant="outline" size="sm" pressed={false}>
+            Sent
+          </Button>
         </FilterGroup>
       }
     >

@@ -24,7 +24,7 @@ export type ComponentPage = {
   /** The components whose props the API table lists. */
   api: string[];
   /**
-   * Exports that are functions, not components (`buttonClass`, `schemeClass`), each with a line on
+   * Exports that are functions, not components (`fromISODate`, `schemeClass`), each with a line on
    * what it is for. A page lists a component under `api` or a function here; every export of
    * `@hackcove/ui` is on exactly one page.
    */

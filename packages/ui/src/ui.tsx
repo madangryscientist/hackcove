@@ -1,25 +1,7 @@
-import { PageHeaderContent } from "./PageHeader.js";
 import type { Passthrough } from "./props.js";
 
 // Small presentational primitives written against Tailwind's slate-based class vocabulary,
 // which a theme remaps.
-
-/**
- * A page's title and subtitle: `PageHeader`'s heading block with no bottom margin.
- * @deprecated use PageHeader
- */
-export function PageTitle({
-  title,
-  subtitle,
-  ...rest
-}: {
-  /** The page's `h1`. */
-  title: string;
-  /** A muted line under the title. */
-  subtitle?: string;
-} & Passthrough) {
-  return <PageHeaderContent {...rest} title={title} subtitle={subtitle} />;
-}
 
 /** A coloured epic header row: a dot in the epic's colour + its label. */
 export function EpicHeader({

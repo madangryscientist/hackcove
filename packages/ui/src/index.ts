@@ -1,5 +1,5 @@
 export { Card } from "./Card.js";
-export { EpicHeader, PageTitle, groupByEpic } from "./ui.js";
+export { EpicHeader, groupByEpic } from "./ui.js";
 export { Pill, type PillTone } from "./Pill.js";
 export { Badge } from "./Badge.js";
 export { StatTile, type StatTileTone } from "./StatTile.js";
@@ -7,7 +7,7 @@ export { ProgressBar, type BarSize, type BarTone } from "./ProgressBar.js";
 export { SplitBar } from "./SplitBar.js";
 export { Legend, StackedBar, type LegendItem, type StackedSegment } from "./StackedBar.js";
 export { Markdown } from "./Markdown.js";
-export { AppShell, AppShellBrand, appShellRootClass, appShellRootClassFor } from "./AppShell.js";
+export { AppShell, AppShellBrand, appShellRootClassFor } from "./AppShell.js";
 export { Container } from "./Container.js";
 export { PageHeader, type PageHeaderProps } from "./PageHeader.js";
 export {
@@ -31,23 +31,20 @@ export {
 export { Section, Stack, type StackGap, type StackWidth } from "./Stack.js";
 export {
   Button,
-  buttonClass,
   type ButtonLook,
   type ButtonSize,
   type ButtonTone,
   type ButtonVariant,
 } from "./Button.js";
 export { ButtonGroup } from "./ButtonGroup.js";
-export { ButtonLink } from "./ButtonLink.js";
 export { type LinkRender, type LinkRenderProps } from "./link.js";
 export { Avatar, avatarColourClass, initialsOf, type AvatarSize } from "./Avatar.js";
-export { Breadcrumbs, crumbLinkClass, type Crumb } from "./Breadcrumbs.js";
+export { Breadcrumbs, type Crumb } from "./Breadcrumbs.js";
 export { BulletList } from "./BulletList.js";
 export { Callout, type CalloutTone } from "./Callout.js";
 export { ListRow, type ListRowProps } from "./ListRow.js";
 export {
   type CellTone,
-  rowLinkClass,
   type RowTone,
   Table,
   TableBody,
@@ -82,10 +79,8 @@ export {
   storeColourScheme,
   type ColourScheme,
 } from "./colourScheme.js";
-export { NavTabs, navTabClass, type NavTab } from "./NavTabs.js";
 export { Tabs, type Tab, type TabsProps } from "./Tabs.js";
 export { SegmentedControl, type Segment } from "./SegmentedControl.js";
-export { ToggleChip } from "./ToggleChip.js";
 export { FilterGroup } from "./FilterGroup.js";
 export { Checkbox } from "./Checkbox.js";
 export { Radio, RadioGroup } from "./RadioGroup.js";
@@ -98,14 +93,13 @@ export { FieldDialog, type FieldDialogProps } from "./FieldDialog.js";
 export { Input } from "./Input.js";
 export type { ControlAlign, ControlSize, ControlWidth } from "./control.js";
 export type { Size } from "./size.js";
-export { InlineLinks, type InlineLinksSeparator } from "./InlineLinks.js";
-export { MetaList } from "./MetaList.js";
+export { MetaList, type MetaListSeparator } from "./MetaList.js";
 export { Kbd } from "./Kbd.js";
 export { KeyValue, KeyValueList } from "./KeyValueList.js";
 export { Select } from "./Select.js";
 export { Textarea } from "./Textarea.js";
 export { Video } from "./Video.js";
-export { linkClass, linkStretchClass, TextLink, type TextLinkSize } from "./TextLink.js";
+export { TextLink, type TextLinkSize } from "./TextLink.js";
 export {
   Caption,
   Display,
@@ -121,6 +115,5 @@ export {
   type TypographyProps,
 } from "./typography.js";
 export { DateField, type DateFieldProps } from "./DateField.js";
-export { DatePicker, type DatePickerProps } from "./DatePicker.js";
 export { fromISODate, toISODate } from "./isoDate.js";
 export type { CalendarDate } from "@internationalized/date";

@@ -1,11 +1,9 @@
-import { Fragment, type KeyboardEvent, type ReactElement, type ReactNode } from "react";
+import { type KeyboardEvent, type ReactElement, type ReactNode } from "react";
 import { cx } from "./cx.js";
 import type { Passthrough } from "./props.js";
 import { type DataAttributes, dataAttributes, type LinkRender, renderLink } from "./link.js";
 
 type Option = DataAttributes & {
-  /** What `value` is set to when this option is current. */
-  value: string;
   label: ReactNode;
   /** A small muted count after the label, part of the accessible name ("Shots 12"). */
   count?: number;
@@ -16,6 +14,8 @@ type Option = DataAttributes & {
 
 /** An option that is a button: it calls `onChange(value)`. */
 export type SwitchButton = Option & {
+  /** What `value` is set to when this option is current. */
+  value: string;
   /**
    * Not chosen by click or arrow key. The button stays in the page as `aria-disabled`, so its
    * `title` still shows on hover and is read out.
@@ -30,9 +30,14 @@ export type SwitchButton = Option & {
 
 /**
  * An option that is a link: `href`, or `render` to draw the app's own router `<Link>`. The router
- * changes the page; `value` only marks which one is current. `external` opens a new tab.
+ * changes the page; `active` on the item, or a `value` equal to the group's, marks the current one.
+ * `external` opens a new tab.
  */
 export type SwitchLink = Option & {
+  /** Marks this link current when it equals the group's `value`. */
+  value?: string;
+  /** This link is the current page. */
+  active?: boolean;
   disabled?: undefined;
   controls?: undefined;
   external?: boolean;
@@ -42,8 +47,6 @@ export type SwitchLink = Option & {
 export type SwitchItem = SwitchButton | SwitchLink;
 
 type Shared = {
-  /** The `value` of the current option. */
-  value: string;
   /** The accessible name of the group. */
   label: string;
 } & Passthrough;
@@ -53,14 +56,18 @@ export type SwitchProps = Shared &
     | {
         /** The options in order: `{ value, label }` buttons, or links (`href` or `render`) with `value` marking the current one. Either may carry a `count`; a button may be `disabled`. */
         items: SwitchButton[];
+        /** The `value` of the current option. */
+        value: string;
         /** Called with the option's `value` when one is chosen, by click or arrow key. */
         onChange: (value: string) => void;
         /** Every option is disabled, e.g. until the page has hydrated. */
         disabled?: boolean;
       }
     | {
-        /** The options in order: `{ value, label }` buttons, or links (`href` or `render`) with `value` marking the current one. Either may carry a `count`; a button may be `disabled`. */
+        /** The options in order: links (`href` or `render`), the current one marked by its `active` or by a `value` equal to the group's. A link may carry a `count`. */
         items: SwitchLink[];
+        /** The `value` of the current link, as an alternative to `active` on the item. */
+        value?: string;
         onChange?: undefined;
         disabled?: undefined;
       }
@@ -72,6 +79,8 @@ type Parts = {
   item: "tab" | "radio";
   /** The vertical arrows move too, as in a radio group. */
   vertical: boolean;
+  /** The options stack in a column: a tablist says so with `aria-orientation`. */
+  stacked?: boolean;
   root: string;
   option: (active: boolean, disabled: boolean) => string;
 };
@@ -98,6 +107,30 @@ function Label({ item }: { item: SwitchItem }): ReactElement {
 const isLinks = (items: SwitchProps["items"]): items is SwitchLink[] =>
   items.some((item) => item.href !== undefined || item.render !== undefined);
 
+const isCurrent = (item: SwitchLink, value: string | undefined): boolean =>
+  item.active === true || (item.value !== undefined && item.value === value);
+
+function SwitchLinkItem({
+  item,
+  current,
+  parts,
+}: {
+  item: SwitchLink;
+  current: boolean;
+  parts: Parts;
+}): ReactElement {
+  return renderLink({
+    ...dataAttributes(item),
+    href: item.href,
+    render: item.render,
+    external: item.external,
+    className: parts.option(current, false),
+    "aria-current": current ? "page" : undefined,
+    ...(item.title === undefined ? {} : { title: item.title }),
+    children: <Label item={item} />,
+  });
+}
+
 /**
  * The shared body of Tabs and SegmentedControl: a row of options with one current. Buttons form a
  * `tablist` or `radiogroup` with a single tab stop and arrow-key movement (the arrow focuses and
@@ -116,19 +149,13 @@ export function Switcher({
   if (isLinks(items)) {
     return (
       <nav {...rest} aria-label={label} className={root}>
-        {items.map((item) => (
-          <Fragment key={item.value}>
-            {renderLink({
-              ...dataAttributes(item),
-              href: item.href,
-              render: item.render,
-              external: item.external,
-              className: parts.option(item.value === value, false),
-              "aria-current": item.value === value ? "page" : undefined,
-              ...(item.title === undefined ? {} : { title: item.title }),
-              children: <Label item={item} />,
-            })}
-          </Fragment>
+        {items.map((item, index) => (
+          <SwitchLinkItem
+            key={item.value ?? item.href ?? index}
+            item={item}
+            current={isCurrent(item, value)}
+            parts={parts}
+          />
         ))}
       </nav>
     );
@@ -154,6 +181,7 @@ export function Switcher({
       {...rest}
       role={parts.group}
       aria-label={label}
+      {...(parts.stacked ? { "aria-orientation": "vertical" as const } : {})}
       {...(groupDisabled ? { "aria-disabled": true } : {})}
       onKeyDown={onKeyDown}
       className={root}

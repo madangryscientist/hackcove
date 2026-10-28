@@ -15,7 +15,7 @@ export const pagelayouts: ComponentSection = {
       fullPage: "ListLayout/FullPage",
       usage: [
         "Put the page's title, subtitle and primary `actions` in the header props; `breadcrumbs` and `tabs` go there too.",
-        "`filters` sit between the header and the list: a `FilterGroup` of `ToggleChip`s.",
+        "`filters` sit between the header and the list: a `FilterGroup` of pressed-toggle `Button`s.",
         "The items are the `children`, one `Card` per item, or a `Table`; the layout spaces them.",
         "Set `isEmpty` and give `empty` an `EmptyState` that says what is missing and what to do next; `isEmpty` without `empty` is a blank page.",
         "Do not build the header and the list by hand with `PageHeader` and `Stack`: the layout is the one right header, filters and list.",
@@ -121,7 +121,7 @@ export const pagelayouts: ComponentSection = {
       pairs: ["SidebarLayout/Sections"],
       fullPage: "SidebarLayout/FullPage",
       usage: [
-        'The `rail` is a `NavTabs` with `orientation="vertical"`, one link per section and the current one `active`.',
+        'The `rail` is pill `Tabs` of links with `orientation="vertical"`, one link per section and the current one `active`.',
         "The `children` are the section's page: its `PageHeader`, then the content.",
         "From `md` the rail is a fixed width beside the page; below it, the rail stacks above the page.",
         "The rail has no background or border: it is a list of links on the page.",
@@ -129,7 +129,7 @@ export const pagelayouts: ComponentSection = {
         "Facts about one record go in `DetailLayout`'s aside, not a rail.",
       ],
       accessibility: [
-        "The rail is an `<aside>` holding the `NavTabs`, which is a `<nav>` named by its `label`.",
+        "The rail is an `<aside>` holding the `Tabs`, which is a `<nav>` named by its `label`.",
         'The current link has `aria-current="page"`.',
         "In the DOM the rail comes first, so it is first in the tab order; folded, the summary is that first stop and the links are skipped until it is opened.",
         "With `railLabel` the rail is a native `<details>` disclosure: its `<summary>` is the toggle, on the keyboard like any button.",

@@ -8,7 +8,7 @@ import {
   Forbidden,
   FullBleedLayout,
   Maintenance,
-  NavTabs,
+  Tabs,
   NotFound,
   Offline,
   Overline,
@@ -84,7 +84,8 @@ export function GalleryPages() {
       <PageBox label="SidebarLayout">
         <SidebarLayout
           rail={
-            <NavTabs
+            <Tabs
+              variant="pill"
               orientation="vertical"
               label="Organisations"
               items={[

@@ -10,7 +10,6 @@ import {
   CopyButton,
   CopyLine,
   DateField,
-  DatePicker,
   Dialog,
   Display,
   Drawer,
@@ -23,11 +22,11 @@ import {
   KeyValueList,
   Lead,
   Markdown,
-  NavTabs,
+  Tabs,
   Overline,
   PageFade,
   PageHeading,
-  PageTitle,
+  PageHeader,
   SectionHeading,
   SegmentedControl,
   Select,
@@ -35,7 +34,6 @@ import {
   SubsectionHeading,
   Text,
   Textarea,
-  ToggleChip,
 } from "@hackcove/ui";
 import { GalleryBars } from "./GalleryBars";
 import { GalleryControls } from "./GalleryControls";
@@ -52,7 +50,7 @@ import { GalleryLinks } from "./GalleryLinks";
 import { GalleryPages } from "./GalleryPages";
 import { samplePhoto } from "./samplePhoto";
 
-/** The page header block of the Gallery: a Display title, a PageTitle and a NavTabs row. */
+/** The page header block of the Gallery: a Display title, a PageHeader and a pill Tabs row of links. */
 function GalleryHeader() {
   return (
     <>
@@ -61,9 +59,10 @@ function GalleryHeader() {
         <Lead>The supporting sentence that sits under a Display heading.</Lead>
       </div>
 
-      <PageTitle title="Status" subtitle="what's happening now" />
+      <PageHeader title="Status" subtitle="what's happening now" />
 
-      <NavTabs
+      <Tabs
+        variant="pill"
         label="Main"
         items={[
           { label: "Map", href: "/" },
@@ -77,22 +76,22 @@ function GalleryHeader() {
   );
 }
 
-/** The filter chips block of the Gallery: four ToggleChips with category dots, one pressed, in a FilterGroup. */
+/** The filter chips block of the Gallery: four pressable outline Buttons, one pressed, in a FilterGroup. */
 function GalleryChips() {
   return (
     <FilterGroup legend="Type of shop">
-      <ToggleChip pressed={false} dot="#e11d48">
+      <Button variant="outline" size="sm" pressed={false}>
         Charity
-      </ToggleChip>
-      <ToggleChip pressed dot="#7c3aed">
+      </Button>
+      <Button variant="outline" size="sm" pressed>
         Vintage
-      </ToggleChip>
-      <ToggleChip pressed={false} dot="#0891b2">
+      </Button>
+      <Button variant="outline" size="sm" pressed={false}>
         Books
-      </ToggleChip>
-      <ToggleChip pressed={false} dot="#ca8a04">
+      </Button>
+      <Button variant="outline" size="sm" pressed={false}>
         Furniture
-      </ToggleChip>
+      </Button>
     </FilterGroup>
   );
 }
@@ -279,7 +278,7 @@ export function Gallery() {
           <option value={1}>★ (1)</option>
         </Select>
         <Checkbox label="Open now" defaultChecked />
-        <DatePicker label="Date of birth" defaultValue={fromISODate("1990-05-17")} />
+        <DateField calendar label="Date of birth" defaultValue={fromISODate("1990-05-17")} />
         <DateField label="Visited on" description="DD/MM/YYYY" />
       </div>
 

@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   Button,
-  ButtonLink,
   Card,
   Code,
   EmptyState,
@@ -43,9 +42,9 @@ export const WithActions: S = {
       actions={
         <>
           <Button>Create a project</Button>
-          <ButtonLink href="#docs" variant="outline">
+          <Button href="#docs" variant="outline">
             Read the docs
-          </ButtonLink>
+          </Button>
         </>
       }
     >

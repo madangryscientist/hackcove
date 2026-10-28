@@ -3,7 +3,7 @@ import {
   CardGrid,
   Code,
   CodeBlock,
-  InlineLinks,
+  MetaList,
   Section,
   Stack,
   Text,
@@ -69,13 +69,13 @@ function Components() {
           <Card key={section.title} as="article" title={section.title} count={section.pages.length}>
             <Stack gap="sm">
               <Text as="p">{section.description}</Text>
-              <InlineLinks separator="none">
+              <MetaList nowrap separator="none">
                 {section.pages.map((page) => (
                   <TextLink key={page.slug} href={`/ui/${page.slug}/`}>
                     {page.name}
                   </TextLink>
                 ))}
-              </InlineLinks>
+              </MetaList>
             </Stack>
           </Card>
         ))}
@@ -105,13 +105,13 @@ export function UiPage() {
         links={ui.docs.links}
       />
       <Section title={ui.links.title}>
-        <InlineLinks>
+        <MetaList nowrap>
           {ui.links.items.map((link) => (
             <TextLink key={link.href} href={link.href}>
               {link.label}
             </TextLink>
           ))}
-        </InlineLinks>
+        </MetaList>
       </Section>
     </Stack>
   );

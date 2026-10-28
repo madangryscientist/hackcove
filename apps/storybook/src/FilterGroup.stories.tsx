@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Cluster, FilterGroup, Stack, ToggleChip } from "@hackcove/ui";
+import { Cluster, FilterGroup, Stack, Button } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/FilterGroup" };
 export default meta;
@@ -8,18 +8,18 @@ type S = StoryObj;
 export const WithChips: S = {
   render: () => (
     <FilterGroup legend="Type of shop">
-      <ToggleChip pressed={false} dot="#e11d48">
+      <Button variant="outline" size="sm" pressed={false}>
         Charity
-      </ToggleChip>
-      <ToggleChip pressed dot="#7c3aed">
+      </Button>
+      <Button variant="outline" size="sm" pressed>
         Vintage
-      </ToggleChip>
-      <ToggleChip pressed={false} dot="#0891b2">
+      </Button>
+      <Button variant="outline" size="sm" pressed={false}>
         Books
-      </ToggleChip>
-      <ToggleChip pressed={false} dot="#ca8a04">
+      </Button>
+      <Button variant="outline" size="sm" pressed={false}>
         Furniture
-      </ToggleChip>
+      </Button>
     </FilterGroup>
   ),
 };
@@ -28,15 +28,15 @@ export const WithChips: S = {
 export const DoLegend: S = {
   render: () => (
     <FilterGroup legend="Type of shop">
-      <ToggleChip pressed dot="#7c3aed">
+      <Button variant="outline" size="sm" pressed>
         Vintage
-      </ToggleChip>
-      <ToggleChip pressed={false} dot="#0891b2">
+      </Button>
+      <Button variant="outline" size="sm" pressed={false}>
         Books
-      </ToggleChip>
-      <ToggleChip pressed={false} dot="#ca8a04">
+      </Button>
+      <Button variant="outline" size="sm" pressed={false}>
         Furniture
-      </ToggleChip>
+      </Button>
     </FilterGroup>
   ),
 };
@@ -45,9 +45,15 @@ export const DoLegend: S = {
 export const DontLegend: S = {
   render: () => (
     <Cluster gap="xs" wrap>
-      <ToggleChip pressed>Vintage</ToggleChip>
-      <ToggleChip pressed={false}>Books</ToggleChip>
-      <ToggleChip pressed={false}>Furniture</ToggleChip>
+      <Button variant="outline" size="sm" pressed>
+        Vintage
+      </Button>
+      <Button variant="outline" size="sm" pressed={false}>
+        Books
+      </Button>
+      <Button variant="outline" size="sm" pressed={false}>
+        Furniture
+      </Button>
     </Cluster>
   ),
 };
@@ -57,12 +63,20 @@ export const DoFacets: S = {
   render: () => (
     <Stack gap="sm">
       <FilterGroup legend="Type of shop">
-        <ToggleChip pressed>Vintage</ToggleChip>
-        <ToggleChip pressed={false}>Books</ToggleChip>
+        <Button variant="outline" size="sm" pressed>
+          Vintage
+        </Button>
+        <Button variant="outline" size="sm" pressed={false}>
+          Books
+        </Button>
       </FilterGroup>
       <FilterGroup legend="Open">
-        <ToggleChip pressed={false}>Now</ToggleChip>
-        <ToggleChip pressed>Saturdays</ToggleChip>
+        <Button variant="outline" size="sm" pressed={false}>
+          Now
+        </Button>
+        <Button variant="outline" size="sm" pressed>
+          Saturdays
+        </Button>
       </FilterGroup>
     </Stack>
   ),

@@ -1,15 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import {
-  Button,
-  ButtonLink,
-  DateField,
-  DatePicker,
-  IconButton,
-  Input,
-  SegmentedControl,
-  Select,
-  ToggleChip,
-} from "@hackcove/ui";
+import { Button, DateField, IconButton, Input, SegmentedControl, Select } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Control heights" };
 export default meta;
@@ -33,13 +23,18 @@ function Row({ size }: { size: Size }) {
       </Select>
       <Input type="search" data-control="Search" aria-label="Search" size={size} width="sm" />
       <DateField data-control="DateField" aria-label="Date field" size={size} />
-      <DatePicker data-control="DatePicker" aria-label="Date picker" size={size} />
+      <DateField
+        calendar
+        data-control="DateField calendar"
+        aria-label="Date field with calendar"
+        size={size}
+      />
       <Button data-control="Button" size={size}>
         Button
       </Button>
-      <ButtonLink data-control="ButtonLink" href="#heights" size={size}>
+      <Button data-control="Button href" href="#heights" size={size}>
         Link
-      </ButtonLink>
+      </Button>
       <IconButton data-control="IconButton" label="Icon button" size={size}>
         +
       </IconButton>
@@ -51,9 +46,6 @@ function Row({ size }: { size: Size }) {
         onChange={() => undefined}
         items={items}
       />
-      <ToggleChip data-control="ToggleChip" size={size} pressed={false} onChange={() => undefined}>
-        Chip
-      </ToggleChip>
     </div>
   );
 }

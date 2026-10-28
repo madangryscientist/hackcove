@@ -1,6 +1,5 @@
 import type { ReactElement, ReactNode } from "react";
 import { Button } from "./Button.js";
-import { ButtonLink } from "./ButtonLink.js";
 import { CodeBlock } from "./CodeBlock.js";
 import { type LinkRender } from "./link.js";
 import { CenteredLayout } from "./PageLayouts.js";
@@ -19,7 +18,7 @@ type StatusPageProps = {
   action?: ReactNode;
   /** Adds a "Back to home" button linking here. With neither this nor `renderHome` there is no home link. */
   homeHref?: string;
-  /** Draws the home link with the app's own router `<Link>`, as on `ButtonLink`. */
+  /** Draws the home link with the app's own router `<Link>`, as on `Button`. */
   renderHome?: LinkRender;
 } & Passthrough;
 
@@ -32,16 +31,16 @@ function homeLink(
 ): ReactNode {
   if (render) {
     return (
-      <ButtonLink render={render} variant={variant}>
+      <Button render={render} variant={variant}>
         Back to home
-      </ButtonLink>
+      </Button>
     );
   }
   if (href === undefined) return null;
   return (
-    <ButtonLink href={href} variant={variant}>
+    <Button href={href} variant={variant}>
       Back to home
-    </ButtonLink>
+    </Button>
   );
 }
 

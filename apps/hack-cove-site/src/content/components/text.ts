@@ -139,7 +139,7 @@ export const text: ComponentSection = {
       slug: "text-link",
       name: "TextLink",
       summary: "A link in the accent colour, inside a sentence or on its own.",
-      whenToUse: "A link that sits in text. A link that is an action is a `ButtonLink`.",
+      whenToUse: "A link that sits in text. A link that is an action is a `Button` with `href`.",
       pairs: ["TextLink/InSentence", "TextLink/External", "TextLink/Router", "TextLink/Stretch"],
       usage: [
         "Use `TextLink` for every link in running text. Never a bare `<a>`.",
@@ -148,7 +148,6 @@ export const text: ComponentSection = {
         "`size` pins the type size to `sm`, `md` or `lg`; left out, the link takes the size of its text. `mono` sets the monospace face for a path or an id.",
         '`tone` gives the link a meaning\'s colour (`warn`, `danger`, `positive`, `info`, `muted`), underlined on hover. Use it for a link that is the message, like "3 failed".',
         "`stretch` makes the nearest `relative` ancestor the click target: a `Card` or a `TableRow`. Put it on the one link in that row; any other link or button in the row sits above it and is clickable on its own.",
-        "A router's own `<Link>` that must look like a `TextLink` takes `linkClass`, and a stretched one `linkStretchClass` as well.",
       ],
       accessibility: [
         "A `TextLink` is a native `<a>`, so it is in the tab order and opens with Enter.",
@@ -157,35 +156,6 @@ export const text: ComponentSection = {
         "Every anchor prop (`aria-*`, `download`, `title`, a handler) goes on the `<a>`; `render` receives them as well.",
       ],
       api: ["TextLink"],
-      functions: [
-        {
-          name: "linkClass",
-          text: "The classes of an inline text link, for a router's own `<Link>` that must look like a `TextLink`.",
-        },
-        {
-          name: "linkStretchClass",
-          text: "Stretches a link's hit area over its nearest `relative` ancestor, so a whole row or card opens it; add it to the one link in the row.",
-        },
-      ],
-    },
-    {
-      slug: "inline-links",
-      name: "InlineLinks",
-      summary: "A wrapping row of links joined by a separator.",
-      whenToUse: "A footer or a row of related links: Privacy, Terms, Contact.",
-      pairs: ["InlineLinks/Footer"],
-      usage: [
-        "Put one `TextLink` per child. The row wraps and spaces them.",
-        "`separator` is `·` (default), `•` or `none`.",
-        "Never type the separators yourself: they wrap onto the end of a line and a screen reader reads them.",
-        "A row of facts that are not links is a `MetaList`.",
-      ],
-      accessibility: [
-        "The separators are `aria-hidden` and lead every link but the first, held to their link so a wrap never leaves one at the end of a line.",
-        "Each link keeps its own focus ring; the row adds no extra tab stop.",
-        "`aria-*` and `data-*` go on the root.",
-      ],
-      api: ["InlineLinks"],
     },
     {
       slug: "bullet-list",
@@ -207,18 +177,22 @@ export const text: ComponentSection = {
     {
       slug: "meta-list",
       name: "MetaList",
-      summary: "A wrapping row of facts in muted small text, joined by a dot.",
-      whenToUse: "The facts about a record under its title: branch, SHA, date.",
-      pairs: ["MetaList/Facts"],
+      summary: "A wrapping row of facts or links in muted small text, joined by a dot.",
+      whenToUse:
+        "The facts about a record under its title (branch, SHA, date), or a footer's row of links (Privacy, Terms, Contact).",
+      pairs: ["MetaList/Facts", "MetaList/Footer"],
       usage: [
-        "Each child is one fact: text, a `Code` or a `TextLink`.",
+        "Each child is one item: text, a `Code` or a `TextLink`.",
+        "`separator` is `·` (default), `•` or `none`.",
+        "`nowrap` keeps each item on one line, for a row of links; the row still wraps between items.",
         "`mono` sets the whole row in the monospace face, for ids and paths.",
-        "Never type the dots into one string: they wrap onto the end of a line and a screen reader reads them.",
-        "A row of links is `InlineLinks`; a labelled fact is a `KeyValueList`.",
+        "Never type the separators yourself: they wrap onto the end of a line and a screen reader reads them.",
+        "A labelled fact is a `KeyValueList`.",
       ],
       accessibility: [
-        "A `MetaList` renders a `<ul>` with an `<li>` per fact.",
-        "The `·` separators are `aria-hidden`, so a screen reader reads the facts alone.",
+        "A `MetaList` renders a `<ul>` with an `<li>` per item.",
+        "The separators are `aria-hidden` and lead every item but the first, held to their item so a wrap never leaves one at the end of a line.",
+        "Each link keeps its own focus ring; the row adds no extra tab stop.",
         "`aria-*` and `data-*` go on the list.",
       ],
       api: ["MetaList"],

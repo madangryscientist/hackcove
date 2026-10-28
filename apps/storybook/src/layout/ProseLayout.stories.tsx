@@ -1,13 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import {
-  AppShell,
-  Card,
-  ListLayout,
-  NavTabs,
-  ProseLayout,
-  SectionHeading,
-  Text,
-} from "@hackcove/ui";
+import { AppShell, Card, ListLayout, Tabs, ProseLayout, SectionHeading, Text } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { ProsePage } from "./pages";
 
@@ -26,7 +18,8 @@ export const FullPage: S = {
     <AppShell
       brand={<a href="#">Hack Cove</a>}
       nav={
-        <NavTabs
+        <Tabs
+          variant="pill"
           label="Main"
           items={[
             { label: "Quotes", href: "#quotes", active: true },
