@@ -127,10 +127,18 @@ const CASES: Record<string, () => ReactElement> = {
   MetaList: () => <ui.MetaList {...A}>{ITEMS}</ui.MetaList>,
   NotFound: () => <ui.NotFound {...A} />,
   Offline: () => <ui.Offline {...A} />,
+  OutlineRegion: () => (
+    <ui.OutlineRegion
+      rect={{ x: 0, y: 0, width: 1, height: 1 }}
+      within={{ width: 2, height: 2 }}
+      {...A}
+    />
+  ),
   Overline: () => <ui.Overline {...A}>x</ui.Overline>,
   PageFade: () => <ui.PageFade {...A}>x</ui.PageFade>,
   PageHeader: () => <ui.PageHeader title="T" {...A} />,
   PageHeading: () => <ui.PageHeading {...A}>x</ui.PageHeading>,
+  RegionFrame: () => <ui.RegionFrame src="/x.png" alt="" {...A} />,
   Radio: () => (
     <ui.RadioGroup label="L">
       <ui.Radio value="a" label="A" {...A} />

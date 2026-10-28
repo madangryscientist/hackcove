@@ -62,7 +62,7 @@ export const data: ComponentSection = {
         '`leadingWidth="thumbnail"` gives `leading` a fixed width that sizes an image to it, for a row that shows a screenshot. The label may hold block content, such as a title over a caption.',
         "A link row (`href` or `render`) can hold its own link or button in `trailing`: it sits above the row's link and takes its own click, with no class from you. A row that is a `<button>` cannot hold a button, so a row with buttons of its own is `static`: the buttons go in `actions`, after `trailing`. `revealOnHover` shows them only on hover or focus, so a long list is not a wall of buttons.",
         'Never put a button or a link inside a button or link row. `size="sm"` is the dense padding for a list that must fit more rows, `size="lg"` the roomy one for a short list of big targets; `md` is the default.',
-        "`active` marks the row the pointer or the keyboard is on in a list that follows both, such as a preview beside the list: drive it from the row's `onPointerEnter`, `onPointerLeave` and `onFocus`. It shows the hover fill and the `revealOnHover` actions.",
+        "`active` marks the row the pointer or the keyboard is on in a list that follows both, such as a preview beside the list: drive it from the row's `onPointerEnter`, `onPointerLeave` and `onFocus`. It fills the row one step deeper than hover, so it shows on a white card and on a tinted panel (a `FullBleedLayout` panel) alike, and shows the `revealOnHover` actions.",
         "Records with several columns to compare are a `Table`, not rows.",
       ],
       accessibility: [

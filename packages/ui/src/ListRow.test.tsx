@@ -232,33 +232,33 @@ describe("ListRow focused and leadingWidth", () => {
 });
 
 describe("ListRow active", () => {
-  it("holds the hover look on every form; selected wins", () => {
-    expect(renderToStaticMarkup(<ListRow active>Rent</ListRow>)).toContain("bg-slate-50");
+  it("fills every form one step deeper than hover, so it shows on a slate-50 panel; selected wins", () => {
+    expect(renderToStaticMarkup(<ListRow active>Rent</ListRow>)).toContain("bg-slate-100");
     expect(
       renderToStaticMarkup(
         <ListRow href="/r" active>
           Rent
         </ListRow>,
       ),
-    ).toMatch(/<div id="[^"]*" class="[^"]*\bbg-slate-50\b/);
+    ).toMatch(/<div id="[^"]*" class="[^"]*\bbg-slate-100\b/);
     expect(
       renderToStaticMarkup(
         <ListRow static active>
           Rent
         </ListRow>,
       ),
-    ).toContain("bg-slate-50");
+    ).toContain("bg-slate-100");
     const both = renderToStaticMarkup(
       <ListRow active selected>
         Rent
       </ListRow>,
     );
     expect(both).toContain("bg-violet-50");
-    expect(both).not.toMatch(/ bg-slate-50\b/);
+    expect(both).not.toMatch(/ bg-slate-100\b/);
   });
 
   it("a plain static row has no fill until active", () => {
-    expect(renderToStaticMarkup(<ListRow static>Rent</ListRow>)).not.toContain("bg-slate-50");
+    expect(renderToStaticMarkup(<ListRow static>Rent</ListRow>)).not.toContain("bg-slate-100");
   });
 
   it("shows actions that revealOnHover hides", () => {

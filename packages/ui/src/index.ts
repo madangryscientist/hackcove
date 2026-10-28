@@ -43,6 +43,7 @@ export { Breadcrumbs, type Crumb } from "./Breadcrumbs.js";
 export { BulletList } from "./BulletList.js";
 export { Callout, type CalloutTone } from "./Callout.js";
 export { ListRow, type ListRowProps } from "./ListRow.js";
+export { OutlineRegion, RegionFrame, type RegionRect } from "./OutlineRegion.js";
 export {
   type CellTone,
   type RowTone,

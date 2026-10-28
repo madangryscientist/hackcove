@@ -27,8 +27,11 @@ const STATIC = "group/row flex w-full items-center gap-3 text-sm text-slate-900"
 
 const FILL = "hover:bg-slate-50";
 const SELECTED = "bg-violet-50 hover:bg-violet-50";
-/** The hover look held on, for the row a pointer or keyboard cursor is on. */
-const ACTIVE = "bg-slate-50";
+/**
+ * The row a pointer or keyboard cursor is on: the inset fill, one step deeper than hover, so it
+ * still shows on a `bg-slate-50` surface (a `FullBleedLayout` panel, a toned card).
+ */
+const ACTIVE = "bg-slate-100";
 
 /** The keyboard cursor: the focus ring, drawn inside the row, on a row that does not hold DOM focus. */
 const FOCUSED = "outline-2 -outline-offset-2 outline-violet-600";
@@ -66,9 +69,10 @@ type Shared = {
    */
   focused?: boolean | undefined;
   /**
-   * Holds the hover look on, for the row a list follows with the pointer and the keyboard alike
-   * (set it from `onPointerEnter` and `onFocus`). On a static row it shows the fill without
-   * `revealOnHover`, and shows `actions` that `revealOnHover` hides. `selected` wins.
+   * Marks the row a list follows with the pointer and the keyboard alike (set it from
+   * `onPointerEnter` and `onFocus`): a fill one step deeper than hover, so it shows on a white card
+   * and on a tinted panel alike. On a static row it shows the fill without `revealOnHover`, and
+   * shows `actions` that `revealOnHover` hides. `selected` wins.
    */
   active?: boolean | undefined;
   /**
@@ -297,8 +301,8 @@ function ButtonRow(props: ListRowButtonProps & Pieces): ReactElement {
  * the line between them, on each row after the first.
  *
  * `leading` is content before the label (`leadingWidth="thumbnail"` gives it a fixed picture width),
- * `selected` marks the row in view, `focused` the one the keyboard cursor is on and `active` holds
- * the hover look on the row a list follows (`onPointerEnter`, `onPointerLeave` and `onFocus` reach
+ * `selected` marks the row in view, `focused` the one the keyboard cursor is on and `active` fills
+ * the row a list follows (`onPointerEnter`, `onPointerLeave` and `onFocus` reach
  * every form; on a linked row the pointer handlers go on the row itself). The label is a
  * `<div>`, so it can hold block content (a name over a path). `static` makes the
  * row a plain `<div>` for one that holds its own buttons (a button cannot sit inside a button or a

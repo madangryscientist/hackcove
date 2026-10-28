@@ -64,7 +64,7 @@ same three names. Only `Avatar` (`xl`, `2xl`) and the `Stack` gap (`xs`, `xl`) g
 
 One default is not `md`, on purpose: `Cluster`'s gap is `xs` (a row is a label and its chips,
 which sit tight). `TextLink` with no `size`
-takes the size of the text around it. Upgrading from 0.4: `MIGRATING.md`.
+takes the size of the text around it. Upgrading: `MIGRATING.md`, shipped in the package (`node_modules/@hackcove/ui/MIGRATING.md`).
 
 ## What is exported
 

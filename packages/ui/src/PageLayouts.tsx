@@ -312,7 +312,10 @@ export function FullBleedLayout({
   bar?: ReactNode;
   /** A side column on the right (`lg:w-72`) on a tinted surface; below `lg` it stacks under `children`. */
   panel?: ReactNode;
-  /** Pads `children` as the Container pads every other page. Off, they run to the viewport's edges. */
+  /**
+   * Pads `children` as the Container pads every other page. Off, they run to the viewport's edges.
+   * A notice in the column is a plain `Callout` in a `Stack`, never a `Callout banner`.
+   */
   padded?: boolean | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {

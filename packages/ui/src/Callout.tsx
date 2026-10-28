@@ -25,7 +25,8 @@ const TONE_TEXT: Record<CalloutTone, string> = {
 /**
  * A tinted notice box, with an optional bold title above its body. `actions` puts a button or link
  * at the end of the row; `banner` makes it a flat strip (bottom border only, no radius) for the
- * top of a `Card flush` (a padded card would inset it). With `actions` the box is `relative`, so a `TextLink
+ * top of a `Card flush` and nowhere else: a padded card or a padded `FullBleedLayout` column
+ * would inset it. In a page's column the notice is a plain Callout, first in the column's `Stack`. With `actions` the box is `relative`, so a `TextLink
  * stretch` there makes the whole callout its click target, like a link in a table row.
  */
 export function Callout({
@@ -40,7 +41,7 @@ export function Callout({
   tone?: CalloutTone;
   /** A bold line above the body. */
   title?: ReactNode;
-  /** A flat strip: `border-b` only and no radius, to sit above a card body. */
+  /** A flat strip: `border-b` only and no radius, for the top of a `Card flush` only. */
   banner?: boolean;
   /** A button or link at the end of the row, beside the title and body. */
   actions?: ReactNode;
