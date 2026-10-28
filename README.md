@@ -156,8 +156,11 @@ It runs two layers on the lines the pull request adds:
   The palette and the export list are read from `@hackcove/ui` itself, never copied.
 - **Model review (advisory).** An OpenCode Zen model (`opencode/deepseek-v4.1-flash`) reads the diff
   against the Hack Cove purpose and the generated `/ui/llms.txt`, and posts inline comments plus one
-  summary. A part Hack Cove lacks is reported as "ask hackcove for X", never "build it locally". It
-  is not a required check, and an API failure is a warning, never a red pull request. The diff is
+  summary. A part Hack Cove lacks is reported as "ask hackcove for X", never "build it locally". Its
+  findings are advisory and never fail the pull request. A review that did not happen does: if the
+  model run crashes or times out, the reply cannot be parsed, or the component reference or the
+  comments cannot be had, the step prints an error, writes a step summary and goes red. It is
+  skipped, and green, only when there is no `OPENCODE_API_KEY` or no app file changed. The diff is
   sent to OpenCode Zen.
 
 What it needs:
