@@ -1,11 +1,12 @@
-import { type ReactElement, type ReactNode, useEffect, useId, useRef } from "react";
+import { type ReactElement, type ReactNode, useId, useRef } from "react";
 import { cx } from "./cx.js";
+import { useModal } from "./modal.js";
 import type { Passthrough } from "./props.js";
 import type { Size } from "./size.js";
 import { HeaderText, SectionHeading } from "./typography.js";
 
 const PANEL =
-  "mx-auto mt-28 max-w-[calc(100vw-2rem)] overflow-visible rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-2xl backdrop:bg-slate-900/35";
+  "mx-auto mt-28 max-w-[calc(100vw-2rem)] overflow-visible rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-2xl -translate-y-2 opacity-0 transition-[opacity,translate,overlay,display] transition-discrete duration-200 open:translate-y-0 open:opacity-100 starting:open:-translate-y-2 starting:open:opacity-0 backdrop:bg-slate-900/35 backdrop:opacity-0 backdrop:transition-[opacity,overlay,display] backdrop:transition-discrete backdrop:duration-200 open:backdrop:opacity-100 starting:open:backdrop:opacity-0 motion-reduce:transition-none motion-reduce:backdrop:transition-none";
 const SIZE: Record<Size, string> = { sm: "w-80", md: "w-110", lg: "w-160" };
 
 export type DialogProps = {
@@ -43,16 +44,14 @@ export function Dialog({
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
-  useEffect(() => {
-    dialog.current?.showModal();
-  }, []);
+  const closed = useModal(dialog, onClose);
 
   return (
     <dialog
       {...rest}
       ref={dialog}
       aria-labelledby={titleId}
-      onClose={onClose}
+      onClose={closed}
       onClick={(event) => event.target === dialog.current && dialog.current?.close()}
       className={cx(PANEL, SIZE[size])}
     >

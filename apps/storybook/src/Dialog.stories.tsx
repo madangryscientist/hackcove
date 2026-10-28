@@ -1,10 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState, type ReactNode } from "react";
+import { useState, type MouseEvent, type ReactNode } from "react";
 import { Button, Callout, Dialog, Kbd, KeyValue, KeyValueList, Stack, Text } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Dialog" };
 export default meta;
 type S = StoryObj;
+
+/** Close through the `<dialog>` so it animates out; `onClose` then unmounts it. Setting the parent's state here would cut the exit animation short. */
+const closeDialog = (event: MouseEvent<HTMLElement>) =>
+  event.currentTarget.closest("dialog")?.close();
 
 /** Open when the story loads; Esc or the backdrop closes it, and the button opens it again. */
 function Opened({ children }: { children: (close: () => void) => ReactNode }) {
@@ -29,10 +33,10 @@ export const Default: S = {
           onClose={close}
           footer={
             <>
-              <Button variant="ghost" onClick={close}>
+              <Button variant="ghost" onClick={closeDialog}>
                 Cancel
               </Button>
-              <Button onClick={close}>Delete</Button>
+              <Button onClick={closeDialog}>Delete</Button>
             </>
           }
         >
@@ -181,10 +185,10 @@ export const Large: S = {
           onClose={close}
           footer={
             <>
-              <Button variant="ghost" onClick={close}>
+              <Button variant="ghost" onClick={closeDialog}>
                 Cancel
               </Button>
-              <Button onClick={close}>Import</Button>
+              <Button onClick={closeDialog}>Import</Button>
             </>
           }
         >

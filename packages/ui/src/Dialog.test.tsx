@@ -14,6 +14,15 @@ describe("Dialog", () => {
     expect(showModal).toHaveBeenCalledExactlyOnceWith(dialogOf(out));
   });
 
+  it("closes the dialog when the parent unmounts it, so no open modal or inert page is left behind", () => {
+    const dialog = dialogOf(mount(<Dialog title="Rename" onClose={() => {}} />));
+    expect(dialog.hasAttribute("open")).toBe(true);
+    unmount();
+    expect(dialog.hasAttribute("open")).toBe(false);
+    expect(document.querySelector("dialog[open]")).toBeNull();
+    expect(document.querySelector("[inert]")).toBeNull();
+  });
+
   it("is named by its title and shows the description, body and footer", () => {
     const out = mount(
       <Dialog
@@ -34,20 +43,48 @@ describe("Dialog", () => {
     expect(dialog.textContent).toContain("Done");
   });
 
-  it("calls onClose when the dialog closes (Esc and form method=dialog fire the same event)", () => {
+  it("calls onClose when the dialog closes (Esc and form method=dialog fire the same event)", async () => {
     const onClose = vi.fn<() => void>();
     const out = mount(<Dialog title="t" onClose={onClose} />);
-    act(() => {
-      dialogOf(out).dispatchEvent(new Event("close"));
-    });
+    await act(async () => dialogOf(out).close());
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("closes on a click on the backdrop, which is a click on the <dialog> itself", () => {
+  it("closes on a click on the backdrop, which is a click on the <dialog> itself", async () => {
     const onClose = vi.fn<() => void>();
     const out = mount(<Dialog title="t" onClose={onClose} />);
-    act(() => dialogOf(out).click());
+    await act(async () => dialogOf(out).click());
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls onClose only after the exit transition has ended, so an unmount does not cut it short", async () => {
+    const onClose = vi.fn<() => void>();
+    const out = mount(<Dialog title="t" onClose={onClose} />);
+    const dialog = dialogOf(out);
+    const exit = Promise.withResolvers<null>();
+    // A looping animation inside the dialog (a spinner) is not an exit transition and is not waited for.
+    const spinner = { finished: new Promise<null>(() => {}) };
+    const opacity = { transitionProperty: "opacity", finished: exit.promise };
+    Reflect.set(dialog, "getAnimations", () => [spinner, opacity]);
+    await act(async () => dialog.click());
+    expect(onClose).not.toHaveBeenCalled();
+    await act(async () => exit.resolve(null));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not call onClose for the close an unmount causes", async () => {
+    const onClose = vi.fn<() => void>();
+    mount(<Dialog title="t" onClose={onClose} />);
+    await act(async () => unmount());
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it("slides and fades in and out with transitions that survive the dialog leaving the top layer", () => {
+    const out = renderToStaticMarkup(<Dialog title="t" onClose={() => {}} />);
+    expect(out).toContain("transition-discrete");
+    expect(out).toContain("starting:open:opacity-0");
+    expect(out).toContain("backdrop:transition-discrete");
+    expect(out).toContain("motion-reduce:transition-none");
   });
 
   it("does not close on a click inside the panel", () => {

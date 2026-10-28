@@ -14,6 +14,14 @@ describe("Drawer", () => {
     expect(showModal).toHaveBeenCalledExactlyOnceWith(dialogOf(out));
   });
 
+  it("slides in and out with transitions that survive the dialog leaving the top layer", () => {
+    const out = renderToStaticMarkup(<Drawer title="t" onClose={() => {}} />);
+    expect(out).toContain("transition-discrete");
+    expect(out).toContain("starting:open:translate-x-full");
+    expect(out).toContain("backdrop:transition-discrete");
+    expect(out).toContain("motion-reduce:transition-none");
+  });
+
   it("closes the dialog when the parent unmounts it, so focus returns to the opener", () => {
     const dialog = dialogOf(mount(<Drawer title="Item" onClose={() => {}} />));
     expect(dialog.hasAttribute("open")).toBe(true);
@@ -69,28 +77,26 @@ describe("Drawer", () => {
     expect(out.match(/<dialog[^>]*>/)?.[0]).not.toMatch(/(?<![:\w-])flex(?![\w-])/);
   });
 
-  it("calls onClose when the dialog closes (Esc fires the same event)", () => {
+  it("calls onClose when the dialog closes (Esc fires the same event)", async () => {
     const onClose = vi.fn<() => void>();
     const out = mount(<Drawer title="t" onClose={onClose} />);
-    act(() => {
-      dialogOf(out).dispatchEvent(new Event("close"));
-    });
+    await act(async () => dialogOf(out).close());
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("closes on a click on the scrim, which is a click on the <dialog> itself", () => {
+  it("closes on a click on the scrim, which is a click on the <dialog> itself", async () => {
     const onClose = vi.fn<() => void>();
     const out = mount(<Drawer title="t" onClose={onClose} />);
-    act(() => dialogOf(out).click());
+    await act(async () => dialogOf(out).click());
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("closes from the close button, named by closeLabel", () => {
+  it("closes from the close button, named by closeLabel", async () => {
     const onClose = vi.fn<() => void>();
     const out = mount(<Drawer title="t" closeLabel="Dismiss" onClose={onClose} />);
     const button = out.querySelector("button");
     expect(button?.getAttribute("aria-label")).toBe("Dismiss");
-    act(() => button?.click());
+    await act(async () => button?.click());
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
