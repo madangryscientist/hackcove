@@ -1,3 +1,213 @@
+## 0.6.0 (2026-10-28)
+
+### 🚀 Features
+
+- ⚠️  **ui:** fold paired parts: Button href, DateField calendar, MetaList separator, Tabs orientation; PageTitle, ToggleChip and *Class helpers removed (HC-169) ([1e80adb](https://github.com/madangryscientist/hackcove/commit/1e80adb))
+- ⚠️  **ui:** Body becomes Text with strong; Subtitle, Empty, BodyStrong and ModalHeading removed (HC-167) ([72d6278](https://github.com/madangryscientist/hackcove/commit/72d6278))
+
+### ⚠️  Breaking Changes
+
+- **ui:** fold paired parts: Button href, DateField calendar, MetaList separator, Tabs orientation; PageTitle, ToggleChip and *Class helpers removed (HC-169)  ([1e80adb](https://github.com/madangryscientist/hackcove/commit/1e80adb))
+  removed from @hackcove/ui: ButtonLink, DatePicker, DatePickerProps, InlineLinks,
+  InlineLinksSeparator, NavTabs, NavTab, navTabClass, PageTitle, ToggleChip, buttonClass,
+  crumbLinkClass, rowLinkClass, linkClass, linkStretchClass, appShellRootClass. See MIGRATING.md,
+  0.5 → 0.6, for each swap.
+  Visual: 24 changed, 58 new, 76 removed vs merge-base 72d6278 — chips become pressed outline Buttons (ToggleChip's colours, Button radius, no dots), Button/Pressed off/on looks, Gallery PageTitle → PageHeader, ControlHeights drops the chip; new/removed are the moved DateField, TabsLinks and MetaList ids (56/58 byte-identical) plus the removed ToggleChip and PageTitle stories
+  Gate: bun install; nx run-many -t typecheck lint test build; format:check; pack-check; e2e storybook (44); e2e hack-cove-site (80) — all green
+  State: landable
+  Gated by the planner on af5c438: typecheck, lint, 258 tests, build, format, pack-check, 44 e2e; PixelSlash 25 changed / 58 new / 76 removed (renamed stories) / 1096 unchanged, report read. First head 89bfc1b was sent back: the ToggleChip swap had inverted the filter look (accent outline off, faint tint on); a toggle Button now draws neutral off and the tone fill on, matching main apart from the corner radius. Control heights pixel-identical."
+  M	README.md
+  M	apps/hack-cove-site/README.md
+  M	apps/hack-cove-site/scripts/generate-props.ts
+  M	apps/hack-cove-site/src/components/Contact.tsx
+  M	apps/hack-cove-site/src/components/Cv.tsx
+  M	apps/hack-cove-site/src/components/DocsFrame.tsx
+  M	apps/hack-cove-site/src/components/LegalPage.tsx
+  M	apps/hack-cove-site/src/components/SiteNav.tsx
+  M	apps/hack-cove-site/src/components/StatusCard.tsx
+  M	apps/hack-cove-site/src/components/UiPage.tsx
+  M	apps/hack-cove-site/src/content/components/actions.ts
+  M	apps/hack-cove-site/src/content/components/content.ts
+  M	apps/hack-cove-site/src/content/components/data.ts
+  M	apps/hack-cove-site/src/content/components/forms.ts
+  M	apps/hack-cove-site/src/content/components/layout.ts
+  M	apps/hack-cove-site/src/content/components/navigation.ts
+  M	apps/hack-cove-site/src/content/components/pagelayouts.ts
+  M	apps/hack-cove-site/src/content/components/pages.ts
+  M	apps/hack-cove-site/src/content/components/text.ts
+  M	apps/hack-cove-site/src/content/components/types.ts
+  M	apps/hack-cove-site/src/docs/types.ts
+  M	apps/hack-cove-site/src/layouts/Base.astro
+  M	apps/hack-cove-site/test/docs.test.tsx
+  M	apps/storybook/e2e/control-heights.spec.ts
+  R089	apps/storybook/e2e/date-picker-overlay.spec.ts	apps/storybook/e2e/date-field-calendar-overlay.spec.ts
+  M	apps/storybook/src/Breadcrumbs.stories.tsx
+  M	apps/storybook/src/Button.stories.tsx
+  M	apps/storybook/src/ButtonGroup.stories.tsx
+  M	apps/storybook/src/ControlHeights.stories.tsx
+  R074	apps/storybook/src/DatePicker.stories.tsx	apps/storybook/src/DateField.stories.tsx
+  M	apps/storybook/src/Divider.stories.tsx
+  M	apps/storybook/src/EmptyState.stories.tsx
+  M	apps/storybook/src/FilterGroup.stories.tsx
+  M	apps/storybook/src/Gallery.tsx
+  M	apps/storybook/src/GalleryButtons.tsx
+  M	apps/storybook/src/GalleryControls.tsx
+  M	apps/storybook/src/GalleryData.tsx
+  M	apps/storybook/src/GalleryLayout.tsx
+  M	apps/storybook/src/GalleryLinkedRows.tsx
+  M	apps/storybook/src/GalleryLinks.tsx
+  M	apps/storybook/src/GalleryPages.tsx
+  D	apps/storybook/src/InlineLinks.stories.tsx
+  M	apps/storybook/src/LinkedControls.stories.tsx
+  M	apps/storybook/src/MetaList.stories.tsx
+  M	apps/storybook/src/PageHeaderDocs.stories.tsx
+  M	apps/storybook/src/Table.stories.tsx
+  M	apps/storybook/src/Tabs.stories.tsx
+  R077	apps/storybook/src/NavTabs.stories.tsx	apps/storybook/src/TabsLinks.stories.tsx
+  D	apps/storybook/src/ToggleChip.stories.tsx
+  M	apps/storybook/src/layout/AppShell.stories.tsx
+  M	apps/storybook/src/layout/CardGrid.stories.tsx
+  M	apps/storybook/src/layout/CenteredLayout.stories.tsx
+  M	apps/storybook/src/layout/DemoShell.tsx
+  M	apps/storybook/src/layout/DetailLayout.stories.tsx
+  M	apps/storybook/src/layout/FormLayout.stories.tsx
+  M	apps/storybook/src/layout/FullBleedLayout.stories.tsx
+  M	apps/storybook/src/layout/ListLayout.stories.tsx
+  M	apps/storybook/src/layout/PageHeader.stories.tsx
+  M	apps/storybook/src/layout/ProseLayout.stories.tsx
+  M	apps/storybook/src/layout/SidebarLayout.stories.tsx
+  M	apps/storybook/src/layout/pages.tsx
+  M	apps/storybook/src/ui.stories.tsx
+  M	packages/ui/MIGRATING.md
+  M	packages/ui/README.md
+  M	packages/ui/src/AppShell.tsx
+  R070	packages/ui/src/ButtonLink.test.tsx	packages/ui/src/Button.link.test.tsx
+  M	packages/ui/src/Button.positivePressed.test.tsx
+  M	packages/ui/src/Button.tsx
+  D	packages/ui/src/ButtonLink.tsx
+  R089	packages/ui/src/DatePicker.test.tsx	packages/ui/src/DateField.calendar.test.tsx
+  M	packages/ui/src/DateField.tsx
+  R093	packages/ui/src/DatePicker.tsx	packages/ui/src/DateFieldCalendar.tsx
+  M	packages/ui/src/DateValue.test.tsx
+  M	packages/ui/src/FilterGroup.tsx
+  D	packages/ui/src/InlineLinks.test.tsx
+  D	packages/ui/src/InlineLinks.tsx
+  M	packages/ui/src/MetaList.test.tsx
+  M	packages/ui/src/MetaList.tsx
+  D	packages/ui/src/NavTabs.tsx
+  M	packages/ui/src/PageHeader.test.tsx
+  M	packages/ui/src/PageHeader.tsx
+  M	packages/ui/src/PageLayouts.tsx
+  M	packages/ui/src/StatusPages.test.tsx
+  M	packages/ui/src/StatusPages.tsx
+  M	packages/ui/src/Table.test.tsx
+  M	packages/ui/src/Table.tsx
+  R072	packages/ui/src/NavTabs.test.tsx	packages/ui/src/Tabs.pillLinks.test.tsx
+  M	packages/ui/src/Tabs.tsx
+  D	packages/ui/src/ToggleChip.test.tsx
+  D	packages/ui/src/ToggleChip.tsx
+  M	packages/ui/src/index.ts
+  M	packages/ui/src/linkForms.test.tsx
+  M	packages/ui/src/passthrough.test.tsx
+  M	packages/ui/src/shownDate.tsx
+  M	packages/ui/src/size.test.tsx
+  M	packages/ui/src/switcher.tsx
+  M	packages/ui/src/ui.tsx
+- **ui:** Body becomes Text with strong; Subtitle, Empty, BodyStrong and ModalHeading removed (HC-167)  ([72d6278](https://github.com/madangryscientist/hackcove/commit/72d6278))
+  Body is renamed Text; BodyStrong, Subtitle, Empty and
+  ModalHeading are removed from @hackcove/ui (see MIGRATING.md, 0.5 -> 0.6).
+  Visual: 53 changed, 8 new, 12 removed vs c80f5a4 — FilterGroup legend weight, StatTile label tracking, typography stories renamed/removed, Gallery lines removed — http://192.168.0.34:3000/projects/c37dfb5b-1e95-4234-936f-85a501781e02/builds/cd1139a3-3fac-4eae-a41c-1ed179ed2ec1
+  Gate: typecheck lint test build, format:check, pack-check, e2e storybook (44), e2e hack-cove-site (83) all green
+  State: landable
+  Gated by the planner on 19c3d0f (rebased on e4e85a0): typecheck, lint, 267 tests, build, format, pack-check, 44 e2e; PixelSlash 53 changed / 8 new / 12 removed / 1136 unchanged, report read (StatTile label tracking, FilterGroup legend semibold, Body to Text; empty states unchanged)."
+  M	README.md
+  M	apps/hack-cove-site/README.md
+  M	apps/hack-cove-site/src/components/ComponentPage.tsx
+  M	apps/hack-cove-site/src/components/Contact.tsx
+  M	apps/hack-cove-site/src/components/Cv.tsx
+  M	apps/hack-cove-site/src/components/CvLink.tsx
+  M	apps/hack-cove-site/src/components/LegalPage.tsx
+  M	apps/hack-cove-site/src/components/SectionCards.tsx
+  M	apps/hack-cove-site/src/components/StatusCard.tsx
+  M	apps/hack-cove-site/src/components/Team.tsx
+  M	apps/hack-cove-site/src/components/UiPage.tsx
+  M	apps/hack-cove-site/src/content/components/content.ts
+  M	apps/hack-cove-site/src/content/components/feedback.ts
+  M	apps/hack-cove-site/src/content/components/pagelayouts.ts
+  M	apps/hack-cove-site/src/content/components/text.ts
+  M	apps/hack-cove-site/src/docs/Props.tsx
+  M	apps/hack-cove-site/test/docs.test.tsx
+  M	apps/storybook/src/Avatar.stories.tsx
+  M	apps/storybook/src/BodyText.stories.tsx
+  M	apps/storybook/src/BulletList.stories.tsx
+  M	apps/storybook/src/Card.stories.tsx
+  M	apps/storybook/src/CardBadge.stories.tsx
+  M	apps/storybook/src/Checkbox.stories.tsx
+  M	apps/storybook/src/Cluster.stories.tsx
+  M	apps/storybook/src/Code.stories.tsx
+  M	apps/storybook/src/ContainerDocs.stories.tsx
+  M	apps/storybook/src/Dialog.stories.tsx
+  M	apps/storybook/src/Disclosure.stories.tsx
+  M	apps/storybook/src/Divider.stories.tsx
+  M	apps/storybook/src/Drawer.stories.tsx
+  M	apps/storybook/src/EmptyState.stories.tsx
+  M	apps/storybook/src/Gallery.tsx
+  M	apps/storybook/src/GalleryChoice.tsx
+  M	apps/storybook/src/GalleryData.tsx
+  M	apps/storybook/src/GalleryLayout.tsx
+  M	apps/storybook/src/GalleryLinkedRows.tsx
+  M	apps/storybook/src/GalleryPages.tsx
+  M	apps/storybook/src/GallerySwitchers.tsx
+  M	apps/storybook/src/GalleryText.tsx
+  M	apps/storybook/src/Headings.stories.tsx
+  M	apps/storybook/src/Icon.stories.tsx
+  M	apps/storybook/src/InlineLinks.stories.tsx
+  M	apps/storybook/src/Kbd.stories.tsx
+  M	apps/storybook/src/KeyValueList.stories.tsx
+  M	apps/storybook/src/LinkedControls.stories.tsx
+  M	apps/storybook/src/ListRow.stories.tsx
+  M	apps/storybook/src/PageFade.stories.tsx
+  M	apps/storybook/src/PageHeaderDocs.stories.tsx
+  M	apps/storybook/src/ProgressBar.stories.tsx
+  M	apps/storybook/src/RadioGroup.stories.tsx
+  M	apps/storybook/src/StackDocs.stories.tsx
+  M	apps/storybook/src/Tabs.stories.tsx
+  M	apps/storybook/src/TextLink.stories.tsx
+  M	apps/storybook/src/layout/AppShell.stories.tsx
+  M	apps/storybook/src/layout/CardGrid.stories.tsx
+  M	apps/storybook/src/layout/Container.stories.tsx
+  M	apps/storybook/src/layout/DetailLayout.stories.tsx
+  M	apps/storybook/src/layout/FullBleedLayout.stories.tsx
+  M	apps/storybook/src/layout/ListLayout.stories.tsx
+  M	apps/storybook/src/layout/PageHeader.stories.tsx
+  M	apps/storybook/src/layout/ProseLayout.stories.tsx
+  M	apps/storybook/src/layout/SidebarLayout.stories.tsx
+  M	apps/storybook/src/layout/Stack.stories.tsx
+  M	apps/storybook/src/layout/pages.tsx
+  A	apps/storybook/src/sampleTable.tsx
+  M	apps/storybook/src/typography.stories.tsx
+  M	apps/storybook/src/ui.stories.tsx
+  M	packages/ui/MIGRATING.md
+  M	packages/ui/README.md
+  M	packages/ui/src/BulletList.tsx
+  M	packages/ui/src/CardParts.tsx
+  M	packages/ui/src/Dialog.tsx
+  M	packages/ui/src/Drawer.tsx
+  M	packages/ui/src/EmptyState.tsx
+  M	packages/ui/src/FilterGroup.tsx
+  M	packages/ui/src/PageHeader.tsx
+  M	packages/ui/src/Stack.tsx
+  M	packages/ui/src/StatTile.tsx
+  M	packages/ui/src/index.ts
+  M	packages/ui/src/passthrough.test.tsx
+  M	packages/ui/src/typography.test.tsx
+  M	packages/ui/src/typography.tsx
+  M	packages/ui/src/ui.tsx
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.1.10 (2026-10-28)
 
 ### 🩹 Fixes
