@@ -41,6 +41,7 @@ export function RadioGroup({
   children,
   ...rest
 }: {
+  /** The group's visible name, above the options. */
   label: ReactNode;
   /** Shown under the options in red with `role="alert"`; marks the group invalid. Like `Field`'s `error`. */
   error?: ReactNode;
@@ -48,6 +49,7 @@ export function RadioGroup({
   value?: string;
   /** The `value` chosen to begin with, when the group keeps its own choice. */
   defaultValue?: string;
+  /** Called with the chosen radio's `value`. */
   onChange?: (value: string) => void;
   /** The form field the choice posts under. */
   name?: string;
@@ -99,11 +101,13 @@ export function Radio({
   "aria-describedby": describedBy,
   ...rest
 }: {
+  /** The text beside the circle. */
   label: ReactNode;
   /** A muted line under the label that says more. It is the radio's `aria-describedby`. */
   description?: ReactNode;
   /** What the group's `value` becomes when this one is chosen. */
   value: string;
+  /** Disables this radio alone. */
   isDisabled?: boolean;
 } & DataAttributes &
   Pick<AriaAttributes, "aria-describedby">): ReactElement {

@@ -12,8 +12,17 @@ export function CopyButton({
   onClick,
   ...rest
 }: {
+  /** What goes on the clipboard. */
   text: string;
+  /**
+   * The button's text before a copy.
+   * @default copy
+   */
   label?: string;
+  /**
+   * The button's text once the copy has gone through.
+   * @default copied
+   */
   copiedLabel?: string;
 } & Unstyled<Omit<ComponentPropsWithoutRef<"button">, "children">>): ReactElement {
   const [copied, setCopied] = useState(false);

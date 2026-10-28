@@ -10,6 +10,7 @@ import {
 } from "../src/content/components/index";
 import { site } from "../src/content/site";
 import { themes } from "../src/content/themes";
+import propsJson from "../src/generated/props.json";
 import { docOf } from "../src/docs/Props";
 import { renderLlms } from "../src/docs/llms";
 import { pairOf } from "../src/docs/pairs";
@@ -151,6 +152,26 @@ describe("props.json", () => {
   test("shows the same defaults for Button and ButtonLink, which share one look", () => {
     expect(looksOf("Button")).toEqual(looksOf("ButtonLink"));
     expect(looksOf("Button")["size"]).toBe("md");
+  });
+
+  test("covers exactly what @hackcove/ui exports", () => {
+    expect(Object.keys(propsJson).toSorted()).toEqual(Object.keys(ui).toSorted());
+  });
+
+  test("describes every export and every prop: no description is empty", () => {
+    const empty = Object.keys(ui).flatMap((name) => {
+      const doc = docOf(name);
+      const props = doc.props
+        .filter((p) => p.description.trim() === "")
+        .map((p) => `${name}.${p.name}`);
+      return doc.description.trim() === "" ? [name, ...props] : props;
+    });
+    expect(empty).toEqual([]);
+  });
+
+  test("gives every helper (a lower-case export) its signature", () => {
+    const missing = Object.keys(ui).filter((name) => /^[a-z]/.test(name) && !docOf(name).signature);
+    expect(missing).toEqual([]);
   });
 });
 

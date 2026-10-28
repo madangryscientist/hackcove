@@ -16,10 +16,12 @@ export function EmptyState({
   actions,
   ...rest
 }: {
+  /** The heading, centred: what is missing ("No projects yet"). It names the section. */
   title: ReactNode;
   /** The title's heading level, 2 to 6. It does not change how the title looks. */
   level?: 2 | 3 | 4 | 5 | 6 | undefined;
   children?: ReactNode;
+  /** Buttons or links in a centred row at the bottom. */
   actions?: ReactNode;
 } & Passthrough): ReactElement {
   const titleId = useId();

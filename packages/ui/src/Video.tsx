@@ -12,7 +12,9 @@ export function Video({
   children,
   ...rest
 }: {
+  /** The video file, the app's own. */
   src: string;
+  /** A WebVTT file, offered as the default captions track. */
   captions?: string | undefined;
 } & Unstyled<Omit<VideoHTMLAttributes<HTMLVideoElement>, "src" | "controls">>): ReactElement {
   return (

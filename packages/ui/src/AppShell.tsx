@@ -21,14 +21,14 @@ export function appShellRootClassFor(scheme: ColourScheme, schemes?: ColourSchem
   return cx(schemeClass(scheme, schemes), appShellRootClass);
 }
 
+const LOGO_BOX: Record<Size, string> = { sm: "size-5", md: "size-6", lg: "size-8" };
+
 /**
  * The `brand` slot as one link: a logo and a label inside the same `<a>`, so the whole brand is the
  * way home. The label names the link; the logo is decoration and hidden from assistive tech.
  * `collapse` shows only the logo below `sm`, the label staying in the accessible name. With
  * `render` it draws the app's own router `<Link>` (`render={(p) => <Link to="/" {...p} />}`).
  */
-const LOGO_BOX: Record<Size, string> = { sm: "size-5", md: "size-6", lg: "size-8" };
-
 export function AppShellBrand({
   logo,
   logoSize = "md",
@@ -55,8 +55,18 @@ export function AppShellBrand({
       }
   ) &
   (
-    | { href: string; render?: LinkRender | undefined }
-    | { href?: string | undefined; render: LinkRender }
+    | {
+        /** Where the brand links, usually the app's home (`/`). */
+        href: string;
+        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/" {...p} />`. */
+        render?: LinkRender | undefined;
+      }
+    | {
+        /** Where the brand links, usually the app's home (`/`). */
+        href?: string | undefined;
+        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/" {...p} />`. */
+        render: LinkRender;
+      }
   )): ReactElement {
   return renderLink({
     ...rest,
@@ -190,6 +200,7 @@ export function AppShell({
   header?: ReactNode;
   /** A second fixed-height row under the header, e.g. `NavTabs`. */
   subnav?: ReactNode;
+  /** The page footer: small muted text in a `Container`, under a hairline. Hidden in print with `hideChromeInPrint`. */
   footer?: ReactNode;
   /** Main without a Container, for a full-bleed layout. */
   bleed?: boolean;

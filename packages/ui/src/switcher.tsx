@@ -51,13 +51,19 @@ type Shared = {
 export type SwitchProps = Shared &
   (
     | {
+        /** The options in order: `{ value, label }` buttons, or links (`href` or `render`) with `value` marking the current one. Either may carry a `count`; a button may be `disabled`. */
         items: SwitchButton[];
         /** Called with the option's `value` when one is chosen, by click or arrow key. */
         onChange: (value: string) => void;
         /** Every option is disabled, e.g. until the page has hydrated. */
         disabled?: boolean;
       }
-    | { items: SwitchLink[]; onChange?: undefined; disabled?: undefined }
+    | {
+        /** The options in order: `{ value, label }` buttons, or links (`href` or `render`) with `value` marking the current one. Either may carry a `count`; a button may be `disabled`. */
+        items: SwitchLink[];
+        onChange?: undefined;
+        disabled?: undefined;
+      }
   );
 
 type Parts = {

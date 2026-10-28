@@ -88,14 +88,19 @@ type InlineOwnProps = {
 type Own = OwnProps & InlineOwnProps;
 
 /** Polymorphic props: own props + `as` + the intrinsic props of whichever element `as` selects. */
-export type TypographyProps<E extends ElementType> = OwnProps & { as?: E } & Omit<
-    ComponentPropsWithoutRef<E>,
-    keyof OwnProps | "as" | "className" | "style"
-  >;
+export type TypographyProps<E extends ElementType> = OwnProps & {
+  /** The element to render (each role has a semantic default); the other props follow it. */
+  as?: E;
+} & Omit<ComponentPropsWithoutRef<E>, keyof OwnProps | "as" | "className" | "style">;
 
-/** The props of an inline role: `TypographyProps` plus `tone`, `numeric`, `mono` and `truncate`. */
-export type InlineTypographyProps<E extends ElementType> = InlineOwnProps &
-  Omit<TypographyProps<E>, keyof InlineOwnProps>;
+/**
+ * The props of an inline role: `TypographyProps` plus `tone`, `numeric`, `mono` and `truncate`.
+ * Spelled out like `TypographyProps`, not as an `Omit` of it, so the docs read its real types.
+ */
+export type InlineTypographyProps<E extends ElementType> = Own & {
+  /** The element to render (each role has a semantic default); the other props follow it. */
+  as?: E;
+} & Omit<ComponentPropsWithoutRef<E>, keyof Own | "as" | "className" | "style">;
 
 /**
  * Build a semantic component that pins `variantClass` (size + weight + tracking)
@@ -210,7 +215,10 @@ export const PageHeading = typography(
 export function SectionHeading<E extends ElementType = "h2">({
   rule,
   ...props
-}: TypographyProps<E> & { rule?: boolean }): ReactElement {
+}: TypographyProps<E> & {
+  /** A hairline under the heading, with the space either side of it built in. */
+  rule?: boolean;
+}): ReactElement {
   const variant = cx(rule && "mb-4 border-b border-slate-200/70 pb-2", "text-base/6 font-semibold");
   return pinned("h2", variant, "default", props);
 }
@@ -237,6 +245,7 @@ export function SubsectionHeading<E extends ElementType = "h3">({
    * @default md
    */
   size?: SubsectionHeadingSize;
+  /** One line, cut with an ellipsis where the container ends; the full text becomes the `title`. */
   truncate?: boolean | undefined;
 }): ReactElement {
   return pinned("h3", SUBSECTION_SIZE[size], "default", props);
@@ -277,7 +286,10 @@ export const Overline = inlineRole(
 export function Body<E extends ElementType = "span">({
   preserveNewlines,
   ...props
-}: InlineTypographyProps<E> & { preserveNewlines?: boolean }): ReactElement {
+}: InlineTypographyProps<E> & {
+  /** Keep the line breaks in the text (a user-typed note); runs of spaces still collapse. */
+  preserveNewlines?: boolean;
+}): ReactElement {
   const variant = cx(
     preserveNewlines && "whitespace-pre-line",
     "max-w-[72ch] text-sm/5 font-normal",

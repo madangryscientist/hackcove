@@ -6,7 +6,10 @@ export function FilterGroup({
   legend,
   children,
   ...rest
-}: { legend: ReactNode } & Unstyled<ComponentPropsWithoutRef<"fieldset">>): ReactElement {
+}: {
+  /** The section's name, a small uppercase legend over the chips. */
+  legend: ReactNode;
+} & Unstyled<ComponentPropsWithoutRef<"fieldset">>): ReactElement {
   return (
     <fieldset {...rest} className="min-w-0">
       <legend className="mb-2 text-xs font-medium tracking-wide text-slate-500 uppercase">

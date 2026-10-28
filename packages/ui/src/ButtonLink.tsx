@@ -8,8 +8,18 @@ type ButtonLinkProps = ButtonLook & {
   external?: boolean | undefined;
 } & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href">> &
   (
-    | { href: string; render?: LinkRender | undefined }
-    | { href?: string | undefined; render: LinkRender }
+    | {
+        /** Where the link goes. */
+        href: string;
+        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/quotes" {...p} />`. */
+        render?: LinkRender | undefined;
+      }
+    | {
+        /** Where the link goes. */
+        href?: string | undefined;
+        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/quotes" {...p} />`. */
+        render: LinkRender;
+      }
   );
 
 /**

@@ -21,7 +21,10 @@ const FILL = (tone: TextTone): string => cx("bg-current", TEXT_TONE[tone]);
 export function Legend({
   items,
   ...rest
-}: { items: readonly LegendItem[] } & Passthrough): ReactElement {
+}: {
+  /** One entry per colour: its `label`, its `tone` and an optional `detail` (a count, a share). */
+  items: readonly LegendItem[];
+} & Passthrough): ReactElement {
   return (
     <ul {...rest} className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600">
       {items.map((item) => (
@@ -53,7 +56,9 @@ export function StackedBar({
   size = "md",
   ...rest
 }: {
+  /** The parts in order, each a `label`, a `value` (its share is the value over the sum) and a `tone`. */
   segments: readonly StackedSegment[];
+  /** What the bar shows, for a screen reader, which hears it before every part's name and percent. */
   label: string;
   /** Draw the key under the bar. Defaults to false. */
   legend?: boolean;

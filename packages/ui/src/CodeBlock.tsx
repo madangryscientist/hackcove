@@ -4,7 +4,17 @@ import type { CodeLanguage } from "./highlight.js";
 import type { Unstyled } from "./props.js";
 
 /** Exactly one of `children` (a string, newlines kept) or `lines` (one array entry per line). */
-type CodeBlockSource = { children: string; lines?: never } | { lines: string[]; children?: never };
+type CodeBlockSource =
+  | {
+      children: string;
+      /** The code as one array entry per line, in place of `children`. */
+      lines?: never;
+    }
+  | {
+      /** The code as one array entry per line, in place of `children`. */
+      lines: string[];
+      children?: never;
+    };
 
 /**
  * A static multi-line block of code: mono, in a bordered inset box, long lines wrap. No client JS;
@@ -20,6 +30,7 @@ export function CodeBlock({
   lines,
   ...rest
 }: {
+  /** A caption above the code naming its language or file (`bash`, `theme.css`). */
   label?: string;
   /** What the code is written in; `text` (the default) colours nothing. */
   language?: CodeLanguage;

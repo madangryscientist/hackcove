@@ -11,6 +11,7 @@ const SIZE: Record<Size, string> = { sm: "w-80", md: "w-110", lg: "w-160" };
 export type DialogProps = {
   /** The dialog's accessible name, shown as its heading. */
   title: ReactNode;
+  /** A muted line under the title. */
   description?: ReactNode;
   children?: ReactNode;
   /** Actions under the body, right-aligned. A submit button here can reach a form in the body with its `form` attribute. */

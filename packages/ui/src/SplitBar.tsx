@@ -25,8 +25,11 @@ export function SplitBar({
   size = "md",
   ...rest
 }: {
+  /** The left party's amount; its share is `a` over `a + b`. */
   a: number;
+  /** The right party's amount; its share is `b` over `a + b`. */
   b: number;
+  /** What the split is, for a screen reader, which hears it before both percentages. */
   label: string;
   /** The left and right parties, spoken before their percentages. */
   names?: readonly [string, string];

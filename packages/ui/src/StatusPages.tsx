@@ -96,7 +96,9 @@ export function ErrorPage({
   action,
   ...props
 }: StatusPageProps & {
+  /** The error text, in a `CodeBlock` under the copy: a request id or a message a reader may see, never a stack trace. */
   detail?: string;
+  /** Adds a "Try again" button that calls it, unless `action` replaces the button. */
   onRetry?: () => void;
 }): ReactElement {
   return (
@@ -117,7 +119,10 @@ export function Offline({
   onRetry,
   action,
   ...props
-}: StatusPageProps & { onRetry?: () => void }): ReactElement {
+}: StatusPageProps & {
+  /** Adds a "Try again" button that calls it, unless `action` replaces the button. */
+  onRetry?: () => void;
+}): ReactElement {
   return (
     <StatusPage
       copy={{

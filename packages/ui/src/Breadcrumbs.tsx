@@ -45,7 +45,10 @@ function CrumbContent({
 export function Breadcrumbs({
   crumbs,
   ...rest
-}: { crumbs: Array<Crumb | ReactNode> } & Passthrough): ReactElement {
+}: {
+  /** The trail, first to current: a node, or a `Crumb` (`{ label, href | render, external? }`) for one that links. The last is the current page and never a link. */
+  crumbs: Array<Crumb | ReactNode>;
+} & Passthrough): ReactElement {
   const last = crumbs.length - 1;
   return (
     <nav {...rest} aria-label="Breadcrumb" className="min-w-0">

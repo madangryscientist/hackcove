@@ -31,11 +31,15 @@ export function StatTile({
   accent = false,
   ...rest
 }: {
+  /** The small uppercase caption over the value. */
   label: ReactNode;
+  /** The figure, already formatted, large and in tabular figures. */
   value: ReactNode;
+  /** A muted line under the value. */
   hint?: ReactNode;
   /** Defaults to "neutral". */
   tone?: StatTileTone;
+  /** A bar across the top edge in the tone's colour. */
   accent?: boolean;
 } & Unstyled<Omit<HTMLAttributes<HTMLDivElement>, "children">>): ReactElement {
   return (

@@ -46,6 +46,7 @@ export function FormRow({
 }: {
   /** A button or two after the last field. It keeps its own width. */
   action?: ReactNode;
+  /** One muted line under the whole row. */
   hint?: ReactNode;
   /** Replaces the hint when set, as `Field`'s does. */
   error?: ReactNode;
@@ -71,9 +72,14 @@ export function FormRowField({
   children,
   ...rest
 }: {
+  /** The small label above the control. */
   label: ReactNode;
   /** The id of the control inside; the label's htmlFor. */
   htmlFor: string;
+  /**
+   * The field's share of the row, 1 to 4: a `span` of 2 is twice as wide as a 1.
+   * @default 1
+   */
   span?: FormRowSpan | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {

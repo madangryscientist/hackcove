@@ -90,12 +90,16 @@ export function ColourSchemeToggle({
    * @default md
    */
   size?: Size | undefined;
+  /** Called with the new scheme after a click, for an app that persists the choice itself (a cookie). */
   onChange?: (scheme: ColourScheme) => void;
-  /** The class each scheme puts on `<html>`. Default `{ light: "", dark: "dark" }`. */
+  /** The class each scheme puts on `<html>`. */
   schemes?: ColourSchemeClasses | undefined;
-  /** The scheme the server rendered. What the server and the hydrating client show; the real state follows right after. Default `"light"`. */
+  /**
+   * The scheme the server rendered. What the server and the hydrating client show; the real state follows right after.
+   * @default light
+   */
   initial?: ColourScheme | undefined;
-  /** Remember the choice in `localStorage`. `false` leaves persisting to `onChange`. Default `true`. */
+  /** Remember the choice in `localStorage`. `false` leaves persisting to `onChange`. */
   store?: boolean | undefined;
 } & Unstyled<
   Omit<

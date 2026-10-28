@@ -108,8 +108,18 @@ type ListRowLinkProps = Shared &
     Omit<ComponentPropsWithoutRef<"a">, "href" | "children" | "onPointerEnter" | "onPointerLeave">
   > &
   (
-    | { href: string; render?: LinkRender | undefined }
-    | { href?: string | undefined; render: LinkRender }
+    | {
+        /** Makes the row a link to this URL. */
+        href: string;
+        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/quotes/1" {...p} />`. */
+        render?: LinkRender | undefined;
+      }
+    | {
+        /** Makes the row a link to this URL. */
+        href?: string | undefined;
+        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/quotes/1" {...p} />`. */
+        render: LinkRender;
+      }
   );
 
 type ListRowStaticProps = Shared & {

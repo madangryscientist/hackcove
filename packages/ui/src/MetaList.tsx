@@ -14,6 +14,7 @@ export function MetaList({
   children,
   ...rest
 }: {
+  /** The whole row in the monospace face, for ids and paths. */
   mono?: boolean | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {

@@ -51,8 +51,17 @@ export function Cluster({
    * @default xs
    */
   gap?: ClusterGap | undefined;
+  /**
+   * The cross axis: `center`, `baseline` (for mixed text sizes), `start` or `end`.
+   * @default center
+   */
   align?: ClusterAlign | undefined;
+  /**
+   * The main axis: `start`, `between` (the first and last items at the two ends) or `end`.
+   * @default start
+   */
   justify?: ClusterJustify | undefined;
+  /** Let the items flow onto further lines on a narrow viewport. Off, the row stays on one line. */
   wrap?: boolean | undefined;
   children?: ReactNode;
 } & Passthrough): ReactElement {

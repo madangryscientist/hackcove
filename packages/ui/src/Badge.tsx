@@ -13,7 +13,9 @@ export function Badge({
   corner = false,
   ...rest
 }: {
+  /** The number shown; above 99 it reads `99+`. */
   count: number;
+  /** Pin it to the top-right corner of its `relative` parent, over the icon. */
   corner?: boolean;
 } & Unstyled<Omit<HTMLAttributes<HTMLSpanElement>, "children">>) {
   return (

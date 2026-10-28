@@ -38,6 +38,7 @@ export function Callout({
 }: {
   /** Defaults to "info". */
   tone?: CalloutTone;
+  /** A bold line above the body. */
   title?: ReactNode;
   /** A flat strip: `border-b` only and no radius, to sit above a card body. */
   banner?: boolean;

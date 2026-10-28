@@ -56,6 +56,7 @@ export function Checkbox({
   "aria-describedby": describedBy,
   ...rest
 }: {
+  /** The text beside the box. Leave it out for a bare box (a table cell) and name it with `aria-label`. */
   label?: ReactNode;
   /** A muted line under the label that says more. It is the box's `aria-describedby`. */
   description?: ReactNode;
@@ -64,6 +65,10 @@ export function Checkbox({
    * @default md
    */
   size?: Size | undefined;
+  /**
+   * `start` puts the box on the label's first line, for a label that wraps; `center` centres it on the whole label. A `description` makes it `start`.
+   * @default center
+   */
   align?: "center" | "start" | undefined;
 } & Unstyled<Omit<ComponentPropsWithoutRef<"input">, "type" | "size" | "width">>): ReactElement {
   const { descriptionId, describedIds } = useDescription(description, describedBy);
