@@ -7,8 +7,6 @@ import {
   groupByEpic,
   type LinkRenderProps,
   Markdown,
-  PageHeader,
-  PageTitle,
   Pill,
   Stack,
   Text,
@@ -119,9 +117,6 @@ export const CardAsArticle: S = {
 export const Header: S = {
   render: () => <EpicHeader color="#cba6f7" label="HC-42 · Voice Inbox" />,
 };
-export const Title: S = {
-  render: () => <PageTitle title="Status" subtitle="what's happening now" />,
-};
 export const MarkdownStory: S = {
   render: () => <Markdown md={"## What I did\n- **HC-42** shipped\n- plain item"} />,
 };
@@ -207,14 +202,4 @@ export const DontEpicGroups: S = {
       <Text as="p">Choose how the site looks and what it tells you about.</Text>
     </Stack>
   ),
-};
-
-/** `PageHeader` is the top of a page: a title, a subtitle, and the fixed margin that puts every page's first block at the same height. */
-export const DoPageHeader: S = {
-  render: () => <PageHeader title="Status" subtitle="What is happening now" />,
-};
-
-/** `PageTitle` is deprecated and has no bottom margin, so a page that uses it sits at a different height. Use `PageHeader`. */
-export const DontPageHeader: S = {
-  render: () => <PageTitle title="Status" subtitle="What is happening now" />,
 };

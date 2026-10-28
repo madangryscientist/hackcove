@@ -3,7 +3,6 @@ import {
   Button,
   Caption,
   DateField,
-  DatePicker,
   Dialog,
   Drawer,
   fromISODate,
@@ -15,7 +14,7 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 
 /**
  * The calendar popover portals to <body>, outside the toolbar's theme frame. An app puts its theme's
- * scope class on <html>, so do the same here while a picker story is mounted.
+ * scope class on <html>, so do the same here while a calendar story is mounted.
  */
 function HtmlScope({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -28,7 +27,7 @@ function HtmlScope({ children }: { children: ReactNode }) {
 }
 
 const meta: Meta = {
-  title: "UI/DatePicker",
+  title: "UI/DateField",
   decorators: [
     (Story) => (
       <HtmlScope>
@@ -65,22 +64,22 @@ async function typeDigits(canvasElement: HTMLElement, digits: string): Promise<v
 }
 
 export const Empty: S = {
-  render: () => <DatePicker label="Date of birth" description="As on your ID document." />,
+  render: () => <DateField calendar label="Date of birth" description="As on your ID document." />,
 };
 
 export const Filled: S = {
-  render: () => <DatePicker label="Date of birth" defaultValue={birthday} />,
+  render: () => <DateField calendar label="Date of birth" defaultValue={birthday} />,
 };
 
 /** The day is typed and the month segment is active. */
 export const FocusedWhileTyping: S = {
-  render: () => <DatePicker label="Date of birth" />,
+  render: () => <DateField calendar label="Date of birth" />,
   play: ({ canvasElement }) => typeDigits(canvasElement, "17"),
 };
 
 /** 31/02/1990 does not exist: after focus leaves it stays as typed, with the error. */
 export const Invalid: S = {
-  render: () => <DatePicker label="Date of birth" />,
+  render: () => <DateField calendar label="Date of birth" />,
   play: async ({ canvasElement }) => {
     await typeDigits(canvasElement, "31021990");
     await new Promise<void>((resolve) => queueMicrotask(resolve));
@@ -91,7 +90,8 @@ export const Invalid: S = {
 /** An error from outside, a server's say: shown in place of the description, and the field is invalid. */
 export const ExternalError: S = {
   render: () => (
-    <DatePicker
+    <DateField
+      calendar
       label="Paid on"
       description="The day the money moved."
       error="That date is before the invoice."
@@ -100,14 +100,14 @@ export const ExternalError: S = {
 };
 
 export const Disabled: S = {
-  render: () => <DatePicker label="Date of birth" defaultValue={birthday} isDisabled />,
+  render: () => <DateField calendar label="Date of birth" defaultValue={birthday} isDisabled />,
 };
 
 /** The calendar open: Monday-first, outside days dimmed, the selected day filled. */
 export const Open: S = {
   render: () => (
     <div className="min-h-112">
-      <DatePicker label="Date of birth" defaultValue={birthday} defaultOpen />
+      <DateField calendar label="Date of birth" defaultValue={birthday} defaultOpen />
     </div>
   ),
 };
@@ -130,35 +130,35 @@ function Opened({ children }: { children: (close: () => void) => ReactNode }) {
   );
 }
 
-/** A picker in a modal Dialog: the calendar must still open, take focus and pick a day. */
+/** A calendar field in a modal Dialog: the calendar must still open, take focus and pick a day. */
 export const InDialog: S = {
   render: () => (
     <Opened>
       {(close) => (
         <Dialog title="Mark as paid" onClose={close}>
-          <DatePicker label="Paid on" />
+          <DateField calendar label="Paid on" />
         </Dialog>
       )}
     </Opened>
   ),
 };
 
-/** A picker in a modal Drawer: the calendar must still open, take focus and pick a day. */
+/** A calendar field in a modal Drawer: the calendar must still open, take focus and pick a day. */
 export const InDrawer: S = {
   render: () => (
     <Opened>
       {(close) => (
         <Drawer title="Mark as paid" onClose={close}>
-          <DatePicker label="Paid on" />
+          <DateField calendar label="Paid on" />
         </Drawer>
       )}
     </Opened>
   ),
 };
 
-/** A date is a `DatePicker`: DD/MM/YYYY segments the person can type, and a calendar button for the rest. */
+/** A date is a `DateField` with `calendar`: DD/MM/YYYY segments the person can type, and a calendar button for the rest. */
 export const DoDate: S = {
-  render: () => <DatePicker label="Date of birth" description="As on your ID document." />,
+  render: () => <DateField calendar label="Date of birth" description="As on your ID document." />,
 };
 
 /** A text input takes any characters, so 17/5/90, 1990-05-17 and "May" all arrive, and nothing says which is meant. */
@@ -169,7 +169,8 @@ export const DontDate: S = {
 /** A message from outside the field, a server's say, is `error`: it replaces the description and is announced as an alert. */
 export const DoError: S = {
   render: () => (
-    <DatePicker
+    <DateField
+      calendar
       label="Paid on"
       description="The day the money moved."
       error="That date is before the invoice."
@@ -179,7 +180,9 @@ export const DoError: S = {
 
 /** `isInvalid` alone turns the field red and says nothing about why. */
 export const DontError: S = {
-  render: () => <DatePicker label="Paid on" description="The day the money moved." isInvalid />,
+  render: () => (
+    <DateField calendar label="Paid on" description="The day the money moved." isInvalid />
+  ),
 };
 
 /** The value is a `CalendarDate`. `fromISODate` reads a stored `YYYY-MM-DD`, `toISODate` writes it back, and `name` posts the same string in a form. */
@@ -188,24 +191,30 @@ export const DoValue: S = {
     const [paid, setPaid] = useState(fromISODate("2026-10-26"));
     return (
       <Stack gap="xs">
-        <DatePicker label="Paid on" name="paidOn" value={paid} onChange={setPaid} />
+        <DateField calendar label="Paid on" name="paidOn" value={paid} onChange={setPaid} />
         <Caption>Stored as {toISODate(paid) || "nothing yet"}.</Caption>
       </Stack>
     );
   },
 };
 
-/** `DateField` is the same input without the calendar button, for a date the person knows by heart. */
+/** `DateField` without `calendar` is the same input with no calendar button, for a date the person knows by heart. */
 export const DoTypedOnly: S = {
   render: () => <DateField label="Date of birth" description="DD/MM/YYYY" />,
 };
 
-/** `sm`, `md` (the default) and `lg`, on the picker and the bare field. */
+/** `sm`, `md` (the default) and `lg`, with the calendar and without. */
 export const Sizes: S = {
   render: () => (
     <>
       {(["sm", "md", "lg"] as const).map((size) => (
-        <DatePicker key={size} label={`Picker, ${size}`} size={size} defaultValue={birthday} />
+        <DateField
+          calendar
+          key={size}
+          label={`Calendar, ${size}`}
+          size={size}
+          defaultValue={birthday}
+        />
       ))}
       {(["sm", "md", "lg"] as const).map((size) => (
         <DateField key={size} label={`Field, ${size}`} size={size} defaultValue={birthday} />

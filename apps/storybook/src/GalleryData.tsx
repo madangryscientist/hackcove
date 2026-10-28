@@ -6,7 +6,7 @@ import {
   Card,
   ListRow,
   Pill,
-  rowLinkClass,
+  TextLink,
   Table,
   TableBody,
   TableCell,
@@ -16,7 +16,6 @@ import {
   TableHeaderCell,
   TableRow,
   Text,
-  TextLink,
   Timeline,
   TimelineItem,
 } from "@hackcove/ui";
@@ -153,9 +152,9 @@ function QuotesTable() {
       <TableBody>
         <TableRow>
           <TableCell mono>
-            <a href="#Q-1042" className={rowLinkClass}>
+            <TextLink href="#Q-1042" stretch>
               Q-1042
-            </a>
+            </TextLink>
           </TableCell>
           <TableCell tone="strong">Naledi Dlamini</TableCell>
           <TableCell align="end" numeric>
@@ -164,9 +163,9 @@ function QuotesTable() {
         </TableRow>
         <TableRow tone="danger">
           <TableCell mono>
-            <a href="#Q-1043" className={rowLinkClass}>
+            <TextLink href="#Q-1043" stretch>
               Q-1043
-            </a>
+            </TextLink>
           </TableCell>
           <TableCell tone="muted">Pieter van Wyk</TableCell>
           <TableCell align="end" numeric>

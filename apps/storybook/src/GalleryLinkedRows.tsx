@@ -5,7 +5,7 @@ import {
   Cluster,
   ListRow,
   Pill,
-  rowLinkClass,
+  TextLink,
   Stack,
   Table,
   TableBody,
@@ -14,7 +14,6 @@ import {
   TableHeaderCell,
   TableRow,
   Text,
-  TextLink,
 } from "@hackcove/ui";
 
 /** A linked ListRow (and an `active` one), a linked TableRow and a link Card, each holding its own link and button above the stretched link, then a badged link Card and an `attention` Card. */
@@ -48,9 +47,9 @@ export function GalleryLinkedRows() {
         <TableBody>
           <TableRow>
             <TableCell mono>
-              <a href="#Q-2001" className={rowLinkClass}>
+              <TextLink href="#Q-2001" stretch>
                 Q-2001
-              </a>
+              </TextLink>
             </TableCell>
             <TableCell>
               <TextLink href="#Q-2001-client">Naledi Dlamini</TextLink>

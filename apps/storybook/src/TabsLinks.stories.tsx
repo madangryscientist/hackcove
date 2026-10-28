@@ -1,14 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { ButtonLink, NavTabs, Stack, type LinkRenderProps } from "@hackcove/ui";
+import { Button, Stack, Tabs, type LinkRenderProps } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/NavTabs" };
+const meta: Meta = { title: "UI/Tabs links" };
 export default meta;
 type S = StoryObj;
 
-/** A rail of links is `NavTabs` with `orientation="vertical"`: one nav landmark, the current page marked. */
+/** A rail of links is pill `Tabs` of links with `orientation="vertical"`: one nav landmark, the current page marked. */
 export const DoRail: S = {
   render: () => (
-    <NavTabs
+    <Tabs
+      variant="pill"
       orientation="vertical"
       label="Sections"
       items={[
@@ -20,26 +21,27 @@ export const DoRail: S = {
   ),
 };
 
-/** A stack of ghost `ButtonLink`s is not a nav landmark, and nothing marks the current page. */
+/** A stack of ghost link `Button`s is not a nav landmark, and nothing marks the current page. */
 export const DontRail: S = {
   render: () => (
     <Stack gap="xs">
-      <ButtonLink href="#overview" variant="ghost">
+      <Button href="#overview" variant="ghost">
         Overview
-      </ButtonLink>
-      <ButtonLink href="#button" variant="ghost">
+      </Button>
+      <Button href="#button" variant="ghost">
         Button
-      </ButtonLink>
-      <ButtonLink href="#card" variant="ghost">
+      </Button>
+      <Button href="#card" variant="ghost">
         Card
-      </ButtonLink>
+      </Button>
     </Stack>
   ),
 };
 
 export const Default: S = {
   render: () => (
-    <NavTabs
+    <Tabs
+      variant="pill"
       label="Main"
       items={[
         { label: "Map", href: "/" },
@@ -55,7 +57,8 @@ export const Default: S = {
 export const Vertical: S = {
   render: () => (
     <div className="w-56">
-      <NavTabs
+      <Tabs
+        variant="pill"
         orientation="vertical"
         label="Sections"
         items={[
@@ -77,7 +80,8 @@ function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
 /** Each tab's `render` draws the app's own Link and gets the tab's classes and `aria-current`. */
 export const WithRouterLink: S = {
   render: () => (
-    <NavTabs
+    <Tabs
+      variant="pill"
       label="Main"
       items={[
         { label: "Quotes", active: true, render: (p) => <FakeLink to="/quotes" {...p} /> },
@@ -93,7 +97,8 @@ export const Sizes: S = {
   render: () => (
     <Stack gap="sm">
       {(["sm", "md", "lg"] as const).map((size) => (
-        <NavTabs
+        <Tabs
+          variant="pill"
           key={size}
           size={size}
           label={`Main, ${size}`}

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Caption, Card, Divider, InlineLinks, Stack, Text, TextLink } from "@hackcove/ui";
+import { Caption, Card, Divider, MetaList, Stack, Text, TextLink } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Divider" };
 export default meta;
@@ -25,10 +25,10 @@ export const AboveAFooter: S = {
       <footer className="pt-8">
         <Caption as="p">Hack Cove (Pty) Ltd</Caption>
         <div className="mt-2">
-          <InlineLinks>
+          <MetaList nowrap>
             <TextLink href="/privacy">Privacy</TextLink>
             <TextLink href="/terms">Terms</TextLink>
-          </InlineLinks>
+          </MetaList>
         </div>
       </footer>
     </div>

@@ -3,7 +3,7 @@
  * the TypeScript checker: the props of every component, and the signature of every helper.
  * `className` and `style` are left out: the library has no styling escape hatch to document. Props
  * that only come from React's DOM types (`onClick`) and the `aria-*` props are described once, in
- * prose; the react-aria props a component picks (`DatePicker`'s `value`) are its own and stay.
+ * prose; the react-aria props a component picks (`DateField`'s `value`) are its own and stay.
  */
 import { globSync } from "node:fs";
 import { dirname, join } from "node:path";

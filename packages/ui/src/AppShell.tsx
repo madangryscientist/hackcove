@@ -192,13 +192,13 @@ export function AppShell({
 }: {
   /** The brand: a logo and a name, in the header's brand type, with the gap between them. `AppShellBrand` makes both one link. */
   brand?: ReactNode;
-  /** The main navigation, e.g. `NavTabs` (it is already a `<nav>`). */
+  /** The main navigation, e.g. a `Tabs variant="pill"` of links (it is already a `<nav>`). */
   nav?: ReactNode;
   /** The end of the row: a picker, a theme toggle. Gap-2, vertically centred; no child shrinks, and a full-width control (a `Select` at its default) sizes to its content. */
   controls?: ReactNode;
   /** The escape hatch: a free node in the header row, after `brand` and `nav`. */
   header?: ReactNode;
-  /** A second fixed-height row under the header, e.g. `NavTabs`. */
+  /** A second fixed-height row under the header, e.g. a `Tabs variant="pill"` of links. */
   subnav?: ReactNode;
   /** The page footer: small muted text in a `Container`, under a hairline. Hidden in print with `hideChromeInPrint`. */
   footer?: ReactNode;

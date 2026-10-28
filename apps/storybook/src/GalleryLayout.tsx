@@ -10,7 +10,7 @@ import {
   Container,
   Field,
   Input,
-  NavTabs,
+  Tabs,
   PageHeader,
   Section,
   Stack,
@@ -32,7 +32,8 @@ export function GalleryLayout() {
           />
         }
         nav={
-          <NavTabs
+          <Tabs
+            variant="pill"
             label="Gallery shell"
             items={[
               { label: "Builds", href: "#builds", active: true },

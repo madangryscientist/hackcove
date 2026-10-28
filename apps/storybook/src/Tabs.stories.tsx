@@ -4,10 +4,9 @@ import {
   Breadcrumbs,
   Button,
   type LinkRenderProps,
-  NavTabs,
+  Tabs,
   PageHeader,
   Stack,
-  Tabs,
   Text,
 } from "@hackcove/ui";
 
@@ -45,10 +44,11 @@ export const DoSwitchView: S = {
   },
 };
 
-/** Going to another page is not a tab: `NavTabs` are links, so the URL and history move. */
+/** Going to another page is not a tab: `Tabs variant="pill"` with `href` items are links, so the URL and history move. */
 export const DoSwitchPage: S = {
   render: () => (
-    <NavTabs
+    <Tabs
+      variant="pill"
       label="Sections"
       items={[
         { label: "Quotes", href: "#quotes", active: true },
@@ -163,7 +163,7 @@ export const WithDisabledTab: S = {
   },
 };
 
-/** The current tab is a filled pill, as `NavTabs` draws it, with no rule under the row. */
+/** The current tab is a filled pill, as a row of page links draws it, with no rule under the row. */
 export const Pill: S = {
   render: () => {
     const [value, setValue] = useState("overview");

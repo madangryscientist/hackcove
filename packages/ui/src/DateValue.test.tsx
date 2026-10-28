@@ -4,7 +4,6 @@ import { act, useState } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { errorOf, leave, posted, segmentsOf, textOf, type } from "./date.harness.js";
 import { DateField } from "./DateField.js";
-import { DatePicker } from "./DatePicker.js";
 import { mount, unmount } from "./dom.harness.js";
 
 /** A parent that stores what the field reports and passes it back. */
@@ -82,7 +81,7 @@ afterEach(() => {
 
 describe.each([
   ["DateField", DateField],
-  ["DatePicker", DatePicker as typeof DateField],
+  ["DateField calendar", ((props) => <DateField {...props} calendar />) as typeof DateField],
 ])("%s reports what it shows", (_component, Field) => {
   const birthday = new CalendarDate(1990, 5, 17);
 

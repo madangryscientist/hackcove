@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Breadcrumbs, crumbLinkClass, type LinkRenderProps } from "@hackcove/ui";
+import { Breadcrumbs, type LinkRenderProps } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Breadcrumbs" };
 export default meta;
@@ -32,7 +32,7 @@ export const DoHierarchy: S = {
   ),
 };
 
-/** Siblings are not a hierarchy: switching between peer sections is `NavTabs`. */
+/** Siblings are not a hierarchy: switching between peer sections is `Tabs variant="pill"` of links. */
 export const DontHierarchy: S = {
   render: () => (
     <Breadcrumbs
@@ -45,11 +45,7 @@ export const DontHierarchy: S = {
   ),
 };
 
-const link = (href: string, label: string) => (
-  <a href={href} className={crumbLinkClass}>
-    {label}
-  </a>
-);
+const link = (href: string, label: string) => ({ label, href });
 
 export const Two: S = {
   render: () => <Breadcrumbs crumbs={[link("/", "Projects"), "Hack Cove"]} />,

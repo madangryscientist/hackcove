@@ -1,5 +1,6 @@
 import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import { cx, focusRing } from "./cx.js";
+import { type LinkRender, renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 
@@ -59,23 +60,21 @@ const DASHED: Look = {
   hover: "hover:border-violet-400 hover:text-violet-700",
 };
 
-// The selected look of a pressed toggle: the tone's border and tint at rest. Only the boxed
-// outline and ghost variants show it; a primary is already filled, and link and dashed have no
-// selected state.
-const PRESSED: Record<ButtonTone, Look> = {
-  default: { color: "border-violet-600 bg-violet-50 text-violet-700", hover: "hover:bg-violet-50" },
-  positive: {
-    color: "border-emerald-600 bg-emerald-50 text-emerald-700",
-    hover: "hover:bg-emerald-50",
-  },
-  danger: { color: "border-red-600 bg-red-50 text-red-700", hover: "hover:bg-red-50" },
+// An outline or ghost Button with `pressed` set is a toggle, such as a filter chip: off is neutral
+// (the surface, a hairline, muted text, lit with the accent on hover), on is the tone's primary
+// fill, so the selected one stands out in every theme. A primary is already filled, and link and
+// dashed have no selected state; with `pressed` left out, outline and ghost keep their own look.
+const TOGGLE_OFF: Look = {
+  color: "border-slate-200 bg-white text-slate-600",
+  hover: "hover:border-violet-400",
 };
 
-function lookOf(variant: ButtonVariant, tone: ButtonTone, pressed = false): Look {
+function lookOf(variant: ButtonVariant, tone: ButtonTone, pressed?: boolean): Look {
   if (variant === "dashed") return DASHED;
-  return pressed && (variant === "outline" || variant === "ghost")
-    ? PRESSED[tone]
-    : TONE[tone][variant];
+  if (pressed !== undefined && (variant === "outline" || variant === "ghost")) {
+    return pressed ? TONE[tone].primary : TOGGLE_OFF;
+  }
+  return TONE[tone][variant];
 }
 
 // Blocked replaces the variant's colour and hover rather than overriding them, so no `!` is needed.
@@ -121,25 +120,25 @@ function shape(variant: ButtonVariant, size: ButtonSize): string {
   );
 }
 
-/** The classes of a Button, for a router's own <Link> that should look like one. */
+/** The classes of an idle Button: what `href` draws, and what the tests compare against. */
 export function buttonClass(
   variant: ButtonVariant = "primary",
   { size = "md", tone = "default" }: Omit<ButtonLook, "variant"> = {},
 ): string {
-  return idleClass(variant, size, tone, false);
+  return idleClass(variant, size, tone);
 }
 
 function idleClass(
   variant: ButtonVariant,
   size: ButtonSize,
   tone: ButtonTone,
-  pressed: boolean,
+  pressed?: boolean,
 ): string {
   const look = lookOf(variant, tone, pressed);
   return cx(shape(variant, size), DISABLED_PLAIN, look.color, look.hover);
 }
 
-type ButtonProps = ButtonLook & {
+type ButtonAsButton = ButtonLook & {
   /** Why the button cannot be pressed: disables it, sets it as the `title`, and greys it flat. */
   disabledReason?: string | undefined;
   /** The work is in flight: disabled, `aria-busy`, keeps its colour. Wins over `disabledReason`. */
@@ -147,12 +146,44 @@ type ButtonProps = ButtonLook & {
   /** The label while `busy`, in place of the children. */
   busyLabel?: string | undefined;
   /**
-   * A toggle: sets `aria-pressed`, and when `true` draws the selected look (the tone's border and
-   * tint) on the `outline` and `ghost` variants. Left out, the button is not a toggle and has no
-   * `aria-pressed`.
+   * A toggle: sets `aria-pressed`. On `outline` and `ghost`, `false` draws the neutral off look
+   * and `true` the tone's primary fill, so a row of filter chips shows the selected one plainly.
+   * Left out, the button is not a toggle, has no `aria-pressed` and keeps its variant's look.
    */
   pressed?: boolean | undefined;
+  href?: undefined;
+  render?: undefined;
+  external?: undefined;
 } & Unstyled<ComponentPropsWithoutRef<"button">>;
+
+type ButtonAsLink = ButtonLook & {
+  /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
+  external?: boolean | undefined;
+  disabledReason?: undefined;
+  busy?: undefined;
+  busyLabel?: undefined;
+  pressed?: undefined;
+} & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href">> &
+  (
+    | {
+        /** Makes the button a link to this URL. */
+        href: string;
+        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/quotes" {...p} />`. */
+        render?: LinkRender | undefined;
+      }
+    | {
+        /** Makes the button a link to this URL. */
+        href?: string | undefined;
+        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/quotes" {...p} />`. */
+        render: LinkRender;
+      }
+  );
+
+type ButtonProps = ButtonAsButton | ButtonAsLink;
+
+function isLink(props: ButtonProps): props is ButtonAsLink {
+  return props.href !== undefined || props.render !== undefined;
+}
 
 type State = "blocked" | "busy" | "idle";
 
@@ -166,7 +197,7 @@ function stateOf(busy: boolean, disabledReason: string | undefined): State {
 function stateClass(
   { variant = "primary", size = "md", tone = "default" }: ButtonLook,
   state: State,
-  pressed: boolean,
+  pressed: boolean | undefined,
 ): string {
   if (state === "blocked") {
     return cx(shape(variant, size), BLOCKED_BY_VARIANT[variant] ?? BLOCKED);
@@ -180,11 +211,37 @@ function stateClass(
  * underline on hover, for an in-line action; `dashed` is the full-width "add" row, a dashed
  * outline with muted text that fills its container, with an optional leading icon in the
  * children). `size="sm"` is compact and `size="lg"` larger; `tone="positive"` is green and `tone="danger"` is red;
- * `pressed` makes it a toggle with a selected look.
+ * `pressed` makes it a toggle: neutral when off, the tone's fill when on.
  * Defaults to `type="button"`. `disabledReason` and `busy` are the two disabled states that say
- * more than a plain `disabled`, which keeps its half-opacity look.
+ * more than a plain `disabled`, which keeps its half-opacity look. `href` makes it a link instead,
+ * with the same look (a plain `<a>`, or with `render` the app's own router `<Link>`:
+ * `render={(p) => <Link to="/quotes" {...p} />}`; `external` opens a new tab).
  */
-export function Button({
+export function Button(props: ButtonProps): ReactElement {
+  return isLink(props) ? <LinkButton {...props} /> : <PlainButton {...props} />;
+}
+
+function LinkButton({
+  variant = "primary",
+  size = "md",
+  tone = "default",
+  href,
+  render,
+  external = false,
+  children,
+  ...rest
+}: ButtonAsLink): ReactElement {
+  return renderLink({
+    ...rest,
+    href,
+    render,
+    external,
+    className: buttonClass(variant, { size, tone }),
+    children,
+  });
+}
+
+function PlainButton({
   variant,
   size,
   tone,
@@ -196,13 +253,13 @@ export function Button({
   title,
   disabled,
   ...rest
-}: ButtonProps): ReactElement {
+}: ButtonAsButton): ReactElement {
   const state = stateOf(busy, disabledReason);
   const blocked = state === "blocked";
   return (
     <button
       type="button"
-      className={stateClass({ variant, size, tone }, state, pressed === true)}
+      className={stateClass({ variant, size, tone }, state, pressed)}
       disabled={disabled || busy || blocked}
       aria-busy={busy || undefined}
       aria-pressed={pressed}

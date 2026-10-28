@@ -22,7 +22,7 @@ export const pages: ComponentSection = {
       accessibility: [
         "Each page is a `CenteredLayout` card, so the title is the page's `h1` and the copy under it is a paragraph.",
         '`detail` is shown in a `CodeBlock` labelled "Error".',
-        'The buttons are a `Button` and a `ButtonLink`, with their own focus rings; "Back to home" is a real link.',
+        'The buttons are a `Button` and a `Button` with `href`, with their own focus rings; "Back to home" is a real link.',
         "The pages do not set an HTTP status; send the 404, 403 or 500 from the server.",
       ],
       api: ["NotFound", "Forbidden", "ErrorPage", "Offline", "Maintenance"],

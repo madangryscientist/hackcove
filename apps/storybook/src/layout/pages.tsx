@@ -4,7 +4,6 @@ import {
   Button,
   Card,
   CardGrid,
-  crumbLinkClass,
   DetailLayout,
   Field,
   FilterGroup,
@@ -19,7 +18,6 @@ import {
   Select,
   Text,
   Textarea,
-  ToggleChip,
 } from "@hackcove/ui";
 
 // Realistic page bodies, shared by the layout stories and the Pages stories. Each is the layout
@@ -40,10 +38,18 @@ export function ListPage({ isEmpty = false }: { isEmpty?: boolean }) {
       actions={<Button>New quote</Button>}
       filters={
         <FilterGroup legend="Status">
-          <ToggleChip pressed>All</ToggleChip>
-          <ToggleChip pressed={false}>Draft</ToggleChip>
-          <ToggleChip pressed={false}>Sent</ToggleChip>
-          <ToggleChip pressed={false}>Accepted</ToggleChip>
+          <Button variant="outline" size="sm" pressed>
+            All
+          </Button>
+          <Button variant="outline" size="sm" pressed={false}>
+            Draft
+          </Button>
+          <Button variant="outline" size="sm" pressed={false}>
+            Sent
+          </Button>
+          <Button variant="outline" size="sm" pressed={false}>
+            Accepted
+          </Button>
         </FilterGroup>
       }
       isEmpty={isEmpty}
@@ -75,16 +81,7 @@ export function ListPage({ isEmpty = false }: { isEmpty?: boolean }) {
 export function DetailPage() {
   return (
     <DetailLayout
-      breadcrumbs={
-        <Breadcrumbs
-          crumbs={[
-            <a key="quotes" href="#quotes" className={crumbLinkClass}>
-              Quotes
-            </a>,
-            "Q-1042",
-          ]}
-        />
-      }
+      breadcrumbs={<Breadcrumbs crumbs={[{ label: "Quotes", href: "#quotes" }, "Q-1042"]} />}
       title="Quote Q-1042"
       subtitle="Naledi Mokoena"
       actions={
@@ -158,16 +155,7 @@ export function FormPage() {
 export function ProsePage() {
   return (
     <ProseLayout
-      breadcrumbs={
-        <Breadcrumbs
-          crumbs={[
-            <a key="home" href="#home" className={crumbLinkClass}>
-              Hack Cove
-            </a>,
-            "Privacy",
-          ]}
-        />
-      }
+      breadcrumbs={<Breadcrumbs crumbs={[{ label: "Hack Cove", href: "#home" }, "Privacy"]} />}
       title="Privacy"
       subtitle="Last updated 12 October 2026"
       gap="lg"

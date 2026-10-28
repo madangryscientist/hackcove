@@ -25,7 +25,7 @@ export const data: ComponentSection = {
         "Group rows with a `TableGroupRow` and give it `colSpan` equal to the table's column count; `trailing` is a count or a subtotal at the far end. A full-width note or empty state is a `TableCell` with `colSpan`.",
         'A column with nothing to say in its head (its actions) takes a `TableHeaderCell` with `srLabel="Actions"`. `variant="plain"` drops the card, for a table inside a `Card`.',
         "A prose cell wraps; a `numeric` or `mono` cell never breaks. `truncate` cuts a long value to one line and keeps its full text as a `title`; its content is plain text.",
-        "To make a whole row clickable, put one router `<Link>` with `rowLinkClass` in its first cell. Keep an action that is not navigation a `Button` in an actions column.",
+        "To make a whole row clickable, put one `TextLink` with `stretch` in its first cell (with `render` for the app's router link). Keep an action that is not navigation a `Button` in an actions column.",
       ],
       accessibility: [
         "A Table renders a native `<table>`; `caption` is its accessible name, visually hidden.",
@@ -33,7 +33,7 @@ export const data: ComponentSection = {
         "`srLabel` is hidden text inside the header cell, so an actions column still has a name for a screen reader.",
         "Colour alone never carries a row's or a cell's status; name it in text.",
         "A `truncate` cell puts its full text in a `title`.",
-        "A `rowLinkClass` link is a real link and the only tab stop in its row; the row's whole area is its click target.",
+        "A stretched `TextLink` is a real link and the only tab stop in its row; the row's whole area is its click target.",
         "On a narrow screen the card scrolls sideways instead of squeezing its columns.",
       ],
       api: [
@@ -45,12 +45,6 @@ export const data: ComponentSection = {
         "TableHeaderCell",
         "TableCell",
         "TableGroupRow",
-      ],
-      functions: [
-        {
-          name: "rowLinkClass",
-          text: "The one link in a row that stretches over the whole row, for a router's own `<Link>` in the row's first cell; a plain link is a `TextLink`.",
-        },
       ],
     },
     {

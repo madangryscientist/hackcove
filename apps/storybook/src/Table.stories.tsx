@@ -3,7 +3,7 @@ import {
   type CellTone,
   Card,
   Pill,
-  rowLinkClass,
+  TextLink,
   Table,
   TableBody,
   TableCell,
@@ -39,9 +39,9 @@ function QuotesTable() {
         {quotes.map((q) => (
           <TableRow key={q.ref}>
             <TableCell mono>
-              <a href={`#${q.ref}`} className={rowLinkClass}>
+              <TextLink href={`#${q.ref}`} stretch>
                 {q.ref}
-              </a>
+              </TextLink>
             </TableCell>
             <TableCell tone="strong">{q.client}</TableCell>
             <TableCell align="end" numeric>

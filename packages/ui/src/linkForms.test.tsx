@@ -7,7 +7,7 @@ import { focusRing } from "./cx.js";
 import { Pill } from "./Pill.js";
 import { Card } from "./Card.js";
 
-// `href` (and `render`, the router hook TextLink and ButtonLink use) makes the whole part the link:
+// `href` (and `render`, the router hook TextLink and Button use) makes the whole part the link:
 // Card, IconButton and Pill. Pill also has a button form.
 
 function Router({ to, ...rest }: { to: string } & LinkRenderProps) {

@@ -7,7 +7,7 @@ import {
   FormLayout,
   Input,
   ListLayout,
-  NavTabs,
+  Tabs,
   Stack,
 } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
@@ -28,7 +28,8 @@ export const FullPage: S = {
     <AppShell
       brand={<a href="#">Hack Cove</a>}
       nav={
-        <NavTabs
+        <Tabs
+          variant="pill"
           label="Main"
           items={[
             { label: "Quotes", href: "#quotes", active: true },

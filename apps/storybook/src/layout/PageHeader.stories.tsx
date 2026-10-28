@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Breadcrumbs, Button, crumbLinkClass, NavTabs, PageHeader, Text } from "@hackcove/ui";
+import { Breadcrumbs, Button, Tabs, PageHeader, Text } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 const meta: Meta = {
@@ -16,15 +16,7 @@ export const AllSlots: S = {
       <PageHeader
         breadcrumbs={
           <Breadcrumbs
-            crumbs={[
-              <a key="org" href="#" className={crumbLinkClass}>
-                Org
-              </a>,
-              <a key="project" href="#" className={crumbLinkClass}>
-                Hack Cove
-              </a>,
-              "Build 412",
-            ]}
+            crumbs={[{ label: "Org", href: "#" }, { label: "Hack Cove", href: "#" }, "Build 412"]}
           />
         }
         title="Build 412"
@@ -36,7 +28,8 @@ export const AllSlots: S = {
           </>
         }
         tabs={
-          <NavTabs
+          <Tabs
+            variant="pill"
             label="Build"
             items={[
               { label: "Changed", href: "#changed", active: true },

@@ -1,7 +1,7 @@
 import {
   Caption,
   Divider,
-  InlineLinks,
+  MetaList,
   ProseLayout,
   Section,
   Stack,
@@ -38,10 +38,10 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
         <Divider />
         <Stack gap="xs">
           <Caption as="p">{site.legalName}</Caption>
-          <InlineLinks>
+          <MetaList nowrap>
             <TextLink href={`mailto:${site.contactEmail}`}>{site.contactEmail}</TextLink>
             <TextLink href={other.href}>{other.label}</TextLink>
-          </InlineLinks>
+          </MetaList>
         </Stack>
       </footer>
     </ProseLayout>

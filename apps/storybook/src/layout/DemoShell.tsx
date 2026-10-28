@@ -1,11 +1,13 @@
 import type { ReactNode } from "react";
-import { AppShell, NavTabs, appShellRootClass } from "@hackcove/ui";
+import { AppShell, Tabs, appShellRootClassFor } from "@hackcove/ui";
 
 /** A Layout story's `beforeEach`: what an app does once on its own `<html>` (reserve the scrollbar), undone when the story is left. */
 export function layoutPage(): () => void {
   const root = document.documentElement;
-  root.classList.add(appShellRootClass);
-  return () => root.classList.remove(appShellRootClass);
+  // The light scheme adds no class, so this is only the shell's own root class.
+  const shellClass = appShellRootClassFor("light");
+  root.classList.add(shellClass);
+  return () => root.classList.remove(shellClass);
 }
 
 const nav = ["Overview", "Builds", "Snapshots", "Reviews", "Projects", "Members", "Settings"];
@@ -39,7 +41,8 @@ export function DemoShell({
         )
       }
       nav={
-        <NavTabs
+        <Tabs
+          variant="pill"
           label="Main"
           items={nav.map((label, index) => ({ label, href: `#${label}`, active: index === 1 }))}
         />

@@ -8,7 +8,7 @@ export type PropDoc = {
   description: string;
 };
 
-/** One export: a component and its props, or a helper (`buttonClass`) and its signature. */
+/** One export: a component and its props, or a helper (`fromISODate`) and its signature. */
 export type ComponentDoc = {
   name: string;
   description: string;

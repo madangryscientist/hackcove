@@ -4,7 +4,7 @@ import {
   Button,
   Card,
   Cluster,
-  NavTabs,
+  Tabs,
   PageHeader,
   PageHeading,
   Stack,
@@ -38,7 +38,8 @@ export const DoSlots: S = {
         </>
       }
       tabs={
-        <NavTabs
+        <Tabs
+          variant="pill"
           label="Build"
           items={[
             { label: "Changed", href: "#changed", active: true },

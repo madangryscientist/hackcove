@@ -20,7 +20,7 @@ export const actions: ComponentSection = {
         'Put one primary Button in a view. The other actions use `variant="outline"`, `"ghost"` or `"link"`; `variant="dashed"` is the full-width "add another" row at the foot of a list.',
         "Group the actions in a `ButtonGroup`, so the row spaces and wraps the same everywhere; `end` pushes one item, such as a Back link, to the far side, and `label` names the group.",
         "Say why a button cannot be pressed with `disabledReason`; use `busy` while the work is in flight.",
-        "Going to another page is a `ButtonLink`, not a Button.",
+        "Going to another page is a `Button` with `href`, or `render` for the app's router link: a real `<a>` with the same look.",
         'A destructive action is `tone="danger"`, an accept is `tone="positive"`; `size="sm"` is for a button inside a row or a card header, `size="lg"` for the one action of a hero or a sign-in form.',
         "`pressed` makes a toggle; `busyLabel` replaces the label while `busy`.",
         "An icon-only action is an `IconButton`, not a Button holding a glyph.",
@@ -31,13 +31,7 @@ export const actions: ComponentSection = {
         "`busy` sets `aria-busy` and disables the button until the work is done.",
         "Every Button has a focus ring from the component, so the keyboard focus is always visible.",
       ],
-      api: ["Button", "ButtonLink", "ButtonGroup"],
-      functions: [
-        {
-          name: "buttonClass",
-          text: "The Button's look as a class string, for a router link that has to look like a Button when `ButtonLink`'s `render` cannot draw it.",
-        },
-      ],
+      api: ["Button", "ButtonGroup"],
     },
     {
       slug: "icon-button",

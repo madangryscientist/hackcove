@@ -8,7 +8,7 @@ import {
   FullBleedLayout,
   KeyValue,
   KeyValueList,
-  NavTabs,
+  Tabs,
   Overline,
   Text,
 } from "@hackcove/ui";
@@ -32,7 +32,8 @@ export const FullPage: S = {
     <AppShell
       brand={<a href="#">Hack Cove</a>}
       nav={
-        <NavTabs
+        <Tabs
+          variant="pill"
           label="Main"
           items={[
             { label: "Quotes", href: "#quotes", active: true },

@@ -16,6 +16,7 @@ import {
   Text,
 } from "react-aria-components";
 import { cx, focusRing } from "./cx.js";
+import { CalendarDateField } from "./DateFieldCalendar.js";
 import { toISODate } from "./isoDate.js";
 import type { DataAttributes } from "./link.js";
 import { ShownInput, useShownDate } from "./shownDate.js";
@@ -31,7 +32,8 @@ export const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => ({
 
 type Segment = NonNullable<ContextType<typeof DateFieldStateContext>>["segments"][number];
 
-export type DateFieldProps = {
+/** The props of a plain `DateField`, without the calendar. */
+export type FieldProps = {
   /** The field's visible label, above it. Without one, name the field with `aria-label`. */
   label?: ReactNode;
   /** A hint under the field; an error replaces it. */
@@ -64,6 +66,21 @@ export type DateFieldProps = {
     | "aria-describedby"
     | "aria-details"
   >;
+
+export type DateFieldProps = FieldProps &
+  (
+    | {
+        /** Adds a calendar button that opens a month view in a popover; the field is a date picker. */
+        calendar?: false | undefined;
+        /** Only a `calendar` field takes `defaultOpen`. */
+        defaultOpen?: undefined;
+      }
+    | {
+        calendar: true;
+        /** Open the calendar on mount. */
+        defaultOpen?: boolean | undefined;
+      }
+  );
 
 /** What the segments show, as the day segment reports it to the field. */
 export type Read = {
@@ -198,8 +215,19 @@ export const labelClass = "text-sm font-medium text-slate-700";
 export const iconButtonLook = `inline-flex shrink-0 items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 disabled:opacity-50 ${focusRing}`;
 export const iconButtonClass = `${iconButtonLook} h-7 w-7`;
 
-/** A segmented DD / MM / YYYY date input. Values are `CalendarDate`s; `name` posts it as `YYYY-MM-DD`. */
-export function DateField({
+/**
+ * A segmented DD / MM / YYYY date input. Values are `CalendarDate`s; `name` posts it as
+ * `YYYY-MM-DD`. `calendar` adds a calendar button that opens a month view in a popover, at the
+ * same height as the plain field; `defaultOpen` opens it on mount.
+ */
+export function DateField({ calendar, defaultOpen, ...field }: DateFieldProps): ReactElement {
+  if (calendar) {
+    return <CalendarDateField {...field} {...(defaultOpen === undefined ? {} : { defaultOpen })} />;
+  }
+  return <PlainDateField {...field} />;
+}
+
+function PlainDateField({
   label,
   description,
   errorMessage,
@@ -211,7 +239,7 @@ export function DateField({
   name,
   size = "md",
   ...rest
-}: DateFieldProps): ReactElement {
+}: FieldProps): ReactElement {
   const { inner, setInner, shown, impossible, onRead, validate, leaving, onBlurCapture, onLeft } =
     useShownDate({
       value,

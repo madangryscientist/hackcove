@@ -5,7 +5,7 @@ import {
   Card,
   Code,
   ColourSchemeToggle,
-  NavTabs,
+  Tabs,
   PageHeader,
   Select,
   Stack,
@@ -23,7 +23,8 @@ export default meta;
 type S = StoryObj;
 
 const subnav = (
-  <NavTabs
+  <Tabs
+    variant="pill"
     label="Project"
     items={["Latest", "Branches", "Baselines", "Flaky", "Ignore boxes", "Audit"].map(
       (label, i) => ({
@@ -102,7 +103,8 @@ export const OverflowingSubnav: S = {
   render: () => (
     <DemoShell
       subnav={
-        <NavTabs
+        <Tabs
+          variant="pill"
           label="Personal"
           items={personal.map((label, i) => ({ label, href: `#${label}`, active: i === 0 }))}
         />
@@ -115,7 +117,7 @@ export const OverflowingSubnav: S = {
 
 /**
  * The three header slots, none with a wrapper or `className` from the app: `brand` is the logo and
- * name at the brand type with the logo gap, `nav` is a `NavTabs`, and `controls` sits at the end of
+ * name at the brand type with the logo gap, `nav` is a `Tabs variant="pill"` of links, and `controls` sits at the end of
  * the row, gap-2 and vertically centred. No child of `controls` shrinks, and the `Select` at its
  * default `width="full"` sizes to its content, so the toggle keeps its square.
  */

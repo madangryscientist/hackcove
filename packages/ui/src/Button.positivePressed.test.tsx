@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { Button, buttonClass } from "./Button.js";
 
 const html = renderToStaticMarkup;
+const classOf = (out: string) => /class="([^"]*)"/.exec(out)?.[1] ?? "";
 
 describe("Button positive tone", () => {
   it("primary is a solid green with the green hover and no violet or red", () => {
@@ -59,17 +60,21 @@ describe("Button pressed", () => {
     expect(html(<Button variant="outline">X</Button>)).not.toContain("aria-pressed");
   });
 
-  it("pressed={false} sets aria-pressed=false and keeps the resting look", () => {
-    const out = html(
-      <Button variant="outline" pressed={false}>
-        X
-      </Button>,
-    );
-    expect(out).toContain('aria-pressed="false"');
-    expect(out).toContain(`class="${buttonClass("outline")}`);
+  it("pressed={false} sets aria-pressed=false and draws the neutral off look", () => {
+    for (const variant of ["outline", "ghost"] as const) {
+      const out = html(
+        <Button variant={variant} pressed={false}>
+          X
+        </Button>,
+      );
+      expect(out).toContain('aria-pressed="false"');
+      expect(out).toContain("border-slate-200 bg-white text-slate-600");
+      expect(out).toContain("hover:border-violet-400");
+      expect(out).not.toMatch(/(?:bg|border|text)-violet-600/);
+    }
   });
 
-  it("pressed sets aria-pressed=true and draws the selected look on outline and ghost", () => {
+  it("pressed sets aria-pressed=true and draws the tone's primary fill on outline and ghost", () => {
     for (const variant of ["outline", "ghost"] as const) {
       const out = html(
         <Button variant={variant} pressed>
@@ -77,28 +82,51 @@ describe("Button pressed", () => {
         </Button>,
       );
       expect(out).toContain('aria-pressed="true"');
-      expect(out).toContain("border-violet-600");
-      expect(out).toContain("bg-violet-50");
-      expect(out).toContain("text-violet-700");
+      expect(out).toContain("border-violet-600 bg-violet-600 text-violet-50");
+      expect(out).toContain("hover:bg-violet-700");
     }
   });
 
-  it("the selected look follows the tone", () => {
+  it("on and off differ, on is the primary fill, and left out keeps the variant's own look", () => {
+    const on = classOf(
+      html(
+        <Button variant="outline" size="sm" pressed>
+          X
+        </Button>,
+      ),
+    );
+    const off = classOf(
+      html(
+        <Button variant="outline" size="sm" pressed={false}>
+          X
+        </Button>,
+      ),
+    );
+    expect(on).not.toBe(off);
+    const primary = buttonClass("primary", { size: "sm" });
+    for (const fill of ["bg-violet-600", "text-violet-50", "hover:bg-violet-700"]) {
+      expect(primary).toContain(fill);
+      expect(on).toContain(fill);
+      expect(off).not.toContain(fill);
+    }
+    expect(classOf(html(<Button variant="outline">X</Button>))).toBe(buttonClass("outline"));
+    expect(classOf(html(<Button variant="ghost">X</Button>))).toBe(buttonClass("ghost"));
+  });
+
+  it("the on fill follows the tone", () => {
     const positive = html(
       <Button variant="outline" tone="positive" pressed>
         X
       </Button>,
     );
-    expect(positive).toContain("border-emerald-600");
-    expect(positive).toContain("bg-emerald-50");
+    expect(positive).toContain("border-emerald-600 bg-emerald-600 text-emerald-50");
     expect(positive).not.toMatch(/(?:bg|border|text)-violet/);
     const danger = html(
       <Button variant="ghost" tone="danger" pressed>
         X
       </Button>,
     );
-    expect(danger).toContain("border-red-600");
-    expect(danger).toContain("bg-red-50");
+    expect(danger).toContain("border-red-600 bg-red-600 text-red-50");
     expect(danger).not.toMatch(/(?:bg|border|text)-violet/);
   });
 
@@ -116,7 +144,7 @@ describe("Button pressed", () => {
     }
   });
 
-  it("blocked stays grey and busy keeps the selected colour", () => {
+  it("blocked stays grey and busy keeps the on fill", () => {
     const blocked = html(
       <Button variant="outline" pressed disabledReason="No">
         X
@@ -129,7 +157,7 @@ describe("Button pressed", () => {
         X
       </Button>,
     );
-    expect(busy).toContain("bg-violet-50");
+    expect(busy).toContain("bg-violet-600");
     expect(busy).toContain("cursor-progress");
   });
 });

@@ -12,8 +12,8 @@ import {
 import { cx } from "./cx.js";
 import { CalendarPopover, calendarIcon } from "./DateCalendar.js";
 import {
-  type DateFieldProps,
   FieldSegment,
+  type FieldProps,
   LOCALE,
   forcedInvalid,
   Notes,
@@ -29,11 +29,6 @@ const PICKER_SIZE: Record<Size, { frame: string; button: string }> = {
   sm: { frame: "py-0.5 pl-2 pr-0.5 text-xs", button: "h-5 w-5" },
   md: { frame: "py-1 pl-2.5 pr-1 text-sm", button: "h-7 w-7" },
   lg: { frame: "py-1.5 pl-3 pr-1.5 text-base", button: "h-8 w-8" },
-};
-
-export type DatePickerProps = DateFieldProps & {
-  /** Open the calendar on mount. */
-  defaultOpen?: boolean;
 };
 
 /**
@@ -57,8 +52,8 @@ function PickerInput({
   );
 }
 
-/** A `DateField` with a calendar button that opens a month view in a popover. */
-export function DatePicker({
+/** The body of `<DateField calendar>`: the field with a calendar button that opens a month view in a popover. */
+export function CalendarDateField({
   label,
   description,
   errorMessage,
@@ -70,7 +65,7 @@ export function DatePicker({
   name,
   size = "md",
   ...rest
-}: DatePickerProps): ReactElement {
+}: FieldProps & { defaultOpen?: boolean }): ReactElement {
   const { inner, setInner, shown, impossible, onRead, validate, leaving, onBlurCapture, onLeft } =
     useShownDate({
       value,

@@ -23,11 +23,6 @@ const CASES: Record<string, () => ReactElement> = {
   BulletList: () => <ui.BulletList {...A} />,
   Button: () => <ui.Button {...A}>x</ui.Button>,
   ButtonGroup: () => <ui.ButtonGroup {...A}>x</ui.ButtonGroup>,
-  ButtonLink: () => (
-    <ui.ButtonLink href="/x" {...A}>
-      x
-    </ui.ButtonLink>
-  ),
   Callout: () => <ui.Callout {...A}>x</ui.Callout>,
   Caption: () => <ui.Caption {...A}>x</ui.Caption>,
   Card: () => <ui.Card {...A}>x</ui.Card>,
@@ -48,9 +43,6 @@ const CASES: Record<string, () => ReactElement> = {
   CopyButton: () => <ui.CopyButton text="x" {...A} />,
   CopyLine: () => <ui.CopyLine text="x" {...A} />,
   DateField: () => <ui.DateField label="Day" defaultValue={new CalendarDate(2026, 1, 2)} {...A} />,
-  DatePicker: () => (
-    <ui.DatePicker label="Day" defaultValue={new CalendarDate(2026, 1, 2)} {...A} />
-  ),
   DetailLayout: () => (
     <ui.DetailLayout title="T" aside="a" {...A}>
       x
@@ -113,7 +105,6 @@ const CASES: Record<string, () => ReactElement> = {
       x
     </ui.IconButton>
   ),
-  InlineLinks: () => <ui.InlineLinks {...A}>{ITEMS}</ui.InlineLinks>,
   Input: () => <ui.Input {...A} />,
   Kbd: () => <ui.Kbd {...A}>k</ui.Kbd>,
   KeyValue: () => (
@@ -134,14 +125,12 @@ const CASES: Record<string, () => ReactElement> = {
   Maintenance: () => <ui.Maintenance {...A} />,
   Markdown: () => <ui.Markdown md="x" {...A} />,
   MetaList: () => <ui.MetaList {...A}>{ITEMS}</ui.MetaList>,
-  NavTabs: () => <ui.NavTabs label="L" items={[{ label: "A", href: "/a", active: true }]} {...A} />,
   NotFound: () => <ui.NotFound {...A} />,
   Offline: () => <ui.Offline {...A} />,
   Overline: () => <ui.Overline {...A}>x</ui.Overline>,
   PageFade: () => <ui.PageFade {...A}>x</ui.PageFade>,
   PageHeader: () => <ui.PageHeader title="T" {...A} />,
   PageHeading: () => <ui.PageHeading {...A}>x</ui.PageHeading>,
-  PageTitle: () => <ui.PageTitle title="T" {...A} />,
   Radio: () => (
     <ui.RadioGroup label="L">
       <ui.Radio value="a" label="A" {...A} />
@@ -215,11 +204,6 @@ const CASES: Record<string, () => ReactElement> = {
     </ui.Timeline>
   ),
   TimelineItem: () => <ui.TimelineItem title="T" {...A} />,
-  ToggleChip: () => (
-    <ui.ToggleChip pressed {...A}>
-      x
-    </ui.ToggleChip>
-  ),
   Video: () => <ui.Video src="/x.mp4" {...A} />,
 };
 
@@ -233,7 +217,7 @@ function probes(): Element[] {
  * (merging the id with its own description), so the description is asserted inside the probe. A
  * `Radio` does the same: `data-*` on its label, the description on the input inside it.
  */
-const SPLIT = new Set(["DateField", "DatePicker", "Radio"]);
+const SPLIT = new Set(["DateField", "Radio"]);
 
 describe("every exported component passes data-* and aria-* through", () => {
   beforeEach(stubDialog);
@@ -254,6 +238,18 @@ describe("every exported component passes data-* and aria-* through", () => {
       );
     });
   }
+
+  it("a Button that is a link puts both on the <a>", () => {
+    mount(
+      <ui.Button href="/x" {...A}>
+        x
+      </ui.Button>,
+    );
+    const found = probes();
+    expect(found).toHaveLength(1);
+    expect(found[0]?.tagName).toBe("A");
+    expect(found[0]?.getAttribute("aria-describedby")).toBe("described");
+  });
 
   it("a Card that is a link puts both on the card root, not on the link inside it", () => {
     mount(
@@ -276,4 +272,11 @@ describe("every exported component passes data-* and aria-* through", () => {
       expect(found[0]?.querySelector('[aria-describedby~="described"]')).not.toBeNull();
     });
   }
+
+  it("a calendar DateField puts data-* on its wrapper and the description on the field inside", () => {
+    mount(<ui.DateField calendar label="Day" defaultValue={new CalendarDate(2026, 1, 2)} {...A} />);
+    const found = probes();
+    expect(found).toHaveLength(1);
+    expect(found[0]?.querySelector('[aria-describedby~="described"]')).not.toBeNull();
+  });
 });

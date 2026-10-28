@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import { appShellRootClass } from "@hackcove/ui";
+import { appShellRootClassFor } from "@hackcove/ui";
 import { SCOPES, THEMES } from "@hackcove/themes-shared";
 import { themeScope } from "@hackcove/themes-shared/scope";
 import siteCss from "@hackcove/theme-catppuccin-mocha/theme.css?inline";
@@ -27,7 +27,7 @@ const pickerItems = themes.map((theme) => ({ value: theme.folder, label: theme.t
 const canonical = new URL(Astro.url.pathname, site.url).href;
 ---
 
-<html lang="en" class={`${siteScope} ${appShellRootClass}`}>
+<html lang="en" class={appShellRootClassFor("dark", { light: "", dark: siteScope })}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

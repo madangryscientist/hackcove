@@ -11,11 +11,11 @@ export type PageHeaderProps = {
   subtitle?: ReactNode;
   /** Right of the title on `sm` and up, below it on a phone. */
   actions?: ReactNode;
-  /** A `NavTabs` (or similar) under the title. */
+  /** A `Tabs variant="pill"` (or similar) under the title. */
   tabs?: ReactNode;
 };
 
-/** The header block without its bottom margin; PageHeader adds the margin (a `Stack` child drops it), PageTitle does not. */
+/** The header block without its bottom margin; PageHeader adds the margin (a `Stack` child drops it). */
 export function PageHeaderContent({
   breadcrumbs,
   title,

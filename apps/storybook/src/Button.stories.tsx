@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, ButtonGroup, ButtonLink, buttonClass, type LinkRenderProps } from "@hackcove/ui";
+import { Button, ButtonGroup, type LinkRenderProps } from "@hackcove/ui";
 
 /** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
 function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
@@ -50,12 +50,12 @@ export const DontDisabledReason: S = {
   render: () => <Button disabled>Save</Button>,
 };
 
-/** Going to another page is a link: `ButtonLink` keeps the anchor, middle-click and the URL. */
+/** Going to another page is a link: `Button` with `href` keeps the anchor, middle-click and the URL. */
 export const DoNavigate: S = {
   render: () => (
-    <ButtonLink href="#quotes" variant="outline">
+    <Button href="#quotes" variant="outline">
       Open quotes
-    </ButtonLink>
+    </Button>
   ),
 };
 
@@ -198,7 +198,7 @@ export const ReviewBar: S = {
     </ButtonGroup>
   ),
 };
-/** `pressed` makes a toggle: `aria-pressed` and a selected look in the tone's colour, on the outline and ghost variants. */
+/** `pressed` makes a toggle on the outline and ghost variants: `aria-pressed`, neutral when off and the tone's primary fill when on. */
 export const Pressed: S = {
   render: () => (
     <div className="flex flex-wrap items-center gap-2">
@@ -290,23 +290,21 @@ export const Busy: S = {
 export const AsLink: S = {
   render: () => (
     <div className="flex flex-wrap items-center gap-2">
-      <a href="#" className={buttonClass("outline")}>
+      <Button href="#" variant="outline">
         List your shop
-      </a>
-      <ButtonLink href="#" variant="outline" size="sm">
+      </Button>
+      <Button href="#" variant="outline" size="sm">
         List your shop
-      </ButtonLink>
-      <ButtonLink href="https://example.com" external tone="danger" variant="ghost">
+      </Button>
+      <Button href="https://example.com" external tone="danger" variant="ghost">
         External
-      </ButtonLink>
+      </Button>
     </div>
   ),
 };
 /** `render` draws the app's own router Link; here a stand-in. No router lives in @hackcove/ui. */
 export const WithRouterLink: S = {
-  render: () => (
-    <ButtonLink render={(props) => <FakeLink to="/quotes" {...props} />}>New quote</ButtonLink>
-  ),
+  render: () => <Button render={(props) => <FakeLink to="/quotes" {...props} />}>New quote</Button>,
 };
 
 /** `sm`, `md` (the default) and `lg`: the one size scale every control shares. */
@@ -319,9 +317,9 @@ export const Sizes: S = {
         </Button>
       ))}
       {(["sm", "md", "lg"] as const).map((size) => (
-        <ButtonLink key={size} href="#quotes" size={size} variant="outline">
+        <Button key={size} href="#quotes" size={size} variant="outline">
           Quotes {size}
-        </ButtonLink>
+        </Button>
       ))}
     </div>
   ),

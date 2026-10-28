@@ -57,23 +57,6 @@ export const content: ComponentSection = {
       ],
     },
     {
-      slug: "page-title",
-      name: "PageTitle",
-      summary: "Deprecated: the title row of a page, now `PageHeader`.",
-      whenToUse:
-        "Never in new code: use `PageHeader`, which also takes breadcrumbs, actions and tabs.",
-      pairs: ["ui/PageHeader"],
-      usage: [
-        "Use `PageHeader` for the top of every page. `PageTitle` is the same title and subtitle without the bottom margin, so a page that uses it sits at a different height from the rest.",
-        "Move existing `PageTitle` uses to `PageHeader`; it takes the same `title` and `subtitle`.",
-      ],
-      accessibility: [
-        "The `title` is the page's `<h1>`, with the `subtitle` under it, as in `PageHeader`.",
-        "`aria-*` and `data-*` props go on the root element.",
-      ],
-      api: ["PageTitle"],
-    },
-    {
       slug: "avatar",
       name: "Avatar",
       summary: "A person as a round badge of initials, or their photo.",

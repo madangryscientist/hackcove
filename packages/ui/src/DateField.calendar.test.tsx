@@ -3,7 +3,6 @@ import { CalendarDate } from "@internationalized/date";
 import { act } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DateField } from "./DateField.js";
-import { DatePicker } from "./DatePicker.js";
 import { mount, unmount } from "./dom.harness.js";
 
 import { errorOf, leave, segmentsOf, type } from "./date.harness.js";
@@ -103,16 +102,18 @@ describe("DateField", () => {
     expect(container.textContent).not.toContain("A hint.");
   });
 
-  it("marks a DatePicker invalid from outside with isInvalid and errorMessage", () => {
+  it("marks a calendar DateField invalid from outside with isInvalid and errorMessage", () => {
     const container = mount(
-      <DatePicker aria-label="Date" isInvalid errorMessage="Pick another day." />,
+      <DateField calendar aria-label="Date" isInvalid errorMessage="Pick another day." />,
     );
     expect(errorOf(container)).toBe("Pick another day.");
     expect(container.querySelector('[aria-invalid="true"]')).not.toBeNull();
   });
 
-  it("shows a DatePicker's error from outside too", () => {
-    const container = mount(<DatePicker aria-label="Date" description="Hint" error="Taken." />);
+  it("shows a calendar DateField's error from outside too", () => {
+    const container = mount(
+      <DateField calendar aria-label="Date" description="Hint" error="Taken." />,
+    );
     expect(errorOf(container)).toBe("Taken.");
     expect(container.querySelector('[role="alert"]')).not.toBeNull();
     expect(container.textContent).not.toContain("Hint");
@@ -136,10 +137,10 @@ describe("DateField", () => {
   });
 });
 
-describe("DatePicker", () => {
+describe("DateField calendar", () => {
   it("reads typed digits as day, month, year under a US locale", () => {
     const onChange = vi.fn<(date: CalendarDate | null) => void>();
-    const container = mount(<DatePicker aria-label="Date" onChange={onChange} />);
+    const container = mount(<DateField calendar aria-label="Date" onChange={onChange} />);
     const [day] = segmentsOf(container);
     if (!day) throw new Error("no day segment");
     type(day, "17051990");
@@ -148,7 +149,12 @@ describe("DatePicker", () => {
 
   it("opens a Monday-first calendar with month and year dropdowns", () => {
     mount(
-      <DatePicker aria-label="Date" defaultOpen defaultValue={new CalendarDate(1990, 5, 17)} />,
+      <DateField
+        calendar
+        aria-label="Date"
+        defaultOpen
+        defaultValue={new CalendarDate(1990, 5, 17)}
+      />,
     );
     const grid = document.querySelector('[role="grid"]');
     expect(grid).not.toBeNull();
@@ -165,7 +171,8 @@ describe("DatePicker", () => {
   it("clears the value from the calendar footer", () => {
     const onChange = vi.fn<(date: CalendarDate | null) => void>();
     mount(
-      <DatePicker
+      <DateField
+        calendar
         aria-label="Date"
         defaultOpen
         defaultValue={new CalendarDate(1990, 5, 17)}
@@ -181,7 +188,7 @@ describe("DatePicker", () => {
   });
 
   it("flags an impossible date", () => {
-    const container = mount(<DatePicker aria-label="Date" />);
+    const container = mount(<DateField calendar aria-label="Date" />);
     const [day] = segmentsOf(container);
     if (!day) throw new Error("no day segment");
     type(day, "31021990");
@@ -190,7 +197,9 @@ describe("DatePicker", () => {
 
   it("keeps an impossible date as typed when focus leaves", () => {
     const onChange = vi.fn<(date: CalendarDate | null) => void>();
-    const container = mount(<DatePicker aria-label="Date" name="dob" onChange={onChange} />);
+    const container = mount(
+      <DateField calendar aria-label="Date" name="dob" onChange={onChange} />,
+    );
     const [day] = segmentsOf(container);
     if (!day) throw new Error("no day segment");
     type(day, "31021990");
@@ -203,7 +212,7 @@ describe("DatePicker", () => {
 
   it("keeps an impossible date as typed when focus moves to the calendar button", () => {
     const onChange = vi.fn<(date: CalendarDate | null) => void>();
-    const container = mount(<DatePicker aria-label="Date" onChange={onChange} />);
+    const container = mount(<DateField calendar aria-label="Date" onChange={onChange} />);
     const [day] = segmentsOf(container);
     if (!day) throw new Error("no day segment");
     type(day, "31021990");

@@ -1,14 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import {
-  AppShell,
-  Button,
-  Card,
-  NavTabs,
-  PageHeader,
-  SidebarLayout,
-  Stack,
-  Text,
-} from "@hackcove/ui";
+import { AppShell, Button, Card, Tabs, PageHeader, SidebarLayout, Stack, Text } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 /**
@@ -25,13 +16,14 @@ const meta: Meta = {
 export default meta;
 type S = StoryObj;
 
-/** A whole page with a rail: the shell with its brand and nav, then the layout with a vertical `NavTabs` in `rail` and the page in `children`. */
+/** A whole page with a rail: the shell with its brand and nav, then the layout with a vertical pill `Tabs` in `rail` and the page in `children`. */
 export const FullPage: S = {
   render: () => (
     <AppShell
       brand={<a href="#">Hack Cove</a>}
       nav={
-        <NavTabs
+        <Tabs
+          variant="pill"
           label="Main"
           items={[
             { label: "Quotes", href: "#quotes", active: true },
@@ -42,7 +34,8 @@ export const FullPage: S = {
     >
       <SidebarLayout
         rail={
-          <NavTabs
+          <Tabs
+            variant="pill"
             orientation="vertical"
             label="Organisations"
             items={[
@@ -69,7 +62,8 @@ export const FullPage: S = {
 const orgs = ["Hack Cove", "Acme", "Northwind", "Initech"];
 
 const orgRail = (
-  <NavTabs
+  <Tabs
+    variant="pill"
     orientation="vertical"
     label="Organisations"
     items={orgs.map((label, i) => ({ label, href: `#${label}`, active: i === 0 }))}
@@ -107,7 +101,8 @@ export const LongRail: S = {
       <SidebarLayout
         railLabel="All sections"
         rail={
-          <NavTabs
+          <Tabs
+            variant="pill"
             orientation="vertical"
             label="Sections"
             items={sections.map((label, i) => ({ label, href: `#${label}`, active: i === 0 }))}
@@ -125,12 +120,13 @@ export const LongRail: S = {
   ),
 };
 
-/** A vertical `NavTabs` is the rail: a short list of sections beside the page. */
+/** A vertical pill `Tabs` is the rail: a short list of sections beside the page. */
 export const DoSections: S = {
   render: () => (
     <SidebarLayout
       rail={
-        <NavTabs
+        <Tabs
+          variant="pill"
           orientation="vertical"
           label="Settings"
           items={[
@@ -149,12 +145,13 @@ export const DoSections: S = {
   ),
 };
 
-/** The default, horizontal `NavTabs` wraps into a ragged block in the rail. Give the rail `orientation="vertical"`. */
+/** The default, horizontal pill `Tabs` wraps into a ragged block in the rail. Give the rail `orientation="vertical"`. */
 export const DontSections: S = {
   render: () => (
     <SidebarLayout
       rail={
-        <NavTabs
+        <Tabs
+          variant="pill"
           label="Settings"
           items={[
             { label: "Profile", href: "#profile", active: true },
