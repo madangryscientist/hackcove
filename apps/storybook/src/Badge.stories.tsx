@@ -85,3 +85,13 @@ export const DoCount: S = {
     </Cluster>
   ),
 };
+
+/** A count is not a `Pill`: a Pill is a status label, and it prints `120` where a Badge caps at `99+`. */
+export const DontCount: S = {
+  render: () => (
+    <Cluster>
+      <Pill>7</Pill>
+      <Pill>120</Pill>
+    </Cluster>
+  ),
+};

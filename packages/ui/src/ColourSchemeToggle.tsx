@@ -68,7 +68,7 @@ function subscribe(onChange: () => void): () => void {
 /**
  * A sun/moon button that switches `<html>` between light and dark and remembers the choice. It shows the scheme you would switch to. Pair it with `colourSchemeScript` in `<head>`, unless you pass `schemes` or `initial`: the script knows only the `dark` class and the stored choice, so an app that sets the scheme itself leaves it out.
  *
- * An app whose light scheme has a class of its own passes `schemes` (`{ light: "paper", dark: "dark" }`);
+ * An app whose light scheme has a class of its own passes `schemes` (`{ light: "my-light", dark: "dark" }`);
  * the toggle swaps those classes, and `schemeClass` gives the same one for the server to render on `<html>`.
  * An app that knows the scheme on the server (from a cookie) passes it as `initial`, so the server
  * markup, the hydrating client and the `<html>` class agree; persist a change from `onChange`.

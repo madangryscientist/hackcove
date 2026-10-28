@@ -13,7 +13,7 @@ value where the old look was the point.
 | `TextLink` | `size="xs"` | `size="sm"` |
 | `TextLink` | `size="sm"` | `size="md"` |
 | `SubsectionHeading` | `size="base"` | `size="md"` |
-| `Stack`, `Section`, `PageLayout` gap | `gap="section"` | `gap="xl"` |
+| `Stack`, `Section`, `ProseLayout` gap | `gap="section"` | `gap="xl"` |
 
 ### Changed defaults
 
@@ -30,7 +30,7 @@ value where the old look was the point.
 
 ### New sizes
 
-- `lg` on `Button`, `ButtonLink`, `Input`, `Select`, `Textarea`, `SearchInput`, `Checkbox`,
+- `lg` on `Button`, `ButtonLink`, `Input` (also `type="search"`), `Select`, `Textarea`, `Checkbox`,
   `Card`, `ListRow`, `FileDrop` and `TextLink`; `lg` on `Dialog` is 640px wide.
 - A `size` prop on `RadioGroup`, `DatePicker`, `DateField`, `IconButton`, `ColourSchemeToggle`,
   `SegmentedControl`, `NavTabs` and `Tabs variant="pill"`.

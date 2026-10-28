@@ -4,7 +4,8 @@ import { THEMES, themeNames, themeScope } from "@hackcove/themes-shared";
 export { THEMES, themeNames };
 
 /**
- * Each theme remaps under its own scope class. A theme is required: there is no unthemed frame.
+ * Each theme remaps under its own scope class. Every frame is themed: the unthemed stock look is
+ * not one the repo checks.
  * `bare` drops the frame's padding, for a story that is a whole page (the Layout stories).
  */
 export function ThemeFrame({

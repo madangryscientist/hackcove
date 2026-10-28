@@ -53,6 +53,7 @@ export function RadioGroup({
   name?: string;
   /** Disables every radio. */
   isDisabled?: boolean;
+  /** Marks the choice required: the group is `aria-required`, and a form will not submit with no option chosen. */
   isRequired?: boolean;
   /**
    * The size of every radio in the group: `sm` is `text-xs` and a smaller circle, `lg` `text-base`

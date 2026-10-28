@@ -205,6 +205,21 @@ export const DoLinks: S = {
   ),
 };
 
+/** Buttons that navigate from `onChange` are not links: they cannot be opened in a new tab or copied, and the current page is not marked as one. */
+export const DontLinks: S = {
+  render: () => (
+    <SegmentedControl
+      label="Journal"
+      value="daily"
+      items={[
+        { value: "daily", label: "Daily" },
+        { value: "weekly", label: "Weekly" },
+      ]}
+      onChange={(value) => window.location.assign(`#${value}`)}
+    />
+  ),
+};
+
 /** `sm`, `md` (the default, 38px) and `lg`: the control scale. */
 export const Sizes: S = {
   render: () => (

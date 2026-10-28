@@ -18,8 +18,9 @@ under the `@hackcove` scope (MIT, all `0.x`).
 | `apps/hack-cove-site` | (private) | The hack-cove.com website (Astro), built on the workspace components and the Mocha theme. |
 
 Each theme scopes under its own class, which goes on `<html>`: `.dark` for Mocha,
-`.thrifty-paper` for Thrifty Paper. A theme is required: the components' stock Tailwind utilities
-are only what a theme remaps, never a look to ship.
+`.thrifty-paper` for Thrifty Paper. Without a theme the components render in Tailwind's own
+default colours, a plain light look: it works, but it is only what a theme remaps, not a look Hack
+Cove designs or checks, so Storybook and the visual check list the themes and nothing else.
 
 ## Use it
 
@@ -70,7 +71,8 @@ the font stacks), so an app ships no page-background or font CSS. It gives every
 on your `<html>` so the scrollbar is always reserved and centred content does not shift between a
 short and a long page; no component touches `<html>`. Pages never set their own width or outer
 padding: they start with `PageHeader` and space their blocks with `Stack` (`xs` between lines of text,
-`sm` inside a group, `md` between blocks, `lg` between groups). A text page uses `ProseLayout`, or
+`sm` inside a group, `md` between blocks, `lg` between groups, `xl` between a page's top-level
+blocks). A text page uses `ProseLayout`, or
 `Stack width="narrow"`, for its reading measure. See
 [`packages/ui/README.md`](packages/ui/README.md#layout).
 
@@ -78,10 +80,10 @@ The Layout stories in Storybook are checked at 375, 768 and 1280 px by `e2e/layo
 page title must start at the logo's x, the same x on every `Layout/…` story (found by title, so a
 new one needs no test edit). `CenteredLayout`, `SidebarLayout` and `FullBleedLayout` are the
 exceptions (a narrow card, a rail beside the canvas, no page padding) and are asserted on their own
-terms in the same file. The last two break the edge on purpose, from `md` and `lg` up: a full-height
-rail and an edge-to-edge viewer need the viewport's edges (at 1280 px the logo and the other
-layouts are at x=88, the rail at 0, its canvas at 264), so the header stays the constant and an
-app gives a whole section one layout. The screenshot-based visual check (see
+terms in the same file. `SidebarLayout`'s rail starts at the logo's x, so it keeps the edge.
+`FullBleedLayout` breaks it on purpose from `lg` up: an edge-to-edge viewer needs the viewport's
+edges (at 1280 px the logo and the other layouts are at x=88, the viewer at 0), so the header stays
+the constant and an app gives a whole section one layout. The screenshot-based visual check (see
 [`CONTRIBUTING.md`](CONTRIBUTING.md#the-visual-check)) shoots desktop (1280) only; for the narrow widths, pick
 Phone (375) or Tablet (768) from Storybook's viewport toolbar.
 

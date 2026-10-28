@@ -27,10 +27,10 @@ export const DontSwitch: S = {
   ),
 };
 
-/** A light theme with a class of its own (thrifty-paper's) is named in `schemes`, so the toggle swaps both classes. */
+/** A light theme with a class of its own (`my-light` here) is named in `schemes`, so the toggle swaps both classes. */
 export const DoSchemes: S = {
   beforeEach: resetColourScheme,
-  render: () => <ColourSchemeToggle schemes={{ light: "paper", dark: "dark" }} />,
+  render: () => <ColourSchemeToggle schemes={{ light: "my-light", dark: "dark" }} />,
 };
 
 /** Without `schemes` the toggle only adds and removes `dark`, so the light theme's own class is never put back. */
@@ -48,7 +48,7 @@ export const Default: S = {
 /** An app whose light scheme has a class of its own passes `schemes`; clicking swaps the two. Same snapshot: the class is what changes. */
 export const CustomClasses: S = {
   beforeEach: resetColourScheme,
-  render: () => <ColourSchemeToggle schemes={{ light: "paper", dark: "dark" }} />,
+  render: () => <ColourSchemeToggle schemes={{ light: "my-light", dark: "dark" }} />,
 };
 
 /** `sm`, `md` (the default) and `lg`, the `IconButton` sizes. */

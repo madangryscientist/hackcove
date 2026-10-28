@@ -53,6 +53,7 @@ export const layout: ComponentSection = {
         "Never nest a `Container` in a `Container`: the padding doubles.",
         "`as` picks the element: `div` (default), `main`, `header`, `footer`, `section` or `nav`. A `section` or `nav` needs an `aria-label`.",
         "Space inside it with a `Stack`; a `Container` has no vertical padding or gap of its own.",
+        "`elementRef` hands over the rendered element, for a parent that measures or scrolls it.",
       ],
       accessibility: [
         "A `Container` adds no role: a `div` is not a landmark. `as` picks `main`, `header`, `footer`, `section` or `nav` when the part should be one.",
