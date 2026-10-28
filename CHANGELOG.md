@@ -1,3 +1,13 @@
+## 0.6.1 (2026-10-28)
+
+### 🚀 Features
+
+- **ui:** ListRow active shows on a panel, Callout in a column, OutlineRegion and RegionFrame (HC-171) ([03e0732](https://github.com/madangryscientist/hackcove/commit/03e0732))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.6.0 (2026-10-28)
 
 ### 🚀 Features
