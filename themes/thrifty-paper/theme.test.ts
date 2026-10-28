@@ -132,6 +132,16 @@ it("keeps the violet and sky Pill text at WCAG AA (4.5:1) on its soft fill", () 
   }
 });
 
+it("keeps the media scrim dark in this light theme, its text at AA and its focus ring at 3:1", () => {
+  // Lightbox paints `bg-black/90` over the cream page; it must stay near-black, not turn light.
+  const scrim = channels(colourOf("bg-black/90", "background-color"), CANVAS);
+  expect(luminance(scrim)).toBeLessThan(0.05);
+  const over = `#${scrim.map((c) => Math.round(c).toString(16).padStart(2, "0")).join("")}`;
+  expect(contrast("text-white", "color", over)).toBeGreaterThanOrEqual(4.5);
+  expect(contrast("text-white/70", "color", over)).toBeGreaterThanOrEqual(4.5);
+  expect(contrast("focus-visible:outline-white", "outline-color", over)).toBeGreaterThanOrEqual(3);
+});
+
 it("owns the page canvas and the type faces", () => {
   // AppShell paints `bg-gray-50` (the palette's canvas role) and sets `font-sans`.
   expect(rules).toMatch(/\.thrifty-paper \.bg-gray-50\s*\{\s*background-color:\s*#fdfbf7;/);

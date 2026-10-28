@@ -81,3 +81,25 @@ test("Drawer: the panel sits against the right edge, full height", async ({ page
   const box = await drawer.boundingBox();
   expect(Math.round(box?.height ?? 0)).toBe(view.height);
 });
+
+test("Lightbox: the arrows step, Esc and the scrim close it, the photo does not", async ({
+  page,
+}) => {
+  await page.goto(story("ui-lightbox--default"));
+  const viewer = page.getByRole("dialog", { name: /^Photo \d of 3$/ });
+  await expect(viewer).toBeVisible();
+  await expect(viewer.getByText("1 of 3")).toBeVisible();
+  await page.keyboard.press("ArrowRight");
+  await expect(viewer.getByText("2 of 3")).toBeVisible();
+  await page.keyboard.press("ArrowLeft");
+  await expect(viewer.getByText("1 of 3")).toBeVisible();
+  await viewer.getByRole("img").click();
+  await expect(viewer).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(viewer).toBeHidden();
+
+  await page.getByRole("button", { name: "View photos" }).click();
+  await expect(viewer).toBeVisible();
+  await page.mouse.click(20, 400);
+  await expect(viewer).toBeHidden();
+});

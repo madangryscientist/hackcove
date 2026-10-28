@@ -65,6 +65,24 @@
   background-color: rgba(28, 25, 23, 0.35); /* ink — the modal scrim */
 }
 
+/* The media scrim — Lightbox's full-screen viewer. It stays near-black with light text in this light
+   theme too, so a photo or a video reads against it as it would in any viewer. */
+.thrifty-paper .bg-black\/90 {
+  background-color: rgba(28, 25, 23, 0.94); /* ink */
+}
+.thrifty-paper .text-white {
+  color: #fdfbf7; /* canvas */
+}
+.thrifty-paper .text-white\/70 {
+  color: rgba(253, 251, 247, 0.72); /* canvas/72 */
+}
+.thrifty-paper .hover\:bg-white\/10:hover {
+  background-color: rgba(253, 251, 247, 0.12); /* canvas/12 */
+}
+.thrifty-paper .focus-visible\:outline-white:focus-visible {
+  outline-color: #fdfbf7; /* canvas — the accent is 2.4:1 on the scrim */
+}
+
 /* Text */
 .thrifty-paper .text-slate-900,
 .thrifty-paper .text-slate-800 {
