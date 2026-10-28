@@ -26,6 +26,7 @@ export function ToggleChip({
   children,
   ...rest
 }: {
+  /** On or off: a pressed chip is filled, and its `aria-pressed` says so. */
   pressed: boolean;
   /** A CSS colour for a leading dot (e.g. a category colour); no dot when omitted. */
   dot?: string;

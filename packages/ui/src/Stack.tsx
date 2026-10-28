@@ -76,17 +76,37 @@ function Box({
 }
 
 type StackBase = {
+  /**
+   * The space between blocks: `xs` gap-2, `sm` gap-4, `md` gap-6, `lg` gap-8, `xl` gap-12 (gap-16 from `sm`).
+   * @default md
+   */
   gap?: StackGap | undefined;
+  /**
+   * Caps the column: `narrow` max-w-3xl (a reading measure), `wide` max-w-5xl, `full` the parent's whole width, `default` sets nothing.
+   * @default default
+   */
   width?: StackWidth | undefined;
   children?: ReactNode;
 };
 
 type StackProps = StackBase &
   (
-    | ({ as?: "div" | "section" } & Passthrough)
-    | ({ as: "form" } & Unstyled<Omit<ComponentPropsWithoutRef<"form">, "children">>)
-    | ({ as: "ul" } & Unstyled<Omit<ComponentPropsWithoutRef<"ul">, "children">>)
-    | ({ as: "ol" } & Unstyled<Omit<ComponentPropsWithoutRef<"ol">, "children">>)
+    | ({
+        /** The element: `div`, `section`, `form` (takes the form's props), `ul` or `ol` (no markers; each child is an `<li>`). */
+        as?: "div" | "section";
+      } & Passthrough)
+    | ({
+        /** The element: `div`, `section`, `form` (takes the form's props), `ul` or `ol` (no markers; each child is an `<li>`). */
+        as: "form";
+      } & Unstyled<Omit<ComponentPropsWithoutRef<"form">, "children">>)
+    | ({
+        /** The element: `div`, `section`, `form` (takes the form's props), `ul` or `ol` (no markers; each child is an `<li>`). */
+        as: "ul";
+      } & Unstyled<Omit<ComponentPropsWithoutRef<"ul">, "children">>)
+    | ({
+        /** The element: `div`, `section`, `form` (takes the form's props), `ul` or `ol` (no markers; each child is an `<li>`). */
+        as: "ol";
+      } & Unstyled<Omit<ComponentPropsWithoutRef<"ol">, "children">>)
   );
 
 /**
@@ -101,9 +121,19 @@ export function Section({
   children,
   ...rest
 }: {
+  /** A `SectionHeading` at the top, which names the section. */
   title?: ReactNode;
+  /** Buttons or links at the end of the title row. */
   actions?: ReactNode;
+  /**
+   * The space between blocks: `xs` gap-2, `sm` gap-4, `md` gap-6, `lg` gap-8, `xl` gap-12 (gap-16 from `sm`).
+   * @default md
+   */
   gap?: StackGap | undefined;
+  /**
+   * Caps the column: `narrow` max-w-3xl (a reading measure), `wide` max-w-5xl, `full` the parent's whole width, `default` sets nothing.
+   * @default default
+   */
   width?: StackWidth | undefined;
   children?: ReactNode;
 } & Passthrough): ReactElement {

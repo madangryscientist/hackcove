@@ -6,20 +6,27 @@ import { Input } from "./Input.js";
 import type { Passthrough } from "./props.js";
 
 export type FieldDialogProps = {
+  /** The dialog's heading and accessible name. */
   title: string;
+  /** A muted line under the title. */
   description?: string;
   /** The visible label above the field. */
   label: string;
   /** The field's accessible name, when it says more than the visible label. */
   inputLabel: string;
+  /** The field's placeholder. */
   placeholder: string;
+  /** A muted line under the field; `emptyReason` takes its place while the field is empty. */
   hint: string;
   /** Said when the field is empty and the submit button is blocked. */
   emptyReason: string;
+  /** The submit button's text. */
   submit: string;
+  /** What the submit button says while `onSubmit` runs. */
   busyLabel: string;
   /** Gets the trimmed value. Resolving closes the dialog; a rejection shows its message in it. */
   onSubmit: (value: string) => Promise<unknown>;
+  /** Called when the dialog closes: Cancel, Esc, the backdrop, or a resolved `onSubmit`. */
   onClose: () => void;
 } & Passthrough;
 

@@ -15,6 +15,10 @@ export function Container({ as, elementRef, children, ...rest }: ContainerProps)
 }
 
 type ContainerProps = {
+  /**
+   * The element: `div`, `main`, `header`, `footer`, `section` or `nav`.
+   * @default div
+   */
   as?: "div" | "main" | "header" | "footer" | "section" | "nav";
   /** The rendered element, for a parent that measures or scrolls it. */
   elementRef?: ((element: HTMLElement | null) => void) | undefined;

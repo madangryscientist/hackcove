@@ -52,9 +52,14 @@ export function Avatar({
   ring = false,
   ...rest
 }: {
+  /** Whose avatar: its initials, its colour (a hash of the name) and its title or `alt`. */
   name: string;
   /** The person's photo, a local path. It replaces the initials and is announced as `name`. */
   src?: string;
+  /**
+   * `sm` 24px, `md` 32px, `lg` 40px, `xl` 56px or `2xl` 96px.
+   * @default md
+   */
   size?: AvatarSize;
   /** A ring in the page colour, for a stack of overlapping avatars. */
   ring?: boolean;

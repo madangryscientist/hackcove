@@ -5,7 +5,9 @@ import { PageHeading, Subtitle } from "./typography.js";
 export type PageHeaderProps = {
   /** A `Breadcrumbs` above the title. */
   breadcrumbs?: ReactNode;
+  /** The page's `h1`. */
   title: ReactNode;
+  /** A muted line under the title. */
   subtitle?: ReactNode;
   /** Right of the title on `sm` and up, below it on a phone. */
   actions?: ReactNode;

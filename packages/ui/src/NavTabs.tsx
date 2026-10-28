@@ -49,9 +49,14 @@ export function NavTabs({
   size = "md",
   ...rest
 }: {
+  /** The tabs in order: each a `label`, an `href` or a `render`, and `active` on the current one. */
   items: NavTab[];
   /** The accessible name of the nav landmark. */
   label: string;
+  /**
+   * `vertical` stacks the links in one column at the rail's width, for a `SidebarLayout` rail.
+   * @default horizontal
+   */
   orientation?: "horizontal" | "vertical";
   /**
    * The tabs' height and text, on the scale of a `Button`.

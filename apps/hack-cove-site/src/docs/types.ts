@@ -8,11 +8,14 @@ export type PropDoc = {
   description: string;
 };
 
+/** One export: a component and its props, or a helper (`buttonClass`) and its signature. */
 export type ComponentDoc = {
   name: string;
   description: string;
+  /** A helper's TypeScript signature, as `name(params): result` or `name: type`. */
+  signature?: string | undefined;
   props: PropDoc[];
 };
 
-/** `src/generated/props.json`: every component `@hackcove/ui` exports, by name. */
+/** `src/generated/props.json`: every value `@hackcove/ui` exports, by name. */
 export type PropsJson = Record<string, ComponentDoc>;

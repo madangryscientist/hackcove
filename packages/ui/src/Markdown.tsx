@@ -15,7 +15,17 @@ function inline(text: string): ReactNode[] {
   );
 }
 
-export function Markdown({ md, ...rest }: { md: string } & Passthrough) {
+/**
+ * A small, safe Markdown renderer for short notes: `## ` and `### ` headings, `- ` or `* ` bullets,
+ * `**bold**` and paragraphs. Text is rendered as React nodes, never as HTML.
+ */
+export function Markdown({
+  md,
+  ...rest
+}: {
+  /** The Markdown source. */
+  md: string;
+} & Passthrough) {
   const out: ReactNode[] = [];
   let bullets: ReactNode[] = [];
   const flush = () => {

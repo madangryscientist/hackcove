@@ -22,6 +22,10 @@ export function KeyValueList({
   children,
   ...rest
 }: {
+  /**
+   * `end` right-aligns each value; `start` puts every value left-aligned in one column beside the labels, sized to the widest.
+   * @default end
+   */
   align?: KeyValueAlign;
   children: ReactNode;
 } & Unstyled<HTMLAttributes<HTMLDListElement>>): ReactElement {
@@ -46,6 +50,7 @@ export function KeyValue({
   children,
   ...rest
 }: {
+  /** The term, on the left. */
   label: ReactNode;
   children: ReactNode;
 } & Unstyled<HTMLAttributes<HTMLDivElement>>): ReactElement {

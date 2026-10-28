@@ -27,9 +27,11 @@ export function ListLayout({
   tabs,
   ...rest
 }: PageHeaderProps & {
+  /** A row between the header and the list, e.g. a `FilterGroup` or a `SearchInput`. */
   filters?: ReactNode;
   /** Shown in place of `children` when `isEmpty`. */
   empty?: ReactNode;
+  /** Show `empty` instead of `children`. */
   isEmpty?: boolean;
   children?: ReactNode;
 } & Passthrough): ReactElement {
@@ -60,7 +62,11 @@ export function DetailLayout({
   actions,
   tabs,
   ...rest
-}: PageHeaderProps & { aside: ReactNode; children: ReactNode } & Passthrough): ReactElement {
+}: PageHeaderProps & {
+  /** The side column: one third from `lg`, below `children` on a smaller screen. */
+  aside: ReactNode;
+  children: ReactNode;
+} & Passthrough): ReactElement {
   return (
     <>
       <PageHeader
@@ -91,9 +97,11 @@ export function FormLayout({
   subtitle,
   tabs,
   ...form
-}: Omit<PageHeaderProps, "actions"> & { actions?: ReactNode; children: ReactNode } & Unstyled<
-    Omit<ComponentPropsWithoutRef<"form">, "title">
-  >): ReactElement {
+}: Omit<PageHeaderProps, "actions"> & {
+  /** The row at the end of the form: its submit and cancel buttons. */
+  actions?: ReactNode;
+  children: ReactNode;
+} & Unstyled<Omit<ComponentPropsWithoutRef<"form">, "title">>): ReactElement {
   return (
     <>
       <PageHeader breadcrumbs={breadcrumbs} title={title} subtitle={subtitle} tabs={tabs} />
@@ -123,6 +131,10 @@ export function ProseLayout({
   tabs,
   ...rest
 }: PageHeaderProps & {
+  /**
+   * The space between blocks: `xs` gap-2, `sm` gap-4, `md` gap-6, `lg` gap-8, `xl` gap-12 (gap-16 from `sm`).
+   * @default md
+   */
   gap?: StackGap | undefined;
   children?: ReactNode;
 } & Passthrough): ReactElement {
@@ -153,8 +165,27 @@ const AUTO_MIN_WIDTH = {
 } as const;
 
 type CardGridProps = (
-  | { columns?: keyof typeof COLUMNS | undefined; minWidth?: undefined }
-  | { columns: "auto"; minWidth?: keyof typeof AUTO_MIN_WIDTH | undefined }
+  | {
+      /**
+       * Cards per row from `lg` (one on a phone, two from `sm`), or `auto` for as many as fit.
+       * @default 3
+       */
+      columns?: keyof typeof COLUMNS | undefined;
+      /** With `columns="auto"`, the narrowest a card gets: `md` 17rem or `sm` 12rem. */
+      minWidth?: undefined;
+    }
+  | {
+      /**
+       * Cards per row from `lg` (one on a phone, two from `sm`), or `auto` for as many as fit.
+       * @default 3
+       */
+      columns: "auto";
+      /**
+       * With `columns="auto"`, the narrowest a card gets: `md` 17rem or `sm` 12rem.
+       * @default md
+       */
+      minWidth?: keyof typeof AUTO_MIN_WIDTH | undefined;
+    }
 ) & {
   /** `start` keeps each card its own height; the default stretches every card to the tallest in its row. */
   align?: "stretch" | "start" | undefined;
@@ -218,6 +249,7 @@ export function SidebarLayout({
   children,
   ...rest
 }: {
+  /** The links beside the canvas, usually a `NavTabs orientation="vertical"`. */
   rail: ReactNode;
   /** Folds the rail behind a disclosure with this name below `md` (a long rail). Left out, the rail is always open. */
   railLabel?: string | undefined;
@@ -278,6 +310,7 @@ export function FullBleedLayout({
 }: {
   /** A full-width row above `children` and `panel` that sticks under the header, e.g. a viewer's title and actions. `padded` does not pad it. */
   bar?: ReactNode;
+  /** A side column on the right (`lg:w-72`) on a tinted surface; below `lg` it stacks under `children`. */
   panel?: ReactNode;
   /** Pads `children` as the Container pads every other page. Off, they run to the viewport's edges. */
   padded?: boolean | undefined;
@@ -317,7 +350,9 @@ export function CenteredLayout({
   children,
   ...rest
 }: {
+  /** The card's `h1`. */
   title: ReactNode;
+  /** A muted line under the title. */
   subtitle?: ReactNode;
   children?: ReactNode;
 } & Passthrough): ReactElement {

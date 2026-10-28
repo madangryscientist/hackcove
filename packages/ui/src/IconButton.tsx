@@ -25,6 +25,7 @@ const LOOK: Record<IconButtonTone, Record<IconButtonVariant, string>> = {
 };
 
 type IconButtonProps = {
+  /** The button's accessible name and its tooltip. */
   label: string;
   /**
    * `outline` has a border; `ghost` has none, until the hover fill.
@@ -58,8 +59,18 @@ type IconButtonAsLink = IconButtonProps & {
   external?: boolean | undefined;
 } & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href" | "children">> &
   (
-    | { href: string; render?: LinkRender | undefined }
-    | { href?: string | undefined; render: LinkRender }
+    | {
+        /** Makes the button a link to this URL. */
+        href: string;
+        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/settings" {...p} />`. */
+        render?: LinkRender | undefined;
+      }
+    | {
+        /** Makes the button a link to this URL. */
+        href?: string | undefined;
+        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/settings" {...p} />`. */
+        render: LinkRender;
+      }
   );
 
 /** The classes for a variant, tone and size, each at its default when left out. */

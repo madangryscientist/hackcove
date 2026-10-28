@@ -46,9 +46,11 @@ export function ProgressBar({
   size = "md",
   ...rest
 }: {
+  /** How far along, held to 0–`max`. */
   value: number;
   /** Defaults to 100. */
   max?: number;
+  /** What the bar measures, for a screen reader, which also hears the percentage. */
   label: string;
   /** Defaults to "accent". */
   tone?: BarTone;

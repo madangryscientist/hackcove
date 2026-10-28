@@ -90,7 +90,11 @@ const BUSY = "cursor-progress opacity-85";
 
 /** Size, tone and variant: the look of a button, apart from its state. */
 export type ButtonLook = {
-  /** @default primary */
+  /**
+   * `primary` is filled, for the one main action; `outline` and `ghost` are quieter; `link` is
+   * text with an underline on hover; `dashed` is an "add another" row that fills its container.
+   * @default primary
+   */
   variant?: ButtonVariant | undefined;
   /**
    * `sm` is compact, for table rows and toolbars; `lg` is larger, for a hero call to action.

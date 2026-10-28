@@ -13,6 +13,10 @@ export function InlineLinks({
   children,
   ...rest
 }: {
+  /**
+   * The mark between links: `·`, `•`, or `none` for a gap alone.
+   * @default ·
+   */
   separator?: InlineLinksSeparator;
   children: ReactNode;
 } & Passthrough): ReactElement {

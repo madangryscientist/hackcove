@@ -24,7 +24,11 @@ export function Step({
   title,
   children,
   ...rest
-}: { title: ReactNode; children?: ReactNode } & Passthrough): ReactElement {
+}: {
+  /** What to do, in medium weight; `children` is the detail under it. */
+  title: ReactNode;
+  children?: ReactNode;
+} & Passthrough): ReactElement {
   return (
     <li {...rest} className="grid grid-cols-[1.625rem_1fr] gap-3 [counter-increment:step]">
       <span

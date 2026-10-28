@@ -23,7 +23,20 @@ export function Input({
   width = "full",
   align = "start",
   ...rest
-}: ({ icon?: ReactNode; prefix?: undefined } | { icon?: undefined; prefix: string }) &
+}: (
+  | {
+      /** A leading icon inside the field (a search glass). Not with `prefix`. */
+      icon?: ReactNode;
+      /** Short text inside the border before the value (a currency symbol). For a plain field: not with `icon` or `type="search"`. */
+      prefix?: undefined;
+    }
+  | {
+      /** A leading icon inside the field (a search glass). Not with `prefix`. */
+      icon?: undefined;
+      /** Short text inside the border before the value (a currency symbol). For a plain field: not with `icon` or `type="search"`. */
+      prefix: string;
+    }
+) &
   ControlProps & {
     /** `end` right-aligns the value, for a numeric field. `start` (default) leaves it as typed. */
     align?: ControlAlign | undefined;

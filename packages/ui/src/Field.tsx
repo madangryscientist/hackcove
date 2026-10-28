@@ -30,9 +30,11 @@ export function Field({
   children,
   ...rest
 }: {
+  /** The text above the control. */
   label: ReactNode;
   /** The id of the control inside; the label's htmlFor. */
   htmlFor: string;
+  /** A muted line under the control that says more. */
   hint?: ReactNode;
   /** Replaces the hint when set. */
   error?: ReactNode;

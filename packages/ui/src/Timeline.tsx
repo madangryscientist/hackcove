@@ -50,7 +50,9 @@ export function TimelineItem({
   children,
   ...rest
 }: {
+  /** What happened: text, a `Pill` or a heading. */
   title: ReactNode;
+  /** When, already formatted by the app, small and muted beside the title. */
   time?: ReactNode;
   /** The marker dot's colour. Defaults to `neutral`, a plain ring. */
   tone?: CalloutTone;

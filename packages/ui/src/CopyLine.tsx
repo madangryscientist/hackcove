@@ -11,7 +11,9 @@ export function CopyLine({
   disabled,
   ...rest
 }: {
+  /** The line shown, and what the button copies. */
   text: string;
+  /** Disables the copy button, e.g. until hydration. */
   disabled?: boolean;
 } & Unstyled<Omit<ComponentPropsWithoutRef<"div">, "children">>): ReactElement {
   return (

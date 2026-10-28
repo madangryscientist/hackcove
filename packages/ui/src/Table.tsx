@@ -44,8 +44,18 @@ const STRIPE = "shadow-[inset_4px_0_0_0_currentColor]";
 
 /** The row's status mark: a `tone` (stripe and fill, or faded) or a `stripe` alone, never both. */
 type RowMark =
-  | { tone?: RowTone | undefined; stripe?: undefined }
-  | { stripe?: TextTone | undefined; tone?: undefined };
+  | {
+      /** The row's status: a stripe on the leading edge plus the tone's soft fill, or `muted` to fade the row. Give `tone` or `stripe`, not both. */
+      tone?: RowTone | undefined;
+      /** A stripe on the leading edge in this tone, with no fill. Give `stripe` or `tone`, not both. */
+      stripe?: undefined;
+    }
+  | {
+      /** A stripe on the leading edge in this tone, with no fill. Give `stripe` or `tone`, not both. */
+      stripe?: TextTone | undefined;
+      /** The row's status: a stripe on the leading edge plus the tone's soft fill, or `muted` to fade the row. Give `tone` or `stripe`, not both. */
+      tone?: undefined;
+    };
 
 const VariantContext = createContext<TableVariant>("card");
 
@@ -81,7 +91,12 @@ export function Table({
   children,
   ...rest
 }: {
+  /** Names the table for assistive tech; it is not drawn. */
   caption?: string | undefined;
+  /**
+   * `card` sits the table in its own bordered card; `plain` drops the card, the head's tint and the row hover, for a table inside a card of its own.
+   * @default card
+   */
   variant?: TableVariant | undefined;
   children: ReactNode;
 } & Rest<"table">): ReactElement {
@@ -201,7 +216,14 @@ export function TableGroupRow({
   trailing,
   colSpan,
   ...rest
-}: { label: ReactNode; trailing?: ReactNode; colSpan: number } & Rest<"tr">): ReactElement {
+}: {
+  /** The group's name, at the start of the row. */
+  label: ReactNode;
+  /** Content at the far end of the row: a count, a subtotal, a small button. */
+  trailing?: ReactNode;
+  /** The table's real column count, so the header spans the whole row. */
+  colSpan: number;
+} & Rest<"tr">): ReactElement {
   return (
     <tr {...rest} className="relative border-t border-slate-200/70 bg-slate-50">
       <th scope="rowgroup" colSpan={colSpan} className="px-4 py-2 text-left text-sm">
@@ -227,8 +249,19 @@ export function TableHeaderCell({
   srLabel,
   ...rest
 }: {
+  /**
+   * The cell's horizontal alignment; `end` for figures.
+   * @default start
+   */
   align?: Align | undefined;
-} & ({ children?: ReactNode; srLabel?: undefined } | { children?: undefined; srLabel: string }) &
+} & (
+  | { children?: ReactNode; srLabel?: undefined }
+  | {
+      children?: undefined;
+      /** The column's name for a screen reader, visually hidden, for a column with no visible title (a row's actions). */
+      srLabel: string;
+    }
+) &
   Rest<"th", "align" | "scope">): ReactElement {
   return (
     <th
@@ -270,11 +303,20 @@ export function TableCell({
   children,
   ...rest
 }: {
+  /**
+   * The cell's horizontal alignment; `end` for figures.
+   * @default start
+   */
   align?: Align | undefined;
+  /** The text weight and colour (see `CellTone`). In a `TableFoot` it defaults to `strong`. */
   tone?: CellTone | undefined;
+  /** Tabular figures, and the cell never wraps. */
   numeric?: boolean | undefined;
+  /** A small monospace face for a code or a type, and the cell never wraps. */
   mono?: boolean | undefined;
+  /** Caps the width and cuts a long value with an ellipsis on one line, the full text in a `title`. Plain text content only. */
   truncate?: boolean | undefined;
+  /** A second, muted line under the content. */
   secondary?: ReactNode;
   children?: ReactNode;
 } & Rest<"td", "align">): ReactElement {

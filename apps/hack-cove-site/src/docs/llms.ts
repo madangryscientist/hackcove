@@ -39,7 +39,9 @@ function functionsOf(page: ComponentPage): string[] {
   const { functions = [] } = page;
   return functions.length === 0
     ? []
-    : [`### Functions\n${functions.map((fn) => `- ${fn.name}: ${fn.text}`).join("\n")}`];
+    : [
+        `### Functions\n${functions.map((fn) => `- ${fn.name}: \`${docOf(fn.name).signature ?? fn.name}\`. ${fn.text}`).join("\n")}`,
+      ];
 }
 
 function fullPageOf(page: ComponentPage): string[] {

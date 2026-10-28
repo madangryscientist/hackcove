@@ -32,6 +32,7 @@ export const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => ({
 type Segment = NonNullable<ContextType<typeof DateFieldStateContext>>["segments"][number];
 
 export type DateFieldProps = {
+  /** The field's visible label, above it. Without one, name the field with `aria-label`. */
   label?: ReactNode;
   /** A hint under the field; an error replaces it. */
   description?: ReactNode;

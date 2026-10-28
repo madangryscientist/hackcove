@@ -7,8 +7,14 @@ export type PillTone = "slate" | "amber" | "emerald" | "blue" | "red" | "violet"
 
 type PillBase = {
   children: ReactNode;
+  /**
+   * The tint: `slate`, `amber`, `emerald`, `blue`, `red`, `violet` or `sky`.
+   * @default slate
+   */
   tone?: PillTone;
+  /** A leading dot in the pill's own text colour. */
   dot?: boolean;
+  /** A full pill shape in place of the rounded-md corners. */
   round?: boolean;
   /** The tooltip on hover, for a pill whose text is short or cut off: the full status, a date. */
   title?: string | undefined;
@@ -30,8 +36,18 @@ type PillProps = PillBase &
         /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
         external?: boolean | undefined;
       } & (
-        | { href: string; render?: LinkRender | undefined }
-        | { href?: string | undefined; render: LinkRender }
+        | {
+            /** Makes the pill a link to this URL. */
+            href: string;
+            /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/flakes" {...p} />`. */
+            render?: LinkRender | undefined;
+          }
+        | {
+            /** Makes the pill a link to this URL. */
+            href?: string | undefined;
+            /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/flakes" {...p} />`. */
+            render: LinkRender;
+          }
       ))
   );
 

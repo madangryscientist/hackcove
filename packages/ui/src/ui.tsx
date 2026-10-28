@@ -5,12 +5,20 @@ import type { Passthrough } from "./props.js";
 // Small presentational primitives written against Tailwind's slate-based class vocabulary,
 // which a theme remaps.
 
-/** @deprecated use PageHeader */
+/**
+ * A page's title and subtitle: `PageHeader`'s heading block with no bottom margin.
+ * @deprecated use PageHeader
+ */
 export function PageTitle({
   title,
   subtitle,
   ...rest
-}: { title: string; subtitle?: string } & Passthrough) {
+}: {
+  /** The page's `h1`. */
+  title: string;
+  /** A muted line under the title. */
+  subtitle?: string;
+} & Passthrough) {
   return <PageHeaderContent {...rest} title={title} subtitle={subtitle} />;
 }
 
@@ -19,7 +27,12 @@ export function EpicHeader({
   color,
   label,
   ...rest
-}: { color: string; label: string } & Passthrough) {
+}: {
+  /** The dot's colour, any CSS colour (the epic's own). */
+  color: string;
+  /** The epic's name. */
+  label: string;
+} & Passthrough) {
   return (
     <div {...rest} className="mb-1.5 mt-3 flex items-center gap-2 first:mt-0">
       <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
@@ -28,6 +41,7 @@ export function EpicHeader({
   );
 }
 
+/** A muted one-line note for a list with nothing in it ("No tickets."). `EmptyState` is the full block. */
 export function Empty({ children, ...rest }: { children: ReactNode } & Passthrough) {
   return (
     <p {...rest} className="text-sm text-slate-400">

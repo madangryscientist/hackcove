@@ -10,7 +10,7 @@ import {
 import type { ComponentPage as Page } from "../content/components/index";
 import { DoDont } from "../docs/DoDont";
 import { Example } from "../docs/Example";
-import { Props } from "../docs/Props";
+import { docOf, Props } from "../docs/Props";
 import { Prose } from "../docs/Prose";
 
 /** `OnePrimary` as `One primary`: the heading of a Do/Don't topic. */
@@ -71,7 +71,7 @@ export function ComponentPage({ page }: { page: Page }) {
             <BulletList>
               {page.functions.map((fn) => (
                 <Body as="li" key={fn.name}>
-                  <Code>{fn.name}</Code> <Prose text={fn.text} />
+                  <Code>{docOf(fn.name).signature ?? fn.name}</Code> <Prose text={fn.text} />
                 </Body>
               ))}
             </BulletList>

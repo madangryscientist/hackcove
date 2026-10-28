@@ -70,7 +70,9 @@ function cardClass(form: ReturnType<typeof cardForm>): string {
 }
 
 type CardBase = {
+  /** The card's heading, a small uppercase `h2`; on a `section` or `article` it names the card. */
   title?: string;
+  /** A small number beside the title (how many rows the card holds). Needs a `title`. */
   count?: number;
   /** A `Pill` (or any node) directly beside the title and count, not at the far end like `actions`. Needs a `title`. */
   status?: ReactNode;
@@ -100,6 +102,10 @@ type CardPanelProps = CardBase & {
   actions?: ReactNode;
   /** A tinted strip across the bottom of the card, under a hairline, for the card's own actions or a total. It stays at the foot when the card is stretched in a `CardGrid`. Ignored with `dashed`. */
   footer?: ReactNode;
+  /**
+   * The root element. A `div` takes no name from the title. Not on a card that is a link.
+   * @default section
+   */
   as?: "section" | "article" | "div";
   href?: undefined;
   render?: undefined;
@@ -107,18 +113,25 @@ type CardPanelProps = CardBase & {
 } & Omit<ComponentPropsWithoutRef<"section">, "title" | "className" | "style" | "children">;
 
 type CardLinkProps = CardBase & {
-  /** A card that is a link has nothing else to click: no `actions`. */
   actions?: undefined;
-  /** A card that is a link has nothing else to click: no `footer`. */
   footer?: undefined;
-  /** A card that is a link is the link: no `as`. */
   as?: undefined;
   /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
   external?: boolean | undefined;
 } & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href" | "title" | "children">> &
   (
-    | { href: string; render?: LinkRender | undefined }
-    | { href?: string | undefined; render: LinkRender }
+    | {
+        /** Makes the whole card one link to this URL, with no `actions`, `footer` or `as`. */
+        href: string;
+        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/shots/1" {...p} />`. */
+        render?: LinkRender | undefined;
+      }
+    | {
+        /** Makes the whole card one link to this URL, with no `actions`, `footer` or `as`. */
+        href?: string | undefined;
+        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/shots/1" {...p} />`. */
+        render: LinkRender;
+      }
   );
 
 function isCardLink(props: CardPanelProps | CardLinkProps): props is CardLinkProps {
