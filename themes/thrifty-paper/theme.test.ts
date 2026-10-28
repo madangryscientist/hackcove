@@ -16,9 +16,9 @@ it("exports theme.css and ships only theme.css", () => {
 
 it("is light and scopes every rule under .thrifty-paper", () => {
   expect(rules).toMatch(/^\.thrifty-paper\s*\{\s*color-scheme:\s*light;/m);
-  expect(rules).not.toContain("@custom-variant");
+  expect(rules).not.toContain("@");
   const selectors = [...rules.matchAll(/([^{}]+)\{[^{}]*\}/g)].flatMap((rule) =>
-    (rule[1] ?? "").split(",").map((selector) => selector.trim()),
+    (rule[1] ?? "").split(/,(?![^(]*\))/).map((selector) => selector.trim()),
   );
   expect(selectors.length).toBeGreaterThan(1);
   expect(selectors.filter((selector) => !/^\.thrifty-paper(\s|$)/.test(selector))).toEqual([]);

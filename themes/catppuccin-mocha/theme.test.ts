@@ -18,6 +18,17 @@ it("declares the class-based dark variant and scopes its remaps under .dark", ()
   expect(css).toMatch(/^\.dark\s/m);
 });
 
+it("scopes every rule under .dark, apart from the @custom-variant at-rule", () => {
+  // An unscoped rule (a bare `.link`) would restyle a consumer's page whatever theme it picked.
+  const flat = rules.replace(/@custom-variant[^;]*;/g, "");
+  expect(flat).not.toMatch(/@/);
+  const selectors = [...flat.matchAll(/([^{}]+)\{[^{}]*\}/g)].flatMap((rule) =>
+    (rule[1] ?? "").split(/,(?![^(]*\))/).map((selector) => selector.trim()),
+  );
+  expect(selectors.length).toBeGreaterThan(1);
+  expect(selectors.filter((selector) => !/^\.dark(\s|$)/.test(selector))).toEqual([]);
+});
+
 it("leaves the Tailwind import to the consumer", () => {
   expect(css.replace(/\/\*[\s\S]*?\*\//g, "")).not.toMatch(/@import\s+["']tailwindcss/);
   expect(pkg.peerDependencies.tailwindcss).toBeDefined();

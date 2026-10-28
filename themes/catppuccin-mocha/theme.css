@@ -308,12 +308,12 @@
 /* Inline links — Mocha mauve (green is reserved for positive values). Alias of @hackcove/ui's
    TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
    write class="link" on a bare <a>. */
-.link {
+.dark .link {
   color: #cba6f7; /* mauve */
   font-weight: 500;
   text-underline-offset: 2px;
   transition: color 0.12s ease;
 }
-.link:hover {
+.dark .link:hover {
   color: #b4befe; /* lavender */
 }
