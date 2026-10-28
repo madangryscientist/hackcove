@@ -1,9 +1,6 @@
 /** The model that reviews, through OpenCode Zen. */
 export const MODEL = "opencode/deepseek-v4.1-flash";
 
-/** Longest diff the prompt carries; past it the rest is left out and the model is told so. */
-export const MAX_DIFF_CHARS = 60_000;
-
 /** The `## Purpose` section of the repo's AGENTS.md, so the reviewer shares the library's intent. */
 export function purposeOf(agentsMd: string): string {
   const match = /^## Purpose\s*\n([\s\S]*?)(?=^## )/m.exec(agentsMd);
@@ -30,12 +27,13 @@ Answer with one JSON object and nothing else:
 {"findings":[{"path":"src/Page.tsx","line":12,"kind":"wrong-component","message":"One or two sentences: what is wrong and which Hack Cove part to use.","missing_part":"only for kind missing-part"}]}
 An empty "findings" array means the change matches Hack Cove.`;
 
-export type PromptParts = { purpose: string; reference: string; diff: string };
+export type PromptParts = { purpose: string; reference: string; diff: string; left?: number };
 
-/** The whole prompt: the task, the library's purpose, its component reference, the change. */
-export function buildPrompt({ purpose, reference, diff }: PromptParts): string {
-  const cut = diff.length > MAX_DIFF_CHARS;
-  const shown = cut ? diff.slice(0, MAX_DIFF_CHARS) : diff;
+/**
+ * The whole prompt: the task, the library's purpose, its component reference, the change. The diff
+ * is already within the budget (`fitDiff`); `left` is how many files that left out.
+ */
+export function buildPrompt({ purpose, reference, diff, left = 0 }: PromptParts): string {
   return [
     TASK,
     "# Purpose of Hack Cove UI",
@@ -44,8 +42,12 @@ export function buildPrompt({ purpose, reference, diff }: PromptParts): string {
     reference.trim(),
     "# The change (unified diff of the app's files)",
     "```diff",
-    shown.trimEnd(),
+    diff.trimEnd(),
     "```",
-    ...(cut ? ["(The diff was cut here for length; review only what is shown.)"] : []),
+    ...(left > 0
+      ? [
+          `(${left} more file${left === 1 ? " was" : "s were"} left out; review only what is shown.)`,
+        ]
+      : []),
   ].join("\n\n");
 }

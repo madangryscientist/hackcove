@@ -43,7 +43,10 @@ function findingOf(raw: unknown): ModelFinding | undefined {
 export function parseReply(reply: string): ModelFinding[] {
   const from = reply.indexOf("{");
   const to = reply.lastIndexOf("}");
-  if (from === -1 || to < from) throw new Error("the model's reply has no JSON object");
+  if (from === -1 || to < from) {
+    const start = reply.replaceAll(/\s+/g, " ").trim().slice(0, 200);
+    throw new Error(`the model's reply has no JSON object (it began: "${start}")`);
+  }
   const parsed: unknown = JSON.parse(reply.slice(from, to + 1));
   if (!isRecord(parsed) || !Array.isArray(parsed["findings"])) {
     throw new Error("the model's reply has no `findings` array");
@@ -72,9 +75,20 @@ export function place(findings: readonly ModelFinding[], files: readonly FileDif
   return { inline, loose };
 }
 
-/** The one summary comment. */
-export function summaryOf(total: number, loose: readonly ModelFinding[]): string {
-  if (total === 0) return "**Hack Cove UI review:** matches Hack Cove.";
+/** The one summary comment; `notReviewed` says what the model was not sent. */
+export function summaryOf(
+  total: number,
+  loose: readonly ModelFinding[],
+  notReviewed: readonly string[] = [],
+): string {
+  const tail = notReviewed.length === 0 ? [] : ["", ...notReviewed];
+  if (total === 0) {
+    const head =
+      tail.length === 0
+        ? "**Hack Cove UI review:** matches Hack Cove."
+        : "**Hack Cove UI review:** no notes on the files it reviewed.";
+    return [head, ...tail].join("\n");
+  }
   const lines = [
     `**Hack Cove UI review:** ${total} note${total === 1 ? "" : "s"} on how this change uses Hack Cove. Advisory: it does not block the pull request.`,
   ];
@@ -84,5 +98,5 @@ export function summaryOf(total: number, loose: readonly ModelFinding[]): string
       ...loose.map((f) => `- \`${f.path}:${f.line}\` ${bodyOf(f).replaceAll("\n\n", " ")}`),
     );
   }
-  return lines.join("\n");
+  return [...lines, ...tail].join("\n");
 }

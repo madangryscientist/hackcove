@@ -2,6 +2,16 @@ import { appendFileSync } from "node:fs";
 
 const TITLE = "Hack Cove UI review";
 
+/** Appends a section to `$GITHUB_STEP_SUMMARY` (when set): what a green review did not cover. */
+export function noteInSummary(
+  lines: readonly string[],
+  env: Record<string, string | undefined>,
+): void {
+  const file = env["GITHUB_STEP_SUMMARY"];
+  if (file !== undefined && file !== "")
+    appendFileSync(file, `## ${TITLE}\n\n${lines.join("\n")}\n`);
+}
+
 /**
  * Records that the model review did not run: appends a short section to `$GITHUB_STEP_SUMMARY`
  * (when set) and returns the `::error` annotation to print. The caller exits 1, so a review that

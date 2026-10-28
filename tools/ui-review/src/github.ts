@@ -37,7 +37,12 @@ function mineOf(rows: unknown): Mine[] {
 }
 
 /** Removes the comments an earlier run left, then posts the inline comments and the one summary. */
-export async function post(target: Target, placed: Placed, total: number): Promise<void> {
+export async function post(
+  target: Target,
+  placed: Placed,
+  total: number,
+  notReviewed: readonly string[] = [],
+): Promise<void> {
   const prefix = `/pulls/${target.pr}`;
   const oldInline = mineOf(await call(target, "GET", `${prefix}/comments?per_page=100`));
   const oldSummary = mineOf(
@@ -63,6 +68,6 @@ export async function post(target: Target, placed: Placed, total: number): Promi
     }
   }
   await call(target, "POST", `/issues/${target.pr}/comments`, {
-    body: `${summaryOf(total, loose)}\n\n${MARKER}`,
+    body: `${summaryOf(total, loose, notReviewed)}\n\n${MARKER}`,
   });
 }

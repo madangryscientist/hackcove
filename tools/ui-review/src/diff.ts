@@ -68,13 +68,18 @@ export function parseDiff(diff: string): FileDiff[] {
   return state.files.filter((file) => file.path !== "");
 }
 
+/** A unified diff cut into one chunk per file, with the file's new path. */
+export function splitDiff(diff: string): { path: string; text: string }[] {
+  return diff.split(/^(?=diff --git )/m).flatMap((text) => {
+    const header = /^\+\+\+ (.+)$/m.exec(text)?.[1];
+    return header === undefined ? [] : [{ path: unquote(header).replace(/^b\//, ""), text }];
+  });
+}
+
 /** The part of a unified diff that belongs to the files in `keep`. */
 export function onlyFiles(diff: string, keep: ReadonlySet<string>): string {
-  return diff
-    .split(/^(?=diff --git )/m)
-    .filter((chunk) => {
-      const header = /^\+\+\+ (.+)$/m.exec(chunk)?.[1];
-      return header !== undefined && keep.has(unquote(header).replace(/^b\//, ""));
-    })
+  return splitDiff(diff)
+    .filter((chunk) => keep.has(chunk.path))
+    .map((chunk) => chunk.text)
     .join("");
 }
