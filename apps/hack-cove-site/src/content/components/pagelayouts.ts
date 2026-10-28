@@ -78,7 +78,7 @@ export const pagelayouts: ComponentSection = {
       pairs: ["ProseLayout/Article"],
       fullPage: "ProseLayout/FullPage",
       usage: [
-        'The text is the `children`: `SectionHeading`s and `Body as="p"` paragraphs, spaced `md` apart.',
+        'The text is the `children`: `SectionHeading`s and `Text as="p"` paragraphs, spaced `md` apart.',
         "`gap` picks another spacing from the same scale (`xs` to `xl`) for the whole page; the default is right for most pages.",
         "The header sits inside the column, so its `actions` stay beside the text.",
         "Data or cards in a grid are not prose: use `ListLayout` or `CardGrid`.",

@@ -1,14 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import {
-  Body,
   Breadcrumbs,
   Button,
+  type LinkRenderProps,
   NavTabs,
   PageHeader,
   Stack,
   Tabs,
-  type LinkRenderProps,
+  Text,
 } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Tabs" };
@@ -37,9 +37,9 @@ export const DoSwitchView: S = {
             { value: "settings", label: "Settings", controls: "panel" },
           ]}
         />
-        <Body id="panel" role="tabpanel">
+        <Text id="panel" role="tabpanel">
           Showing {value}.
-        </Body>
+        </Text>
       </Stack>
     );
   },
@@ -122,9 +122,9 @@ export const Default: S = {
     return (
       <div className="flex max-w-xl flex-col gap-4">
         <Tabs label="Project views" items={views} value={value} onChange={setValue} />
-        <Body id="panel" role="tabpanel">
+        <Text id="panel" role="tabpanel">
           Showing {value}.
-        </Body>
+        </Text>
       </div>
     );
   },
@@ -176,9 +176,9 @@ export const Pill: S = {
           value={value}
           onChange={setValue}
         />
-        <Body id="panel" role="tabpanel">
+        <Text id="panel" role="tabpanel">
           Showing {value}.
-        </Body>
+        </Text>
       </div>
     );
   },
@@ -273,7 +273,7 @@ export const InPageHeader: S = {
             />
           }
         />
-        <Body as="p">Showing {value}.</Body>
+        <Text as="p">Showing {value}.</Text>
       </div>
     );
   },

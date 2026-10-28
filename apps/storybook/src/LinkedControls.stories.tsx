@@ -4,7 +4,6 @@ import {
   Card,
   CardGrid,
   Cluster,
-  Empty,
   ListRow,
   Pill,
   rowLinkClass,
@@ -15,6 +14,7 @@ import {
   TableHead,
   TableHeaderCell,
   TableRow,
+  Text,
   TextLink,
 } from "@hackcove/ui";
 
@@ -91,7 +91,9 @@ export const CardWithAction: S = {
     <CardGrid>
       <Card href="#shot-1" title="Dashboard" status={<Pill tone="amber">changed</Pill>}>
         <Stack>
-          <Empty>Open the diff for this shot.</Empty>
+          <Text as="p" color="muted">
+            Open the diff for this shot.
+          </Text>
           <TextLink href="#shot-1-history">History</TextLink>
           <Button size="sm" variant="outline">
             Accept

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Button, Icon, Stack } from "@hackcove/ui";
+import { Button, Icon, Stack, Text } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Icon" };
 export default meta;
@@ -41,12 +41,12 @@ export const Tones: S = {
 export const Label: S = {
   render: () => (
     <Stack gap="sm">
-      <Body as="p">
+      <Text as="p">
         <Icon tone="warn" label="Flaky">
           {flagIcon}
         </Icon>{" "}
         Dashboard
-      </Body>
+      </Text>
     </Stack>
   ),
 };

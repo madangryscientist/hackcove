@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Card, CardGrid, Empty, Pill } from "@hackcove/ui";
+import { Card, CardGrid, Pill, Text } from "@hackcove/ui";
 
 /** Card's `badge` and `attention`, apart from Card.stories.tsx so each file stays short. */
 const meta: Meta = { title: "UI/CardBadge" };
@@ -11,10 +11,14 @@ export const Badge: S = {
   render: () => (
     <CardGrid>
       <Card title="Dashboard" badge={<Pill tone="sky">UI</Pill>}>
-        <Empty>A panel with a badge.</Empty>
+        <Text as="p" color="muted">
+          A panel with a badge.
+        </Text>
       </Card>
       <Card href="#shot-3" title="Settings" badge={<Pill tone="amber">Flaky</Pill>}>
-        <Empty>A link card with a badge.</Empty>
+        <Text as="p" color="muted">
+          A link card with a badge.
+        </Text>
       </Card>
     </CardGrid>
   ),
@@ -25,10 +29,14 @@ export const Attention: S = {
   render: () => (
     <CardGrid columns={2}>
       <Card title="Flaky" attention>
-        <Empty>Three shots changed on a rerun.</Empty>
+        <Text as="p" color="muted">
+          Three shots changed on a rerun.
+        </Text>
       </Card>
       <Card title="Flaky" tone="warn" attention>
-        <Empty>The same, on the warn surface.</Empty>
+        <Text as="p" color="muted">
+          The same, on the warn surface.
+        </Text>
       </Card>
     </CardGrid>
   ),

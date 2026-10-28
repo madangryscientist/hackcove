@@ -1,11 +1,11 @@
 import {
-  Body,
   BulletList,
   Code,
   PageHeader,
   Section,
   Stack,
   SubsectionHeading,
+  Text,
 } from "@hackcove/ui";
 import type { ComponentPage as Page } from "../content/components/index";
 import { DoDont } from "../docs/DoDont";
@@ -23,9 +23,9 @@ function Rules({ items }: { items: string[] }) {
   return (
     <BulletList>
       {items.map((item) => (
-        <Body as="li" key={item}>
+        <Text as="li" key={item}>
           <Prose text={item} />
-        </Body>
+        </Text>
       ))}
     </BulletList>
   );
@@ -40,9 +40,9 @@ export function ComponentPage({ page }: { page: Page }) {
     <Stack gap="xl">
       <PageHeader title={page.name} subtitle={page.summary} />
       <Section title="Overview" gap="md">
-        <Body as="p">
+        <Text as="p">
           <Prose text={page.whenToUse} />
-        </Body>
+        </Text>
         {page.pairs.map((topic) => (
           <Stack key={topic} gap="sm">
             <SubsectionHeading>{topicTitle(topic)}</SubsectionHeading>
@@ -70,9 +70,9 @@ export function ComponentPage({ page }: { page: Page }) {
             <SubsectionHeading>Functions</SubsectionHeading>
             <BulletList>
               {page.functions.map((fn) => (
-                <Body as="li" key={fn.name}>
+                <Text as="li" key={fn.name}>
                   <Code>{docOf(fn.name).signature ?? fn.name}</Code> <Prose text={fn.text} />
-                </Body>
+                </Text>
               ))}
             </BulletList>
           </Stack>

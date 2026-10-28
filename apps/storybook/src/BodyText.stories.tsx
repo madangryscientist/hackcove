@@ -1,17 +1,17 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, BodyStrong, Caption, Overline, SectionHeading, Stack } from "@hackcove/ui";
+import { Caption, Overline, SectionHeading, Stack, Text } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/BodyText" };
 export default meta;
 type S = StoryObj;
 
-/** Body copy is `Body as="p"`, with `BodyStrong` for emphasis inside it and `Caption` for the fine print. */
+/** Body copy is `Text as="p"`, with `Text strong` for emphasis inside it and `Caption` for the fine print. */
 export const DoParagraph: S = {
   render: () => (
     <Stack gap="xs">
-      <Body as="p">
-        Invoice <BodyStrong>INV-204</BodyStrong> is due on Friday.
-      </Body>
+      <Text as="p">
+        Invoice <Text strong>INV-204</Text> is due on Friday.
+      </Text>
       <Caption as="p">Sent 2 minutes ago</Caption>
     </Stack>
   ),
@@ -33,12 +33,12 @@ export const DontParagraph: S = {
 export const DoMeaning: S = {
   render: () => (
     <Stack gap="xs">
-      <Body as="p" tone="positive">
+      <Text as="p" tone="positive">
         Saved.
-      </Body>
-      <Body as="p" tone="danger">
+      </Text>
+      <Text as="p" tone="danger">
         Could not save: the name is taken.
-      </Body>
+      </Text>
     </Stack>
   ),
 };
@@ -47,12 +47,12 @@ export const DoMeaning: S = {
 export const DontMeaning: S = {
   render: () => (
     <Stack gap="xs">
-      <Body as="p" color="brand">
+      <Text as="p" color="brand">
         Saved.
-      </Body>
-      <Body as="p" color="muted">
+      </Text>
+      <Text as="p" color="muted">
         Could not save: the name is taken.
-      </Body>
+      </Text>
     </Stack>
   ),
 };
@@ -72,7 +72,7 @@ export const DontLabels: S = {
   render: () => (
     <Stack gap="xs">
       <Overline>Invoices</Overline>
-      <Body as="p">Two invoices are due this week.</Body>
+      <Text as="p">Two invoices are due this week.</Text>
     </Stack>
   ),
 };

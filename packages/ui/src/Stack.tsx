@@ -41,7 +41,7 @@ export const STACK_WIDTH: Record<StackWidth, string | undefined> = {
  * `as` is a closed set: `div` (default), `section`, `form`, `ul` or `ol`. A `form` takes the form
  * props (`onSubmit`, `action`, `method`, `noValidate`, ...). A `ul` or `ol` is drawn with no
  * markers and its children are `<li>`s, as in `BulletList` and `Timeline`: the Stack does not wrap
- * them, so a child is one list item and `Body as="li"` or a bare `<li>` both work.
+ * them, so a child is one list item and `Text as="li"` or a bare `<li>` both work.
  */
 export function Stack({
   gap = "md",

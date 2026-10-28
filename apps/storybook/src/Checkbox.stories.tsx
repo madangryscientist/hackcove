@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Checkbox, Cluster } from "@hackcove/ui";
+import { Checkbox, Cluster, Text } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Checkbox" };
 export default meta;
@@ -63,7 +63,7 @@ export const DontLabel: S = {
   render: () => (
     <Cluster gap="sm">
       <Checkbox />
-      <Body>Email me when a shop I follow posts</Body>
+      <Text>Email me when a shop I follow posts</Text>
     </Cluster>
   ),
 };

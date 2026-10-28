@@ -1,16 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
-  Body,
   Button,
   ButtonLink,
   Card,
   Code,
-  Empty,
   EmptyState,
   SectionHeading,
   Stack,
   Step,
   Steps,
+  Text,
 } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/EmptyState" };
@@ -20,7 +19,7 @@ type S = StoryObj;
 export const TitleAndBody: S = {
   render: () => (
     <EmptyState title="No builds yet">
-      <Body as="p">Builds appear here once a project has uploaded its first capture.</Body>
+      <Text as="p">Builds appear here once a project has uploaded its first capture.</Text>
     </EmptyState>
   ),
 };
@@ -31,7 +30,7 @@ export const Level: S = {
     <Stack gap="xl">
       <SectionHeading as="h2">Builds</SectionHeading>
       <EmptyState title="No builds yet" level={3}>
-        <Body as="p">Builds appear here once a project has uploaded its first capture.</Body>
+        <Text as="p">Builds appear here once a project has uploaded its first capture.</Text>
       </EmptyState>
     </Stack>
   ),
@@ -50,7 +49,7 @@ export const WithActions: S = {
         </>
       }
     >
-      <Body as="p">A project holds the stories you compare from build to build.</Body>
+      <Text as="p">A project holds the stories you compare from build to build.</Text>
     </EmptyState>
   ),
 };
@@ -60,7 +59,7 @@ export const GetStarted: S = {
   render: () => (
     <Card>
       <EmptyState title="Get your first build" actions={<Button>Copy the token</Button>}>
-        <Body as="p">Three steps and the first comparison is on this page.</Body>
+        <Text as="p">Three steps and the first comparison is on this page.</Text>
         <Steps>
           <Step title="Install the CLI">
             Run <Code>bun add -d pixelslash</Code> in your repo.
@@ -79,7 +78,7 @@ export const GetStarted: S = {
 export const DoNextStep: S = {
   render: () => (
     <EmptyState title="No builds yet" actions={<Button>Create a project</Button>}>
-      <Body as="p">Builds appear here once a project has uploaded its first capture.</Body>
+      <Text as="p">Builds appear here once a project has uploaded its first capture.</Text>
     </EmptyState>
   ),
 };
@@ -89,11 +88,13 @@ export const DontNextStep: S = {
   render: () => <EmptyState title="Nothing here" />,
 };
 
-/** An empty list inside a card is one muted line: `Empty`. */
+/** An empty list inside a card is one muted line: `Text as="p" color="muted"`. */
 export const DoInline: S = {
   render: () => (
     <Card title="Builds">
-      <Empty>No builds yet.</Empty>
+      <Text as="p" color="muted">
+        No builds yet.
+      </Text>
     </Card>
   ),
 };
@@ -103,7 +104,7 @@ export const DontInline: S = {
   render: () => (
     <Card title="Builds">
       <EmptyState title="No builds yet">
-        <Body as="p">Builds appear here once a project has uploaded its first capture.</Body>
+        <Text as="p">Builds appear here once a project has uploaded its first capture.</Text>
       </EmptyState>
     </Card>
   ),

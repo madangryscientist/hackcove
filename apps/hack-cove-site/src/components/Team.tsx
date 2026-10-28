@@ -1,4 +1,4 @@
-import { Avatar, Body, Card, Section, SubsectionHeading } from "@hackcove/ui";
+import { Avatar, Card, Section, SubsectionHeading, Text } from "@hackcove/ui";
 import { type Person, site } from "../content/site";
 
 function TeamMember({ person }: { person: Person }) {
@@ -7,10 +7,10 @@ function TeamMember({ person }: { person: Person }) {
       <Avatar name={person.name} src={person.photo} size="xl" />
       <div className="min-w-0">
         <SubsectionHeading>{person.name}</SubsectionHeading>
-        <Body as="p" color="tertiary">
+        <Text as="p" color="tertiary">
           {person.role}
-        </Body>
-        {person.bio && <Body as="p">{person.bio}</Body>}
+        </Text>
+        {person.bio && <Text as="p">{person.bio}</Text>}
       </div>
     </div>
   );

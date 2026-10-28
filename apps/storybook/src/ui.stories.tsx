@@ -1,18 +1,17 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
-  Body,
   Button,
   Card,
-  Empty,
   EmptyState,
   EpicHeader,
+  groupByEpic,
+  type LinkRenderProps,
   Markdown,
   PageHeader,
   PageTitle,
   Pill,
   Stack,
-  groupByEpic,
-  type LinkRenderProps,
+  Text,
 } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Primitives" };
@@ -126,18 +125,26 @@ export const Title: S = {
 export const MarkdownStory: S = {
   render: () => <Markdown md={"## What I did\n- **HC-42** shipped\n- plain item"} />,
 };
-export const EmptyLine: S = { render: () => <Empty>nothing here yet</Empty> };
+export const EmptyLine: S = {
+  render: () => (
+    <Text as="p" color="muted">
+      nothing here yet
+    </Text>
+  ),
+};
 
-/** `Empty` is the one muted line inside a Card that has nothing to show yet. */
+/** A Card with nothing to show yet holds one muted line, `Text as="p" color="muted"`. */
 export const DoEmptyNote: S = {
   render: () => (
     <Card title="Done" count={0}>
-      <Empty>Nothing finished yet.</Empty>
+      <Text as="p" color="muted">
+        Nothing finished yet.
+      </Text>
     </Card>
   ),
 };
 
-/** A bare `<p>` in a Card has its own colour and size, so it drifts from every other empty Card: use `Empty`. */
+/** A bare `<p>` in a Card has its own colour and size, so it drifts from every other empty Card: use `Text as="p" color="muted"`. */
 export const DontEmptyNote: S = {
   render: () => (
     <Card title="Done" count={0}>
@@ -150,16 +157,18 @@ export const DontEmptyNote: S = {
 export const DoEmptyView: S = {
   render: () => (
     <EmptyState title="No projects yet" actions={<Button>Create a project</Button>}>
-      <Body>Projects collect the shots you upload.</Body>
+      <Text>Projects collect the shots you upload.</Text>
     </EmptyState>
   ),
 };
 
-/** `Empty` is one muted line, not a view: with a button under it nothing says what the page is for. Use `EmptyState`. */
+/** One muted line is not a view: with a button under it nothing says what the page is for. Use `EmptyState`. */
 export const DontEmptyView: S = {
   render: () => (
     <Stack>
-      <Empty>No projects yet.</Empty>
+      <Text as="p" color="muted">
+        No projects yet.
+      </Text>
       <Button>Create a project</Button>
     </Stack>
   ),
@@ -180,9 +189,9 @@ export const DoEpicGroups: S = {
         <div key={epic ?? "none"}>
           <EpicHeader color={items[0]?.colour ?? "#9399b2"} label={epic ?? "No epic"} />
           {items.map((item) => (
-            <Body as="p" key={item.task}>
+            <Text as="p" key={item.task}>
               {item.task}
-            </Body>
+            </Text>
           ))}
         </div>
       ))}
@@ -195,7 +204,7 @@ export const DontEpicGroups: S = {
   render: () => (
     <Stack>
       <EpicHeader color="#cba6f7" label="Settings" />
-      <Body as="p">Choose how the site looks and what it tells you about.</Body>
+      <Text as="p">Choose how the site looks and what it tells you about.</Text>
     </Stack>
   ),
 };

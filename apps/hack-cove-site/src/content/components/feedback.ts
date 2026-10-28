@@ -32,10 +32,10 @@ export const feedback: ComponentSection = {
         "A whole page or list with no content yet: say what belongs here and offer the first step.",
       pairs: ["EmptyState/NextStep", "EmptyState/Inline"],
       usage: [
-        'Give it a `title`, one `Body as="p"` that says what belongs here, and the first step as `actions`, with the primary `Button` first.',
-        "For a get-started list, put `Steps` after the `Body` in the children.",
+        'Give it a `title`, one `Text as="p"` that says what belongs here, and the first step as `actions`, with the primary `Button` first.',
+        "For a get-started list, put `Steps` after the `Text` in the children.",
         "`level` is the title's heading level, 2 to 6 and `2` by default; the look does not change. Set it so the outline does not skip or repeat: `3` under a page's `h2`.",
-        "One muted line inside a card, for an empty table or list, is `Empty`, not an EmptyState.",
+        'One muted line inside a card, for an empty table or list, is `Text as="p" color="muted"`, not an EmptyState.',
         "Do not leave it as a title alone: a page with nothing in it and nothing to do is a dead end.",
       ],
       accessibility: [

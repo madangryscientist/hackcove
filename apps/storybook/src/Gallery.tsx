@@ -1,22 +1,19 @@
 import { useId, useState } from "react";
 import {
   Avatar,
-  Body,
-  BodyStrong,
-  Button,
   Breadcrumbs,
+  Button,
   Callout,
   Caption,
   Card,
+  Checkbox,
   CopyButton,
   CopyLine,
-  Checkbox,
   DateField,
   DatePicker,
   Dialog,
-  Drawer,
   Display,
-  Empty,
+  Drawer,
   EpicHeader,
   FieldDialog,
   FilterGroup,
@@ -26,18 +23,17 @@ import {
   KeyValueList,
   Lead,
   Markdown,
-  ModalHeading,
   NavTabs,
   Overline,
   PageFade,
   PageHeading,
   PageTitle,
+  SectionHeading,
   SegmentedControl,
   Select,
-  SectionHeading,
-  SubsectionHeading,
   startPageTransition,
-  Subtitle,
+  SubsectionHeading,
+  Text,
   Textarea,
   ToggleChip,
 } from "@hackcove/ui";
@@ -136,7 +132,7 @@ function GalleryPageFade() {
         onChange={(next) => startPageTransition(() => setPage(next))}
       />
       <PageFade name={name}>
-        <Body>The {page} page.</Body>
+        <Text>The {page} page.</Text>
       </PageFade>
     </div>
   );
@@ -164,7 +160,7 @@ function GalleryDialogs() {
           onClose={close}
           footer={<Button onClick={close}>Delete</Button>}
         >
-          <Body>There is no undo.</Body>
+          <Text>There is no undo.</Text>
         </Dialog>
       )}
       {open === "drawer" && (
@@ -241,15 +237,13 @@ export function Gallery() {
         <PageHeading>PageHeading</PageHeading>
         <SectionHeading>SectionHeading</SectionHeading>
         <SubsectionHeading>SubsectionHeading</SubsectionHeading>
-        <ModalHeading>ModalHeading</ModalHeading>
-        <Subtitle>Subtitle</Subtitle>
         <Overline>Overline</Overline>
       </div>
 
       <div className="flex flex-col gap-2">
-        <Body as="p">
-          Body text with a <BodyStrong>BodyStrong run</BodyStrong> inside it.
-        </Body>
+        <Text as="p">
+          Text with a <Text strong>strong run</Text> inside it.
+        </Text>
         <Caption as="p">Caption — fine print and metadata.</Caption>
       </div>
 
@@ -328,7 +322,9 @@ export function Gallery() {
 
       <GalleryPages />
 
-      <Empty>nothing here yet</Empty>
+      <Text as="p" color="muted">
+        nothing here yet
+      </Text>
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Body,
   Button,
   Callout,
   Caption,
@@ -16,6 +15,7 @@ import {
   TableHead,
   TableHeaderCell,
   TableRow,
+  Text,
   TextLink,
   Timeline,
   TimelineItem,
@@ -122,7 +122,7 @@ function GalleryStaticRows() {
         leading={<img alt="" src={samplePhoto} />}
         trailing={<Pill tone="amber">changed</Pill>}
       >
-        <Body as="p">Thumbnail row</Body>
+        <Text as="p">Thumbnail row</Text>
         <Caption as="p">A block label under the title.</Caption>
       </ListRow>
     </Card>

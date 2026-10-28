@@ -1,13 +1,12 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import {
-  Body,
-  BodyStrong,
   Caption,
   Overline,
   PageHeading,
   SectionHeading,
   SubsectionHeading,
+  Text,
   type TextTone,
 } from "./typography.js";
 
@@ -20,8 +19,8 @@ describe("typography", () => {
   });
 
   it("makes inline roles spans, and `as` turns them into blocks", () => {
-    expect(renderToStaticMarkup(<Body>x</Body>)).toMatch(/^<span /);
-    expect(renderToStaticMarkup(<Body as="p">x</Body>)).toMatch(/^<p /);
+    expect(renderToStaticMarkup(<Text>x</Text>)).toMatch(/^<span /);
+    expect(renderToStaticMarkup(<Text as="p">x</Text>)).toMatch(/^<p /);
   });
 
   it("maps the colour prop to its slate/violet utility", () => {
@@ -68,28 +67,50 @@ describe("typography", () => {
     expect(lg).not.toContain("size=");
   });
 
-  it("Body stops at a readable 72ch line length, as a paragraph or inline", () => {
-    expect(renderToStaticMarkup(<Body as="p">x</Body>)).toContain("max-w-[72ch]");
-    expect(renderToStaticMarkup(<Body>x</Body>)).toContain("max-w-[72ch]");
+  it("Text stops at a readable 72ch line length, as a paragraph or inline", () => {
+    expect(renderToStaticMarkup(<Text as="p">x</Text>)).toContain("max-w-[72ch]");
+    expect(renderToStaticMarkup(<Text>x</Text>)).toContain("max-w-[72ch]");
   });
 
-  it("Body `preserveNewlines` keeps a newline as a line break and is opt-in", () => {
+  it("Text `preserveNewlines` keeps a newline as a line break and is opt-in", () => {
     const out = renderToStaticMarkup(
-      <Body as="p" preserveNewlines>
+      <Text as="p" preserveNewlines>
         {"line one\nline two"}
-      </Body>,
+      </Text>,
     );
     expect(out).toContain("whitespace-pre-line");
     expect(out).toContain("line one\nline two");
     expect(out).not.toContain("preserve");
-    expect(renderToStaticMarkup(<Body>x</Body>)).not.toContain("whitespace-pre-line");
+    expect(renderToStaticMarkup(<Text>x</Text>)).not.toContain("whitespace-pre-line");
+  });
+
+  it("Text `strong` is font-medium in the primary ink, and color and tone still win", () => {
+    const strong = renderToStaticMarkup(<Text strong>x</Text>);
+    expect(strong).toContain("text-sm/5 font-medium text-slate-900");
+    expect(strong).not.toContain("font-normal");
+    expect(strong).not.toContain("strong=");
+    expect(renderToStaticMarkup(<Text>x</Text>)).toContain("text-sm/5 font-normal text-slate-600");
+    expect(
+      renderToStaticMarkup(
+        <Text strong color="muted">
+          x
+        </Text>,
+      ),
+    ).toContain("font-medium text-slate-400");
+    expect(
+      renderToStaticMarkup(
+        <Text strong tone="danger">
+          x
+        </Text>,
+      ),
+    ).toContain("font-medium text-red-700");
   });
 });
 
 describe("typography inline roles: tone, numeric, mono, truncate", () => {
   const roles = [
-    ["Body", Body],
-    ["BodyStrong", BodyStrong],
+    ["Text", Text],
+    ["Text strong", (props: Parameters<typeof Text>[0]) => <Text strong {...props} />],
     ["Caption", Caption],
     ["Overline", Overline],
   ] as const;
@@ -111,14 +132,14 @@ describe("typography inline roles: tone, numeric, mono, truncate", () => {
 
   it("a tone replaces the role's colour, and wins over `color`", () => {
     const out = renderToStaticMarkup(
-      <Body tone="danger" color="brand">
+      <Text tone="danger" color="brand">
         x
-      </Body>,
+      </Text>,
     );
     expect(out).toContain("text-red-700");
     expect(out).not.toContain("text-violet-600");
     expect(out).not.toContain("text-slate-600");
-    expect(renderToStaticMarkup(<Body>x</Body>)).toContain("text-slate-600");
+    expect(renderToStaticMarkup(<Text>x</Text>)).toContain("text-slate-600");
   });
 
   it.each(roles)("%s `numeric` and `mono` are opt-in and not forwarded", (_name, Role) => {
@@ -163,11 +184,11 @@ describe("typography inline roles: tone, numeric, mono, truncate", () => {
     ).not.toContain("title=");
   });
 
-  it("works with `as` and Body's other props", () => {
+  it("works with `as` and Text's other props", () => {
     const out = renderToStaticMarkup(
-      <Body as="p" tone="positive" preserveNewlines mono>
+      <Text as="p" tone="positive" preserveNewlines mono>
         Saved.
-      </Body>,
+      </Text>,
     );
     expect(out).toMatch(/^<p /);
     expect(out).toContain("text-emerald-700");

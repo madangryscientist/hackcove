@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Caption, Cluster, ProgressBar, Stack, type BarTone } from "@hackcove/ui";
+import { type BarTone, Caption, Cluster, ProgressBar, Stack, Text } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/ProgressBar" };
 export default meta;
@@ -50,7 +50,7 @@ export const DoProgress: S = {
   render: () => (
     <Stack gap="xs">
       <Cluster justify="between">
-        <Body>Kitchen funded</Body>
+        <Text>Kitchen funded</Text>
         <Caption>R 45 000 of R 75 000</Caption>
       </Cluster>
       <ProgressBar value={45000} max={75000} label="Kitchen funded" />

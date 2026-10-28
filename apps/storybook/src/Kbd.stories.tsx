@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Button, Kbd } from "@hackcove/ui";
+import { Button, Kbd, Text } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Kbd" };
 export default meta;
@@ -24,17 +24,17 @@ export const OnButton: S = {
 /** `Kbd` is a key the reader presses: in a sentence, or as the shortcut on a button. */
 export const DoKey: S = {
   render: () => (
-    <Body as="p">
+    <Text as="p">
       Press <Kbd>Esc</Kbd> to close this list, or <Kbd>⌘S</Kbd> to save.
-    </Body>
+    </Text>
   ),
 };
 
 /** A command is `Code`, not a key. `Kbd` draws a keycap, which says "press this". */
 export const DontKey: S = {
   render: () => (
-    <Body as="p">
+    <Text as="p">
       Run <Kbd>bun install</Kbd> to install.
-    </Body>
+    </Text>
   ),
 };

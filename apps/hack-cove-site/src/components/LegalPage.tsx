@@ -1,11 +1,11 @@
 import {
-  Body,
   Caption,
   Divider,
   InlineLinks,
   ProseLayout,
   Section,
   Stack,
+  Text,
   TextLink,
 } from "@hackcove/ui";
 import { type LegalDoc } from "../content/legal";
@@ -27,9 +27,9 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
       {doc.sections.map((section) => (
         <Section key={section.heading} title={section.heading}>
           {section.paragraphs.map((para) => (
-            <Body key={para} as="p">
+            <Text key={para} as="p">
               {para}
-            </Body>
+            </Text>
           ))}
         </Section>
       ))}

@@ -4,14 +4,15 @@ import {
   ButtonGroup,
   Card,
   CardGrid,
-  Empty,
+  type LinkRenderProps,
   ListRow,
   Pill,
   Stack,
-  TextLink,
   SubsectionHeading,
-  type LinkRenderProps,
+  Text,
+  TextLink,
 } from "@hackcove/ui";
+import { SampleTable } from "./sampleTable";
 
 const meta: Meta = { title: "UI/Card" };
 export default meta;
@@ -22,32 +23,13 @@ function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
   return <a href={`#${to}`} {...rest} />;
 }
 
-const rows = [
-  ["Rent", "R 9 500"],
-  ["Groceries", "R 4 200"],
-  ["Transport", "R 1 850"],
-];
-
-function Table() {
-  return (
-    <table className="w-full text-left text-sm">
-      <tbody>
-        {rows.map(([name, amount]) => (
-          <tr key={name} className="border-b border-slate-200/70 last:border-b-0">
-            <td className="px-5 py-2 text-slate-700">{name}</td>
-            <td className="px-5 py-2 text-right tabular-nums">{amount}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-}
-
 /** `status` puts a Pill directly beside the title; `actions` stays at the far end. */
 export const DoStatus: S = {
   render: () => (
     <Card title="PixelSlash" status={<Pill tone="amber">Coming soon</Pill>}>
-      <Empty>Visual review for every pull request.</Empty>
+      <Text as="p" color="muted">
+        Visual review for every pull request.
+      </Text>
     </Card>
   ),
 };
@@ -58,7 +40,9 @@ export const DontStatus: S = {
     <Card>
       <SubsectionHeading>PixelSlash</SubsectionHeading>
       <Pill tone="amber">Coming soon</Pill>
-      <Empty>Visual review for every pull request.</Empty>
+      <Text as="p" color="muted">
+        Visual review for every pull request.
+      </Text>
     </Card>
   ),
 };
@@ -68,10 +52,14 @@ export const DoSpacing: S = {
   render: () => (
     <Stack>
       <Card title="Open" count={3}>
-        <Empty>Three things to do.</Empty>
+        <Text as="p" color="muted">
+          Three things to do.
+        </Text>
       </Card>
       <Card title="Done" count={12}>
-        <Empty>Twelve things finished.</Empty>
+        <Text as="p" color="muted">
+          Twelve things finished.
+        </Text>
       </Card>
     </Stack>
   ),
@@ -82,10 +70,14 @@ export const DontSpacing: S = {
   render: () => (
     <>
       <Card title="Open" count={3}>
-        <Empty>Three things to do.</Empty>
+        <Text as="p" color="muted">
+          Three things to do.
+        </Text>
       </Card>
       <Card title="Done" count={12}>
-        <Empty>Twelve things finished.</Empty>
+        <Text as="p" color="muted">
+          Twelve things finished.
+        </Text>
       </Card>
     </>
   ),
@@ -96,7 +88,9 @@ export const Status: S = {
   render: () => (
     <div className="flex max-w-md flex-col gap-4">
       <Card title="Hack Cove UI" status={<Pill tone="emerald">Available</Pill>}>
-        <Empty>Components and themes, designed together.</Empty>
+        <Text as="p" color="muted">
+          Components and themes, designed together.
+        </Text>
       </Card>
       <Card
         bar
@@ -118,7 +112,7 @@ export const Flush: S = {
   render: () => (
     <div className="max-w-md">
       <Card flush>
-        <Table />
+        <SampleTable />
       </Card>
     </div>
   ),
@@ -138,7 +132,7 @@ export const HeaderBar: S = {
           </Button>
         }
       >
-        <Table />
+        <SampleTable />
       </Card>
     </div>
   ),
@@ -211,10 +205,14 @@ export const Link: S = {
   render: () => (
     <CardGrid>
       <Card href="#shot-1" title="Dashboard" status={<Pill tone="amber">changed</Pill>}>
-        <Empty>Open the diff for this shot.</Empty>
+        <Text as="p" color="muted">
+          Open the diff for this shot.
+        </Text>
       </Card>
       <Card href="#shot-2" title="Settings">
-        <Empty>Unchanged.</Empty>
+        <Text as="p" color="muted">
+          Unchanged.
+        </Text>
       </Card>
     </CardGrid>
   ),
@@ -226,7 +224,9 @@ export const AnchorTarget: S = {
     <div className="flex max-w-md flex-col gap-4">
       <TextLink href="#billing">Jump to billing</TextLink>
       <Card id="billing" title="Billing">
-        <Empty>This card is the target of the link above.</Empty>
+        <Text as="p" color="muted">
+          This card is the target of the link above.
+        </Text>
       </Card>
     </div>
   ),
@@ -240,7 +240,9 @@ export const LinkRender: S = {
   render: () => (
     <div className="max-w-md">
       <Card render={(p) => <FakeLink to="/shots/1" {...p} />} title="Dashboard">
-        <Empty>The router Link is the card.</Empty>
+        <Text as="p" color="muted">
+          The router Link is the card.
+        </Text>
       </Card>
     </div>
   ),
@@ -273,7 +275,7 @@ export const Footer: S = {
         count={2}
         footer={<span className="text-sm text-slate-500">Total R 11 350</span>}
       >
-        <Table />
+        <SampleTable />
       </Card>
       <Card size="sm" footer={<span className="text-xs text-slate-500">Dense</span>}>
         <p className="text-sm text-slate-700">The same strip at the dense padding.</p>
@@ -325,7 +327,9 @@ export const Sizes: S = {
     <div className="flex max-w-md flex-col gap-4">
       {(["sm", "md", "lg"] as const).map((size) => (
         <Card key={size} size={size} title={`Open, ${size}`} count={3}>
-          <Empty>Three things to do.</Empty>
+          <Text as="p" color="muted">
+            Three things to do.
+          </Text>
         </Card>
       ))}
     </div>

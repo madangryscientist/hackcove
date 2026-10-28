@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   AppShell,
-  Body,
   Button,
   Card,
   Cluster,
@@ -11,6 +10,7 @@ import {
   KeyValueList,
   NavTabs,
   Overline,
+  Text,
 } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 
@@ -54,9 +54,9 @@ export const FullPage: S = {
         }
       >
         <EmptyState title="Snapshot viewer">
-          <Body as="p" color="secondary">
+          <Text as="p" color="secondary">
             Your viewer goes here and fills the width.
-          </Body>
+          </Text>
         </EmptyState>
       </FullBleedLayout>
     </AppShell>
@@ -65,9 +65,9 @@ export const FullPage: S = {
 
 const snapshotCanvas = (
   <div className="flex h-96 items-center justify-center bg-slate-100">
-    <Body as="p" color="secondary">
+    <Text as="p" color="secondary">
       Snapshot viewer: fills the width
-    </Body>
+    </Text>
   </div>
 );
 
@@ -106,7 +106,7 @@ export const Padded: S = {
     <DemoShell bleed>
       <FullBleedLayout padded panel={snapshotPanel}>
         <Card title="Quotes">
-          <Body as="p">Every quote you have sent.</Body>
+          <Text as="p">Every quote you have sent.</Text>
         </Card>
       </FullBleedLayout>
     </DemoShell>
@@ -115,7 +115,7 @@ export const Padded: S = {
 
 const viewerBar = (
   <Cluster justify="between" gap="md">
-    <Body as="p">Button / Primary</Body>
+    <Text as="p">Button / Primary</Text>
     <Button size="sm" variant="outline">
       Accept
     </Button>
@@ -139,7 +139,7 @@ export const BarPadded: S = {
     <DemoShell bleed>
       <FullBleedLayout bar={viewerBar} padded panel={snapshotPanel}>
         <Card title="Quotes">
-          <Body as="p">Every quote you have sent.</Body>
+          <Text as="p">Every quote you have sent.</Text>
         </Card>
       </FullBleedLayout>
     </DemoShell>
@@ -160,9 +160,9 @@ export const DoViewer: S = {
         </>
       }
     >
-      <Body as="p" color="secondary">
+      <Text as="p" color="secondary">
         The snapshot fills the width.
-      </Body>
+      </Text>
     </FullBleedLayout>
   ),
 };
@@ -172,7 +172,7 @@ export const DontViewer: S = {
   render: () => (
     <FullBleedLayout>
       <Card title="Quotes">
-        <Body as="p">Every quote you have sent.</Body>
+        <Text as="p">Every quote you have sent.</Text>
       </Card>
     </FullBleedLayout>
   ),

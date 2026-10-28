@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   AppShellBrand,
   Avatar,
-  Body,
   Card,
   Code,
   ColourSchemeToggle,
@@ -10,6 +9,7 @@ import {
   PageHeader,
   Select,
   Stack,
+  Text,
 } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 
@@ -43,7 +43,7 @@ export const LongPage: S = {
       <Stack>
         {Array.from({ length: 12 }, (_, i) => (
           <Card key={i} title={`Build ${12 - i}`}>
-            <Body>Captured 48 stories in 4 themes.</Body>
+            <Text>Captured 48 stories in 4 themes.</Text>
           </Card>
         ))}
       </Stack>
@@ -56,7 +56,7 @@ export const ShortPage: S = {
   render: () => (
     <DemoShell>
       <PageHeader title="About" />
-      <Body as="p">One short paragraph.</Body>
+      <Text as="p">One short paragraph.</Text>
     </DemoShell>
   ),
 };
@@ -71,9 +71,9 @@ export const ThemeCanvas: S = {
     <DemoShell>
       <PageHeader title="Canvas" subtitle="The page behind the cards." />
       <Card title="On the canvas">
-        <Body as="p">
+        <Text as="p">
           Body text in the theme's sans face, and <Code>mono_in_the_theme_face</Code> beside it.
-        </Body>
+        </Text>
       </Card>
     </DemoShell>
   ),
@@ -212,7 +212,7 @@ export const HiddenInPrint: S = {
   render: () => (
     <DemoShell footer="Hack Cove · MIT" hideChromeInPrint>
       <PageHeader title="Printed page" subtitle="Only this prints." />
-      <Body as="p">The header and footer above and below are hidden in print.</Body>
+      <Text as="p">The header and footer above and below are hidden in print.</Text>
     </DemoShell>
   ),
 };

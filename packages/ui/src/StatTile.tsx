@@ -2,6 +2,7 @@ import type { HTMLAttributes, ReactElement, ReactNode } from "react";
 import type { Unstyled } from "./props.js";
 import { cx } from "./cx.js";
 import { BAR_FILL } from "./ProgressBar.js";
+import { Overline } from "./typography.js";
 
 /** The colour of a tile's value (and of its accent bar): plain ink, green or red. */
 export type StatTileTone = "neutral" | "positive" | "negative";
@@ -50,7 +51,7 @@ export function StatTile({
       {accent && (
         <span aria-hidden="true" className={cx("absolute inset-x-0 top-0 h-1", BAR[tone])} />
       )}
-      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">{label}</p>
+      <Overline as="p">{label}</Overline>
       <p className={cx("mt-2 text-3xl font-bold tabular-nums", VALUE[tone])}>{value}</p>
       {hint != null && <p className="mt-1 text-xs text-slate-500">{hint}</p>}
     </div>

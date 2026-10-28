@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   AppShell,
-  Body,
   Button,
   Card,
   NavTabs,
   PageHeader,
   SidebarLayout,
   Stack,
+  Text,
 } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 
@@ -59,7 +59,7 @@ export const FullPage: S = {
           actions={<Button>New project</Button>}
         />
         <Card title="Projects">
-          <Body as="p">Storybook, Dashboard, Site.</Body>
+          <Text as="p">Storybook, Dashboard, Site.</Text>
         </Card>
       </SidebarLayout>
     </AppShell>
@@ -87,7 +87,7 @@ export const Orgs: S = {
         />
         <Stack>
           <Card title="Projects">
-            <Body as="p">Storybook, Dashboard, Site.</Body>
+            <Text as="p">Storybook, Dashboard, Site.</Text>
           </Card>
         </Stack>
       </SidebarLayout>
@@ -117,7 +117,7 @@ export const LongRail: S = {
         <PageHeader title="Section 1" subtitle="24 sections." />
         <Stack>
           <Card title="Overview">
-            <Body as="p">The page is first on a phone; the rail opens from the disclosure.</Body>
+            <Text as="p">The page is first on a phone; the rail opens from the disclosure.</Text>
           </Card>
         </Stack>
       </SidebarLayout>
@@ -143,7 +143,7 @@ export const DoSections: S = {
     >
       <PageHeader title="Profile" subtitle="Your name and email." />
       <Card title="Account">
-        <Body as="p">Naledi Mokoena, naledi@example.com</Body>
+        <Text as="p">Naledi Mokoena, naledi@example.com</Text>
       </Card>
     </SidebarLayout>
   ),
@@ -166,7 +166,7 @@ export const DontSections: S = {
     >
       <PageHeader title="Profile" subtitle="Your name and email." />
       <Card title="Account">
-        <Body as="p">Naledi Mokoena, naledi@example.com</Body>
+        <Text as="p">Naledi Mokoena, naledi@example.com</Text>
       </Card>
     </SidebarLayout>
   ),

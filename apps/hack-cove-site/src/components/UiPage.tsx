@@ -1,5 +1,4 @@
 import {
-  Body,
   Card,
   CardGrid,
   Code,
@@ -7,6 +6,7 @@ import {
   InlineLinks,
   Section,
   Stack,
+  Text,
   TextLink,
 } from "@hackcove/ui";
 import { componentSections } from "../content/components/index";
@@ -21,7 +21,7 @@ function Install() {
     <Section title={ui.install.title} gap="md">
       {ui.install.steps.map((step) => (
         <Stack key={step.text} gap="xs">
-          <Body as="p">{step.text}</Body>
+          <Text as="p">{step.text}</Text>
           {step.code !== undefined && (
             <CodeBlock
               lines={[step.code].flat()}
@@ -38,19 +38,19 @@ function Install() {
 function Themes() {
   return (
     <Section title={ui.themes.title} gap="md">
-      <Body as="p">{ui.themes.intro}</Body>
+      <Text as="p">{ui.themes.intro}</Text>
       <CardGrid columns={2}>
         {themes.map((theme) => (
           <Card key={theme.folder} as="article" title={theme.title}>
             <Stack gap="sm">
-              <Body as="p">{theme.description}</Body>
+              <Text as="p">{theme.description}</Text>
               <Stack gap="xs">
-                <Body as="p" color="tertiary">
+                <Text as="p" color="tertiary">
                   <Code>{theme.name}</Code>
-                </Body>
-                <Body as="p" color="tertiary">
+                </Text>
+                <Text as="p" color="tertiary">
                   {ui.themes.scopeLabel}: <Code>{theme.scopeClass}</Code>
-                </Body>
+                </Text>
               </Stack>
             </Stack>
           </Card>
@@ -63,12 +63,12 @@ function Themes() {
 function Components() {
   return (
     <Section title={ui.components.title} gap="md">
-      <Body as="p">{ui.components.intro}</Body>
+      <Text as="p">{ui.components.intro}</Text>
       <CardGrid columns={2}>
         {componentSections.map((section) => (
           <Card key={section.title} as="article" title={section.title} count={section.pages.length}>
             <Stack gap="sm">
-              <Body as="p">{section.description}</Body>
+              <Text as="p">{section.description}</Text>
               <InlineLinks separator="none">
                 {section.pages.map((page) => (
                   <TextLink key={page.slug} href={`/ui/${page.slug}/`}>
@@ -90,9 +90,9 @@ export function UiPage() {
     <Stack gap="xl">
       <Stack gap="md">
         {ui.intro.map((paragraph) => (
-          <Body as="p" key={paragraph}>
+          <Text as="p" key={paragraph}>
             {paragraph}
-          </Body>
+          </Text>
         ))}
       </Stack>
       <Install />

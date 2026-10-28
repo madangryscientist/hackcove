@@ -1,5 +1,4 @@
 import { PageHeaderContent } from "./PageHeader.js";
-import type { ReactNode } from "react";
 import type { Passthrough } from "./props.js";
 
 // Small presentational primitives written against Tailwind's slate-based class vocabulary,
@@ -38,15 +37,6 @@ export function EpicHeader({
       <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
       <span className="text-sm font-semibold text-slate-700">{label}</span>
     </div>
-  );
-}
-
-/** A muted one-line note for a list with nothing in it ("No tickets."). `EmptyState` is the full block. */
-export function Empty({ children, ...rest }: { children: ReactNode } & Passthrough) {
-  return (
-    <p {...rest} className="text-sm text-slate-400">
-      {children}
-    </p>
   );
 }
 

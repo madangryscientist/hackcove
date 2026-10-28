@@ -24,19 +24,18 @@ import type { Size } from "./size.js";
      muted     → text-slate-400
      brand     → text-violet-600 (the accent)
 
-   Meaning axis — the inline roles (Body, BodyStrong, Caption, Overline) also take `tone`
+   Meaning axis — the inline roles (Text, Caption, Overline) also take `tone`
    (muted | positive | warn | danger | info), which wins over `color`, and the closed switches
    `numeric`, `mono` and `truncate`.
 
    Element axis — every component has a semantic default element; the `as` prop
    overrides it (type-safe: the extra props follow the element you pass).
 
-   Inline vs block — the inline-role components (Body, BodyStrong, Overline,
-   Caption) default to `<span>` so they compose inside a sentence/flex row
-   (inline by default for inline roles). The structural
-   roles (PageHeading, SectionHeading, SubsectionHeading, ModalHeading,
-   Subtitle) default to block elements (h1/h2/h3/p). Pass `as="p"` (etc.) to
-   turn an inline role into a block.
+   Inline vs block — the inline-role components (Text, Overline, Caption)
+   default to `<span>` so they compose inside a sentence/flex row (inline by
+   default for inline roles). The structural roles (Display, Lead, PageHeading,
+   SectionHeading, SubsectionHeading) default to block elements (h1/h2/h3/p).
+   Pass `as="p"` (etc.) to turn an inline role into a block.
    --------------------------------------------------------------------------- */
 
 export type TypographyColor = "default" | "secondary" | "tertiary" | "muted" | "brand";
@@ -73,7 +72,7 @@ type OwnProps = {
   children?: ReactNode;
 };
 
-/** The opt-in props of the inline roles (`Body`, `BodyStrong`, `Caption`, `Overline`). */
+/** The opt-in props of the inline roles (`Text`, `Caption`, `Overline`). */
 type InlineOwnProps = {
   /** A meaning's colour (see `TextTone`). Wins over `color`. */
   tone?: TextTone | undefined;
@@ -251,22 +250,11 @@ export function SubsectionHeading<E extends ElementType = "h3">({
   return pinned("h3", SUBSECTION_SIZE[size], "default", props);
 }
 
-/** Dialog/modal title. `h2`, text-base/6 semibold, primary text. */
-export const ModalHeading = typography(
-  "ModalHeading",
-  "h2",
-  "text-base/6 font-semibold",
-  "default",
-);
-
-/** Supporting line under a heading. `p`, text-sm/5 normal, secondary. */
-export const Subtitle = typography("Subtitle", "p", "text-sm/5 font-normal", "secondary");
-
 // --- Inline roles (inline by default) --------------------------------------
 
 /**
  * Small all-caps label above a group. `span`, text-xs semibold uppercase, tertiary. `tone`,
- * `numeric`, `mono` and `truncate` are opt-in, as on `Body`.
+ * `numeric`, `mono` and `truncate` are opt-in, as on `Text`.
  */
 export const Overline = inlineRole(
   "Overline",
@@ -276,29 +264,52 @@ export const Overline = inlineRole(
 );
 
 /**
- * Default running text. `span` (inline; `as="p"` for a paragraph), text-sm/5 normal, secondary. A
- * block of it stops at a readable line length (`max-w-[72ch]`), wherever it sits.
+ * Running text. `span` (inline; `as="p"` for a paragraph), text-sm/5 normal, secondary. A block of it
+ * stops at a readable line length (`max-w-[72ch]`), wherever it sits. `strong` emphasises it:
+ * font-medium in the primary ink, unless `color` or `tone` says otherwise.
  * `preserveNewlines` keeps the line breaks in the text (a user-typed note); runs of spaces still collapse.
  * `tone` colours it by meaning (`positive` for "Saved.", `danger` for an error; it wins over `color`),
  * `numeric` sets tabular figures, `mono` the monospace face, and `truncate` cuts it to one line with an
  * ellipsis (the full text becomes its `title`).
  */
-export function Body<E extends ElementType = "span">({
+export function Text<E extends ElementType = "span">({
+  strong,
   preserveNewlines,
   ...props
 }: InlineTypographyProps<E> & {
+  /** Emphasis: font-medium in the primary ink (`color` and `tone` still win). */
+  strong?: boolean | undefined;
   /** Keep the line breaks in the text (a user-typed note); runs of spaces still collapse. */
   preserveNewlines?: boolean;
 }): ReactElement {
-  const variant = cx(
-    preserveNewlines && "whitespace-pre-line",
-    "max-w-[72ch] text-sm/5 font-normal",
+  return pinned(
+    "span",
+    textVariant(strong, preserveNewlines, true),
+    strong ? "default" : "secondary",
+    props,
   );
-  return pinned("span", variant, "secondary", props);
 }
 
-/** Emphasised run of body text. `span`, text-sm/5 medium, primary text. Takes `tone`, `numeric`, `mono` and `truncate` like `Body`. */
-export const BodyStrong = inlineRole("BodyStrong", "span", "text-sm/5 font-medium", "default");
+/**
+ * The supporting line under a `PageHeader` or `Dialog` title: `Text as="p"` without the measure, so
+ * it runs the width of its header. Internal; not exported from the package.
+ */
+export function HeaderText({ children }: { children: ReactNode }): ReactElement {
+  return pinned("p", textVariant(false, false, false), "secondary", { children });
+}
 
-/** Fine print / metadata. `span` (inline; `as="p"` for a block), text-xs/4 normal, tertiary. Takes `tone`, `numeric`, `mono` and `truncate` like `Body`. */
+function textVariant(
+  strong: boolean | undefined,
+  preserveNewlines: boolean | undefined,
+  measure: boolean,
+): string {
+  return cx(
+    preserveNewlines && "whitespace-pre-line",
+    measure && "max-w-[72ch]",
+    "text-sm/5",
+    strong ? "font-medium" : "font-normal",
+  );
+}
+
+/** Fine print / metadata. `span` (inline; `as="p"` for a block), text-xs/4 normal, tertiary. Takes `tone`, `numeric`, `mono` and `truncate` like `Text`. */
 export const Caption = inlineRole("Caption", "span", "text-xs/4 font-normal", "tertiary");

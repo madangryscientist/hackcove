@@ -1,17 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
 import {
-  Body,
-  BodyStrong,
   Caption,
   Display,
   Lead,
-  ModalHeading,
   Overline,
   PageHeading,
   SectionHeading,
   SubsectionHeading,
-  Subtitle,
+  Text,
   type TextTone,
   type TypographyColor,
 } from "@hackcove/ui";
@@ -49,7 +46,7 @@ export const SectionHeadingRuleStory: S = {
   render: () => (
     <div className="max-w-xl">
       <SectionHeading rule>In progress</SectionHeading>
-      <Body as="p">The rule and the space either side of it are built in.</Body>
+      <Text as="p">The rule and the space either side of it are built in.</Text>
     </div>
   ),
 };
@@ -70,62 +67,52 @@ export const SubsectionHeadingSizes: S = {
   ),
 };
 
-export const ModalHeadingStory: S = {
-  name: "ModalHeading",
-  render: () => <ModalHeading>Close this ticket?</ModalHeading>,
-};
-
-export const SubtitleStory: S = {
-  name: "Subtitle",
-  render: () => <Subtitle>A short supporting line that sits under a heading.</Subtitle>,
-};
-
 export const OverlineStory: S = {
   name: "Overline",
   render: () => <Overline>Section label</Overline>,
 };
 
-export const BodyStory: S = {
-  name: "Body",
+export const TextStory: S = {
+  name: "Text",
   render: () => (
-    <Body>
-      Default running text. Inline by default, so an emphasised <BodyStrong>run of text</BodyStrong>{" "}
+    <Text>
+      Default running text. Inline by default, so an emphasised <Text strong>run of text</Text>{" "}
       composes right inside the sentence.
-    </Body>
+    </Text>
   ),
 };
 
-export const BodyPreserveNewlines: S = {
-  name: "Body preserveNewlines",
+export const TextPreserveNewlines: S = {
+  name: "Text preserveNewlines",
   render: () => (
     <div className="flex max-w-xl flex-col gap-3">
-      <Body as="p">{"Collapsed (default):\nthe note's line break is lost."}</Body>
-      <Body as="p" preserveNewlines>
+      <Text as="p">{"Collapsed (default):\nthe note's line break is lost."}</Text>
+      <Text as="p" preserveNewlines>
         {"Preserved:\nthe note's line break is kept."}
-      </Body>
+      </Text>
     </div>
   ),
 };
 
-export const BodyTone: S = {
-  name: "Body tone",
+export const TextToneStory: S = {
+  name: "Text tone",
   render: () => (
     <div className="flex max-w-xl flex-col gap-1">
-      <Body as="p" tone="positive">
+      <Text as="p" tone="positive">
         Saved.
-      </Body>
-      <Body as="p" tone="danger">
+      </Text>
+      <Text as="p" tone="danger">
         Could not save: the name is taken.
-      </Body>
-      <Body as="p" tone="warn">
+      </Text>
+      <Text as="p" tone="warn">
         This quote expires tomorrow.
-      </Body>
-      <Body as="p" tone="info">
+      </Text>
+      <Text as="p" tone="info">
         Changes sync in the background.
-      </Body>
-      <Body as="p" tone="muted">
+      </Text>
+      <Text as="p" tone="muted">
         Nothing to show yet.
-      </Body>
+      </Text>
     </div>
   ),
 };
@@ -134,16 +121,23 @@ export const InlineFigures: S = {
   name: "numeric, mono and truncate",
   render: () => (
     <div className="flex w-72 flex-col gap-2">
-      <Body as="p">
-        Amount <BodyStrong numeric>1,111.11</BodyStrong> vs{" "}
-        <BodyStrong numeric>8,888.88</BodyStrong> (tabular figures)
-      </Body>
-      <Body as="p">
-        Commit <Body mono>c870e81</Body> on <Caption mono>packages/ui/src/typography.tsx</Caption>
-      </Body>
-      <Body as="p" truncate>
+      <Text as="p">
+        Amount{" "}
+        <Text strong numeric>
+          1,111.11
+        </Text>{" "}
+        vs{" "}
+        <Text strong numeric>
+          8,888.88
+        </Text>{" "}
+        (tabular figures)
+      </Text>
+      <Text as="p">
+        Commit <Text mono>c870e81</Text> on <Caption mono>packages/ui/src/typography.tsx</Caption>
+      </Text>
+      <Text as="p" truncate>
         A long line of body text that does not fit the width of its container and is cut off.
-      </Body>
+      </Text>
       <Caption as="p" truncate tone="muted">
         packages/ui/src/some/very/deeply/nested/path/typography.test.tsx
       </Caption>
@@ -151,9 +145,9 @@ export const InlineFigures: S = {
   ),
 };
 
-export const BodyStrongStory: S = {
-  name: "BodyStrong",
-  render: () => <BodyStrong>Emphasised body text</BodyStrong>,
+export const TextStrongStory: S = {
+  name: "Text strong",
+  render: () => <Text strong>Emphasised body text</Text>,
 };
 
 export const CaptionStory: S = {
@@ -167,16 +161,16 @@ export const Specimen: S = {
   render: () => (
     <div className="flex max-w-xl flex-col gap-4">
       <PageHeading>Typography specimen</PageHeading>
-      <Subtitle>Every semantic role in the design system, on the Catppuccin base surface.</Subtitle>
+      <Text as="p">Every semantic role in the design system, on the Catppuccin base surface.</Text>
       <div className="flex flex-col gap-1">
         <Overline>Overline</Overline>
         <SectionHeading>Section heading</SectionHeading>
         <SubsectionHeading>Subsection heading</SubsectionHeading>
       </div>
-      <Body as="p">
-        This is a paragraph of <BodyStrong>body text</BodyStrong> rendered with <code>as="p"</code>{" "}
-        so it takes block layout, while the default <Body>Body</Body> stays inline.
-      </Body>
+      <Text as="p">
+        This is a paragraph of <Text strong>body text</Text> rendered with <code>as="p"</code> so it
+        takes block layout, while the default <Text>Text</Text> stays inline.
+      </Text>
       <Caption as="p">Caption — fine print and metadata.</Caption>
     </div>
   ),
@@ -194,11 +188,16 @@ export const ColorAxis: S = {
         "SubsectionHeading",
         (c) => <SubsectionHeading color={c}>SubsectionHeading</SubsectionHeading>,
       ],
-      ["ModalHeading", (c) => <ModalHeading color={c}>ModalHeading</ModalHeading>],
-      ["Subtitle", (c) => <Subtitle color={c}>Subtitle</Subtitle>],
       ["Overline", (c) => <Overline color={c}>Overline</Overline>],
-      ["Body", (c) => <Body color={c}>Body</Body>],
-      ["BodyStrong", (c) => <BodyStrong color={c}>BodyStrong</BodyStrong>],
+      ["Text", (c) => <Text color={c}>Text</Text>],
+      [
+        "Text strong",
+        (c) => (
+          <Text strong color={c}>
+            Text strong
+          </Text>
+        ),
+      ],
       ["Caption", (c) => <Caption color={c}>Caption</Caption>],
     ];
     return (
@@ -255,8 +254,15 @@ export const ToneAxis: S = {
       <tbody>
         {(
           [
-            ["Body", (t: TextTone) => <Body tone={t}>Body</Body>],
-            ["BodyStrong", (t: TextTone) => <BodyStrong tone={t}>BodyStrong</BodyStrong>],
+            ["Text", (t: TextTone) => <Text tone={t}>Text</Text>],
+            [
+              "Text strong",
+              (t: TextTone) => (
+                <Text strong tone={t}>
+                  Text strong
+                </Text>
+              ),
+            ],
             ["Caption", (t: TextTone) => <Caption tone={t}>Caption</Caption>],
             ["Overline", (t: TextTone) => <Overline tone={t}>Overline</Overline>],
           ] satisfies Array<[string, (t: TextTone) => ReactNode]>
@@ -288,7 +294,7 @@ export const AsOverride: S = {
       <PageHeading as="h2">as="h2"</PageHeading>
       <PageHeading as="div">as="div"</PageHeading>
       <Caption color="muted">Inline roles turned into block elements:</Caption>
-      <Body as="p">Body as="p" — now a block paragraph.</Body>
+      <Text as="p">Text as="p" — now a block paragraph.</Text>
       <Caption as="p">Caption as="p" — now a block.</Caption>
       <Overline as="label" htmlFor="x">
         Overline as="label" (accepts label props like htmlFor)

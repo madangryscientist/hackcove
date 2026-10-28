@@ -1,7 +1,5 @@
 import {
   Avatar,
-  Body,
-  BodyStrong,
   BulletList,
   Caption,
   Card,
@@ -9,6 +7,7 @@ import {
   ProseLayout,
   SectionHeading,
   SubsectionHeading,
+  Text,
   TextLink,
 } from "@hackcove/ui";
 import { cv, type CvJob } from "../content/cv";
@@ -19,7 +18,7 @@ function Bullets({ items }: { items: string[] }) {
     <BulletList>
       {items.map((line) => (
         <li key={line}>
-          <Body>{line}</Body>
+          <Text>{line}</Text>
         </li>
       ))}
     </BulletList>
@@ -36,13 +35,17 @@ function Job({ job }: { job: CvJob }) {
         <Caption color="brand">{job.dates}</Caption>
       </div>
       {job.summary?.split("\n\n").map((para) => (
-        <Body key={para} as="p">
+        <Text key={para} as="p">
           {para}
-        </Body>
+        </Text>
       ))}
       {job.groups.map((group) => (
         <div key={group.heading ?? group.items[0]} className="mt-3">
-          {group.heading && <BodyStrong as="p">{group.heading}</BodyStrong>}
+          {group.heading && (
+            <Text strong as="p">
+              {group.heading}
+            </Text>
+          )}
           <Bullets items={group.items} />
         </div>
       ))}
@@ -64,13 +67,13 @@ function Experience() {
           <ul className="mt-3 space-y-2">
             {cv.earlierRoles.map((role) => (
               <li key={role.company}>
-                <Body as="p">
-                  <BodyStrong>
+                <Text as="p">
+                  <Text strong>
                     {role.title} — {role.company} ({role.dates})
-                  </BodyStrong>
+                  </Text>
                   {" — "}
                   {role.summary}
-                </Body>
+                </Text>
               </li>
             ))}
           </ul>
@@ -114,7 +117,7 @@ export function Cv() {
         {/* One block, so the sections keep their own mt-12 rhythm: no Stack gap is 48px. */}
         <div>
           <Card>
-            <Body as="p">{cv.summary}</Body>
+            <Text as="p">{cv.summary}</Text>
           </Card>
 
           <Experience />
@@ -134,8 +137,10 @@ export function Cv() {
             <dl className="grid gap-2">
               {cv.skills.map((group, i) => (
                 <div key={`${group.label}-${i}`} className="flex flex-wrap gap-x-2">
-                  <BodyStrong as="dt">{group.label}:</BodyStrong>
-                  <Body as="dd">{group.items.join(", ")}</Body>
+                  <Text strong as="dt">
+                    {group.label}:
+                  </Text>
+                  <Text as="dd">{group.items.join(", ")}</Text>
                 </div>
               ))}
             </dl>

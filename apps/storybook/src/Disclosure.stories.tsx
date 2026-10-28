@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Callout, Disclosure, Stack } from "@hackcove/ui";
+import { Callout, Disclosure, Stack, Text } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Disclosure" };
 export default meta;
@@ -8,7 +8,7 @@ type S = StoryObj;
 export const Closed: S = {
   render: () => (
     <Disclosure summary="Override trail">
-      <Body>Three overrides, the latest on Tuesday.</Body>
+      <Text>Three overrides, the latest on Tuesday.</Text>
     </Disclosure>
   ),
 };
@@ -16,7 +16,7 @@ export const Closed: S = {
 export const Open: S = {
   render: () => (
     <Disclosure summary="Override trail" defaultOpen>
-      <Body>Three overrides, the latest on Tuesday.</Body>
+      <Text>Three overrides, the latest on Tuesday.</Text>
     </Disclosure>
   ),
 };
@@ -25,7 +25,7 @@ export const RichBody: S = {
   render: () => (
     <Disclosure summary="Shipping and returns" defaultOpen>
       <Stack gap="sm">
-        <Body>Posted within two working days.</Body>
+        <Text>Posted within two working days.</Text>
         <Callout tone="info">Returns are free for thirty days.</Callout>
       </Stack>
     </Disclosure>
@@ -36,13 +36,13 @@ export const Several: S = {
   render: () => (
     <Stack gap="xs">
       <Disclosure summary="What is a hold?" defaultOpen>
-        <Body>A hold keeps an item for you for an hour.</Body>
+        <Text>A hold keeps an item for you for an hour.</Text>
       </Disclosure>
       <Disclosure summary="How do I cancel?">
-        <Body>Open the order and choose Cancel.</Body>
+        <Text>Open the order and choose Cancel.</Text>
       </Disclosure>
       <Disclosure summary="Can I change the address?">
-        <Body>Until the order has been posted.</Body>
+        <Text>Until the order has been posted.</Text>
       </Disclosure>
     </Stack>
   ),
@@ -52,9 +52,9 @@ export const Several: S = {
 export const DoSecondary: S = {
   render: () => (
     <Stack gap="xs">
-      <Body>Order 1042 was posted on Monday.</Body>
+      <Text>Order 1042 was posted on Monday.</Text>
       <Disclosure summary="Tracking history">
-        <Body>Posted Monday · Sorted Tuesday · Out for delivery Wednesday.</Body>
+        <Text>Posted Monday · Sorted Tuesday · Out for delivery Wednesday.</Text>
       </Disclosure>
     </Stack>
   ),

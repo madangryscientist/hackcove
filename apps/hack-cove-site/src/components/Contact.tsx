@@ -1,4 +1,4 @@
-import { Caption, InlineLinks, SectionHeading, Stack, Subtitle, TextLink } from "@hackcove/ui";
+import { Caption, InlineLinks, SectionHeading, Stack, Text, TextLink } from "@hackcove/ui";
 import { site } from "../content/site";
 
 /**
@@ -11,9 +11,9 @@ export function Contact() {
     <Stack width="narrow" gap="lg">
       <Stack gap="xs">
         <SectionHeading>Get in touch</SectionHeading>
-        <Subtitle>
+        <Text as="p">
           Email <TextLink href={`mailto:${site.contactEmail}`}>{site.contactEmail}</TextLink>.
-        </Subtitle>
+        </Text>
       </Stack>
       <Stack gap="xs">
         <Caption as="p">{site.legalName}</Caption>

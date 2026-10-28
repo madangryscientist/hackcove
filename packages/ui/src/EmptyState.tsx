@@ -4,9 +4,9 @@ import { SectionHeading } from "./typography.js";
 
 /**
  * What a list or a page shows when there is nothing in it yet: a centred `title`, the `children`
- * as the explanation under it (a `Body as="p"`, then `Steps` for a "get started" list), and
+ * as the explanation under it (a `Text as="p"`, then `Steps` for a "get started" list), and
  * `actions` (buttons, links) in a centred row at the bottom. A named `<section>`. For one muted
- * line inside a card, use `Empty`. `level` is the title's heading level (default 2): one below the
+ * line inside a card, use `Text as="p" color="muted"`. `level` is the title's heading level (default 2): one below the
  * page's own heading, so the empty state inside a `SectionHeading` section is a 3.
  */
 export function EmptyState({

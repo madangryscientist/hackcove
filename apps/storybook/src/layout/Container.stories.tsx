@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Container, PageHeader } from "@hackcove/ui";
+import { Container, PageHeader, Text } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 const meta: Meta = {
@@ -26,7 +26,7 @@ export const InABleedShell: S = {
       </div>
       <Container>
         <div className="py-8">
-          <Body as="p">Below the band, another Container.</Body>
+          <Text as="p">Below the band, another Container.</Text>
         </div>
       </Container>
     </DemoShell>

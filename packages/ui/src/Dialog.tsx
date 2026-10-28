@@ -2,7 +2,7 @@ import { type ReactElement, type ReactNode, useEffect, useId, useRef } from "rea
 import { cx } from "./cx.js";
 import type { Passthrough } from "./props.js";
 import type { Size } from "./size.js";
-import { Subtitle, ModalHeading } from "./typography.js";
+import { HeaderText, SectionHeading } from "./typography.js";
 
 const PANEL =
   "mx-auto mt-28 max-w-[calc(100vw-2rem)] overflow-visible rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-2xl backdrop:bg-slate-900/35";
@@ -57,10 +57,10 @@ export function Dialog({
       className={cx(PANEL, SIZE[size])}
     >
       <div className="p-5.5">
-        <ModalHeading id={titleId}>{title}</ModalHeading>
+        <SectionHeading id={titleId}>{title}</SectionHeading>
         {description && (
           <div className="mt-1">
-            <Subtitle>{description}</Subtitle>
+            <HeaderText>{description}</HeaderText>
           </div>
         )}
         {children && <div className="mt-4">{children}</div>}
