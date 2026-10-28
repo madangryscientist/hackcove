@@ -34,7 +34,8 @@ const ARBITRARY_COLOUR =
   /(?<![\w-])(?:[a-z-]+:)*(?:bg|text|border|outline|ring|accent|fill|stroke|decoration|divide)-\[(?:#[0-9a-fA-F]{3,8}|(?:rgb|hsl|oklch|oklab|color)\([^\]]*\))\]/g;
 const DARK = /(?<![\w-])dark:[\w[\]-]/;
 const STYLE_BLOCK = /<style[\s>]/i;
-const STYLESHEET_SETUP = /^\s*(?:$|@(?:import|source|plugin|config)\b|\/\*|\*|\/\/)/;
+const STYLESHEET_SETUP = /^\s*(?:$|@(?:import|source|plugin|config)\b|\/\/)/;
+const CSS_COMMENT = /\/\*[\s\S]*?(?:\*\/|$)/g;
 const FUNCTION_DECLARATION =
   /^\s*(?:export\s+)?(?:default\s+)?(?:async\s+)?(?:function\*?|class)\s+([A-Z]\w*)\b/;
 const CONST_DECLARATION =
@@ -50,7 +51,11 @@ const found = (rule: RuleId, file: ReviewFile, line: number, message: string): F
 /** A stylesheet that only wires Tailwind and a theme in (`@import`, `@source`) is the one allowed. */
 export function newCss(file: ReviewFile): Finding[] {
   const [first] = file.added;
-  const setupOnly = file.added.every((added) => STYLESHEET_SETUP.test(added.text));
+  const uncommented = file.added
+    .map((added) => added.text)
+    .join("\n")
+    .replace(CSS_COMMENT, "");
+  const setupOnly = uncommented.split("\n").every((text) => STYLESHEET_SETUP.test(text));
   if (!file.isNew || !isStylesheet(file.path) || first === undefined || setupOnly) return [];
   return [
     found(

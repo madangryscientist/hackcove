@@ -28,6 +28,23 @@ describe("a clean diff", () => {
     expect(run(diffOf({ path: "src/app.css", isNew: true, lines }))).toEqual([]);
   });
 
+  it("passes a setup-only stylesheet whose multi-line comments have unprefixed continuation lines", () => {
+    const lines = [
+      '@import "tailwindcss";',
+      "",
+      "/* The theme comes from the hackcove repo (a sibling checkout,",
+      "   hackcove repo, ~/dev/hackcove), so the palette stays in one place. */",
+      '@import "@hackcove/theme-catppuccin-mocha";',
+      "",
+      "/*",
+      "   Tailwind scans the app and the ui package for utilities",
+      "   it has to generate.",
+      "*/",
+      '@source "../../../node_modules/@hackcove/ui/dist";',
+    ];
+    expect(run(diffOf({ path: "src/styles.css", isNew: true, lines }))).toEqual([]);
+  });
+
   it("ignores files outside the paths", () => {
     const diff = diffOf({ path: "docs/notes.tsx", lines: ['<div className="bg-slate-800" />'] });
     expect(run(diff, {}, ["src/**"])).toEqual([]);
@@ -78,6 +95,24 @@ describe("new-css and style-block", () => {
     );
     expect(found).toEqual([
       expect.objectContaining({ rule: "new-css", path: "src/extra.css", line: 1 }),
+    ]);
+  });
+
+  it("flags a real rule after a multi-line comment", () => {
+    const lines = [
+      '@import "tailwindcss";',
+      "/* a note",
+      "   over two lines */",
+      ".x { color: red }",
+    ];
+    const found = run(diffOf({ path: "src/extra.css", isNew: true, lines }));
+    expect(found).toEqual([expect.objectContaining({ rule: "new-css", path: "src/extra.css" })]);
+  });
+
+  it("flags a rule on the line a comment closes", () => {
+    const lines = ["/* a note", "   over two lines */ .x { color: red }"];
+    expect(run(diffOf({ path: "src/extra.css", isNew: true, lines })).map((f) => f.rule)).toEqual([
+      "new-css",
     ]);
   });
 
