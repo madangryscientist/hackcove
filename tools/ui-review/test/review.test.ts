@@ -2,11 +2,12 @@ import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { onlyFiles, parseDiff } from "../src/diff.js";
-import { didNotRun } from "../src/failure.js";
+import { MAX_DIFF_CHARS, fitDiff, isGenerated, leftLines } from "../src/budget.js";
+import { onlyFiles, parseDiff, splitDiff } from "../src/diff.js";
+import { didNotRun, noteInSummary } from "../src/failure.js";
 import { bodyOf, parseReply, place, summaryOf } from "../src/findings.js";
 import { commandFor } from "../src/opencode.js";
-import { MAX_DIFF_CHARS, MODEL, buildPrompt, purposeOf } from "../src/prompt.js";
+import { MODEL, buildPrompt, purposeOf } from "../src/prompt.js";
 import { diffOf } from "./fixtures.js";
 
 const agents = readFileSync(join(import.meta.dirname, "..", "..", "..", "AGENTS.md"), "utf8");
@@ -18,22 +19,19 @@ describe("prompt", () => {
     expect(purpose).not.toContain("## Layout");
   });
 
-  it("carries the purpose, the reference and the diff, and cuts a long diff", () => {
+  it("carries the purpose, the reference and the diff, and says when files were left out", () => {
     const prompt = buildPrompt({ purpose: "P-URPOSE", reference: "R-EFERENCE", diff: "D-IFF" });
     for (const part of ["P-URPOSE", "R-EFERENCE", "D-IFF", "ask hackcove", "missing_part"]) {
       expect(prompt.toLowerCase()).toContain(part.toLowerCase());
     }
-    const long = buildPrompt({
-      purpose: "p",
-      reference: "r",
-      diff: "x".repeat(MAX_DIFF_CHARS + 5),
-    });
-    expect(long).toContain("cut here for length");
+    const left = buildPrompt({ purpose: "p", reference: "r", diff: "d", left: 2 });
+    expect(left).toContain("2 more files were left out");
+    expect(buildPrompt({ purpose: "p", reference: "r", diff: "d" })).not.toContain("left out");
   });
 
   it("runs the pinned model through OpenCode Zen", () => {
     expect(MODEL).toBe("opencode/deepseek-v4.1-flash");
-    expect(commandFor("p.md")).toContain(MODEL);
+    expect(commandFor()).toContain(MODEL);
   });
 });
 
@@ -81,6 +79,14 @@ describe("model reply", () => {
     expect(summaryOf(2, [])).toContain("2 notes");
   });
 
+  it("does not say it all matches when files were left out, and lists them", () => {
+    const left = leftLines([{ path: "src/a.tsx", reason: "over the size limit" }]);
+    const text = summaryOf(0, [], left);
+    expect(text).not.toContain("matches Hack Cove");
+    expect(text).toContain("`src/a.tsx` (over the size limit)");
+    expect(summaryOf(1, [], left)).toContain("Not reviewed by the model: 1 file");
+  });
+
   it("carries no AI attribution", () => {
     const texts = [
       summaryOf(0, []),
@@ -99,12 +105,95 @@ it("onlyFiles keeps the chunks of the kept files", () => {
 });
 
 describe("opencode command", () => {
-  it("puts the message before --file, which takes every argument after it", () => {
-    const command = commandFor("prompt.md");
-    const file = command.indexOf("--file");
-    expect(file).toBeGreaterThan(command.indexOf("run"));
-    expect(command.slice(file)).toEqual(["--file", "prompt.md"]);
+  it("sends the prompt on stdin, not as an attached file the model pages through", () => {
+    const command = commandFor();
+    expect(command).not.toContain("--file");
     expect(command[command.indexOf("run") + 1]).toMatch(/^Follow the instructions/);
+  });
+});
+
+const file = (path: string, lines: number, width = 20) =>
+  diffOf({ path, lines: Array.from({ length: lines }, (_, i) => `${i}`.padEnd(width, "x")) });
+
+describe("the diff budget", () => {
+  it("splits a diff into one chunk per file", () => {
+    const parts = splitDiff(
+      diffOf({ path: "a.tsx", lines: ["1"] }, { path: "b.tsx", lines: ["2"] }),
+    );
+    expect(parts.map((part) => part.path)).toEqual(["a.tsx", "b.tsx"]);
+  });
+
+  it("knows the generated files", () => {
+    for (const path of [
+      "packages/ui/props.json",
+      "bun.lock",
+      "package-lock.json",
+      "src/a.test.tsx.snap",
+      "apps/x/dist/index.js",
+      "public/app.min.js",
+      "app.js.map",
+    ])
+      expect(isGenerated(path)).toBe(true);
+    for (const path of ["src/Page.tsx", "src/props.tsx", "README.md", "src/style.css"])
+      expect(isGenerated(path)).toBe(false);
+  });
+
+  it("sends a small diff whole", () => {
+    const diff = diffOf({ path: "a.tsx", lines: ["1"] }, { path: "b.css", lines: ["2"] });
+    expect(fitDiff(diff)).toEqual({ diff, left: [] });
+  });
+
+  it("drops generated files first and names them", () => {
+    const diff = [file("src/a.tsx", 2), file("props.json", 2), file("bun.lock", 2)].join("\n");
+    const fitted = fitDiff(diff + "\n");
+    expect(fitted.diff).toContain("src/a.tsx");
+    expect(fitted.diff).not.toContain("props.json");
+    expect(fitted.left).toEqual([
+      { path: "props.json", reason: "generated" },
+      { path: "bun.lock", reason: "generated" },
+    ]);
+  });
+
+  it("keeps source files and the largest additions within the limit, whole, in diff order", () => {
+    const small = file("src/small.tsx", 2);
+    const big = file("src/big.tsx", 20);
+    const style = file("src/app.css", 40);
+    const huge = file("src/huge.tsx", 400);
+    const diff = [small, style, huge, big].join("\n") + "\n";
+    const max = big.length + small.length + 300;
+    const fitted = fitDiff(diff, max);
+    expect(fitted.diff.length).toBeLessThanOrEqual(max);
+    expect(splitDiff(fitted.diff).map((part) => part.path)).toEqual([
+      "src/small.tsx",
+      "src/big.tsx",
+    ]);
+    expect(fitted.left).toEqual([
+      { path: "src/huge.tsx", reason: "over the size limit" },
+      { path: "src/app.css", reason: "over the size limit" },
+    ]);
+  });
+
+  it("is never over the limit, however large the pull request", () => {
+    const diff =
+      Array.from({ length: 60 }, (_, i) => file(`src/f${i}.tsx`, 30 + i)).join("\n") + "\n";
+    const fitted = fitDiff(diff);
+    expect(fitted.diff.length).toBeLessThanOrEqual(MAX_DIFF_CHARS);
+    expect(fitted.left.length).toBeGreaterThan(0);
+    expect(splitDiff(fitted.diff).length + fitted.left.length).toBe(60);
+  });
+
+  it("writes what was left out to the step summary", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ui-review-left-"));
+    const summary = join(dir, "summary.md");
+    try {
+      noteInSummary(leftLines([{ path: "props.json", reason: "generated" }]), {
+        GITHUB_STEP_SUMMARY: summary,
+      });
+      expect(readFileSync(summary, "utf8")).toContain("`props.json` (generated)");
+      noteInSummary(["x"], {});
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
 

@@ -15,7 +15,8 @@ name: UI review
 # if the model run crashes, times out or returns a reply that cannot be parsed, or the component
 # reference or the GitHub comments cannot be had, the step writes an `::error` and a step summary
 # and exits 1, so the check is red. It is skipped, and green, only when `OPENCODE_API_KEY` is unset
-# or no app file changed. It uses the plain `pull_request` event, so a fork's pull request has no
+# or no app file changed. A large diff is sent within a size limit; the files left out (generated
+# files first) are named in the step summary and the check stays green. It uses the plain `pull_request` event, so a fork's pull request has no
 # secrets and layer 2 is skipped. Never run it on `pull_request_target`: it checks out and reads
 # untrusted code.
 on:
