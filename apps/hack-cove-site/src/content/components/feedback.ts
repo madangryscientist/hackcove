@@ -14,7 +14,7 @@ export const feedback: ComponentSection = {
         "Pick the `tone` by how much the message matters: `neutral` for a note, `info` (the default) for something worth knowing, `positive` for a result, `warn` for a thing to check before going on, `danger` for a failure or something that cannot be undone. Keep `danger` for the real failure.",
         "Add a `title` for a short bold lead-in; the body carries the detail.",
         'Put the one action in `actions`, at the end of the row: a `Button size="sm"` or a `TextLink stretch`, which makes the whole callout the click target.',
-        "`banner` is the flat strip at the top of a `Card flush`; do not use it anywhere else.",
+        "`banner` is the flat strip at the top of a `Card flush`; do not use it anywhere else. In a page's column (a `FullBleedLayout`, padded or not) the notice is a plain Callout, first in the column's `Stack`.",
         "A message that must be answered before the reader goes on is a `Dialog`; a field's own error is the `error` of its `Field`.",
       ],
       accessibility: [

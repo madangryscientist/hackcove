@@ -1,5 +1,20 @@
 # Migrating @hackcove/ui
 
+## 0.6 → 0.6.1: ListRow active on a panel, notices in a column, OutlineRegion
+
+Nothing breaks; a consumer changes only what it had built for itself.
+
+- `ListRow active` now fills the row one step deeper than hover (`bg-slate-100`), so it shows on a
+  `bg-slate-50` surface such as a `FullBleedLayout` panel. A local row drawn only to get a visible
+  focus is now `<ListRow size="sm" divided active={focused}>`.
+- `Callout banner` is for the top of a `Card flush` only. A notice in a page's column (a
+  `FullBleedLayout`, padded or not) is a plain `Callout`, first in the column's `Stack`:
+  `<FullBleedLayout padded …><Stack gap="sm"><Callout tone="danger" role="alert">…</Callout>…</Stack></FullBleedLayout>`.
+- New: `RegionFrame` and `OutlineRegion` mark areas of a picture. Draw the picture as
+  `<RegionFrame src={…} alt={…}>` (any `<img>` prop, such as `onLoad` or `loading`, passes on) and put
+  `<OutlineRegion rect={{ x, y, width, height }} within={{ width, height }} label="…" hatched />` inside
+  it, in the picture's own pixels. It replaces a hand-drawn box with an arbitrary colour.
+
 ## 0.5 → 0.6: one Text role, paired parts folded
 
 `Body` is now `Text`, and `Text strong` takes over from `BodyStrong`. `Subtitle`, `Empty` and

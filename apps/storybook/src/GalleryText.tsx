@@ -7,6 +7,8 @@ import {
   CodeExample,
   Divider,
   EmptyState,
+  OutlineRegion,
+  RegionFrame,
   SectionHeading,
   Step,
   Steps,
@@ -15,9 +17,10 @@ import {
   Video,
 } from "@hackcove/ui";
 import { samplePhoto } from "./samplePhoto";
+import { sampleShot, sampleShotSize } from "./sampleShot";
 import { sampleVideo } from "./sampleVideo";
 
-/** The text-level block of the Gallery: heading sizes, a ruled heading, preserved newlines, text tones with numeric, mono and truncate, a list, an EmptyState with Steps, inline code, a CodeBlock, a CodeExample, a divider and a video. */
+/** The text-level block of the Gallery: heading sizes, a ruled heading, preserved newlines, text tones with numeric, mono and truncate, a list, an EmptyState with Steps, inline code, a CodeBlock, a CodeExample, a divider, a video and an OutlineRegion in a RegionFrame. */
 export function GalleryText() {
   return (
     <div className="flex flex-col gap-3">
@@ -73,6 +76,16 @@ export function GalleryText() {
       <Divider />
       <div className="max-w-sm">
         <Video src={sampleVideo} poster={samplePhoto} />
+      </div>
+      <div className="max-w-sm">
+        <RegionFrame src={sampleShot} alt="">
+          <OutlineRegion
+            rect={{ x: 228, y: 4, width: 80, height: 20 }}
+            within={sampleShotSize}
+            label="UI"
+            hatched
+          />
+        </RegionFrame>
       </div>
     </div>
   );

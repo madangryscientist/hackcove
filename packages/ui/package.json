@@ -27,7 +27,8 @@
     "directory": "packages/ui"
   },
   "files": [
-    "dist"
+    "dist",
+    "MIGRATING.md"
   ],
   "type": "module",
   "sideEffects": false,

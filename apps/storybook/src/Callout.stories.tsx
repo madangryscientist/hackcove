@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Callout, Card, Stack, TextLink } from "@hackcove/ui";
+import { Button, Callout, Card, FullBleedLayout, Stack, Text, TextLink } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Callout" };
 export default meta;
@@ -55,6 +55,20 @@ export const Banner: S = {
         <p className="p-5 text-sm text-slate-700">The card body sits under the strip.</p>
       </Card>
     </div>
+  ),
+};
+
+/** In a padded `FullBleedLayout` column the notice is a plain Callout, first in the column's `Stack`: `banner` is for the top of a `Card flush` only, and the padding would inset it. */
+export const InPaddedColumn: S = {
+  render: () => (
+    <FullBleedLayout padded panel={<Text tone="muted">The side panel.</Text>}>
+      <Stack gap="sm">
+        <Callout tone="danger" role="alert">
+          The decision did not save. Try again.
+        </Callout>
+        <Text>The column's content sits under the notice, on the same edge.</Text>
+      </Stack>
+    </FullBleedLayout>
   ),
 };
 
