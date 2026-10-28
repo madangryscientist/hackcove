@@ -102,7 +102,7 @@ describe("AppShell", () => {
 
 describe("appShellRootClassFor", () => {
   it("joins the scheme's class and the root class, for the default and the app's own schemes", () => {
-    const schemes = { light: "paper", dark: "night" };
+    const schemes = { light: "my-light", dark: "night" };
     expect(appShellRootClassFor("dark")).toBe(`dark ${appShellRootClass}`);
     expect(appShellRootClassFor("light")).toBe(appShellRootClass);
     expect(appShellRootClassFor("light", schemes)).toBe(

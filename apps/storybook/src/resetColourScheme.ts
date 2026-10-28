@@ -2,7 +2,7 @@
 export function resetColourScheme(): () => void {
   const root = document.documentElement;
   const reset = () => {
-    root.classList.remove("dark", "paper");
+    root.classList.remove("dark", "my-light");
     root.style.removeProperty("color-scheme");
   };
   reset();

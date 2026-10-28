@@ -52,14 +52,16 @@ describe("ColourSchemeToggle", () => {
 
   it("keys the rule on the app's own dark class, or on the light class's absence when dark has none", () => {
     const own = renderToStaticMarkup(
-      <ColourSchemeToggle schemes={{ light: "paper", dark: "ink" }} />,
+      <ColourSchemeToggle schemes={{ light: "my-light", dark: "ink" }} />,
     );
     expect(own).toContain(':root[class~="ink"] [data-scheme-icon="sun"]');
     expect(own).not.toContain('"dark"');
     const bare = renderToStaticMarkup(
-      <ColourSchemeToggle schemes={{ light: "paper", dark: "" }} />,
+      <ColourSchemeToggle schemes={{ light: "my-light", dark: "" }} />,
     );
-    expect(bare).toContain(':root:not([class~="paper"]) [data-scheme-icon="sun"]{display:inline}');
+    expect(bare).toContain(
+      ':root:not([class~="my-light"]) [data-scheme-icon="sun"]{display:inline}',
+    );
     const none = renderToStaticMarkup(<ColourSchemeToggle schemes={{ light: "", dark: "" }} />);
     expect(none).not.toContain(":root");
   });
@@ -107,8 +109,8 @@ describe("ColourSchemeToggle", () => {
   });
 
   it("takes its scheme classes from `schemes` and swaps them on click", async () => {
-    const schemes = { light: "paper", dark: "dark" };
-    root.classList.add("paper");
+    const schemes = { light: "my-light", dark: "dark" };
+    root.classList.add("my-light");
     const onChange = vi.fn<(scheme: ColourScheme) => void>();
     const button = buttonOf(mount(<ColourSchemeToggle schemes={schemes} onChange={onChange} />));
     expect(button.getAttribute("aria-label")).toBe("Switch to dark theme");
@@ -120,7 +122,7 @@ describe("ColourSchemeToggle", () => {
     expect(button.getAttribute("aria-label")).toBe("Switch to light theme");
 
     await click(button);
-    expect([...root.classList]).toEqual(["paper"]);
+    expect([...root.classList]).toEqual(["my-light"]);
     expect(root.style.colorScheme).toBe("light");
     expect(button.getAttribute("aria-label")).toBe("Switch to dark theme");
   });
@@ -161,7 +163,7 @@ describe("ColourSchemeToggle", () => {
       container.remove();
       return { label, errors: errors.mock.calls };
     }
-    const paper = { light: "paper", dark: "dark" };
+    const paper = { light: "my-light", dark: "dark" };
 
     it("with `initial` set, matches the server on a dark cookie with no mismatch", async () => {
       const { label, errors } = await hydrate("dark", "dark");
@@ -170,7 +172,7 @@ describe("ColourSchemeToggle", () => {
     });
 
     it("with `initial` set, matches the server on a light cookie with no mismatch", async () => {
-      const { label, errors } = await hydrate("light", "paper");
+      const { label, errors } = await hydrate("light", "my-light");
       expect(errors).toEqual([]);
       expect(label).toBe("Switch to dark theme");
     });

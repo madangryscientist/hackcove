@@ -5,6 +5,7 @@
  */
 import { componentPages, sectionOfPage, type ComponentPage } from "../content/components/index.js";
 import { site } from "../content/site.js";
+import { themes } from "../content/themes.js";
 import { pairOf } from "./pairs.js";
 import { docOf } from "./Props.js";
 import { findStory } from "./stories.js";
@@ -66,6 +67,25 @@ function sectionOf(page: ComponentPage): string {
   ].join("\n\n");
 }
 
+/** Install, the CSS wiring and every theme's package and class: what an agent needs before any component works. */
+function setupOf(): string {
+  const { install, themes: themesCopy } = site.ui;
+  const steps = install.steps.map((step, i) => {
+    const code =
+      "code" in step ? `\n\`\`\`${step.language}\n${[step.code].flat().join("\n")}\n\`\`\`` : "";
+    return `${i + 1}. ${step.text}${code}`;
+  });
+  const list = themes.map(
+    (theme) =>
+      `- ${theme.title}: \`${theme.name}\`; ${themesCopy.scopeLabel}: \`${theme.scopeClass}\`. ${theme.description}`,
+  );
+  return [
+    `## ${install.title}`,
+    steps.join("\n\n"),
+    `### ${themesCopy.title}\n${themesCopy.intro}\n${list.join("\n")}`,
+  ].join("\n\n");
+}
+
 /** The whole file. */
 export function renderLlms(): string {
   const head = [
@@ -74,5 +94,5 @@ export function renderLlms(): string {
     ...site.ui.intro,
     "Every component has one right way to use it. There are no extension recipes and no styling escape hatches: do not restyle a component, compose the parts.",
   ].join("\n\n");
-  return `${[head, ...componentPages.map(sectionOf)].join("\n\n")}\n`;
+  return `${[head, setupOf(), ...componentPages.map(sectionOf)].join("\n\n")}\n`;
 }

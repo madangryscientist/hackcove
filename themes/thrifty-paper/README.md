@@ -34,7 +34,8 @@ page-background or font CSS.
 
 ## Palette
 
-From Thrifty's light theme. Thrifty has no danger colour, so the red utilities keep Tailwind's own.
+From Thrifty's light theme. Thrifty has no danger colour of its own, so the red utilities map to a matching red (danger
+`#b91c1c`, danger-hover `#991b1b`, danger-soft `#fef2f2`).
 
 canvas `#fdfbf7` · surface `#ffffff` · subtle `#f7f2e9` · line `#ece3d4` · ink `#1c1917` ·
 ink-body `#3b342e` · ink-mute `#6b6259` · accent `#c2410c` · accent-hover `#9a3412` ·

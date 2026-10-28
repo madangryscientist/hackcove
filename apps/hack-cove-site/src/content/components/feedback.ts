@@ -53,7 +53,7 @@ export const feedback: ComponentSection = {
       usage: [
         "Render it only while it is open: `{open && <Dialog … onClose={() => setOpen(false)} />}`. It opens itself on mount.",
         'A `title` that names the action, a `description` with the consequence, and the actions in `footer`: Cancel as `variant="ghost"` first, then the one action, `tone="danger"` when it destroys something.',
-        '`size="sm"` is a short list; `md`, the default, holds a form. A submit button in the footer reaches a form in the body with its `form` attribute.',
+        '`size="sm"` is a short list; `md`, the default, holds a form; `lg` (640px) is a wider form or a table. A submit button in the footer reaches a form in the body with its `form` attribute.',
         "One text field is a `FieldDialog`. A record or a long form is a `Drawer`. A message that needs no answer is a `Callout`.",
       ],
       accessibility: [
@@ -94,7 +94,7 @@ export const feedback: ComponentSection = {
       whenToUse: "Asking for a single name or value: new project, rename, a label.",
       pairs: ["FieldDialog/OneField"],
       usage: [
-        "Render it only while it is open, and give every string it shows: `title`, `label`, `inputLabel`, `placeholder`, `hint`, `emptyReason`, `submit` and `busyLabel`.",
+        "Render it only while it is open, and give every string it shows: `title`, `label`, `inputLabel`, `placeholder`, `hint`, `emptyReason`, `submit` and `busyLabel`, and a `description` under the title when the question needs a sentence.",
         "`onSubmit` gets the trimmed value and returns a promise. Resolving closes the dialog; rejecting shows the error message under the field and keeps the dialog open.",
         "More than one field is a `Dialog` with a `FormRow` or `Field`s, or a `Drawer`.",
       ],

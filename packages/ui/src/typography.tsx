@@ -12,18 +12,17 @@ import type { Size } from "./size.js";
    Typography system
    ---------------------------------------------------------------------------
    Semantic text components that each PIN a size + weight + a default colour, so
-   text can never accidentally inherit the wrong weight/scale. Written for
-   this stack (Tailwind v4 + Catppuccin Mocha).
+   text can never accidentally inherit the wrong weight/scale. Written against
+   Tailwind v4 utilities.
 
-   Colour axis — the `color` prop maps to Tailwind's slate utilities, which
-   theme.css remaps to the real Catppuccin Mocha tokens in dark mode (so these
-   stay consistent with the rest of the system rather than inventing a parallel
-   palette). In dark mode they resolve to:
-     default   → text-slate-900 → #cdd6f4  (Catppuccin `text`)
-     secondary → text-slate-600 → #bac2de  (Catppuccin `subtext1`)
-     tertiary  → text-slate-500 → #a6adc8  (Catppuccin `subtext0`)
-     muted     → text-slate-400 → #9399b2  (Catppuccin `overlay2`)
-     brand     → text-violet-600 → #cba6f7 (Catppuccin `mauve` — the accent)
+   Colour axis — the `color` prop maps to Tailwind's slate and violet utilities,
+   which a theme remaps to its own ink and accent (so these stay consistent with
+   the rest of the system rather than inventing a parallel palette):
+     default   → text-slate-900  (primary ink)
+     secondary → text-slate-600
+     tertiary  → text-slate-500
+     muted     → text-slate-400
+     brand     → text-violet-600 (the accent)
 
    Meaning axis — the inline roles (Body, BodyStrong, Caption, Overline) also take `tone`
    (muted | positive | warn | danger | info), which wins over `color`, and the closed switches
@@ -42,13 +41,13 @@ import type { Size } from "./size.js";
 
 export type TypographyColor = "default" | "secondary" | "tertiary" | "muted" | "brand";
 
-/** Colour token → slate/violet utility (remapped to Catppuccin Mocha in dark mode by theme.css). */
+/** Colour token → slate/violet utility, which a theme remaps. */
 const COLOR: Record<TypographyColor, string> = {
-  default: "text-slate-900", // Catppuccin text     #cdd6f4
-  secondary: "text-slate-600", // Catppuccin subtext1 #bac2de
-  tertiary: "text-slate-500", // Catppuccin subtext0 #a6adc8
-  muted: "text-slate-400", // Catppuccin overlay2 #9399b2
-  brand: "text-violet-600", // Catppuccin mauve    #cba6f7
+  default: "text-slate-900",
+  secondary: "text-slate-600",
+  tertiary: "text-slate-500",
+  muted: "text-slate-400",
+  brand: "text-violet-600",
 };
 
 /**

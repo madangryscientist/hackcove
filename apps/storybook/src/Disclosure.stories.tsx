@@ -60,6 +60,13 @@ export const DoSecondary: S = {
   ),
 };
 
+/** What the person must read to carry on, such as an error, is in view: a `Callout`, not a `Disclosure`. */
+export const DoEssential: S = {
+  render: () => (
+    <Callout tone="danger">Your payment was declined. Your order is not placed.</Callout>
+  ),
+};
+
 /** What the person must read to carry on, such as an error, is not hidden behind a summary: show it. */
 export const DontEssential: S = {
   render: () => (

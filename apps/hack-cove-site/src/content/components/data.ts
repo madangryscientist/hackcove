@@ -75,7 +75,7 @@ export const data: ComponentSection = {
         'A button row is a native `<button type="button">`; a link row is a real link; a `static` row is a plain `<div>` with no click target.',
         '`selected` sets `aria-current="true"` on the row.',
         "`expanded` sets `aria-expanded` and draws a chevron, which is hidden from assistive tech.",
-        "A button or link row has a focus ring from the component; `disabled` fades the row and stops pointer events.",
+        "A button or link row has a focus ring from the component; a button row's `disabled` fades the row and stops pointer events.",
         "`revealOnHover` actions appear when the row is hovered or has focus inside it, so a keyboard user can reach them, and they are always shown on a touch screen.",
       ],
       api: ["ListRow"],

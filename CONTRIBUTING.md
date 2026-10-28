@@ -61,15 +61,19 @@ bunx nx e2e hack-cove-site                      # Playwright: builds the site, f
 `bunx nx affected -t <target>` runs just what changed. Lint rules are all errors: fix the code, do
 not disable a rule.
 
+The shared compiler options live in `tsconfig.shared.json`, not a root `tsconfig.base.json` or
+`tsconfig.json`: Nx reads only those two names, and TypeScript 7 has no classic compiler API for it
+to parse them with.
+
 ## Rules of the repo
 
 1. **`@hackcove/ui` carries no theme.** Components use stock Tailwind utilities (`bg-white`,
    `text-slate-900`, …) and never a `dark:` variant or a palette colour. A theme is the only place
    a palette lives; it remaps those utilities under its own scope class. The colour utilities a
    component may use are listed in `packages/ui/palette.json`. A new one is a palette change: add
-   it there and remap it in every theme in the same change. A theme is required: those stock
-   utilities are only what a theme remaps, never a look to ship, and Storybook offers no unthemed
-   choice.
+   it there and remap it in every theme in the same change. With no theme the
+   components render in Tailwind's own default colours; that works, but it is only what a theme
+   remaps, not a look the repo designs or checks, so Storybook offers no unthemed choice.
 2. **A theme is a folder and nothing else registers it.** No theme name appears in code.
 3. **Almost no runtime dependencies.** `@hackcove/ui` has one approved dependency,
    `react-aria-components` (with `@internationalized/date`), for the date picker; its peers are react,
@@ -79,7 +83,10 @@ not disable a rule.
 4. **Source imports in `packages/ui` use `.js` specifiers** (`./ui.js`, resolved to the `.tsx`),
    because a `.tsx` specifier is emitted into the `.d.ts` and breaks consumers' types.
 5. **A new component** is exported from `packages/ui/src/index.ts`, has its own story, and appears
-   in `apps/storybook/src/Gallery.tsx`.
+   in `apps/storybook/src/Gallery.tsx`. Its docs page names Do/Don't topics, the stories
+   `Do<Topic>` and `Dont<Topic>`. A topic shows both halves when a counter-example teaches
+   something; one shown on its own (a feature, or a wrong way the types already refuse) is listed
+   with its reason in `ONE_HALF` in `apps/hack-cove-site/test/docs.test.tsx`.
 
 6. **No `className` or `style` on a component.** A public component has no styling prop and its
    HTML props are typed `Unstyled<…>` (`packages/ui/src/props.ts`). If a story or a site needs a

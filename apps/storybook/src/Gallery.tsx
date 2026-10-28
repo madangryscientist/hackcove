@@ -47,7 +47,7 @@ import { GalleryButtons } from "./GalleryButtons";
 import { GalleryChoice } from "./GalleryChoice";
 import { GalleryData } from "./GalleryData";
 import { GalleryForm, GalleryNameField } from "./GalleryForm";
-import { GalleryLayout } from "./GalleryLayout";
+import { GalleryContainer, GalleryLayout } from "./GalleryLayout";
 import { GalleryPills } from "./GalleryPills";
 import { GallerySwitchers } from "./GallerySwitchers";
 import { GalleryText } from "./GalleryText";
@@ -323,6 +323,8 @@ export function Gallery() {
       <GalleryDialogs />
 
       <GalleryLayout />
+
+      <GalleryContainer />
 
       <GalleryPages />
 

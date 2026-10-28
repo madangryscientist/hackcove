@@ -252,7 +252,7 @@ export const DoRowActions: S = {
   ),
 };
 
-/** `sm`, `md` (the default) and `lg`: the row's padding and type. */
+/** `sm`, `md` (the default) and `lg`: the row's padding; the text stays `text-sm`. */
 export const Sizes: S = {
   render: () => (
     <div className="max-w-md">

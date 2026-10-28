@@ -9,6 +9,7 @@ import {
   componentSections,
 } from "../src/content/components/index";
 import { site } from "../src/content/site";
+import { themes } from "../src/content/themes";
 import { docOf } from "../src/docs/Props";
 import { renderLlms } from "../src/docs/llms";
 import { pairOf } from "../src/docs/pairs";
@@ -79,7 +80,42 @@ describe("the component pages", () => {
       ),
     ).toThrow(/Button\/Nope/);
   });
+
+  test("a topic with only one half is one of these, each with the reason it has no other", () => {
+    const oneHalf = componentPages
+      .flatMap((page) => page.pairs)
+      .filter((topic) => {
+        const { do: right, dont: wrong } = pairOf(topic);
+        return right === undefined || wrong === undefined;
+      })
+      .toSorted();
+    expect(oneHalf).toEqual(Object.keys(ONE_HALF).toSorted());
+  });
 });
+
+/**
+ * The Do/Don't topics that show one half, and why. A topic gets its other half when a
+ * counter-example teaches something; a feature shown on its own, or a wrong way the types already
+ * refuse, does not.
+ */
+const ONE_HALF: Record<string, string> = {
+  "AppShellDocs/RouterBrand": "A feature: `AppShellBrand` with the router's own link.",
+  "CardGrid/Auto": 'A feature: `columns="auto"`.',
+  "Divider/Footer": "A feature: the one hairline between content and its footer.",
+  "Tabs/SwitchView":
+    "Its wrong ways are the other Tabs topics; this one shows the panel under the row.",
+  "Checkbox/Row": "A feature: `ButtonGroup` spaces a row of checkboxes and buttons.",
+  "DatePicker/TypedOnly": "A feature: `DateField` is the picker without the calendar.",
+  "DatePicker/Value": "A feature: the `CalendarDate` value and the ISO helpers.",
+  "Disclosure/Secondary":
+    "Its wrong way is `Disclosure/Essential`'s Don't: hiding what must be read.",
+  "FilterGroup/Facets": "A feature: one group per facet.",
+  "KeyValueList/AlignStart": "A feature: the `align` prop.",
+  "ListRow/RowActions": "The wrong way does not compile: a button or link row takes no `actions`.",
+  "TextLink/Stretch": "A feature: the `stretch` prop.",
+  "Timeline/NoEvents": "A feature: the `empty` prop.",
+  "ToggleChip/Dot": "A feature: the `dot` prop.",
+};
 
 const story = (render: string) =>
   `import { Body } from "@hackcove/ui";\nconst words = "hi";\nexport const A = { render: () => ${render} };`;
@@ -127,9 +163,21 @@ describe("/ui/llms.txt", () => {
     expect(await response.text()).toBe(text);
   });
 
-  test("states the purpose and has one section per component", () => {
+  test("states the purpose", () => {
     expect(text).toContain("fully integrated with its theming");
     expect(text).toContain("no custom CSS or Tailwind");
+  });
+
+  test("leads with the setup: install, the CSS wiring and every theme's package and class", () => {
+    expect(text.indexOf("## Install")).toBeLessThan(text.indexOf(`## ${componentPages[0]?.name}`));
+    expect(text).toContain('@source "../node_modules/@hackcove/ui/dist";');
+    for (const theme of themes) {
+      expect(text).toContain(`\`${theme.name}\``);
+      expect(text).toContain(`\`${theme.scopeClass}\``);
+    }
+  });
+
+  test("has one section per component", () => {
     for (const page of componentPages) {
       expect(text.match(new RegExp(`^## ${page.name}$`, "gm"))).toHaveLength(1);
       for (const fn of page.functions ?? []) expect(text).toContain(`- ${fn.name}: `);

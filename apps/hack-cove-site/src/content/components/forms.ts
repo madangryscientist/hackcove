@@ -117,6 +117,7 @@ export const forms: ComponentSection = {
         "A `description` on a `Radio` is a muted line under its label, for the option that needs a sentence.",
         "An `error` on the group is a red line under the options and marks every circle red; it is the same wording rule as `Field`'s.",
         "`isDisabled` on the group disables every option; on a `Radio` it disables that one.",
+        "`isRequired` marks a choice the form cannot submit without; the group is `aria-required`.",
         "`size` (`sm`, `md` the default, `lg`) sets every circle and label, to match the `Input`s around it.",
         "More than five options, or a list that grows, is a `Select`. Several ticks are `Checkbox`es. Switching a view in place is a `SegmentedControl`.",
       ],

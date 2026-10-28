@@ -22,14 +22,15 @@ export const External: S = {
   ),
 };
 
-export const Sizes: S = {
+/** With no `size`, a link takes the size of the text around it. The `size` scale is in "size and mono". */
+export const InheritsSize: S = {
   render: () => (
     <div className="flex flex-col items-start gap-2">
       <p className="text-sm">
-        <TextLink href="#small">Small link</TextLink>
+        <TextLink href="#in-small-text">A link in text-sm</TextLink>
       </p>
       <p className="text-base">
-        <TextLink href="#base">Base link</TextLink>
+        <TextLink href="#in-base-text">A link in text-base</TextLink>
       </p>
     </div>
   ),
@@ -148,6 +149,11 @@ export const DontExternal: S = {
 /** In an app with a router, `render` draws the router's own `<Link>`; here an anchor stands in. */
 export const DoRouter: S = {
   render: () => <TextLink render={(p) => <a href="#terms" {...p} />}>Read the terms</TextLink>,
+};
+
+/** In an app with a router, a bare `href` loads the whole page again: pass the router's `<Link>` through `render`. */
+export const DontRouter: S = {
+  render: () => <TextLink href="#terms">Read the terms</TextLink>,
 };
 
 /** `stretch` makes the whole of the nearest `relative` ancestor the click target: a `Card` here, a `TableRow` in a table. */

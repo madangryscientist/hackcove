@@ -2,8 +2,8 @@ import { PageHeaderContent } from "./PageHeader.js";
 import type { ReactNode } from "react";
 import type { Passthrough } from "./props.js";
 
-// Small presentational primitives written against Tailwind's slate-based class vocabulary
-// (remapped to Catppuccin Mocha in dark mode by theme.css).
+// Small presentational primitives written against Tailwind's slate-based class vocabulary,
+// which a theme remaps.
 
 /** @deprecated use PageHeader */
 export function PageTitle({

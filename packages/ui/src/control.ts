@@ -4,7 +4,7 @@ import type { Size } from "./size.js";
 /** A control's size: the library's one `Size` scale. */
 export type ControlSize = Size;
 
-/** `full` fills the parent (the default); `fill` grows to the space left in a flex row; `auto` is as wide as the content; the rest are fixed. */
+/** `full` fills the parent (the default); `fill` grows to the space left in a flex row; `auto` adds no width class, so the control is as wide as the browser makes it; the rest are fixed. */
 export type ControlWidth = "full" | "fill" | "auto" | "xs" | "sm" | "md" | "lg";
 
 /** The props `Input`, `Select` and `Textarea` share. They replace the native `size` and `width`. */
@@ -15,7 +15,7 @@ export type ControlProps = {
    * @default md
    */
   size?: ControlSize | undefined;
-  /** `full` (default) fills the parent; `fill` grows to fill the room left in a row beside other items (it can shrink to nothing, so buttons stay on the line); `xs`, `sm`, `md`, `lg` are fixed; `auto` is as wide as its content. */
+  /** `full` (default) fills the parent; `fill` grows to fill the room left in a row beside other items (it can shrink to nothing, so buttons stay on the line); `xs`, `sm`, `md`, `lg` are fixed; `auto` adds no width class, so the control is as wide as the browser makes it. */
   width?: ControlWidth | undefined;
 };
 

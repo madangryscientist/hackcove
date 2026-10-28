@@ -8,6 +8,7 @@ import {
   ClusterGrow,
   Card,
   ColourSchemeToggle,
+  Container,
   Field,
   Input,
   NavTabs,
@@ -52,7 +53,7 @@ export function GalleryLayout() {
             <Body>A Stack of Sections, gap md.</Body>
           </Section>
           <Section title="Another">
-            <Body>Each Section stacks its children at gap sm.</Body>
+            <Body>Each Section stacks its children at gap md.</Body>
           </Section>
           <Stack gap="xs">
             <SubsectionHeading>Text block</SubsectionHeading>
@@ -95,5 +96,16 @@ export function GalleryLayout() {
         </div>
       </AppShell>
     </div>
+  );
+}
+
+/** A Container on its own, outside an AppShell: the page width and side padding. */
+export function GalleryContainer() {
+  return (
+    <Container as="section" aria-label="Container">
+      <Card title="Container">
+        <Body>A Container on its own: the page width and side padding, outside an AppShell.</Body>
+      </Card>
+    </Container>
   );
 }

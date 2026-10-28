@@ -26,7 +26,7 @@ function systemPrefers(dark: boolean | undefined): void {
 }
 
 function resetRoot(): void {
-  root.classList.remove("dark", "paper");
+  root.classList.remove("dark", "my-light");
   root.style.removeProperty("color-scheme");
 }
 
@@ -70,13 +70,13 @@ describe("applyColourScheme", () => {
   });
 });
 
-const paper = { light: "paper", dark: "dark" };
+const paper = { light: "my-light", dark: "dark" };
 
 describe("schemes with a light class of their own", () => {
   it("schemeClass names the class for each scheme, with the default of dark and none", () => {
     expect(schemeClass("dark")).toBe("dark");
     expect(schemeClass("light")).toBe("");
-    expect(schemeClass("light", paper)).toBe("paper");
+    expect(schemeClass("light", paper)).toBe("my-light");
     expect(schemeClass("dark", paper)).toBe("dark");
   });
 
@@ -93,9 +93,9 @@ describe("schemes with a light class of their own", () => {
     root.classList.add("dark");
     expect(appliedColourScheme(root, paper)).toBe("dark");
     root.classList.remove("dark");
-    root.classList.add("paper");
+    root.classList.add("my-light");
     expect(appliedColourScheme(root, paper)).toBe("light");
-    root.classList.remove("paper");
+    root.classList.remove("my-light");
   });
 });
 
