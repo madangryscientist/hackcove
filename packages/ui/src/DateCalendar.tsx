@@ -15,35 +15,36 @@ import {
 } from "react-aria-components";
 import { cx, focusRing } from "./cx.js";
 import { MONTH_OPTIONS, iconButtonClass } from "./DateField.js";
+import { Icon } from "./Icon.js";
 
 export const calendarIcon = (
-  <svg
-    viewBox="0 0 20 20"
-    className="h-4 w-4"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.6"
-    strokeLinecap="round"
-    aria-hidden="true"
-  >
-    <rect x="3" y="4.5" width="14" height="12.5" rx="2" />
-    <path d="M3 8.5h14M7 2.5v4M13 2.5v4" />
-  </svg>
+  <Icon>
+    <svg
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+    >
+      <rect x="3" y="4.5" width="14" height="12.5" rx="2" />
+      <path d="M3 8.5h14M7 2.5v4M13 2.5v4" />
+    </svg>
+  </Icon>
 );
 
 const chevron = (d: string) => (
-  <svg
-    viewBox="0 0 20 20"
-    className="h-4 w-4"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.8"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
-    <path d={d} />
-  </svg>
+  <Icon>
+    <svg
+      viewBox="0 0 20 20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d={d} />
+    </svg>
+  </Icon>
 );
 
 const selectClass = `rounded-md border border-slate-300 bg-white py-1 pr-1 pl-2 text-sm text-slate-900 transition hover:border-violet-400 ${focusRing}`;

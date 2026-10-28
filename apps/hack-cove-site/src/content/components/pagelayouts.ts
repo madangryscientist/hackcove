@@ -149,6 +149,7 @@ export const pagelayouts: ComponentSection = {
         "It adds no padding and has no page title; the canvas is the `children`. Set `padded` when the body is not a viewer and should have the other layouts' page padding.",
         "Put the facts about what is shown in `panel`, a `KeyValueList` under an `Overline`. From `lg` the panel is a fixed-width column on the right; below it, it stacks under the canvas.",
         "Omit `panel` when the canvas stands alone.",
+        "`bar` is a full-width row above the canvas and the panel, such as a viewer's title and its actions in a `Cluster justify=\"between\"`. It sticks under the shell's header as the page scrolls; `padded` does not pad it.",
         "A page with a title and content is `ListLayout` or `DetailLayout`.",
       ],
       accessibility: [

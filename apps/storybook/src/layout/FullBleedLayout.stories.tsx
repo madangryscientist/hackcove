@@ -2,7 +2,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   AppShell,
   Body,
+  Button,
   Card,
+  Cluster,
   EmptyState,
   FullBleedLayout,
   KeyValue,
@@ -103,6 +105,39 @@ export const Padded: S = {
   render: () => (
     <DemoShell bleed>
       <FullBleedLayout padded panel={snapshotPanel}>
+        <Card title="Quotes">
+          <Body as="p">Every quote you have sent.</Body>
+        </Card>
+      </FullBleedLayout>
+    </DemoShell>
+  ),
+};
+
+const viewerBar = (
+  <Cluster justify="between" gap="md">
+    <Body as="p">Button / Primary</Body>
+    <Button size="sm" variant="outline">
+      Accept
+    </Button>
+  </Cluster>
+);
+
+/** `bar` is a full-width row above the canvas and the panel, on the surface with a bottom line, that sticks under the shell's header as the page scrolls. */
+export const WithBar: S = {
+  render: () => (
+    <DemoShell bleed>
+      <FullBleedLayout bar={viewerBar} panel={snapshotPanel}>
+        {snapshotCanvas}
+      </FullBleedLayout>
+    </DemoShell>
+  ),
+};
+
+/** With a `bar`, `padded` pads only what is below it: the bar keeps its own edge. */
+export const BarPadded: S = {
+  render: () => (
+    <DemoShell bleed>
+      <FullBleedLayout bar={viewerBar} padded panel={snapshotPanel}>
         <Card title="Quotes">
           <Body as="p">Every quote you have sent.</Body>
         </Card>

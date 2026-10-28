@@ -106,6 +106,11 @@ const CASES: Record<string, () => ReactElement> = {
     </ui.FormRowField>
   ),
   FullBleedLayout: () => <ui.FullBleedLayout {...A}>x</ui.FullBleedLayout>,
+  Icon: () => (
+    <ui.Icon {...A}>
+      <svg />
+    </ui.Icon>
+  ),
   IconButton: () => (
     <ui.IconButton label="L" {...A}>
       x

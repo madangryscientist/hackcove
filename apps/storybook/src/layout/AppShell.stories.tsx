@@ -148,6 +148,32 @@ export const LinkedBrand: S = {
   ),
 };
 
+const squareLogo = (
+  <svg viewBox="0 0 20 20" fill="currentColor">
+    <rect x="2" y="2" width="16" height="16" rx="4" />
+  </svg>
+);
+
+/** `logoSize`: `sm` (20px), `md` (24px, the default) and `lg` (32px); an `<img>` or `<svg>` logo fills the box. */
+export const LogoSizes: S = {
+  render: () => (
+    <DemoShell brand={<AppShellBrand href="#" logoSize="sm" logo={squareLogo} label="Quotes" />}>
+      <PageHeader title="Logo sizes" subtitle="sm in the header; sm, md and lg below." />
+      <Stack>
+        {(["sm", "md", "lg"] as const).map((size) => (
+          <AppShellBrand
+            key={size}
+            href="#"
+            logoSize={size}
+            logo={squareLogo}
+            label={`Quotes, ${size}`}
+          />
+        ))}
+      </Stack>
+    </DemoShell>
+  ),
+};
+
 /** `collapse`: below the `sm` breakpoint only the logo shows; the label is visually hidden and still names the link. Narrow the viewport to see it. */
 export const CollapsedBrand: S = {
   render: () => (

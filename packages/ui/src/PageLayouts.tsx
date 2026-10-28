@@ -266,27 +266,46 @@ export function SidebarLayout({
  * screen. Render it in `<AppShell bleed>`. It deliberately breaks the shared left edge: a viewer
  * that needs the whole width has no Container of its own, so `children` start at the viewport's
  * left edge. `padded` gives them the Container's padding instead (`px-4`, `sm:px-6`, `py-8`), for
- * a page of ordinary content beside a full-height `panel`.
+ * a page of ordinary content beside a full-height `panel`. A `bar` runs the full width above both,
+ * on the surface with a bottom line, and sticks under AppShell's header as the page scrolls.
  */
 export function FullBleedLayout({
+  bar,
   panel,
   padded = false,
   children,
   ...rest
 }: {
+  /** A full-width row above `children` and `panel` that sticks under the header, e.g. a viewer's title and actions. `padded` does not pad it. */
+  bar?: ReactNode;
   panel?: ReactNode;
   /** Pads `children` as the Container pads every other page. Off, they run to the viewport's edges. */
   padded?: boolean | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {
-  return (
-    <div {...rest} className="flex min-h-0 flex-1 flex-col lg:flex-row">
+  const row = (
+    <>
       <div className={cx("min-w-0 flex-1", padded && "px-4 py-8 sm:px-6")}>{children}</div>
       {panel && (
         <aside className="w-full shrink-0 border-t border-slate-200 bg-slate-50 p-4 lg:w-72 lg:border-t-0 lg:border-l">
           {panel}
         </aside>
       )}
+    </>
+  );
+  if (!bar) {
+    return (
+      <div {...rest} className="flex min-h-0 flex-1 flex-col lg:flex-row">
+        {row}
+      </div>
+    );
+  }
+  return (
+    <div {...rest} className="flex min-h-0 flex-1 flex-col">
+      <div className="sticky top-[var(--app-header,0px)] z-5 border-b border-slate-200 bg-white px-4 py-2 sm:px-6">
+        {bar}
+      </div>
+      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">{row}</div>
     </div>
   );
 }

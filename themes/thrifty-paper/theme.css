@@ -271,6 +271,9 @@
 .thrifty-paper .border-amber-300 {
   border-color: rgba(180, 83, 9, 0.3); /* warn */
 }
+.thrifty-paper .border-amber-600 {
+  border-color: #b45309; /* warn — the strong edge (Card attention) */
+}
 .thrifty-paper .border-red-200 {
   border-color: rgba(
     185,

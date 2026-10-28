@@ -230,3 +230,49 @@ describe("ListRow focused and leadingWidth", () => {
     expect(out).toContain('<div class="min-w-0 flex-1"><div>Title</div></div>');
   });
 });
+
+describe("ListRow active", () => {
+  it("holds the hover look on every form; selected wins", () => {
+    expect(renderToStaticMarkup(<ListRow active>Rent</ListRow>)).toContain("bg-slate-50");
+    expect(
+      renderToStaticMarkup(
+        <ListRow href="/r" active>
+          Rent
+        </ListRow>,
+      ),
+    ).toMatch(/<div id="[^"]*" class="[^"]*\bbg-slate-50\b/);
+    expect(
+      renderToStaticMarkup(
+        <ListRow static active>
+          Rent
+        </ListRow>,
+      ),
+    ).toContain("bg-slate-50");
+    const both = renderToStaticMarkup(
+      <ListRow active selected>
+        Rent
+      </ListRow>,
+    );
+    expect(both).toContain("bg-violet-50");
+    expect(both).not.toMatch(/ bg-slate-50\b/);
+  });
+
+  it("a plain static row has no fill until active", () => {
+    expect(renderToStaticMarkup(<ListRow static>Rent</ListRow>)).not.toContain("bg-slate-50");
+  });
+
+  it("shows actions that revealOnHover hides", () => {
+    const hidden = renderToStaticMarkup(
+      <ListRow static revealOnHover actions={<button type="button">Edit</button>}>
+        Rent
+      </ListRow>,
+    );
+    const shown = renderToStaticMarkup(
+      <ListRow static revealOnHover active actions={<button type="button">Edit</button>}>
+        Rent
+      </ListRow>,
+    );
+    expect(hidden).toContain("opacity-0");
+    expect(shown).not.toContain("opacity-0");
+  });
+});

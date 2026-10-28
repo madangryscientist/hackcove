@@ -62,6 +62,25 @@ export const actions: ComponentSection = {
       api: ["IconButton"],
     },
     {
+      slug: "icon",
+      name: "Icon",
+      summary: "Sizes and tones one `<svg>` glyph.",
+      whenToUse:
+        "A glyph beside text or inside a control: a flag in a row, a camera in a Button, a mark in a card.",
+      pairs: ["Icon/Icon"],
+      usage: [
+        "Put a bare `<svg>` (with a `viewBox`, no size or colour classes) in an `Icon`; it fills the box.",
+        "`size` is `sm` (14px), `md` (16px, the default) or `lg` (20px).",
+        "`tone` is a text tone (`muted`, `positive`, `warn`, `danger`, `info`); `inherit`, the default, takes the colour of the text around it, so draw the glyph with `currentColor`.",
+        "An icon that is a button is an `IconButton`.",
+      ],
+      accessibility: [
+        "An Icon is decorative and `aria-hidden` by default: the text beside it says what it means.",
+        'An icon that carries meaning on its own takes a `label`, which makes it `role="img"` with that name.',
+      ],
+      api: ["Icon"],
+    },
+    {
       slug: "copy-button",
       name: "CopyButton",
       summary: "Copies a string to the clipboard.",

@@ -13,7 +13,7 @@ export const layout: ComponentSection = {
       pairs: ["AppShellDocs/Brand", "AppShellDocs/RouterBrand"],
       usage: [
         "Fill the slots and write no wrapper: `brand`, `nav` (a `NavTabs`), `controls` (a picker, a `ColourSchemeToggle`), then an optional `subnav` row and `footer`.",
-        "`brand` is an `AppShellBrand`: logo and label in one link. `collapse` leaves only the logo below `sm`.",
+        '`brand` is an `AppShellBrand`: logo and label in one link. `collapse` leaves only the logo below `sm`. `logoSize` is `sm` (20px), `md` (24px, the default, an `Avatar size="sm"`) or `lg` (32px); an `<img>` or `<svg>` logo fills it.',
         "With a router, give `AppShellBrand` a `render` that draws the app's own `<Link>` instead of an `href`.",
         "Header, main and footer each sit in a `Container`, so a page never sets its own width or padding. Do not add a `Container` inside the shell.",
         "`bleed` drops main's `Container` for a layout that needs the whole width (`FullBleedLayout`); `SidebarLayout` needs no `bleed`.",

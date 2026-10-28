@@ -1,4 +1,10 @@
-import { type ComponentPropsWithoutRef, type ReactElement, type ReactNode, useId } from "react";
+import {
+  type ComponentPropsWithoutRef,
+  type PointerEventHandler,
+  type ReactElement,
+  type ReactNode,
+  useId,
+} from "react";
 import { Chevron } from "./Chevron.js";
 import { cx, focusRing, liftInteractive } from "./cx.js";
 import { type LinkRender, renderLink } from "./link.js";
@@ -21,6 +27,8 @@ const STATIC = "group/row flex w-full items-center gap-3 text-sm text-slate-900"
 
 const FILL = "hover:bg-slate-50";
 const SELECTED = "bg-violet-50 hover:bg-violet-50";
+/** The hover look held on, for the row a pointer or keyboard cursor is on. */
+const ACTIVE = "bg-slate-50";
 
 /** The keyboard cursor: the focus ring, drawn inside the row, on a row that does not hold DOM focus. */
 const FOCUSED = "outline-2 -outline-offset-2 outline-violet-600";
@@ -58,6 +66,12 @@ type Shared = {
    */
   focused?: boolean | undefined;
   /**
+   * Holds the hover look on, for the row a list follows with the pointer and the keyboard alike
+   * (set it from `onPointerEnter` and `onFocus`). On a static row it shows the fill without
+   * `revealOnHover`, and shows `actions` that `revealOnHover` hides. `selected` wins.
+   */
+  active?: boolean | undefined;
+  /**
    * A fixed width for `leading`, for a thumbnail (an `<img>` fills it), so the labels of rows with
    * and without a picture still line up. Without it `leading` is as wide as its content.
    */
@@ -87,7 +101,12 @@ type ListRowLinkProps = Shared &
     /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
     external?: boolean | undefined;
     expanded?: undefined;
-  } & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href" | "children">> &
+    /** On the row, not the link, so a link or button in the row does not count as leaving it. */
+    onPointerEnter?: PointerEventHandler<HTMLDivElement> | undefined;
+    onPointerLeave?: PointerEventHandler<HTMLDivElement> | undefined;
+  } & Unstyled<
+    Omit<ComponentPropsWithoutRef<"a">, "href" | "children" | "onPointerEnter" | "onPointerLeave">
+  > &
   (
     | { href: string; render?: LinkRender | undefined }
     | { href?: string | undefined; render: LinkRender }
@@ -118,6 +137,7 @@ type Pieces = { start: ReactNode; label: ReactNode; end: ReactNode };
 /** The row's background: the selected fill, else the hover fill unless a plain static row has none. */
 function fillOf(props: ListRowProps): string | undefined {
   if (props.selected) return SELECTED;
+  if (props.active) return ACTIVE;
   return props.static && !props.revealOnHover ? undefined : FILL;
 }
 
@@ -143,6 +163,7 @@ function StaticRow(props: ListRowStaticProps & Pieces): ReactElement {
     leadingWidth: _lw,
     trailing: _t,
     focused: _f,
+    active = false,
     selected,
     size: _s,
     divided: _d,
@@ -167,7 +188,9 @@ function StaticRow(props: ListRowStaticProps & Pieces): ReactElement {
       {label}
       {end}
       {actions != null && (
-        <span className={cx("flex shrink-0 items-center gap-2", revealOnHover && REVEAL)}>
+        <span
+          className={cx("flex shrink-0 items-center gap-2", revealOnHover && !active && REVEAL)}
+        >
           {actions}
         </span>
       )}
@@ -181,6 +204,7 @@ function LinkRow(props: ListRowLinkProps & Pieces): ReactElement {
     leadingWidth: _lw,
     trailing: _t,
     focused: _f,
+    active: _ac,
     selected,
     expanded: _e,
     size: _s,
@@ -191,11 +215,18 @@ function LinkRow(props: ListRowLinkProps & Pieces): ReactElement {
     start,
     label,
     end,
+    onPointerEnter,
+    onPointerLeave,
     ...rest
   } = props;
   const rowId = useId();
   return (
-    <div id={rowId} className={look(props)}>
+    <div
+      id={rowId}
+      onPointerEnter={onPointerEnter}
+      onPointerLeave={onPointerLeave}
+      className={look(props)}
+    >
       {renderLink({
         ...(rest["aria-label"] === undefined ? { "aria-labelledby": rowId } : {}),
         ...rest,
@@ -216,6 +247,7 @@ function ButtonRow(props: ListRowButtonProps & Pieces): ReactElement {
     leadingWidth: _lw,
     trailing: _t,
     focused: _f,
+    active: _ac,
     selected,
     expanded,
     size: _s,
@@ -255,7 +287,9 @@ function ButtonRow(props: ListRowButtonProps & Pieces): ReactElement {
  * the line between them, on each row after the first.
  *
  * `leading` is content before the label (`leadingWidth="thumbnail"` gives it a fixed picture width),
- * `selected` marks the row in view and `focused` the one the keyboard cursor is on. The label is a
+ * `selected` marks the row in view, `focused` the one the keyboard cursor is on and `active` holds
+ * the hover look on the row a list follows (`onPointerEnter`, `onPointerLeave` and `onFocus` reach
+ * every form; on a linked row the pointer handlers go on the row itself). The label is a
  * `<div>`, so it can hold block content (a name over a path). `static` makes the
  * row a plain `<div>` for one that holds its own buttons (a button cannot sit inside a button or a
  * link): `actions` follow `trailing`, and `revealOnHover` shows them only on hover or focus.
