@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   AppShell,
-  Body,
   Card,
   ListLayout,
   NavTabs,
   ProseLayout,
   SectionHeading,
+  Text,
 } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { ProsePage } from "./pages";
@@ -37,9 +37,9 @@ export const FullPage: S = {
     >
       <ProseLayout title="Privacy" subtitle="How we handle your data.">
         <SectionHeading>What we keep</SectionHeading>
-        <Body as="p">We keep your account details and the quotes you send, and nothing else.</Body>
+        <Text as="p">We keep your account details and the quotes you send, and nothing else.</Text>
         <SectionHeading>Who sees it</SectionHeading>
-        <Body as="p">Only you and the people you invite to your organisation.</Body>
+        <Text as="p">Only you and the people you invite to your organisation.</Text>
       </ProseLayout>
     </AppShell>
   ),
@@ -58,9 +58,9 @@ export const DoArticle: S = {
   render: () => (
     <ProseLayout title="Privacy" subtitle="How we handle your data.">
       <SectionHeading>What we keep</SectionHeading>
-      <Body as="p">We keep your account details and the quotes you send, and nothing else.</Body>
+      <Text as="p">We keep your account details and the quotes you send, and nothing else.</Text>
       <SectionHeading>Who sees it</SectionHeading>
-      <Body as="p">Only you and the people you invite to your organisation.</Body>
+      <Text as="p">Only you and the people you invite to your organisation.</Text>
     </ProseLayout>
   ),
 };
@@ -70,10 +70,10 @@ export const DontArticle: S = {
   render: () => (
     <ListLayout title="Privacy" subtitle="How we handle your data.">
       <Card>
-        <Body as="p">
+        <Text as="p">
           We keep your account details and the quotes you send, and nothing else. Only you and the
           people you invite to your organisation can see them.
-        </Body>
+        </Text>
       </Card>
     </ListLayout>
   ),

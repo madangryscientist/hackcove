@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   AppShell,
-  Body,
-  BodyStrong,
   Button,
   Card,
   EmptyState,
@@ -12,6 +10,7 @@ import {
   PageHeader,
   Pill,
   Stack,
+  Text,
   ToggleChip,
 } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
@@ -54,16 +53,20 @@ export const FullPage: S = {
         }
       >
         <Card as="article">
-          <BodyStrong as="p">Naledi Mokoena</BodyStrong>
-          <Body as="p" color="secondary">
+          <Text strong as="p">
+            Naledi Mokoena
+          </Text>
+          <Text as="p" color="secondary">
             Q-1042 · R 1 240 / mo
-          </Body>
+          </Text>
         </Card>
         <Card as="article">
-          <BodyStrong as="p">Pieter van Wyk</BodyStrong>
-          <Body as="p" color="secondary">
+          <Text strong as="p">
+            Pieter van Wyk
+          </Text>
+          <Text as="p" color="secondary">
             Q-1041 · R 860 / mo
-          </Body>
+          </Text>
         </Card>
       </ListLayout>
     </AppShell>
@@ -102,10 +105,10 @@ export const DoRows: S = {
       }
     >
       <Card as="article" title="Naledi Mokoena" status={<Pill tone="emerald">Accepted</Pill>}>
-        <Body as="p">Q-1042 · R 1 240 / mo</Body>
+        <Text as="p">Q-1042 · R 1 240 / mo</Text>
       </Card>
       <Card as="article" title="Pieter van Wyk" status={<Pill tone="slate">Sent</Pill>}>
-        <Body as="p">Q-1041 · R 860 / mo</Body>
+        <Text as="p">Q-1041 · R 860 / mo</Text>
       </Card>
     </ListLayout>
   ),
@@ -117,7 +120,7 @@ export const DontRows: S = {
     <Stack>
       <PageHeader title="Quotes" subtitle="Every quote you have sent." />
       <Card as="article" title="Naledi Mokoena">
-        <Body as="p">Q-1042 · R 1 240 / mo</Body>
+        <Text as="p">Q-1042 · R 1 240 / mo</Text>
       </Card>
     </Stack>
   ),
@@ -132,9 +135,9 @@ export const DoNothingYet: S = {
       isEmpty
       empty={
         <EmptyState title="No quotes yet" actions={<Button>New quote</Button>}>
-          <Body as="p" color="secondary">
+          <Text as="p" color="secondary">
             Quotes you send show up here.
-          </Body>
+          </Text>
         </EmptyState>
       }
     />

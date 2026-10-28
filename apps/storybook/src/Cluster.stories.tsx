@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
-  Body,
-  BodyStrong,
   Button,
   ButtonGroup,
   Caption,
@@ -10,6 +8,7 @@ import {
   Input,
   Pill,
   Stack,
+  Text,
 } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Cluster" };
@@ -51,7 +50,7 @@ export const Justify: S = {
     <Stack>
       {(["start", "between", "end"] as const).map((justify) => (
         <Cluster key={justify} justify={justify}>
-          <BodyStrong>Invoice 1042</BodyStrong>
+          <Text strong>Invoice 1042</Text>
           <Pill>{justify}</Pill>
         </Cluster>
       ))}
@@ -63,7 +62,7 @@ export const Justify: S = {
 export const Spacer: S = {
   render: () => (
     <Cluster>
-      <BodyStrong>Invoice 1042</BodyStrong>
+      <Text strong>Invoice 1042</Text>
       <ClusterGrow />
       <Button size="sm" variant="outline">
         Edit
@@ -82,7 +81,7 @@ export const Align: S = {
       {(["center", "baseline", "start", "end"] as const).map((align) => (
         <Cluster key={align} align={align}>
           <Caption>{align}</Caption>
-          <BodyStrong>Total</BodyStrong>
+          <Text strong>Total</Text>
           <Input aria-label={`Amount (${align})`} defaultValue="1,240.00" width="md" />
         </Cluster>
       ))}
@@ -109,7 +108,7 @@ export const Wraps: S = {
 /** `as="span"` is for a Cluster inside a paragraph, where a `div` is not allowed: the row sits on the paragraph's line. Its items must be phrasing content, so no `ClusterGrow`. */
 export const InsideAParagraph: S = {
   render: () => (
-    <Body as="p">
+    <Text as="p">
       <Cluster as="span" gap="xs">
         <Pill tone="emerald" dot>
           Paid
@@ -117,7 +116,7 @@ export const InsideAParagraph: S = {
         <Caption>12 Oct</Caption>
         <Caption>Invoice 1042</Caption>
       </Cluster>
-    </Body>
+    </Text>
   ),
 };
 
@@ -168,7 +167,7 @@ export const DontButtons: S = {
 export const DoSpacer: S = {
   render: () => (
     <Cluster>
-      <BodyStrong>Invoice 1042</BodyStrong>
+      <Text strong>Invoice 1042</Text>
       <ClusterGrow />
       <Button size="sm" variant="outline">
         Edit
@@ -184,7 +183,7 @@ export const DoSpacer: S = {
 export const DontSpacer: S = {
   render: () => (
     <Cluster justify="between">
-      <BodyStrong>Invoice 1042</BodyStrong>
+      <Text strong>Invoice 1042</Text>
       <Button size="sm" variant="outline">
         Edit
       </Button>

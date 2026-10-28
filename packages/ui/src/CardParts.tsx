@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cx } from "./cx.js";
+import { Overline } from "./typography.js";
 import type { Size } from "./size.js";
 
 /** The space under a card's heading, by `size`. */
@@ -34,9 +35,9 @@ export function CardHeading({
         spaced && HEADING_GAP[size],
       )}
     >
-      <h2 id={id} className={cx("text-xs font-semibold uppercase tracking-wide", ink)}>
+      <Overline as="h2" id={id} color={bar ? "tertiary" : "muted"}>
         {title}
-      </h2>
+      </Overline>
       {count !== undefined && <span className={cx("text-xs font-medium", ink)}>{count}</span>}
       {status}
     </div>

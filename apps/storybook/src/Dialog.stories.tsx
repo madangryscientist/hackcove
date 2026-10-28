@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState, type ReactNode } from "react";
-import { Body, Button, Callout, Dialog, Kbd, KeyValue, KeyValueList, Stack } from "@hackcove/ui";
+import { Button, Callout, Dialog, Kbd, KeyValue, KeyValueList, Stack, Text } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Dialog" };
 export default meta;
@@ -36,7 +36,7 @@ export const Default: S = {
             </>
           }
         >
-          <Body>There is no undo. Reviews already recorded stay in the audit log.</Body>
+          <Text>There is no undo. Reviews already recorded stay in the audit log.</Text>
         </Dialog>
       )}
     </Opened>

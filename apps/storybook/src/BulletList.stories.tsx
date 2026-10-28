@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, BulletList, Stack } from "@hackcove/ui";
+import { BulletList, Stack, Text } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/BulletList" };
 export default meta;
@@ -21,20 +21,20 @@ export const WithBody: S = {
   render: () => (
     <div className="max-w-xl">
       <BulletList>
-        <Body as="li">Items set in Body, as the site does.</Body>
-        <Body as="li">The list owns the discs, indent and gap.</Body>
+        <Text as="li">Items set in Text, as the site does.</Text>
+        <Text as="li">The list owns the discs, indent and gap.</Text>
       </BulletList>
     </div>
   ),
 };
 
-/** A list is a `BulletList` of `Body as="li"`: the list owns the discs, the indent and the gap. */
+/** A list is a `BulletList` of `Text as="li"`: the list owns the discs, the indent and the gap. */
 export const DoItems: S = {
   render: () => (
     <BulletList>
-      <Body as="li">Moved the nightly build from cron to a queue.</Body>
-      <Body as="li">Cut the cold start from nine seconds to two.</Body>
-      <Body as="li">Wrote the runbook the team still uses.</Body>
+      <Text as="li">Moved the nightly build from cron to a queue.</Text>
+      <Text as="li">Cut the cold start from nine seconds to two.</Text>
+      <Text as="li">Wrote the runbook the team still uses.</Text>
     </BulletList>
   ),
 };
@@ -43,9 +43,9 @@ export const DoItems: S = {
 export const DontItems: S = {
   render: () => (
     <Stack gap="xs">
-      <Body as="p">- Moved the nightly build from cron to a queue.</Body>
-      <Body as="p">- Cut the cold start from nine seconds to two.</Body>
-      <Body as="p">- Wrote the runbook the team still uses.</Body>
+      <Text as="p">- Moved the nightly build from cron to a queue.</Text>
+      <Text as="p">- Cut the cold start from nine seconds to two.</Text>
+      <Text as="p">- Wrote the runbook the team still uses.</Text>
     </Stack>
   ),
 };

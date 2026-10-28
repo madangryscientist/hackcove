@@ -1,6 +1,4 @@
 import {
-  Body,
-  BodyStrong,
   Caption,
   Code,
   Divider,
@@ -8,6 +6,7 @@ import {
   KeyValueList,
   Stack,
   SubsectionHeading,
+  Text,
 } from "@hackcove/ui";
 import propsJson from "../generated/props.json";
 import { Prose } from "./Prose.js";
@@ -27,15 +26,15 @@ function PropEntry({ prop }: { prop: PropDoc }) {
   return (
     <Stack gap="xs">
       <div>
-        <BodyStrong>
+        <Text strong>
           <Code>{prop.name}</Code>
-        </BodyStrong>
+        </Text>
         {prop.required && <Caption> required</Caption>}
       </div>
       {prop.description && (
-        <Body as="p">
+        <Text as="p">
           <Prose text={prop.description} />
-        </Body>
+        </Text>
       )}
       <KeyValueList align="start">
         <KeyValue label="Type">
@@ -58,9 +57,9 @@ export function Props({ of }: { of: string }) {
     <Stack gap="sm">
       <SubsectionHeading>{name}</SubsectionHeading>
       {description && (
-        <Body as="p">
+        <Text as="p">
           <Prose text={description.replace(/\s*\n\s*/g, " ")} />
-        </Body>
+        </Text>
       )}
       {props.map((prop) => (
         <Stack key={prop.name} gap="sm">

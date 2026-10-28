@@ -1,6 +1,6 @@
 import type { ReactElement, ReactNode } from "react";
 import type { Passthrough } from "./props.js";
-import { PageHeading, Subtitle } from "./typography.js";
+import { HeaderText, PageHeading } from "./typography.js";
 
 export type PageHeaderProps = {
   /** A `Breadcrumbs` above the title. */
@@ -33,7 +33,7 @@ export function PageHeaderContent({
           <PageHeading>{title}</PageHeading>
           {subtitle && (
             <div className="mt-1">
-              <Subtitle>{subtitle}</Subtitle>
+              <HeaderText>{subtitle}</HeaderText>
             </div>
           )}
         </div>

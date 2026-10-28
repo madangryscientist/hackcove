@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState, type ReactNode } from "react";
-import { Body, Button, Drawer, Field, Input, KeyValue, KeyValueList, Stack } from "@hackcove/ui";
+import { Button, Drawer, Field, Input, KeyValue, KeyValueList, Stack, Text } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Drawer" };
 export default meta;
@@ -55,7 +55,7 @@ export const LongBody: S = {
         <Drawer title="Activity" onClose={close} footer={<Button onClick={close}>Done</Button>}>
           <div className="flex flex-col gap-3">
             {Array.from({ length: 40 }, (_, i) => (
-              <Body key={i}>Entry {i + 1}: a line of activity in the log.</Body>
+              <Text key={i}>Entry {i + 1}: a line of activity in the log.</Text>
             ))}
           </div>
         </Drawer>
@@ -83,7 +83,7 @@ export const Large: S = {
     <Opened>
       {(close) => (
         <Drawer title="Compare" size="lg" onClose={close}>
-          <Body>A wider panel for a table or a form with two columns.</Body>
+          <Text>A wider panel for a table or a form with two columns.</Text>
         </Drawer>
       )}
     </Opened>
@@ -139,7 +139,7 @@ export const DontRecord: S = {
             onClose={() => setOpen(false)}
             footer={<Button onClick={() => setOpen(false)}>Delete</Button>}
           >
-            <Body>This removes the build and every snapshot in it.</Body>
+            <Text>This removes the build and every snapshot in it.</Text>
           </Drawer>
         )}
       </>

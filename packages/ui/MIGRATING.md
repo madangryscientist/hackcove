@@ -1,5 +1,27 @@
 # Migrating @hackcove/ui
 
+## 0.5 → 0.6: one Text role
+
+`Body` is now `Text`, and `Text strong` takes over from `BodyStrong`. `Subtitle`, `Empty` and
+`ModalHeading` were near-copies of other parts and are gone with no alias: each is one of the
+remaining parts with a prop. TypeScript names every use; the swaps are mechanical.
+
+| Removed or renamed | Write instead |
+| --- | --- |
+| `<Body>…</Body>` | `<Text>…</Text>` (same props: `as`, `color`, `tone`, `numeric`, `mono`, `truncate`, `preserveNewlines`) |
+| `<BodyStrong>…</BodyStrong>` | `<Text strong>…</Text>` |
+| `<Subtitle>…</Subtitle>` | `<Text as="p">…</Text>` |
+| `<Empty>…</Empty>` | `<Text as="p" color="muted">…</Text>` |
+| `<ModalHeading>…</ModalHeading>` | `<SectionHeading>…</SectionHeading>` |
+
+A block of `Text` stops at a readable line length (`max-w-[72ch]`), as `Body` did. `Subtitle` and
+`BodyStrong` had no such measure, so a long line in a wide column now wraps at about 72 characters.
+`PageHeader` and `Dialog` draw their own subtitle and description, and keep the full width.
+
+The small labels of `Card`, `FilterGroup` and `StatTile` now render as an `Overline`. The `Card`
+title looks the same; a `FilterGroup` legend is semibold (it was medium) and a `StatTile` label's
+letter spacing is `tracking-wide` (it was `tracking-wider`).
+
 ## 0.4 → 0.5: one size scale
 
 Every `size` is now `sm`, `md` or `lg`, and `md` is the default (README, "Sizes"). TypeScript finds

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { Avatar, Body, Button, Caption, Card, IconButton, ListRow, Pill } from "@hackcove/ui";
+import { Avatar, Button, Caption, Card, IconButton, ListRow, Pill, Text } from "@hackcove/ui";
 import { samplePhoto } from "./samplePhoto";
 
 const meta: Meta = { title: "UI/ListRow" };
@@ -131,7 +131,7 @@ export const Thumbnail: S = {
             leading={<img alt="" src={samplePhoto} />}
             trailing={<Pill tone="amber">changed</Pill>}
           >
-            <Body as="p">{name}</Body>
+            <Text as="p">{name}</Text>
             <Caption as="p">0.4% of pixels differ</Caption>
           </ListRow>
         ))}

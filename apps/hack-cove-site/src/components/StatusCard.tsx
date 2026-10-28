@@ -1,4 +1,4 @@
-import { Body, BulletList, Card, InlineLinks, Pill, Stack, TextLink } from "@hackcove/ui";
+import { BulletList, Card, InlineLinks, Pill, Stack, Text, TextLink } from "@hackcove/ui";
 import type { Status } from "../content/site";
 
 const STATUS = {
@@ -28,13 +28,13 @@ export function StatusCard({
   return (
     <Card as="article" title={title} status={<Pill tone={tone}>{label}</Pill>}>
       <Stack gap="sm">
-        {summary && <Body as="p">{summary}</Body>}
+        {summary && <Text as="p">{summary}</Text>}
         {items.length > 0 && (
           <BulletList>
             {items.map((item) => (
-              <Body as="li" key={item} color="secondary">
+              <Text as="li" key={item} color="secondary">
                 {item}
-              </Body>
+              </Text>
             ))}
           </BulletList>
         )}

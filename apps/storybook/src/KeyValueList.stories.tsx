@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Cluster, Kbd, KeyValue, KeyValueList, Stack } from "@hackcove/ui";
+import { Cluster, Kbd, KeyValue, KeyValueList, Stack, Text } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/KeyValueList" };
 export default meta;
@@ -59,17 +59,17 @@ export const DoFactsList: S = {
   ),
 };
 
-/** Rows built by hand from a `Cluster` and `Body` drift from the list's label colour and figures. Use `KeyValueList`. */
+/** Rows built by hand from a `Cluster` and `Text` drift from the list's label colour and figures. Use `KeyValueList`. */
 export const DontFactsList: S = {
   render: () => (
     <Stack gap="xs">
       <Cluster justify="between">
-        <Body>Size</Body>
-        <Body>1280×720</Body>
+        <Text>Size</Text>
+        <Text>1280×720</Text>
       </Cluster>
       <Cluster justify="between">
-        <Body>Changed pixels</Body>
-        <Body>0.4%</Body>
+        <Text>Changed pixels</Text>
+        <Text>0.4%</Text>
       </Cluster>
     </Stack>
   ),

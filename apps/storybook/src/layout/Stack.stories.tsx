@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
-  Body,
   Button,
   Card,
   Field,
@@ -9,6 +8,7 @@ import {
   Section,
   Stack,
   SubsectionHeading,
+  Text,
 } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 
@@ -31,19 +31,19 @@ export const StackAndSection: S = {
       <Stack gap="lg">
         <Section title="Recent builds" actions={<Button variant="outline">All builds</Button>}>
           <Card>
-            <Body>Build 412 · 3 changed</Body>
+            <Text>Build 412 · 3 changed</Text>
           </Card>
           <Card>
-            <Body>Build 411 · 0 changed</Body>
+            <Text>Build 411 · 0 changed</Text>
           </Card>
         </Section>
         <Section title="Members">
           <Stack>
             <Card>
-              <Body>md gap between these two cards.</Body>
+              <Text>md gap between these two cards.</Text>
             </Card>
             <Card>
-              <Body>Second card.</Body>
+              <Text>Second card.</Text>
             </Card>
           </Stack>
         </Section>
@@ -59,15 +59,15 @@ export const SectionGap: S = {
       <Stack gap="xl">
         <PageHeader title="Page" subtitle="Stack gap section: the step between a page's blocks." />
         <Section title="Intro">
-          <Body as="p">First block of the page.</Body>
+          <Text as="p">First block of the page.</Text>
         </Section>
         <Section title="Details">
           <Card>
-            <Body>Second block.</Body>
+            <Text>Second block.</Text>
           </Card>
         </Section>
         <Section title="Contact">
-          <Body as="p">Third block.</Body>
+          <Text as="p">Third block.</Text>
         </Section>
       </Stack>
     </DemoShell>
@@ -81,8 +81,8 @@ export const TextBlock: S = {
       <PageHeader title="Team" subtitle="Stack gap xs: the step between lines of one text block." />
       <Stack gap="xs">
         <SubsectionHeading>Jacobus Langner</SubsectionHeading>
-        <Body color="tertiary">Founder</Body>
-        <Body as="p">Builds the Hack Cove design system and the sites that use it.</Body>
+        <Text color="tertiary">Founder</Text>
+        <Text as="p">Builds the Hack Cove design system and the sites that use it.</Text>
       </Stack>
     </DemoShell>
   ),
@@ -100,7 +100,7 @@ export const Widths: S = {
         {(["narrow", "default", "wide", "full"] as const).map((width) => (
           <Stack key={width} width={width}>
             <Card>
-              <Body>width="{width}"</Body>
+              <Text>width="{width}"</Text>
             </Card>
           </Stack>
         ))}
@@ -147,21 +147,21 @@ export const AsList: S = {
         <Stack as="ul" gap="sm" aria-label="Builds">
           <li>
             <Card>
-              <Body>Build 412 · 3 changed</Body>
+              <Text>Build 412 · 3 changed</Text>
             </Card>
           </li>
           <li>
             <Card>
-              <Body>Build 411 · 0 changed</Body>
+              <Text>Build 411 · 0 changed</Text>
             </Card>
           </li>
         </Stack>
         <Stack as="ol" gap="sm" aria-label="Steps">
           <li>
-            <Body>1. Install the package.</Body>
+            <Text>1. Install the package.</Text>
           </li>
           <li>
-            <Body>2. Import the theme.</Body>
+            <Text>2. Import the theme.</Text>
           </li>
         </Stack>
       </Stack>

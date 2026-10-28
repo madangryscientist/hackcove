@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
-  Body,
   Display,
   Lead,
   PageHeading,
   SectionHeading,
   Stack,
   SubsectionHeading,
+  Text,
 } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/Headings" };
@@ -20,7 +20,7 @@ export const DoScale: S = {
       <PageHeading>Quotes</PageHeading>
       <SectionHeading rule>Open</SectionHeading>
       <SubsectionHeading>Awaiting reply</SubsectionHeading>
-      <Body as="p">Three quotes are waiting on the customer.</Body>
+      <Text as="p">Three quotes are waiting on the customer.</Text>
     </Stack>
   ),
 };
@@ -30,9 +30,9 @@ export const DontScale: S = {
   render: () => (
     <Stack gap="sm">
       <PageHeading>Quotes</PageHeading>
-      <Body as="p">Three quotes are waiting on the customer.</Body>
+      <Text as="p">Three quotes are waiting on the customer.</Text>
       <PageHeading>Open</PageHeading>
-      <Body as="p">Two quotes are open.</Body>
+      <Text as="p">Two quotes are open.</Text>
     </Stack>
   ),
 };
@@ -64,7 +64,7 @@ export const DontHero: S = {
     <Stack gap="sm">
       <PageHeading>Dashboard</PageHeading>
       <Display as="h2">Recent activity</Display>
-      <Body as="p">Nothing has changed since yesterday.</Body>
+      <Text as="p">Nothing has changed since yesterday.</Text>
     </Stack>
   ),
 };

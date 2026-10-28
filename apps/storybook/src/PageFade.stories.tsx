@@ -1,14 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import {
-  Body,
-  Button,
-  PageFade,
-  SegmentedControl,
-  Stack,
-  startPageTransition,
-  Subtitle,
-} from "@hackcove/ui";
+import { Button, PageFade, SegmentedControl, Stack, startPageTransition, Text } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/PageFade" };
 export default meta;
@@ -38,8 +30,8 @@ export const Default: S = {
         />
         <PageFade>
           <div className="flex flex-col gap-2 rounded-lg border border-slate-200 p-4">
-            <Subtitle>{page?.label}</Subtitle>
-            <Body>{page?.text}</Body>
+            <Text as="p">{page?.label}</Text>
+            <Text>{page?.text}</Text>
           </div>
         </PageFade>
       </div>
@@ -64,7 +56,7 @@ export const DoChangingArea: S = {
           onChange={(next) => startPageTransition(() => setValue(next))}
         />
         <PageFade>
-          <Body>The {value} page.</Body>
+          <Text>The {value} page.</Text>
         </PageFade>
       </Stack>
     );
@@ -88,7 +80,7 @@ export const DontChangingArea: S = {
             value={value}
             onChange={(next) => startPageTransition(() => setValue(next))}
           />
-          <Body>The {value} page.</Body>
+          <Text>The {value} page.</Text>
         </Stack>
       </PageFade>
     );
@@ -110,7 +102,7 @@ export const DoTransition: S = {
           Switch page
         </Button>
         <PageFade>
-          <Body>The {value} page.</Body>
+          <Text>The {value} page.</Text>
         </PageFade>
       </Stack>
     );
@@ -130,7 +122,7 @@ export const DontTransition: S = {
           Switch page
         </Button>
         <PageFade>
-          <Body>The {value} page.</Body>
+          <Text>The {value} page.</Text>
         </PageFade>
       </Stack>
     );

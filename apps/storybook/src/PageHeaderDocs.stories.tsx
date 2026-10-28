@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
-  Body,
   Breadcrumbs,
   Button,
   Card,
@@ -9,7 +8,7 @@ import {
   PageHeader,
   PageHeading,
   Stack,
-  Subtitle,
+  Text,
 } from "@hackcove/ui";
 
 /** The docs examples for `PageHeader`. */
@@ -57,7 +56,7 @@ export const DontSlots: S = {
     <Cluster justify="between">
       <Stack gap="xs">
         <PageHeading>Build 412</PageHeading>
-        <Subtitle>main · 3 changed</Subtitle>
+        <Text as="p">main · 3 changed</Text>
       </Stack>
       <Button>Accept all</Button>
     </Cluster>
@@ -70,7 +69,7 @@ export const DoInStack: S = {
     <Stack gap="lg">
       <PageHeader title="Members" subtitle="Who can see this project." />
       <Card title="Active">
-        <Body>3 members</Body>
+        <Text>3 members</Text>
       </Card>
     </Stack>
   ),
@@ -84,7 +83,7 @@ export const DontInStack: S = {
         <PageHeader title="Members" subtitle="Who can see this project." />
       </div>
       <Card title="Active">
-        <Body>3 members</Body>
+        <Text>3 members</Text>
       </Card>
     </Stack>
   ),

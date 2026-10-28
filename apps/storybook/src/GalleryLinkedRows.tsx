@@ -3,7 +3,6 @@ import {
   Card,
   CardGrid,
   Cluster,
-  Empty,
   ListRow,
   Pill,
   rowLinkClass,
@@ -14,6 +13,7 @@ import {
   TableHead,
   TableHeaderCell,
   TableRow,
+  Text,
   TextLink,
 } from "@hackcove/ui";
 
@@ -66,7 +66,9 @@ export function GalleryLinkedRows() {
       <CardGrid>
         <Card href="#shot-9" title="Settings">
           <Stack>
-            <Empty>A link card with its own link and button.</Empty>
+            <Text as="p" color="muted">
+              A link card with its own link and button.
+            </Text>
             <TextLink href="#shot-9-history">History</TextLink>
             <Button size="sm" variant="outline">
               Accept
@@ -74,10 +76,14 @@ export function GalleryLinkedRows() {
           </Stack>
         </Card>
         <Card href="#shot-10" title="Dashboard" badge={<Pill tone="amber">Flaky</Pill>}>
-          <Empty>A link card with a badge.</Empty>
+          <Text as="p" color="muted">
+            A link card with a badge.
+          </Text>
         </Card>
         <Card title="Flaky" attention>
-          <Empty>A card that needs a look.</Empty>
+          <Text as="p" color="muted">
+            A card that needs a look.
+          </Text>
         </Card>
       </CardGrid>
     </div>

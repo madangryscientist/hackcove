@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   AppShell,
-  Body,
   Button,
   Card,
   DetailLayout,
@@ -9,6 +8,7 @@ import {
   KeyValueList,
   ListLayout,
   NavTabs,
+  Text,
 } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { DetailPage } from "./pages";
@@ -51,10 +51,10 @@ export const FullPage: S = {
         }
       >
         <Card title="Cover">
-          <Body as="p">Life cover of R 1 500 000, to age 65.</Body>
+          <Text as="p">Life cover of R 1 500 000, to age 65.</Text>
         </Card>
         <Card title="Notes">
-          <Body as="p">The client asked to be debited on the 25th.</Body>
+          <Text as="p">The client asked to be debited on the 25th.</Text>
         </Card>
       </DetailLayout>
     </AppShell>
@@ -86,7 +86,7 @@ export const DoRecord: S = {
       }
     >
       <Card title="Cover">
-        <Body as="p">Life cover of R 1 500 000, to age 65.</Body>
+        <Text as="p">Life cover of R 1 500 000, to age 65.</Text>
       </Card>
     </DetailLayout>
   ),
@@ -101,7 +101,7 @@ export const DontRecord: S = {
       actions={<Button variant="outline">Edit</Button>}
     >
       <Card title="Cover">
-        <Body as="p">Life cover of R 1 500 000, to age 65.</Body>
+        <Text as="p">Life cover of R 1 500 000, to age 65.</Text>
       </Card>
       <Card title="Details">
         <KeyValueList>

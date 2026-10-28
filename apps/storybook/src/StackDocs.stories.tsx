@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Button, Card, Cluster, Section, SectionHeading, Stack } from "@hackcove/ui";
+import { Button, Card, Cluster, Section, SectionHeading, Stack, Text } from "@hackcove/ui";
 
 /** The docs examples for `Stack` and `Section`. */
 const meta: Meta = { title: "Docs/Stack" };
@@ -11,10 +11,10 @@ export const DoGap: S = {
   render: () => (
     <Stack>
       <Card title="Build 412">
-        <Body>3 changed</Body>
+        <Text>3 changed</Text>
       </Card>
       <Card title="Build 411">
-        <Body>No changes</Body>
+        <Text>No changes</Text>
       </Card>
     </Stack>
   ),
@@ -25,10 +25,10 @@ export const DontGap: S = {
   render: () => (
     <div>
       <Card title="Build 412">
-        <Body>3 changed</Body>
+        <Text>3 changed</Text>
       </Card>
       <Card title="Build 411">
-        <Body>No changes</Body>
+        <Text>No changes</Text>
       </Card>
     </div>
   ),
@@ -39,10 +39,10 @@ export const DoSectionTitle: S = {
   render: () => (
     <Section title="Recent builds" actions={<Button variant="outline">All builds</Button>}>
       <Card>
-        <Body>Build 412 · 3 changed</Body>
+        <Text>Build 412 · 3 changed</Text>
       </Card>
       <Card>
-        <Body>Build 411 · no changes</Body>
+        <Text>Build 411 · no changes</Text>
       </Card>
     </Section>
   ),
@@ -57,10 +57,10 @@ export const DontSectionTitle: S = {
         <Button variant="outline">All builds</Button>
       </Cluster>
       <Card>
-        <Body>Build 412 · 3 changed</Body>
+        <Text>Build 412 · 3 changed</Text>
       </Card>
       <Card>
-        <Body>Build 411 · no changes</Body>
+        <Text>Build 411 · no changes</Text>
       </Card>
     </Stack>
   ),
@@ -72,12 +72,12 @@ export const DoList: S = {
     <Stack as="ul" gap="sm" aria-label="Builds">
       <li>
         <Card>
-          <Body>Build 412 · 3 changed</Body>
+          <Text>Build 412 · 3 changed</Text>
         </Card>
       </li>
       <li>
         <Card>
-          <Body>Build 411 · no changes</Body>
+          <Text>Build 411 · no changes</Text>
         </Card>
       </li>
     </Stack>
@@ -89,10 +89,10 @@ export const DontList: S = {
   render: () => (
     <Stack gap="sm">
       <Card>
-        <Body>Build 412 · 3 changed</Body>
+        <Text>Build 412 · 3 changed</Text>
       </Card>
       <Card>
-        <Body>Build 411 · no changes</Body>
+        <Text>Build 411 · no changes</Text>
       </Card>
     </Stack>
   ),

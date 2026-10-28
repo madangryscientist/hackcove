@@ -3,7 +3,7 @@ import { cx } from "./cx.js";
 import { Icon } from "./Icon.js";
 import { IconButton } from "./IconButton.js";
 import type { Passthrough } from "./props.js";
-import { ModalHeading } from "./typography.js";
+import { SectionHeading } from "./typography.js";
 
 const PANEL =
   "fixed inset-y-0 right-0 left-auto m-0 h-dvh max-h-none max-w-full flex-col overflow-hidden border-l border-slate-200 bg-white p-0 text-slate-900 shadow-2xl backdrop:bg-slate-900/35 open:flex transition-transform duration-200 starting:open:translate-x-full motion-reduce:transition-none";
@@ -60,7 +60,7 @@ export function Drawer({
       className={cx(PANEL, SIZE[size])}
     >
       <header className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 px-5.5 py-3.5">
-        <ModalHeading id={titleId}>{title}</ModalHeading>
+        <SectionHeading id={titleId}>{title}</SectionHeading>
         <IconButton label={closeLabel} onClick={() => dialog.current?.close()}>
           <Icon>
             <svg viewBox="0 0 20 20" fill="currentColor">

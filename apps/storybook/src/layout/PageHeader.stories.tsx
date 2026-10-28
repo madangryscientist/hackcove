@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Breadcrumbs, Button, NavTabs, PageHeader, crumbLinkClass } from "@hackcove/ui";
+import { Breadcrumbs, Button, crumbLinkClass, NavTabs, PageHeader, Text } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 const meta: Meta = {
@@ -46,7 +46,7 @@ export const AllSlots: S = {
           />
         }
       />
-      <Body as="p">The first block starts here, the same distance under every header.</Body>
+      <Text as="p">The first block starts here, the same distance under every header.</Text>
     </DemoShell>
   ),
 };
@@ -55,7 +55,7 @@ export const TitleOnly: S = {
   render: () => (
     <DemoShell>
       <PageHeader title="Settings" />
-      <Body as="p">The first block starts here.</Body>
+      <Text as="p">The first block starts here.</Text>
     </DemoShell>
   ),
 };

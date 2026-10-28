@@ -119,12 +119,12 @@ const ONE_HALF: Record<string, string> = {
 };
 
 const story = (render: string) =>
-  `import { Body } from "@hackcove/ui";\nconst words = "hi";\nexport const A = { render: () => ${render} };`;
+  `import { Text } from "@hackcove/ui";\nconst words = "hi";\nexport const A = { render: () => ${render} };`;
 
 describe("a story's snippet", () => {
   test("stands alone: a word inside a string is fine, a name from the story's file fails the build", () => {
-    expect(storyParts(story('<Body label="words">x</Body>'), "A")?.code).toContain("<Body");
-    expect(() => storyParts(story("<Body>{words}</Body>"), "A")).toThrow(/"words"/);
+    expect(storyParts(story('<Text label="words">x</Text>'), "A")?.code).toContain("<Text");
+    expect(() => storyParts(story("<Text>{words}</Text>"), "A")).toThrow(/"words"/);
   });
 });
 

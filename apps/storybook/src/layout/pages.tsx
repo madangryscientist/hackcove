@@ -1,13 +1,11 @@
 import { useId } from "react";
 import {
-  Body,
-  BodyStrong,
   Breadcrumbs,
   Button,
   Card,
   CardGrid,
+  crumbLinkClass,
   DetailLayout,
-  Empty,
   Field,
   FilterGroup,
   FormLayout,
@@ -19,9 +17,9 @@ import {
   ProseLayout,
   Section,
   Select,
+  Text,
   Textarea,
   ToggleChip,
-  crumbLinkClass,
 } from "@hackcove/ui";
 
 // Realistic page bodies, shared by the layout stories and the Pages stories. Each is the layout
@@ -49,16 +47,22 @@ export function ListPage({ isEmpty = false }: { isEmpty?: boolean }) {
         </FilterGroup>
       }
       isEmpty={isEmpty}
-      empty={<Empty>No quotes match these filters.</Empty>}
+      empty={
+        <Text as="p" color="muted">
+          No quotes match these filters.
+        </Text>
+      }
     >
       {quotes.map(([ref, name, premium, status]) => (
         <Card key={ref} as="article">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
-              <BodyStrong as="p">{name}</BodyStrong>
-              <Body as="p" color="secondary">
+              <Text strong as="p">
+                {name}
+              </Text>
+              <Text as="p" color="secondary">
                 {ref} · {premium}
-              </Body>
+              </Text>
             </div>
             <Pill tone={status === "Accepted" ? "emerald" : "slate"}>{status}</Pill>
           </div>
@@ -101,10 +105,10 @@ export function DetailPage() {
       }
     >
       <Card title="Cover">
-        <Body as="p">Life cover of R 1 500 000 with a funeral benefit, to age 65.</Body>
+        <Text as="p">Life cover of R 1 500 000 with a funeral benefit, to age 65.</Text>
       </Card>
       <Card title="Notes">
-        <Body as="p">Client asked for the premium to be debited on the 25th.</Body>
+        <Text as="p">Client asked for the premium to be debited on the 25th.</Text>
       </Card>
     </DetailLayout>
   );
@@ -169,17 +173,17 @@ export function ProsePage() {
       gap="lg"
     >
       <Section title="What we collect">
-        <Body as="p">
+        <Text as="p">
           We keep the email address you write to us from and nothing else: no cookies, no analytics
           and no accounts. A message stays in one inbox until the question it asks is answered.
-        </Body>
-        <Body as="p">
+        </Text>
+        <Text as="p">
           This paragraph is long on purpose: the column stops at the reading measure, so a line
           holds a comfortable number of words however wide the window is.
-        </Body>
+        </Text>
       </Section>
       <Section title="Who to ask">
-        <Body as="p">Write to the address in the footer and we reply within a working week.</Body>
+        <Text as="p">Write to the address in the footer and we reply within a working week.</Text>
       </Section>
     </ProseLayout>
   );

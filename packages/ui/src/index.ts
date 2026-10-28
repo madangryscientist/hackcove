@@ -1,5 +1,5 @@
 export { Card } from "./Card.js";
-export { EpicHeader, Empty, PageTitle, groupByEpic } from "./ui.js";
+export { EpicHeader, PageTitle, groupByEpic } from "./ui.js";
 export { Pill, type PillTone } from "./Pill.js";
 export { Badge } from "./Badge.js";
 export { StatTile, type StatTileTone } from "./StatTile.js";
@@ -107,18 +107,15 @@ export { Textarea } from "./Textarea.js";
 export { Video } from "./Video.js";
 export { linkClass, linkStretchClass, TextLink, type TextLinkSize } from "./TextLink.js";
 export {
-  Body,
-  BodyStrong,
   Caption,
   Display,
   Lead,
-  ModalHeading,
   Overline,
   PageHeading,
   SectionHeading,
   SubsectionHeading,
   type SubsectionHeadingSize,
-  Subtitle,
+  Text,
   type TextTone,
   type TypographyColor,
   type TypographyProps,

@@ -2,11 +2,10 @@ import {
   AppShell,
   AppShellBrand,
   Avatar,
-  Body,
   Button,
+  Card,
   Cluster,
   ClusterGrow,
-  Card,
   ColourSchemeToggle,
   Container,
   Field,
@@ -16,6 +15,7 @@ import {
   Section,
   Stack,
   SubsectionHeading,
+  Text,
 } from "@hackcove/ui";
 
 /** AppShell (its brand, nav and controls slots, and the Container inside it), PageHeader, Section, Stack and Cluster, in a box that scrolls under the sticky header. */
@@ -50,14 +50,14 @@ export function GalleryLayout() {
         />
         <Stack width="narrow">
           <Section title="Section">
-            <Body>A Stack of Sections, gap md.</Body>
+            <Text>A Stack of Sections, gap md.</Text>
           </Section>
           <Section title="Another">
-            <Body>Each Section stacks its children at gap md.</Body>
+            <Text>Each Section stacks its children at gap md.</Text>
           </Section>
           <Stack gap="xs">
             <SubsectionHeading>Text block</SubsectionHeading>
-            <Body as="p">A Stack at gap xs, in a narrow (max-w-3xl) column.</Body>
+            <Text as="p">A Stack at gap xs, in a narrow (max-w-3xl) column.</Text>
           </Stack>
           <Stack as="form" gap="sm" aria-label="Stack as form" onSubmit={(e) => e.preventDefault()}>
             <Field label="Stack as form" htmlFor="gallery-stack-form">
@@ -68,12 +68,12 @@ export function GalleryLayout() {
           <Stack as="ul" gap="sm" aria-label="Stack as ul">
             <li>
               <Card>
-                <Body>Stack as ul: each child is an li, no markers.</Body>
+                <Text>Stack as ul: each child is an li, no markers.</Text>
               </Card>
             </li>
             <li>
               <Card>
-                <Body>Second item.</Body>
+                <Text>Second item.</Text>
               </Card>
             </li>
           </Stack>
@@ -87,10 +87,10 @@ export function GalleryLayout() {
         <div className="mt-8">
           <Stack gap="xl" width="narrow">
             <Section title="Gap section">
-              <Body>The page rhythm between top-level blocks: gap-12, then sm:gap-16.</Body>
+              <Text>The page rhythm between top-level blocks: gap-12, then sm:gap-16.</Text>
             </Section>
             <Section title="Next block">
-              <Body>Sections inside keep their own gap.</Body>
+              <Text>Sections inside keep their own gap.</Text>
             </Section>
           </Stack>
         </div>
@@ -104,7 +104,7 @@ export function GalleryContainer() {
   return (
     <Container as="section" aria-label="Container">
       <Card title="Container">
-        <Body>A Container on its own: the page width and side padding, outside an AppShell.</Body>
+        <Text>A Container on its own: the page width and side padding, outside an AppShell.</Text>
       </Card>
     </Container>
   );

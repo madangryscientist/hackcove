@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Avatar, BodyStrong, Cluster } from "@hackcove/ui";
+import { Avatar, Cluster, Text } from "@hackcove/ui";
 import { samplePhoto } from "./samplePhoto";
 
 const meta: Meta = { title: "UI/Avatar" };
@@ -76,7 +76,7 @@ export const DoBeside: S = {
   render: () => (
     <Cluster>
       <Avatar name="Ada Lovelace" />
-      <BodyStrong>Ada Lovelace</BodyStrong>
+      <Text strong>Ada Lovelace</Text>
     </Cluster>
   ),
 };

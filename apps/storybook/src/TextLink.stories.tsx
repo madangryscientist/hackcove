@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Card, TextLink, type LinkRenderProps } from "@hackcove/ui";
+import { Card, type LinkRenderProps, Text, TextLink } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/TextLink" };
 export default meta;
@@ -108,23 +108,23 @@ export const Stretch: S = {
   ),
 };
 
-/** A link in running text is a `TextLink` inside a `Body`. */
+/** A link in running text is a `TextLink` inside a `Text`. */
 export const DoInSentence: S = {
   render: () => (
-    <Body as="p">
+    <Text as="p">
       Questions? Email <TextLink href="mailto:hello@example.com">hello@example.com</TextLink>, or
       read the <TextLink href="#terms">terms</TextLink> first.
-    </Body>
+    </Text>
   ),
 };
 
 /** A bare `<a>` has none of the theme's link colour, weight or focus ring. */
 export const DontInSentence: S = {
   render: () => (
-    <Body as="p">
+    <Text as="p">
       Questions? Email <a href="mailto:hello@example.com">hello@example.com</a>, or read the{" "}
       <a href="#terms">terms</a> first.
-    </Body>
+    </Text>
   ),
 };
 

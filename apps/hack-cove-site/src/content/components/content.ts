@@ -33,25 +33,6 @@ export const content: ComponentSection = {
       api: ["Card"],
     },
     {
-      slug: "empty",
-      name: "Empty",
-      summary: "One muted line for a Card with nothing in it yet.",
-      whenToUse:
-        "A short note inside a Card or a list that has nothing to show; a whole empty view is an `EmptyState`.",
-      pairs: ["ui/EmptyNote", "ui/EmptyView"],
-      usage: [
-        'Use `Empty` for one short sentence in a muted tone: "Nothing finished yet."',
-        "Put it inside a `Card` (give the Card its `title` and `count`) or under a list; do not style a paragraph by hand.",
-        "A whole page or list with nothing in it, and a way forward, is an `EmptyState` with its `actions`, not an `Empty`.",
-        "`Empty` is not a place for a button or a link; if the person needs to do something next, use `EmptyState`.",
-      ],
-      accessibility: [
-        "`Empty` is a plain `<p>`: it is read in order with the rest of the Card, with no role of its own.",
-        "`aria-*` and `data-*` props go on the paragraph.",
-      ],
-      api: ["Empty"],
-    },
-    {
       slug: "epic-header",
       name: "EpicHeader",
       summary: "A row that heads a group of work with a dot in its epic's colour and its label.",

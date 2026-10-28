@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Checkbox, Radio, RadioGroup, Stack } from "@hackcove/ui";
+import { Checkbox, Radio, RadioGroup, Stack, Text } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/RadioGroup" };
 export default meta;
@@ -36,7 +36,7 @@ export const Controlled: S = {
           <Radio value="weekly" label="Weekly" />
           <Radio value="never" label="Never" />
         </RadioGroup>
-        <Body>Chosen: {value}</Body>
+        <Text>Chosen: {value}</Text>
       </Stack>
     );
   },

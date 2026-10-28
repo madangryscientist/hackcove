@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { AppShell, Body, Card, CardGrid, NavTabs, PageHeader, Stack, StatTile } from "@hackcove/ui";
+import { AppShell, Card, CardGrid, NavTabs, PageHeader, Stack, StatTile, Text } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { StatTiles } from "./pages";
 
@@ -142,13 +142,13 @@ export const DoAuto: S = {
   render: () => (
     <CardGrid columns="auto" minWidth="sm" align="start">
       <Card title="Dashboard">
-        <Body as="p">Quotes and renewals this week.</Body>
+        <Text as="p">Quotes and renewals this week.</Text>
       </Card>
       <Card title="Billing">
-        <Body as="p">Invoices and payments.</Body>
+        <Text as="p">Invoices and payments.</Text>
       </Card>
       <Card title="Members">
-        <Body as="p">Who can sign in.</Body>
+        <Text as="p">Who can sign in.</Text>
       </Card>
     </CardGrid>
   ),

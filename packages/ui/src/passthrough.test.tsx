@@ -19,8 +19,6 @@ const CASES: Record<string, () => ReactElement> = {
   AppShellBrand: () => <ui.AppShellBrand label="Brand" href="/" {...A} />,
   Avatar: () => <ui.Avatar name="Ada Lovelace" {...A} />,
   Badge: () => <ui.Badge count={3} {...A} />,
-  Body: () => <ui.Body {...A}>x</ui.Body>,
-  BodyStrong: () => <ui.BodyStrong {...A}>x</ui.BodyStrong>,
   Breadcrumbs: () => <ui.Breadcrumbs crumbs={["Home", "Page"]} {...A} />,
   BulletList: () => <ui.BulletList {...A} />,
   Button: () => <ui.Button {...A}>x</ui.Button>,
@@ -68,7 +66,6 @@ const CASES: Record<string, () => ReactElement> = {
   Divider: () => <ui.Divider {...A} />,
   Drawer: () => <ui.Drawer title="T" onClose={noop} {...A} />,
   EpicHeader: () => <ui.EpicHeader color="#000" label="Epic" {...A} />,
-  Empty: () => <ui.Empty {...A}>x</ui.Empty>,
   ErrorPage: () => <ui.ErrorPage {...A} />,
   Field: () => (
     <ui.Field label="L" htmlFor="f" {...A}>
@@ -137,7 +134,6 @@ const CASES: Record<string, () => ReactElement> = {
   Maintenance: () => <ui.Maintenance {...A} />,
   Markdown: () => <ui.Markdown md="x" {...A} />,
   MetaList: () => <ui.MetaList {...A}>{ITEMS}</ui.MetaList>,
-  ModalHeading: () => <ui.ModalHeading {...A}>x</ui.ModalHeading>,
   NavTabs: () => <ui.NavTabs label="L" items={[{ label: "A", href: "/a", active: true }]} {...A} />,
   NotFound: () => <ui.NotFound {...A} />,
   Offline: () => <ui.Offline {...A} />,
@@ -188,7 +184,6 @@ const CASES: Record<string, () => ReactElement> = {
   ),
   StatTile: () => <ui.StatTile label="L" value="1" {...A} />,
   SubsectionHeading: () => <ui.SubsectionHeading {...A}>x</ui.SubsectionHeading>,
-  Subtitle: () => <ui.Subtitle {...A}>x</ui.Subtitle>,
   Table: () => (
     <ui.Table {...A}>
       <ui.TableBody>{null}</ui.TableBody>
@@ -213,6 +208,7 @@ const CASES: Record<string, () => ReactElement> = {
   EmptyState: () => <ui.EmptyState title="T" {...A} />,
   Step: () => <ui.Step title="T" {...A} />,
   Steps: () => <ui.Steps {...A}>{ITEMS}</ui.Steps>,
+  Text: () => <ui.Text {...A}>x</ui.Text>,
   Timeline: () => (
     <ui.Timeline label="L" {...A}>
       {ITEMS}

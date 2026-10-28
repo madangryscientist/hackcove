@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import {
-  Body,
   Button,
   Card,
   CardGrid,
@@ -14,6 +13,7 @@ import {
   Offline,
   Overline,
   SidebarLayout,
+  Text,
 } from "@hackcove/ui";
 import { DemoShell } from "./layout/DemoShell";
 import { DetailPage, FormPage, ListPage, ProsePage, StatTiles } from "./layout/pages";
@@ -69,15 +69,15 @@ export function GalleryPages() {
       <PageBox label="CardGrid columns auto, align start">
         <CardGrid columns="auto" minWidth="sm" align="start">
           <Card title="Dashboard">
-            <Body as="p">One line.</Body>
+            <Text as="p">One line.</Text>
           </Card>
           <Card title="Settings">
-            <Body as="p">
+            <Text as="p">
               A longer note that wraps onto a few lines, so this card is taller than its neighbours.
-            </Body>
+            </Text>
           </Card>
-          <Card title="Billing" footer={<Body as="p">Footer</Body>}>
-            <Body as="p">One line.</Body>
+          <Card title="Billing" footer={<Text as="p">Footer</Text>}>
+            <Text as="p">One line.</Text>
           </Card>
         </CardGrid>
       </PageBox>
@@ -94,20 +94,20 @@ export function GalleryPages() {
             />
           }
         >
-          <Body as="p">The canvas.</Body>
+          <Text as="p">The canvas.</Text>
         </SidebarLayout>
       </PageBox>
       <PageBox label="FullBleedLayout" bleed>
-        <FullBleedLayout panel={<Body as="p">Panel</Body>}>
+        <FullBleedLayout panel={<Text as="p">Panel</Text>}>
           <div className="flex h-full min-h-48 items-center justify-center bg-slate-100">
-            <Body as="p">Fills the width</Body>
+            <Text as="p">Fills the width</Text>
           </div>
         </FullBleedLayout>
       </PageBox>
       <PageBox label="FullBleedLayout padded" bleed>
-        <FullBleedLayout padded panel={<Body as="p">Panel</Body>}>
+        <FullBleedLayout padded panel={<Text as="p">Panel</Text>}>
           <Card title="Padded canvas">
-            <Body as="p">Given the other layouts' page padding.</Body>
+            <Text as="p">Given the other layouts' page padding.</Text>
           </Card>
         </FullBleedLayout>
       </PageBox>

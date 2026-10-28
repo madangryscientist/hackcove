@@ -43,12 +43,12 @@ Put `class="dark"` on `<html>`. The theme declares the class-based `dark` varian
 slate/colour utilities to Mocha tokens under `.dark`.
 
 ```tsx
-import { Body, Card, PageHeading, Pill } from "@hackcove/ui";
+import { Card, PageHeading, Pill, Text } from "@hackcove/ui";
 
 export const Example = () => (
   <Card title="Status" count={2}>
     <PageHeading>All good</PageHeading>
-    <Body>Two things shipped.</Body> <Pill tone="emerald">ok</Pill>
+    <Text>Two things shipped.</Text> <Pill tone="emerald">ok</Pill>
   </Card>
 );
 ```

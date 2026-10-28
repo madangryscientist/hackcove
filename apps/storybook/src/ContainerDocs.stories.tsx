@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, Card, Container } from "@hackcove/ui";
+import { Card, Container, Text } from "@hackcove/ui";
 
 /** The docs examples for `Container`. */
 const meta: Meta = { title: "Docs/Container" };
@@ -11,7 +11,7 @@ export const DoOneEdge: S = {
   render: () => (
     <Container as="section" aria-label="Billing">
       <Card title="Plan">
-        <Body>Team, billed monthly.</Body>
+        <Text>Team, billed monthly.</Text>
       </Card>
     </Container>
   ),
@@ -23,7 +23,7 @@ export const DontOneEdge: S = {
     <Container as="section" aria-label="Billing">
       <Container>
         <Card title="Plan">
-          <Body>Team, billed monthly.</Body>
+          <Text>Team, billed monthly.</Text>
         </Card>
       </Container>
     </Container>

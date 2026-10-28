@@ -1,4 +1,4 @@
-import { Body, Disclosure, Radio, RadioGroup } from "@hackcove/ui";
+import { Disclosure, Radio, RadioGroup, Text } from "@hackcove/ui";
 
 /** The RadioGroup (a description, an error) and the Disclosure (closed, open) of the Gallery. */
 export function GalleryChoice() {
@@ -15,10 +15,10 @@ export function GalleryChoice() {
       </RadioGroup>
       <div className="flex flex-col">
         <Disclosure summary="Override trail" defaultOpen>
-          <Body>Three overrides, the latest on Tuesday.</Body>
+          <Text>Three overrides, the latest on Tuesday.</Text>
         </Disclosure>
         <Disclosure summary="Tracking history">
-          <Body>Posted Monday · Sorted Tuesday.</Body>
+          <Text>Posted Monday · Sorted Tuesday.</Text>
         </Disclosure>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Body, InlineLinks, TextLink } from "@hackcove/ui";
+import { InlineLinks, Text, TextLink } from "@hackcove/ui";
 
 const meta: Meta = { title: "UI/InlineLinks" };
 export default meta;
@@ -45,9 +45,9 @@ export const DoFooter: S = {
 /** Separators typed by hand are read aloud and can wrap onto the end of a line. */
 export const DontFooter: S = {
   render: () => (
-    <Body as="p">
+    <Text as="p">
       <TextLink href="#privacy">Privacy</TextLink> | <TextLink href="#terms">Terms</TextLink> |{" "}
       <TextLink href="#contact">Contact</TextLink>
-    </Body>
+    </Text>
   ),
 };

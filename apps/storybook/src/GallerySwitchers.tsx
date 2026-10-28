@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Body, SegmentedControl, Tabs } from "@hackcove/ui";
+import { SegmentedControl, Tabs, Text } from "@hackcove/ui";
 
 /**
  * The in-place switchers of the Gallery: underline and pill Tabs (counts, a disabled tab) over a
@@ -21,7 +21,7 @@ export function GallerySwitchers() {
         value={tab}
         onChange={setTab}
       />
-      <Body role="tabpanel">Showing {tab}.</Body>
+      <Text role="tabpanel">Showing {tab}.</Text>
       <Tabs
         variant="pill"
         label="Assets"
