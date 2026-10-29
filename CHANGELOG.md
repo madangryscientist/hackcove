@@ -1,3 +1,33 @@
+## 0.1.11 (2026-10-29)
+
+### 🚀 Features
+
+- **ui:** Lightbox, a full-screen media viewer with a theme-invariant scrim (HC-163) ([8de7c11](https://github.com/madangryscientist/hackcove/commit/8de7c11))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
+## 0.2.12 (2026-10-29)
+
+### 🚀 Features
+
+- **ui:** Lightbox, a full-screen media viewer with a theme-invariant scrim (HC-163) ([8de7c11](https://github.com/madangryscientist/hackcove/commit/8de7c11))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
+## 0.6.3 (2026-10-29)
+
+### 🚀 Features
+
+- **ui:** Lightbox, a full-screen media viewer with a theme-invariant scrim (HC-163) ([8de7c11](https://github.com/madangryscientist/hackcove/commit/8de7c11))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.6.2 (2026-10-28)
 
 ### 🚀 Features
