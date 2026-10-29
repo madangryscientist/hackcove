@@ -30,12 +30,14 @@ export const Sizes: S = {
   ),
 };
 
-export const RingedStack: S = {
+/** `shape="square"` for an org, a team or a project: rounded corners that scale with the size. */
+export const Square: S = {
   render: () => (
-    <div className="flex bg-slate-50 p-4">
-      {["ada", "grace", "linus", "margaret"].map((name) => (
-        <Avatar key={name} name={name} ring />
+    <div className="flex items-center gap-3">
+      {(["sm", "md", "lg", "xl", "2xl"] as const).map((size) => (
+        <Avatar key={size} name="Hack Cove" shape="square" size={size} />
       ))}
+      <Avatar name="Jacobus Langner" src={samplePhoto} shape="square" size="xl" />
     </div>
   ),
 };

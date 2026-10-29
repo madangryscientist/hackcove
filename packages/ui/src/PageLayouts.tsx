@@ -9,6 +9,7 @@ import { Card } from "./Card.js";
 import { cx, focusRing } from "./cx.js";
 import { PageHeader, PageHeaderContent, type PageHeaderProps } from "./PageHeader.js";
 import { STACK_WIDTH, Stack, type StackGap } from "./Stack.js";
+import { StickyBar } from "./StickyBar.js";
 import type { Passthrough, Unstyled } from "./props.js";
 
 // Compositions of the layout foundation. None sets a page width or outer padding of its own; the
@@ -298,8 +299,8 @@ export function SidebarLayout({
  * screen. Render it in `<AppShell bleed>`. It deliberately breaks the shared left edge: a viewer
  * that needs the whole width has no Container of its own, so `children` start at the viewport's
  * left edge. `padded` gives them the Container's padding instead (`px-4`, `sm:px-6`, `py-8`), for
- * a page of ordinary content beside a full-height `panel`. A `bar` runs the full width above both,
- * on the surface with a bottom line, and sticks under AppShell's header as the page scrolls.
+ * a page of ordinary content beside a full-height `panel`. A `bar` is a `StickyBar` above both: the
+ * full width, on the surface with a bottom line, sticking under AppShell's header as the page scrolls.
  */
 export function FullBleedLayout({
   bar,
@@ -338,9 +339,7 @@ export function FullBleedLayout({
   }
   return (
     <div {...rest} className="flex min-h-0 flex-1 flex-col">
-      <div className="sticky top-[var(--app-header,0px)] z-5 border-b border-slate-200 bg-white px-4 py-2 sm:px-6">
-        {bar}
-      </div>
+      <StickyBar>{bar}</StickyBar>
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">{row}</div>
     </div>
   );

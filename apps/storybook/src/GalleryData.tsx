@@ -21,7 +21,29 @@ import {
 } from "@hackcove/ui";
 import { samplePhoto } from "./samplePhoto";
 
-/** The Card variants (flush, header bar, dashed, dashed filled, dense, toned), the Callout actions, banner and link, the ListRow set (a static row with leading, selected and hover actions), a link Card, a Table with a stretched row link and toned rows, a Table with a group row, cell tones, a truncated cell and a totals foot, a plain Table with a second-line cell and an `srLabel` actions column and a Timeline. */
+/** A Callout with an action, in info and in danger. */
+function GalleryCalloutActions() {
+  return (
+    <>
+      <Callout tone="info" title="Heads up." actions={<Button size="sm">Retry</Button>}>
+        The last import did not finish.
+      </Callout>
+      <Callout
+        tone="danger"
+        title="Build failed."
+        actions={
+          <Button size="sm" variant="outline">
+            Rerun
+          </Button>
+        }
+      >
+        3 visual checks did not match.
+      </Callout>
+    </>
+  );
+}
+
+/** The Card variants (flush, header bar, dashed, dashed filled, dense, toned), the Callout actions (info and danger), banner and link, the ListRow set (a static row with leading, selected and hover actions), a link Card, a Table with a stretched row link and toned rows, a Table with a group row, cell tones, a truncated cell and a totals foot, a plain Table with a second-line cell and an `srLabel` actions column and a Timeline. */
 export function GalleryData() {
   return (
     <div className="flex flex-col gap-4">
@@ -77,9 +99,7 @@ export function GalleryData() {
       <GalleryStaticRows />
       <Card dashed>No statements yet.</Card>
       <Card dashed="filled">No quotes yet.</Card>
-      <Callout tone="info" title="Heads up." actions={<Button size="sm">Retry</Button>}>
-        The last import did not finish.
-      </Callout>
+      <GalleryCalloutActions />
       <GalleryTables />
       <Timeline label="Status history">
         <TimelineItem

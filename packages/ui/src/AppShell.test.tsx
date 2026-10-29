@@ -1,6 +1,12 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { AppShell, AppShellBrand, appShellRootClass, appShellRootClassFor } from "./AppShell.js";
+import {
+  AppShell,
+  AppShellBrand,
+  AppShellHideBelow,
+  appShellRootClass,
+  appShellRootClassFor,
+} from "./AppShell.js";
 import { schemeClass } from "./colourScheme.js";
 
 const EDGE = "max-w-6xl px-4 sm:px-6";
@@ -15,10 +21,12 @@ describe("AppShell", () => {
     );
   });
 
-  it("paints the page canvas and sets the type face and ink, so an app needs no page rule", () => {
+  it("paints the page canvas and sets the type face, ink and smoothing, so an app needs no page rule", () => {
     const out = renderToStaticMarkup(<AppShell header="h">page</AppShell>);
     const root = /^<div class="([^"]*)">/.exec(out)?.[1]?.split(" ") ?? [];
-    expect(root).toEqual(expect.arrayContaining(["bg-gray-50", "font-sans", "text-slate-900"]));
+    expect(root).toEqual(
+      expect.arrayContaining(["bg-gray-50", "font-sans", "text-slate-900", "antialiased"]),
+    );
   });
 
   it("puts main in a Container with fixed vertical padding", () => {
@@ -183,5 +191,32 @@ describe("AppShellBrand collapse", () => {
     expect(
       renderToStaticMarkup(<AppShellBrand href="/" logo={<i>L</i>} label="Quotes" />),
     ).toContain("<span>Quotes</span>");
+  });
+});
+
+describe("AppShellHideBelow", () => {
+  it("hides its item below sm by default and lays it out in a row from sm up", () => {
+    const out = renderToStaticMarkup(<AppShellHideBelow>ada</AppShellHideBelow>);
+    expect(out).toBe('<span class="hidden sm:flex items-center gap-2">ada</span>');
+  });
+
+  it("takes md and lg", () => {
+    expect(
+      renderToStaticMarkup(<AppShellHideBelow breakpoint="md">x</AppShellHideBelow>),
+    ).toContain('class="hidden md:flex ');
+    expect(
+      renderToStaticMarkup(<AppShellHideBelow breakpoint="lg">x</AppShellHideBelow>),
+    ).toContain('class="hidden lg:flex ');
+  });
+
+  it("sits in the header's controls as written", () => {
+    const out = renderToStaticMarkup(
+      <AppShell controls={<AppShellHideBelow data-testid="viewer">ada</AppShellHideBelow>}>
+        x
+      </AppShell>,
+    );
+    expect(out).toContain(
+      '<span data-testid="viewer" class="hidden sm:flex items-center gap-2">ada</span>',
+    );
   });
 });

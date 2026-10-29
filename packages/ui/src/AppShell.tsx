@@ -92,6 +92,39 @@ export function AppShellBrand({
   });
 }
 
+/** The breakpoint below which an `AppShellHideBelow` item is hidden. */
+export type AppShellBreakpoint = "sm" | "md" | "lg";
+
+const SHOWN_FROM: Record<AppShellBreakpoint, string> = {
+  sm: "hidden sm:flex",
+  md: "hidden md:flex",
+  lg: "hidden lg:flex",
+};
+
+/**
+ * An inline header item that only shows from a breakpoint up, such as the viewer's avatar and name
+ * in `controls`: below `breakpoint` it is gone (`display: none`, so assistive tech skips it too).
+ * Its children sit in a row with the header's gap.
+ */
+export function AppShellHideBelow({
+  breakpoint = "sm",
+  children,
+  ...rest
+}: Passthrough & {
+  /**
+   * Hidden below `sm` (640px), `md` (768px) or `lg` (1024px).
+   * @default sm
+   */
+  breakpoint?: AppShellBreakpoint;
+  children: ReactNode;
+}): ReactElement {
+  return (
+    <span {...rest} className={cx(SHOWN_FROM[breakpoint], "items-center gap-2")}>
+      {children}
+    </span>
+  );
+}
+
 // One fixed-height row that scrolls sideways and never wraps; its children keep their width.
 const ROW = "flex items-center gap-4 overflow-x-auto whitespace-nowrap *:shrink-0";
 
@@ -167,8 +200,9 @@ function HeaderSlots({
 }
 
 /**
- * The page frame: it paints the page canvas and sets the type face and ink, so an app writes no
- * page-background or font rule of its own (a theme remaps the canvas and the font stacks). A sticky one-row header, an optional second `subnav` row, the main area and an
+ * The page frame: it paints the page canvas and sets the type face, ink and font smoothing
+ * (`antialiased`), so an app writes no page-background or font rule of its own (a theme remaps
+ * the canvas and the font stacks). A sticky one-row header, an optional second `subnav` row, the main area and an
  * optional footer. Header, main and footer each sit in a `Container`, so pages never set their own
  * width or padding. `bleed` drops main's Container (the header keeps its own), for a layout that
  * needs the whole width (`FullBleedLayout`). Main is a flex column. `SidebarLayout` needs no
@@ -176,7 +210,8 @@ function HeaderSlots({
  *
  * The header row is laid out by its slots, left to right: `brand`, `nav`, then `header` (anything
  * the slots do not cover), then `controls`, pushed to the end. An app writes no wrapper or
- * styling for any of them.
+ * styling for any of them: an item that only fits a wide screen goes in `AppShellHideBelow`. A bar
+ * that sticks under the header as the page scrolls is a `StickyBar`.
  */
 export function AppShell({
   brand,
@@ -215,7 +250,7 @@ export function AppShell({
     <div
       {...rest}
       className={cx(
-        "flex min-h-dvh flex-col bg-gray-50 font-sans text-slate-900",
+        "flex min-h-dvh flex-col bg-gray-50 font-sans text-slate-900 antialiased",
         // The sticky header's height (its rows and the bottom border), for a bar that sticks under it.
         subnav ? "[--app-header:calc(6.5rem+1px)]" : "[--app-header:calc(3.5rem+1px)]",
       )}

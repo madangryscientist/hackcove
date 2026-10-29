@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Avatar, AppShellBrand, Cluster, TextLink } from "@hackcove/ui";
+import { Avatar, AppShellBrand, AppShellHideBelow, Cluster, Text, TextLink } from "@hackcove/ui";
 
 /**
  * The docs examples for `AppShell`. The shell is a whole page (`min-h-dvh`, a sticky header), so
@@ -37,5 +37,25 @@ export const DoRouterBrand: S = {
       label="Quotes"
       render={(props) => <a {...props} href="#home" />}
     />
+  ),
+};
+
+/** A header control that only matters on a wide screen (who is signed in) goes in `AppShellHideBelow`: hidden below `sm`, a row from `sm` up. Narrow the viewport to see it go. */
+export const DoHideBelow: S = {
+  render: () => (
+    <AppShellHideBelow>
+      <Avatar name="Ada Lovelace" size="sm" />
+      <Text>Ada Lovelace</Text>
+    </AppShellHideBelow>
+  ),
+};
+
+/** Shown at every width, the name pushes the nav and the toggle off a phone's header row. */
+export const DontHideBelow: S = {
+  render: () => (
+    <Cluster gap="xs">
+      <Avatar name="Ada Lovelace" size="sm" />
+      <Text>Ada Lovelace</Text>
+    </Cluster>
   ),
 };

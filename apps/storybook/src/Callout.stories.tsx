@@ -42,6 +42,17 @@ export const WithActions: S = {
       <Callout tone="info" actions={<Button size="sm">Retry</Button>}>
         The last import did not finish.
       </Callout>
+      <Callout
+        tone="danger"
+        title="Build failed."
+        actions={
+          <Button size="sm" variant="outline">
+            Rerun
+          </Button>
+        }
+      >
+        3 visual checks did not match their baselines.
+      </Callout>
     </div>
   ),
 };

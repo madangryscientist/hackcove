@@ -1,6 +1,7 @@
 import {
   AppShell,
   AppShellBrand,
+  AppShellHideBelow,
   Avatar,
   Button,
   Card,
@@ -18,7 +19,18 @@ import {
   Text,
 } from "@hackcove/ui";
 
-/** AppShell (its brand, nav and controls slots, and the Container inside it), PageHeader, Section, Stack and Cluster, in a box that scrolls under the sticky header. */
+/** The header's controls: a viewer chip that hides below `sm`, then the scheme toggle. */
+const galleryControls = (
+  <>
+    <AppShellHideBelow>
+      <Avatar name="Ada Lovelace" size="sm" />
+      <Text>Ada Lovelace</Text>
+    </AppShellHideBelow>
+    <ColourSchemeToggle />
+  </>
+);
+
+/** AppShell (its brand, nav and controls slots, an AppShellHideBelow viewer chip, and the Container inside it), PageHeader, Section, Stack and Cluster, in a box that scrolls under the sticky header. */
 export function GalleryLayout() {
   return (
     <div className="h-80 overflow-y-auto rounded-xl border border-slate-200">
@@ -41,7 +53,7 @@ export function GalleryLayout() {
             ]}
           />
         }
-        controls={<ColourSchemeToggle />}
+        controls={galleryControls}
         footer="Hack Cove · MIT"
       >
         <PageHeader
