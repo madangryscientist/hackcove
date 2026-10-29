@@ -63,6 +63,23 @@
   background-color: rgba(17, 17, 27, 0.6); /* crust — the modal scrim */
 }
 
+/* The media scrim — Lightbox's full-screen viewer: near-black crust with light text. */
+.dark .bg-black\/90 {
+  background-color: rgba(17, 17, 27, 0.94); /* crust */
+}
+.dark .text-white {
+  color: #cdd6f4; /* text */
+}
+.dark .text-white\/70 {
+  color: #a6adc8; /* subtext0 */
+}
+.dark .hover\:bg-white\/10:hover {
+  background-color: rgba(205, 214, 244, 0.1); /* text/10 */
+}
+.dark .focus-visible\:outline-white:focus-visible {
+  outline-color: #cdd6f4; /* text */
+}
+
 /* Text */
 .dark .text-slate-900,
 .dark .text-slate-800 {

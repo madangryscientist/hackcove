@@ -68,6 +68,7 @@ export { Divider } from "./Divider.js";
 export { PageFade, startPageTransition } from "./PageFade.js";
 export { Dialog, type DialogProps } from "./Dialog.js";
 export { Drawer, type DrawerProps } from "./Drawer.js";
+export { Lightbox, type LightboxProps } from "./Lightbox.js";
 export { Icon } from "./Icon.js";
 export { IconButton, type IconButtonTone, type IconButtonVariant } from "./IconButton.js";
 export { ColourSchemeToggle } from "./ColourSchemeToggle.js";

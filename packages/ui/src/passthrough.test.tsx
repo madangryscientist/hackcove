@@ -57,6 +57,11 @@ const CASES: Record<string, () => ReactElement> = {
   ),
   Divider: () => <ui.Divider {...A} />,
   Drawer: () => <ui.Drawer title="T" onClose={noop} {...A} />,
+  Lightbox: () => (
+    <ui.Lightbox label="L" onClose={noop} {...A}>
+      x
+    </ui.Lightbox>
+  ),
   EpicHeader: () => <ui.EpicHeader color="#000" label="Epic" {...A} />,
   ErrorPage: () => <ui.ErrorPage {...A} />,
   Field: () => (

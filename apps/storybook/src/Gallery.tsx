@@ -13,6 +13,7 @@ import {
   Dialog,
   Display,
   Drawer,
+  Lightbox,
   EpicHeader,
   FieldDialog,
   FilterGroup,
@@ -49,6 +50,7 @@ import { GalleryLinkedRows } from "./GalleryLinkedRows";
 import { GalleryLinks } from "./GalleryLinks";
 import { GalleryPages } from "./GalleryPages";
 import { samplePhoto } from "./samplePhoto";
+import { sampleScenes } from "./sampleScene";
 
 /** The page header block of the Gallery: a Display title, a PageHeader and a pill Tabs row of links. */
 function GalleryHeader() {
@@ -137,9 +139,9 @@ function GalleryPageFade() {
   );
 }
 
-/** The two dialogs and the Drawer, shut: each button opens one over the page (open, they make the page inert). */
+/** The two dialogs, the Drawer and the Lightbox, shut: each button opens one over the page (open, they make the page inert). */
 function GalleryDialogs() {
-  const [open, setOpen] = useState<"dialog" | "field" | "drawer" | null>(null);
+  const [open, setOpen] = useState<"dialog" | "field" | "drawer" | "lightbox" | null>(null);
   const close = () => setOpen(null);
   return (
     <div className="flex flex-wrap gap-2">
@@ -151,6 +153,9 @@ function GalleryDialogs() {
       </Button>
       <Button variant="outline" onClick={() => setOpen("drawer")}>
         Open Drawer
+      </Button>
+      <Button variant="outline" onClick={() => setOpen("lightbox")}>
+        Open Lightbox
       </Button>
       {open === "dialog" && (
         <Dialog
@@ -169,6 +174,16 @@ function GalleryDialogs() {
             <KeyValue label="Owner">Jacobus</KeyValue>
           </KeyValueList>
         </Drawer>
+      )}
+      {open === "lightbox" && sampleScenes[0] && (
+        <Lightbox
+          label="Photo from Anna"
+          title="Anna"
+          caption={sampleScenes[0].caption}
+          onClose={close}
+        >
+          <img src={sampleScenes[0].src} alt={sampleScenes[0].alt} />
+        </Lightbox>
       )}
       {open === "field" && (
         <FieldDialog
