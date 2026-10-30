@@ -10,6 +10,7 @@ import {
   Text,
   TextLink,
 } from "@hackcove/ui";
+import { Fragment } from "react";
 import { cv, type CvJob } from "../content/cv";
 import { site } from "../content/site";
 
@@ -47,9 +48,14 @@ function Job({ job }: { job: CvJob }) {
             </Text>
           )}
           <Bullets items={group.items} />
-          {group.link && (
+          {group.links && (
             <Text as="p">
-              <TextLink href={group.link.href}>{group.link.label}</TextLink>
+              {group.links.map((link, index) => (
+                <Fragment key={link.href}>
+                  {index > 0 && " · "}
+                  <TextLink href={link.href}>{link.label}</TextLink>
+                </Fragment>
+              ))}
             </Text>
           )}
         </div>

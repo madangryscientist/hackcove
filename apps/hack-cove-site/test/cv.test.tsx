@@ -98,9 +98,19 @@ describe("cv content", () => {
     expect(hackCove.groups[0].items).toContain(
       "Built the Python service that integrates the app with the voice service provider.",
     );
-    expect(hackCove.groups[1].link?.href).toBe("https://github.com/madangryscientist/hackcove");
-    expect(hackCove.groups[2].link?.href).toBe("https://github.com/madangryscientist/pixelslash");
-    expect(hackCove.groups[2].link?.label).toBe("github.com/madangryscientist/pixelslash");
+    expect(hackCove.groups[1].items.join(" ")).toContain("LLM review through OpenCode Zen");
+    expect(hackCove.groups[2].items.join(" ")).toContain("An MCP server lets coding agents");
+    expect(hackCove.groups[1].links?.map((link) => link.href)).toEqual([
+      "https://hack-cove.com/ui",
+      "https://github.com/madangryscientist/hackcove",
+    ]);
+    expect(hackCove.groups[2].links?.map((link) => link.href)).toEqual([
+      "https://pixelslash.dev",
+      "https://github.com/madangryscientist/pixelslash",
+    ]);
+    expect(hackCove.groups[2].links?.[1].label).toBe("github.com/madangryscientist/pixelslash");
+    expect(html).toContain('href="https://pixelslash.dev"');
+    expect(html).toContain('href="https://hack-cove.com/ui"');
     expect(html).toContain('href="https://github.com/madangryscientist/pixelslash"');
     expect(html).toContain('href="https://github.com/madangryscientist/hackcove"');
   });
