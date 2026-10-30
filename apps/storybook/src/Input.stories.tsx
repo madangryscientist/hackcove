@@ -80,6 +80,7 @@ export const SearchWithValue: S = {
 };
 /** `width="fill"` grows to the room left in a row, so the buttons beside it stay on the line. */
 export const FillWidth: S = {
+  parameters: { layout: "padded" },
   render: () => (
     <div className="flex max-w-lg flex-wrap items-center gap-2">
       <Input width="fill" aria-label="Note" placeholder="Fills the row" />

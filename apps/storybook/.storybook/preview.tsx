@@ -1,10 +1,11 @@
 import type { Preview } from "@storybook/react-vite";
-import { ThemeFrame, themeNames } from "./themes";
+import { ThemeDocument, themeNames } from "./themes";
 import "./tailwind.css";
 
 const preview: Preview = {
   parameters: {
-    layout: "fullscreen",
+    // A story is cropped to its component by default; a page or layout opts in to "fullscreen".
+    layout: "centered",
     // The three widths the Layout stories and the no-jump e2e are checked at.
     viewport: {
       options: {
@@ -34,18 +35,21 @@ const preview: Preview = {
     },
   },
   decorators: [
-    (Story, context) =>
-      // A story that lays out every theme itself must not sit inside the toolbar's theme scope.
-      context.parameters["allThemes"] === true ? (
+    (Story, context) => (
+      <ThemeDocument
+        // A story that lays out every theme itself must not sit inside the toolbar's theme scope.
+        theme={
+          context.parameters["allThemes"] === true
+            ? undefined
+            : String(context.globals["theme"] ?? themeNames[0])
+        }
+        padded={
+          context.parameters["layout"] === "fullscreen" && context.parameters["bare"] !== true
+        }
+      >
         <Story />
-      ) : (
-        <ThemeFrame
-          theme={String(context.globals["theme"] ?? themeNames[0])}
-          bare={context.parameters["bare"] === true}
-        >
-          <Story />
-        </ThemeFrame>
-      ),
+      </ThemeDocument>
+    ),
   ],
 };
 export default preview;

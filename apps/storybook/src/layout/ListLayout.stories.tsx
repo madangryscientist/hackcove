@@ -18,7 +18,7 @@ import { ListPage } from "./pages";
 /** Every story under `Layout/` is picked up by the no-jump e2e at 375, 768 and 1280. */
 const meta: Meta = {
   title: "Layout/ListLayout",
-  parameters: { bare: true },
+  parameters: { layout: "fullscreen", bare: true },
   beforeEach: layoutPage,
 };
 export default meta;

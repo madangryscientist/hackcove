@@ -20,7 +20,7 @@ import { DemoShell, layoutPage } from "./DemoShell";
  */
 const meta: Meta = {
   title: "Layout/FullBleedLayout",
-  parameters: { bare: true },
+  parameters: { layout: "fullscreen", bare: true },
   beforeEach: layoutPage,
 };
 export default meta;

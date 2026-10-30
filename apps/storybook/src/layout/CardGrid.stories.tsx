@@ -6,7 +6,7 @@ import { StatTiles } from "./pages";
 /** One column on a phone, two from `sm`, `columns` from `lg`; `columns="auto"` fills by a minimum card width. */
 const meta: Meta = {
   title: "Layout/CardGrid",
-  parameters: { bare: true },
+  parameters: { layout: "fullscreen", bare: true },
   beforeEach: layoutPage,
 };
 export default meta;

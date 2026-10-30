@@ -34,6 +34,7 @@ export const AutoWidth: S = {
 };
 /** `width="fill"` grows to the room left in a row, so the button beside it stays on the line. */
 export const FillWidth: S = {
+  parameters: { layout: "padded" },
   render: () => (
     <div className="flex max-w-lg flex-wrap items-center gap-2">
       <Select width="fill" aria-label="Rating" defaultValue={5}>

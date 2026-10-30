@@ -46,6 +46,7 @@ export const WithActions: S = {
   ),
 };
 export const Banner: S = {
+  parameters: { layout: "padded" },
   render: () => (
     <div className="max-w-xl">
       <Card flush>

@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Caption, Overline } from "@hackcove/ui";
 import palette from "../../../packages/ui/palette.json";
 
-const meta: Meta = { title: "Overview/Palette" };
+const meta: Meta = { title: "Overview/Palette", parameters: { layout: "fullscreen" } };
 export default meta;
 type S = StoryObj;
 

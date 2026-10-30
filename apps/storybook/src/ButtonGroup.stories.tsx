@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button, ButtonGroup } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/ButtonGroup" };
+const meta: Meta = { title: "UI/ButtonGroup", parameters: { layout: "padded" } };
 export default meta;
 type S = StoryObj;
 

@@ -11,7 +11,7 @@ import {
   Text,
 } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/Cluster" };
+const meta: Meta = { title: "UI/Cluster", parameters: { layout: "padded" } };
 export default meta;
 type S = StoryObj;
 

@@ -94,6 +94,7 @@ export const WithRouterLink: S = {
 
 /** `stretch` covers the nearest `relative` ancestor, so the whole row is the click target. */
 export const Stretch: S = {
+  parameters: { layout: "padded" },
   render: () => (
     <ul className="max-w-sm divide-y divide-slate-200 rounded-lg border border-slate-200 text-sm">
       {["Quote 12", "Quote 13", "Quote 14"].map((name) => (
