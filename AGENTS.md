@@ -65,6 +65,15 @@ The e2e needs a Chromium once per machine: `bunx playwright install chromium`. I
 from `themes/*` like the switcher does and asserts each one under the scope class its `theme.css`
 names, so a new theme needs no test edit.
 
+**The visual check** (PixelSlash, `CONTRIBUTING.md`, "The visual check") is split into one group
+per section of the site's component docs, read from `componentSections`: one Nx project
+`visual-<section>` and one PixelSlash project `hackcove-ui-<section>` each, plus Overview, which is
+always captured. `bunx nx run storybook:visual` (or `bunx nx affected -t visual`) captures only the
+stories and themes the change reaches against the merge-base, and its report says what it picked
+and why. `bunx nx run storybook:visual --all` (or `VISUAL_ALL=1 bunx nx run-many -t visual`;
+run-many takes `--all` for itself) captures everything. A gate run is `--all`. Every story file is
+named by a docs page (`pairs`, `fullPage` or `stories`); the storybook tests fail on one that is not.
+
 ## Commits: conventional, because nx reads them
 
 Every commit is `<type>(<scope>): <subject>`, as in `fix(ui): keep the Pill label on one line`:
@@ -87,8 +96,8 @@ hackcove lands through pull requests (Jacobus, 2026-10-27). Who opens and who me
 global rule; what is particular to hackcove:
 
 - **Screenshots before the merge.** The planner gates the PR's head, reads the PixelSlash
-  report, and uploads that commit's screenshots (`nx run storybook:visual-upload`) before it
-  merges.
+  reports, and uploads that commit's screenshots (`nx run storybook:visual-upload`, every group
+  whole, each to its own `hackcove-ui-<section>` project) before it merges.
 - **The squash subject stays conventional** (`gh pr merge <pr> --squash --subject "…"`),
   because `nx release` reads it.
 - **No branch protection.** `publish.yml` pushes its release commit straight to `main`, so

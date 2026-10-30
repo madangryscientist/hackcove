@@ -16,6 +16,7 @@ export const data: ComponentSection = {
         "TableRowStripe/Stripe",
         "TableActions/ActionsColumn",
       ],
+      stories: ["Table"],
       usage: [
         "Compose a `Table` from `TableHead`, `TableBody` and, for totals, `TableFoot`. A `TableHead` holds one `TableRow` of `TableHeaderCell`s; give the `Table` a `caption` that names it.",
         'Right-align a column of amounts with `align="end"` on its header and its cells, and set `numeric` on the cells so the figures line up. A code or a type is `mono`.',
@@ -54,6 +55,7 @@ export const data: ComponentSection = {
       whenToUse:
         "A short list where each row opens something, toggles a section or holds its own buttons.",
       pairs: ["ListRow/List", "ListRow/RowActions"],
+      stories: ["ListRowPanel", "LinkedControls"],
       usage: [
         "Put the rows in a `Card flush` and set `divided` on every row after the first. `trailing` is a value, a count or a `Pill`; `leading` is an `Avatar` or an icon.",
         "A row with `onClick` is a button; with `href` (or `render`, for a router's link) it is a link. `external` opens a link in a new tab.",

@@ -66,5 +66,6 @@
         "createRelease": "github"
       }
     }
-  }
+  },
+  "plugins": ["./apps/storybook/scripts/nx-plugin.ts"]
 }
