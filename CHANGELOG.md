@@ -1,3 +1,54 @@
+## 0.7.0 (2026-10-30)
+
+### 🚀 Features
+
+- ⚠️  **ui:** AvatarStack, Avatar shape, AppShellHideBelow, StickyBar and an antialiased AppShell (HC-153) ([f33c6f4](https://github.com/madangryscientist/hackcove/commit/f33c6f4))
+
+### ⚠️  Breaking Changes
+
+- **ui:** AvatarStack, Avatar shape, AppShellHideBelow, StickyBar and an antialiased AppShell (HC-153)  ([f33c6f4](https://github.com/madangryscientist/hackcove/commit/f33c6f4))
+  Avatar's `ring` prop is removed. A stack is an AvatarStack,
+  which draws the same ring, so there is one way to build one.
+  Already covered on main (documented, not rebuilt):
+  - AppShell brand logo sizing an svg: AppShellBrand `logo` / `logoSize` fill
+    the box with `[&>img]:size-full [&>svg]:size-full`
+    (packages/ui/src/AppShell.tsx; test "makes an <img> or <svg> logo fill the
+    box"; site docs in layout.ts).
+  - Callout `tone="danger"` with `actions`: packages/ui/src/Callout.tsx. Added a
+    danger callout with an action to the WithActions story and the Gallery; it
+    reads correctly in catppuccin-mocha and thrifty-paper.
+  No palette change, no `dark:`, no className on any public part.
+  Visual: http://192.168.0.34:3000/projects/c37dfb5b-1e95-4234-936f-85a501781e02/builds/1478c021-5e04-4c0f-8658-1621bf6f595e (5 changed: Callout WithActions and the Gallery/All themes overviews, from the new danger callout, AvatarStack, square avatar, StickyBar and header chip; 26 new; 2 removed: Avatar RingedStack, replaced by AvatarStack. Report read.)
+  Gated by the planner on 733c50b: typecheck lint test build, format, pack-check, storybook e2e 50, site test 272; PixelSlash 5 changed (Callout WithActions + overviews), 26 new, 2 removed (Avatar RingedStack), report read."
+  M	apps/hack-cove-site/src/content/components/content.ts
+  M	apps/hack-cove-site/src/content/components/layout.ts
+  M	apps/hack-cove-site/src/content/components/pagelayouts.ts
+  M	apps/storybook/src/AppShellDocs.stories.tsx
+  M	apps/storybook/src/Avatar.stories.tsx
+  A	apps/storybook/src/AvatarStack.stories.tsx
+  M	apps/storybook/src/Callout.stories.tsx
+  M	apps/storybook/src/Gallery.tsx
+  M	apps/storybook/src/GalleryData.tsx
+  M	apps/storybook/src/GalleryLayout.tsx
+  M	apps/storybook/src/GalleryPages.tsx
+  A	apps/storybook/src/StickyBar.stories.tsx
+  M	apps/storybook/src/layout/AppShell.stories.tsx
+  M	packages/ui/src/AppShell.test.tsx
+  M	packages/ui/src/AppShell.tsx
+  M	packages/ui/src/Avatar.test.tsx
+  M	packages/ui/src/Avatar.tsx
+  A	packages/ui/src/AvatarStack.test.tsx
+  A	packages/ui/src/AvatarStack.tsx
+  M	packages/ui/src/PageLayouts.tsx
+  A	packages/ui/src/StickyBar.test.tsx
+  A	packages/ui/src/StickyBar.tsx
+  M	packages/ui/src/index.ts
+  M	packages/ui/src/passthrough.test.tsx
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.1.11 (2026-10-29)
 
 ### 🚀 Features
