@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { type BarTone, Caption, Cluster, ProgressBar, Stack, Text } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/ProgressBar" };
+const meta: Meta = { title: "UI/ProgressBar", parameters: { layout: "padded" } };
 export default meta;
 type S = StoryObj;
 

@@ -5,7 +5,7 @@ import { DemoShell, layoutPage } from "./layout/DemoShell";
 /** Whole pages for the states every site has. Each renders as the content of an AppShell, with fixed copy; `title` and the body can be overridden. */
 const meta: Meta = {
   title: "Pages/Status",
-  parameters: { bare: true },
+  parameters: { layout: "fullscreen", bare: true },
   beforeEach: layoutPage,
 };
 export default meta;

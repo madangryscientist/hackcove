@@ -4,7 +4,7 @@ import { ThemeFrame, themeNames } from "../.storybook/themes";
 import { Gallery as GalleryView } from "./Gallery";
 import { resetColourScheme } from "./resetColourScheme";
 
-const meta: Meta = { title: "Overview" };
+const meta: Meta = { title: "Overview", parameters: { layout: "fullscreen" } };
 export default meta;
 type S = StoryObj;
 

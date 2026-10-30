@@ -16,6 +16,7 @@ export const FixedWidth: S = {
 };
 /** `width="fill"` grows to the room left in a row, so the button beside it stays on the line. */
 export const FillWidth: S = {
+  parameters: { layout: "padded" },
   render: () => (
     <div className="flex max-w-lg flex-wrap items-start gap-2">
       <Textarea width="fill" rows={2} aria-label="Note" placeholder="Fills the row" />

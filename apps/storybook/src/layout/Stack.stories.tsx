@@ -14,7 +14,7 @@ import { DemoShell, layoutPage } from "./DemoShell";
 
 const meta: Meta = {
   title: "Layout/Stack",
-  parameters: { bare: true },
+  parameters: { layout: "fullscreen", bare: true },
   beforeEach: layoutPage,
 };
 export default meta;

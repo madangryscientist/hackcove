@@ -17,17 +17,23 @@ async function open(page: Page, theme: string) {
 }
 
 /**
- * The Pill's paint inside the theme frame, and the same classes on a probe placed outside every
- * theme scope: the components' stock Tailwind utilities, which a theme must remap.
+ * The Pill's paint inside the theme scope (the toolbar's theme sits on `<html>`), and the same
+ * classes on a probe measured with the scope class taken off: the components' stock Tailwind
+ * utilities, which a theme must remap.
  */
 const pillBackgrounds = (page: Page, tone: string) =>
   page.getByText(tone, { exact: true }).evaluate((el) => {
+    const root = document.documentElement;
+    const scope = [...root.classList];
     const probe = document.createElement("span");
     probe.className = el.className;
     document.body.append(probe);
+    const themed = getComputedStyle(el).backgroundColor;
+    root.classList.remove(...scope);
     const stock = getComputedStyle(probe).backgroundColor;
+    root.classList.add(...scope);
     probe.remove();
-    return { themed: getComputedStyle(el).backgroundColor, stock };
+    return { themed, stock };
   });
 
 async function snapshot(page: Page, theme: string) {

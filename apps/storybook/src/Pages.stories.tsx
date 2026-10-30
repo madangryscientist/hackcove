@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { PageSequence } from "./GalleryPages";
 
-const meta: Meta = { title: "Pages" };
+const meta: Meta = { title: "Pages", parameters: { layout: "fullscreen" } };
 export default meta;
 type S = StoryObj;
 
