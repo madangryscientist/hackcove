@@ -16,7 +16,7 @@ export type CvLink = {
 export type CvHighlightGroup = {
   heading?: string;
   items: string[];
-  link?: CvLink;
+  links?: CvLink[];
 };
 
 export type CvJob = {
@@ -78,21 +78,29 @@ export const cv = {
           heading: "Hack Cove UI",
           items: [
             "An open-source React design system on npm (@hackcove/ui plus theme packages), in an Nx and Bun monorepo with Storybook. Every theme reskins every component with no code change.",
+            "Its reusable GitHub Action reviews UI pull requests in two layers: deterministic rules that fail on off-system styling, then an LLM review through OpenCode Zen against the published component reference (llms.txt).",
           ],
-          link: {
-            label: "github.com/madangryscientist/hackcove",
-            href: "https://github.com/madangryscientist/hackcove",
-          },
+          links: [
+            { label: "hack-cove.com/ui", href: "https://hack-cove.com/ui" },
+            {
+              label: "github.com/madangryscientist/hackcove",
+              href: "https://github.com/madangryscientist/hackcove",
+            },
+          ],
         },
         {
           heading: "PixelSlash",
           items: [
             "A visual-regression tool. It has a Bun CLI and a pixel-diff engine in Rust compiled to WebAssembly. Its review app runs TanStack Start on Cloudflare Workers, with D1 through Drizzle, R2 for screenshots, GitHub sign-in, and AES-256-GCM encryption for the API keys it stores.",
+            "AI review: a vision model judges each shot against the design system (local mlx or ollama, or a hosted model), and the server sends each changed region to an OpenAI-compatible vision endpoint on a Cloudflare Queue to explain the change, with retries and per-build token accounting. An MCP server lets coding agents such as Claude Code read builds and drive the tool.",
           ],
-          link: {
-            label: "github.com/madangryscientist/pixelslash",
-            href: "https://github.com/madangryscientist/pixelslash",
-          },
+          links: [
+            { label: "pixelslash.dev", href: "https://pixelslash.dev" },
+            {
+              label: "github.com/madangryscientist/pixelslash",
+              href: "https://github.com/madangryscientist/pixelslash",
+            },
+          ],
         },
       ],
       tech: "TypeScript, React, Python, Node/Bun, Rust/WebAssembly, Cloudflare Workers, D1, Drizzle",
