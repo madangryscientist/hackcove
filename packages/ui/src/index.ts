@@ -7,7 +7,13 @@ export { ProgressBar, type BarSize, type BarTone } from "./ProgressBar.js";
 export { SplitBar } from "./SplitBar.js";
 export { Legend, StackedBar, type LegendItem, type StackedSegment } from "./StackedBar.js";
 export { Markdown } from "./Markdown.js";
-export { AppShell, AppShellBrand, appShellRootClassFor } from "./AppShell.js";
+export {
+  AppShell,
+  AppShellBrand,
+  type AppShellBreakpoint,
+  AppShellHideBelow,
+  appShellRootClassFor,
+} from "./AppShell.js";
 export { Container } from "./Container.js";
 export { PageHeader, type PageHeaderProps } from "./PageHeader.js";
 export {
@@ -20,6 +26,7 @@ export {
   ProseLayout,
   SidebarLayout,
 } from "./PageLayouts.js";
+export { StickyBar } from "./StickyBar.js";
 export { ErrorPage, Forbidden, Maintenance, NotFound, Offline } from "./StatusPages.js";
 export {
   Cluster,
@@ -38,7 +45,14 @@ export {
 } from "./Button.js";
 export { ButtonGroup } from "./ButtonGroup.js";
 export { type LinkRender, type LinkRenderProps } from "./link.js";
-export { Avatar, avatarColourClass, initialsOf, type AvatarSize } from "./Avatar.js";
+export {
+  Avatar,
+  avatarColourClass,
+  initialsOf,
+  type AvatarShape,
+  type AvatarSize,
+} from "./Avatar.js";
+export { AvatarStack, type AvatarStackPerson } from "./AvatarStack.js";
 export { Breadcrumbs, type Crumb } from "./Breadcrumbs.js";
 export { BulletList } from "./BulletList.js";
 export { Callout, type CalloutTone } from "./Callout.js";

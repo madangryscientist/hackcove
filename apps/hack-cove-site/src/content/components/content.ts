@@ -59,14 +59,16 @@ export const content: ComponentSection = {
     {
       slug: "avatar",
       name: "Avatar",
-      summary: "A person as a round badge of initials, or their photo.",
+      summary:
+        "A person as a round badge of initials, or their photo; an org or team as a square one.",
       whenToUse: "Marking who did something or who owns something, next to their name.",
       pairs: ["Avatar/Identity", "Avatar/Beside"],
       usage: [
         "Pass the person's full `name`, the same string everywhere: the colour and the initials are worked out from it, so one person looks the same in every list and header.",
         "`size` is `sm`, `md` (default), `lg`, `xl` or `2xl`; use `sm` or `md` in a row and a larger one at the head of a profile.",
         "`src` is the person's photo, as a path your app serves. It replaces the initials, and the Avatar never loads an image from another server on its own, so use your own local image.",
-        "`ring` is for a stack of overlapping Avatars: each one overlaps the one before it, with a ring in the page colour. Leave it off a single Avatar.",
+        '`shape="square"` is for an org, a team or a project, not a person: rounded corners that scale with the size. Round (the default) is a person.',
+        "Several people as one group is an `AvatarStack`, not a row of Avatars.",
         "Put the person's name beside the Avatar as text; the Avatar is a mark, not a label.",
       ],
       accessibility: [
@@ -85,6 +87,26 @@ export const content: ComponentSection = {
           text: "The background class `Avatar` picks for a name, so the same name always gets the same colour. `Avatar` applies it for you; pass `name` to `Avatar` instead of using it.",
         },
       ],
+    },
+    {
+      slug: "avatar-stack",
+      name: "AvatarStack",
+      summary: "A group of people as a row of overlapping avatars, with an optional +N.",
+      whenToUse:
+        "Who is in something (a team, the reviewers, the people on a page) where one row says it.",
+      pairs: ["AvatarStack/Max"],
+      usage: [
+        "Pass `people`, each with the full `name` and an optional local `src`, as for `Avatar`.",
+        "Each avatar overlaps the one before it, in a ring in the page colour that keeps them apart. Draw no ring or overlap of your own.",
+        '`max` shows the first `max` and a "+N" chip of the same size and shape for the rest; leave it off to show everyone.',
+        "`size` and `shape` are `Avatar`'s and apply to every avatar and the chip: `square` for a stack of orgs or teams.",
+      ],
+      accessibility: [
+        'The stack is one `role="img"` named by the people in it ("Ada Lovelace, Grace Hopper and 3 more"); the avatars inside are hidden from a screen reader.',
+        "The +N chip is hidden from a screen reader (the name already counts the rest) and its `title` lists who it stands for.",
+        "`aria-*` and `data-*` props go on the root element.",
+      ],
+      api: ["AvatarStack"],
     },
     {
       slug: "badge",

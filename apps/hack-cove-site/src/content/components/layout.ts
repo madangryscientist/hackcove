@@ -10,17 +10,19 @@ export const layout: ComponentSection = {
       summary: "The page frame: header, optional subnav, main and footer.",
       whenToUse:
         "Every page of an app sits in one `AppShell`; it is the only place the page canvas, the font and the header live.",
-      pairs: ["AppShellDocs/Brand", "AppShellDocs/RouterBrand"],
+      pairs: ["AppShellDocs/Brand", "AppShellDocs/RouterBrand", "AppShellDocs/HideBelow"],
       usage: [
         "Fill the slots and write no wrapper: `brand`, `nav` (pill `Tabs` of links), `controls` (a picker, a `ColourSchemeToggle`), then an optional `subnav` row and `footer`.",
         '`brand` is an `AppShellBrand`: logo and label in one link. `collapse` leaves only the logo below `sm`. `logoSize` is `sm` (20px), `md` (24px, the default, an `Avatar size="sm"`) or `lg` (32px); an `<img>` or `<svg>` logo fills it.',
+        "`AppShellHideBelow` wraps a header control that only matters on a wide screen, such as the viewer's name: hidden below `breakpoint` (`sm`, the default, `md` or `lg`), a centred row from there up.",
+        "A bar that sticks under the header at the top of a `bleed` page is a `StickyBar`.",
         "With a router, give `AppShellBrand` a `render` that draws the app's own `<Link>` instead of an `href`.",
         "Header, main and footer each sit in a `Container`, so a page never sets its own width or padding. Do not add a `Container` inside the shell.",
         "`bleed` drops main's `Container` for a layout that needs the whole width (`FullBleedLayout`); `SidebarLayout` needs no `bleed`.",
         "`hideChromeInPrint` hides the header and footer and main's padding on paper; screen is unchanged.",
         "`header` is for a node no other slot covers. Prefer `brand`, `nav` and `controls`.",
         "Put `appShellRootClassFor(scheme)` on the app's own `<html>`. `AppShell` never touches `<html>`.",
-        "A theme sets the canvas colour and the font; the app writes no page background or font rule.",
+        "A theme sets the canvas colour and the font, and the shell turns on font smoothing (`antialiased`); the app writes no page background, font or smoothing rule.",
       ],
       accessibility: [
         "The header is a `<header>` (the banner landmark), main is `<main>` and the footer is `<footer>`.",
@@ -28,13 +30,32 @@ export const layout: ComponentSection = {
         "A header row that is wider than the screen (a long nav) scrolls sideways and never wraps; a link that takes focus scrolls into view, and the side with more to reach fades out.",
         "Give `nav` and `subnav` pill `Tabs` of links, so each is a labelled `<nav>`.",
       ],
-      api: ["AppShell", "AppShellBrand"],
+      api: ["AppShell", "AppShellBrand", "AppShellHideBelow"],
       functions: [
         {
           name: "appShellRootClassFor",
           text: "Everything the app's `<html>` takes from the scheme the server knows: that scheme's class and the class that always reserves the scrollbar, so centred content does not shift between a short page and a long one.",
         },
       ],
+    },
+    {
+      slug: "sticky-bar",
+      name: "StickyBar",
+      summary: "A full-width bar that sticks under the AppShell header.",
+      whenToUse:
+        "A page's filters or bulk actions that must stay in reach while a long `bleed` page scrolls.",
+      pairs: ["StickyBar/Bar"],
+      usage: [
+        "Put it first in an `AppShell bleed` page; it spans its parent and sticks just under the shell's header as the page scrolls.",
+        'It draws the surface, the bottom line and the padding; its `children` are the row, such as a `Cluster justify="between"` of filters and an action.',
+        "`FullBleedLayout`'s `bar` is a `StickyBar`; with that layout, pass the row as `bar` instead.",
+        "Write no `sticky` row of your own.",
+      ],
+      accessibility: [
+        "It is a plain `<div>`, not a landmark; it sits in the page's `<main>` and its controls keep their own names.",
+        "`aria-*` and `data-*` props go on the root element.",
+      ],
+      api: ["StickyBar"],
     },
     {
       slug: "container",

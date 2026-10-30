@@ -1,6 +1,7 @@
 import { useId, useState } from "react";
 import {
   Avatar,
+  AvatarStack,
   Breadcrumbs,
   Button,
   Callout,
@@ -216,7 +217,7 @@ function GalleryCopy() {
   );
 }
 
-/** The Avatar set: the seven identity colours at md, a ringed stack, then initials and a photo at xl and 2xl. */
+/** The Avatar set: the seven identity colours at md, an AvatarStack with a "+N", a square Avatar, then initials and a photo at xl and 2xl. */
 function GalleryAvatars() {
   const names = ["ada", "grace", "linus", "margaret", "dennis", "ken", "barbara"];
   return (
@@ -226,11 +227,12 @@ function GalleryAvatars() {
           <Avatar key={name} name={name} />
         ))}
       </div>
-      <div className="flex items-center">
-        <Avatar name="ada" size="lg" ring />
-        <Avatar name="grace" size="lg" ring />
-        <Avatar name="linus" size="lg" ring />
-      </div>
+      <AvatarStack
+        people={["ada", "grace", "linus", "margaret", "dennis"].map((name) => ({ name }))}
+        max={3}
+        size="lg"
+      />
+      <Avatar name="Hack Cove" size="lg" shape="square" />
       <div className="flex items-center gap-3">
         <Avatar name="Ada Lovelace" size="xl" />
         <Avatar name="Ada Lovelace" src={samplePhoto} size="xl" />

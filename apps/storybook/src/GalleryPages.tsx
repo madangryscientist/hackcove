@@ -13,6 +13,7 @@ import {
   Offline,
   Overline,
   SidebarLayout,
+  StickyBar,
   Text,
 } from "@hackcove/ui";
 import { DemoShell } from "./layout/DemoShell";
@@ -55,7 +56,37 @@ export function PageSequence() {
   );
 }
 
-/** Every page layout in a shell box: the sequence, then the grid, sidebar, full-bleed and centred ones. */
+/** The layouts for a `bleed` shell: FullBleedLayout, plain and padded, and a StickyBar on its own. */
+function BleedPages() {
+  return (
+    <>
+      <PageBox label="FullBleedLayout" bleed>
+        <FullBleedLayout panel={<Text as="p">Panel</Text>}>
+          <div className="flex h-full min-h-48 items-center justify-center bg-slate-100">
+            <Text as="p">Fills the width</Text>
+          </div>
+        </FullBleedLayout>
+      </PageBox>
+      <PageBox label="FullBleedLayout padded" bleed>
+        <FullBleedLayout padded panel={<Text as="p">Panel</Text>}>
+          <Card title="Padded canvas">
+            <Text as="p">Given the other layouts' page padding.</Text>
+          </Card>
+        </FullBleedLayout>
+      </PageBox>
+      <PageBox label="StickyBar" bleed>
+        <StickyBar>
+          <Text strong>Sticks under the header</Text>
+        </StickyBar>
+        <div className="p-4">
+          <Text as="p">The page scrolls under the bar.</Text>
+        </div>
+      </PageBox>
+    </>
+  );
+}
+
+/** Every page layout in a shell box: the sequence, then the grid, sidebar, full-bleed, StickyBar and centred ones. */
 export function GalleryPages() {
   return (
     <div className="flex flex-col gap-6">
@@ -98,20 +129,7 @@ export function GalleryPages() {
           <Text as="p">The canvas.</Text>
         </SidebarLayout>
       </PageBox>
-      <PageBox label="FullBleedLayout" bleed>
-        <FullBleedLayout panel={<Text as="p">Panel</Text>}>
-          <div className="flex h-full min-h-48 items-center justify-center bg-slate-100">
-            <Text as="p">Fills the width</Text>
-          </div>
-        </FullBleedLayout>
-      </PageBox>
-      <PageBox label="FullBleedLayout padded" bleed>
-        <FullBleedLayout padded panel={<Text as="p">Panel</Text>}>
-          <Card title="Padded canvas">
-            <Text as="p">Given the other layouts' page padding.</Text>
-          </Card>
-        </FullBleedLayout>
-      </PageBox>
+      <BleedPages />
       <PageBox label="CenteredLayout">
         <CenteredLayout title="Sign in" subtitle="Use your Hack Cove account.">
           <Button>Continue</Button>

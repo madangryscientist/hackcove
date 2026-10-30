@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   AppShellBrand,
+  AppShellHideBelow,
   Avatar,
   Card,
   Code,
@@ -135,6 +136,25 @@ export const HeaderSlots: S = {
       }
     >
       <PageHeader title="Header slots" subtitle="Brand, nav and controls." />
+    </DemoShell>
+  ),
+};
+
+/** `AppShellHideBelow` in `controls`: the viewer's name shows from `sm` up and is gone on a phone, so the toggle keeps its place. Narrow the viewport to see it. */
+export const HideBelow: S = {
+  render: () => (
+    <DemoShell
+      controls={
+        <>
+          <AppShellHideBelow>
+            <Avatar name="Ada Lovelace" size="sm" />
+            <Text>Ada Lovelace</Text>
+          </AppShellHideBelow>
+          <ColourSchemeToggle />
+        </>
+      }
+    >
+      <PageHeader title="Hide below" subtitle="The viewer chip shows from sm up." />
     </DemoShell>
   ),
 };

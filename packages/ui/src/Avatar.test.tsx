@@ -2,6 +2,11 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { Avatar, avatarColourClass, initialsOf } from "./Avatar.js";
 
+/** The classes on the first element of some markup. */
+function classes(out: string): string[] {
+  return /class="([^"]*)"/.exec(out)?.[1]?.split(" ") ?? [];
+}
+
 describe("avatarColourClass", () => {
   it("gives the same name the same stock background class", () => {
     expect(avatarColourClass("octocat")).toBe(avatarColourClass("octocat"));
@@ -47,9 +52,28 @@ describe("Avatar", () => {
     expect(renderToStaticMarkup(<Avatar name="a" size="lg" />)).toContain("size-10");
   });
 
-  it("adds the overlap ring only when asked", () => {
+  it("has no ring of its own: the overlap ring belongs to AvatarStack", () => {
     expect(renderToStaticMarkup(<Avatar name="a" />)).not.toContain("border-2");
-    expect(renderToStaticMarkup(<Avatar name="a" ring />)).toContain("border-slate-50");
+  });
+
+  it("is round by default and square (rounded corners) for an org, at every size", () => {
+    expect(classes(renderToStaticMarkup(<Avatar name="a" />))).toContain("rounded-full");
+    const corners = [
+      ["sm", "rounded"],
+      ["md", "rounded-md"],
+      ["lg", "rounded-md"],
+      ["xl", "rounded-lg"],
+      ["2xl", "rounded-xl"],
+    ] as const;
+    for (const [size, corner] of corners) {
+      for (const src of [undefined, "/acme.png"]) {
+        const out = classes(
+          renderToStaticMarkup(<Avatar name="Acme" src={src} shape="square" size={size} />),
+        );
+        expect(out).toContain(corner);
+        expect(out).not.toContain("rounded-full");
+      }
+    }
   });
 
   it("has xl (56px) and 2xl (96px) sizes", () => {
@@ -68,11 +92,5 @@ describe("Avatar", () => {
     expect(out).not.toContain("aria-hidden");
     expect(out).not.toContain("AD");
     expect(out).not.toContain(avatarColourClass("Ada Lovelace"));
-  });
-
-  it("keeps the overlap ring on a photo", () => {
-    expect(renderToStaticMarkup(<Avatar name="a" src="/a.jpg" ring />)).toContain(
-      "border-slate-50",
-    );
   });
 });
