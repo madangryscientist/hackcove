@@ -16,6 +16,7 @@ export type CvLink = {
 export type CvHighlightGroup = {
   heading?: string;
   items: string[];
+  link?: CvLink;
 };
 
 export type CvJob = {
@@ -42,12 +43,12 @@ export type CvSkillGroup = {
 
 export const cv = {
   name: "Jacobus Langner",
-  headline: "Staff-level Engineer",
+  headline: "Staff-level Full Stack Engineer",
   location: "Cape Town",
   photo: "/cv/jacobus.jpg",
   pdf: "/cv/jacobus.pdf",
   summary:
-    "Staff-level engineer with 18 years in production TypeScript/React. I started Hack Cove in April 2026 to do contract work. Cue is my current client — I'm building their voice product (live call and transfer flows) remotely in a distributed team. At Zappi I owned the front-end guild and the shared UI platform. I enjoy TypeScript, C#, and Python, but I'm happy to learn whatever gets the job done well.",
+    "Staff-level full stack engineer with 18 years of production software: TypeScript/React front ends, and the Node, Python and C#/.NET services behind them, connected through messaging (SQS/SNS, RabbitMQ), on Kubernetes and Cloudflare. I started Hack Cove in April 2026 for contract work. At Cue, my current client, I build the voice product on both sides: the live call and transfer flows in React, and the Python service that integrates with the voice provider. At Zappi I owned the front-end guild and the shared UI platform, and built the Node service that carried Salesforce events to the rest of the platform.",
 
   links: [
     { label: "jacobus@hack-cove.com", href: "mailto:jacobus@hack-cove.com" },
@@ -62,10 +63,39 @@ export const cv = {
       title: "Founder / Contract Engineer",
       dates: "April 2026 – Present",
       location: "Remote",
-      summary:
-        "I started Hack Cove to do engineering contract work. Cue is my current client.\n\nFor Cue I have been building the Voice Inbox and live call and transfer flows in the TypeScript/React app.\n\nI work on the calls inbox as a product surface: listings, inbound answer that opens the voice session and contact context, and realtime updates. The call UI is a floating modal with a dialer, mic and speaker selection, and recipient and contact search.\n\nI have also been implementing cold and warm transfers, including a transfer picker with live directory and presence, and in-flight actions to pull a transfer back, complete it, or mute.",
-      groups: [],
-      tech: "TypeScript, React, Python",
+      summary: "I started Hack Cove to do engineering contract work. Cue is my current client.",
+      groups: [
+        {
+          heading: "Cue",
+          items: [
+            "Building the Voice Inbox and live call and transfer flows in the TypeScript/React app.",
+            "I work on the calls inbox as a product surface: listings, inbound answer that opens the voice session and contact context, and realtime updates. The call UI is a floating modal with a dialer, mic and speaker selection, and recipient and contact search.",
+            "Implementing cold and warm transfers, including a transfer picker with live directory and presence, and in-flight actions to pull a transfer back, complete it, or mute.",
+            "Built the Python service that integrates the app with the voice service provider.",
+          ],
+        },
+        {
+          heading: "Hack Cove UI",
+          items: [
+            "An open-source React design system on npm (@hackcove/ui plus theme packages), in an Nx and Bun monorepo with Storybook. Every theme reskins every component with no code change.",
+          ],
+          link: {
+            label: "github.com/madangryscientist/hackcove",
+            href: "https://github.com/madangryscientist/hackcove",
+          },
+        },
+        {
+          heading: "PixelSlash",
+          items: [
+            "A visual-regression tool. It has a Bun CLI and a pixel-diff engine in Rust compiled to WebAssembly. Its review app runs TanStack Start on Cloudflare Workers, with D1 through Drizzle, R2 for screenshots, GitHub sign-in, and AES-256-GCM encryption for the API keys it stores.",
+          ],
+          link: {
+            label: "github.com/madangryscientist/pixelslash",
+            href: "https://github.com/madangryscientist/pixelslash",
+          },
+        },
+      ],
+      tech: "TypeScript, React, Python, Node/Bun, Rust/WebAssembly, Cloudflare Workers, D1, Drizzle",
     },
     {
       company: "Zappi",
@@ -77,6 +107,8 @@ export const cv = {
       groups: [
         {
           items: [
+            "Built a Node microservice that took events from Salesforce's messaging system and republished them on SQS/SNS so other services could consume them.",
+            "Ran the front-end Node server: its build and the APIs I built to speed up page loads.",
             "Maintain a TypeScript monorepo of 60+ packages: shared UI components and tooling consumed by multiple frontend applications. Design library APIs balancing end-user simplicity with extensibility for internal consumers.",
             "Jest to Vitest: reduced test suite runtime from 90s to 58s (35% faster), with 60% faster transforms using SWC—100% pass rate across 1,126 tests",
             "Cypress to Playwright: reduced E2E test runtime from 30 minutes to 5 minutes (83% faster)",
@@ -88,7 +120,7 @@ export const cv = {
           ],
         },
       ],
-      tech: "TypeScript, Next.js, React, Ruby, Storybook, Playwright, Cypress, Amazon SQS",
+      tech: "TypeScript, Node.js, Next.js, React, Ruby, Storybook, Playwright, Cypress, Amazon SQS, Amazon SNS",
     },
     {
       company: "FMI",
@@ -96,7 +128,7 @@ export const cv = {
       dates: "June 2018 – March 2021",
       location: "Remote",
       summary:
-        "Led digital transformation of paper-based workflows at a life insurance company, architecting secure web applications handling sensitive medical and financial data. Built Kubernetes clusters from scratch and transformed releases from monthly FTP deployments to continuous delivery. Designed workflow engines for policy applications, claims processing, and underwriting. Architected role-based access control and POPI Act compliance patterns.",
+        "Architected the APIs and workflow engines (policy applications, claims, underwriting) for a life insurer moving off paper, in C# and TypeScript, with React/Next.js front ends. Built Kubernetes clusters from scratch and moved releases from monthly FTP drops to continuous delivery. Designed role-based access control and POPI Act compliance for medical and financial data.",
       groups: [],
       tech: "Docker, TypeScript, C#, Next.js, React, Angular, Vue, Kubernetes",
     },
@@ -106,7 +138,7 @@ export const cv = {
       dates: "August 2015 – May 2018",
       location: "Office-based",
       summary:
-        "Starting as a back-end developer. Soon I moved into a technical lead developer position on the front-end as we migrated from our PHP site into an AngularJS site with ASP.NET Core Web API.\n\nAfter the completion of that project I was promoted to team lead where we developed new products in a full-stack environment. We developed isolated microservices using the CQRS pattern to scale and RabbitMQ to be more durable.\n\nThese efforts led to my team being awarded the CEO Recognition Award.\n\nIn mid-2017, I started doing more architectural work to help move away from our legacy system.",
+        "Led a full stack team building new products as C# microservices (CQRS, RabbitMQ), with ASP.NET Core Web API back ends and AngularJS front ends.\n\nStarting as a back-end developer. Soon I moved into a technical lead developer position on the front-end as we migrated from our PHP site into an AngularJS site with ASP.NET Core Web API.\n\nAfter the completion of that project I was promoted to team lead.\n\nThese efforts led to my team being awarded the CEO Recognition Award.\n\nIn mid-2017, I started doing more architectural work to help move away from our legacy system.",
       groups: [],
       tech: "C#, Octopus Deploy, AngularJS, RabbitMQ",
     },

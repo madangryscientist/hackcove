@@ -44,12 +44,14 @@ function confirmedFields(): string[] {
 describe("cv content", () => {
   test("header matches OfferZen current role", () => {
     expect(cv.name).toBe("Jacobus Langner");
-    expect(cv.headline).toBe("Staff-level Engineer");
+    expect(cv.headline).toBe("Staff-level Full Stack Engineer");
     expect(cv.location).toBe("Cape Town");
-    expect(cv.summary).toContain("Cue is my current client");
-    expect(cv.summary).toMatch(/^Staff-level engineer with 18 years/);
+    expect(cv.summary).toContain("At Cue, my current client");
+    expect(cv.summary).toMatch(/^Staff-level full stack engineer with 18 years/);
     expect(cv.summary).toContain("At Zappi I owned the front-end guild");
-    expect(cv.experience[0].tech).toBe("TypeScript, React, Python");
+    expect(cv.experience[0].tech).toBe(
+      "TypeScript, React, Python, Node/Bun, Rust/WebAssembly, Cloudflare Workers, D1, Drizzle",
+    );
   });
 
   test("experience dates and titles match OfferZen", () => {
@@ -66,6 +68,8 @@ describe("cv content", () => {
     expect(zappi?.groups).toEqual([
       {
         items: [
+          "Built a Node microservice that took events from Salesforce's messaging system and republished them on SQS/SNS so other services could consume them.",
+          "Ran the front-end Node server: its build and the APIs I built to speed up page loads.",
           "Maintain a TypeScript monorepo of 60+ packages: shared UI components and tooling consumed by multiple frontend applications. Design library APIs balancing end-user simplicity with extensibility for internal consumers.",
           "Jest to Vitest: reduced test suite runtime from 90s to 58s (35% faster), with 60% faster transforms using SWC—100% pass rate across 1,126 tests",
           "Cypress to Playwright: reduced E2E test runtime from 30 minutes to 5 minutes (83% faster)",
@@ -77,9 +81,38 @@ describe("cv content", () => {
         ],
       },
     ]);
-    expect(blob).not.toContain("Salesforce");
+    expect(zappi?.tech).toBe(
+      "TypeScript, Node.js, Next.js, React, Ruby, Storybook, Playwright, Cypress, Amazon SQS, Amazon SNS",
+    );
     expect(blob).not.toContain("HeadlessUI");
     expect(blob).not.toContain("Component Library & Developer Tooling");
+  });
+
+  test("Hack Cove lists the Python service, Hack Cove UI and PixelSlash", () => {
+    const hackCove: CvJob = cv.experience[0];
+    expect(hackCove.groups.map((group) => group.heading)).toEqual([
+      "Cue",
+      "Hack Cove UI",
+      "PixelSlash",
+    ]);
+    expect(hackCove.groups[0].items).toContain(
+      "Built the Python service that integrates the app with the voice service provider.",
+    );
+    expect(hackCove.groups[1].link?.href).toBe("https://github.com/madangryscientist/hackcove");
+    expect(hackCove.groups[2].link?.href).toBe("https://github.com/madangryscientist/pixelslash");
+    expect(hackCove.groups[2].link?.label).toBe("github.com/madangryscientist/pixelslash");
+    expect(html).toContain('href="https://github.com/madangryscientist/pixelslash"');
+    expect(html).toContain('href="https://github.com/madangryscientist/hackcove"');
+  });
+
+  test("FMI and Wonga read full stack", () => {
+    const fmi = cv.experience.find((job) => job.company === "FMI");
+    const wonga = cv.experience.find((job) => job.company === "Wonga");
+    expect(fmi?.summary).toMatch(/^Architected the APIs and workflow engines/);
+    expect(wonga?.summary).toMatch(
+      /^Led a full stack team building new products as C# microservices/,
+    );
+    expect(wonga?.summary).toContain("CEO Recognition Award");
   });
 
   test("earlier roles, education and grouped skills are present", () => {
@@ -127,7 +160,7 @@ describe("cv static HTML", () => {
     expect(blob.toLowerCase()).not.toContain("open to new opportunities");
     expect(blob).not.toContain("Storybook Hiring Team");
     expect(blob).not.toContain("senior software engineer at Cue leading frontend architecture");
-    expect(cv.experience[0].summary).toContain("Voice Inbox");
+    expect(cv.experience[0].groups[0].items.join(" ")).toContain("Voice Inbox");
   });
 
   test("public cv pdf is next to the photo", () => {

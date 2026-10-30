@@ -47,6 +47,11 @@ function Job({ job }: { job: CvJob }) {
             </Text>
           )}
           <Bullets items={group.items} />
+          {group.link && (
+            <Text as="p">
+              <TextLink href={group.link.href}>{group.link.label}</TextLink>
+            </Text>
+          )}
         </div>
       ))}
       {job.tech && <Caption as="p">Tech: {job.tech}</Caption>}
@@ -64,16 +69,16 @@ function Experience() {
         ))}
         <div className="cv-job">
           <SubsectionHeading>Earlier Roles</SubsectionHeading>
-          <ul className="mt-3 space-y-2">
+          <ul className="mt-3 space-y-4">
             {cv.earlierRoles.map((role) => (
               <li key={role.company}>
-                <Text as="p">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                   <Text strong>
-                    {role.title} — {role.company} ({role.dates})
+                    {role.title} — {role.company}
                   </Text>
-                  {" — "}
-                  {role.summary}
-                </Text>
+                  <Caption color="brand">{role.dates}</Caption>
+                </div>
+                <Text as="p">{role.summary}</Text>
               </li>
             ))}
           </ul>
