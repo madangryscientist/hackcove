@@ -10,6 +10,7 @@ export const content: ComponentSection = {
       summary: "A bordered panel that groups one thing on a page.",
       whenToUse: "A titled block of related content: a record, a status, a list, an empty state.",
       pairs: ["Card/Status", "Card/Spacing"],
+      stories: ["CardBadge"],
       usage: [
         "Name the Card with `title`; add a `count` or a `status` and they sit beside the title.",
         "`actions` sit at the far end of the header; use `bar` to put the header in a tinted strip.",

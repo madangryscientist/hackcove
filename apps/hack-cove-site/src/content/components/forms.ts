@@ -30,6 +30,7 @@ export const forms: ComponentSection = {
       summary: "A single-line text input.",
       whenToUse: "A short piece of text: a name, an amount, a search term.",
       pairs: ["Input/Amount", "Input/Search"],
+      stories: ["ControlHeights"],
       usage: [
         "Put an `Input` in a `Field`. Without one, name it with `aria-label`.",
         'A search box is `type="search"` with an `icon`; the clear button appears by itself.',

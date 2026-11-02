@@ -1,331 +1,252 @@
 /**
- * `nx run storybook:visual`: what did this change do to every story in every theme?
+ * `nx run storybook:visual`: what did this change do to the stories it reaches, in the themes it
+ * reaches?
  *
- * Captures the built working tree (the Nx `build` dependency) and the baseline's Storybook with
- * PixelSlash, then compares them locally. The baseline is the branch's merge-base with origin/main
- * (the fork point, so a main that moved since the fork stays out of the diff); `VISUAL_BASE` names
- * another ref. pixelslash is not published: it runs from the checkout `PIXELSLASH_DIR` names
- * (default ~/dev/pixelslash), whose dependencies are installed from its lockfile here when behind.
- * The baseline is built in a reusable worktree at ~/dev/hackcove.visual-main, so this checkout's
- * branch and working tree are never touched.
+ * The stories are split into groups, one per section of the site's component docs (`--groups`
+ * lists them), and each group is its own Nx project (`visual-<slug>`, from `nx-plugin.ts`) and its
+ * own PixelSlash project (`hackcove-ui-<slug>`). A run has three steps, each a mode of this script:
  *
- * `--upload` also sends both captures to the PixelSlash server `PIXELSLASH_SERVER` names, with the
- * CI token from `PIXELSLASH_TOKEN` or the file `PIXELSLASH_TOKEN_PATH`: origin/main's once per
- * commit (as branch `main`, which the server auto-accepts as the baseline), then the branch's.
+ * - `--plan` reads the diff against the base and writes `.pixelslash/plan.json`: which groups,
+ *   story files and themes the change reaches, and why (`visual-plan.ts`). `--all`, or
+ *   `VISUAL_ALL=1`, picks everything.
+ * - `--group <slug>` captures that group's picked stories on the branch and on the base, and
+ *   compares them; a group the plan skipped does nothing.
+ * - `--summary` reads every group's result and totals them.
  *
- * The static Storybook is served on a port free at run time (`VISUAL_PORT` overrides it), so two
- * checkouts can run at once. The baseline worktree is shared by all of them, so it is built under
- * a lock.
+ * The base is the branch's merge-base with origin/main (the fork point, so a main that moved since
+ * stays out of the diff); `VISUAL_BASE` names another ref. `--upload` also sends each group's
+ * captures to its PixelSlash project on `PIXELSLASH_SERVER`: origin/main's once per commit (as
+ * branch `main`, which the server auto-accepts as the baseline), then the branch's. An upload
+ * always takes a whole group in every theme, since a partial capture would read as removals.
  */
+import { randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { homedir } from "node:os";
-import { join, resolve } from "node:path";
-
-const appDir = join(import.meta.dirname, "..");
-const repoRoot = join(appDir, "..", "..");
-const out = join(appDir, ".pixelslash");
-const config = join(appDir, "pixelslash.config.ts");
-const pixelslashDir = resolve(
-  process.env["PIXELSLASH_DIR"] ?? join(homedir(), "dev", "pixelslash"),
-);
-const baselineDir = join(homedir(), "dev", "hackcove.visual-main");
+import { join } from "node:path";
+import { indexOf, isRecord, shotsOf } from "./visual-index.js";
+import { groupStories, planCapture, readRepo, type Grouping, type Plan } from "./visual-plan.js";
+import {
+  VisualError,
+  baseStatic,
+  branchStatic,
+  buildBase,
+  capture,
+  capturePort,
+  changedSince,
+  checkUpload,
+  compare,
+  ensurePixelslashInstall,
+  log,
+  out,
+  repoRoot,
+  resolveBase,
+  uploadGroup,
+  withBaselineLock,
+  type Counts,
+  type Selection,
+} from "./visual-tools.js";
 
 const upload = process.argv.includes("--upload");
+const everything = process.argv.includes("--all") || process.env["VISUAL_ALL"] === "1";
+const planPath = join(out, "plan.json");
+const countKeys: (keyof Counts)[] = ["changed", "unchanged", "new", "removed"];
 
-class VisualError extends Error {}
+type PlannedGroup = Selection & { slug: string; project: string; skipped: boolean };
+type SavedPlan = { id: string; upload: boolean; sha: string; groups: PlannedGroup[] };
 
-function log(message: string) {
-  process.stdout.write(`visual: ${message}\n`);
-}
+const isStrings = (value: unknown): value is string[] =>
+  Array.isArray(value) && value.every((item) => typeof item === "string");
 
-async function run(cmd: string[], cwd: string, env: Record<string, string> = {}) {
-  const proc = Bun.spawn(cmd, { cwd, env: { ...process.env, ...env }, stdio: ["ignore", 2, 2] });
-  if ((await proc.exited) !== 0) throw new VisualError(`\`${cmd.join(" ")}\` failed in ${cwd}`);
-}
-
-async function git(cwd: string, ...args: string[]): Promise<string> {
-  const proc = Bun.spawn(["git", ...args], { cwd, stdout: "pipe", stderr: "inherit" });
-  const text = await new Response(proc.stdout).text();
-  if ((await proc.exited) !== 0)
-    throw new VisualError(`\`git ${args.join(" ")}\` failed in ${cwd}`);
-  return text.trim();
-}
-
-/** A port nothing listens on now: the OS hands out a free one, and the probe server stops at once. */
-async function freePort(): Promise<number> {
-  const probe = Bun.serve({ hostname: "127.0.0.1", port: 0, fetch: () => new Response() });
-  const port = probe.port;
-  await probe.stop(true);
-  if (port === undefined) throw new VisualError("no TCP port to serve the capture on");
-  return port;
-}
-
-/** The port this run serves on: `VISUAL_PORT` if set, else one free now. */
-async function capturePort(): Promise<number> {
-  const given = process.env["VISUAL_PORT"];
-  if (!given) return freePort();
-  const port = Number(given);
-  if (!Number.isInteger(port) || port <= 0) throw new VisualError(`VISUAL_PORT is not a port`);
-  return port;
-}
-
-/**
- * Runs `task` holding the baseline lock. The baseline worktree is one directory for every checkout
- * on this machine, so two builds at once would check out and install over each other. `mkdir` is
- * atomic, so the run that creates the lock holds it and the others wait. A lock left by a run that
- * died is removed by hand, as the wait message says.
- */
-async function withBaselineLock<T>(task: () => Promise<T>): Promise<T> {
-  const lock = `${baselineDir}.lock`;
-  let waiting = false;
-  while (true) {
-    try {
-      mkdirSync(lock);
-      break;
-    } catch {
-      if (!waiting)
-        log(`waiting for another run on the baseline; if none is running, rm -r ${lock}`);
-      waiting = true;
-      await Bun.sleep(1000);
-    }
-  }
-  try {
-    return await task();
-  } finally {
-    rmSync(lock, { recursive: true, force: true });
-  }
-}
-
-/** One capture of a built storybook-static into a fresh snapshot dir, served on `port`. */
-async function capture(staticDir: string, into: string, port: number) {
-  // PixelSlash takes any answer on the ready URL for its own server, so a server left on the port
-  // (or another worktree's run) would be captured instead, and the report could say 0 changed.
-  const taken = await fetch(`http://127.0.0.1:${port}/`, {
-    signal: AbortSignal.timeout(2000),
-  }).then(
-    () => true,
-    () => false,
-  );
-  if (taken) throw new VisualError(`something already answers on port ${port}; stop it and re-run`);
-  rmSync(into, { recursive: true, force: true });
-  await run(
-    [
-      "bun",
-      "run",
-      "--cwd",
-      pixelslashDir,
-      "pixelslash",
-      "--",
-      "capture",
-      "--config",
-      config,
-      "--out",
-      into,
-    ],
-    pixelslashDir,
-    { VISUAL_STATIC_DIR: staticDir, VISUAL_PORT: String(port) },
-  );
-}
-
-/**
- * `pixelslash upload` run from `cwd`, the checkout whose commit, branch and merge-base it sends.
- * Not `bun run --cwd` like the other calls: that would read git from the pixelslash checkout.
- */
-async function uploadSnapshots(dir: string, cwd: string, ...flags: string[]) {
-  const tokenPath = process.env["PIXELSLASH_TOKEN_PATH"];
-  await run(
-    [
-      "bun",
-      join(pixelslashDir, "packages", "cli", "src", "index.ts"),
-      "upload",
-      dir,
-      ...(tokenPath ? ["--token-path", tokenPath] : []),
-      ...flags,
-    ],
-    cwd,
-  );
-}
-
-/**
- * PIXELSLASH_DIR's dependencies, in step with its lockfile. `--frozen-lockfile` never rewrites the
- * lockfile and is a no-op when `node_modules` is current; when it cannot install, the message names
- * the command to run by hand.
- */
-async function ensurePixelslashInstall() {
-  const command = "bun install --frozen-lockfile";
-  const proc = Bun.spawn(["bun", "install", "--frozen-lockfile"], {
-    cwd: pixelslashDir,
-    stdio: ["ignore", 2, 2],
-  });
-  if ((await proc.exited) !== 0)
-    throw new VisualError(
-      `\`${command}\` failed in ${pixelslashDir}; run it there and read why (node_modules behind its lockfile, or the lockfile out of step with package.json)`,
-    );
-}
-
-/**
- * The commit to compare against: `VISUAL_BASE` when set, else the branch's merge-base with
- * origin/main. `label` is what the log calls it.
- */
-async function resolveBase(): Promise<{ label: string; sha: string }> {
-  await git(repoRoot, "fetch", "origin", "main");
-  const given = process.env["VISUAL_BASE"];
-  if (given) return { label: given, sha: await git(repoRoot, "rev-parse", given) };
-  return { label: "merge-base", sha: await git(repoRoot, "merge-base", "HEAD", "origin/main") };
-}
-
-/** The baseline worktree at `sha`, with dependencies installed when its lockfile changed. */
-async function checkoutBaseline(sha: string) {
-  if (existsSync(baselineDir)) {
-    const registered = await git(repoRoot, "worktree", "list", "--porcelain");
-    if (!registered.split("\n").includes(`worktree ${baselineDir}`))
-      throw new VisualError(`${baselineDir} exists but is not a worktree of this repo`);
-  }
-  const lockfile = join(baselineDir, "bun.lock");
-  const before = existsSync(lockfile) ? readFileSync(lockfile, "utf8") : undefined;
-  if (before === undefined) await git(repoRoot, "worktree", "add", "--detach", baselineDir, sha);
-  else await git(baselineDir, "checkout", "--force", "--detach", sha);
-  const changed = before !== readFileSync(lockfile, "utf8");
-  if (changed || !existsSync(join(baselineDir, "node_modules")))
-    await run(["bun", "install"], baselineDir);
-}
-
-/**
- * What `--upload` needs, checked before the minute-long capture. The server takes a branch's
- * baseline from its merge-base, and a `main` upload is auto-accepted, so only a clean branch on
- * origin/main's tip uploads: anything else would read "new" everywhere or seed a wrong baseline.
- */
-async function checkUpload() {
-  if (!process.env["PIXELSLASH_SERVER"]) throw new VisualError("--upload needs PIXELSLASH_SERVER");
-  if (process.env["VISUAL_BASE"])
-    throw new VisualError("--upload seeds origin/main as the baseline; unset VISUAL_BASE");
-  if ((await git(repoRoot, "branch", "--show-current")) === "main")
-    throw new VisualError("on main: the server would auto-accept the working tree as the baseline");
-  if (await git(repoRoot, "status", "--porcelain"))
-    throw new VisualError("uncommitted changes: the upload names HEAD; commit first");
-  await git(repoRoot, "fetch", "origin", "main");
-  const [tip, mergeBase] = await Promise.all([
-    git(repoRoot, "rev-parse", "origin/main"),
-    git(repoRoot, "merge-base", "HEAD", "origin/main"),
-  ]);
-  if (mergeBase !== tip)
-    throw new VisualError(
-      "not based on origin/main's tip, so its baseline is out of reach; rebase",
-    );
-}
-
-/** origin/main's capture as `main`, once per commit and server, then the working tree's. */
-async function uploadBoth(sha: string) {
-  const uploaded = join(out, "main.uploaded");
-  const seeded = `${sha} ${process.env["PIXELSLASH_SERVER"] ?? ""}`;
-  if (existsSync(uploaded) && readFileSync(uploaded, "utf8").trim() === seeded) {
-    log(`origin/main ${sha.slice(0, 7)} already uploaded`);
-  } else {
-    log(`uploading origin/main ${sha.slice(0, 7)}`);
-    await withBaselineLock(async () => {
-      await checkoutBaseline(sha);
-      await uploadSnapshots(join(out, "main"), baselineDir, "--branch", "main");
-    });
-    writeFileSync(uploaded, `${seeded}\n`);
-  }
-  log("uploading the working tree");
-  await uploadSnapshots(join(out, "branch"), repoRoot);
-  await logBuildUrl();
-}
-
-function isBuildList(value: unknown): value is { builds: { web_url?: string }[] } {
+function isPlannedGroup(value: unknown): value is PlannedGroup {
   return (
-    typeof value === "object" && value !== null && "builds" in value && Array.isArray(value.builds)
+    isRecord(value) &&
+    typeof value["slug"] === "string" &&
+    typeof value["project"] === "string" &&
+    typeof value["skipped"] === "boolean" &&
+    isStrings(value["titles"]) &&
+    isStrings(value["themes"])
   );
 }
 
-/** The branch's newest build on the server: `upload` itself prints no link, `builds --json` has it. */
-async function logBuildUrl() {
-  const tokenPath = process.env["PIXELSLASH_TOKEN_PATH"];
-  const branch = await git(repoRoot, "branch", "--show-current");
-  const proc = Bun.spawn(
-    [
-      "bun",
-      join(pixelslashDir, "packages", "cli", "src", "index.ts"),
-      "builds",
-      "--branch",
-      branch,
-      "--limit",
-      "1",
-      "--json",
-      ...(tokenPath ? ["--token-path", tokenPath] : []),
-    ],
-    { cwd: repoRoot, stdout: "pipe", stderr: "inherit" },
+function readJson(path: string): unknown {
+  return existsSync(path) ? JSON.parse(readFileSync(path, "utf8")) : null;
+}
+
+/** The plan `--plan` wrote, for the same mode (an upload plan for an upload run). */
+function readPlan(): SavedPlan {
+  const plan = readJson(planPath);
+  const target = upload ? "visual-upload" : "visual";
+  if (
+    !isRecord(plan) ||
+    typeof plan["id"] !== "string" ||
+    typeof plan["sha"] !== "string" ||
+    plan["upload"] !== upload ||
+    !Array.isArray(plan["groups"]) ||
+    !plan["groups"].every(isPlannedGroup)
+  )
+    throw new VisualError(
+      `${planPath} is missing or from another mode; run nx run storybook:${target}`,
+    );
+  return { id: plan["id"], sha: plan["sha"], upload, groups: plan["groups"] };
+}
+
+/** The repo's groups, failing on a story file no docs page names, or a page naming no story file. */
+function checked(result: Grouping): Grouping {
+  if (result.unsectioned.length > 0)
+    throw new VisualError(
+      `no page of the site's component docs names ${result.unsectioned.map((f) => f.path).join(", ")}; ` +
+        "add it to a page's `pairs` or `stories` in apps/hack-cove-site/src/content/components",
+    );
+  if (result.unknown.length > 0)
+    throw new VisualError(
+      `docs pages name story files that do not exist: ${result.unknown.join(", ")}`,
+    );
+  return result;
+}
+
+/** What the plan says, at the top of the run: what is captured and why, and what is skipped. */
+function reportPlan(plan: Plan, grouping: Grouping, saved: SavedPlan, themes: number) {
+  const index = indexOf(branchStatic);
+  const allTitles = grouping.groups.flatMap((g) => g.files.map((f) => f.title));
+  const shots = saved.groups.reduce((n, g) => n + shotsOf(index, g.titles, g.themes.length), 0);
+  const files = plan.picked.reduce((n, g) => n + g.picked.length, 0);
+  log(
+    `${plan.all ? "everything" : "affected"}: ${plan.picked.length} of ${grouping.groups.length} groups, ` +
+      `${files} of ${allTitles.length} story files, ${shots} of ${shotsOf(index, allTitles, themes)} shots`,
   );
-  const text = await new Response(proc.stdout).text();
-  if ((await proc.exited) !== 0) {
-    log("uploaded, but `pixelslash builds` could not list the build; find it on the server");
+  for (const note of plan.notes) log(`  ${note}`);
+  for (const g of plan.picked) {
+    const why = g.why.length > 0 ? ` (${g.why.join("; ")})` : "";
+    log(
+      `  ${g.slug}: ${g.picked.length} of ${g.files.length} story files in ${g.themes.join(", ")}${why}`,
+    );
+  }
+  const skipped = plan.skipped.map((g) => `${g.slug} (${g.files.length} story files)`);
+  if (skipped.length > 0) log(`skipped as unaffected: ${skipped.join(", ")}`);
+}
+
+async function planMode() {
+  await ensurePixelslashInstall();
+  const repo = await readRepo(repoRoot);
+  const grouping = checked(groupStories(repo.sections, repo.storyFiles));
+  const base = await resolveBase();
+  // An upload takes every group whole: the server reads a story missing from a build as removed.
+  const plan = planCapture({
+    repo,
+    grouping,
+    changed: await changedSince(base.sha),
+    everything: everything || upload,
+  });
+  if (upload) await checkUpload(grouping.groups.map((g) => g.project));
+  const picked = new Map(plan.picked.map((g) => [g.slug, g]));
+  const groups = grouping.groups.map((group) => {
+    const pick = picked.get(group.slug);
+    const titles = (pick?.picked ?? []).map((file) => file.title);
+    return {
+      slug: group.slug,
+      project: group.project,
+      skipped: !pick,
+      titles,
+      themes: pick?.themes ?? [],
+    };
+  });
+  const saved: SavedPlan = { id: randomUUID(), upload, sha: base.sha, groups };
+  mkdirSync(out, { recursive: true });
+  writeFileSync(planPath, `${JSON.stringify(saved, null, 2)}\n`);
+  log(`base: ${base.label} ${base.sha.slice(0, 7)}`);
+  reportPlan(plan, grouping, saved, repo.themes.length);
+}
+
+/** The base's capture of `pick`, reused while the base commit and the selection stay the same. */
+async function captureBase(dir: string, sha: string, pick: Selection) {
+  const keyPath = join(dir, "main.key");
+  const key = JSON.stringify({ sha, titles: pick.titles, themes: pick.themes });
+  if (existsSync(keyPath) && readFileSync(keyPath, "utf8").trim() === key) {
+    log(`base ${sha.slice(0, 7)} already captured`);
     return;
   }
-  const listing: unknown = JSON.parse(text);
-  const url = isBuildList(listing) ? listing.builds[0]?.web_url : undefined;
-  log(url ? `build: ${url}` : "uploaded, but the server lists no build for this branch");
+  rmSync(keyPath, { force: true });
+  await withBaselineLock(async () => {
+    await buildBase(sha);
+    await capture(baseStatic, join(dir, "main"), await capturePort(), pick);
+  });
+  writeFileSync(keyPath, `${key}\n`);
+}
+
+async function groupMode(slug: string) {
+  const plan = readPlan();
+  const group = plan.groups.find((g) => g.slug === slug);
+  if (group === undefined) throw new VisualError(`the plan has no group ${slug}`);
+  const dir = join(out, slug);
+  mkdirSync(dir, { recursive: true });
+  const result = join(dir, "result.json");
+  if (group.skipped) {
+    log(`${slug}: skipped, unaffected`);
+    writeFileSync(result, `${JSON.stringify({ id: plan.id, slug, skipped: true })}\n`);
+    return;
+  }
+  const started = Date.now();
+  await capture(branchStatic, join(dir, "branch"), await capturePort(), group);
+  await captureBase(dir, plan.sha, group);
+  const report = join(dir, "report");
+  const counts = await compare(join(dir, "main"), join(dir, "branch"), report);
+  if (plan.upload) await uploadGroup(group.project, plan.sha, dir);
+  log(`${slug}: done in ${Math.round((Date.now() - started) / 1000)}s`);
+  log(`${slug}: report: ${join(report, "index.html")}`);
+  writeFileSync(result, `${JSON.stringify({ id: plan.id, slug, skipped: false, counts })}\n`);
+}
+
+/** A group's counts from its last run for this plan; `undefined` when the plan skipped it. */
+function readResult(id: string, slug: string): Counts | undefined {
+  const path = join(out, slug, "result.json");
+  const result = readJson(path);
+  if (!isRecord(result) || result["id"] !== id)
+    throw new VisualError(`${slug} has no result for this plan: its capture did not run`);
+  if (result["skipped"] === true) return undefined;
+  const counts = result["counts"];
+  if (!isRecord(counts)) throw new VisualError(`${path} has no counts`);
+  const read = (key: keyof Counts) => {
+    const value = counts[key];
+    if (typeof value !== "number") throw new VisualError(`${path} has no ${key} count`);
+    return value;
+  };
+  return {
+    changed: read("changed"),
+    unchanged: read("unchanged"),
+    new: read("new"),
+    removed: read("removed"),
+  };
+}
+
+const countsLine = (c: Counts) =>
+  `${c.changed} changed, ${c.unchanged} unchanged, ${c.new} new, ${c.removed} removed`;
+
+function summaryMode() {
+  const plan = readPlan();
+  const total: Counts = { changed: 0, unchanged: 0, new: 0, removed: 0 };
+  for (const group of plan.groups) {
+    const counts = readResult(plan.id, group.slug);
+    if (counts === undefined) {
+      log(`${group.slug}: skipped, unaffected`);
+      continue;
+    }
+    for (const key of countKeys) total[key] += counts[key];
+    log(`${group.slug}: ${countsLine(counts)} — ${join(out, group.slug, "report", "index.html")}`);
+  }
+  log(`total: ${countsLine(total)}`);
 }
 
 async function main() {
-  const started = Date.now();
-  if (!existsSync(join(pixelslashDir, "packages", "cli", "src", "index.ts")))
-    throw new VisualError(`no pixelslash checkout at ${pixelslashDir}; set PIXELSLASH_DIR`);
-
-  await ensurePixelslashInstall();
-  if (upload) await checkUpload();
-
-  const port = await capturePort();
-
-  log("capturing the working tree");
-  await capture(join(appDir, "storybook-static"), join(out, "branch"), port);
-
-  const { label: base, sha } = await resolveBase();
-  log(`base: ${base} ${sha}`);
-  const stamp = join(out, "main.sha");
-  const cached =
-    existsSync(join(out, "main", "manifest.json")) &&
-    existsSync(stamp) &&
-    readFileSync(stamp, "utf8").trim() === sha;
-  if (cached) {
-    log(`base ${sha.slice(0, 7)} already captured`);
-  } else {
-    log(`building and capturing base ${sha.slice(0, 7)}`);
-    rmSync(stamp, { force: true });
-    await withBaselineLock(async () => {
-      await checkoutBaseline(sha);
-      await run(["bunx", "nx", "build", "storybook"], baselineDir);
-      await capture(
-        join(baselineDir, "apps", "storybook", "storybook-static"),
-        join(out, "main"),
-        port,
-      );
-    });
-    writeFileSync(stamp, `${sha}\n`);
-  }
-
-  const report = join(out, "report");
-  rmSync(report, { recursive: true, force: true });
-  await run(
-    [
-      "bun",
-      "run",
-      "--cwd",
-      pixelslashDir,
-      "pixelslash",
-      "--",
-      "compare",
-      join(out, "main"),
-      join(out, "branch"),
-      "--out",
-      report,
-    ],
-    pixelslashDir,
-  );
-  if (upload) await uploadBoth(sha);
-
-  log(`done in ${Math.round((Date.now() - started) / 1000)}s`);
-  log(`report: ${join(report, "index.html")}`);
+  const at = process.argv.indexOf("--group");
+  if (process.argv.includes("--groups")) {
+    // The Nx plugin reads this to make the projects, so a story file outside every section does
+    // not stop the graph: `--plan` and this repo's test fail on it instead.
+    const repo = await readRepo(repoRoot);
+    const { groups } = groupStories(repo.sections, repo.storyFiles);
+    process.stdout.write(`${groups.map((g) => g.slug).join("\n")}\n`);
+  } else if (process.argv.includes("--plan")) await planMode();
+  else if (at !== -1) await groupMode(process.argv[at + 1] ?? "");
+  else if (process.argv.includes("--summary")) summaryMode();
+  else throw new VisualError("give --groups, --plan, --group <slug> or --summary");
 }
 
 try {

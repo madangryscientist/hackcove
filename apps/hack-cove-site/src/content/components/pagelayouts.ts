@@ -13,6 +13,7 @@ export const pagelayouts: ComponentSection = {
         "An index of quotes, builds, members or any other collection; a single record is `DetailLayout`.",
       pairs: ["ListLayout/Rows", "ListLayout/NothingYet"],
       fullPage: "ListLayout/FullPage",
+      stories: ["Pages"],
       usage: [
         "Put the page's title, subtitle and primary `actions` in the header props; `breadcrumbs` and `tabs` go there too.",
         "`filters` sit between the header and the list: a `FilterGroup` of pressed-toggle `Button`s.",

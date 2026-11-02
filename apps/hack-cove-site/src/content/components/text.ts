@@ -11,6 +11,7 @@ export const text: ComponentSection = {
       whenToUse:
         "Any title on a page: the public headline, the page title, a section, a subsection.",
       pairs: ["Headings/Scale", "Headings/Hero"],
+      stories: ["typography"],
       usage: [
         "A page has one title: `PageHeading` for an app page, `Display` for the headline of a public page. A `PageHeader` already draws the `PageHeading` and its subtitle, so use it for the top of a page.",
         "Name the parts of a page with `SectionHeading`; `rule` puts the hairline under it, with the space either side built in.",

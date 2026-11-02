@@ -11,6 +11,7 @@ export const layout: ComponentSection = {
       whenToUse:
         "Every page of an app sits in one `AppShell`; it is the only place the page canvas, the font and the header live.",
       pairs: ["AppShellDocs/Brand", "AppShellDocs/RouterBrand", "AppShellDocs/HideBelow"],
+      stories: ["AppShell"],
       usage: [
         "Fill the slots and write no wrapper: `brand`, `nav` (pill `Tabs` of links), `controls` (a picker, a `ColourSchemeToggle`), then an optional `subnav` row and `footer`.",
         '`brand` is an `AppShellBrand`: logo and label in one link. `collapse` leaves only the logo below `sm`. `logoSize` is `sm` (20px), `md` (24px, the default, an `Avatar size="sm"`) or `lg` (32px); an `<img>` or `<svg>` logo fills it.',
@@ -64,6 +65,7 @@ export const layout: ComponentSection = {
       whenToUse:
         "Content outside an `AppShell`, such as a band in a `bleed` shell, that must start at the same x as the page.",
       pairs: ["ContainerDocs/OneEdge"],
+      stories: ["Container"],
       usage: [
         "`Container` is the only place the page width (`max-w-6xl`) and side padding are defined; a header, a page and a footer inside one start at the same x.",
         "`AppShell` already wraps its header, main and footer in one. Use `Container` only for a part of a `bleed` shell that spans the page, so its content still keeps the edge.",
@@ -85,6 +87,7 @@ export const layout: ComponentSection = {
       whenToUse:
         "The first block of every page; it puts the page's first content at the same y on every page.",
       pairs: ["PageHeaderDocs/Slots", "PageHeaderDocs/InStack"],
+      stories: ["PageHeader"],
       usage: [
         "Pass `title`, and `subtitle`, `breadcrumbs`, `actions` and `tabs` as needed; never build a title row from a heading and a `Cluster`.",
         "`actions` sit beside the title from `sm` up and under it on a phone: a `Button` or two, one primary.",
@@ -106,6 +109,7 @@ export const layout: ComponentSection = {
       whenToUse:
         "Any blocks that follow each other: space is a Stack's `gap`, never a margin on a block.",
       pairs: ["StackDocs/Gap", "StackDocs/SectionTitle", "StackDocs/List"],
+      stories: ["Stack"],
       usage: [
         "`gap` is a scale: `xs` between lines of text, `sm` inside a group, `md` (default) between blocks, `lg` between groups, `xl` between a page's top-level blocks (the one responsive page rhythm).",
         "`width` caps the column at the left edge: `narrow` (a reading measure), `wide`, `full`, or `default` for the parent's width. It is never re-centred.",

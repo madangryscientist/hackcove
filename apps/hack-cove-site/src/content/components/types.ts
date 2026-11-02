@@ -19,6 +19,12 @@ export type ComponentPage = {
   pairs: string[];
   /** A page layout's whole page, in its shell: the story `<File>/<Topic>`, shown under Overview. */
   fullPage?: string;
+  /**
+   * Story files (`<File>`, as in `pairs`) this page covers but does not show. The visual check
+   * captures every story file with the section of a page that names it, and fails on one that no
+   * page names.
+   */
+  stories?: string[];
   usage: string[];
   accessibility: string[];
   /** The components whose props the API table lists. */

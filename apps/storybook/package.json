@@ -8,9 +8,12 @@
     "build": "storybook build",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint -c ../../.oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
+    "test": "vitest run scripts",
     "test:e2e": "playwright test",
-    "visual": "bun scripts/visual.ts",
-    "visual:upload": "bun scripts/visual.ts --upload"
+    "visual": "bun scripts/visual.ts --summary",
+    "visual:upload": "bun scripts/visual.ts --summary --upload",
+    "visual:plan": "bun scripts/visual.ts --plan",
+    "visual:plan-upload": "bun scripts/visual.ts --plan --upload"
   },
   "dependencies": {
     "@hackcove/themes-shared": "workspace:*",
@@ -26,7 +29,8 @@
     "@types/react-dom": "^19.3.0",
     "storybook": "^10.6.2",
     "tailwindcss": "^4.3.3",
-    "vite": "^8.3.4"
+    "vite": "^8.3.4",
+    "vitest": "5.0.5"
   },
   "nx": {
     "name": "storybook",
@@ -61,8 +65,13 @@
           "script": "visual"
         },
         "dependsOn": [
-          "build"
+          {
+            "projects": "tag:visual-group",
+            "target": "visual",
+            "params": "forward"
+          }
         ],
+        "inputs": [],
         "cache": false
       },
       "visual-upload": {
@@ -71,8 +80,35 @@
           "script": "visual:upload"
         },
         "dependsOn": [
+          {
+            "projects": "tag:visual-group",
+            "target": "visual-upload",
+            "params": "forward"
+          }
+        ],
+        "inputs": [],
+        "cache": false
+      },
+      "visual-plan": {
+        "executor": "nx:run-script",
+        "options": {
+          "script": "visual:plan"
+        },
+        "dependsOn": [
           "build"
         ],
+        "inputs": [],
+        "cache": false
+      },
+      "visual-plan-upload": {
+        "executor": "nx:run-script",
+        "options": {
+          "script": "visual:plan-upload"
+        },
+        "dependsOn": [
+          "build"
+        ],
+        "inputs": [],
         "cache": false
       }
     }

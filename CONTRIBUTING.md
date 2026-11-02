@@ -103,9 +103,26 @@ is the contract; Storybook and the e2e find it from `themes/*`, so there is no l
 ## The visual check
 
 The maintainers also run a screenshot comparison (PixelSlash, an internal tool that is not published)
-over every story in every theme, against the branch's merge-base with `main`. It is not part of the
-gate above and **you do not need it to contribute**: it runs from a separate checkout and reports to
-a private server that outside contributors have no access to.
+against the branch's merge-base with `main`. It is not part of the gate above and **you do not need
+it to contribute**: it runs from a separate checkout and reports to a private server that outside
+contributors have no access to.
+
+The stories are split into groups, one per section of the [component docs](https://hack-cove.com/ui/)
+(Layout, Page layouts, Text, … and Overview), read from
+`apps/hack-cove-site/src/content/components`. Each group is its own Nx project (`visual-<section>`)
+and its own PixelSlash project (`hackcove-ui-<section>`), with its own baseline and review queue.
+A story file goes in the section of the docs page that names it in `pairs`, `fullPage` or
+`stories`; one that no page names fails the storybook tests, so a new story file comes with its
+docs page. The check runs in one of two modes:
+
+- **Affected** (`bunx nx run storybook:visual`, or `bunx nx affected -t visual`): only the stories
+  the change reaches, found by following imports from each story file, in every theme; a change
+  only under `themes/<name>/` captures every story in that theme alone. Overview is always
+  captured. Anything shared (the palette, Storybook's config, the lockfile, a `package.json`, the
+  visual scripts) or a diff that cannot be read captures everything. The run says at the top what
+  it picked and why, and how much it skipped.
+- **Everything** (`bunx nx run storybook:visual --all`, or `VISUAL_ALL=1 bunx nx run-many -t
+  visual`): every story in every theme. An upload (`visual-upload`) is always this mode.
 
 What it means for you:
 
