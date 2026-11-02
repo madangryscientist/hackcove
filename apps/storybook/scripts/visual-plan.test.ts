@@ -10,6 +10,7 @@ import {
   type Section,
   type StoryFile,
 } from "./visual-plan.js";
+import { sidebarOrder, titleOf } from "./sidebar-order.js";
 
 const story = (stem: string, title: string, dir = "apps/storybook/src"): StoryFile => ({
   path: `${dir}/${stem}.stories.tsx`,
@@ -18,9 +19,9 @@ const story = (stem: string, title: string, dir = "apps/storybook/src"): StoryFi
 });
 
 const storyFiles = [
-  story("Button", "UI/Button"),
-  story("Card", "UI/Card"),
-  story("CardBadge", "UI/CardBadge"),
+  story("Button", "Actions/Button"),
+  story("Card", "Content/Card"),
+  story("CardBadge", "Content/Card"),
   story("Stack", "Layout/Stack", "apps/storybook/src/layout"),
   story("overview", "Overview"),
   story("palette", "Overview/Palette"),
@@ -53,17 +54,17 @@ const files: Record<string, string> = {
 const sections: Section[] = [
   {
     title: "Layout",
-    pages: [{ slug: "stack", pairs: [], stories: ["Stack"] }],
+    pages: [{ slug: "stack", name: "Stack", pairs: [], stories: ["Stack"] }],
   },
   {
     title: "Content",
-    pages: [{ slug: "card", pairs: ["Card/Title"], stories: ["CardBadge"] }],
+    pages: [{ slug: "card", name: "Card", pairs: ["Card/Title"], stories: ["CardBadge"] }],
   },
   {
     title: "Actions",
     pages: [
-      { slug: "button", pairs: ["Button/Variants", "Button/Sizes"] },
-      { slug: "card-action", pairs: ["Card/Action"] },
+      { slug: "button", name: "Button", pairs: ["Button/Variants", "Button/Sizes"] },
+      { slug: "card-action", name: "Card action", pairs: ["Card/Action"] },
     ],
   },
 ];
@@ -99,7 +100,12 @@ describe("groupStories", () => {
 
   it("names a story file no page names, and a page that names no story file", () => {
     const { unsectioned, unknown } = groupStories(
-      [{ title: "Layout", pages: [{ slug: "stack", pairs: ["Gone/Topic"], stories: [] }] }],
+      [
+        {
+          title: "Layout",
+          pages: [{ slug: "stack", name: "Stack", pairs: ["Gone/Topic"], stories: [] }],
+        },
+      ],
       storyFiles,
     );
     expect(unsectioned.map((f) => f.stem)).toEqual(["Button", "Card", "CardBadge", "Stack"]);
@@ -109,6 +115,42 @@ describe("groupStories", () => {
   it("slugs a two-word section", () => {
     const [group] = groupStories([{ title: "Page layouts", pages: [] }], []).groups;
     expect(group?.project).toBe("hackcove-ui-page-layouts");
+  });
+});
+
+describe("the sidebar", () => {
+  it("titles each file <Section>/<Page name> and orders Overview, then the sections' rail order", () => {
+    expect(grouping.placements.map((placement) => titleOf(placement))).toEqual([
+      "Layout/Stack",
+      "Content/Card",
+      "Content/Card",
+      "Actions/Button",
+    ]);
+    expect(sidebarOrder(grouping)).toEqual([
+      "apps/storybook/src/overview.stories.tsx",
+      "apps/storybook/src/palette.stories.tsx",
+      "apps/storybook/src/layout/Stack.stories.tsx",
+      "apps/storybook/src/Card.stories.tsx",
+      "apps/storybook/src/CardBadge.stories.tsx",
+      "apps/storybook/src/Button.stories.tsx",
+    ]);
+  });
+
+  it("puts a file no page names last", () => {
+    const only = groupStories(
+      [
+        {
+          title: "Layout",
+          pages: [{ slug: "stack", name: "Stack", pairs: [], stories: ["Stack"] }],
+        },
+      ],
+      storyFiles,
+    );
+    expect(sidebarOrder(only).slice(-3)).toEqual([
+      "apps/storybook/src/Button.stories.tsx",
+      "apps/storybook/src/Card.stories.tsx",
+      "apps/storybook/src/CardBadge.stories.tsx",
+    ]);
   });
 });
 
@@ -198,5 +240,35 @@ describe("this repo", () => {
     expect(unsectioned.map((f) => f.path)).toEqual([]);
     expect(unknown).toEqual([]);
     expect(groups.flatMap((g) => g.files)).toHaveLength(real.storyFiles.length);
+  });
+
+  it("titles every story <Section>/<Page name> from the site, and sorts the sidebar like the rail", async () => {
+    const real = await readRepo(join(import.meta.dirname, "..", "..", ".."));
+    const realGrouping = groupStories(real.sections, real.storyFiles);
+    const expected = new Map(
+      realGrouping.placements.map((placement) => [placement.file.path, titleOf(placement)]),
+    );
+    // A story file the site's sections do not name is an Overview one, and keeps its own title.
+    const wrong = real.storyFiles
+      .filter((file) => file.title !== (expected.get(file.path) ?? file.title))
+      .map((file) => `${file.path}: ${file.title} (want ${expected.get(file.path)})`);
+    expect(wrong).toEqual([]);
+    const outside = real.storyFiles.filter((file) => !expected.has(file.path));
+    expect(outside.map((file) => file.title.split("/")[0])).toEqual(outside.map(() => "Overview"));
+
+    // The sidebar's titles, in order: Overview, then the sections in rail order, pages in page order.
+    const titles = sidebarOrder(realGrouping).map(
+      (path) => real.storyFiles.find((file) => file.path === path)?.title,
+    );
+    const railTitles = real.sections.flatMap((section) =>
+      section.pages.map((page) => `${section.title}/${page.name}`),
+    );
+    expect([...new Set(titles.map((title) => title?.split("/")[0]))]).toEqual([
+      "Overview",
+      ...real.sections.map((section) => section.title),
+    ]);
+    expect(railTitles.filter((title) => titles.includes(title))).toEqual([
+      ...new Set(titles.filter((title) => railTitles.includes(title ?? ""))),
+    ]);
   });
 });

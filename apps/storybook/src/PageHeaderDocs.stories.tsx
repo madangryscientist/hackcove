@@ -12,7 +12,7 @@ import {
 } from "@hackcove/ui";
 
 /** The docs examples for `PageHeader`. */
-const meta: Meta = { title: "Docs/PageHeader" };
+const meta: Meta = { title: "Layout/PageHeader" };
 export default meta;
 type S = StoryObj;
 

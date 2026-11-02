@@ -13,7 +13,7 @@ test("a click writes the text and swaps the label to copied", async ({ page }) =
       },
     });
   });
-  await page.goto(story("ui-copybutton--default"));
+  await page.goto(story("actions-copybutton--default"));
   await page.getByRole("button", { name: "copy", exact: true }).click();
   await expect(page.getByRole("button", { name: "copied", exact: true })).toBeVisible();
   await expect(page.locator("body")).toHaveAttribute("data-written", "bun add @hackcove/ui");
@@ -25,7 +25,7 @@ test("a missing clipboard does not throw and leaves the label on copy", async ({
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "clipboard", { configurable: true, value: undefined });
   });
-  await page.goto(story("ui-copybutton--default"));
+  await page.goto(story("actions-copybutton--default"));
   await page.getByRole("button", { name: "copy", exact: true }).click();
   await expect(page.getByRole("button", { name: "copy", exact: true })).toBeVisible();
   expect(errors).toEqual([]);

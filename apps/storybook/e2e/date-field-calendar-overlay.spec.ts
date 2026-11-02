@@ -12,8 +12,8 @@ const themes = readdirSync(themesDir, { withFileTypes: true })
 // <body>: the calendar must still open, take focus and pick a day.
 for (const theme of ["default", ...themes]) {
   for (const [story, label] of [
-    ["ui-datefield--in-dialog", "Dialog"],
-    ["ui-datefield--in-drawer", "Drawer"],
+    ["forms-datefield--in-dialog", "Dialog"],
+    ["forms-datefield--in-drawer", "Drawer"],
   ] as const) {
     test(`DateField calendar in a ${label} opens its calendar and picks a day (${theme})`, async ({
       page,

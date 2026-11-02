@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button, Callout, Card, FullBleedLayout, Stack, Text, TextLink } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/Callout" };
+const meta: Meta = { title: "Feedback/Callout" };
 export default meta;
 type S = StoryObj;
 

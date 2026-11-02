@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { applyColourScheme, Button, ButtonGroup, ColourSchemeToggle } from "@hackcove/ui";
 import { resetColourScheme } from "./resetColourScheme";
 
-const meta: Meta = { title: "UI/ColourSchemeToggle" };
+const meta: Meta = { title: "Actions/ColourSchemeToggle" };
 export default meta;
 type S = StoryObj;
 

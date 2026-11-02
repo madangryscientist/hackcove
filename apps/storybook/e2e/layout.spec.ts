@@ -1,9 +1,9 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 /**
- * The no-jump check: on every Layout story, at every width, the page title starts at the same x
- * as the header's logo, and that x is the same on every Layout story (short page and long alike).
- * Stories are found by title in Storybook's own index, so a new `Layout/…` story is checked with
+ * The no-jump check: on every page story, at every width, the page title starts at the same x
+ * as the header's logo, and that x is the same on every page story (short page and long alike).
+ * Stories are found by title in Storybook's own index, so a new `Page layouts/…` story is checked with
  * no edit here.
  *
  * The compact Do/Dont fragments the docs pages render are left out too.
@@ -15,12 +15,19 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 const widths = [375, 768, 1280];
 
 const ownTerms = new Set([
-  "Layout/CenteredLayout",
-  "Layout/SidebarLayout",
-  "Layout/FullBleedLayout",
+  "Page layouts/CenteredLayout",
+  "Page layouts/SidebarLayout",
+  "Page layouts/FullBleedLayout",
 ]);
 
-type IndexEntry = { id: string; title: string; name: string; type: string };
+type IndexEntry = { id: string; title: string; name: string; type: string; importPath: string };
+
+/** The full-page stories: every `Page layouts/…` story, and the AppShell's own. */
+const isPageStory = (entry: IndexEntry) =>
+  (entry.title.startsWith("Page layouts/") &&
+    // List → Detail → Form is three pages in one story, so it has three titles.
+    !entry.importPath.endsWith("/Pages.stories.tsx")) ||
+  (entry.title === "Layout/AppShell" && !entry.importPath.endsWith("/AppShellDocs.stories.tsx"));
 
 /** The docs' compact `Do …` / `Dont …` fragments are not pages: they have no title or header to align. */
 const isDocsFragment = (entry: IndexEntry) => /^Do(nt)? /.test(entry.name);
@@ -32,7 +39,7 @@ async function layoutStories(page: Page): Promise<string[]> {
     .filter(
       (entry) =>
         entry.type === "story" &&
-        entry.title.startsWith("Layout/") &&
+        isPageStory(entry) &&
         !ownTerms.has(entry.title) &&
         !isDocsFragment(entry),
     )
@@ -57,7 +64,7 @@ async function edges(page: Page, id: string) {
 }
 
 for (const width of widths) {
-  test(`at ${width}px every Layout story's title starts at the logo's x, the same x on every story`, async ({
+  test(`at ${width}px every page story's title starts at the logo's x, the same x on every story`, async ({
     page,
   }) => {
     await page.setViewportSize({ width, height: 800 });
@@ -140,10 +147,10 @@ for (const width of widths) {
     page,
   }) => {
     await page.setViewportSize({ width, height: 800 });
-    await page.goto(storyUrl("layout-formlayout--new-quote"));
+    await page.goto(storyUrl("page-layouts-formlayout--new-quote"));
     const title = await left(page.getByRole("heading", { level: 1 }).boundingBox());
     expect(await left(page.locator("form").boundingBox())).toBe(title);
-    await page.goto(storyUrl("layout-listlayout--with-rows"));
+    await page.goto(storyUrl("page-layouts-listlayout--with-rows"));
     expect(await left(page.getByRole("article").first().boundingBox())).toBe(title);
   });
 }
@@ -153,7 +160,7 @@ for (const width of widths) {
     page,
   }) => {
     await page.setViewportSize({ width, height: 800 });
-    await page.goto(storyUrl("layout-sidebarlayout--orgs"));
+    await page.goto(storyUrl("page-layouts-sidebarlayout--orgs"));
     const rail = page.getByRole("complementary");
     const title = page.getByRole("heading", { level: 1 });
     await title.waitFor();
@@ -194,7 +201,7 @@ for (const width of widths) {
     page,
   }) => {
     await page.setViewportSize({ width, height: 800 });
-    await page.goto(storyUrl("layout-sidebarlayout--long-rail"));
+    await page.goto(storyUrl("page-layouts-sidebarlayout--long-rail"));
     const title = page.getByRole("heading", { level: 1 });
     await title.waitFor();
     const nav = page.getByRole("navigation", { name: "Sections" });
@@ -215,7 +222,7 @@ for (const width of widths) {
     page,
   }) => {
     await page.setViewportSize({ width, height: 800 });
-    await page.goto(storyUrl("layout-fullbleedlayout--with-panel"));
+    await page.goto(storyUrl("page-layouts-fullbleedlayout--with-panel"));
     const panel = page.getByRole("complementary");
     await panel.waitFor();
     const canvas = page.locator("main > div > div").first();
@@ -236,7 +243,10 @@ for (const width of widths) {
   }) => {
     await page.setViewportSize({ width, height: 800 });
     const tops: Array<number | undefined> = [];
-    for (const id of ["layout-centeredlayout--sign-in", "layout-centeredlayout--not-found"]) {
+    for (const id of [
+      "page-layouts-centeredlayout--sign-in",
+      "page-layouts-centeredlayout--not-found",
+    ]) {
       await page.goto(storyUrl(id));
       const title = page.getByRole("heading", { level: 1 });
       await title.waitFor();

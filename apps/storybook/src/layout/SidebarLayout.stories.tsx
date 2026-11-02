@@ -9,7 +9,7 @@ import { DemoShell, layoutPage } from "./DemoShell";
  * the rail); the e2e asserts the shared edges on their own terms.
  */
 const meta: Meta = {
-  title: "Layout/SidebarLayout",
+  title: "Page layouts/SidebarLayout",
   parameters: { layout: "fullscreen", bare: true },
   beforeEach: layoutPage,
 };

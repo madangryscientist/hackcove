@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FileDrop } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/FileDrop" };
+const meta: Meta = { title: "Forms/FileDrop" };
 export default meta;
 type S = StoryObj;
 

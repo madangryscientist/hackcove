@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { CodeBlock, Cluster, Code, CopyButton, CopyLine } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/CopyLine" };
+const meta: Meta = { title: "Actions/CopyLine" };
 export default meta;
 type S = StoryObj;
 

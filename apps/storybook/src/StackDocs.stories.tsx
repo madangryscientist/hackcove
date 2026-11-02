@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button, Card, Cluster, Section, SectionHeading, Stack, Text } from "@hackcove/ui";
 
 /** The docs examples for `Stack` and `Section`. */
-const meta: Meta = { title: "Docs/Stack" };
+const meta: Meta = { title: "Layout/Stack" };
 export default meta;
 type S = StoryObj;
 

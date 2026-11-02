@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Avatar, Button, Caption, Card, IconButton, ListRow, Pill, Text } from "@hackcove/ui";
 import { samplePhoto } from "./samplePhoto";
 
-const meta: Meta = { title: "UI/ListRow" };
+const meta: Meta = { title: "Data/ListRow" };
 export default meta;
 type S = StoryObj;
 

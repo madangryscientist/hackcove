@@ -59,7 +59,7 @@ bunx nx e2e hack-cove-site                         # Playwright: builds the site
 
 `bunx nx affected -t ...` for just what changed; `--skip-nx-cache` to force a rerun. Lint rules are
 all errors; fix the code, do not disable a rule. A change to a component or a `theme.css` also gets
-a look: `bunx nx run storybook:storybook`, flip the theme switcher, and read the stories. Every component exported from `packages/ui/src/index.ts` has its own story and appears in `apps/storybook/src/Gallery.tsx`. A new component adds both in the same change. **Overview / All themes** is the one-page check of every component in every theme.
+a look: `bunx nx run storybook:storybook`, flip the theme switcher, and read the stories. Every component exported from `packages/ui/src/index.ts` has its own story and appears in `apps/storybook/src/Gallery.tsx`. A new component adds both in the same change. **A story's title is `<Section>/<Page name>`, taken from the site's `componentSections` (`apps/hack-cove-site/src/content/components/`), never written from memory:** add the component to a page there first, then give its story file that page's section and name. The Storybook sidebar is built from the same list, in the site's rail order (`apps/storybook/scripts/visual-plan.ts`, `sidebarOrder`), so there is no sort list to edit; `visual-plan.test.ts` fails on a title that is not the site's, or a story file no page names. **Overview / All themes** is the one-page check of every component in every theme.
 
 The e2e needs a Chromium once per machine: `bunx playwright install chromium`. It discovers themes
 from `themes/*` like the switcher does and asserts each one under the scope class its `theme.css`

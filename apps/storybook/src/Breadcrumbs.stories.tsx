@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Breadcrumbs, type LinkRenderProps } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/Breadcrumbs" };
+const meta: Meta = { title: "Navigation/Breadcrumbs" };
 export default meta;
 type S = StoryObj;
 

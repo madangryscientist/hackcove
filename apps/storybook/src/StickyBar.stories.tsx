@@ -2,7 +2,11 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button, Card, Cluster, Input, Stack, StickyBar, Text } from "@hackcove/ui";
 import { DemoShell, layoutPage } from "./layout/DemoShell";
 
-const meta: Meta = { title: "UI/StickyBar", parameters: { bare: true }, beforeEach: layoutPage };
+const meta: Meta = {
+  title: "Layout/StickyBar",
+  parameters: { bare: true },
+  beforeEach: layoutPage,
+};
 export default meta;
 type S = StoryObj;
 

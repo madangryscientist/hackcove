@@ -12,7 +12,7 @@ import {
   Text,
 } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/Primitives" };
+const meta: Meta = { title: "Text/Body text" };
 export default meta;
 type S = StoryObj;
 

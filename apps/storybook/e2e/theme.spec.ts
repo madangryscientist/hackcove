@@ -9,7 +9,7 @@ const themes = readdirSync(themesDir, { withFileTypes: true })
   .map((entry) => entry.name)
   .toSorted();
 
-const pillStory = "ui-primitives--pills";
+const pillStory = "text-body-text--pills";
 
 async function open(page: Page, theme: string) {
   await page.goto(`/iframe.html?id=${pillStory}&viewMode=story&globals=theme:${theme}`);

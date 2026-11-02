@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Caption, Card, Divider, MetaList, Stack, Text, TextLink } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/Divider" };
+const meta: Meta = { title: "Layout/Divider" };
 export default meta;
 type S = StoryObj;
 

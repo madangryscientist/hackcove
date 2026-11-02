@@ -87,6 +87,11 @@ to parse them with.
    `Do<Topic>` and `Dont<Topic>`. A topic shows both halves when a counter-example teaches
    something; one shown on its own (a feature, or a wrong way the types already refuse) is listed
    with its reason in `ONE_HALF` in `apps/hack-cove-site/test/docs.test.tsx`.
+   Its story title is `<Section>/<Page name>`, read from the site's `componentSections`
+   (`apps/hack-cove-site/src/content/components/`): add the component to a page there first, then
+   title the story file with that page's section and name. Storybook's sidebar takes its order from
+   the same list, so nothing else needs editing, and `visual-plan.test.ts` fails on a title that
+   differs from the site's.
 
 6. **No `className` or `style` on a component.** A public component has no styling prop and its
    HTML props are typed `Unstyled<…>` (`packages/ui/src/props.ts`). If a story or a site needs a

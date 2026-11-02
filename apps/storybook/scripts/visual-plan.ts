@@ -18,6 +18,9 @@
  */
 import { globSync, readFileSync, readdirSync } from "node:fs";
 import { join, posix } from "node:path";
+import type { Page, Placement, Section } from "./site-types.js";
+
+export type { Placement, Section };
 
 export type StoryFile = {
   /** Repo-relative, e.g. `apps/storybook/src/Button.stories.tsx`. */
@@ -26,12 +29,6 @@ export type StoryFile = {
   stem: string;
   /** The meta's `title`, which PixelSlash's `storybook.include` matches. */
   title: string;
-};
-
-/** The part of a site section this reads. */
-export type Section = {
-  title: string;
-  pages: { slug: string; pairs: string[]; fullPage?: string; stories?: string[] }[];
 };
 
 export type Group = {
@@ -45,6 +42,8 @@ export type Group = {
 
 export type Grouping = {
   groups: Group[];
+  /** Every sectioned story file, in the site's rail order: section, then page, then file. */
+  placements: Placement[];
   /** Story files no page names. */
   unsectioned: StoryFile[];
   /** `<page>: <File>` for a file a page names that is not in Storybook. */
@@ -76,7 +75,7 @@ const isOverview = (file: StoryFile) =>
   file.title === "Overview" || file.title.startsWith("Overview/");
 
 /** The story files a page names: `<File>` of each pair and of its full page, and its `stories`. */
-function stemsOf(page: Section["pages"][number]): string[] {
+function stemsOf(page: Page): string[] {
   const named = [...page.pairs, ...(page.fullPage === undefined ? [] : [page.fullPage])];
   return [...named.map((id) => id.split("/")[0] ?? id), ...(page.stories ?? [])];
 }
@@ -85,6 +84,7 @@ export function groupStories(sections: Section[], storyFiles: StoryFile[]): Grou
   const byStem = new Map(storyFiles.map((file) => [file.stem, file]));
   const placed = new Set<string>();
   const unknown: string[] = [];
+  const placements: Placement[] = [];
   const groups: Group[] = sections.map((section) => {
     const slug = slugOf(section.title);
     const files: StoryFile[] = [];
@@ -95,6 +95,7 @@ export function groupStories(sections: Section[], storyFiles: StoryFile[]): Grou
         else if (!placed.has(file.path) && !isOverview(file)) {
           placed.add(file.path);
           files.push(file);
+          placements.push({ file, section, page });
         }
       }
     return { slug, title: section.title, project: projectOf(slug), files };
@@ -103,7 +104,7 @@ export function groupStories(sections: Section[], storyFiles: StoryFile[]): Grou
   groups.push({ slug: OVERVIEW, title: "Overview", project: projectOf(OVERVIEW), files: overview });
   for (const file of overview) placed.add(file.path);
   const unsectioned = storyFiles.filter((file) => !placed.has(file.path));
-  return { groups, unsectioned, unknown: [...new Set(unknown)] };
+  return { groups, placements, unsectioned, unknown: [...new Set(unknown)] };
 }
 
 /* ---------------------------------------------------------------------------

@@ -27,7 +27,7 @@ function HtmlScope({ children }: { children: ReactNode }) {
 }
 
 const meta: Meta = {
-  title: "UI/DateField",
+  title: "Forms/DateField",
   decorators: [
     (Story) => (
       <HtmlScope>

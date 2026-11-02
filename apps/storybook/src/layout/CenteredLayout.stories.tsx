@@ -4,7 +4,7 @@ import { DemoShell, layoutPage } from "./DemoShell";
 
 /** The one layout whose width differs on purpose, so the no-jump title check skips it (e2e/layout.spec.ts). */
 const meta: Meta = {
-  title: "Layout/CenteredLayout",
+  title: "Page layouts/CenteredLayout",
   parameters: { layout: "fullscreen", bare: true },
   beforeEach: layoutPage,
 };

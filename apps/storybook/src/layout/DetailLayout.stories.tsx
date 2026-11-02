@@ -15,7 +15,7 @@ import { DetailPage } from "./pages";
 
 /** Main two thirds and aside one third from `lg`; the aside stacks below main under it. */
 const meta: Meta = {
-  title: "Layout/DetailLayout",
+  title: "Page layouts/DetailLayout",
   parameters: { layout: "fullscreen", bare: true },
   beforeEach: layoutPage,
 };

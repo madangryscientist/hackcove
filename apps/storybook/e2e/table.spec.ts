@@ -50,7 +50,7 @@ for (const theme of themes) {
     page,
   }) => {
     if (!scope) throw new Error(`${theme} names no scope class`);
-    await page.goto(`/iframe.html?id=ui-table--quotes&viewMode=story&globals=theme:${theme}`);
+    await page.goto(`/iframe.html?id=data-table--quotes&viewMode=story&globals=theme:${theme}`);
     const row = page.getByRole("row", { name: /Q-1043/ });
     await row.waitFor();
     await row.hover();
@@ -69,7 +69,7 @@ for (const theme of themes) {
 
   test(`theme ${theme}: Table row dividers take the theme's line colour`, async ({ page }) => {
     if (!scope) throw new Error(`${theme} names no scope class`);
-    await page.goto(`/iframe.html?id=ui-table--quotes&viewMode=story&globals=theme:${theme}`);
+    await page.goto(`/iframe.html?id=data-table--quotes&viewMode=story&globals=theme:${theme}`);
     const rows = page.getByRole("row", { name: /Q-10/ });
     await rows.first().waitFor();
 

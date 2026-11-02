@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { OutlineRegion, RegionFrame } from "@hackcove/ui";
 import { sampleShot, sampleShotSize } from "./sampleShot";
 
-const meta: Meta = { title: "UI/OutlineRegion" };
+const meta: Meta = { title: "Content/OutlineRegion" };
 export default meta;
 type S = StoryObj;
 

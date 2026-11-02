@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Avatar, AvatarStack, Cluster, Stack } from "@hackcove/ui";
 import { samplePhoto } from "./samplePhoto";
 
-const meta: Meta = { title: "UI/AvatarStack" };
+const meta: Meta = { title: "Content/AvatarStack" };
 export default meta;
 type S = StoryObj;
 

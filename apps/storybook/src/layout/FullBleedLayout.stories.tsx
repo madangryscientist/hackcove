@@ -19,7 +19,7 @@ import { DemoShell, layoutPage } from "./DemoShell";
  * no-jump title check (the canvas has no page title); the e2e asserts the panel on its own terms.
  */
 const meta: Meta = {
-  title: "Layout/FullBleedLayout",
+  title: "Page layouts/FullBleedLayout",
   parameters: { layout: "fullscreen", bare: true },
   beforeEach: layoutPage,
 };
