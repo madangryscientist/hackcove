@@ -12,7 +12,7 @@ const snapshot: StackedSegment[] = [
   { label: "Same", value: 163, tone: "muted" },
 ];
 
-/** Any number of parts, each a `TextTone` (`muted`, `positive`, `warn`, `danger`, `info`), sized by its share. The consumer maps its own roles to tones. */
+/** Any number of parts, each a `VizTone` (`muted`, `positive`, `warn`, `danger`, `info`, `neutral`, `violet`), sized by its share. The consumer maps its own roles to tones. */
 export const Default: S = {
   render: () => (
     <div className="max-w-md">
@@ -26,6 +26,23 @@ export const WithLegend: S = {
   render: () => (
     <div className="max-w-md">
       <StackedBar segments={snapshot} label="Screenshots by status" legend />
+    </div>
+  ),
+};
+
+const buildMix: StackedSegment[] = [
+  { label: "Changed", value: 24, tone: "warn" },
+  { label: "New", value: 9, tone: "info" },
+  { label: "Removed", value: 4, tone: "danger" },
+  { label: "Unmeasured", value: 31, tone: "neutral" },
+  { label: "Same", value: 132, tone: "muted" },
+];
+
+/** Five parts that stay apart: `neutral` is a grey distinct from `muted`, so "unmeasured" and "same" never collide. */
+export const BuildMix: S = {
+  render: () => (
+    <div className="max-w-md">
+      <StackedBar segments={buildMix} label="Build by status" legend />
     </div>
   ),
 };
@@ -64,6 +81,21 @@ export const LegendOnly: S = {
         { label: "New", tone: "info" },
         { label: "Removed", tone: "danger" },
         { label: "Same", tone: "muted" },
+      ]}
+    />
+  ),
+};
+
+/** `violet` is a seventh tone, and `swatch="dashed"` is a dashed ring with no fill: the key for an outline drawn over the chart. */
+export const LegendSwatches: S = {
+  render: () => (
+    <Legend
+      items={[
+        { label: "Current", tone: "violet" },
+        { label: "Snapshot", tone: "violet", swatch: "dashed" },
+        { label: "Unmeasured", tone: "neutral" },
+        { label: "Unmeasured overlay", tone: "neutral", swatch: "dashed" },
+        { label: "Changed", tone: "warn", swatch: "dashed", detail: 24 },
       ]}
     />
   ),

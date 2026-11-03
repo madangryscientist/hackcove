@@ -10,6 +10,14 @@ import {
 
 const tones: BarTone[] = ["accent", "positive", "warn", "negative"];
 
+const buildMix: StackedSegment[] = [
+  { label: "Changed", value: 24, tone: "warn" },
+  { label: "New", value: 9, tone: "info" },
+  { label: "Removed", value: 4, tone: "danger" },
+  { label: "Unmeasured", value: 31, tone: "neutral" },
+  { label: "Same", value: 132, tone: "muted" },
+];
+
 const snapshot: StackedSegment[] = [
   { label: "Changed", value: 24, tone: "warn" },
   { label: "New", value: 9, tone: "info" },
@@ -40,6 +48,14 @@ export function GalleryBars() {
         <StackedBar segments={snapshot} label="Screenshots by status" legend />
         <StackedBar segments={snapshot} size="sm" label="Thin screenshots by status" />
         <Legend items={snapshot.map(({ label, tone }) => ({ label, tone }))} />
+        <StackedBar segments={buildMix} label="Build by status" legend />
+        <Legend
+          items={[
+            { label: "Current", tone: "violet" },
+            { label: "Snapshot", tone: "violet", swatch: "dashed" },
+            { label: "Unmeasured", tone: "neutral", swatch: "dashed" },
+          ]}
+        />
       </div>
     </div>
   );

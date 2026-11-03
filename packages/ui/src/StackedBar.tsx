@@ -4,35 +4,62 @@ import { announcedPercent, BAR_TRACK, type BarSize, sharePercent } from "./Progr
 import type { Passthrough } from "./props.js";
 import { TEXT_TONE, type TextTone } from "./typography.js";
 
+/**
+ * The colour of a `StackedBar` segment or a `Legend` swatch: the five `TextTone` meanings plus two
+ * that only a chart needs, `neutral` (a grey that sits apart from `muted`, for "unmeasured" next to
+ * "same") and `violet` (the chart's own purple, apart from `info`). Text, links and icons keep the
+ * five `TextTone` names; a chart with more than five parts is why these two live here.
+ */
+export type VizTone = TextTone | "neutral" | "violet";
+
+/** Tone → text utility, painted as a fill. The five `TextTone` colours are shared; the two extra ones are remapped by every theme. */
+const VIZ_TONE: Record<VizTone, string> = {
+  ...TEXT_TONE,
+  neutral: "text-neutral-500",
+  violet: "text-purple-700",
+};
+
 /** One part of a `StackedBar`: its `label`, its `value` (its share is `value` over the sum) and its colour. */
-export type StackedSegment = { label: string; value: number; tone: TextTone };
+export type StackedSegment = { label: string; value: number; tone: VizTone };
 
-/** One entry of a `Legend`: the `label` the colour stands for, and an optional `detail` (a count, a share) after it. */
-export type LegendItem = { label: string; tone: TextTone; detail?: string | number | undefined };
+/** One entry of a `Legend`: the `label` the colour stands for, its swatch, and an optional `detail` (a count, a share) after it. */
+export type LegendItem = {
+  label: string;
+  tone: VizTone;
+  /**
+   * `solid` (the default) is a filled dot; `dashed` is a dashed ring in the tone's colour with no
+   * fill, the key for an outline drawn over the chart (a snapshot overlay).
+   */
+  swatch?: "solid" | "dashed" | undefined;
+  detail?: string | number | undefined;
+};
 
-/** The colour of a swatch or a segment: the tone's text colour, painted as a fill, so no new palette entry. */
-const FILL = (tone: TextTone): string => cx("bg-current", TEXT_TONE[tone]);
+/** The colour of a segment: the tone's text colour, painted as a fill, so no new fill utility. */
+const FILL = (tone: VizTone): string => cx("bg-current", VIZ_TONE[tone]);
+
+/** A swatch: a filled dot, or a dashed ring in the same colour. */
+const SWATCH = (item: LegendItem): string =>
+  item.swatch === "dashed"
+    ? cx("border-2 border-dashed border-current", VIZ_TONE[item.tone])
+    : FILL(item.tone);
 
 /**
- * A key to the colours of a chart or a row stripe: a swatch in the `TextTone` colour, its `label`
- * and an optional `detail` after it. Colour alone does not say it, so the label is always drawn.
+ * A key to the colours of a chart or a row stripe: a swatch in the `VizTone` colour (a filled
+ * dot, or a dashed ring with `swatch="dashed"`), its `label` and an optional `detail` after it. Colour alone does not say it, so the label is always drawn.
  * `StackedBar legend` draws one under the bar from its segments.
  */
 export function Legend({
   items,
   ...rest
 }: {
-  /** One entry per colour: its `label`, its `tone` and an optional `detail` (a count, a share). */
+  /** One entry per colour: its `label`, its `tone`, an optional `swatch` and `detail` (a count, a share). */
   items: readonly LegendItem[];
 } & Passthrough): ReactElement {
   return (
     <ul {...rest} className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600">
       {items.map((item) => (
         <li key={item.label} className="flex items-center gap-1.5">
-          <span
-            aria-hidden="true"
-            className={cx("size-2.5 shrink-0 rounded-full", FILL(item.tone))}
-          />
+          <span aria-hidden="true" className={cx("size-2.5 shrink-0 rounded-full", SWATCH(item))} />
           <span>{item.label}</span>
           {item.detail !== undefined && (
             <span className="tabular-nums text-slate-500">{item.detail}</span>

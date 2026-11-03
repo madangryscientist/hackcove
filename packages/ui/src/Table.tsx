@@ -162,7 +162,7 @@ export function TableFoot({
  * fill. `tone` marks the row's status (see `RowTone`): a stripe on the leading edge and a soft fill,
  * or `muted` to fade it. A toned row keeps its fill on hover (the status stays readable), so a
  * linked row's link, not a hover fill, says it is clickable. `stripe` is the stripe alone, in the
- * `TextTone` colours (the names a `StackedBar` segment takes), with no fill: the row keeps its hover
+ * `TextTone` colours (the first five names of a `StackedBar` segment's `VizTone`), with no fill: the row keeps its hover
  * and its own look. Give `tone` or `stripe`, not both. Body rows only; colour alone does not say it,
  * so name the status in a cell too (a `Pill`). A bold subtotal is not a tone: it is a `TableFoot` row.
  */
