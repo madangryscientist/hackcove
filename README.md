@@ -56,6 +56,17 @@ export const Example = () => (
 `@hackcove/ui` has one runtime dependency, `react-aria-components` (with `@internationalized/date`),
 for the date picker. Any other dependency is a human decision.
 
+## Browser support
+
+Hack Cove supports the web platform as of the [Baseline digest of August 2026](https://web.dev/blog/baseline-digest-aug-2026).
+Anything Baseline newly available by then may be used; anything newer goes in only as
+feature-detected progressive enhancement (the page fade's `startViewTransition` is one). In
+practice that means the current evergreen browsers: Chrome and Edge 131+, Firefox 143+, and Safari
+(macOS and iOS) 18.4+ (`browserslist` in the root `package.json`; the floor is set by
+`::details-content`, and Tailwind v4's own floor is lower). There is no support for older
+browsers and no polyfills. The e2e runs every spec in Chromium, Firefox and WebKit; the PixelSlash
+visual check is Chromium-only.
+
 ## No styling props
 
 No component takes `className` or `style`, and the HTML props they spread leave both out
@@ -204,7 +215,7 @@ bun install
 bunx nx run-many -t typecheck lint test build   # the gate
 bun run format:check                            # oxfmt, workspace-wide
 bunx nx run-many -t pack-check                  # npm pack --dry-run per package; ui also typechecks its tarball in a consumer app
-bunx nx e2e storybook                           # Playwright over the built Storybook (first time: bunx playwright install chromium)
+bunx nx e2e storybook                           # Playwright over the built Storybook, in Chromium, Firefox and WebKit (first time: bunx playwright install chromium firefox webkit)
 bunx nx e2e hack-cove-site                      # Playwright over the built site: the /ui/ pages under every theme
 bunx nx run storybook:storybook                 # http://localhost:6006
 bunx nx dev hack-cove-site                      # the website, http://localhost:4321
