@@ -1,58 +1,136 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
-import { themeScope } from "@hackcove/themes-shared/scope";
+import { declaresDark, themeScope } from "@hackcove/themes-shared/scope";
 import { componentPages } from "../src/content/components/index";
 
-// Same source of truth as the picker: one folder per theme under themes/.
+// One folder per theme under themes/. The header toggle switches between the first light theme and
+// the first dark one (by folder order), told apart as the site does: a dark theme declares
+// `@custom-variant dark`.
 const themesDir = `${import.meta.dirname}/../../../themes`;
 const folders = readdirSync(themesDir, { withFileTypes: true })
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
   .toSorted();
-const scopeOf = (folder: string) =>
-  themeScope(readFileSync(`${themesDir}/${folder}/theme.css`, "utf8")) ?? "";
+const cssOf = (folder: string) => readFileSync(`${themesDir}/${folder}/theme.css`, "utf8");
+const scopeOf = (folder: string) => themeScope(cssOf(folder)) ?? "";
 const scopes = folders.map(scopeOf);
+const scopeOfScheme = (dark: boolean) =>
+  scopeOf(folders.find((folder) => declaresDark(cssOf(folder)) === dark) ?? "");
+const schemeScope = { light: scopeOfScheme(false), dark: scopeOfScheme(true) };
+type Scheme = keyof typeof schemeScope;
 
 const pages = [
   { path: "/ui/", heading: "Getting started" },
   ...componentPages.map(({ slug, name }) => ({ path: `/ui/${slug}/`, heading: name })),
 ];
 
-/** The header's Select (`aria-label="Theme"`): one option per theme folder, on every page. */
-const picker = (page: Page) => page.getByRole("combobox", { name: "Theme" });
-const choose = (page: Page, folder: string) => picker(page).selectOption(folder);
+/** The header's light/dark toggle: one button, named for the scheme it switches to. */
+const toggle = (page: Page) =>
+  page.getByRole("banner").getByRole("button", { name: /^Switch to (light|dark) theme$/ });
 
-/** The scope classes on `<html>`, which is where the picker puts the chosen theme's. */
+/** The scope classes on `<html>`, which is where the toggle puts the scheme's. */
 const scopeClasses = (page: Page) =>
   page
     .locator("html")
     .evaluate((el, all) => all.filter((scope) => el.classList.contains(scope)), scopes);
+
+/** The island is hydrated once Astro drops `ssr` from it; a click before that does nothing. */
+const hydrated = (page: Page) => page.locator("astro-island:not([ssr])").first().waitFor();
+
+/** Click the toggle until the page is in `scheme`. */
+async function setScheme(page: Page, scheme: Scheme) {
+  await hydrated(page);
+  const to = scheme === "dark" ? "Switch to light theme" : "Switch to dark theme";
+  if ((await toggle(page).getAttribute("aria-label")) === to) return;
+  await toggle(page).click();
+  await expect(toggle(page)).toHaveAttribute("aria-label", to);
+}
 
 test("the themes folder lists at least one theme", () => {
   expect(folders.length).toBeGreaterThan(0);
 });
 
 for (const { path, heading } of pages) {
-  test(`${path} renders under every theme's own scope class`, async ({ page }) => {
+  test(`${path} renders under each scheme's own scope class`, async ({ page }) => {
     await page.goto(path);
     await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
-    await expect(picker(page).getByRole("option")).toHaveCount(folders.length);
+    await expect(page.getByRole("combobox", { name: "Theme" })).toHaveCount(0);
 
-    for (const folder of folders) {
-      await choose(page, folder);
-      expect(await scopeClasses(page)).toEqual([scopeOf(folder)]);
+    for (const scheme of ["dark", "light"] as const) {
+      await setScheme(page, scheme);
+      expect(await scopeClasses(page)).toEqual([schemeScope[scheme]]);
       await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
     }
   });
 }
 
-test("a chosen theme is remembered and applied again on the next page", async ({ page }) => {
+test("the toggle flips the scope class on <html> and the colour-scheme with it", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await setScheme(page, "dark");
+  expect(await scopeClasses(page)).toEqual([schemeScope.dark]);
+  await toggle(page).click();
+  expect(await scopeClasses(page)).toEqual([schemeScope.light]);
+  expect(await page.locator("html").evaluate((el) => el.style.colorScheme)).toBe("light");
+  await toggle(page).click();
+  expect(await scopeClasses(page)).toEqual([schemeScope.dark]);
+  expect(await page.locator("html").evaluate((el) => el.style.colorScheme)).toBe("dark");
+});
+
+test("there is no theme Select in the header: the toggle is the only control", async ({ page }) => {
   await page.goto("/ui/");
-  const other = folders.at(-1) ?? "";
-  await choose(page, other);
+  await hydrated(page);
+  await expect(page.locator("header select")).toHaveCount(0);
+  await expect(page.getByRole("combobox")).toHaveCount(0);
+  await expect(toggle(page)).toHaveCount(1);
+});
+
+test("a choice is remembered across a reload and on the next page", async ({ page }) => {
+  await page.goto("/ui/");
+  await setScheme(page, "light");
+  await page.reload();
+  expect(await scopeClasses(page)).toEqual([schemeScope.light]);
   await page.goto("/ui/button/");
-  expect(await scopeClasses(page)).toEqual([scopeOf(other)]);
-  await expect(picker(page)).toHaveValue(other);
+  expect(await scopeClasses(page)).toEqual([schemeScope.light]);
+  await setScheme(page, "dark");
+  await page.reload();
+  expect(await scopeClasses(page)).toEqual([schemeScope.dark]);
+});
+
+for (const scheme of ["dark", "light"] as const) {
+  test(`a first visit follows prefers-color-scheme: ${scheme}`, async ({ browser }) => {
+    const context = await browser.newContext({ colorScheme: scheme });
+    const page = await context.newPage();
+    await page.goto("/contracting/");
+    expect(await scopeClasses(page)).toEqual([schemeScope[scheme]]);
+    await hydrated(page);
+    await expect(toggle(page)).toHaveAttribute(
+      "aria-label",
+      scheme === "dark" ? "Switch to light theme" : "Switch to dark theme",
+    );
+    await context.close();
+  });
+}
+
+test("a saved value from the old theme picker is ignored", async ({ browser }) => {
+  const context = await browser.newContext({ colorScheme: "light" });
+  const page = await context.newPage();
+  await page.addInitScript(() => localStorage.setItem("hackcove-theme", "catppuccin-mocha"));
+  await page.goto("/");
+  expect(await scopeClasses(page)).toEqual([schemeScope.light]);
+  await context.close();
+});
+
+test("the right scheme is on <html> before the page scripts run: no flash", async ({ browser }) => {
+  const context = await browser.newContext({ colorScheme: "light" });
+  const page = await context.newPage();
+  // The island script is a module, which runs after the head script; block it and the head script's
+  // class must still be there.
+  await page.route("**/*.js", (route) => route.abort());
+  await page.goto("/");
+  expect(await scopeClasses(page)).toEqual([schemeScope.light]);
+  await context.close();
 });
 
 test("each theme reskins the page: its page paint differs from the stock components'", async ({
@@ -62,42 +140,54 @@ test("each theme reskins the page: its page paint differs from the stock compone
   const paint = () => page.locator("html").evaluate((el) => getComputedStyle(el).backgroundColor);
   await page.locator("html").evaluate((el, all) => el.classList.remove(...all), scopes);
   const plain = await paint();
-  for (const folder of folders) {
-    await choose(page, folder);
+  for (const scope of scopes) {
+    await page.locator("html").evaluate(
+      (el, { all, one }) => {
+        el.classList.remove(...all);
+        el.classList.add(one);
+      },
+      { all: scopes, one: scope },
+    );
     expect(await paint()).not.toBe(plain);
   }
 });
 
 const everyPage = ["/", "/contracting/", "/pixelslash/", ...pages.map(({ path }) => path)];
 
-test("the theme picker is in the header of every page, and a choice carries to the next", async ({
+test("the toggle is in the header of every page, and a choice carries to the next", async ({
   page,
 }) => {
-  const other = folders.at(-1) ?? "";
   await page.goto("/");
-  await choose(page, other);
+  await setScheme(page, "light");
   for (const path of ["/contracting/", "/pixelslash/", "/ui/tabs/"]) {
     await page.goto(path);
-    await expect(picker(page)).toHaveValue(other);
-    expect(await scopeClasses(page)).toEqual([scopeOf(other)]);
+    await expect(toggle(page)).toHaveAttribute("aria-label", "Switch to dark theme");
+    expect(await scopeClasses(page)).toEqual([schemeScope.light]);
   }
 });
 
-test("at 390px no page scrolls sideways, the picker is inside the viewport and no prop is clipped", async ({
+const middle = (box?: { top: number; height: number }) => (box?.top ?? 0) + (box?.height ?? 0) / 2;
+
+test("at 375px the header is one row on every page: no sideways scroll, the toggle inside the viewport, beside the brand", async ({
   page,
 }) => {
   test.setTimeout(180_000);
-  await page.setViewportSize({ width: 390, height: 900 });
+  await page.setViewportSize({ width: 375, height: 900 });
   for (const path of new Set(everyPage)) {
     await page.goto(path);
-    await picker(page).waitFor();
-    const { overflow, pickerRight } = await page.evaluate(() => ({
+    await toggle(page).waitFor();
+    const { overflow, button, brand } = await page.evaluate(() => ({
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-      pickerRight:
-        document.querySelector("select[aria-label='Theme']")?.getBoundingClientRect().right ?? 0,
+      button: document
+        .querySelector("header button[aria-label^='Switch to']")
+        ?.getBoundingClientRect(),
+      brand: document.querySelector("header a[href='/']")?.getBoundingClientRect(),
     }));
     expect(overflow, `${path}: horizontal overflow`).toBe(0);
-    expect(pickerRight, `${path}: picker right edge`).toBeLessThanOrEqual(390);
+    expect(button?.right ?? 0, `${path}: toggle right edge`).toBeLessThanOrEqual(375);
+    expect(Math.abs(middle(button) - middle(brand)), `${path}: toggle beside brand`).toBeLessThan(
+      16,
+    );
   }
 });
 
@@ -181,7 +271,7 @@ test("/ui/llms.txt is served as plain text, one section per component page", asy
   for (const { name } of componentPages) expect(text).toContain(`\n## ${name}\n`);
 });
 
-test("the logo ink and halo are the same fixed blue under every theme's scope class", async ({
+test("the logo ink and halo are the same fixed blue under both schemes' scope classes", async ({
   page,
 }) => {
   await page.goto("/");
@@ -192,9 +282,9 @@ test("the logo ink and halo are the same fixed blue under every theme's scope cl
         return el ? getComputedStyle(el).color : "";
       }),
     );
-  for (const folder of folders) {
-    await choose(page, folder);
-    expect(await scopeClasses(page)).toEqual([scopeOf(folder)]);
+  for (const scheme of ["light", "dark"] as const) {
+    await setScheme(page, scheme);
+    expect(await scopeClasses(page)).toEqual([schemeScope[scheme]]);
     expect(await colours()).toEqual(["rgb(79, 134, 247)", "rgb(79, 134, 247)"]);
   }
 });
