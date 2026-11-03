@@ -4,14 +4,14 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { Contact } from "../src/components/Contact";
 import { Hero } from "../src/components/Hero";
 import { Logo } from "../src/components/Logo";
-import { PixelSlashPage } from "../src/components/PixelSlashPage";
+import { PixelSlashHero, PixelSlashPage } from "../src/components/PixelSlashPage";
 import { Projects } from "../src/components/Projects";
 import { SectionCards } from "../src/components/SectionCards";
 import { SiteNav } from "../src/components/SiteNav";
 import { Team } from "../src/components/Team";
 import { UiPage } from "../src/components/UiPage";
 import { componentPages, componentSections } from "../src/content/components/index";
-import { type Person, type Project, site } from "../src/content/site";
+import { type Person, type Project, sectionOf, site } from "../src/content/site";
 import { themes } from "../src/content/themes";
 
 /* The point of these tests is that the words and the people survive rendering as
@@ -179,27 +179,51 @@ describe("sections", () => {
 });
 
 describe("the PixelSlash page", () => {
-  const html = renderToStaticMarkup(<PixelSlashPage />);
+  const { pixelslash } = site;
+  const html = renderToStaticMarkup(<PixelSlashHero />) + renderToStaticMarkup(<PixelSlashPage />);
+  // The command and code runs sit in spans: compare the text, not the markup.
+  const text = html.replace(/<[^>]+>/g, " ").replaceAll("&quot;", '"');
 
-  test("Today lists what the CLI does now, marked in use", () => {
-    const { today } = site.pixelslash;
-    expect(html).toContain(">Today<");
-    expect(html).toContain(">In use<");
-    expect(today.items).toHaveLength(7);
-    expect(html).toContain("pixelslash dev");
+  test("the hero says what it is, with the badges, the calls to action and the install line", () => {
+    expect(html.match(/<h1/g)).toHaveLength(1);
+    expect(html).toContain(pixelslash.hero.title);
+    for (const label of ["Open source", "MIT", "Local first"]) expect(html).toContain(`>${label}<`);
+    expect(html).toContain('href="https://pixelslash.dev/docs"');
+    expect(html).toContain('href="https://github.com/madangryscientist/pixelslash"');
+    expect(html).toContain(">npm i -D @hackcove/pixelslash</code>");
+    expect(html).toContain(">copy</button>");
   });
 
-  test("Coming soon lists the public release, CI and hosted review and uploads", () => {
-    const { comingSoon } = site.pixelslash;
-    expect(html).toContain(">Coming soon<");
-    expect(comingSoon.items).toHaveLength(3);
-    for (const item of comingSoon.items) expect(html).toContain(item);
+  test("the proof is the real report image, with alt text and a caption", () => {
+    expect(html).toContain('src="/pixelslash/report.png"');
+    expect(html).toContain(`alt="${pixelslash.report.alt}"`);
+    expect(html).toContain("<figcaption");
+    expect(readFileSync(new URL("../public/pixelslash/report.png", import.meta.url)).length).toBe(
+      26214,
+    );
   });
 
-  test("it has no repo or npm link while PixelSlash is unpublished", () => {
-    expect(html).not.toContain("<a ");
-    expect(html).not.toContain("github.com");
-    expect(html).not.toContain("npmjs.com");
+  test("it walks through Capture, Diff and Review, then the features, CI and agents", () => {
+    for (const step of ["Capture", "Diff", "Review"]) expect(html).toContain(step);
+    expect(pixelslash.features.items.length).toBeGreaterThanOrEqual(6);
+    expect(pixelslash.features.items.length).toBeLessThanOrEqual(8);
+    for (const item of pixelslash.features.items) expect(html).toContain(item.title);
+    for (const command of ["pixelslash upload", "pixelslash check", "pixelslash mcp"])
+      expect(text).toContain(command);
+  });
+
+  test("privacy, free and open source, and the Hack Cove UI proof", () => {
+    expect(text).toContain("--upload");
+    expect(text).toContain("Self-host");
+    expect(text).toContain("Paid hosting is planned, not available yet.");
+    expect(html).toContain('href="/ui/"');
+  });
+
+  test("it no longer says PixelSlash is unreleased, here or on the home card", () => {
+    const section = sectionOf("pixelslash");
+    for (const copy of [text, section.summary, section.description]) {
+      expect(copy).not.toMatch(/coming soon|not published|nothing to install|public release/i);
+    }
   });
 });
 

@@ -3,13 +3,12 @@ import type { Status } from "../content/site";
 
 const STATUS = {
   available: { label: "Available", tone: "emerald" },
-  "in-use": { label: "In use", tone: "emerald" },
   "coming-soon": { label: "Coming soon", tone: "amber" },
 } as const;
 
 /**
  * A card titled with a status pill, an optional summary, a bulleted list and optional links: a
- * project on the home page, a block of the PixelSlash page and the component docs on /ui/.
+ * project on the home page and the component docs on /ui/.
  */
 export function StatusCard({
   title,
