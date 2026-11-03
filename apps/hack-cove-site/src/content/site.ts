@@ -19,7 +19,7 @@ export type Person = {
   photo?: string;
 };
 
-export type Status = "available" | "in-use" | "coming-soon";
+export type Status = "available" | "coming-soon";
 
 export type Project = {
   slug: string;
@@ -94,10 +94,10 @@ const sections: Section[] = [
     name: "PixelSlash",
     navLabel: "PixelSlash",
     summary:
-      "Visual checks for every change. It runs on every Hack Cove UI change; a public release is coming soon.",
+      "Open-source visual review: see what your change did to the page before you merge. Free, MIT, local first.",
     cta: "About PixelSlash",
     description:
-      "PixelSlash screenshots your main branch and your branch, compares them, and shows only what really changed.",
+      "PixelSlash is an open-source visual review tool: it screenshots your main branch and your branch, sets real change apart from rendering noise, and shows a report cropped to what moved. Free, MIT, on npm.",
   },
 ];
 
@@ -167,29 +167,138 @@ const ui = {
   },
 };
 
+const pixelslashLinks = {
+  docs: { label: "Get started", href: "https://pixelslash.dev/docs" },
+  github: { label: "GitHub", href: "https://github.com/madangryscientist/pixelslash" },
+  site: { label: "pixelslash.dev", href: "https://pixelslash.dev" },
+  selfHost: { label: "Self-host guide", href: "https://pixelslash.dev/self-host" },
+  pricing: { label: "Pricing", href: "https://pixelslash.dev/pricing" },
+  security: { label: "Security and threat model", href: "https://pixelslash.dev/security" },
+};
+
+/** The PixelSlash page: what has launched, and nothing that has not (HC-190). */
 const pixelslash = {
-  subtitle:
-    "Visual checks for every change: it screenshots the main branch and your branch, compares them, and shows only what really changed.",
-  today: {
-    title: "Today",
-    status: "in-use" as const,
-    items: [
-      "Screenshots of the main branch and your branch, for URLs or Storybook stories, across themes and viewports.",
-      "A perceptual diff that labels anti-aliasing, noise and sub-pixel shifts, and shows only the real changes, in regions.",
-      "An HTML report cropped to the change.",
-      "pixelslash dev re-captures one page or story on every save and diffs it with your last iteration, while you build.",
-      "A design-system check by a vision model that runs locally (mlx or ollama), so nothing leaves your machine.",
-      "A pinned capture image, so the same commit renders the same pixels anywhere.",
-      "In use on every Hack Cove UI change.",
+  links: pixelslashLinks,
+  hero: {
+    title: "See what your change did to the page, before you merge it.",
+    lead: "PixelSlash screenshots your main branch and your branch, sets real change apart from rendering noise, and gives you a report cropped to what moved.",
+    pills: [
+      { label: "Open source", tone: "emerald" },
+      { label: "MIT", tone: "slate" },
+      { label: "Local first", tone: "violet" },
+    ] as const,
+    install: "npm i -D @hackcove/pixelslash",
+    installNote:
+      "The command is pixelslash. It runs on Bun, and npx @hackcove/pixelslash works too.",
+  },
+  report: {
+    src: "/pixelslash/report.png",
+    width: 1100,
+    height: 400,
+    alt: "A PixelSlash report for one changed card: the Main, Branch and Diff shots side by side, each cropped to the changed region, with the change marked in magenta on the Diff.",
+    caption:
+      "A real report.html. One card changed, so the report shows Main, Branch and the diff of that region, and nothing else.",
+  },
+  how: {
+    title: "How it works",
+    steps: [
+      {
+        title: "Capture",
+        text: "Give it two URLs, main and your branch, and it shoots both with Playwright. Or hand it PNGs you already have.",
+      },
+      {
+        title: "Diff",
+        text: "A perceptual diff tells anti-aliasing, noise and sub-pixel shifts apart from a real change, and groups what is left into regions.",
+      },
+      {
+        title: "Review",
+        text: "Open report.html, cropped to each changed region, or upload the build so a person accepts or rejects it.",
+      },
     ],
   },
-  comingSoon: {
-    title: "Coming soon",
-    status: "coming-soon" as const,
+  features: {
+    title: "What it does",
     items: [
-      "A public release. PixelSlash is not published yet, so there is nothing to install.",
-      "CI review that can block a merge until a change is reviewed, and hosted review.",
-      "Uploads to a PixelSlash server.",
+      {
+        title: "Every page in one run",
+        code: "--routes",
+        text: "Compares a list of paths in one run, and compare diffs two folders of snapshots.",
+      },
+      {
+        title: "The same pixels on every runner",
+        code: "pixelslash capture",
+        text: "Shoots inside a pinned image from ghcr, so a commit renders the same in CI as on your laptop.",
+      },
+      {
+        title: "No Storybook needed",
+        code: "--live-png",
+        text: "Diff any two pages by URL, or any two PNGs with no browser at all.",
+      },
+      {
+        title: "Feedback while you build",
+        code: "pixelslash dev",
+        text: "Re-captures a page or component on every save and diffs it with your last version. Nothing is uploaded.",
+      },
+      {
+        title: "A design-system judge",
+        code: "--ds",
+        text: "Checks each shot against your components with a local vision model (mlx or ollama) or a hosted one. With no judge installed it says so and invents nothing.",
+      },
+      {
+        title: "A config from a few questions",
+        code: "pixelslash init",
+        text: "Asks about your project and writes pixelslash.config.ts.",
+      },
+    ],
+  },
+  ci: {
+    title: "Built for CI and for agents",
+    intro:
+      "Upload each build to a PixelSlash review server, your own, and review the changes in a browser before the merge.",
+    items: [
+      {
+        title: "A GitHub check",
+        code: "pixelslash upload",
+        text: "Sends the shots to the server, which diffs them against your default branch, holds the build for review and reports a GitHub check.",
+      },
+      {
+        title: "No merge without a look",
+        code: "pixelslash check",
+        text: "Blocks CI until a person has accepted or rejected the changes.",
+      },
+      {
+        title: "Your coding agent can read it",
+        code: "pixelslash mcp",
+        text: "A stdio MCP server, so the agent you already run can read builds, changed shots and flakes.",
+      },
+    ],
+  },
+  privacy: {
+    title: "Private by default",
+    items: [
+      "It runs on your machine. No screenshot leaves it unless you pass --upload, and then only to the server you name.",
+      "An AI judge is opt-in, and it sees only the crops of a changed region, never the whole page.",
+    ],
+  },
+  free: {
+    title: "Free and open source",
+    items: [
+      "MIT licensed, with the code on GitHub.",
+      "Self-host all of it: with Docker, on your own Cloudflare account or on a box on your own network.",
+      "Paid hosting is planned, not available yet. No feature will ever sit behind a paid plan.",
+    ],
+  },
+  proof: {
+    title: "In use on every Hack Cove UI change",
+    text: "Hack Cove UI's visual check captures every Storybook story in every theme and uploads it to a PixelSlash project per docs section, where each change is reviewed before it merges.",
+    link: { label: "See Hack Cove UI", href: "/ui/" },
+  },
+  closing: {
+    title: "Try it on your own page",
+    text: "Install the browser once, then point PixelSlash at what is live and at your local change.",
+    code: [
+      "npx @hackcove/pixelslash install-browser",
+      "npx @hackcove/pixelslash --live https://example.com --local http://localhost:3000 --out out",
     ],
   },
 };
