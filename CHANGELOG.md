@@ -1,3 +1,36 @@
+## 0.1.12 (2026-11-03)
+
+### 🚀 Features
+
+- **ui:** neutral and violet tones and a dashed swatch for StackedBar and Legend (HC-154) ([#31](https://github.com/madangryscientist/hackcove/pull/31))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+- Jacobus Langner @madangryscientist
+
+## 0.2.13 (2026-11-03)
+
+### 🚀 Features
+
+- **ui:** neutral and violet tones and a dashed swatch for StackedBar and Legend (HC-154) ([#31](https://github.com/madangryscientist/hackcove/pull/31))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+- Jacobus Langner @madangryscientist
+
+## 0.7.1 (2026-11-03)
+
+### 🚀 Features
+
+- **ui:** neutral and violet tones and a dashed swatch for StackedBar and Legend (HC-154) ([#31](https://github.com/madangryscientist/hackcove/pull/31))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+- Jacobus Langner @madangryscientist
+
 ## 0.7.0 (2026-10-30)
 
 ### 🚀 Features
