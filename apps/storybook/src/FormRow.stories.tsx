@@ -11,7 +11,7 @@ import {
   Textarea,
 } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/FormRow" };
+const meta: Meta = { title: "Forms/FormRow" };
 export default meta;
 type S = StoryObj;
 

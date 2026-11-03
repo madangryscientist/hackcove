@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button, DateField, IconButton, Input, SegmentedControl, Select } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/Control heights" };
+const meta: Meta = { title: "Forms/Input" };
 export default meta;
 type S = StoryObj;
 

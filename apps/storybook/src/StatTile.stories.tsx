@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { CardGrid, StatTile } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/StatTile" };
+const meta: Meta = { title: "Data/StatTile" };
 export default meta;
 type S = StoryObj;
 

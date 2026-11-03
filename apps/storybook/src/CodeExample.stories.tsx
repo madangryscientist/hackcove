@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button, CodeBlock, CodeExample, Stack } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/CodeExample" };
+const meta: Meta = { title: "Text/CodeExample" };
 export default meta;
 type S = StoryObj;
 

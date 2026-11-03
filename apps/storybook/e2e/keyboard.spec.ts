@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 const story = (id: string) => `/iframe.html?id=${id}&viewMode=story`;
 
 test("Tabs: one tab stop, then the arrows, Home and End move the current tab", async ({ page }) => {
-  await page.goto(story("ui-tabs--default"));
+  await page.goto(story("navigation-tabs--default"));
   const tabs = page.getByRole("tab");
   await expect(tabs.nth(0)).toHaveAttribute("aria-selected", "true");
   await page.keyboard.press("Tab");
@@ -22,14 +22,14 @@ test("Tabs: one tab stop, then the arrows, Home and End move the current tab", a
 });
 
 test("Tabs: a disabled tab is skipped", async ({ page }) => {
-  await page.goto(story("ui-tabs--with-disabled-tab"));
+  await page.goto(story("navigation-tabs--with-disabled-tab"));
   await page.getByRole("tab", { name: "Overview" }).focus();
   await page.keyboard.press("ArrowRight");
   await expect(page.getByRole("tab", { name: "Settings" })).toBeFocused();
 });
 
 test("SegmentedControl: the arrows move the filled option", async ({ page }) => {
-  await page.goto(story("ui-segmentedcontrol--default"));
+  await page.goto(story("forms-segmentedcontrol--default"));
   const options = page.getByRole("radio");
   await expect(options.nth(1)).toHaveAttribute("aria-checked", "true");
   await options.nth(1).focus();
@@ -41,7 +41,7 @@ test("SegmentedControl: the arrows move the filled option", async ({ page }) => 
 });
 
 test("Drawer: focus stays inside, Esc closes it and the scrim closes it", async ({ page }) => {
-  await page.goto(story("ui-drawer--default"));
+  await page.goto(story("feedback-drawer--default"));
   const drawer = page.getByRole("dialog", { name: "HC-65 · Tabs" });
   await expect(drawer).toBeVisible();
   // The page behind is inert: Tab cycles the drawer (and the browser's own UI), never the Open button.
@@ -66,7 +66,7 @@ test("Drawer: focus stays inside, Esc closes it and the scrim closes it", async 
 });
 
 test("Drawer: the panel sits against the right edge, full height", async ({ page }) => {
-  await page.goto(story("ui-drawer--default"));
+  await page.goto(story("feedback-drawer--default"));
   const drawer = page.getByRole("dialog");
   await expect(drawer).toBeVisible();
   const view = page.viewportSize();
@@ -85,7 +85,7 @@ test("Drawer: the panel sits against the right edge, full height", async ({ page
 test("Lightbox: the arrows step, Esc and the scrim close it, the photo does not", async ({
   page,
 }) => {
-  await page.goto(story("ui-lightbox--default"));
+  await page.goto(story("feedback-lightbox--default"));
   const viewer = page.getByRole("dialog", { name: /^Photo \d of 3$/ });
   await expect(viewer).toBeVisible();
   await expect(viewer.getByText("1 of 3")).toBeVisible();

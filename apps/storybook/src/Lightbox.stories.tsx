@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button, Dialog, Lightbox } from "@hackcove/ui";
 import { sampleScenes } from "./sampleScene";
 
-const meta: Meta = { title: "UI/Lightbox" };
+const meta: Meta = { title: "Feedback/Lightbox" };
 export default meta;
 type S = StoryObj;
 

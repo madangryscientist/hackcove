@@ -11,7 +11,7 @@ import {
   Text,
 } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/EmptyState" };
+const meta: Meta = { title: "Feedback/EmptyState" };
 export default meta;
 type S = StoryObj;
 

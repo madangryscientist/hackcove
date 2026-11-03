@@ -14,7 +14,7 @@ import {
 } from "@hackcove/ui";
 import { SampleTable } from "./sampleTable";
 
-const meta: Meta = { title: "UI/Card" };
+const meta: Meta = { title: "Content/Card" };
 export default meta;
 type S = StoryObj;
 

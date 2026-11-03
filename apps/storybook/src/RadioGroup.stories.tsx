@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Checkbox, Radio, RadioGroup, Stack, Text } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/RadioGroup" };
+const meta: Meta = { title: "Forms/RadioGroup" };
 export default meta;
 type S = StoryObj;
 

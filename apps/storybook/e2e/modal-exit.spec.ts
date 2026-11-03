@@ -6,10 +6,10 @@ const story = (id: string) => `/iframe.html?id=${id}&viewMode=story`;
 // the parent unmounts it) after the exit transition has ended. Esc, the footer button and the close
 // button all go through the <dialog>'s own close.
 for (const [id, name, closer] of [
-  ["ui-dialog--default", "Delete build", "Esc"],
-  ["ui-dialog--default", "Delete build", "Cancel"],
-  ["ui-drawer--default", "HC-65 · Tabs", "Esc"],
-  ["ui-drawer--default", "HC-65 · Tabs", "Close"],
+  ["feedback-dialog--default", "Delete build", "Esc"],
+  ["feedback-dialog--default", "Delete build", "Cancel"],
+  ["feedback-drawer--default", "HC-65 · Tabs", "Esc"],
+  ["feedback-drawer--default", "HC-65 · Tabs", "Close"],
 ] as const) {
   test(`${id} stays on screen while it animates out, then unmounts (${closer})`, async ({
     page,
@@ -51,7 +51,7 @@ for (const [id, name, closer] of [
 
 test("Dialog: with reduced motion it closes at once", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto(story("ui-dialog--default"));
+  await page.goto(story("feedback-dialog--default"));
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.locator("dialog")).toHaveCount(0, { timeout: 150 });

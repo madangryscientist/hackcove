@@ -43,7 +43,8 @@
           "default",
           "{workspaceRoot}/themes/*/theme.css",
           "{workspaceRoot}/packages/themes-shared/src/**/*",
-          "{workspaceRoot}/packages/ui/src/**/*"
+          "{workspaceRoot}/packages/ui/src/**/*",
+          "{workspaceRoot}/apps/hack-cove-site/src/content/components/**/*"
         ],
         "outputs": [
           "{projectRoot}/storybook-static"
@@ -110,6 +111,13 @@
         ],
         "inputs": [],
         "cache": false
+      },
+      "test": {
+        "inputs": [
+          "default",
+          "{workspaceRoot}/apps/hack-cove-site/src/content/components/**/*",
+          "{workspaceRoot}/packages/ui/src/**/*"
+        ]
       }
     }
   }

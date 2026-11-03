@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Checkbox, Cluster, Text } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/Checkbox" };
+const meta: Meta = { title: "Forms/Checkbox" };
 export default meta;
 type S = StoryObj;
 

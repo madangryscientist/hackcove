@@ -76,8 +76,8 @@ blocks). A text page uses `ProseLayout`, or
 `Stack width="narrow"`, for its reading measure. See
 [`packages/ui/README.md`](packages/ui/README.md#layout).
 
-The Layout stories in Storybook are checked at 375, 768 and 1280 px by `e2e/layout.spec.ts`: the
-page title must start at the logo's x, the same x on every `Layout/…` story (found by title, so a
+The page-layout stories in Storybook (`Page layouts/…`, and `Layout/AppShell`) are checked at 375, 768 and 1280 px by `e2e/layout.spec.ts`: the
+page title must start at the logo's x, the same x on every one of them (found by title, so a
 new one needs no test edit). `CenteredLayout`, `SidebarLayout` and `FullBleedLayout` are the
 exceptions (a narrow card, a rail beside the canvas, no page padding) and are asserted on their own
 terms in the same file. `SidebarLayout`'s rail starts at the logo's x, so it keeps the edge.

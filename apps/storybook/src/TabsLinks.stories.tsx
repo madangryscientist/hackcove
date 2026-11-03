@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button, Stack, Tabs, type LinkRenderProps } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/Tabs links" };
+const meta: Meta = { title: "Navigation/Tabs" };
 export default meta;
 type S = StoryObj;
 
@@ -38,7 +38,7 @@ export const DontRail: S = {
   ),
 };
 
-export const Default: S = {
+export const Links: S = {
   render: () => (
     <Tabs
       variant="pill"
@@ -78,7 +78,7 @@ function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
 }
 
 /** Each tab's `render` draws the app's own Link and gets the tab's classes and `aria-current`. */
-export const WithRouterLink: S = {
+export const LinksWithRouterLink: S = {
   render: () => (
     <Tabs
       variant="pill"

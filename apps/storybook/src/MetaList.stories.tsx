@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Caption, Code, MetaList, Text as Prose, TextLink } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/MetaList" };
+const meta: Meta = { title: "Text/MetaList" };
 export default meta;
 type S = StoryObj;
 

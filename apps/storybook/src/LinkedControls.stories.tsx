@@ -17,7 +17,7 @@ import {
   Text,
 } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/Linked controls" };
+const meta: Meta = { title: "Data/ListRow" };
 export default meta;
 type S = StoryObj;
 

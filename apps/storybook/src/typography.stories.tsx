@@ -13,7 +13,7 @@ import {
   type TypographyColor,
 } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/Typography" };
+const meta: Meta = { title: "Text/Headings" };
 export default meta;
 type S = StoryObj;
 

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button, ButtonGroup } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/ButtonGroup", parameters: { layout: "padded" } };
+const meta: Meta = { title: "Actions/Button", parameters: { layout: "padded" } };
 export default meta;
 type S = StoryObj;
 
@@ -35,7 +35,7 @@ export const DontRow: S = {
   ),
 };
 
-export const Default: S = {
+export const Group: S = {
   render: () => (
     <ButtonGroup label="Quote actions">
       <Button>Save</Button>

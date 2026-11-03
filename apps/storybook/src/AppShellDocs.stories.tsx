@@ -6,7 +6,7 @@ import { Avatar, AppShellBrand, AppShellHideBelow, Cluster, Text, TextLink } fro
  * the examples show its brand slot, the part that is small enough to put beside the text; the
  * full shell is the `Layout/AppShell` stories.
  */
-const meta: Meta = { title: "Docs/AppShell" };
+const meta: Meta = { title: "Layout/AppShell" };
 export default meta;
 type S = StoryObj;
 

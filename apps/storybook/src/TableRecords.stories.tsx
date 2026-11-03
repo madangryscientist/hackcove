@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/Table do and don't" };
+const meta: Meta = { title: "Data/Table" };
 export default meta;
 type S = StoryObj;
 

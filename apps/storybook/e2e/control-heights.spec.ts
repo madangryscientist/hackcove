@@ -20,9 +20,7 @@ for (const theme of themes) {
   test(`theme ${theme}: every sized control is 26px at sm, 38px at md and 46px at lg`, async ({
     page,
   }) => {
-    await page.goto(
-      `/iframe.html?id=ui-control-heights--heights&viewMode=story&globals=theme:${theme}`,
-    );
+    await page.goto(`/iframe.html?id=forms-input--heights&viewMode=story&globals=theme:${theme}`);
     await page.locator('[data-control="Input"]').first().waitFor();
 
     const heights = await page.locator("[data-size]").evaluateAll((rows) =>

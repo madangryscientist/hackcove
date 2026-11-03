@@ -6,7 +6,7 @@ function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
   return <a href={`#${to}`} {...rest} />;
 }
 
-const meta: Meta = { title: "UI/Button" };
+const meta: Meta = { title: "Actions/Button" };
 export default meta;
 type S = StoryObj;
 

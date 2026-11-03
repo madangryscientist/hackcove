@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState, type MouseEvent, type ReactNode } from "react";
 import { Button, Drawer, Field, Input, KeyValue, KeyValueList, Stack, Text } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/Drawer" };
+const meta: Meta = { title: "Feedback/Drawer" };
 export default meta;
 type S = StoryObj;
 

@@ -10,7 +10,7 @@ import {
   Text,
 } from "@hackcove/ui";
 
-const meta: Meta = { title: "UI/Tabs" };
+const meta: Meta = { title: "Navigation/Tabs" };
 export default meta;
 type S = StoryObj;
 
