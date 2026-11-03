@@ -1,14 +1,10 @@
 ---
 import "../styles/global.css";
-import { appShellRootClassFor } from "@hackcove/ui";
-import { SCOPES, THEMES } from "@hackcove/themes-shared";
-import { themeScope } from "@hackcove/themes-shared/scope";
-import siteCss from "@hackcove/theme-catppuccin-mocha/theme.css?inline";
+import { ColourSchemeToggle, appShellRootClassFor } from "@hackcove/ui";
+import { THEMES } from "@hackcove/themes-shared";
 import { SiteShell } from "../components/SiteShell";
-import { ThemePicker } from "../components/ThemePicker";
 import { site } from "../content/site";
-import { themes } from "../content/themes";
-import { folderOfScope, themeScript } from "../content/themeScript";
+import { colourSchemeHeadScript, schemes } from "../content/colourSchemes";
 
 type Props = {
   title?: string;
@@ -20,14 +16,13 @@ const {
   description = site.tagline,
   hideChromeInPrint = false,
 } = Astro.props;
-// The class the site ships with (the theme global.css imports), which the picker starts on.
-const siteScope = themeScope(siteCss) ?? "";
+// The server cannot know the visitor's scheme, so it renders dark (the site's own look); the head
+// script swaps to the remembered or system scheme before first paint.
 const themeCss = Object.values(THEMES).join("\n");
-const pickerItems = themes.map((theme) => ({ value: theme.folder, label: theme.title }));
 const canonical = new URL(Astro.url.pathname, site.url).href;
 ---
 
-<html lang="en" class={appShellRootClassFor("dark", { light: "", dark: siteScope })}>
+<html lang="en" class={appShellRootClassFor("dark", schemes)}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -35,7 +30,7 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#181825" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
@@ -44,19 +39,13 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary" />
     <style set:html={themeCss} />
-    <script is:inline set:html={themeScript} />
+    <script is:inline set:html={colourSchemeHeadScript} />
   </head>
   <body>
     <SiteShell pathname={Astro.url.pathname} hideChromeInPrint={hideChromeInPrint}>
       <slot />
       {Astro.slots.has("footer") && <slot name="footer" slot="footer" />}
-      <ThemePicker
-        slot="controls"
-        client:load
-        items={pickerItems}
-        scopes={SCOPES}
-        selected={folderOfScope(siteScope)}
-      />
+      <ColourSchemeToggle slot="controls" client:load schemes={schemes} initial="dark" size="sm" />
     </SiteShell>
   </body>
 </html>

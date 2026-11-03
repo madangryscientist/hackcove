@@ -1,4 +1,4 @@
-import { themeScope } from "./scope.js";
+import { declaresDark, themeScope } from "./scope.js";
 
 // Every folder under themes/ ships a theme.css. Globbing them means a new theme appears in the
 // Storybook toolbar and the docs picker the moment its folder exists; nothing here names a theme.
@@ -22,4 +22,4 @@ export const SCOPES: Record<string, string> = Object.fromEntries(
   }),
 );
 
-export { themeScope };
+export { declaresDark, themeScope };

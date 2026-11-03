@@ -17,7 +17,7 @@
    alternate loop. Static at rest under prefers-reduced-motion. Flagged in README, "Custom, by design". */
 /* The logo is one fixed brand blue in every theme (HC-144): a custom property of the site, used
    through `currentColor` by the ink and the halo. It is not a palette utility and no theme.css
-   remaps it, so the theme picker never recolours it. */
+   remaps it, so the scheme toggle never recolours it. */
 :root {
   --logo: #4f86f7;
 }
