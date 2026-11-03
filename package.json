@@ -28,5 +28,12 @@
     "oxlint-tsgolint": "7.0.2004",
     "typescript": "7.0.2",
     "vitest": "5.0.5"
-  }
+  },
+  "browserslist": [
+    "chrome >= 131",
+    "edge >= 131",
+    "firefox >= 143",
+    "safari >= 18.4",
+    "ios_saf >= 18.4"
+  ]
 }

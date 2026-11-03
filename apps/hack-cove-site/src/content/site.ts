@@ -137,6 +137,9 @@ const ui = {
       {
         text: "Put the theme's class on <html>. The class for each theme is listed below.",
       },
+      {
+        text: "Browser support is the web platform as of the Baseline digest of August 2026: current Chrome and Edge (131+), Firefox (143+) and Safari (18.4+, macOS and iOS). Older browsers and polyfills are not supported.",
+      },
     ],
   },
   themes: {

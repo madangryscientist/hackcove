@@ -53,7 +53,7 @@ bun install                                        # a fresh checkout has no nod
 bunx nx run-many -t typecheck lint test build      # tsc strict · oxlint --type-aware --deny-warnings + check-slop · Vitest · dist + Storybook build
 bun run format:check                               # oxfmt --check  (`bun run format` fixes)
 bunx nx run-many -t pack-check                     # npm pack --dry-run for every package; ui also typechecks its tarball in a consumer app
-bunx nx e2e storybook                              # Playwright: builds Storybook, serves it on 127.0.0.1:6007, flips every theme
+bunx nx e2e storybook                              # Playwright (Chromium, Firefox, WebKit): builds Storybook, serves it on 127.0.0.1:6007, flips every theme
 bunx nx e2e hack-cove-site                         # Playwright: builds the site, serves it on 127.0.0.1:4322, flips every theme on the /ui/ pages
 ```
 
@@ -61,7 +61,7 @@ bunx nx e2e hack-cove-site                         # Playwright: builds the site
 all errors; fix the code, do not disable a rule. A change to a component or a `theme.css` also gets
 a look: `bunx nx run storybook:storybook`, flip the theme switcher, and read the stories. Every component exported from `packages/ui/src/index.ts` has its own story and appears in `apps/storybook/src/Gallery.tsx`. A new component adds both in the same change. **A story's title is `<Section>/<Page name>`, taken from the site's `componentSections` (`apps/hack-cove-site/src/content/components/`), never written from memory:** add the component to a page there first, then give its story file that page's section and name. The Storybook sidebar is built from the same list, in the site's rail order (`apps/storybook/scripts/visual-plan.ts`, `sidebarOrder`), so there is no sort list to edit; `visual-plan.test.ts` fails on a title that is not the site's, or a story file no page names. **Overview / All themes** is the one-page check of every component in every theme.
 
-The e2e needs a Chromium once per machine: `bunx playwright install chromium`. It discovers themes
+The e2e runs every spec in Chromium, Firefox and WebKit (`apps/storybook/playwright.config.ts`) and needs all three once per machine: `bunx playwright install chromium firefox webkit` (on Linux, `--with-deps` in CI). The PixelSlash visual check stays Chromium-only. A spec that cannot pass in one engine gets a scoped, commented skip (or a conditional assertion) naming the engine and the reason, never a blanket skip; a real cross-engine failure is fixed in the component. It discovers themes
 from `themes/*` like the switcher does and asserts each one under the scope class its `theme.css`
 names, so a new theme needs no test edit.
 
@@ -73,6 +73,18 @@ stories and themes the change reaches against the merge-base, and its report say
 and why. `bunx nx run storybook:visual --all` (or `VISUAL_ALL=1 bunx nx run-many -t visual`;
 run-many takes `--all` for itself) captures everything. A gate run is `--all`. Every story file is
 named by a docs page (`pairs`, `fullPage` or `stories`); the storybook tests fail on one that is not.
+
+## Browser support
+
+Hack Cove supports the web platform as of the Baseline digest of August 2026
+(<https://web.dev/blog/baseline-digest-aug-2026>, Jacobus, 2026-10-28). Anything Baseline newly
+available by August 2026 may be used. Anything newer goes in only as feature-detected progressive
+enhancement, with a working fallback. The `browserslist` in the root `package.json` is the
+declared floor (Chrome and Edge 131, Firefox 143, Safari and iOS 18.4); it is declarative, since
+nothing in the toolchain reads it (Tailwind v4 and Vite hard-code their own targets), so the e2e in
+three engines is what enforces it. Use of a feature that raises the floor (check
+[web.dev/baseline](https://web.dev/baseline) or MDN) raises the `browserslist` in the same
+change, and says so in the README's "Browser support". The visual check is Chromium-only.
 
 ## Commits: conventional, because nx reads them
 

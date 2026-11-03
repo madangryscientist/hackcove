@@ -17,8 +17,12 @@ test("Tabs: one tab stop, then the arrows, Home and End move the current tab", a
   await page.keyboard.press("ArrowRight");
   await expect(tabs.nth(0)).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(tabs.nth(0)).not.toBeFocused();
+  // Tab leaves the group: it never lands on another tab. (Not "tab 0 is blurred": the story's tabs
+  // are the page's only tab stop, so Firefox wraps Tab straight back to the first one.)
   await expect(tabs.nth(1)).not.toBeFocused();
+  await expect(tabs.nth(2)).not.toBeFocused();
+  // Roving tabindex is what makes the group one tab stop: only the current tab is reachable by Tab.
+  await expect(page.locator('[role="tab"][tabindex="0"]')).toHaveCount(1);
 });
 
 test("Tabs: a disabled tab is skipped", async ({ page }) => {
