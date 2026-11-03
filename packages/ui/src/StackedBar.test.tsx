@@ -25,6 +25,23 @@ describe("StackedBar", () => {
     }
   });
 
+  it("paints neutral and violet with their own utilities, apart from muted and info", () => {
+    const out = renderToStaticMarkup(
+      <StackedBar
+        segments={[
+          { label: "Unmeasured", value: 1, tone: "neutral" },
+          { label: "Same", value: 1, tone: "muted" },
+          { label: "Overlay", value: 1, tone: "violet" },
+        ]}
+        label="x"
+      />,
+    );
+    expect(out).toContain("text-neutral-500");
+    expect(out).toContain("text-purple-700");
+    expect(out).toContain("text-slate-500");
+    expect(out).toContain('aria-label="x: Unmeasured 33%, Same 33%, Overlay 33%"');
+  });
+
   it("draws a zero-wide part for a zero value, and an empty track when all are zero", () => {
     const some = renderToStaticMarkup(
       <StackedBar
@@ -92,5 +109,25 @@ describe("Legend", () => {
     expect(out).toContain("text-slate-500");
     expect(out).toContain(">3</span>");
     expect(out.match(/tabular-nums/g)).toHaveLength(1);
+  });
+
+  it("draws a solid dot by default and a dashed ring, with no fill, for swatch dashed", () => {
+    const out = renderToStaticMarkup(
+      <Legend
+        items={[
+          { label: "Current", tone: "violet" },
+          { label: "Solid", tone: "neutral", swatch: "solid" },
+          { label: "Snapshot", tone: "violet", swatch: "dashed" },
+        ]}
+      />,
+    );
+    const swatches = [...out.matchAll(/<span aria-hidden="true" class="([^"]*)"/g)].map(
+      (m) => m[1] ?? "",
+    );
+    expect(swatches).toHaveLength(3);
+    expect(swatches[0]).toContain("bg-current text-purple-700");
+    expect(swatches[1]).toContain("bg-current text-neutral-500");
+    expect(swatches[2]).toContain("border-2 border-dashed border-current text-purple-700");
+    expect(swatches[2]).not.toContain("bg-current");
   });
 });

@@ -299,6 +299,14 @@
 .dark .text-sky-700 {
   color: #89dceb; /* sky */
 }
+/* Chart-only tones (StackedBar, Legend): neutral is a grey apart from muted (subtext0), violet is
+   the mauve of the accent. */
+.dark .text-neutral-500 {
+  color: #6c7086; /* overlay0 */
+}
+.dark .text-purple-700 {
+  color: #cba6f7; /* mauve */
+}
 .dark .border-emerald-200,
 .dark .border-emerald-300 {
   border-color: rgba(166, 227, 161, 0.4);

@@ -276,6 +276,14 @@
 .thrifty-paper .text-sky-700 {
   color: #1e6a8f; /* steel blue */
 }
+/* Chart-only tones (StackedBar, Legend): neutral is a warm grey lighter than muted (ink-mute),
+   violet a plum, because the accent here is clay and would sit beside warn and danger. */
+.thrifty-paper .text-neutral-500 {
+  color: #9a9086; /* 3.13:1 on white */
+}
+.thrifty-paper .text-purple-700 {
+  color: #7e3fb0; /* plum, 6.51:1 on white */
+}
 .thrifty-paper .text-red-700,
 .thrifty-paper .text-red-800,
 .thrifty-paper .text-red-900 {
