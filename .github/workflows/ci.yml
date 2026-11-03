@@ -19,6 +19,12 @@ concurrency:
 jobs:
   gate:
     runs-on: ubuntu-latest
+    # Nx Cloud remote cache (workspace nxCloudId in nx.json; anonymous access is "none"). A push to
+    # main writes the shared cache with the read-write token; a pull request gets the read token,
+    # which Nx Cloud scopes to a per-PR cache, so a branch can never poison main's. A fork's PR has
+    # no secrets and runs uncached.
+    env:
+      NX_CLOUD_ACCESS_TOKEN: ${{ github.event_name == 'push' && secrets.NX_CLOUD_ACCESS_TOKEN || secrets.NX_CLOUD_READ_TOKEN }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
