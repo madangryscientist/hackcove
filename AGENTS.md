@@ -129,7 +129,7 @@ global rule; what is particular to hackcove:
 2. **A theme is a folder and nothing else registers it.** No theme name appears in code: Storybook
    globs `themes/*/theme.css`, and each theme's own `theme.test.ts` is the contract (name
    `@hackcove/theme-<folder>`, exports + `files` = `theme.css` only, rules scoped under the
-   theme's scope class, no Tailwind import, remaps every palette utility; a dark theme also declares `@custom-variant dark`).
+   theme's scope class, no Tailwind import, remaps every palette utility, clears the WCAG AA contrast contract in `packages/themes-shared/src/contrastRules.ts`; a dark theme also declares `@custom-variant dark`).
    The scope class is read from `theme.css`, never listed. Do not add a theme list anywhere.
 3. **Packages stay (nearly) dependency-free at runtime.** `@hackcove/ui-react` has one approved runtime
    dependency, `react-aria-components`, for the date picker (with `@internationalized/date`, whose

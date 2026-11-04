@@ -107,7 +107,10 @@ to parse them with.
 A theme is a folder; copy one and change the CSS. The steps are in the README
 ([How to add a theme](README.md#how-to-add-a-theme)). Each theme names its own scope class (the
 class of the first top-level `.<class> { … }` rule in its `theme.css`), and its own `theme.test.ts`
-is the contract; Storybook and the e2e find it from `themes/*`, so there is no list to edit.
+is the contract; Storybook and the e2e find it from `themes/*`, so there is no list to edit. The
+contract includes WCAG AA contrast, measured from the theme's CSS for every pairing in
+`palette.json` (`packages/themes-shared/src/contrastRules.ts`); a colour that fails is fixed in
+`theme.css`, with a comment saying why when a published token moves.
 
 ## The visual check
 

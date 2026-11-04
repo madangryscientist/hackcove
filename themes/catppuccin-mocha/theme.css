@@ -54,7 +54,10 @@
   background-color: #313244; /* surface0 */
 }
 .dark .bg-slate-100 {
-  background-color: #45475a; /* surface1 */
+  /* Between surface0 and surface1 (surface1 is #45475a). The fill under an active row, a Pill or a
+     Code span carries muted text (subtext0), which is 4.10:1 on surface1 and 4.79:1 here; AA text
+     needs 4.5:1 (the contrast contract, themes/catppuccin-mocha/theme.test.ts). */
+  background-color: #3b3d50;
 }
 .dark .bg-slate-900 {
   background-color: #313244; /* surface0 — e.g. the brand badge */
@@ -93,13 +96,15 @@
   color: #a6adc8; /* subtext0 */
 }
 .dark .text-slate-400 {
-  color: #9399b2; /* overlay2 — legible muted/headers */
+  /* overlay2 (#9399b2) lifted a few steps: it is 4.45:1 on surface0, where a table header or a
+     toned panel puts it, and 4.5:1 is the AA bar for text. This is 4.62:1. */
+  color: #969cb5; /* overlay2, lifted — legible muted/headers */
 }
 .dark .text-slate-300 {
-  color: #6c7086; /* overlay0 — dimmed (days outside the month) */
+  color: #6c7086; /* overlay0 — dimmed (days outside the month); inactive, so under no contrast bar */
 }
 .dark .placeholder\:text-slate-400::placeholder {
-  color: #7f849c; /* overlay1 */
+  color: #969cb5; /* as muted text: overlay1 (#7f849c) was 4.44:1 on base, 3.40:1 on surface0 */
 }
 
 /* Borders */
@@ -114,7 +119,10 @@
   border-color: #313244; /* surface0 */
 }
 .dark .border-slate-300 {
-  border-color: #45475a; /* surface1 */
+  /* overlay1, not surface1 (#45475a): this is the edge of an input, a select, a neutral button,
+     the one thing that shows where a control is, so it needs 3:1 against the surface it sits on
+     (WCAG 1.4.11). surface1 was 1.4:1 to 1.9:1; overlay1 is 3.40:1 on surface0 and more elsewhere. */
+  border-color: #7f849c; /* overlay1 */
 }
 /* "emphasis" / active borders flip to light so they stay visible */
 .dark .border-slate-900 {
@@ -160,7 +168,7 @@
   border-color: #cba6f7; /* mauve */
 }
 .dark .hover\:border-violet-400:hover {
-  border-color: rgba(203, 166, 247, 0.5);
+  border-color: rgba(203, 166, 247, 0.6); /* mauve/60: 0.5 was 2.71:1 on surface0, under 3:1 */
 }
 .dark .outline-violet-600 {
   outline-color: #cba6f7; /* mauve */
@@ -192,7 +200,12 @@
   border-color: #f38ba8; /* red */
 }
 .dark .hover\:bg-red-50:hover {
-  background-color: rgba(243, 139, 168, 0.14); /* red tint */
+  background-color: rgba(
+    243,
+    139,
+    168,
+    0.1
+  ); /* red tint: red text on 0.14 over surface0 is under 4.5:1 */
 }
 
 /* Positive button (Button tone="positive"): solid, outline, ghost and the pressed tint.
@@ -261,7 +274,12 @@
   background-color: rgba(249, 226, 175, 0.13);
 }
 .dark .bg-red-50 {
-  background-color: rgba(243, 139, 168, 0.13);
+  background-color: rgba(
+    243,
+    139,
+    168,
+    0.1
+  ); /* red text on 0.13 over surface0 is 4.34:1, under 4.5:1 */
 }
 .dark .bg-blue-50 {
   background-color: rgba(137, 180, 250, 0.13);
@@ -302,7 +320,7 @@
 /* Chart-only tones (StackedBar, Legend): neutral is a grey apart from muted (subtext0), violet is
    the mauve of the accent. */
 .dark .text-neutral-500 {
-  color: #6c7086; /* overlay0 */
+  color: #7f849c; /* overlay1: overlay0 is 2.57:1 on surface0, and a chart mark needs 3:1 */
 }
 .dark .text-purple-700 {
   color: #cba6f7; /* mauve */
@@ -319,7 +337,9 @@
   border-color: #f9e2af; /* yellow — the strong warn edge (Card attention) */
 }
 .dark .border-red-200 {
-  border-color: rgba(243, 139, 168, 0.45);
+  /* The invalid field's edge, the only sign of the error besides the message: red/65, 3:1 or more
+     on every surface (red/45 was 2.25:1 on surface0). */
+  border-color: rgba(243, 139, 168, 0.65);
 }
 .dark .border-red-300,
 .dark .border-red-400 {
