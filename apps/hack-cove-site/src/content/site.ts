@@ -174,6 +174,7 @@ const pixelslashLinks = {
   selfHost: { label: "Self-host guide", href: "https://pixelslash.dev/self-host" },
   pricing: { label: "Pricing", href: "https://pixelslash.dev/pricing" },
   security: { label: "Security and threat model", href: "https://pixelslash.dev/security" },
+  playwright: { label: "Playwright docs", href: "https://pixelslash.dev/docs/playwright/" },
 };
 
 /** The PixelSlash page: what has launched, and nothing that has not (HC-190). */
@@ -250,6 +251,16 @@ const pixelslash = {
         text: "Asks about your project and writes pixelslash.config.ts.",
       },
     ],
+    playwright: {
+      title: "Playwright tests you already have",
+      intro: "Your own Playwright suite can take the shots, with no capture image needed.",
+      install: "npm i -D @hackcove/pixelslash-playwright",
+      example:
+        'import { test } from "@playwright/test";\nimport { snapshot } from "@hackcove/pixelslash-playwright";\n\ntest("watch page", async ({ page }) => {\n  await page.goto("/watch/42");\n  await snapshot(page, "watch", { ignore: [".live-count"] });\n});',
+      ignore: "lives in the test: a PNG has no DOM, so the boxes are measured at the shot.",
+      upload: "The shots go to pixelslash-snapshots. Send that folder with the pixelslash CLI:",
+      command: "pixelslash upload pixelslash-snapshots --server <your-server>",
+    },
   },
   ci: {
     title: "Built for CI and for agents",
