@@ -35,14 +35,13 @@ import {
   startPageTransition,
   SubsectionHeading,
   Text,
-  Textarea,
 } from "@hackcove/ui-react";
 import { GalleryBars } from "./GalleryBars";
 import { GalleryControls } from "./GalleryControls";
 import { GalleryButtons } from "./GalleryButtons";
 import { GalleryChoice } from "./GalleryChoice";
 import { GalleryData } from "./GalleryData";
-import { GalleryForm, GalleryNameField } from "./GalleryForm";
+import { GalleryForm, GalleryNameField, GalleryNotes } from "./GalleryForm";
 import { GalleryContainer, GalleryLayout } from "./GalleryLayout";
 import { GalleryPills } from "./GalleryPills";
 import { GallerySwitchers } from "./GallerySwitchers";
@@ -286,7 +285,7 @@ export function Gallery() {
 
       <div className="flex max-w-sm flex-col gap-3">
         <GalleryNameField />
-        <Textarea placeholder="What did you find? How were the prices?" />
+        <GalleryNotes />
         <Select defaultValue={5}>
           <option value={5}>★★★★★ (5)</option>
           <option value={4}>★★★★ (4)</option>

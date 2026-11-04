@@ -34,10 +34,13 @@ describe("components take no className or style", () => {
     expectTypeOf<Styling<TypographyProps<"h2">>>().toEqualTypeOf<never>();
   });
 
-  it("every component is a function, so the check above covers it", () => {
+  it("every component is callable (a function, or a forwardRef component), so the check above covers it", () => {
     const components = Object.entries(ui).filter(([name]) => /^[A-Z]/.test(name));
     for (const [name, value] of components) {
-      expect.soft(typeof value === "function", name).toBe(true);
+      // A forwardRef component is an object at runtime, but its type has a call signature.
+      const forwardRef =
+        typeof value === "object" && value !== null && "$$typeof" in value && "render" in value;
+      expect.soft(typeof value === "function" || forwardRef, name).toBe(true);
     }
   });
 });
