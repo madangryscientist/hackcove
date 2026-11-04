@@ -103,7 +103,7 @@
     },
     "themes/catppuccin-mocha": {
       "name": "@hackcove/theme-catppuccin-mocha",
-      "version": "0.2.13",
+      "version": "0.3.0",
       "devDependencies": {
         "@types/bun": "1.4.3",
         "tailwindcss": "^4.3.3",
@@ -115,7 +115,7 @@
     },
     "themes/thrifty-paper": {
       "name": "@hackcove/theme-thrifty-paper",
-      "version": "0.1.12",
+      "version": "0.2.0",
       "devDependencies": {
         "@types/bun": "1.4.3",
         "tailwindcss": "^4.3.3",

@@ -1,3 +1,34 @@
+## 0.2.0 (2026-11-04)
+
+### 🚀 Features
+
+- ⚠️  **ui-react:** rename @hackcove/ui to @hackcove/ui-react ([2991f1c](https://github.com/madangryscientist/hackcove/commit/2991f1c))
+
+### ⚠️  Breaking Changes
+
+- **ui-react:** rename @hackcove/ui to @hackcove/ui-react  ([2991f1c](https://github.com/madangryscientist/hackcove/commit/2991f1c))
+  the package is now @hackcove/ui-react. Swap the dependency and
+  replace the import specifier "@hackcove/ui" with "@hackcove/ui-react", and the
+  Tailwind @source path node_modules/@hackcove/ui/dist with
+  node_modules/@hackcove/ui-react/dist. No alias package, no re-export shim.
+  packages/ui moves to packages/ui-react and the Nx project ui becomes ui-react;
+  every import, tsconfig path, workflow, script, doc and site snippet follows.
+  The version stays 0.7.1 so the first release computes 0.8.0 from the history
+  since ui@0.7.1.
+  publish.yml gains a "renamed" bucket: a project whose npm name does not exist
+  yet but whose git tag does is released with NPM_TOKEN (npm trusted publishing
+  cannot do a first publish). docs/releasing.md gets a "Renaming a package"
+  section; README and MIGRATING.md get the consumer migration note.
+  Unchanged on purpose: the site URL /ui/ and the PixelSlash project names
+  hackcove-ui-<section>, which are about the "UI" docs section, not the package.
+  Visual: 23 changed, 0 new, 0 removed vs origin/main — only story sample text that prints the package name or source path (bun add @hackcove/ui-react, packages/ui-react/src/...) in text, actions and overview; no layout or colour change
+  State: needs-human
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+- Jacobus Langner @madangryscientist
+
 ## 0.8.0 (2026-11-04)
 
 ### 🚀 Features
