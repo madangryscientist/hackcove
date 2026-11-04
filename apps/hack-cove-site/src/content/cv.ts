@@ -1,11 +1,10 @@
 /* ---------------------------------------------------------------------------
    Public CV copy, in one typed place.
    ---------------------------------------------------------------------------
-   One set of facts across OfferZen, the downloaded CV, and this page:
-   OfferZen wins on current role, dates, titles, and descriptions; the PDF
-   supplies photo, email, grouped skills, and education grades. Storybook
-   letter, salary, notice, looking flags, leaving reasons, and blocked
-   companies stay off.
+   The back-end-led CV (v2, confirmed by Jacobus 2026-11-04) is the source of
+   truth for titles, dates and descriptions; the downloadable PDF is printed
+   from this page. Salary, notice, looking flags, leaving reasons, blocked
+   companies and "current client" call-outs stay off.
    --------------------------------------------------------------------------- */
 
 export type CvLink = {
@@ -43,12 +42,13 @@ export type CvSkillGroup = {
 
 export const cv = {
   name: "Jacobus Langner",
-  headline: "Staff-level Full Stack Engineer",
+  headline:
+    "Full-Stack Engineer · Developer productivity · APIs, messaging and platform · .NET Core, Node, Python",
   location: "Cape Town",
   photo: "/cv/jacobus.jpg",
   pdf: "/cv/jacobus.pdf",
   summary:
-    "Staff-level full stack engineer with 18 years of production software: TypeScript/React front ends, and the Node, Python and C#/.NET services behind them, connected through messaging (SQS/SNS, RabbitMQ), on Kubernetes and Cloudflare. I started Hack Cove in April 2026 for contract work. At Cue, my current client, I build the voice product on both sides: the live call and transfer flows in React, and the Python service that integrates with the voice provider. At Zappi I owned the front-end guild and the shared UI platform, and built the Node service that carried Salesforce events to the rest of the platform.",
+    "Senior full-stack engineer with 18 years of production software. Alongside delivering features, I have spent the last ten years building the architecture, APIs and tooling that let other developers excel, finding where they struggle and fixing it at the source. Back end in C#/.NET Core, Node and Python; front end in TypeScript and React. On call for the systems I build.",
 
   links: [
     { label: "jacobus@hack-cove.com", href: "mailto:jacobus@hack-cove.com" },
@@ -61,38 +61,20 @@ export const cv = {
     {
       company: "Hack Cove",
       title: "Founder / Contract Engineer",
-      dates: "April 2026 – Present",
+      dates: "Apr 2026 – Present",
       location: "Remote",
-      summary: "I started Hack Cove to do engineering contract work. Cue is my current client.",
       groups: [
         {
-          heading: "Cue",
+          heading: "Client: Cue (voice and telephony)",
           items: [
-            "Building the Voice Inbox and live call and transfer flows in the TypeScript/React app.",
-            "I work on the calls inbox as a product surface: listings, inbound answer that opens the voice session and contact context, and realtime updates. The call UI is a floating modal with a dialer, mic and speaker selection, and recipient and contact search.",
-            "Implementing cold and warm transfers, including a transfer picker with live directory and presence, and in-flight actions to pull a transfer back, complete it, or mute.",
-            "Built the Python service that integrates the app with the voice service provider.",
-          ],
-        },
-        {
-          heading: "Hack Cove UI",
-          items: [
-            "An open-source React design system on npm (@hackcove/ui-react plus theme packages), in an Nx and Bun monorepo with Storybook. Every theme reskins every component with no code change.",
-            "Its reusable GitHub Action reviews UI pull requests in two layers: deterministic rules that fail on off-system styling, then an LLM review through OpenCode Zen against the published component reference (llms.txt).",
-          ],
-          links: [
-            { label: "hack-cove.com/ui", href: "https://hack-cove.com/ui" },
-            {
-              label: "github.com/madangryscientist/hackcove",
-              href: "https://github.com/madangryscientist/hackcove",
-            },
+            "Built the Python service that integrates the app with the voice provider.",
+            "Built the realtime call, transfer and presence flows on top of it in TypeScript and React: inbound answer, cold and warm transfers, and in-flight transfer actions.",
           ],
         },
         {
           heading: "PixelSlash",
           items: [
-            "A visual-regression tool. It has a Bun CLI and a pixel-diff engine in Rust compiled to WebAssembly. Its review app runs TanStack Start on Cloudflare Workers, with D1 through Drizzle, R2 for screenshots, GitHub sign-in, and AES-256-GCM encryption for the API keys it stores.",
-            "AI review: a vision model judges each shot against the design system (local mlx or ollama, or a hosted model), and the server sends each changed region to an OpenAI-compatible vision endpoint on a Cloudflare Queue to explain the change, with retries and per-build token accounting. An MCP server lets coding agents such as Claude Code read builds and drive the tool.",
+            "Built a visual-regression service on Cloudflare Workers, D1 and Queues, with a Rust/WebAssembly pixel-diff engine, queued vision review of changed regions, and an MCP server so coding agents can drive it.",
           ],
           links: [
             { label: "pixelslash.dev", href: "https://pixelslash.dev" },
@@ -102,91 +84,111 @@ export const cv = {
             },
           ],
         },
-      ],
-      tech: "TypeScript, React, Python, Node/Bun, Rust/WebAssembly, Cloudflare Workers, D1, Drizzle",
-    },
-    {
-      company: "Zappi",
-      title: "Senior Frontend Engineer",
-      dates: "April 2021 – April 2026",
-      location: "Remote",
-      summary:
-        "Working in a fully remote, distributed team maintaining shared UI component libraries and driving modernization of the frontend tooling stack. I owned and led the front-end guild for the last year there, driving technical direction and best practices across teams.",
-      groups: [
         {
+          heading: "Omnibus",
           items: [
-            "Built a Node microservice that took events from Salesforce's messaging system and republished them on SQS/SNS so other services could consume them.",
-            "Ran the front-end Node server: its build and the APIs I built to speed up page loads.",
-            "Maintain a TypeScript monorepo of 60+ packages: shared UI components and tooling consumed by multiple frontend applications. Design library APIs balancing end-user simplicity with extensibility for internal consumers.",
-            "Jest to Vitest: reduced test suite runtime from 90s to 58s (35% faster), with 60% faster transforms using SWC—100% pass rate across 1,126 tests",
-            "Cypress to Playwright: reduced E2E test runtime from 30 minutes to 5 minutes (83% faster)",
-            "Migrated library builds from CommonJS to ESM-only using tsdown, reducing build time from 120s to 5s (96% faster)",
-            "Refactored microfrontend architecture to library-based imports, reducing bundle size from 41MB to 24MB (41% reduction)",
-            "React 18 migration, resolving concurrent rendering issues across a large codebase",
-            "Redux to React Query and Zustand, modernizing state management and data fetching patterns application-wide",
-            "Managed NX monorepo upgrades (v21 → v22) with build caching optimization",
+            "Built a multi-agent engineering system in Bun/TypeScript: a planner agent dispatches builder agents into isolated git worktrees, each runs the test gate and opens a pull request, and leases stop agents colliding.",
+          ],
+        },
+        {
+          heading: "Hack Cove UI",
+          items: [
+            "Built a reusable GitHub Action that reviews UI pull requests in two layers, deterministic rules then an LLM review, for an open-source React design system on npm.",
+          ],
+          links: [
+            { label: "hack-cove.com/ui", href: "https://hack-cove.com/ui" },
+            {
+              label: "github.com/madangryscientist/hackcove",
+              href: "https://github.com/madangryscientist/hackcove",
+            },
           ],
         },
       ],
-      tech: "TypeScript, Node.js, Next.js, React, Ruby, Storybook, Playwright, Cypress, Amazon SQS, Amazon SNS",
+      tech: "Python, PostgreSQL, TypeScript, Node/Bun, Cloudflare Workers, D1, Queues, Drizzle, Rust/WebAssembly, React",
+    },
+    {
+      company: "Zappi",
+      title: "Senior Engineer",
+      dates: "Apr 2021 – Apr 2026",
+      location: "Remote",
+      summary: "Developer platform and Node services · front-end guild lead (final year)",
+      groups: [
+        {
+          items: [
+            "Owned the developer platform for a 60+ package TypeScript monorepo used by 80 engineers across multiple applications.",
+            "Cut library builds from 120 s to 5 s (CommonJS to ESM-only) and E2E runs from 30 to 5 min (Cypress to Playwright); moved 1,126 tests from Jest to Vitest (35% faster) and added Nx build caching.",
+            "Built a Node microservice that took events from Salesforce's messaging system and republished them on SQS/SNS for other services to consume.",
+            "Owned the Node.js backend-for-frontend (BFF): its build, and the APIs that sped up page loads.",
+            "Led the front-end guild in the final year, setting technical direction across teams; led the React 18 migration and the move from Redux to React Query and Zustand, and cut bundle size from 41 MB to 24 MB.",
+          ],
+        },
+      ],
+      tech: "Node.js, Amazon SQS/SNS, TypeScript, Nx, Playwright, Vitest, Ruby (back-end codebase), React, Next.js",
     },
     {
       company: "FMI",
-      title: "Frontend-API Architect",
-      dates: "June 2018 – March 2021",
+      title: "API Architect",
+      dates: "Jun 2018 – Mar 2021",
       location: "Remote",
-      summary:
-        "Architected the APIs and workflow engines (policy applications, claims, underwriting) for a life insurer moving off paper, in C# and TypeScript, with React/Next.js front ends. Built Kubernetes clusters from scratch and moved releases from monthly FTP drops to continuous delivery. Designed role-based access control and POPI Act compliance for medical and financial data.",
-      groups: [],
-      tech: "Docker, TypeScript, C#, Next.js, React, Angular, Vue, Kubernetes",
+      summary: "API and platform architecture for a life insurer moving off paper",
+      groups: [
+        {
+          items: [
+            "Architected 15 API services and the workflow engines for policy applications, claims and underwriting, in C# and TypeScript.",
+            "Built the company's Kubernetes clusters from scratch on Azure, and moved releases from monthly FTP drops to continuous delivery.",
+            "Designed role-based access control and POPI Act compliance for medical and financial data.",
+            "Delivered the React and Next.js front ends on those APIs.",
+          ],
+        },
+      ],
+      tech: "C#, .NET Core, PostgreSQL, MongoDB, Kubernetes (AKS), Docker, TypeScript, React, Next.js",
     },
     {
       company: "Wonga",
       title: "Software Development Team Lead",
-      dates: "August 2015 – May 2018",
+      dates: "Aug 2015 – May 2018",
       location: "Office-based",
-      summary:
-        "Led a full stack team building new products as C# microservices (CQRS, RabbitMQ), with ASP.NET Core Web API back ends and AngularJS front ends.\n\nStarting as a back-end developer. Soon I moved into a technical lead developer position on the front-end as we migrated from our PHP site into an AngularJS site with ASP.NET Core Web API.\n\nAfter the completion of that project I was promoted to team lead.\n\nThese efforts led to my team being awarded the CEO Recognition Award.\n\nIn mid-2017, I started doing more architectural work to help move away from our legacy system.",
-      groups: [],
-      tech: "C#, Octopus Deploy, AngularJS, RabbitMQ",
+      summary: "Migration architecture and tooling · team lead",
+      groups: [
+        {
+          items: [
+            "Drove the architecture to move the business off an unsupported PHP site and NServiceBus, and was key in building the migration tooling used by three teams.",
+            "Led a team of seven building new products as C# microservices with CQRS and RabbitMQ on ASP.NET Core Web API.",
+            "Joined as a back-end developer, then became technical lead for the move from PHP to AngularJS on ASP.NET Core Web API. The team won the CEO Recognition Award.",
+          ],
+        },
+      ],
+      tech: "C#, ASP.NET Core Web API, RabbitMQ, NServiceBus, CQRS, Octopus Deploy, AngularJS",
     },
   ] satisfies CvJob[],
 
   earlierRoles: [
     {
-      company: "Sygnia Ltd",
+      company: "Sygnia",
       title: "Software Developer",
-      dates: "September 2014 – August 2015",
-      summary:
-        "I worked as the bridge between web developers and the server-side developers, in an asset management and finance driven environment. I was often tasked with speeding up queries.",
+      dates: "Sep 2014 – Aug 2015",
+      summary: "Linked the web and server-side teams in asset management; tuned slow queries.",
     },
     {
       company: "Property24",
       title: "Software Developer",
-      dates: "August 2011 – August 2014",
+      dates: "Aug 2011 – Aug 2014",
       summary:
-        "As part of the Property24 team, I was involved with developing, maintaining and monitoring one of South Africa's most visited websites. This required software that scaled across multiple servers, with a heavy emphasis on caching. We upgraded from ASP Classic to ASP.NET to ASP MVC.",
+        "Built and ran one of South Africa's most visited websites across multiple servers with heavy caching; upgraded it from ASP Classic to ASP.NET to ASP.NET MVC.",
     },
     {
       company: "ACI Worldwide",
       title: "Software Developer",
-      dates: "January 2010 – August 2011",
+      dates: "Jan 2010 – Aug 2011",
       summary:
-        "Java on Windows and AIX, SQL Server and DB2. First year on JSP bug fixes, then 3rd-level support for PostCard; patches across multiple versions and platforms.",
+        "Java on Windows and AIX with SQL Server and DB2; third-level support and patches for the PostCard payments product.",
     },
     {
-      company: "Business Intelligence",
+      company: "Axxess DSL and Business Intelligence",
       title: "Software Developer",
-      dates: "July 2009 – December 2009",
+      dates: "Sep 2008 – Dec 2009",
       summary:
-        "C# and ASP.NET. Most of the work was upgrading from ASP.NET 1.1 to ASP.NET 3.5; Ajax processing was the main focus, plus SQL Server 2008.",
-    },
-    {
-      company: "Axxess Dsl",
-      title: "Software Developer",
-      dates: "September 2008 – July 2009",
-      summary:
-        "C# Windows applications, Windows services, ASP.NET 2 websites and web services. Basic knowledge of MySQL.",
+        "C# Windows services, web services and ASP.NET sites on SQL Server; upgrades from ASP.NET 1.1 to 3.5.",
     },
   ] satisfies CvEarlierRole[],
 
@@ -198,13 +200,52 @@ export const cv = {
   },
 
   skills: [
-    { label: "Languages", items: ["TypeScript", "JavaScript", "C#", "Python", "Ruby"] },
-    { label: "Frameworks", items: ["React", "Next.js", "Angular", "Vue"] },
-    { label: "Build Tools", items: ["Vite", "Vitest", "NX", "Webpack", "tsdown", "Biome"] },
-    { label: "Testing", items: ["Vitest", "Playwright", "Storybook", "Chromatic"] },
-    { label: "Infrastructure", items: ["GitHub Actions", "GitLab CI", "Kubernetes", "Docker"] },
-    { label: "Databases", items: ["PostgreSQL", "SQL Server", "MongoDB"] },
-    { label: "Spoken", items: ["English (Native)", "Afrikaans (Fluent)"] },
+    {
+      label: "Back end",
+      items: [
+        "C#/.NET Core",
+        "ASP.NET Core Web API",
+        "Node.js",
+        "Python",
+        "REST APIs",
+        "microservices",
+        "event-driven architecture",
+        "CQRS",
+      ],
+    },
+    {
+      label: "Messaging",
+      items: ["RabbitMQ", "NServiceBus", "Amazon SQS/SNS", "Cloudflare Queues"],
+    },
+    { label: "Databases", items: ["PostgreSQL", "SQL Server", "MongoDB", "Cloudflare D1"] },
+    {
+      label: "Platform & DevEx",
+      items: [
+        "Nx monorepos",
+        "CI/CD",
+        "build and test performance",
+        "internal developer tooling",
+        "AI-agent tooling (MCP)",
+      ],
+    },
+    {
+      label: "Infrastructure",
+      items: [
+        "Kubernetes (Azure AKS)",
+        "Docker",
+        "AWS",
+        "Cloudflare Workers",
+        "GitHub Actions",
+        "GitLab CI",
+        "Octopus Deploy",
+      ],
+    },
+    { label: "Front end", items: ["TypeScript", "React", "Next.js", "Angular", "Vue"] },
+    {
+      label: "Build & testing",
+      items: ["Vite", "tsdown", "Webpack", "Vitest", "Playwright", "Storybook"],
+    },
+    { label: "Spoken", items: ["English (native)", "Afrikaans (fluent)"] },
   ] satisfies CvSkillGroup[],
 };
 
