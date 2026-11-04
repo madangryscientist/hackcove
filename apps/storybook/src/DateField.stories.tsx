@@ -2,12 +2,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   Button,
   Caption,
+  Card,
   DateField,
   Dialog,
   Drawer,
   fromISODate,
   Input,
   Stack,
+  Text,
   toISODate,
 } from "@hackcove/ui-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
@@ -157,6 +159,22 @@ export const InDrawer: S = {
 };
 
 /** A date is a `DateField` with `calendar`: DD/MM/YYYY segments the person can type, and a calendar button for the rest. */
+/** A date field in a Card, its calendar open: the popover paints over the card below it, not under it. */
+export const CalendarInCard: S = {
+  render: () => (
+    <Stack gap="sm">
+      <Card title="Visit">
+        <DateField calendar label="Visit date" />
+      </Card>
+      <Card title="Below">
+        <Text as="p" color="muted">
+          The calendar opens over this card.
+        </Text>
+      </Card>
+    </Stack>
+  ),
+};
+
 export const DoDate: S = {
   render: () => <DateField calendar label="Date of birth" description="As on your ID document." />,
 };

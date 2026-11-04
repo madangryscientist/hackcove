@@ -1,5 +1,17 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Card, CardGrid, Pill, Text } from "@hackcove/ui-react";
+import {
+  Button,
+  Card,
+  CardGrid,
+  Cluster,
+  Input,
+  Pill,
+  Stack,
+  StickyBar,
+  Text,
+  TextLink,
+} from "@hackcove/ui-react";
+import { DemoShell, layoutPage } from "./layout/DemoShell";
 
 /** Card's `badge` and `attention`, apart from Card.stories.tsx so each file stays short. */
 const meta: Meta = { title: "Content/Card" };
@@ -39,5 +51,51 @@ export const Attention: S = {
         </Text>
       </Card>
     </CardGrid>
+  ),
+};
+
+const filters = (
+  <Cluster justify="between">
+    <Input aria-label="Filter builds" placeholder="Filter builds" width="auto" />
+    <Button size="sm" variant="outline">
+      Accept all
+    </Button>
+  </Cluster>
+);
+
+const builds = Array.from({ length: 40 }, (_, index) => (
+  <Text key={index} as="p">
+    Build {40 - index}
+  </Text>
+));
+
+/**
+ * A link card with its own link, button and badge link, on a page that scrolls under AppShell's
+ * header and a StickyBar: the bars stay on top where they overlap the card, and the card's own
+ * controls are still clickable on their own while the rest of the card follows the link.
+ */
+export const UnderStickyBars: S = {
+  parameters: { bare: true },
+  beforeEach: layoutPage,
+  render: () => (
+    <DemoShell bleed>
+      <StickyBar data-testid="sticky-bar">{filters}</StickyBar>
+      <div className="px-4 py-4 sm:px-6">
+        <Stack gap="sm">
+          <Card href="#build-41" title="Build 41" badge={<TextLink href="#flaky">Flaky</TextLink>}>
+            <Text as="p" color="muted">
+              Open the build to review its shots.
+            </Text>
+            <Cluster>
+              <TextLink href="#open">Open the build</TextLink>
+              <Button size="sm" variant="outline">
+                Accept
+              </Button>
+            </Cluster>
+          </Card>
+          {builds}
+        </Stack>
+      </div>
+    </DemoShell>
   ),
 };
