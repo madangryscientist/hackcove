@@ -26,7 +26,7 @@ const preview: Preview = {
   initialGlobals: { theme: themeNames[0] },
   globalTypes: {
     theme: {
-      description: "Theme (one per folder under themes/)",
+      description: "Theme (one per CSS file under themes/*/)",
       toolbar: {
         icon: "paintbrush",
         dynamicTitle: true,

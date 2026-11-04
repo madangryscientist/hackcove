@@ -26,20 +26,24 @@ a consumer writes no styling of its own.
 | Project | Path | What it is |
 | --- | --- | --- |
 | `ui-react` | `packages/ui-react` | `@hackcove/ui-react`: the components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, react-dom, tailwindcss v4, and optional `@types/react` + `@types/react-dom` (types reach consumers under isolated linkers); one runtime dependency, react-aria-components (the date picker). No theme CSS. |
-| `theme-catppuccin-mocha` | `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha`: one `theme.css`, shipped as-is. Dark; scope `.dark`. |
+| `theme-catppuccin-mocha` | `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha`: two Catppuccin flavours, each one CSS file shipped as-is: `theme.css` (Mocha, dark; scope `.dark`) and `latte.css` (Latte, light; scope `.latte`). |
 | `theme-thrifty-paper` | `themes/thrifty-paper` | `@hackcove/theme-thrifty-paper`: one `theme.css`, shipped as-is. Light (Thrifty's cream paper); scope `.thrifty-paper`. |
-| `storybook` | `apps/storybook` | Storybook for the components; a toolbar switcher lists every `themes/*` folder. Its `e2e/` is the Playwright layer (`test:e2e`). Private. |
-| `themes-shared` | `packages/themes-shared` | `@hackcove/themes-shared`: how Storybook and the docs find themes (the `themes/*/theme.css` glob and each theme's scope class). Private; not in `nx release`. |
+| `storybook` | `apps/storybook` | Storybook for the components; a toolbar switcher lists every theme CSS file under `themes/*/`. Its `e2e/` is the Playwright layer (`test:e2e`). Private. |
+| `themes-shared` | `packages/themes-shared` | `@hackcove/themes-shared`: how Storybook and the docs find themes (the `themes/*/*.css` glob, the theme ids and each theme's scope class). Private; not in `nx release`. |
 | `hack-cove-site` | `apps/hack-cove-site` | The hack-cove.com Astro site, with the `/ui/` component docs (pages built from the Storybook stories, a generated `props.json` and `/ui/llms.txt`). Builds `dist/` against the workspace `@hackcove/ui-react` and `@hackcove/theme-catppuccin-mocha` (`workspace:*`). `deploy.sh` direct-uploads to Cloudflare Pages; only Jacobus runs it. Private; not in `nx release`. |
 | `ui-review` | `tools/ui-review` | `@hackcove/ui-review`: the engine behind the `ui-review.yml` reusable workflow (consumer pull requests are checked for building their UI the Hack Cove way: a deterministic layer, then an advisory model layer). Dev tooling; private; not in `nx release`. |
 
-**One folder, one publishable package per theme.** Adding a theme is copying a folder
-(`README.md`, "How to add a theme"); nothing else registers it. **Each theme names its own scope
-class**: the class of the first top-level `.<class> { … }` rule in its `theme.css` (Mocha's is
-`.dark`, thrifty-paper's `.thrifty-paper`). Storybook and the e2e read it from there. With no
+**One folder, one publishable package per theme; a package may carry more than one CSS file.**
+Adding a theme is copying a folder (`README.md`, "How to add a theme"); nothing else registers it.
+Each CSS file in a theme folder is its own theme (the Catppuccin package carries Mocha as `theme.css`
+and Latte as `latte.css`). **Each theme names its own scope class**: the class of the first top-level
+`.<class> { … }` rule in its CSS file (Mocha's is `.dark`, Latte's `.latte`, thrifty-paper's
+`.thrifty-paper`). Storybook and the e2e read it from there. A theme's id is the folder name for
+`theme.css` and `<folder>-<file stem>` for any other file (`catppuccin-mocha-latte`); it names the
+switcher entry and the visual shots, so an id never changes once it has baselines. With no
 theme the components render in Tailwind's own default colours, a plain light look; that is only
 what a theme remaps, not a look the repo designs or checks, so Storybook, its Overview and the
-visual matrix list `themes/*` and nothing else.
+visual matrix list `themes/*/*.css` and nothing else.
 
 **The site composes ui components.** `apps/hack-cove-site` is a composition of `@hackcove/ui-react` and a theme and nothing of its own; a custom style or component there is a flag, not a fix. Put it on the list in the site's `README.md` (a swap, a hackcove ticket, or "Custom, by design" with the reason), and do not add the style to the site.
 
@@ -62,7 +66,7 @@ all errors; fix the code, do not disable a rule. A change to a component or a `t
 a look: `bunx nx run storybook:storybook`, flip the theme switcher, and read the stories. Every component exported from `packages/ui-react/src/index.ts` has its own story and appears in `apps/storybook/src/Gallery.tsx`. A new component adds both in the same change. **A story's title is `<Section>/<Page name>`, taken from the site's `componentSections` (`apps/hack-cove-site/src/content/components/`), never written from memory:** add the component to a page there first, then give its story file that page's section and name. The Storybook sidebar is built from the same list, in the site's rail order (`apps/storybook/scripts/visual-plan.ts`, `sidebarOrder`), so there is no sort list to edit; `visual-plan.test.ts` fails on a title that is not the site's, or a story file no page names. **Overview / All themes** is the one-page check of every component in every theme.
 
 The e2e runs every spec in Chromium, Firefox and WebKit (`apps/storybook/playwright.config.ts`) and needs all three once per machine: `bunx playwright install chromium firefox webkit` (on Linux, `--with-deps` in CI). The PixelSlash visual check stays Chromium-only. A spec that cannot pass in one engine gets a scoped, commented skip (or a conditional assertion) naming the engine and the reason, never a blanket skip; a real cross-engine failure is fixed in the component. It discovers themes
-from `themes/*` like the switcher does and asserts each one under the scope class its `theme.css`
+from `themes/*/*.css` like the switcher does and asserts each one under the scope class its CSS file
 names, so a new theme needs no test edit.
 
 **The visual check** (PixelSlash, `CONTRIBUTING.md`, "The visual check") is split into one group
@@ -127,10 +131,10 @@ global rule; what is particular to hackcove:
    `packages/ui-react/palette.json` (`palette.test.ts`). A new colour utility in a component is a
    palette change: add it to `palette.json` and remap it in every theme in the same commit.
 2. **A theme is a folder and nothing else registers it.** No theme name appears in code: Storybook
-   globs `themes/*/theme.css`, and each theme's own `theme.test.ts` is the contract (name
-   `@hackcove/theme-<folder>`, exports + `files` = `theme.css` only, rules scoped under the
-   theme's scope class, no Tailwind import, remaps every palette utility, clears the WCAG AA contrast contract in `packages/themes-shared/src/contrastRules.ts`; a dark theme also declares `@custom-variant dark`).
-   The scope class is read from `theme.css`, never listed. Do not add a theme list anywhere.
+   globs `themes/*/*.css`, and each theme folder's own `theme.test.ts` is the contract (name
+   `@hackcove/theme-<folder>`, exports + `files` = the theme CSS files only, rules scoped under each
+   file's own scope class, no Tailwind import, remaps every palette utility, clears the WCAG AA contrast contract in `packages/themes-shared/src/contrastRules.ts`; a dark theme also declares `@custom-variant dark`).
+   The scope class is read from the CSS file, never listed. Do not add a theme list anywhere.
 3. **Packages stay (nearly) dependency-free at runtime.** `@hackcove/ui-react` has one approved runtime
    dependency, `react-aria-components`, for the date picker (with `@internationalized/date`, whose
    `CalendarDate` is the picker's value type and which RAC already brings in); its peers are react,

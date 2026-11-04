@@ -12,7 +12,7 @@ under the `@hackcove` scope (MIT, all `0.x`).
 | Folder | Package | What it is |
 | --- | --- | --- |
 | `packages/ui-react` | `@hackcove/ui-react` | The React components: primitives, typography roles, a safe Markdown renderer. Written against Tailwind v4 utilities. No theme CSS. |
-| `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha` | The Catppuccin Mocha dark theme: one `theme.css` that remaps those utilities under `.dark`. |
+| `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha` | The Catppuccin themes: Mocha (dark, `theme.css`, scope `.dark`) and Latte (light, `latte.css`, scope `.latte`), each one CSS file that remaps those utilities. |
 | `themes/thrifty-paper` | `@hackcove/theme-thrifty-paper` | The Thrifty Paper light theme (cream paper, ink text, clay accent): one `theme.css` that remaps those utilities under `.thrifty-paper`. |
 | `apps/storybook` | (private) | Storybook for the components, with a toolbar theme switcher that lists every folder under `themes/`. |
 | `apps/hack-cove-site` | (private) | The hack-cove.com website (Astro), built on the workspace components and the Mocha theme. |
@@ -135,7 +135,9 @@ provider. See [`packages/ui-react/README.md`](packages/ui-react/README.md#light-
 
 ## How to add a theme
 
-A theme is a folder. Copy one, rename it, change the CSS:
+A theme is a CSS file in a folder; a package may carry more than one (the Catppuccin package has
+`theme.css` for Mocha and `latte.css` for Latte, each with its own scope class and the same contract).
+Copy a folder, rename it, change the CSS:
 
 ```sh
 cp -r themes/catppuccin-mocha themes/<name>
@@ -158,7 +160,7 @@ cp -r themes/catppuccin-mocha themes/<name>
 4. `bun install`, then `bunx nx run theme-<name>:test` (checks the name, exports, `files` list and
    the scope in the theme's own `theme.test.ts`; edit it to match your theme).
 
-There is nothing else to register. Storybook finds `themes/*/theme.css` on its own, so the new
+There is nothing else to register. Storybook finds `themes/*/*.css` on its own, so the new
 theme is in the toolbar the next time it starts. It also appears as a panel in **Overview / All themes**, with no code edit.
 
 ## UI review

@@ -41,12 +41,12 @@ function Themes() {
       <Text as="p">{ui.themes.intro}</Text>
       <CardGrid columns={2}>
         {themes.map((theme) => (
-          <Card key={theme.folder} as="article" title={theme.title}>
+          <Card key={theme.id} as="article" title={theme.title}>
             <Stack gap="sm">
               <Text as="p">{theme.description}</Text>
               <Stack gap="xs">
                 <Text as="p" color="tertiary">
-                  <Code>{theme.name}</Code>
+                  <Code>{theme.specifier}</Code>
                 </Text>
                 <Text as="p" color="tertiary">
                   {ui.themes.scopeLabel}: <Code>{theme.scopeClass}</Code>

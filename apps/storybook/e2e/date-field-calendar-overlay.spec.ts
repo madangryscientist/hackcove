@@ -1,12 +1,8 @@
-import { readdirSync } from "node:fs";
 import { expect, test } from "@playwright/test";
+import { themeFiles } from "@hackcove/themes-shared/files";
 
-// One folder per theme under themes/, like the toolbar switcher.
-const themesDir = `${import.meta.dirname}/../../../themes`;
-const themes = readdirSync(themesDir, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .toSorted();
+// One theme per CSS file under themes/*/, like the toolbar switcher.
+const themes = themeFiles(`${import.meta.dirname}/../../../themes`).map((theme) => theme.id);
 
 // A modal <dialog> makes everything outside it inert, and react-aria portals the calendar to
 // <body>: the calendar must still open, take focus and pick a day.

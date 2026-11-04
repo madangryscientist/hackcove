@@ -1,8 +1,13 @@
 # @hackcove/theme-catppuccin-mocha
 
-The Catppuccin Mocha dark theme for Hack Cove. One CSS file, `theme.css`: it declares the
-class-based `dark` variant and, under `.dark`, remaps the Tailwind slate/colour utilities that
-`@hackcove/ui-react` is written against to real Mocha tokens. It also ships a `.link` class.
+The Catppuccin themes for Hack Cove, two flavours in one package. Each is one CSS file with its own
+scope class, and each remaps the Tailwind slate/colour utilities that `@hackcove/ui-react` is
+written against to real Catppuccin tokens. It also ships a `.link` class.
+
+| Flavour | File | Scope | |
+| --- | --- | --- | --- |
+| Mocha | `theme.css` | `.dark` | dark; also declares the class-based `dark` variant |
+| Latte | `latte.css` | `.latte` | light; declares no `dark` variant |
 
 Status: `0.x`, published to npm. License: MIT.
 
@@ -22,7 +27,17 @@ In your global stylesheet, after Tailwind:
 @import "@hackcove/theme-catppuccin-mocha/theme.css";
 ```
 
-Put `class="dark"` on `<html>`. The scope paints the mantle canvas (`#181825`), so the base-coloured
+For Latte, import `latte.css` instead:
+
+```css
+@import "tailwindcss";
+@import "@hackcove/theme-catppuccin-mocha/latte.css";
+```
+
+and put `class="latte"` on `<html>`. Import one flavour, or both and switch the class on `<html>`; the
+scopes do not overlap.
+
+Put `class="dark"` on `<html>` for Mocha. The scope paints the mantle canvas (`#181825`), so the base-coloured
 cards lift off it and the app needs no page-background rule of its own. The rules are unlayered, so
 they override Tailwind's layered utilities.
 
@@ -34,8 +49,16 @@ font CSS.
 
 ## Palette and attribution
 
-The palette is [Catppuccin](https://github.com/catppuccin/catppuccin) Mocha, © 2021 Catppuccin, used under the MIT license. The full notice ships in this package as `NOTICE`, and a one-line credit sits at the top of `theme.css`. Tailwind's build drops that comment from a consumer's bundled CSS, so an app that wants the credit visible should add its own. This package's own license (MIT, see `LICENSE`) is separate.
+The palettes are [Catppuccin](https://github.com/catppuccin/catppuccin) Mocha and Latte, © 2021 Catppuccin, used under the MIT license. The full notice ships in this package as `NOTICE`, and a one-line credit sits at the top of each CSS file. Tailwind's build drops that comment from a consumer's bundled CSS, so an app that wants the credit visible should add its own. This package's own license (MIT, see `LICENSE`) is separate.
 
 base `#1e1e2e` · mantle `#181825` · crust `#11111b` · surface0 `#313244` · surface1 `#45475a` ·
 surface2 `#585b70` · text `#cdd6f4` · subtext1 `#bac2de` · subtext0 `#a6adc8` · overlay1 `#7f849c` ·
 green `#a6e3a1` · red `#f38ba8` · yellow `#f9e2af` · blue `#89b4fa` · mauve `#cba6f7`
+
+Latte: base `#eff1f5` · mantle `#e6e9ef` · crust `#dce0e8` · surface0 `#ccd0da` · text `#4c4f69` ·
+subtext1 `#5c5f77` · subtext0 `#6c6f85` · overlay1 `#8c8fa1` · mauve `#8839ef` · red `#d20f39` ·
+green `#40a02b` · yellow `#df8e1d` · blue `#1e66f5`
+
+Latte's accents are strong on white, so its cards are white and lift off the base canvas. Where a
+token alone misses the WCAG AA contrast contract (text 4.5:1, controls 3:1), `latte.css` darkens it
+just enough, and the rule's comment names the token it started from.

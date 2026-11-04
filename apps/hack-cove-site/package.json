@@ -45,7 +45,7 @@
       "build": {
         "inputs": [
           "default",
-          "{workspaceRoot}/themes/*/theme.css",
+          "{workspaceRoot}/themes/*/*.css",
           "{workspaceRoot}/themes/*/package.json",
           "{workspaceRoot}/packages/ui-react/src/**/*",
           "{workspaceRoot}/apps/storybook/src/**/*",
@@ -94,7 +94,7 @@
       "test": {
         "inputs": [
           "default",
-          "{workspaceRoot}/themes/*/theme.css",
+          "{workspaceRoot}/themes/*/*.css",
           "{workspaceRoot}/themes/*/package.json",
           "{workspaceRoot}/apps/storybook/src/**/*",
           "{workspaceRoot}/packages/themes-shared/src/**/*",

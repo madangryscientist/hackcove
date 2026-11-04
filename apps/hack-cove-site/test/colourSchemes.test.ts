@@ -1,22 +1,22 @@
-import { readdirSync, readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 import { describe, expect, test } from "vitest";
 import { declaresDark, themeScope } from "@hackcove/themes-shared";
+import { themeFiles } from "@hackcove/themes-shared/files";
+import { PRIMARY_FILE } from "@hackcove/themes-shared/ids";
 import { colourSchemeHeadScript, schemes } from "../src/content/colourSchemes";
 
-const themesDir = `${import.meta.dirname}/../../../themes`;
-const folders = readdirSync(themesDir, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .toSorted();
-const cssOf = (folder: string) => readFileSync(`${themesDir}/${folder}/theme.css`, "utf8");
+// Only a package's main `theme.css` can be the site's scheme; its other files are extra themes.
+const primary = themeFiles(`${import.meta.dirname}/../../../themes`)
+  .filter((theme) => theme.file === PRIMARY_FILE)
+  .map((theme) => theme.css);
+
+const first = (dark: boolean) => primary.find((css) => declaresDark(css) === dark) ?? "";
 
 describe("light/dark schemes", () => {
-  test("light and dark are the first themes by folder order that do and do not declare the dark variant", () => {
-    const first = (dark: boolean) => folders.find((f) => declaresDark(cssOf(f)) === dark) ?? "";
+  test("light and dark are the first main themes (theme.css) by folder order that do and do not declare the dark variant", () => {
     expect(schemes).toEqual({
-      light: themeScope(cssOf(first(false))),
-      dark: themeScope(cssOf(first(true))),
+      light: themeScope(first(false)),
+      dark: themeScope(first(true)),
     });
     expect(schemes.light).not.toBe(schemes.dark);
   });

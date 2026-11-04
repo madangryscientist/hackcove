@@ -39,9 +39,9 @@ themes** shows every component in every theme on one page.
 | Folder | Package | What it is |
 | --- | --- | --- |
 | `packages/ui-react` | `@hackcove/ui-react` | The components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, react-dom, tailwindcss v4. No theme CSS. |
-| `themes/<name>` | `@hackcove/theme-<name>` | One `theme.css`, shipped as-is. |
+| `themes/<name>` | `@hackcove/theme-<name>` | One CSS file per theme, shipped as-is (`theme.css`, plus an extra `<flavour>.css` when one package carries more than one flavour). |
 | `apps/storybook` | (private) | Storybook and the Playwright e2e. |
-| `packages/themes-shared` | (private) | How Storybook and the docs find the themes: the `themes/*/theme.css` glob and each theme's scope class. |
+| `packages/themes-shared` | (private) | How Storybook and the docs find the themes: the `themes/*/*.css` glob, the theme ids and each theme's scope class. |
 | `apps/hack-cove-site` | (private) | The hack-cove.com Astro site, including the `/ui/` component docs; run it with `bunx nx dev hack-cove-site` (http://localhost:4321). Its e2e is `bunx nx e2e hack-cove-site`. |
 | `tools/ui-review` | (private) | Dev tooling for the `ui-review.yml` reusable workflow: a deterministic check of a pull request's added lines and an advisory model review. Not published; no package depends on it. |
 
@@ -106,11 +106,11 @@ to parse them with.
 
 A theme is a folder; copy one and change the CSS. The steps are in the README
 ([How to add a theme](README.md#how-to-add-a-theme)). Each theme names its own scope class (the
-class of the first top-level `.<class> { … }` rule in its `theme.css`), and its own `theme.test.ts`
-is the contract; Storybook and the e2e find it from `themes/*`, so there is no list to edit. The
+class of the first top-level `.<class> { … }` rule in its CSS file), and its own `theme.test.ts`
+is the contract for every CSS file in the folder; Storybook and the e2e find them from `themes/*/*.css`, so there is no list to edit. The
 contract includes WCAG AA contrast, measured from the theme's CSS for every pairing in
 `palette.json` (`packages/themes-shared/src/contrastRules.ts`); a colour that fails is fixed in
-`theme.css`, with a comment saying why when a published token moves.
+the theme's CSS file, with a comment saying why when a published token moves.
 
 ## The visual check
 
@@ -141,7 +141,7 @@ What it means for you:
 - If you cannot run it, say so in the pull request. A maintainer runs it before merging and reads
   every changed capture.
 - A change that should not alter any visuals (a refactor, a doc, a test) is expected to show
-  `0 changed`. A component or `theme.css` change will show changes: say in the pull request which
+  `0 changed`. A component or theme CSS change will show changes: say in the pull request which
   stories should look different and why. Attach a before/after screenshot from Storybook if you can.
 - You can get most of the benefit without it: run Storybook, flip each theme, and read the
   affected stories (and **Overview / All themes**); `bunx nx e2e storybook` checks every theme under

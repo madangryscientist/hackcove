@@ -41,7 +41,7 @@
       "build": {
         "inputs": [
           "default",
-          "{workspaceRoot}/themes/*/theme.css",
+          "{workspaceRoot}/themes/*/*.css",
           "{workspaceRoot}/packages/themes-shared/src/**/*",
           "{workspaceRoot}/packages/ui-react/src/**/*",
           "{workspaceRoot}/apps/hack-cove-site/src/content/components/**/*"

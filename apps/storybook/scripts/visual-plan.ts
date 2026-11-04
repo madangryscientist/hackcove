@@ -10,15 +10,18 @@
  *
  * A change reaches a story file when the file's static imports (followed through the
  * `@hackcove/ui-react` barrel to the module that exports each name) lead to a changed file. A change
- * under `themes/<t>/` reaches every group in theme `<t>` only. A change to shared ground (the
+ * to a theme's CSS file, `themes/<folder>/<file>.css`, reaches every group in that theme only; to any other
+ * file in a theme folder, every theme of the folder. A change to shared ground (the
  * palette, Storybook's config and what it imports, a manifest or the lockfile, the visual tooling)
  * or a diff that cannot be read reaches everything.
  *
  * Everything here is pure but `readRepo`, so the tests hand it a repo of their own.
  */
-import { globSync, readFileSync, readdirSync } from "node:fs";
+import { globSync, readFileSync } from "node:fs";
 import { join, posix } from "node:path";
+import { themeFiles } from "@hackcove/themes-shared/files";
 import type { Page, Placement, Section } from "./site-types.js";
+import { themesOf } from "./theme-reach.js";
 
 export type { Placement, Section };
 
@@ -57,8 +60,10 @@ export type Repo = {
   read: Reader;
   storyFiles: StoryFile[];
   sections: Section[];
-  /** The folders under `themes/`. */
+  /** The ids of the themes: each `*.css` file of each folder under `themes/` (`themes-shared`). */
   themes: string[];
+  /** Theme id to the folder under `themes/` it is in. */
+  themeFolders: Record<string, string>;
 };
 
 export const OVERVIEW = "overview";
@@ -227,6 +232,7 @@ export type GroupPick = Group & {
   /** The story files to capture: a subset of `files`. */
   picked: StoryFile[];
   themes: string[];
+  /** Theme id to the folder under `themes/` it is in. */
   why: string[];
 };
 
@@ -253,8 +259,6 @@ const list = (items: string[], max = 3) =>
     ? items.join(", ")
     : `${items.slice(0, max).join(", ")} and ${items.length - max} more`;
 
-const THEME = /^themes\/([^/]+)\//;
-
 /** Why the change reaches every group in every theme, or `[]` when it does not. */
 function everythingWhy(repo: Repo, changed: string[], barrel: Map<string, string>): string[] {
   const configClosure = new Set(
@@ -267,15 +271,14 @@ function everythingWhy(repo: Repo, changed: string[], barrel: Map<string, string
   const known = new Set(repo.storyFiles.map((file) => file.path));
   const gone = changed.filter((path) => path.endsWith(".stories.tsx") && !known.has(path));
   if (gone.length > 0) return gone.map((path) => `${path} was removed`);
-  const strayTheme = changed.find((path) => {
-    const theme = THEME.exec(path)?.[1];
-    return theme !== undefined && !repo.themes.includes(theme);
-  });
+  const strayTheme = changed.find((path) =>
+    themesOf(repo, path)?.some((id) => !repo.themes.includes(id)),
+  );
   return strayTheme === undefined ? [] : [`${strayTheme} is in no theme there is now`];
 }
 
 type Reach = {
-  /** The themes a change under `themes/<t>/` touched. */
+  /** The themes a change under `themes/` touched. */
   themed: string[];
   /** Per story file reached, the changed files that reach it. */
   reached: Map<string, string[]>;
@@ -291,11 +294,11 @@ function reachOf(repo: Repo, changed: string[], barrel: Map<string, string>): Re
   const reached = new Map<string, string[]>();
   const unreached: string[] = [];
   for (const path of changed) {
-    const theme = THEME.exec(path)?.[1];
-    if (theme !== undefined) themed.add(theme);
+    const touched = themesOf(repo, path);
+    for (const id of touched ?? []) themed.add(id);
     const stories = closures.filter((c) => c.closure.has(path)).map((c) => c.story);
     for (const story of stories) reached.set(story, [...(reached.get(story) ?? []), path]);
-    if (theme === undefined && stories.length === 0) unreached.push(path);
+    if (touched === undefined && stories.length === 0) unreached.push(path);
   }
   return { themed: [...themed].toSorted(), reached, unreached };
 }
@@ -389,17 +392,16 @@ export async function readRepo(root: string): Promise<Repo> {
     })
     .toSorted((a, b) => a.path.localeCompare(b.path));
 
-  const themes = readdirSync(join(root, "themes"), { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .toSorted();
+  const found = themeFiles(join(root, "themes"));
+  const themes = found.map((theme) => theme.id);
+  const themeFolders = Object.fromEntries(found.map((theme) => [theme.id, theme.folder]));
 
   const cache = new Map<string, string | undefined>();
   const read: Reader = (path) => {
     if (!cache.has(path)) cache.set(path, safeRead(join(root, path)));
     return cache.get(path);
   };
-  return { read, storyFiles, sections, themes };
+  return { read, storyFiles, sections, themes, themeFolders };
 }
 
 function safeRead(path: string): string | undefined {

@@ -4,15 +4,11 @@
  * checkout (see scripts/visual.ts), which runs from its own directory, so every path here is
  * absolute.
  */
-import { readdirSync } from "node:fs";
 import { join } from "node:path";
+import { themeFiles } from "@hackcove/themes-shared/files";
 
-// Same list as the toolbar: one value per folder under themes/.
-const themesDir = join(import.meta.dirname, "..", "..", "themes");
-const themes = readdirSync(themesDir, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .toSorted();
+// Same list as the toolbar: one id per CSS file under themes/*/.
+const themes = themeFiles(join(import.meta.dirname, "..", "..", "themes")).map((theme) => theme.id);
 
 /** A JSON array of strings from the environment, or `undefined` when unset. */
 function listFrom(name: string): string[] | undefined {
