@@ -125,11 +125,35 @@ function CommandGrid({ items }: { items: { title: string; code: string; text: st
   );
 }
 
+/**
+ * For a team whose own Playwright suite takes the shots: the package, one `snapshot()` call and the
+ * upload. Full width under the grid, because a code block does not fit a grid cell.
+ */
+function PlaywrightCard() {
+  const { playwright } = pixelslash.features;
+  return (
+    <Card as="article" title={playwright.title}>
+      <Stack gap="sm">
+        <Text as="p">{playwright.intro}</Text>
+        <CodeBlock lines={[playwright.install]} label="bash" language="bash" />
+        <CodeBlock language="ts">{playwright.example}</CodeBlock>
+        <Text as="p">
+          <Code>ignore</Code> {playwright.ignore}
+        </Text>
+        <Text as="p">{playwright.upload}</Text>
+        <CodeBlock lines={[playwright.command]} label="bash" language="bash" />
+        <TextLink href={links.playwright.href}>{links.playwright.label}</TextLink>
+      </Stack>
+    </Card>
+  );
+}
+
 function Features() {
   const { features } = pixelslash;
   return (
     <Section title={features.title}>
       <CommandGrid items={features.items} />
+      <PlaywrightCard />
     </Section>
   );
 }

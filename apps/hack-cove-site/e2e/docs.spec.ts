@@ -185,6 +185,23 @@ test("the toggle is in the header of every page, and a choice carries to the nex
   }
 });
 
+test("/pixelslash/ shows the Playwright card under both schemes, and its code fits at 375px", async ({
+  page,
+}) => {
+  await page.goto("/pixelslash/");
+  const card = page.getByRole("article", { name: "Playwright tests you already have" });
+  for (const scheme of ["dark", "light"] as const) {
+    await setScheme(page, scheme);
+    await expect(card).toBeVisible();
+    await expect(card.getByText("npm i -D @hackcove/pixelslash-playwright")).toBeVisible();
+  }
+  await page.setViewportSize({ width: 375, height: 900 });
+  const clipped = await card
+    .locator("pre")
+    .evaluateAll((els) => els.filter((el) => el.scrollWidth > el.clientWidth + 1).length);
+  expect(clipped, "code in the Playwright card that scrolls sideways").toBe(0);
+});
+
 const middle = (box?: { top: number; height: number }) => (box?.top ?? 0) + (box?.height ?? 0) / 2;
 
 test("at 375px the header is one row on every page: no sideways scroll, the toggle inside the viewport, beside the brand", async ({
