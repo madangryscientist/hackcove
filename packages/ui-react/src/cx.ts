@@ -10,7 +10,9 @@ export const focusRing =
 /**
  * On a row or card that holds a stretched link (`link-stretch`): every interactive descendant sits
  * above that link and is clickable on its own. `z-10` needs a position, so each gets `relative`,
- * except one that is already `absolute` and the stretched link itself.
+ * except one that is already `absolute` and the stretched link itself. The row or card is `isolate`,
+ * its own stacking context: its `z-10` descendants rank only inside it, so they cannot tie with or
+ * paint over the page's sticky bars (AppShell's header, a StickyBar).
  */
 export const liftInteractive =
-  "[&_:is(a,button,label,select,textarea,input,summary):not(.link-stretch):not(.absolute)]:relative [&_:is(a,button,label,select,textarea,input,summary):not(.link-stretch)]:z-10";
+  "isolate [&_:is(a,button,label,select,textarea,input,summary):not(.link-stretch):not(.absolute)]:relative [&_:is(a,button,label,select,textarea,input,summary):not(.link-stretch)]:z-10";
