@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { expect, it } from "vitest";
+import { contrastFailures } from "../../packages/themes-shared/src/contrast.js";
 
 const dir = import.meta.dirname;
 const read = (file: string): string => readFileSync(`${dir}/${file}`, "utf8");
@@ -52,6 +53,15 @@ it("remaps every utility in @hackcove/ui-react's palette", () => {
       return !new RegExp(`${escaped}(?=[\\s,:{])`).test(css);
     });
   expect(missing).toEqual([]);
+});
+
+it("meets the contrast contract: every pair measured on every surface at WCAG AA", () => {
+  // packages/themes-shared/src/contrastRules.ts says which pairs and which bar; a failure names the
+  // pair, both colours, the ratio and the bar.
+  const palette: Record<string, string[]> = JSON.parse(
+    read("../../packages/ui-react/palette.json"),
+  );
+  expect(contrastFailures(css, palette)).toEqual([]);
 });
 
 it("owns the page canvas and the type faces", () => {

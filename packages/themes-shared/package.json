@@ -6,7 +6,10 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./scope": "./src/scope.ts"
+    "./scope": "./src/scope.ts",
+    "./colour": "./src/colour.ts",
+    "./contrast": "./src/contrast.ts",
+    "./utilities": "./src/utilities.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

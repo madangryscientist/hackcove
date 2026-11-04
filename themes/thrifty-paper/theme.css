@@ -100,7 +100,7 @@
   color: #6b6259; /* ink-mute — days outside the month: 5.97:1 on white (ink-mute/50 was 2.15:1) */
 }
 .thrifty-paper .placeholder\:text-slate-400::placeholder {
-  color: rgba(107, 98, 89, 0.7); /* ink-mute/70 */
+  color: #736a60; /* ink-mute, a step lighter than the text it sits beside: ink-mute/70 was 2.9:1 to 3.1:1, and AA text needs 4.5:1 */
 }
 
 /* Borders */
@@ -279,7 +279,7 @@
 /* Chart-only tones (StackedBar, Legend): neutral is a warm grey lighter than muted (ink-mute),
    violet a plum, because the accent here is clay and would sit beside warn and danger. */
 .thrifty-paper .text-neutral-500 {
-  color: #9a9086; /* 3.13:1 on white */
+  color: #8f857b; /* 3.24:1 on subtle, the darkest surface a chart sits on (#9a9086 was 2.80:1; a chart mark needs 3:1) */
 }
 .thrifty-paper .text-purple-700 {
   color: #7e3fb0; /* plum, 6.51:1 on white */

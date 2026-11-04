@@ -60,6 +60,13 @@
     "targets": {
       "pack-check": {
         "dependsOn": []
+      },
+      "test": {
+        "inputs": [
+          "default",
+          "{workspaceRoot}/packages/ui-react/palette.json",
+          "{workspaceRoot}/packages/themes-shared/src/**/*"
+        ]
       }
     }
   }
