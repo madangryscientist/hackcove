@@ -3,15 +3,15 @@ import { join } from "node:path";
 
 /** What the rules need to know about Hack Cove, read from a hackcove checkout. */
 export type Context = {
-  /** Every component `@hackcove/ui` exports (capitalised, not a type). */
+  /** Every component `@hackcove/ui-react` exports (capitalised, not a type). */
   components: ReadonlySet<string>;
-  /** A palette utility to the role `packages/ui/palette.json` files it under. */
+  /** A palette utility to the role `packages/ui-react/palette.json` files it under. */
   palette: ReadonlyMap<string, string>;
 };
 
 const EXPORT_BLOCK = /export\s*\{([^}]*)\}\s*from/g;
 
-/** The value exports of `packages/ui/src/index.ts` that read as components. */
+/** The value exports of `packages/ui-react/src/index.ts` that read as components. */
 export function componentsOf(indexSource: string): Set<string> {
   const names = new Set<string>();
   for (const block of indexSource.matchAll(EXPORT_BLOCK)) {
@@ -33,10 +33,12 @@ export function paletteOf(json: string): Map<string, string> {
 
 /** Reads the component list and the palette out of a hackcove checkout. */
 export function loadContext(hackcoveDir: string): Context {
-  const index = join(hackcoveDir, "packages", "ui", "src", "index.ts");
-  const palette = join(hackcoveDir, "packages", "ui", "palette.json");
+  const index = join(hackcoveDir, "packages", "ui-react", "src", "index.ts");
+  const palette = join(hackcoveDir, "packages", "ui-react", "palette.json");
   if (!existsSync(index) || !existsSync(palette)) {
-    throw new Error(`${hackcoveDir} is not a hackcove checkout (no packages/ui/src/index.ts)`);
+    throw new Error(
+      `${hackcoveDir} is not a hackcove checkout (no packages/ui-react/src/index.ts)`,
+    );
   }
   return {
     components: componentsOf(readFileSync(index, "utf8")),

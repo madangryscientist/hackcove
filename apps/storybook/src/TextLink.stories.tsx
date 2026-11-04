@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Card, type LinkRenderProps, Text, TextLink } from "@hackcove/ui";
+import { Card, type LinkRenderProps, Text, TextLink } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Text/TextLink" };
 export default meta;
@@ -50,7 +50,7 @@ export const SizeAndMono: S = {
         size lg
       </TextLink>
       <TextLink href="#path" size="md" mono>
-        packages/ui/src/TextLink.tsx
+        packages/ui-react/src/TextLink.tsx
       </TextLink>
     </div>
   ),

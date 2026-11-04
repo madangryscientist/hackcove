@@ -1,4 +1,4 @@
-import { Display, Overline } from "@hackcove/ui";
+import { Display, Overline } from "@hackcove/ui-react";
 import { site } from "../content/site";
 
 export function Hero() {

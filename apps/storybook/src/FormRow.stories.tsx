@@ -9,7 +9,7 @@ import {
   Select,
   Stack,
   Textarea,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Forms/FormRow" };
 export default meta;

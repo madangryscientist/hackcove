@@ -1,5 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { AppShell, Button, CenteredLayout, Field, FormLayout, Input, Tabs } from "@hackcove/ui";
+import {
+  AppShell,
+  Button,
+  CenteredLayout,
+  Field,
+  FormLayout,
+  Input,
+  Tabs,
+} from "@hackcove/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 /** The one layout whose width differs on purpose, so the no-jump title check skips it (e2e/layout.spec.ts). */

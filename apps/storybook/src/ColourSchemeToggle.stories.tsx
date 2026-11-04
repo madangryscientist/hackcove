@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { applyColourScheme, Button, ButtonGroup, ColourSchemeToggle } from "@hackcove/ui";
+import { applyColourScheme, Button, ButtonGroup, ColourSchemeToggle } from "@hackcove/ui-react";
 import { resetColourScheme } from "./resetColourScheme";
 
 const meta: Meta = { title: "Actions/ColourSchemeToggle" };

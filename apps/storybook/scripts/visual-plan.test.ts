@@ -28,23 +28,23 @@ const storyFiles = [
 ];
 
 const files: Record<string, string> = {
-  "packages/ui/src/index.ts": [
+  "packages/ui-react/src/index.ts": [
     'export { Button, type ButtonProps } from "./Button.js";',
     'export {\n  Card,\n  type CardProps,\n} from "./Card.js";',
     'export { Stack } from "./Stack.js";',
   ].join("\n"),
-  "packages/ui/src/Button.tsx": 'import { focusRing } from "./focus.js";',
-  "packages/ui/src/focus.ts": "export const focusRing = '';",
-  "packages/ui/src/Card.tsx": 'import type { ButtonProps } from "./Button.js";',
-  "packages/ui/src/Stack.tsx": "",
-  "apps/storybook/src/Button.stories.tsx": 'import { Button } from "@hackcove/ui";',
+  "packages/ui-react/src/Button.tsx": 'import { focusRing } from "./focus.js";',
+  "packages/ui-react/src/focus.ts": "export const focusRing = '';",
+  "packages/ui-react/src/Card.tsx": 'import type { ButtonProps } from "./Button.js";',
+  "packages/ui-react/src/Stack.tsx": "",
+  "apps/storybook/src/Button.stories.tsx": 'import { Button } from "@hackcove/ui-react";',
   "apps/storybook/src/Card.stories.tsx":
-    'import { Card, type CardProps } from "@hackcove/ui";\nimport { sample } from "./sample";',
-  "apps/storybook/src/CardBadge.stories.tsx": 'import { Card } from "@hackcove/ui";',
+    'import { Card, type CardProps } from "@hackcove/ui-react";\nimport { sample } from "./sample";',
+  "apps/storybook/src/CardBadge.stories.tsx": 'import { Card } from "@hackcove/ui-react";',
   "apps/storybook/src/sample.ts": "export const sample = 1;",
-  "apps/storybook/src/layout/Stack.stories.tsx": 'import { Stack } from "@hackcove/ui";',
+  "apps/storybook/src/layout/Stack.stories.tsx": 'import { Stack } from "@hackcove/ui-react";',
   "apps/storybook/src/overview.stories.tsx": 'import { Gallery } from "./Gallery";',
-  "apps/storybook/src/Gallery.tsx": 'import * as ui from "@hackcove/ui";',
+  "apps/storybook/src/Gallery.tsx": 'import * as ui from "@hackcove/ui-react";',
   "apps/storybook/src/palette.stories.tsx": "",
   "apps/storybook/.storybook/preview.tsx": 'import { ThemeDocument } from "./themes";',
   "apps/storybook/.storybook/themes.tsx": 'import { useTheme } from "../src/useTheme";',
@@ -161,28 +161,28 @@ describe("closureOf", () => {
     const closure = closureOf("apps/storybook/src/Button.stories.tsx", repo.read, barrel);
     expect([...closure].toSorted()).toEqual([
       "apps/storybook/src/Button.stories.tsx",
-      "packages/ui/src/Button.tsx",
-      "packages/ui/src/focus.ts",
-      "packages/ui/src/index.ts",
+      "packages/ui-react/src/Button.tsx",
+      "packages/ui-react/src/focus.ts",
+      "packages/ui-react/src/index.ts",
     ]);
   });
 
   it("skips type-only imports and follows a namespace import to every module", () => {
     const card = closureOf("apps/storybook/src/Card.stories.tsx", repo.read, barrel);
-    expect(card.has("packages/ui/src/Button.tsx")).toBe(false);
+    expect(card.has("packages/ui-react/src/Button.tsx")).toBe(false);
     expect(card.has("apps/storybook/src/sample.ts")).toBe(true);
     const overview = closureOf("apps/storybook/src/overview.stories.tsx", repo.read, barrel);
-    expect(overview.has("packages/ui/src/Stack.tsx")).toBe(true);
+    expect(overview.has("packages/ui-react/src/Stack.tsx")).toBe(true);
   });
 });
 
 describe("planCapture", () => {
   it("a one-component change captures the stories it reaches, in every theme, and Overview", () => {
-    expect(picked(["packages/ui/src/focus.ts"])).toEqual({
+    expect(picked(["packages/ui-react/src/focus.ts"])).toEqual({
       actions: { stems: ["Button"], themes: repo.themes },
       overview: { stems: ["overview", "palette"], themes: repo.themes },
     });
-    const { skipped, all } = plan(["packages/ui/src/focus.ts"]);
+    const { skipped, all } = plan(["packages/ui-react/src/focus.ts"]);
     expect(all).toBe(false);
     expect(skipped.map((g) => g.slug)).toEqual(["layout", "content"]);
   });
@@ -197,17 +197,17 @@ describe("planCapture", () => {
   });
 
   it("a component and a theme change give the component's group every theme", () => {
-    const result = picked(["themes/thrifty-paper/theme.css", "packages/ui/src/Stack.tsx"]);
+    const result = picked(["themes/thrifty-paper/theme.css", "packages/ui-react/src/Stack.tsx"]);
     expect(result["layout"]?.themes).toEqual(repo.themes);
     expect(result["actions"]?.themes).toEqual(["thrifty-paper"]);
   });
 
   it.each([
-    ["packages/ui/palette.json"],
+    ["packages/ui-react/palette.json"],
     ["apps/storybook/.storybook/preview.tsx"],
     ["apps/storybook/src/useTheme.ts"],
     ["bun.lock"],
-    ["packages/ui/package.json"],
+    ["packages/ui-react/package.json"],
     ["apps/storybook/scripts/visual.ts"],
     ["apps/storybook/pixelslash.config.ts"],
     ["apps/storybook/src/Gone.stories.tsx"],

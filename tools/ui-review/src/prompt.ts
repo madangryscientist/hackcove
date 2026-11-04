@@ -8,7 +8,7 @@ export function purposeOf(agentsMd: string): string {
   return (match[1] ?? "").trim();
 }
 
-const TASK = `You review one pull request for a team that builds its UI with Hack Cove UI (@hackcove/ui), a strict, opinionated component library. Judge only how the change uses it.
+const TASK = `You review one pull request for a team that builds its UI with Hack Cove UI (@hackcove/ui-react), a strict, opinionated component library. Judge only how the change uses it.
 
 Hard rules (raw colour utilities, dark: variants, className/style on a Hack Cove component, new CSS, a local component with a Hack Cove name) are checked by a script. Do not repeat them.
 

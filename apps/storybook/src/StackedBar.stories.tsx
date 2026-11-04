@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Legend, StackedBar, type StackedSegment } from "@hackcove/ui";
+import { Legend, StackedBar, type StackedSegment } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Data/StackedBar", parameters: { layout: "padded" } };
 export default meta;

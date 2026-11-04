@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { FullBleedLayout, ListRow, Text } from "@hackcove/ui";
+import { FullBleedLayout, ListRow, Text } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Data/ListRow" };
 export default meta;

@@ -15,7 +15,7 @@ import {
   SubsectionHeading,
   Text,
   Video,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import { samplePhoto } from "./samplePhoto";
 import { sampleShot, sampleShotSize } from "./sampleShot";
 import { sampleVideo } from "./sampleVideo";
@@ -69,7 +69,11 @@ export function GalleryText() {
           </Text>
         </div>
       </div>
-      <CodeBlock label="bash" language="bash" lines={["bun add @hackcove/ui", "bun install"]} />
+      <CodeBlock
+        label="bash"
+        language="bash"
+        lines={["bun add @hackcove/ui-react", "bun install"]}
+      />
       <CodeExample code={"<Button>Save</Button>"}>
         <Button>Save</Button>
       </CodeExample>

@@ -1,4 +1,4 @@
-import { BulletList, Card, MetaList, Pill, Stack, Text, TextLink } from "@hackcove/ui";
+import { BulletList, Card, MetaList, Pill, Stack, Text, TextLink } from "@hackcove/ui-react";
 import type { Status } from "../content/site";
 
 const STATUS = {

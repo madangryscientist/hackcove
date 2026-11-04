@@ -18,7 +18,7 @@ import {
   Select,
   Text,
   Textarea,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 
 // Realistic page bodies, shared by the layout stories and the Pages stories. Each is the layout
 // plus content; none sets a width or padding of its own.

@@ -7,7 +7,7 @@ import {
   Stack,
   SubsectionHeading,
   Text,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import propsJson from "../generated/props.json";
 import { Prose } from "./Prose.js";
 import type { ComponentDoc, PropDoc, PropsJson } from "./types.js";
@@ -50,7 +50,7 @@ function PropEntry({ prop }: { prop: PropDoc }) {
   );
 }
 
-/** One component's props, read from its types and JSDoc in `packages/ui`. */
+/** One component's props, read from its types and JSDoc in `packages/ui-react`. */
 export function Props({ of }: { of: string }) {
   const { name, description, props } = docOf(of);
   return (

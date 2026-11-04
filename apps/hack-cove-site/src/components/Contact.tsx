@@ -1,4 +1,4 @@
-import { Caption, MetaList, SectionHeading, Stack, Text, TextLink } from "@hackcove/ui";
+import { Caption, MetaList, SectionHeading, Stack, Text, TextLink } from "@hackcove/ui-react";
 import { site } from "../content/site";
 
 /**

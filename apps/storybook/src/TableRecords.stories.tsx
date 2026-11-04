@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeaderCell,
   TableRow,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Data/Table" };
 export default meta;

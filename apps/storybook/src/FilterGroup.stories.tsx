@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Cluster, FilterGroup, Stack, Button } from "@hackcove/ui";
+import { Cluster, FilterGroup, Stack, Button } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Forms/FilterGroup" };
 export default meta;

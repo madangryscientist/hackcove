@@ -9,7 +9,7 @@ import {
   PageHeading,
   Stack,
   Text,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 
 /** The docs examples for `PageHeader`. */
 const meta: Meta = { title: "Layout/PageHeader" };

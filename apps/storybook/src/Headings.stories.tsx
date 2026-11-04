@@ -7,7 +7,7 @@ import {
   Stack,
   SubsectionHeading,
   Text,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Text/Headings" };
 export default meta;

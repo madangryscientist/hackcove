@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Markdown } from "@hackcove/ui";
+import { Markdown } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Text/Markdown" };
 export default meta;

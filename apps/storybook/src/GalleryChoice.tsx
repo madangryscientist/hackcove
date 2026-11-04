@@ -1,4 +1,4 @@
-import { Disclosure, Radio, RadioGroup, Text } from "@hackcove/ui";
+import { Disclosure, Radio, RadioGroup, Text } from "@hackcove/ui-react";
 
 /** The RadioGroup (a description, an error) and the Disclosure (closed, open) of the Gallery. */
 export function GalleryChoice() {

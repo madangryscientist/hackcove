@@ -18,7 +18,7 @@ import {
   Text,
   Timeline,
   TimelineItem,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import { samplePhoto } from "./samplePhoto";
 
 /** A Callout with an action, in info and in danger. */

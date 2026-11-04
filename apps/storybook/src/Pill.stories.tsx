@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Cluster, Pill, TextLink } from "@hackcove/ui";
+import { Cluster, Pill, TextLink } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Content/Pill" };
 export default meta;

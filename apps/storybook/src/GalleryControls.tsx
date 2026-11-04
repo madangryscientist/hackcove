@@ -7,7 +7,7 @@ import {
   Select,
   Textarea,
   type ControlWidth,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 
 const widths: ControlWidth[] = ["xs", "sm", "md", "lg"];
 

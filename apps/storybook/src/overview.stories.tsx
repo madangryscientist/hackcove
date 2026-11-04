@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Overline } from "@hackcove/ui";
+import { Overline } from "@hackcove/ui-react";
 import { ThemeFrame, themeNames } from "../.storybook/themes";
 import { Gallery as GalleryView } from "./Gallery";
 import { resetColourScheme } from "./resetColourScheme";

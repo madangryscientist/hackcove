@@ -6,7 +6,7 @@ import {
   StatTile,
   type BarTone,
   type StackedSegment,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 
 const tones: BarTone[] = ["accent", "positive", "warn", "negative"];
 

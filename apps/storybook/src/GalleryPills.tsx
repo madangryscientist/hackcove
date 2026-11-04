@@ -1,4 +1,4 @@
-import { Badge, Icon, IconButton, Pill, type PillTone } from "@hackcove/ui";
+import { Badge, Icon, IconButton, Pill, type PillTone } from "@hackcove/ui-react";
 
 const tones: PillTone[] = ["slate", "amber", "emerald", "blue", "red", "violet", "sky"];
 

@@ -6,7 +6,7 @@ type AriaCurrent = NonNullable<ComponentPropsWithoutRef<"a">["aria-current"]>;
  * What a `render` function receives to draw a link with the app's own router `<Link>`: the
  * component's classes, its label as `children`, and (for a tab that is current, a link that is
  * external or an option with a tooltip) `aria-current`, `target`, `rel` and `title`. Spread it on
- * the router's link: `render: (props) => <Link to="/quotes" {...props} />`. `@hackcove/ui` has no
+ * the router's link: `render: (props) => <Link to="/quotes" {...props} />`. `@hackcove/ui-react` has no
  * router dependency.
  *
  * An optional field is `?: T`, never `?: T | undefined`, and a key that has no value is left out

@@ -1,4 +1,4 @@
-import { Tabs } from "@hackcove/ui";
+import { Tabs } from "@hackcove/ui-react";
 import { type Section, site } from "../content/site";
 
 const plain = (path: string) => (path.length > 1 ? path.replace(/\/+$/, "") : path);

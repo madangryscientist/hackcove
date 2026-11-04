@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { FileDrop } from "@hackcove/ui";
+import { FileDrop } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Forms/FileDrop" };
 export default meta;

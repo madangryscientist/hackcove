@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Field, Input, Textarea } from "@hackcove/ui";
+import { Field, Input, Textarea } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Forms/Field" };
 export default meta;

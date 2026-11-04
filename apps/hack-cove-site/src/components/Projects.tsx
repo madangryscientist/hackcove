@@ -1,4 +1,4 @@
-import { Section } from "@hackcove/ui";
+import { Section } from "@hackcove/ui-react";
 import { site } from "../content/site";
 import { StatusCard } from "./StatusCard";
 

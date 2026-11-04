@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Video } from "@hackcove/ui";
+import { Video } from "@hackcove/ui-react";
 import { samplePhoto } from "./samplePhoto";
 import { sampleVideo } from "./sampleVideo";
 

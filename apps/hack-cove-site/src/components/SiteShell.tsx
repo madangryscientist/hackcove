@@ -1,4 +1,4 @@
-import { AppShell } from "@hackcove/ui";
+import { AppShell } from "@hackcove/ui-react";
 import type { ReactNode } from "react";
 import { Logo } from "./Logo";
 import { SiteNav } from "./SiteNav";

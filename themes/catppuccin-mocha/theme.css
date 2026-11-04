@@ -2,7 +2,7 @@
 /* ---------------------------------------------------------------------------
    Catppuccin Mocha — the dark theme for the Hack Cove design system.
    ---------------------------------------------------------------------------
-   The @hackcove/ui components are written against Tailwind's slate/colour
+   The @hackcove/ui-react components are written against Tailwind's slate/colour
    utilities directly (bg-white, text-slate-900, …) rather than carrying `dark:`
    variants. This file is what makes them dark: it remaps those core utilities
    to real Catppuccin Mocha tokens under `.dark`. The rules are unlayered, so
@@ -330,7 +330,7 @@
   border-color: rgba(137, 180, 250, 0.4);
 }
 
-/* Inline links — Mocha mauve (green is reserved for positive values). Alias of @hackcove/ui's
+/* Inline links — Mocha mauve (green is reserved for positive values). Alias of @hackcove/ui-react's
    TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
    write class="link" on a bare <a>. */
 .dark .link {

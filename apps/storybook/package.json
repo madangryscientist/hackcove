@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@hackcove/themes-shared": "workspace:*",
-    "@hackcove/ui": "workspace:*",
+    "@hackcove/ui-react": "workspace:*",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
@@ -43,7 +43,7 @@
           "default",
           "{workspaceRoot}/themes/*/theme.css",
           "{workspaceRoot}/packages/themes-shared/src/**/*",
-          "{workspaceRoot}/packages/ui/src/**/*",
+          "{workspaceRoot}/packages/ui-react/src/**/*",
           "{workspaceRoot}/apps/hack-cove-site/src/content/components/**/*"
         ],
         "outputs": [
@@ -116,7 +116,7 @@
         "inputs": [
           "default",
           "{workspaceRoot}/apps/hack-cove-site/src/content/components/**/*",
-          "{workspaceRoot}/packages/ui/src/**/*"
+          "{workspaceRoot}/packages/ui-react/src/**/*"
         ]
       }
     }

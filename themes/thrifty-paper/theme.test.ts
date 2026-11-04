@@ -29,8 +29,10 @@ it("leaves the Tailwind import to the consumer", () => {
   expect(pkg.peerDependencies.tailwindcss).toBeDefined();
 });
 
-it("remaps every utility in @hackcove/ui's palette", () => {
-  const palette: Record<string, string[]> = JSON.parse(read("../../packages/ui/palette.json"));
+it("remaps every utility in @hackcove/ui-react's palette", () => {
+  const palette: Record<string, string[]> = JSON.parse(
+    read("../../packages/ui-react/palette.json"),
+  );
   const missing = Object.values(palette)
     .flat()
     .filter((utility) => {

@@ -10,7 +10,7 @@ import {
   Pill,
   Stack,
   Text,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Text/Body text" };
 export default meta;

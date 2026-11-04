@@ -1,4 +1,4 @@
-/** One prop of a component, as `scripts/generate-props.ts` reads it from `packages/ui`. */
+/** One prop of a component, as `scripts/generate-props.ts` reads it from `packages/ui-react`. */
 export type PropDoc = {
   name: string;
   type: string;
@@ -17,5 +17,5 @@ export type ComponentDoc = {
   props: PropDoc[];
 };
 
-/** `src/generated/props.json`: every value `@hackcove/ui` exports, by name. */
+/** `src/generated/props.json`: every value `@hackcove/ui-react` exports, by name. */
 export type PropsJson = Record<string, ComponentDoc>;

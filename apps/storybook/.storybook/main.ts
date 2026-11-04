@@ -22,10 +22,12 @@ const config: StorybookConfig = {
     const aliases = Array.isArray(existing)
       ? existing
       : Object.entries(existing ?? {}).map(([find, replacement]) => ({ find, replacement }));
-    const source = fileURLToPath(new URL("../../../packages/ui/src/index.ts", import.meta.url));
+    const source = fileURLToPath(
+      new URL("../../../packages/ui-react/src/index.ts", import.meta.url),
+    );
     cfg.resolve = {
       ...cfg.resolve,
-      alias: [...aliases, { find: "@hackcove/ui", replacement: source }],
+      alias: [...aliases, { find: "@hackcove/ui-react", replacement: source }],
     };
     return cfg;
   },

@@ -1,6 +1,6 @@
 # Contributing to hackcove
 
-Thanks for looking. This repo is the Hack Cove design system: React components (`@hackcove/ui`) and
+Thanks for looking. This repo is the Hack Cove design system: React components (`@hackcove/ui-react`) and
 one folder per theme (`@hackcove/theme-<name>`), each its own npm package, in an Nx +
 Bun-workspaces monorepo. By taking part you agree to the [Code of Conduct](CODE_OF_CONDUCT.md). For
 a security problem, follow [SECURITY.md](SECURITY.md) instead of opening an issue.
@@ -38,7 +38,7 @@ themes** shows every component in every theme on one page.
 
 | Folder | Package | What it is |
 | --- | --- | --- |
-| `packages/ui` | `@hackcove/ui` | The components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, react-dom, tailwindcss v4. No theme CSS. |
+| `packages/ui-react` | `@hackcove/ui-react` | The components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, react-dom, tailwindcss v4. No theme CSS. |
 | `themes/<name>` | `@hackcove/theme-<name>` | One `theme.css`, shipped as-is. |
 | `apps/storybook` | (private) | Storybook and the Playwright e2e. |
 | `packages/themes-shared` | (private) | How Storybook and the docs find the themes: the `themes/*/theme.css` glob and each theme's scope class. |
@@ -53,7 +53,7 @@ A change is ready when all of this passes:
 bun install
 bunx nx run-many -t typecheck lint test build   # tsc strict · oxlint + check-slop · Vitest · dist + Storybook build
 bun run format:check                            # oxfmt --check (`bun run format` fixes)
-bunx nx run-many -t pack-check                  # npm pack --dry-run for every package; ui also typechecks its tarball in a consumer app
+bunx nx run-many -t pack-check                  # npm pack --dry-run for every package; ui-react also typechecks its tarball in a consumer app
 bunx nx e2e storybook                           # Playwright, in Chromium, Firefox and WebKit: builds Storybook, flips every theme
 bunx nx e2e hack-cove-site                      # Playwright: builds the site, flips every theme on the /ui/ pages
 ```
@@ -71,22 +71,22 @@ to parse them with.
 
 ## Rules of the repo
 
-1. **`@hackcove/ui` carries no theme.** Components use stock Tailwind utilities (`bg-white`,
+1. **`@hackcove/ui-react` carries no theme.** Components use stock Tailwind utilities (`bg-white`,
    `text-slate-900`, …) and never a `dark:` variant or a palette colour. A theme is the only place
    a palette lives; it remaps those utilities under its own scope class. The colour utilities a
-   component may use are listed in `packages/ui/palette.json`. A new one is a palette change: add
+   component may use are listed in `packages/ui-react/palette.json`. A new one is a palette change: add
    it there and remap it in every theme in the same change. With no theme the
    components render in Tailwind's own default colours; that works, but it is only what a theme
    remaps, not a look the repo designs or checks, so Storybook offers no unthemed choice.
 2. **A theme is a folder and nothing else registers it.** No theme name appears in code.
-3. **Almost no runtime dependencies.** `@hackcove/ui` has one approved dependency,
+3. **Almost no runtime dependencies.** `@hackcove/ui-react` has one approved dependency,
    `react-aria-components` (with `@internationalized/date`), for the date picker; its peers are react,
    react-dom and tailwindcss v4, plus `@types/react` and `@types/react-dom` as optional peers (types only, so a consumer's
    tsc resolves `react` under strict linkers). A theme has only the tailwindcss peer. A new dependency needs a
    maintainer's agreement first.
-4. **Source imports in `packages/ui` use `.js` specifiers** (`./ui.js`, resolved to the `.tsx`),
+4. **Source imports in `packages/ui-react` use `.js` specifiers** (`./ui.js`, resolved to the `.tsx`),
    because a `.tsx` specifier is emitted into the `.d.ts` and breaks consumers' types.
-5. **A new component** is exported from `packages/ui/src/index.ts`, has its own story, and appears
+5. **A new component** is exported from `packages/ui-react/src/index.ts`, has its own story, and appears
    in `apps/storybook/src/Gallery.tsx`. Its docs page names Do/Don't topics, the stories
    `Do<Topic>` and `Dont<Topic>`. A topic shows both halves when a counter-example teaches
    something; one shown on its own (a feature, or a wrong way the types already refuse) is listed
@@ -98,7 +98,7 @@ to parse them with.
    differs from the site's.
 
 6. **No `className` or `style` on a component.** A public component has no styling prop and its
-   HTML props are typed `Unstyled<…>` (`packages/ui/src/props.ts`). If a story or a site needs a
+   HTML props are typed `Unstyled<…>` (`packages/ui-react/src/props.ts`). If a story or a site needs a
    look the component lacks, propose the prop or variant (say what recurring need it serves) or
    drop the look. `noStyling.test.tsx` enforces it.
 
@@ -147,7 +147,7 @@ What it means for you:
 ## Commit messages
 
 Commits are [Conventional Commits](https://www.conventionalcommits.org): `<type>(<scope>): <subject>`,
-for example `fix(ui): keep the Pill label on one line`. Nx reads them to version and release each
+for example `fix(ui-react): keep the Pill label on one line`. Nx reads them to version and release each
 package, so the type is honest:
 
 - `feat`, `fix` and `perf` release a patch while a package is `0.x`. A `!` after the type, or a

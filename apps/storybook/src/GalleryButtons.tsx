@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, ColourSchemeToggle, IconButton } from "@hackcove/ui";
+import { Button, ButtonGroup, ColourSchemeToggle, IconButton } from "@hackcove/ui-react";
 
 const moonIcon = (
   <svg

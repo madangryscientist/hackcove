@@ -9,7 +9,7 @@ import {
   Input,
   Stack,
   toISODate,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
 /**

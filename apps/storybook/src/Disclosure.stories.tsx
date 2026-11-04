@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Callout, Disclosure, Stack, Text } from "@hackcove/ui";
+import { Callout, Disclosure, Stack, Text } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Content/Disclosure" };
 export default meta;

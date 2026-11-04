@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { OutlineRegion, RegionFrame } from "@hackcove/ui";
+import { OutlineRegion, RegionFrame } from "@hackcove/ui-react";
 import { sampleShot, sampleShotSize } from "./sampleShot";
 
 const meta: Meta = { title: "Content/OutlineRegion" };

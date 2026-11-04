@@ -9,7 +9,7 @@ import {
   Step,
   Steps,
   Text,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Feedback/EmptyState" };
 export default meta;

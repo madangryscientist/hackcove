@@ -77,7 +77,7 @@ export const cv = {
         {
           heading: "Hack Cove UI",
           items: [
-            "An open-source React design system on npm (@hackcove/ui plus theme packages), in an Nx and Bun monorepo with Storybook. Every theme reskins every component with no code change.",
+            "An open-source React design system on npm (@hackcove/ui-react plus theme packages), in an Nx and Bun monorepo with Storybook. Every theme reskins every component with no code change.",
             "Its reusable GitHub Action reviews UI pull requests in two layers: deterministic rules that fail on off-system styling, then an LLM review through OpenCode Zen against the published component reference (llms.txt).",
           ],
           links: [

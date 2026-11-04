@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Avatar, AvatarStack, Cluster, Stack } from "@hackcove/ui";
+import { Avatar, AvatarStack, Cluster, Stack } from "@hackcove/ui-react";
 import { samplePhoto } from "./samplePhoto";
 
 const meta: Meta = { title: "Content/AvatarStack" };

@@ -122,7 +122,7 @@ const ui = {
       {
         text: "Add the components and a theme. React, React DOM and Tailwind CSS v4 are peers.",
         language: "bash" as const,
-        code: "bun add @hackcove/ui @hackcove/theme-catppuccin-mocha",
+        code: "bun add @hackcove/ui-react @hackcove/theme-catppuccin-mocha",
       },
       {
         text: "Import the theme in your CSS, after Tailwind, and point Tailwind at the components' build, since it skips node_modules:",
@@ -131,7 +131,7 @@ const ui = {
         code: [
           '@import "tailwindcss";',
           '@import "@hackcove/theme-catppuccin-mocha/theme.css";',
-          '@source "../node_modules/@hackcove/ui/dist";',
+          '@source "../node_modules/@hackcove/ui-react/dist";',
         ],
       },
       {
@@ -152,12 +152,12 @@ const ui = {
     title: "Find it",
     items: [
       { label: "GitHub", href: "https://github.com/madangryscientist/hackcove" },
-      { label: "npm", href: "https://www.npmjs.com/package/@hackcove/ui" },
+      { label: "npm", href: "https://www.npmjs.com/package/@hackcove/ui-react" },
     ],
   },
   components: {
     title: "Components",
-    intro: "Every component in @hackcove/ui has a page, in these groups.",
+    intro: "Every component in @hackcove/ui-react has a page, in these groups.",
   },
   docs: {
     title: "Component docs",

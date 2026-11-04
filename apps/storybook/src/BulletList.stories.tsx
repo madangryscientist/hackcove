@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { BulletList, Stack, Text } from "@hackcove/ui";
+import { BulletList, Stack, Text } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Text/BulletList" };
 export default meta;

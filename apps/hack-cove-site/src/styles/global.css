@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
-/* The Catppuccin Mocha palette that makes @hackcove/ui's slate-based components dark. It is its own
+/* The Catppuccin Mocha palette that makes @hackcove/ui-react's slate-based components dark. It is its own
    package (@hackcove/theme-catppuccin-mocha, in the hackcove repo, ~/dev/hackcove) so this app and
    apps/dashboard share one copy. `.dark` is set on <html> in Base.astro. */
 @import "@hackcove/theme-catppuccin-mocha/theme.css";
 
 /* Tailwind skips node_modules, so tell it to scan the components' build for the
    utilities they use — otherwise their classes are absent from the bundle. */
-@source "../../node_modules/@hackcove/ui/dist";
+@source "../../node_modules/@hackcove/ui-react/dist";
 
 /* The docs pages render the Storybook stories (apps/storybook/src), whose layout classes (a
    story's own `flex max-w-xl …`) are not in the components' build. */

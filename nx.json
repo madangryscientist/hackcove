@@ -41,7 +41,7 @@
     "packageManager": "npm"
   },
   "release": {
-    "projects": ["ui", "theme-*"],
+    "projects": ["ui-react", "theme-*"],
     "projectsRelationship": "independent",
     "releaseTag": {
       "pattern": "{projectName}@{version}"

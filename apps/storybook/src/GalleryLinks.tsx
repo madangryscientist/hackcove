@@ -1,4 +1,4 @@
-import { Code, MetaList, TextLink, type LinkRenderProps } from "@hackcove/ui";
+import { Code, MetaList, TextLink, type LinkRenderProps } from "@hackcove/ui-react";
 
 /** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
 function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {

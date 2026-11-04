@@ -1,7 +1,7 @@
 name: UI review (self)
 
 # hackcove reviews its own site with the reusable workflow, so the check is exercised on every
-# pull request that touches the app. The site composes @hackcove/ui and a theme and nothing of
+# pull request that touches the app. The site composes @hackcove/ui-react and a theme and nothing of
 # its own (AGENTS.md), so that is the code reviewed.
 on:
   pull_request:

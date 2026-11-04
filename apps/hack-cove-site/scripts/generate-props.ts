@@ -1,5 +1,5 @@
 /**
- * Reads what `packages/ui/src/index.ts` exports (types and JSDoc) with react-docgen-typescript and
+ * Reads what `packages/ui-react/src/index.ts` exports (types and JSDoc) with react-docgen-typescript and
  * the TypeScript checker: the props of every component, and the signature of every helper.
  * `className` and `style` are left out: the library has no styling escape hatch to document. Props
  * that only come from React's DOM types (`onClick`) and the `aria-*` props are described once, in
@@ -11,7 +11,7 @@ import { withCustomConfig, type PropItem } from "react-docgen-typescript";
 import ts from "typescript";
 import type { ComponentDoc, PropDoc, PropsJson } from "../src/docs/types.js";
 
-const UI = join(import.meta.dirname, "..", "..", "..", "packages", "ui");
+const UI = join(import.meta.dirname, "..", "..", "..", "packages", "ui-react");
 const TSCONFIG = join(UI, "tsconfig.json");
 const INDEX = join(UI, "src", "index.ts");
 /** Where `scripts/props.ts` writes the result and the docs read it. */
@@ -88,7 +88,7 @@ function helperDoc(checker: ts.TypeChecker, name: string, symbol: ts.Symbol): Co
   };
 }
 
-/** Every export of `@hackcove/ui`, in name order: a component's props, a helper's signature. */
+/** Every export of `@hackcove/ui-react`, in name order: a component's props, a helper's signature. */
 export function generateProps(): PropsJson {
   const source = program();
   const checker = source.getTypeChecker();

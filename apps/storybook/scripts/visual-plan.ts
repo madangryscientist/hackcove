@@ -9,7 +9,7 @@
  * on it, and so does the run.
  *
  * A change reaches a story file when the file's static imports (followed through the
- * `@hackcove/ui` barrel to the module that exports each name) lead to a changed file. A change
+ * `@hackcove/ui-react` barrel to the module that exports each name) lead to a changed file. A change
  * under `themes/<t>/` reaches every group in theme `<t>` only. A change to shared ground (the
  * palette, Storybook's config and what it imports, a manifest or the lockfile, the visual tooling)
  * or a diff that cannot be read reaches everything.
@@ -111,7 +111,7 @@ export function groupStories(sections: Section[], storyFiles: StoryFile[]): Grou
    The import graph
    --------------------------------------------------------------------------- */
 
-const UI_BARREL = "packages/ui/src/index.ts";
+const UI_BARREL = "packages/ui-react/src/index.ts";
 
 // `import x, { a, type b } from "s"` and `export { a } from "s"`: the clause is names, braces,
 // commas and `* as`, so a match never runs across code.
@@ -177,7 +177,7 @@ export function barrelOf(read: Reader): Map<string, string> {
 function targetsOf(from: string, edge: Edge, read: Reader, barrel: Map<string, string>) {
   if (edge.spec.startsWith(".")) return [resolveRelative(from, edge.spec, read)];
   // Any other package is the lockfile's, which is shared ground.
-  if (edge.spec !== "@hackcove/ui") return [];
+  if (edge.spec !== "@hackcove/ui-react") return [];
   const modules =
     edge.names === "all" ? [...barrel.values()] : edge.names.map((n) => barrel.get(n));
   return [UI_BARREL, ...modules];
@@ -206,7 +206,7 @@ export function closureOf(entry: string, read: Reader, barrel: Map<string, strin
    --------------------------------------------------------------------------- */
 
 const SHARED: RegExp[] = [
-  /^packages\/ui\/palette\.json$/,
+  /^packages\/ui-react\/palette\.json$/,
   /^apps\/storybook\/\.storybook\//,
   /^apps\/storybook\/scripts\//,
   /^apps\/storybook\/pixelslash\.config\.ts$/,

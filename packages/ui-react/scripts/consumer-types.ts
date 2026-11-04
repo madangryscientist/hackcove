@@ -1,7 +1,7 @@
 /**
  * Consumer type check: the published tarball's types must resolve `react` in an app that installs
  * it under bun's isolated linker with the global store, where the package lives outside the app
- * and TypeScript cannot walk up to the app's own `@types/react`. If `@hackcove/ui` does not
+ * and TypeScript cannot walk up to the app's own `@types/react`. If `@hackcove/ui-react` does not
  * declare `@types/react` as a peer, its `.d.ts` cannot find `react`, every component's props
  * degrade to `any` and tsc stays green on code that passes `className` (HC-129).
  *
@@ -22,14 +22,14 @@ const pkg: { version: string; devDependencies: Record<string, string> } = JSON.p
 );
 
 if (!existsSync(join(root, "dist", "index.d.ts"))) {
-  throw new Error("packages/ui/dist is missing: run `bunx nx build ui` first");
+  throw new Error("packages/ui-react/dist is missing: run `bunx nx build ui-react` first");
 }
 
 // One dir per checkout, so concurrent worktrees do not collide and the bun global store, which
 // keys its links on the tarball path, does not grow a new entry per run.
 const app = join(
   tmpdir(),
-  `hackcove-ui-consumer-${createHash("sha1").update(root).digest("hex").slice(0, 8)}`,
+  `hackcove-ui-react-consumer-${createHash("sha1").update(root).digest("hex").slice(0, 8)}`,
 );
 rmSync(app, { recursive: true, force: true });
 mkdirSync(join(app, "src"), { recursive: true });
@@ -46,7 +46,7 @@ function run(cmd: string[], cwd: string): void {
 try {
   // --ignore-scripts: `prepack` would rebuild dist, which the caller (nx) has just built.
   run(["npm", "pack", "--ignore-scripts", "--pack-destination", app], root);
-  const tarball = join(app, `hackcove-ui-${pkg.version}.tgz`);
+  const tarball = join(app, `hackcove-ui-react-${pkg.version}.tgz`);
 
   writeFileSync(
     join(app, "package.json"),
@@ -55,7 +55,7 @@ try {
       private: true,
       type: "module",
       dependencies: {
-        "@hackcove/ui": `file:${tarball}`,
+        "@hackcove/ui-react": `file:${tarball}`,
         react: pkg.devDependencies["react"],
         "react-dom": pkg.devDependencies["react-dom"],
         "@types/react": pkg.devDependencies["@types/react"],
@@ -83,7 +83,7 @@ try {
   writeFileSync(
     join(app, "src", "use.tsx"),
     [
-      'import { Button } from "@hackcove/ui";',
+      'import { Button } from "@hackcove/ui-react";',
       "",
       'export const ok = <Button variant="outline">Save</Button>;',
       "",

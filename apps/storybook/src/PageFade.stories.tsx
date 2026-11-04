@@ -1,6 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { Button, PageFade, SegmentedControl, Stack, startPageTransition, Text } from "@hackcove/ui";
+import {
+  Button,
+  PageFade,
+  SegmentedControl,
+  Stack,
+  startPageTransition,
+  Text,
+} from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Feedback/PageFade" };
 export default meta;

@@ -2,7 +2,7 @@
 /* ---------------------------------------------------------------------------
    Thrifty Paper — a light theme for the Hack Cove design system.
    ---------------------------------------------------------------------------
-   The @hackcove/ui components are written against Tailwind's slate/colour
+   The @hackcove/ui-react components are written against Tailwind's slate/colour
    utilities directly (bg-white, text-slate-900, …). This file remaps those
    utilities to Thrifty's light tokens under `.thrifty-paper`. The rules are
    unlayered, so they override Tailwind's (layered) utilities.
@@ -313,7 +313,7 @@
   border-color: rgba(15, 118, 110, 0.3); /* note */
 }
 
-/* Inline links — the clay accent. Alias of @hackcove/ui's TextLink (text-violet-600,
+/* Inline links — the clay accent. Alias of @hackcove/ui-react's TextLink (text-violet-600,
    hover:text-violet-700, remapped above), kept for consumers that still write class="link" on a
    bare <a>. */
 .thrifty-paper .link {

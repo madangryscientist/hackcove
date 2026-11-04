@@ -11,7 +11,7 @@ import {
   SubsectionHeading,
   Text,
   TextLink,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import { SampleTable } from "./sampleTable";
 
 const meta: Meta = { title: "Content/Card" };

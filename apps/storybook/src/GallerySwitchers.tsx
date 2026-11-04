@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SegmentedControl, Tabs, Text } from "@hackcove/ui";
+import { SegmentedControl, Tabs, Text } from "@hackcove/ui-react";
 
 /**
  * The in-place switchers of the Gallery: underline and pill Tabs (counts, a disabled tab) over a

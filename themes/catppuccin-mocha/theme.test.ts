@@ -40,8 +40,10 @@ it("credits Catppuccin: NOTICE carries its MIT notice and theme.css keeps a bann
   expect(css).toMatch(/^\/\*! .*Catppuccin/);
 });
 
-it("remaps every utility in @hackcove/ui's palette", () => {
-  const palette: Record<string, string[]> = JSON.parse(read("../../packages/ui/palette.json"));
+it("remaps every utility in @hackcove/ui-react's palette", () => {
+  const palette: Record<string, string[]> = JSON.parse(
+    read("../../packages/ui-react/palette.json"),
+  );
   const missing = Object.values(palette)
     .flat()
     .filter((utility) => {

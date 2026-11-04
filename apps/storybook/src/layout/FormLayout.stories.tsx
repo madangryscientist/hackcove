@@ -9,7 +9,7 @@ import {
   ListLayout,
   Tabs,
   Stack,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { FormPage } from "./pages";
 
