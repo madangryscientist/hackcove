@@ -15,7 +15,7 @@ import {
   SidebarLayout,
   StickyBar,
   Text,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import { DemoShell } from "./layout/DemoShell";
 import { DetailPage, FormPage, ListPage, ProsePage, StatTiles } from "./layout/pages";
 

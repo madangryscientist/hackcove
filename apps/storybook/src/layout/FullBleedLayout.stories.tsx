@@ -11,7 +11,7 @@ import {
   Tabs,
   Overline,
   Text,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 /**

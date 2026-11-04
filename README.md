@@ -11,7 +11,7 @@ under the `@hackcove` scope (MIT, all `0.x`).
 
 | Folder | Package | What it is |
 | --- | --- | --- |
-| `packages/ui` | `@hackcove/ui` | The React components: primitives, typography roles, a safe Markdown renderer. Written against Tailwind v4 utilities. No theme CSS. |
+| `packages/ui-react` | `@hackcove/ui-react` | The React components: primitives, typography roles, a safe Markdown renderer. Written against Tailwind v4 utilities. No theme CSS. |
 | `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha` | The Catppuccin Mocha dark theme: one `theme.css` that remaps those utilities under `.dark`. |
 | `themes/thrifty-paper` | `@hackcove/theme-thrifty-paper` | The Thrifty Paper light theme (cream paper, ink text, clay accent): one `theme.css` that remaps those utilities under `.thrifty-paper`. |
 | `apps/storybook` | (private) | Storybook for the components, with a toolbar theme switcher that lists every folder under `themes/`. |
@@ -25,7 +25,7 @@ Cove designs or checks, so Storybook and the visual check list the themes and no
 ## Use it
 
 ```sh
-bun add @hackcove/ui @hackcove/theme-catppuccin-mocha
+bun add @hackcove/ui-react @hackcove/theme-catppuccin-mocha
 # peers: react >= 18, react-dom >= 18, tailwindcss ^4
 # optional type peers: @types/react, @types/react-dom (install them in a TypeScript app)
 ```
@@ -36,14 +36,14 @@ bun add @hackcove/ui @hackcove/theme-catppuccin-mocha
 
 /* The components use Tailwind utilities, and Tailwind skips node_modules, so point it at the
    package's build. The path is relative to this stylesheet. */
-@source "../node_modules/@hackcove/ui/dist";
+@source "../node_modules/@hackcove/ui-react/dist";
 ```
 
 Put `class="dark"` on `<html>`. The theme declares the class-based `dark` variant and remaps the
 slate/colour utilities to Mocha tokens under `.dark`.
 
 ```tsx
-import { Card, PageHeading, Pill, Text } from "@hackcove/ui";
+import { Card, PageHeading, Pill, Text } from "@hackcove/ui-react";
 
 export const Example = () => (
   <Card title="Status" count={2}>
@@ -53,8 +53,19 @@ export const Example = () => (
 );
 ```
 
-`@hackcove/ui` has one runtime dependency, `react-aria-components` (with `@internationalized/date`),
+`@hackcove/ui-react` has one runtime dependency, `react-aria-components` (with `@internationalized/date`),
 for the date picker. Any other dependency is a human decision.
+
+### Coming from `@hackcove/ui`?
+
+The package was renamed to `@hackcove/ui-react` in 0.8.0 (the React Native package that comes later is
+`@hackcove/ui-react-native`). It is the same components under a new name, with no alias package and no
+re-export, so the old name stays at 0.7.1. To move:
+
+1. Swap the dependency: `bun remove @hackcove/ui && bun add @hackcove/ui-react`.
+2. Find and replace the import specifier `"@hackcove/ui"` with `"@hackcove/ui-react"`.
+3. Find and replace the `@source` path `node_modules/@hackcove/ui/dist` with
+   `node_modules/@hackcove/ui-react/dist`.
 
 ## Browser support
 
@@ -85,7 +96,7 @@ padding: they start with `PageHeader` and space their blocks with `Stack` (`xs` 
 `sm` inside a group, `md` between blocks, `lg` between groups, `xl` between a page's top-level
 blocks). A text page uses `ProseLayout`, or
 `Stack width="narrow"`, for its reading measure. See
-[`packages/ui/README.md`](packages/ui/README.md#layout).
+[`packages/ui-react/README.md`](packages/ui-react/README.md#layout).
 
 The page-layout stories in Storybook (`Page layouts/…`, and `Layout/AppShell`) are checked at 375, 768 and 1280 px by `e2e/layout.spec.ts`: the
 page title must start at the logo's x, the same x on every one of them (found by title, so a
@@ -113,14 +124,14 @@ Stories: `Layout/AppShell › HeaderSlots`, `LinkedBrand`, `RouterBrand` and `Hi
 ## Dates
 
 `DateField` is a segmented DD/MM/YYYY field; `calendar` adds a calendar popover. Values are `CalendarDate`s; `toISODate` and `fromISODate` convert to and from `"1990-05-17"`.
-See [`packages/ui/README.md`](packages/ui/README.md#dates).
+See [`packages/ui-react/README.md`](packages/ui-react/README.md#dates).
 
 ## Light and dark
 
-`@hackcove/ui` ships the switch for the `.dark` class: inline `colourSchemeScript` in `<head>` (it
+`@hackcove/ui-react` ships the switch for the `.dark` class: inline `colourSchemeScript` in `<head>` (it
 applies the stored choice, else the system preference, before first paint), drop the hard-coded
 `class="dark"` from `<html>`, and place `<ColourSchemeToggle />` in the header. Two states, no
-provider. See [`packages/ui/README.md`](packages/ui/README.md#light-and-dark).
+provider. See [`packages/ui-react/README.md`](packages/ui-react/README.md#light-and-dark).
 
 ## How to add a theme
 
@@ -135,7 +146,7 @@ cp -r themes/catppuccin-mocha themes/<name>
    needs editing.
 2. Edit `theme.css`. The contract: pick the theme's scope class and make its first top-level rule
    `.<scope> { color-scheme: …; }` (Storybook and the e2e read the scope from that rule), remap the
-   utilities `@hackcove/ui` uses under `.<scope>`, and do not import Tailwind (the consumer does).
+   utilities `@hackcove/ui-react` uses under `.<scope>`, and do not import Tailwind (the consumer does).
    A dark theme also declares `@custom-variant dark (&:where(.<scope>, .<scope> *));`.
 3. Rewrite `README.md` for the new package; keep the MIT `LICENSE` and `"license": "MIT"`.
 4. `bun install`, then `bunx nx run theme-<name>:test` (checks the name, exports, `files` list and
@@ -162,8 +173,8 @@ It runs two layers on the lines the pull request adds:
 
 - **Rules (no model).** Fails the check with a `file:line` annotation on a new CSS file or
   `<style>` block, a raw palette utility (`bg-slate-800`), a `dark:` variant, a `className` or
-  `style` on an `@hackcove/ui` component, and a local component that duplicates a Hack Cove export.
-  The palette and the export list are read from `@hackcove/ui` itself, never copied.
+  `style` on an `@hackcove/ui-react` component, and a local component that duplicates a Hack Cove export.
+  The palette and the export list are read from `@hackcove/ui-react` itself, never copied.
 - **Model review (advisory).** An OpenCode Zen model (`opencode/deepseek-v4.1-flash`) reads the diff
   against the Hack Cove purpose and the generated `/ui/llms.txt`, and posts inline comments plus one
   summary. A part Hack Cove lacks is reported as "ask hackcove for X", never "build it locally". Its
@@ -214,7 +225,7 @@ Everything goes through Nx:
 bun install
 bunx nx run-many -t typecheck lint test build   # the gate
 bun run format:check                            # oxfmt, workspace-wide
-bunx nx run-many -t pack-check                  # npm pack --dry-run per package; ui also typechecks its tarball in a consumer app
+bunx nx run-many -t pack-check                  # npm pack --dry-run per package; ui-react also typechecks its tarball in a consumer app
 bunx nx e2e storybook                           # Playwright over the built Storybook, in Chromium, Firefox and WebKit (first time: bunx playwright install chromium firefox webkit)
 bunx nx e2e hack-cove-site                      # Playwright over the built site: the /ui/ pages under every theme
 bunx nx run storybook:storybook                 # http://localhost:6006
@@ -223,7 +234,7 @@ bunx nx dev hack-cove-site                      # the website, http://localhost:
 
 Contributing? Start with [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-Try an unpublished change in a consumer checkout: run `bun link` once inside `packages/ui` and
-each `themes/<name>`, then `bun link @hackcove/ui` (and the theme) in the consumer. Consumers
+Try an unpublished change in a consumer checkout: run `bun link` once inside `packages/ui-react` and
+each `themes/<name>`, then `bun link @hackcove/ui-react` (and the theme) in the consumer. Consumers
 install the published `0.x` from npm, so the link is only for checking a change before it is
-published. Rebuild `packages/ui` (`bunx nx build ui`) after a change; a linked consumer reads its `dist/`.
+published. Rebuild `packages/ui-react` (`bunx nx build ui-react`) after a change; a linked consumer reads its `dist/`.

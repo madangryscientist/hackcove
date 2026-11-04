@@ -1,4 +1,4 @@
-import { Pill, Stack } from "@hackcove/ui";
+import { Pill, Stack } from "@hackcove/ui-react";
 import { Example } from "./Example.js";
 import { pairOf } from "./pairs.js";
 import type { DocStory } from "./stories.js";

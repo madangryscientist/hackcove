@@ -1,4 +1,4 @@
-import { Code } from "@hackcove/ui";
+import { Code } from "@hackcove/ui-react";
 import { Fragment } from "react";
 
 /** Text with `backticked` runs drawn as `Code`: how a prop's JSDoc and the page copy name code. */

@@ -2,10 +2,11 @@
 export type StylingProp = { component: string; prop: string; line: number };
 
 const STYLING = new Set(["className", "class", "class:list", "style"]);
-const IMPORT = /import\s+(?!type\b)(?:[\w$]+\s*,\s*)?\{([^}]*)\}\s*from\s*["']@hackcove\/ui["']/g;
+const IMPORT =
+  /import\s+(?!type\b)(?:[\w$]+\s*,\s*)?\{([^}]*)\}\s*from\s*["']@hackcove\/ui-react["']/g;
 const OPEN_TAG = /<([A-Z][\w$]*)(?=[\s/>])/g;
 
-/** The local names `import { A, B as C } from "@hackcove/ui"` brings in (types are skipped). */
+/** The local names `import { A, B as C } from "@hackcove/ui-react"` brings in (types are skipped). */
 export function importedFromUi(source: string): Set<string> {
   const names = new Set<string>();
   for (const statement of source.matchAll(IMPORT)) {
@@ -89,7 +90,7 @@ export function attributesOf(source: string, from: number): Attribute[] {
   return found;
 }
 
-/** Every `className`, `class` or `style` attribute on a component imported from `@hackcove/ui`. */
+/** Every `className`, `class` or `style` attribute on a component imported from `@hackcove/ui-react`. */
 export function stylingProps(source: string): StylingProp[] {
   const imported = importedFromUi(source);
   const lineAt = (index: number) => source.slice(0, index).split("\n").length;

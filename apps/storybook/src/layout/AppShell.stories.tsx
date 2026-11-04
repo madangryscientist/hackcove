@@ -11,7 +11,7 @@ import {
   Select,
   Stack,
   Text,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 /** Every story under `Layout/AppShell` is picked up by the no-jump e2e (e2e/layout.spec.ts) at 375, 768 and 1280. */

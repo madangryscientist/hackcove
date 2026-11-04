@@ -1,6 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState, type MouseEvent, type ReactNode } from "react";
-import { Button, Drawer, Field, Input, KeyValue, KeyValueList, Stack, Text } from "@hackcove/ui";
+import {
+  Button,
+  Drawer,
+  Field,
+  Input,
+  KeyValue,
+  KeyValueList,
+  Stack,
+  Text,
+} from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Feedback/Drawer" };
 export default meta;

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Caption, Cluster, SplitBar, Stack } from "@hackcove/ui";
+import { Caption, Cluster, SplitBar, Stack } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Data/SplitBar", parameters: { layout: "padded" } };
 export default meta;

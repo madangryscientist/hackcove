@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, IconButton, type LinkRenderProps } from "@hackcove/ui";
+import { Button, IconButton, type LinkRenderProps } from "@hackcove/ui-react";
 
 /** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
 function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {

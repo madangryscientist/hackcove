@@ -2,7 +2,7 @@
 
 The Thrifty Paper light theme for Hack Cove: cream paper, ink text, clay accent. One CSS file,
 `theme.css`: under `.thrifty-paper` it remaps the Tailwind slate/colour utilities that
-`@hackcove/ui` is written against to Thrifty's light tokens. It also ships a `.link` class.
+`@hackcove/ui-react` is written against to Thrifty's light tokens. It also ships a `.link` class.
 
 Status: `0.x`, published on npm. License: MIT.
 

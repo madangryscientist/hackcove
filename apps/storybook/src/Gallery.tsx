@@ -36,7 +36,7 @@ import {
   SubsectionHeading,
   Text,
   Textarea,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import { GalleryBars } from "./GalleryBars";
 import { GalleryControls } from "./GalleryControls";
 import { GalleryButtons } from "./GalleryButtons";
@@ -208,10 +208,10 @@ function GalleryDialogs() {
 function GalleryCopy() {
   return (
     <div className="flex max-w-sm flex-col gap-3">
-      <CopyLine text="bun add @hackcove/ui" />
-      <CopyLine text="bun add @hackcove/ui" disabled />
+      <CopyLine text="bun add @hackcove/ui-react" />
+      <CopyLine text="bun add @hackcove/ui-react" disabled />
       <div className="self-start">
-        <CopyButton text="bun add @hackcove/ui" />
+        <CopyButton text="bun add @hackcove/ui-react" />
       </div>
     </div>
   );
@@ -243,7 +243,7 @@ function GalleryAvatars() {
   );
 }
 
-/** Every component in @hackcove/ui, once each. Colour comes from the components and the theme only. */
+/** Every component in @hackcove/ui-react, once each. Colour comes from the components and the theme only. */
 export function Gallery() {
   return (
     <div className="flex max-w-3xl flex-col gap-6">

@@ -9,7 +9,7 @@ import {
   SubsectionHeading,
   Text,
   TextLink,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import { Fragment } from "react";
 import { cv, type CvJob } from "../content/cv";
 import { site } from "../content/site";

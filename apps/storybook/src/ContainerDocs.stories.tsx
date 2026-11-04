@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Card, Container, Text } from "@hackcove/ui";
+import { Card, Container, Text } from "@hackcove/ui-react";
 
 /** The docs examples for `Container`. */
 const meta: Meta = { title: "Layout/Container" };

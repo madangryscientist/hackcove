@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { AppShell, Tabs, appShellRootClassFor } from "@hackcove/ui";
+import { AppShell, Tabs, appShellRootClassFor } from "@hackcove/ui-react";
 
 /** A Layout story's `beforeEach`: what an app does once on its own `<html>` (reserve the scrollbar), undone when the story is left. */
 export function layoutPage(): () => void {

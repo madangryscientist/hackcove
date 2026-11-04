@@ -1,4 +1,4 @@
-# @hackcove/ui
+# @hackcove/ui-react
 
 Hack Cove React components, written against Tailwind v4 utilities. They carry no theme: pair them
 with a `@hackcove/theme-*` package such as `@hackcove/theme-catppuccin-mocha` and put its scope
@@ -10,7 +10,7 @@ Status: `0.x`, published to npm. License: MIT.
 ## Install
 
 ```sh
-bun add @hackcove/ui
+bun add @hackcove/ui-react
 # peers: react >= 18, react-dom >= 18, tailwindcss ^4
 # optional type peers: @types/react, @types/react-dom (install them in a TypeScript app)
 ```
@@ -23,13 +23,13 @@ in the stylesheet that imports Tailwind (the path is relative to that file):
 
 ```css
 @import "tailwindcss";
-@source "../node_modules/@hackcove/ui/dist";
+@source "../node_modules/@hackcove/ui-react/dist";
 ```
 
 ## Use
 
 ```tsx
-import { Card, PageHeading, Pill, Text } from "@hackcove/ui";
+import { Card, PageHeading, Pill, Text } from "@hackcove/ui-react";
 
 export const Example = () => (
   <Card title="Status" count={2}>
@@ -64,7 +64,7 @@ same three names. Only `Avatar` (`xl`, `2xl`) and the `Stack` gap (`xs`, `xl`) g
 
 One default is not `md`, on purpose: `Cluster`'s gap is `xs` (a row is a label and its chips,
 which sit tight). `TextLink` with no `size`
-takes the size of the text around it. Upgrading: `MIGRATING.md`, shipped in the package (`node_modules/@hackcove/ui/MIGRATING.md`).
+takes the size of the text around it. Upgrading: `MIGRATING.md`, shipped in the package (`node_modules/@hackcove/ui-react/MIGRATING.md`).
 
 ## What is exported
 
@@ -86,7 +86,7 @@ takes the size of the text around it. Upgrading: `MIGRATING.md`, shipped in the 
 ## Dates
 
 ```tsx
-import { DateField, fromISODate, toISODate, type CalendarDate } from "@hackcove/ui";
+import { DateField, fromISODate, toISODate, type CalendarDate } from "@hackcove/ui-react";
 
 <DateField
   calendar
@@ -127,7 +127,7 @@ import { DateField, fromISODate, toISODate, type CalendarDate } from "@hackcove/
 
 ## Router links
 
-`@hackcove/ui` has no router dependency. `Tabs` and `SegmentedControl` (an item with `href` or `render`), `Breadcrumbs` (a crumb), `TextLink`,
+`@hackcove/ui-react` has no router dependency. `Tabs` and `SegmentedControl` (an item with `href` or `render`), `Breadcrumbs` (a crumb), `TextLink`,
 `ListRow`, `Pill`, `IconButton` and `Button` take a `render` function that draws the app's own `<Link>`, handed the component's
 classes (and `aria-current` on the active tab) to spread on it. The call site carries no `className`:
 
@@ -156,7 +156,7 @@ link.
 One content edge for every page, so nothing moves sideways between pages or viewport sizes.
 
 ```tsx
-import { AppShell, PageHeader, Section, Stack, Tabs, appShellRootClassFor } from "@hackcove/ui";
+import { AppShell, PageHeader, Section, Stack, Tabs, appShellRootClassFor } from "@hackcove/ui-react";
 
 // Your root layout. `appShellRootClassFor` adds `overflow-y-scroll`: it reserves the scrollbar, so
 // a short page and a long one centre their content at the same x. AppShell cannot set it itself.
@@ -302,7 +302,7 @@ Two states, light and dark. The stored choice wins; with nothing stored the syst
    first paint and neither scheme flashes the other. It is a few hundred bytes of plain JavaScript:
 
    ```tsx
-   import { colourSchemeScript } from "@hackcove/ui";
+   import { colourSchemeScript } from "@hackcove/ui-react";
 
    <head>
      <script dangerouslySetInnerHTML={{ __html: colourSchemeScript }} />
@@ -318,7 +318,7 @@ Two states, light and dark. The stored choice wins; with nothing stored the syst
 3. **Place the toggle** wherever the header wants it:
 
    ```tsx
-   import { ColourSchemeToggle } from "@hackcove/ui";
+   import { ColourSchemeToggle } from "@hackcove/ui-react";
 
    <ColourSchemeToggle onChange={(scheme) => track(scheme)} />;
    ```
@@ -336,7 +336,7 @@ Two states, light and dark. The stored choice wins; with nothing stored the syst
    scheme from a cookie and whose light theme has a scope class passes both:
 
    ```tsx
-   import { ColourSchemeToggle, schemeClass } from "@hackcove/ui";
+   import { ColourSchemeToggle, schemeClass } from "@hackcove/ui-react";
 
    const schemes = { light: "my-light", dark: "dark" }; // default: { light: "", dark: "dark" }
 
@@ -395,7 +395,7 @@ A theme remaps every utility in `palette.json`; a component uses no colour utili
 
 ## Develop
 
-From the workspace root: `bunx nx run-many -t typecheck lint test build -p ui` and
-`bunx nx pack-check ui` (the tarball is `dist/` plus `package.json`, `README.md`, `LICENSE`; it also typechecks the tarball in a
+From the workspace root: `bunx nx run-many -t typecheck lint test build -p ui-react` and
+`bunx nx pack-check ui-react` (the tarball is `dist/` plus `package.json`, `README.md`, `LICENSE`; it also typechecks the tarball in a
 consumer app: `scripts/consumer-types.ts`).
 The stories live in `apps/storybook`.

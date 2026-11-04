@@ -6,7 +6,7 @@ import {
   Stack,
   SubsectionHeading,
   Text,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import type { ComponentPage as Page } from "../content/components/index";
 import { DoDont } from "../docs/DoDont";
 import { Example } from "../docs/Example";

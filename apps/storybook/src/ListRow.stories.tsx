@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { Avatar, Button, Caption, Card, IconButton, ListRow, Pill, Text } from "@hackcove/ui";
+import { Avatar, Button, Caption, Card, IconButton, ListRow, Pill, Text } from "@hackcove/ui-react";
 import { samplePhoto } from "./samplePhoto";
 
 const meta: Meta = { title: "Data/ListRow" };

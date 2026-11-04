@@ -8,7 +8,7 @@ import {
   PageHeader,
   Stack,
   Text,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Navigation/Tabs" };
 export default meta;

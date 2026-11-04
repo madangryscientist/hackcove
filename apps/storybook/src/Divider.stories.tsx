@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Caption, Card, Divider, MetaList, Stack, Text, TextLink } from "@hackcove/ui";
+import { Caption, Card, Divider, MetaList, Stack, Text, TextLink } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Layout/Divider" };
 export default meta;

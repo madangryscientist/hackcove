@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, CopyButton } from "@hackcove/ui";
+import { Button, CopyButton } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Actions/CopyButton" };
 export default meta;
@@ -26,11 +26,11 @@ export const DontClipboard: S = {
 };
 
 export const Default: S = {
-  render: () => <CopyButton text="bun add @hackcove/ui" />,
+  render: () => <CopyButton text="bun add @hackcove/ui-react" />,
 };
 export const Labels: S = {
   render: () => <CopyButton text="token" label="Copy token" copiedLabel="Token copied" />,
 };
 export const Disabled: S = {
-  render: () => <CopyButton text="bun add @hackcove/ui" disabled />,
+  render: () => <CopyButton text="bun add @hackcove/ui-react" disabled />,
 };

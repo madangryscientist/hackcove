@@ -1,5 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { AppShell, Card, ListLayout, Tabs, ProseLayout, SectionHeading, Text } from "@hackcove/ui";
+import {
+  AppShell,
+  Card,
+  ListLayout,
+  Tabs,
+  ProseLayout,
+  SectionHeading,
+  Text,
+} from "@hackcove/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { ProsePage } from "./pages";
 

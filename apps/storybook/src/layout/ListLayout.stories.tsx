@@ -11,7 +11,7 @@ import {
   Pill,
   Stack,
   Text,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { ListPage } from "./pages";
 

@@ -21,7 +21,7 @@
       "dependencies": {
         "@hackcove/theme-catppuccin-mocha": "workspace:*",
         "@hackcove/themes-shared": "workspace:*",
-        "@hackcove/ui": "workspace:*",
+        "@hackcove/ui-react": "workspace:*",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
       },
@@ -47,7 +47,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@hackcove/themes-shared": "workspace:*",
-        "@hackcove/ui": "workspace:*",
+        "@hackcove/ui-react": "workspace:*",
         "react": "^19.3.1",
         "react-dom": "^19.3.1",
       },
@@ -72,8 +72,8 @@
         "vitest": "5.0.5",
       },
     },
-    "packages/ui": {
-      "name": "@hackcove/ui",
+    "packages/ui-react": {
+      "name": "@hackcove/ui-react",
       "version": "0.7.1",
       "dependencies": {
         "@internationalized/date": "^3.12.4",
@@ -515,7 +515,7 @@
 
     "@hackcove/themes-shared": ["@hackcove/themes-shared@workspace:packages/themes-shared"],
 
-    "@hackcove/ui": ["@hackcove/ui@workspace:packages/ui"],
+    "@hackcove/ui-react": ["@hackcove/ui-react@workspace:packages/ui-react"],
 
     "@hackcove/ui-review": ["@hackcove/ui-review@workspace:tools/ui-review"],
 

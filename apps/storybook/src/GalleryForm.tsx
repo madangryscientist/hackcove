@@ -1,5 +1,13 @@
 import { useId } from "react";
-import { Button, Field, FormGrid, FormRow, FormRowField, Input, Textarea } from "@hackcove/ui";
+import {
+  Button,
+  Field,
+  FormGrid,
+  FormRow,
+  FormRowField,
+  Input,
+  Textarea,
+} from "@hackcove/ui-react";
 
 const searchIcon = (
   <svg viewBox="0 0 20 20" fill="currentColor">

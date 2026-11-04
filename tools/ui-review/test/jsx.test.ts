@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { stylingProps } from "../src/jsx.js";
 import { diffOf, run } from "./fixtures.js";
 
-const IMPORT = 'import { Button } from "@hackcove/ui";\n';
+const IMPORT = 'import { Button } from "@hackcove/ui-react";\n';
 const scan = (tag: string) => stylingProps(`${IMPORT}${tag}`).map((use) => use.prop);
 
 describe("a template literal in an attribute value", () => {

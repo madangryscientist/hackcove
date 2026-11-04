@@ -1,5 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Avatar, AppShellBrand, AppShellHideBelow, Cluster, Text, TextLink } from "@hackcove/ui";
+import {
+  Avatar,
+  AppShellBrand,
+  AppShellHideBelow,
+  Cluster,
+  Text,
+  TextLink,
+} from "@hackcove/ui-react";
 
 /**
  * The docs examples for `AppShell`. The shell is a whole page (`min-h-dvh`, a sticky header), so

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { Button, Dialog, Lightbox } from "@hackcove/ui";
+import { Button, Dialog, Lightbox } from "@hackcove/ui-react";
 import { sampleScenes } from "./sampleScene";
 
 const meta: Meta = { title: "Feedback/Lightbox" };

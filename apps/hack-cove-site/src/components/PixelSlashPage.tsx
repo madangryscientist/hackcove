@@ -22,7 +22,7 @@ import {
   Steps,
   Text,
   TextLink,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import { site } from "../content/site";
 
 const { pixelslash } = site;

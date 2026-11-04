@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, ButtonGroup, type LinkRenderProps } from "@hackcove/ui";
+import { Button, ButtonGroup, type LinkRenderProps } from "@hackcove/ui-react";
 
 /** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
 function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
@@ -302,7 +302,7 @@ export const AsLink: S = {
     </div>
   ),
 };
-/** `render` draws the app's own router Link; here a stand-in. No router lives in @hackcove/ui. */
+/** `render` draws the app's own router Link; here a stand-in. No router lives in @hackcove/ui-react. */
 export const WithRouterLink: S = {
   render: () => <Button render={(props) => <FakeLink to="/quotes" {...props} />}>New quote</Button>,
 };

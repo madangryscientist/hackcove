@@ -3,7 +3,7 @@
    ---------------------------------------------------------------------------
    Both read these files, so they cannot drift. The code and the Do/Don't examples are never
    written here: `pairs` name stories in apps/storybook/src, and the props are
-   read from packages/ui. A page says one right way and what not to do; it has no recipe for
+   read from packages/ui-react. A page says one right way and what not to do; it has no recipe for
    extending a component and no styling escape hatch.
    --------------------------------------------------------------------------- */
 
@@ -32,7 +32,7 @@ export type ComponentPage = {
   /**
    * Exports that are functions, not components (`fromISODate`, `schemeClass`), each with a line on
    * what it is for. A page lists a component under `api` or a function here; every export of
-   * `@hackcove/ui` is on exactly one page.
+   * `@hackcove/ui-react` is on exactly one page.
    */
   functions?: { name: string; text: string }[];
 };

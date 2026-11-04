@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, DateField, IconButton, Input, SegmentedControl, Select } from "@hackcove/ui";
+import { Button, DateField, IconButton, Input, SegmentedControl, Select } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Forms/Input" };
 export default meta;

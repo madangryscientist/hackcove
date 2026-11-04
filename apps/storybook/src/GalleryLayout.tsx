@@ -17,7 +17,7 @@ import {
   Stack,
   SubsectionHeading,
   Text,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 
 /** The header's controls: a viewer chip that hides below `sm`, then the scheme toggle. */
 const galleryControls = (

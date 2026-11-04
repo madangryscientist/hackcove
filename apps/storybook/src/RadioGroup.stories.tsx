@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Checkbox, Radio, RadioGroup, Stack, Text } from "@hackcove/ui";
+import { Checkbox, Radio, RadioGroup, Stack, Text } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Forms/RadioGroup" };
 export default meta;

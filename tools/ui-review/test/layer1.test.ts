@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { ctx, diffOf, run } from "./fixtures.js";
 
-const CLEAN = `import { Card, Stack } from "@hackcove/ui";
+const CLEAN = `import { Card, Stack } from "@hackcove/ui-react";
 
 export function Page() {
   return (
@@ -40,7 +40,7 @@ describe("a clean diff", () => {
       "   Tailwind scans the app and the ui package for utilities",
       "   it has to generate.",
       "*/",
-      '@source "../../../node_modules/@hackcove/ui/dist";',
+      '@source "../../../node_modules/@hackcove/ui-react/dist";',
     ];
     expect(run(diffOf({ path: "src/styles.css", isNew: true, lines }))).toEqual([]);
   });
@@ -129,7 +129,7 @@ describe("new-css and style-block", () => {
 });
 
 describe("styling-prop", () => {
-  const source = `import { Button, Card as Panel } from "@hackcove/ui";
+  const source = `import { Button, Card as Panel } from "@hackcove/ui-react";
 import { Local } from "./Local";
 
 export const a = (

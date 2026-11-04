@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Pill, Timeline, TimelineItem } from "@hackcove/ui";
+import { Pill, Timeline, TimelineItem } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Content/Timeline" };
 export default meta;

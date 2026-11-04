@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Cluster, Kbd, KeyValue, KeyValueList, Stack, Text } from "@hackcove/ui";
+import { Cluster, Kbd, KeyValue, KeyValueList, Stack, Text } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Content/KeyValueList" };
 export default meta;

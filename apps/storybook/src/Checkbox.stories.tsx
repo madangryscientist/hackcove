@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Checkbox, Cluster, Text } from "@hackcove/ui";
+import { Checkbox, Cluster, Text } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Forms/Checkbox" };
 export default meta;

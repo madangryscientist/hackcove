@@ -11,7 +11,7 @@ import {
   Text,
   type TextTone,
   type TypographyColor,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Text/Headings" };
 export default meta;
@@ -133,13 +133,14 @@ export const InlineFigures: S = {
         (tabular figures)
       </Text>
       <Text as="p">
-        Commit <Text mono>c870e81</Text> on <Caption mono>packages/ui/src/typography.tsx</Caption>
+        Commit <Text mono>c870e81</Text> on{" "}
+        <Caption mono>packages/ui-react/src/typography.tsx</Caption>
       </Text>
       <Text as="p" truncate>
         A long line of body text that does not fit the width of its container and is cut off.
       </Text>
       <Caption as="p" truncate tone="muted">
-        packages/ui/src/some/very/deeply/nested/path/typography.test.tsx
+        packages/ui-react/src/some/very/deeply/nested/path/typography.test.tsx
       </Caption>
     </div>
   ),

@@ -9,7 +9,7 @@ import {
   Stack,
   SubsectionHeading,
   Text,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 const meta: Meta = {

@@ -1,4 +1,15 @@
-# Migrating @hackcove/ui
+# Migrating @hackcove/ui-react
+
+## 0.7 → 0.8: `@hackcove/ui` is now `@hackcove/ui-react`
+
+Nothing else changed: 0.8.0 is the 0.7.1 components under a new name, so the React package pairs
+with the React Native one that comes later (`@hackcove/ui-react-native`). There is no alias package
+and no re-export, so the old name stays at 0.7.1.
+
+1. Swap the dependency: `bun remove @hackcove/ui && bun add @hackcove/ui-react`.
+2. Find and replace the import specifier `"@hackcove/ui"` with `"@hackcove/ui-react"` (and any
+   `@hackcove/ui/…` path with `@hackcove/ui-react/…`).
+3. Change the Tailwind `@source` path to `node_modules/@hackcove/ui-react/dist`.
 
 ## 0.6 → 0.6.1: ListRow active on a panel, notices in a column, OutlineRegion
 

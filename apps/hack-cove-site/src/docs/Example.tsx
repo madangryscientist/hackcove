@@ -1,4 +1,4 @@
-import { CodeExample } from "@hackcove/ui";
+import { CodeExample } from "@hackcove/ui-react";
 import { Prose } from "./Prose.js";
 import { findStory } from "./stories.js";
 

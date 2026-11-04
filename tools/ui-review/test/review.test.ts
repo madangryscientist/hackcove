@@ -125,7 +125,7 @@ describe("the diff budget", () => {
 
   it("knows the generated files", () => {
     for (const path of [
-      "packages/ui/props.json",
+      "packages/ui-react/props.json",
       "bun.lock",
       "package-lock.json",
       "src/a.test.tsx.snap",

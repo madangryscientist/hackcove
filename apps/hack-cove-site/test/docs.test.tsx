@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { ComponentPage } from "../src/components/ComponentPage";
-import * as ui from "@hackcove/ui";
+import * as ui from "@hackcove/ui-react";
 import {
   componentPageOf,
   componentPages,
@@ -32,16 +32,16 @@ describe("the component pages", () => {
   });
 
   // The docs equivalent of the Gallery rule: a new export with no page fails here.
-  test("every export of @hackcove/ui is on exactly one page, and a page names only real exports", () => {
+  test("every export of @hackcove/ui-react is on exactly one page, and a page names only real exports", () => {
     const exported = Object.keys(ui).toSorted();
     const documented = componentPages.flatMap((p) => [
       ...p.api,
       ...(p.functions ?? []).map((fn) => fn.name),
     ]);
     const missing = exported.filter((name) => !documented.includes(name));
-    expect(missing, `exported from packages/ui/src/index.ts but on no docs page`).toEqual([]);
+    expect(missing, `exported from packages/ui-react/src/index.ts but on no docs page`).toEqual([]);
     const unknown = documented.filter((name) => !exported.includes(name));
-    expect(unknown, "on a docs page but not exported from @hackcove/ui").toEqual([]);
+    expect(unknown, "on a docs page but not exported from @hackcove/ui-react").toEqual([]);
     const twice = documented.filter((name, i) => documented.indexOf(name) !== i);
     expect(twice, "on more than one docs page").toEqual([]);
   });
@@ -118,7 +118,7 @@ const ONE_HALF: Record<string, string> = {
 };
 
 const story = (render: string) =>
-  `import { Text } from "@hackcove/ui";\nconst words = "hi";\nexport const A = { render: () => ${render} };`;
+  `import { Text } from "@hackcove/ui-react";\nconst words = "hi";\nexport const A = { render: () => ${render} };`;
 
 describe("a story's snippet", () => {
   test("stands alone: a word inside a string is fine, a name from the story's file fails the build", () => {
@@ -135,7 +135,7 @@ const looksOf = (name: string) =>
   );
 
 describe("props.json", () => {
-  test("is current: it equals what react-docgen-typescript reads from packages/ui now", () => {
+  test("is current: it equals what react-docgen-typescript reads from packages/ui-react now", () => {
     const onDisk: unknown = JSON.parse(readFileSync(PROPS_JSON, "utf8"));
     expect(onDisk).toEqual(generateProps());
   });
@@ -152,7 +152,7 @@ describe("props.json", () => {
     expect(looksOf("Button")["size"]).toBe("md");
   });
 
-  test("covers exactly what @hackcove/ui exports", () => {
+  test("covers exactly what @hackcove/ui-react exports", () => {
     expect(Object.keys(propsJson).toSorted()).toEqual(Object.keys(ui).toSorted());
   });
 
@@ -189,7 +189,7 @@ describe("/ui/llms.txt", () => {
 
   test("leads with the setup: install, the CSS wiring and every theme's package and class", () => {
     expect(text.indexOf("## Install")).toBeLessThan(text.indexOf(`## ${componentPages[0]?.name}`));
-    expect(text).toContain('@source "../node_modules/@hackcove/ui/dist";');
+    expect(text).toContain('@source "../node_modules/@hackcove/ui-react/dist";');
     for (const theme of themes) {
       expect(text).toContain(`\`${theme.name}\``);
       expect(text).toContain(`\`${theme.scopeClass}\``);

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { CodeBlock, Cluster, Code, CopyButton, CopyLine } from "@hackcove/ui";
+import { CodeBlock, Cluster, Code, CopyButton, CopyLine } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Actions/CopyLine" };
 export default meta;
@@ -7,15 +7,15 @@ type S = StoryObj;
 
 /** One command or token to paste: `CopyLine` is the box and the copy button together. */
 export const DoCommand: S = {
-  render: () => <CopyLine text="bun add @hackcove/ui" />,
+  render: () => <CopyLine text="bun add @hackcove/ui-react" />,
 };
 
 /** Inline code beside a loose `CopyButton` is two parts that drift apart; the text can differ from what is copied. */
 export const DontCommand: S = {
   render: () => (
     <Cluster>
-      <Code>bun add @hackcove/ui</Code>
-      <CopyButton text="bun add @hackcove/ui" />
+      <Code>bun add @hackcove/ui-react</Code>
+      <CopyButton text="bun add @hackcove/ui-react" />
     </Cluster>
   ),
 };
@@ -31,7 +31,7 @@ export const DontBlock: S = {
 };
 
 export const Default: S = {
-  render: () => <CopyLine text="bun add @hackcove/ui" />,
+  render: () => <CopyLine text="bun add @hackcove/ui-react" />,
 };
 export const LongToken: S = {
   render: () => (
@@ -40,5 +40,5 @@ export const LongToken: S = {
 };
 /** `disabled` greys the copy button and stops it taking clicks, e.g. until hydration. */
 export const Disabled: S = {
-  render: () => <CopyLine text="bun add @hackcove/ui" disabled />,
+  render: () => <CopyLine text="bun add @hackcove/ui-react" disabled />,
 };

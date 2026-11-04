@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { Button, Dialog, Field, FieldDialog, Input } from "@hackcove/ui";
+import { Button, Dialog, Field, FieldDialog, Input } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Feedback/FieldDialog" };
 export default meta;

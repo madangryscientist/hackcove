@@ -4,9 +4,9 @@ import { CopyLine } from "./CopyLine.js";
 
 describe("CopyLine", () => {
   it("shows the text in a <code> with a copy button beside it", () => {
-    const out = renderToStaticMarkup(<CopyLine text="bun add @hackcove/ui" />);
+    const out = renderToStaticMarkup(<CopyLine text="bun add @hackcove/ui-react" />);
     expect(out).toContain("<code");
-    expect(out).toContain("bun add @hackcove/ui</code>");
+    expect(out).toContain("bun add @hackcove/ui-react</code>");
     expect(out).toContain(">copy</button>");
   });
 

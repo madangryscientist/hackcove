@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { CodeBlock } from "@hackcove/ui";
+import { CodeBlock } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Text/Code" };
 export default meta;
@@ -9,7 +9,7 @@ export const Default: S = {
   render: () => (
     <div className="max-w-xl">
       <CodeBlock language="bash">
-        {"bun add @hackcove/ui\nbun add @hackcove/theme-catppuccin-mocha"}
+        {"bun add @hackcove/ui-react\nbun add @hackcove/theme-catppuccin-mocha"}
       </CodeBlock>
     </div>
   ),
@@ -25,7 +25,7 @@ export const Labelled: S = {
         lines={[
           '@import "tailwindcss";',
           '@import "@hackcove/theme-catppuccin-mocha/theme.css";',
-          '@source "../node_modules/@hackcove/ui/dist";',
+          '@source "../node_modules/@hackcove/ui-react/dist";',
         ]}
       />
     </div>
@@ -49,12 +49,12 @@ export const DoSnippet: S = {
     <CodeBlock
       label="bash"
       language="bash"
-      lines={["bun add @hackcove/ui", "bun add @hackcove/theme-catppuccin-mocha"]}
+      lines={["bun add @hackcove/ui-react", "bun add @hackcove/theme-catppuccin-mocha"]}
     />
   ),
 };
 
 /** One line a reader copies is a `CopyLine`, which has the copy button. A `CodeBlock` of one line has none. */
 export const DontSnippet: S = {
-  render: () => <CodeBlock language="bash">bun add @hackcove/ui</CodeBlock>,
+  render: () => <CodeBlock language="bash">bun add @hackcove/ui-react</CodeBlock>,
 };

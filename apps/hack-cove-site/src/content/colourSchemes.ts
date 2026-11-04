@@ -2,8 +2,8 @@
    dark theme declares `@custom-variant dark` in its theme.css. No theme is named here. With more than
    one of either, the first by folder order is used (`themeNames` is sorted). */
 
-import { colourSchemeScript } from "@hackcove/ui";
-import type { ColourSchemeClasses } from "@hackcove/ui";
+import { colourSchemeScript } from "@hackcove/ui-react";
+import type { ColourSchemeClasses } from "@hackcove/ui-react";
 import { THEMES, declaresDark, themeNames, themeScope } from "@hackcove/themes-shared";
 
 const firstScope = (dark: boolean): string => {

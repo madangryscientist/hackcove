@@ -8,7 +8,7 @@ import {
   Stack,
   Text,
   TextLink,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 import { componentSections } from "../content/components/index";
 import { site } from "../content/site";
 import { themes } from "../content/themes";

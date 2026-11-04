@@ -1,4 +1,4 @@
-import { Text, TextLink } from "@hackcove/ui";
+import { Text, TextLink } from "@hackcove/ui-react";
 import { site } from "../content/site";
 
 export function CvLink() {

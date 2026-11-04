@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { SegmentedControl, type LinkRenderProps } from "@hackcove/ui";
+import { SegmentedControl, type LinkRenderProps } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Forms/SegmentedControl" };
 export default meta;

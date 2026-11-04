@@ -1,4 +1,4 @@
-import { Tabs, Overline, SidebarLayout, Stack } from "@hackcove/ui";
+import { Tabs, Overline, SidebarLayout, Stack } from "@hackcove/ui-react";
 import type { ReactNode } from "react";
 import { componentSections } from "../content/components/index";
 

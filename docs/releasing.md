@@ -17,7 +17,7 @@ not even a package's first version. It is a manual workflow (Actions → Publish
 
 - `dry_run` (default on) versions and previews changelogs, and publishes nothing. No commit, tag,
   push or GitHub release happens either. Untick it to release for real.
-- `project` (optional) is only for deliberately releasing one project on its own, such as `ui` (a
+- `project` (optional) is only for deliberately releasing one project on its own, such as `ui-react` (a
   re-publish after a failed first publish, say). A release is started with it empty, which releases
   every releasable project (`release.projects` in `nx.json`). One run per project buys extra gate
   runs and separate release commits, and each run versions only its own project, so a package
@@ -34,7 +34,7 @@ One-time setup, by hand:
    deployment branches to `main`. It has no required reviewer while the packages are `0.x`: a
    dispatch from `main` publishes without an approval step. Add one if you want a gate on every
    publish.
-2. On npmjs.com, for each published package (`@hackcove/ui`, `@hackcove/theme-catppuccin-mocha`,
+2. On npmjs.com, for each published package (`@hackcove/ui-react`, `@hackcove/theme-catppuccin-mocha`,
    `@hackcove/theme-thrifty-paper`):
    Settings → Trusted Publisher → GitHub Actions, repository `madangryscientist/hackcove`, workflow
    filename `publish.yml`, environment `npm-publish`.
@@ -57,25 +57,29 @@ first-release steps again. A dry run does not exercise the token, so it cannot c
 Locally, the same dry run of the tagged projects is:
 
 ```sh
-bunx nx release --dry-run --projects ui,theme-catppuccin-mocha   # use the tagged projects, see below
+bunx nx release --dry-run --projects ui-react,theme-catppuccin-mocha   # use the tagged projects, see below
 ```
 
 ## Tagged projects and new ones
 
-The workflow sorts the releasable projects by their tags on origin (its "Pick" step):
+The workflow sorts the releasable projects by their tags on origin and by whether the package is on
+npm (its "Pick" step):
 
-- **Tagged** (a `<project>@<version>` tag exists): released by conventional commits, as above, through OIDC.
+- **Tagged** (a `<project>@<version>` tag exists and the package is on npm): released by conventional
+  commits, as above, through OIDC.
 - **New** (no such tag): its first publish, in its own step ("First release"), at the version
   already in its `package.json`. Nothing about which projects are new is listed anywhere; it is
   computed from tags.
+- **Renamed** (a tag exists, but the package name is not on npm): see "Renaming a package". Released
+  by conventional commits, authenticated by `NPM_TOKEN` like a first publish.
 
-Nx's `git-tag` version resolver refuses a project with no tag, which is why the two are separate Nx
-invocations. The first-release step runs `nx release <version-on-disk> --first-release --projects
+Nx's `git-tag` version resolver refuses a project with no tag, which is why *new* is a separate Nx
+invocation. The first-release step runs `nx release <version-on-disk> --first-release --projects
 <project>` once per new project: `--first-release` falls back to the version on disk, starts the
 changelog at the first commit and skips the "already on npm" check, and the explicit specifier keeps
 conventional commits from bumping it. It tags `<project>@<version>`, writes `CHANGELOG.md`, pushes
 and creates the GitHub release. Because it now has a tag, the project is a tagged project from the
-next run on. New and tagged projects can be in the same run; the first-release step goes first.
+next run on. New, renamed and tagged projects can be in the same run, in that order.
 
 ## First publish of a new package
 
@@ -99,3 +103,44 @@ names the project. (`theme-thrifty-paper` was the first package to go through th
 From then on the workflow releases it through OIDC whenever it has releasable commits, and npm
 attaches provenance for a public repository.
 
+## Renaming a package
+
+A rename is a new npm package with an old history. `@hackcove/ui` became `@hackcove/ui-react` in
+`packages/ui-react` (Nx project `ui-react`), in one breaking commit
+(`feat(ui-react)!: rename @hackcove/ui to @hackcove/ui-react`), with no alias package and no
+re-export shim (pre-1.0 changes break directly). The version in `package.json` is left where the old
+package ended (`0.7.1`), so the release computes it: a `!` while `0.x` is a minor bump, `0.8.0`.
+
+Nx finds a project's last release by its tag, `<project>@<version>`, and the tags of the old project
+(`ui@…`) mean nothing to the new one. Rather than a version override, the release keeps its normal
+rules and the new name inherits the old name's last tag. That makes `nx release` compute the bump
+from the commits since the old package's last release and write a changelog that continues, not one
+that restarts at the first commit.
+
+1. **Tag, after the rename merges** (the planner; the rename PR does not push tags). Put the new
+   name's tag on the commit the old name's last tag points at, and push only that tag:
+
+   ```sh
+   git fetch origin --tags
+   git tag -a ui-react@0.7.1 -m ui-react@0.7.1 'ui@0.7.1^{commit}'
+   git push origin ui-react@0.7.1
+   ```
+
+   Leave the old `ui@…` tags and GitHub releases alone: they are the history of `@hackcove/ui`.
+2. **Check**: `bunx nx release --dry-run --projects ui-react` must print `0.8.0`, a tag
+   `ui-react@0.8.0`, and a changelog that starts after `ui-react@0.7.1`.
+3. **First publish needs the token.** The new name is not on npm, so OIDC cannot publish it (see
+   "First publish of a new package"). Set `NPM_TOKEN` as there. The workflow sees a tagged project
+   that npm does not have, files it under *renamed* and runs it in the "Release (renamed projects,
+   NPM_TOKEN)" step; with no token it stops before it versions anything. Run a dry run first, then
+   the real release.
+4. **Trusted publisher, afterwards.** On npmjs.com add the trusted publisher for
+   `@hackcove/ui-react` (workflow `publish.yml`, environment `npm-publish`), then delete the secret
+   and revoke the token as in steps 4 and 5 above. From then on the package is *tagged* and goes
+   through OIDC.
+5. **The old package.** `@hackcove/ui` stays on npm at `0.7.1`; whether to `npm deprecate` it, with a
+   message pointing at `@hackcove/ui-react`, is the maintainer's call, made after the first
+   `ui-react` release. Its trusted publisher is no longer needed.
+
+For the next rename of a published package: rename the folder, the `name` and the Nx project name in
+the same commit as a `!` commit, add the tag copy above, and follow 2 to 5.

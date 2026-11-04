@@ -1,5 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { AppShell, Button, Card, Tabs, PageHeader, SidebarLayout, Stack, Text } from "@hackcove/ui";
+import {
+  AppShell,
+  Button,
+  Card,
+  Tabs,
+  PageHeader,
+  SidebarLayout,
+  Stack,
+  Text,
+} from "@hackcove/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 /**

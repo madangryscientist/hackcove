@@ -9,7 +9,7 @@ import {
   Pill,
   Stack,
   Text,
-} from "@hackcove/ui";
+} from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Layout/Cluster", parameters: { layout: "padded" } };
 export default meta;

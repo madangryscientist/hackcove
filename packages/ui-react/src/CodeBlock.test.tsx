@@ -4,11 +4,13 @@ import { CodeBlock } from "./CodeBlock.js";
 
 describe("CodeBlock", () => {
   it("renders a string as one pre/code in mono, wrapping", () => {
-    const out = renderToStaticMarkup(<CodeBlock>{"bun add @hackcove/ui\nbun install"}</CodeBlock>);
+    const out = renderToStaticMarkup(
+      <CodeBlock>{"bun add @hackcove/ui-react\nbun install"}</CodeBlock>,
+    );
     expect(out).toContain("<pre");
     expect(out).toContain("whitespace-pre-wrap");
     expect(out).toContain("font-mono");
-    expect(out).toContain("<code>bun add @hackcove/ui\nbun install</code>");
+    expect(out).toContain("<code>bun add @hackcove/ui-react\nbun install</code>");
   });
 
   it("joins `lines` with newlines, the same markup as the equivalent string", () => {

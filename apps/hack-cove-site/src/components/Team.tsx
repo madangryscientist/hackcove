@@ -1,4 +1,4 @@
-import { Avatar, Card, Section, SubsectionHeading, Text } from "@hackcove/ui";
+import { Avatar, Card, Section, SubsectionHeading, Text } from "@hackcove/ui-react";
 import { type Person, site } from "../content/site";
 
 function TeamMember({ person }: { person: Person }) {

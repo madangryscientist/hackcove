@@ -1,4 +1,4 @@
-import { Card, CardGrid, Section, Text, TextLink } from "@hackcove/ui";
+import { Card, CardGrid, Section, Text, TextLink } from "@hackcove/ui-react";
 import { site } from "../content/site";
 
 /** The home page's way into the three sections: one card each, from `site.sections`. */

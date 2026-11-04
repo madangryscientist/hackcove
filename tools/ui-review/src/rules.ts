@@ -27,7 +27,7 @@ const NOT_APP_CODE = /(?:\.(?:test|spec)\.[cm]?[jt]sx?|\.d\.ts)$/;
 const isCode = (path: string) => CODE.test(path) && !NOT_APP_CODE.test(path);
 const isStylesheet = (path: string) => STYLESHEET.test(path);
 
-/** The stock colour utilities `packages/ui/src/palette.test.ts` looks for, with their variants. */
+/** The stock colour utilities `packages/ui-react/src/palette.test.ts` looks for, with their variants. */
 const COLOUR =
   /(?<![\w-])(?:[a-z-]+:)*(?:bg|text|border|outline|ring|accent|fill|stroke|decoration|divide)-(?:white|black|slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)(?:-\d{2,3})?(?:\/\d+)?(?![\w-])/g;
 const ARBITRARY_COLOUR =
@@ -62,7 +62,7 @@ export function newCss(file: ReviewFile): Finding[] {
       "new-css",
       file,
       first.line,
-      "New stylesheet. Hack Cove apps write no CSS of their own: compose @hackcove/ui parts, and ask hackcove for a part or variant that is missing.",
+      "New stylesheet. Hack Cove apps write no CSS of their own: compose @hackcove/ui-react parts, and ask hackcove for a part or variant that is missing.",
     ),
   ];
 }
@@ -76,7 +76,7 @@ export function styleBlocks(file: ReviewFile): Finding[] {
         "style-block",
         file,
         added.line,
-        "<style> block. Hack Cove apps write no CSS of their own: compose @hackcove/ui parts, and ask hackcove for what is missing.",
+        "<style> block. Hack Cove apps write no CSS of their own: compose @hackcove/ui-react parts, and ask hackcove for what is missing.",
       ),
     );
 }
@@ -95,7 +95,7 @@ export function rawColours(file: ReviewFile, ctx: Context): Finding[] {
         "raw-colour",
         file,
         added.line,
-        `Raw colour utility ${used.map((u) => `\`${u}\``).join(", ")}${role}. Colour belongs to the theme and to @hackcove/ui parts; use the part that carries it, or ask hackcove for one.`,
+        `Raw colour utility ${used.map((u) => `\`${u}\``).join(", ")}${role}. Colour belongs to the theme and to @hackcove/ui-react parts; use the part that carries it, or ask hackcove for one.`,
       ),
     ];
   });
@@ -125,13 +125,13 @@ export function stylingPropsRule(file: ReviewFile): Finding[] {
         "styling-prop",
         file,
         use.line,
-        `\`${use.prop}\` on <${use.component}>. @hackcove/ui components take no styling props: compose the parts, or ask hackcove for the variant you need.`,
+        `\`${use.prop}\` on <${use.component}>. @hackcove/ui-react components take no styling props: compose the parts, or ask hackcove for the variant you need.`,
       ),
     );
 }
 
 function duplicateMessage(name: string): string {
-  return `Local component \`${name}\` has the same name as an @hackcove/ui export. If it does the same job, import the Hack Cove one, and if that one does not fit, ask hackcove for what is missing rather than building a look-alike. If it is a different thing, rename it so it is not mistaken for the Hack Cove one.`;
+  return `Local component \`${name}\` has the same name as an @hackcove/ui-react export. If it does the same job, import the Hack Cove one, and if that one does not fit, ask hackcove for what is missing rather than building a look-alike. If it is a different thing, rename it so it is not mistaken for the Hack Cove one.`;
 }
 
 export function duplicateComponents(file: ReviewFile, ctx: Context): Finding[] {

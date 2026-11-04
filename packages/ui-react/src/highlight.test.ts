@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { highlight, type CodeLanguage, type Token } from "./highlight.js";
 
 const INSTALL =
-  "bun add @hackcove/ui\nbunx nx run-many -t typecheck lint test build --skip-nx-cache";
+  "bun add @hackcove/ui-react\nbunx nx run-many -t typecheck lint test build --skip-nx-cache";
 const TSX = [
-  'import { Button, ButtonGroup } from "@hackcove/ui";\n\n<ButtonGroup>\n  <Button>Save</Button>\n  <Button variant="outline">Cancel</Button>\n</ButtonGroup>',
+  'import { Button, ButtonGroup } from "@hackcove/ui-react";\n\n<ButtonGroup>\n  <Button>Save</Button>\n  <Button variant="outline">Cancel</Button>\n</ButtonGroup>',
   "function Example() {\n  const { name } = props; // keep the label\n  return (\n    <Stack>\n      <Row label={name} count={2} />\n    </Stack>\n  );\n}",
   "<p>Don't panic</p>",
   "<div>{count > 0 && <Badge count={count} />}</div>",
@@ -18,7 +18,10 @@ const SAMPLES: { language: CodeLanguage; code: string }[] = [
     language: "ts",
     code: "export function add(a: number, b: number): number {\n  return a + b;\n}",
   },
-  { language: "json", code: '{\n  "name": "@hackcove/ui",\n  "private": true,\n  "count": 3\n}' },
+  {
+    language: "json",
+    code: '{\n  "name": "@hackcove/ui-react",\n  "private": true,\n  "count": 3\n}',
+  },
   { language: "bash", code: INSTALL },
   { language: "bash", code: "# install first\nbun install" },
   { language: "bash", code: 'echo "done # this is not a comment"' },
@@ -77,7 +80,7 @@ describe("highlight", () => {
   });
 
   it("colours a bash command, a flag and a comment", () => {
-    const tokens = highlight("# go\nbun add --save @hackcove/ui", "bash");
+    const tokens = highlight("# go\nbun add --save @hackcove/ui-react", "bash");
     expect(textOf(tokens, "comment")).toEqual(["# go"]);
     expect(textOf(tokens, "function")).toEqual(["bun"]);
     expect(textOf(tokens, "attr")).toEqual(["--save"]);
