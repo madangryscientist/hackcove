@@ -34,16 +34,33 @@ const scopeClasses = (page: Page) =>
     .locator("html")
     .evaluate((el, all) => all.filter((scope) => el.classList.contains(scope)), scopes);
 
-/** The island is hydrated once Astro drops `ssr` from it; a click before that does nothing. */
-const hydrated = (page: Page) => page.locator("astro-island:not([ssr])").first().waitFor();
+/**
+ * The toggle's own island is hydrated once Astro drops `ssr` from it. Another island on the page can
+ * be hydrated first, so this waits for the toggle's, not the first one's.
+ */
+const hydrated = (page: Page) =>
+  page.locator('astro-island[component-export="ColourSchemeToggle"]:not([ssr])').waitFor();
 
-/** Click the toggle until the page is in `scheme`. */
+/** The scheme `<html>` is in now, read from its classes. */
+const classScheme = async (page: Page): Promise<Scheme> =>
+  (await scopeClasses(page)).includes(schemeScope.dark) ? "dark" : "light";
+
+/** The label the toggle shows for `scheme`: the scheme it would switch to. */
+const labelFor = (scheme: Scheme) => `Switch to ${scheme === "dark" ? "light" : "dark"} theme`;
+
+/**
+ * Get the page into `scheme`. The server renders the toggle's label from `initial` (dark), so its label
+ * is not evidence of the scheme before React has hydrated it, and a click before that does nothing.
+ * So this reads `<html>` (set before any script runs), clicks only while it is not `scheme`, and
+ * repeats until it is. A click that landed leaves the page at `scheme`, so it is never repeated.
+ */
 async function setScheme(page: Page, scheme: Scheme) {
   await hydrated(page);
-  const to = scheme === "dark" ? "Switch to light theme" : "Switch to dark theme";
-  if ((await toggle(page).getAttribute("aria-label")) === to) return;
-  await toggle(page).click();
-  await expect(toggle(page)).toHaveAttribute("aria-label", to);
+  await expect(async () => {
+    if ((await classScheme(page)) !== scheme) await toggle(page).click();
+    await expect.poll(() => classScheme(page), { timeout: 1_000 }).toBe(scheme);
+  }).toPass();
+  await expect(toggle(page)).toHaveAttribute("aria-label", labelFor(scheme));
 }
 
 test("the themes folder lists at least one theme", () => {
@@ -58,7 +75,7 @@ for (const { path, heading } of pages) {
 
     for (const scheme of ["dark", "light"] as const) {
       await setScheme(page, scheme);
-      expect(await scopeClasses(page)).toEqual([schemeScope[scheme]]);
+      await expect.poll(() => scopeClasses(page)).toEqual([schemeScope[scheme]]);
       await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
     }
   });
@@ -69,13 +86,15 @@ test("the toggle flips the scope class on <html> and the colour-scheme with it",
 }) => {
   await page.goto("/");
   await setScheme(page, "dark");
-  expect(await scopeClasses(page)).toEqual([schemeScope.dark]);
+  await expect.poll(() => scopeClasses(page)).toEqual([schemeScope.dark]);
   await toggle(page).click();
-  expect(await scopeClasses(page)).toEqual([schemeScope.light]);
-  expect(await page.locator("html").evaluate((el) => el.style.colorScheme)).toBe("light");
+  await expect.poll(() => scopeClasses(page)).toEqual([schemeScope.light]);
+  await expect
+    .poll(() => page.locator("html").evaluate((el) => el.style.colorScheme))
+    .toBe("light");
   await toggle(page).click();
-  expect(await scopeClasses(page)).toEqual([schemeScope.dark]);
-  expect(await page.locator("html").evaluate((el) => el.style.colorScheme)).toBe("dark");
+  await expect.poll(() => scopeClasses(page)).toEqual([schemeScope.dark]);
+  await expect.poll(() => page.locator("html").evaluate((el) => el.style.colorScheme)).toBe("dark");
 });
 
 test("there is no theme Select in the header: the toggle is the only control", async ({ page }) => {
@@ -90,12 +109,12 @@ test("a choice is remembered across a reload and on the next page", async ({ pag
   await page.goto("/ui/");
   await setScheme(page, "light");
   await page.reload();
-  expect(await scopeClasses(page)).toEqual([schemeScope.light]);
+  await expect.poll(() => scopeClasses(page)).toEqual([schemeScope.light]);
   await page.goto("/ui/button/");
-  expect(await scopeClasses(page)).toEqual([schemeScope.light]);
+  await expect.poll(() => scopeClasses(page)).toEqual([schemeScope.light]);
   await setScheme(page, "dark");
   await page.reload();
-  expect(await scopeClasses(page)).toEqual([schemeScope.dark]);
+  await expect.poll(() => scopeClasses(page)).toEqual([schemeScope.dark]);
 });
 
 for (const scheme of ["dark", "light"] as const) {
@@ -103,7 +122,7 @@ for (const scheme of ["dark", "light"] as const) {
     const context = await browser.newContext({ colorScheme: scheme });
     const page = await context.newPage();
     await page.goto("/contracting/");
-    expect(await scopeClasses(page)).toEqual([schemeScope[scheme]]);
+    await expect.poll(() => scopeClasses(page)).toEqual([schemeScope[scheme]]);
     await hydrated(page);
     await expect(toggle(page)).toHaveAttribute(
       "aria-label",
@@ -118,7 +137,7 @@ test("a saved value from the old theme picker is ignored", async ({ browser }) =
   const page = await context.newPage();
   await page.addInitScript(() => localStorage.setItem("hackcove-theme", "catppuccin-mocha"));
   await page.goto("/");
-  expect(await scopeClasses(page)).toEqual([schemeScope.light]);
+  await expect.poll(() => scopeClasses(page)).toEqual([schemeScope.light]);
   await context.close();
 });
 
@@ -129,7 +148,7 @@ test("the right scheme is on <html> before the page scripts run: no flash", asyn
   // class must still be there.
   await page.route("**/*.js", (route) => route.abort());
   await page.goto("/");
-  expect(await scopeClasses(page)).toEqual([schemeScope.light]);
+  await expect.poll(() => scopeClasses(page)).toEqual([schemeScope.light]);
   await context.close();
 });
 
@@ -162,7 +181,7 @@ test("the toggle is in the header of every page, and a choice carries to the nex
   for (const path of ["/contracting/", "/pixelslash/", "/ui/tabs/"]) {
     await page.goto(path);
     await expect(toggle(page)).toHaveAttribute("aria-label", "Switch to dark theme");
-    expect(await scopeClasses(page)).toEqual([schemeScope.light]);
+    await expect.poll(() => scopeClasses(page)).toEqual([schemeScope.light]);
   }
 });
 
@@ -284,7 +303,7 @@ test("the logo ink and halo are the same fixed blue under both schemes' scope cl
     );
   for (const scheme of ["light", "dark"] as const) {
     await setScheme(page, scheme);
-    expect(await scopeClasses(page)).toEqual([schemeScope[scheme]]);
+    await expect.poll(() => scopeClasses(page)).toEqual([schemeScope[scheme]]);
     expect(await colours()).toEqual(["rgb(79, 134, 247)", "rgb(79, 134, 247)"]);
   }
 });
