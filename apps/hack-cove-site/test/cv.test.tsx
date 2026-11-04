@@ -42,106 +42,84 @@ function confirmedFields(): string[] {
 }
 
 describe("cv content", () => {
-  test("header matches OfferZen current role", () => {
+  test("header leads with back end and developer productivity", () => {
     expect(cv.name).toBe("Jacobus Langner");
-    expect(cv.headline).toBe("Staff-level Full Stack Engineer");
+    expect(cv.headline).toBe(
+      "Full-Stack Engineer · Developer productivity · APIs, messaging and platform · .NET Core, Node, Python",
+    );
     expect(cv.location).toBe("Cape Town");
-    expect(cv.summary).toContain("At Cue, my current client");
-    expect(cv.summary).toMatch(/^Staff-level full stack engineer with 18 years/);
-    expect(cv.summary).toContain("At Zappi I owned the front-end guild");
-    expect(cv.experience[0].tech).toBe(
-      "TypeScript, React, Python, Node/Bun, Rust/WebAssembly, Cloudflare Workers, D1, Drizzle",
-    );
+    expect(cv.summary).toMatch(/^Senior full-stack engineer with 18 years/);
+    expect(cv.summary).toContain("tooling that let other developers excel");
+    expect(cv.summary).toContain("On call for the systems I build.");
   });
 
-  test("experience dates and titles match OfferZen", () => {
+  test("experience dates and titles match the v2 CV", () => {
     expect(cv.experience.map((job) => `${job.company} · ${job.title} · ${job.dates}`)).toEqual([
-      "Hack Cove · Founder / Contract Engineer · April 2026 – Present",
-      "Zappi · Senior Frontend Engineer · April 2021 – April 2026",
-      "FMI · Frontend-API Architect · June 2018 – March 2021",
-      "Wonga · Software Development Team Lead · August 2015 – May 2018",
+      "Hack Cove · Founder / Contract Engineer · Apr 2026 – Present",
+      "Zappi · Senior Engineer · Apr 2021 – Apr 2026",
+      "FMI · API Architect · Jun 2018 – Mar 2021",
+      "Wonga · Software Development Team Lead · Aug 2015 – May 2018",
     ]);
   });
 
-  test("Zappi description matches the shortened OfferZen copy", () => {
+  test("Zappi leads with the developer platform", () => {
     const zappi = cv.experience.find((job) => job.company === "Zappi");
-    expect(zappi?.groups).toEqual([
-      {
-        items: [
-          "Built a Node microservice that took events from Salesforce's messaging system and republished them on SQS/SNS so other services could consume them.",
-          "Ran the front-end Node server: its build and the APIs I built to speed up page loads.",
-          "Maintain a TypeScript monorepo of 60+ packages: shared UI components and tooling consumed by multiple frontend applications. Design library APIs balancing end-user simplicity with extensibility for internal consumers.",
-          "Jest to Vitest: reduced test suite runtime from 90s to 58s (35% faster), with 60% faster transforms using SWC—100% pass rate across 1,126 tests",
-          "Cypress to Playwright: reduced E2E test runtime from 30 minutes to 5 minutes (83% faster)",
-          "Migrated library builds from CommonJS to ESM-only using tsdown, reducing build time from 120s to 5s (96% faster)",
-          "Refactored microfrontend architecture to library-based imports, reducing bundle size from 41MB to 24MB (41% reduction)",
-          "React 18 migration, resolving concurrent rendering issues across a large codebase",
-          "Redux to React Query and Zustand, modernizing state management and data fetching patterns application-wide",
-          "Managed NX monorepo upgrades (v21 → v22) with build caching optimization",
-        ],
-      },
-    ]);
-    expect(zappi?.tech).toBe(
-      "TypeScript, Node.js, Next.js, React, Ruby, Storybook, Playwright, Cypress, Amazon SQS, Amazon SNS",
-    );
-    expect(blob).not.toContain("HeadlessUI");
-    expect(blob).not.toContain("Component Library & Developer Tooling");
+    const items = zappi?.groups.flatMap((group) => group.items) ?? [];
+    expect(items[0]).toContain("used by 80 engineers");
+    expect(items.join(" ")).toContain("SQS/SNS");
+    expect(zappi?.tech).toMatch(/^Node\.js, Amazon SQS\/SNS/);
   });
 
-  test("Hack Cove lists the Python service, Hack Cove UI and PixelSlash", () => {
+  test("Hack Cove lists Cue, PixelSlash, Omnibus and Hack Cove UI", () => {
     const hackCove: CvJob = cv.experience[0];
     expect(hackCove.groups.map((group) => group.heading)).toEqual([
-      "Cue",
-      "Hack Cove UI",
+      "Client: Cue (voice and telephony)",
       "PixelSlash",
+      "Omnibus",
+      "Hack Cove UI",
     ]);
     expect(hackCove.groups[0].items).toContain(
-      "Built the Python service that integrates the app with the voice service provider.",
+      "Built the Python service that integrates the app with the voice provider.",
     );
-    expect(hackCove.groups[1].items.join(" ")).toContain("LLM review through OpenCode Zen");
-    expect(hackCove.groups[2].items.join(" ")).toContain("An MCP server lets coding agents");
     expect(hackCove.groups[1].links?.map((link) => link.href)).toEqual([
-      "https://hack-cove.com/ui",
-      "https://github.com/madangryscientist/hackcove",
-    ]);
-    expect(hackCove.groups[2].links?.map((link) => link.href)).toEqual([
       "https://pixelslash.dev",
       "https://github.com/madangryscientist/pixelslash",
     ]);
-    expect(hackCove.groups[2].links?.[1].label).toBe("github.com/madangryscientist/pixelslash");
+    expect(hackCove.groups[3].links?.map((link) => link.href)).toEqual([
+      "https://hack-cove.com/ui",
+      "https://github.com/madangryscientist/hackcove",
+    ]);
     expect(html).toContain('href="https://pixelslash.dev"');
     expect(html).toContain('href="https://hack-cove.com/ui"');
     expect(html).toContain('href="https://github.com/madangryscientist/pixelslash"');
     expect(html).toContain('href="https://github.com/madangryscientist/hackcove"');
   });
 
-  test("FMI and Wonga read full stack", () => {
+  test("FMI and Wonga lead with architecture", () => {
     const fmi = cv.experience.find((job) => job.company === "FMI");
     const wonga = cv.experience.find((job) => job.company === "Wonga");
-    expect(fmi?.summary).toMatch(/^Architected the APIs and workflow engines/);
-    expect(wonga?.summary).toMatch(
-      /^Led a full stack team building new products as C# microservices/,
-    );
-    expect(wonga?.summary).toContain("CEO Recognition Award");
+    expect(fmi?.groups[0].items[0]).toMatch(/^Architected 15 API services/);
+    expect(wonga?.groups[0].items[0]).toContain("NServiceBus");
+    expect(wonga?.groups[0].items.join(" ")).toContain("CEO Recognition Award");
   });
 
   test("earlier roles, education and grouped skills are present", () => {
     expect(cv.earlierRoles.map((r) => r.company)).toEqual([
-      "Sygnia Ltd",
+      "Sygnia",
       "Property24",
       "ACI Worldwide",
-      "Business Intelligence",
-      "Axxess Dsl",
+      "Axxess DSL and Business Intelligence",
     ]);
     expect(cv.education.qualification).toBe("Bachelor of Science (BSc), Computer Science");
     expect(cv.education.school).toBe("NMMU, Port Elizabeth");
     expect(cv.skills.map((g) => g.label)).toEqual([
-      "Languages",
-      "Frameworks",
-      "Build Tools",
-      "Testing",
-      "Infrastructure",
+      "Back end",
+      "Messaging",
       "Databases",
+      "Platform & DevEx",
+      "Infrastructure",
+      "Front end",
+      "Build & testing",
       "Spoken",
     ]);
   });
@@ -157,7 +135,7 @@ describe("cv static HTML", () => {
     expect(html).not.toContain("<input");
   });
 
-  test("private OfferZen fields and the Storybook letter stay off the public page", () => {
+  test("private fields and the Storybook letter stay off the public page", () => {
     expect(blob).not.toMatch(/R\s*95/);
     expect(blob).not.toMatch(/R\s*120/);
     expect(blob).not.toMatch(/R\s*130/);
@@ -170,7 +148,7 @@ describe("cv static HTML", () => {
     expect(blob.toLowerCase()).not.toContain("open to new opportunities");
     expect(blob).not.toContain("Storybook Hiring Team");
     expect(blob).not.toContain("senior software engineer at Cue leading frontend architecture");
-    expect(cv.experience[0].groups[0].items.join(" ")).toContain("Voice Inbox");
+    expect(blob.toLowerCase()).not.toContain("current client");
   });
 
   test("public cv pdf is next to the photo", () => {
