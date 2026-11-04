@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useId, useRef } from "react";
 import {
   Button,
   Field,
@@ -31,6 +31,33 @@ export function GalleryNameField() {
         icon={searchIcon}
       />
     </Field>
+  );
+}
+
+const statementCsv =
+  "Date,Description,Amount\n2026-10-01,Groceries,-84.20\n2026-10-03,Salary,3200.00";
+
+/** A pasted statement in `mono`, and a note whose ref lets a button move focus into it. */
+export function GalleryPaste() {
+  const note = useRef<HTMLTextAreaElement>(null);
+  return (
+    <div className="flex flex-col items-start gap-2">
+      <Textarea mono rows={3} defaultValue={statementCsv} aria-label="Pasted statement" />
+      <Textarea ref={note} rows={2} aria-label="Note" placeholder="A note" />
+      <Button size="sm" onClick={() => note.current?.focus()}>
+        Focus the note
+      </Button>
+    </div>
+  );
+}
+
+/** The Gallery's notes: a plain Textarea, then a pasted statement and a ref-focused note. */
+export function GalleryNotes() {
+  return (
+    <>
+      <Textarea placeholder="What did you find? How were the prices?" />
+      <GalleryPaste />
+    </>
   );
 }
 
