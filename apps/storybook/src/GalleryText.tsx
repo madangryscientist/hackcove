@@ -13,12 +13,35 @@ import {
   Step,
   Steps,
   SubsectionHeading,
+  Overline,
   Text,
   Video,
 } from "@hackcove/ui-react";
 import { samplePhoto } from "./samplePhoto";
 import { sampleShot, sampleShotSize } from "./sampleShot";
 import { sampleVideo } from "./sampleVideo";
+
+/** The options a text run takes: italic, a long string, alignment and a fixed amount width. */
+function GalleryTextOptions() {
+  return (
+    <div className="flex flex-col gap-1">
+      <Text as="p" italic color="muted">
+        An italic muted hint.
+      </Text>
+      <div className="w-40">
+        <Caption as="p" breakWords>
+          Caption breakWords: 0f3a9c1d7b2e4f60a8c5d9e1b3f7a2c4d6e8
+        </Caption>
+      </div>
+      <div className="flex w-56 flex-col gap-1">
+        <Overline align="end">Amount</Overline>
+        <Text strong minWidth="amount">
+          1,111.11
+        </Text>
+      </div>
+    </div>
+  );
+}
 
 /** The text-level block of the Gallery: heading sizes, a ruled heading, preserved newlines, text tones with numeric, mono and truncate, a list, an EmptyState with Steps, inline code, a CodeBlock, a CodeExample, a divider, a video and an OutlineRegion in a RegionFrame. */
 export function GalleryText() {
@@ -69,6 +92,7 @@ export function GalleryText() {
           </Text>
         </div>
       </div>
+      <GalleryTextOptions />
       <CodeBlock
         label="bash"
         language="bash"

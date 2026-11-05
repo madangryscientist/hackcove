@@ -196,3 +196,80 @@ describe("typography inline roles: tone, numeric, mono, truncate", () => {
     expect(out).toContain("font-mono");
   });
 });
+
+describe("typography options: align, italic, breakWords, minWidth", () => {
+  it.each([
+    ["Text", (p: { align?: "start" | "center" | "end" }) => <Text {...p}>x</Text>],
+    ["Caption", (p: { align?: "start" | "center" | "end" }) => <Caption {...p}>x</Caption>],
+    ["Overline", (p: { align?: "start" | "center" | "end" }) => <Overline {...p}>x</Overline>],
+  ])("%s `align` sets the text alignment and makes the run block-level", (_name, Role) => {
+    expect(renderToStaticMarkup(Role({ align: "start" }))).toContain("text-start");
+    expect(renderToStaticMarkup(Role({ align: "center" }))).toContain("text-center");
+    const end = renderToStaticMarkup(Role({ align: "end" }));
+    expect(end).toContain("text-end");
+    expect(end).toMatch(/class="[^"]*\bblock\b/);
+    expect(end).not.toContain("align=");
+    const plain = renderToStaticMarkup(Role({}));
+    expect(plain).not.toMatch(/text-(start|center|end)/);
+    expect(plain).not.toMatch(/\bblock\b/);
+  });
+
+  it("`align` with `truncate` is a block that clips, not an inline box", () => {
+    const out = renderToStaticMarkup(
+      <Overline align="end" truncate>
+        A long label
+      </Overline>,
+    );
+    expect(out).toContain("block");
+    expect(out).not.toContain("inline-block");
+    expect(out).toContain("truncate");
+    expect(out).toContain("text-end");
+  });
+
+  it.each([
+    ["Text", Text],
+    ["Caption", Caption],
+  ])("%s `italic` slants the run and is opt-in", (_name, Role) => {
+    expect(renderToStaticMarkup(<Role italic>hint</Role>)).toContain('class="');
+    expect(renderToStaticMarkup(<Role italic>hint</Role>)).toMatch(/class="[^"]*\bitalic\b/);
+    expect(renderToStaticMarkup(<Role italic>hint</Role>)).not.toContain("italic=");
+    expect(renderToStaticMarkup(<Role>hint</Role>)).not.toMatch(/\bitalic\b/);
+  });
+
+  it.each([
+    ["Text", Text],
+    ["Caption", Caption],
+  ])("%s `breakWords` breaks long strings and is opt-in", (_name, Role) => {
+    const out = renderToStaticMarkup(<Role breakWords>https://example.com/a/very/long/path</Role>);
+    expect(out).toMatch(/class="[^"]*\bbreak-words\b/);
+    expect(out).not.toContain("breakWords");
+    expect(renderToStaticMarkup(<Role>x</Role>)).not.toContain("break-words");
+  });
+
+  it("Text `italic` and `breakWords` keep the strong face and the colour", () => {
+    const out = renderToStaticMarkup(
+      <Text strong italic breakWords>
+        x
+      </Text>,
+    );
+    expect(out).toMatch(/\bfont-medium\b/);
+    expect(out).toContain("text-slate-900");
+    expect(out).toMatch(/\bitalic\b/);
+    expect(out).toMatch(/\bbreak-words\b/);
+  });
+
+  it('Text `minWidth="amount"` fixes a width, right-aligns and lines figures up', () => {
+    const out = renderToStaticMarkup(
+      <Text strong minWidth="amount" numeric>
+        1,111.11
+      </Text>,
+    );
+    expect(out).toContain("inline-block min-w-24 text-end");
+    expect(out.match(/tabular-nums/g)).toHaveLength(1);
+    expect(out).toMatch(/\bfont-medium\b/);
+    expect(out).toContain("text-slate-900");
+    expect(renderToStaticMarkup(<Text minWidth="amount">1</Text>)).toContain("tabular-nums");
+    expect(out).not.toContain("minWidth");
+    expect(renderToStaticMarkup(<Text>x</Text>)).not.toContain("min-w-24");
+  });
+});
