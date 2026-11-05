@@ -1,3 +1,17 @@
+## 0.9.0 (2026-11-05)
+
+### 🚀 Features
+
+- ⚠️  **ui-react:** AppShell folds its nav into a Menu button on a phone ([#48](https://github.com/madangryscientist/hackcove/pull/48))
+
+### ⚠️  Breaking Changes
+
+- **ui-react:** AppShell folds its nav into a Menu button on a phone  ([#48](https://github.com/madangryscientist/hackcove/pull/48))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.8.3 (2026-11-05)
 
 ### 🚀 Features
