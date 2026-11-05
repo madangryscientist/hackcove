@@ -16,7 +16,7 @@ import {
   Text,
 } from "@hackcove/ui-react";
 
-/** A linked ListRow (and an `active` one), a linked TableRow and a link Card, each holding its own link and button above the stretched link, then a badged link Card and an `attention` Card. */
+/** A linked ListRow (and an `active` one), a linked TableRow and a link Card, each holding its own link and button above the stretched link, then a badged link Card and an `attention` Card, then Cards with an `icon`. */
 export function GalleryLinkedRows() {
   return (
     <div className="flex flex-col gap-4">
@@ -85,6 +85,29 @@ export function GalleryLinkedRows() {
           </Text>
         </Card>
       </CardGrid>
+      <IconCards />
     </div>
+  );
+}
+
+function IconCards() {
+  return (
+    <CardGrid>
+      <Card icon="diff" title="Visual diffs">
+        <Text as="p" color="muted">
+          A feature card: an icon above the title.
+        </Text>
+      </Card>
+      <Card icon="self-host" title="Self-host" href="#self-host">
+        <Text as="p" color="muted">
+          A link card with an icon.
+        </Text>
+      </Card>
+      <Card icon="privacy" title="Privacy" size="sm">
+        <Text as="p" color="muted">
+          A dense one.
+        </Text>
+      </Card>
+    </CardGrid>
   );
 }

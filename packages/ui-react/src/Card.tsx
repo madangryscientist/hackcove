@@ -1,14 +1,28 @@
 import { type ComponentPropsWithoutRef, type ReactElement, type ReactNode, useId } from "react";
 import { type CalloutTone, TONE_SURFACE } from "./Callout.js";
 import { CardBadge } from "./CardBadge.js";
-import { CardBar, CardFooter, CardHeader, CardHeading } from "./CardParts.js";
+import { CardBar, CardFooter, CardHeader, CardHeading, CardIcon } from "./CardParts.js";
 import { cx, focusRing, liftInteractive } from "./cx.js";
+import type { IconName } from "./icons.js";
 import { type LinkRender, renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 /** A card with a `footer`: a `dashed` card stands alone and has none. */
 function withFooter(form: ReturnType<typeof cardForm>, footer: ReactNode) {
   return { ...form, footer: !form.dashed && Boolean(footer) };
+}
+
+/** A mark needs the padded body above a heading, so it has no place in a strip, a flush card or an empty state. */
+function paddedIcon(
+  asked: { flush?: boolean | undefined; icon?: IconName | undefined },
+  bare: boolean,
+) {
+  return bare || asked.flush ? undefined : asked.icon;
+}
+
+/** A flag that is on only when asked for and not overridden. */
+function on(flag: boolean | undefined, off: boolean): boolean {
+  return (flag ?? false) && !off;
 }
 
 /** `dashed` stands alone; `bar` needs a title or actions to fill it and has no tone. */
@@ -19,19 +33,21 @@ function cardForm(
     dashed?: boolean | "filled" | undefined;
     tone?: CalloutTone | undefined;
     attention?: boolean | undefined;
+    icon?: IconName | undefined;
     size: Size;
   },
   hasHeader: boolean,
 ) {
   const dashed = Boolean(asked.dashed);
-  const bar = (asked.bar ?? false) && !dashed && hasHeader;
+  const bar = on(asked.bar, dashed) && hasHeader;
   return {
-    flush: (asked.flush ?? false) && !dashed,
+    flush: on(asked.flush, dashed),
     bar,
     dashed,
     filled: asked.dashed === "filled",
     tone: dashed || bar ? undefined : asked.tone,
-    attention: (asked.attention ?? false) && !dashed,
+    attention: on(asked.attention, dashed),
+    icon: paddedIcon(asked, dashed || bar),
     size: asked.size,
     footer: false,
   };
@@ -84,6 +100,8 @@ type CardBase = {
   dashed?: boolean | "filled";
   /** A soft fill and border in the Callout's tones, for a data panel with a status. Ignored with `bar` and `dashed`. */
   tone?: CalloutTone;
+  /** One of the library's icons, drawn at feature size in the accent colour above the title: the mark of a feature card. Ignored with `bar`, `flush` and `dashed`. */
+  icon?: IconName;
   /** A `Pill` (or any small node) pinned in the top-right corner, over the content and inside the radius, with no change to the layout. On a card that is a link it is part of the link's name, and a link or button in it is clickable on its own. */
   badge?: ReactNode;
   /** The warn tone's strong border in place of the card's own, for the one card in a set that needs a look (a run that differed). It keeps the card's fill. Ignored with `dashed`. */
@@ -155,6 +173,9 @@ function isCardLink(props: CardPanelProps | CardLinkProps): props is CardLinkPro
  * scrolls it clear of the sticky header (and a `subnav`) and outlines it in the accent colour while
  * it is the target.
  *
+ * `icon` is one of the library's icons at feature size in the accent colour, above the title: the
+ * mark of a feature card. It sits in the padded body, so `bar`, `flush` and `dashed` have none.
+ *
  * `footer` is a tinted strip across the bottom, under a hairline, for the card's own actions or a
  * total; in a `CardGrid` it stays at the foot of a card that is stretched to the row's height. It
  * suits a panel, not a card that is a link, and `dashed` has none.
@@ -186,6 +207,7 @@ function PanelCard(props: CardPanelProps): ReactElement {
     tone,
     badge,
     attention,
+    icon,
     size = "md",
     children,
     ...panel
@@ -193,7 +215,7 @@ function PanelCard(props: CardPanelProps): ReactElement {
   const { as: Tag = "section", ...rest } = panel;
   const headingId = useId();
   const form = withFooter(
-    cardForm({ flush, bar, dashed, tone, attention, size }, Boolean(title || actions)),
+    cardForm({ flush, bar, dashed, tone, attention, icon, size }, Boolean(title || actions)),
     footer,
   );
   // The title names the section or article; a caller's own name wins, and a bare `div` takes none.
@@ -239,12 +261,13 @@ function LinkCard(props: CardLinkProps): ReactElement {
     tone,
     badge,
     attention,
+    icon,
     size = "md",
     children,
     external = false,
     ...rest
   } = props;
-  const form = cardForm({ flush, bar, dashed, tone, attention, size }, Boolean(title));
+  const form = cardForm({ flush, bar, dashed, tone, attention, icon, size }, Boolean(title));
   const generated = useId();
   const [root, link] = splitRootAttrs(rest);
   // The link is named by the whole card, so the root needs an id: the caller's, else a generated one.
@@ -312,6 +335,7 @@ function cardBody(
   }
   const content = (
     <>
+      {form.icon && <CardIcon name={form.icon} size={form.size} />}
       <CardHeader heading={heading} actions={actions} size={form.size} />
       {children}
     </>
