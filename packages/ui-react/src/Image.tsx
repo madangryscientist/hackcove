@@ -7,7 +7,7 @@ import type { Size } from "./size.js";
 /** The shapes an image is cropped or letterboxed to. */
 export type ImageAspect = "square" | "4:3" | "3:2" | "16:9" | "3:4" | "9:16";
 
-/** How wide an image is: `full` fills its parent; the others cap it at 96, 160 or 256px. */
+/** How wide an image is: `full` fills its parent; the others are 96, 160 or 256px, capped at the parent's width. */
 export type ImageWidth = Size | "full";
 
 const ASPECT: Record<ImageAspect, string> = {
@@ -19,11 +19,15 @@ const ASPECT: Record<ImageAspect, string> = {
   "9:16": "aspect-[9/16]",
 };
 
-/** `full` is the parent's width; a size is a cap on it, so a narrow parent still wins. */
+/**
+ * `full` is the parent's width; a size is a real width that a narrower parent still caps. It is
+ * a width and not a `max-width`, so it holds inside a shrink-to-fit parent, where a placeholder
+ * has no intrinsic size of its own to give it one.
+ */
 export const IMAGE_WIDTH: Record<ImageWidth, string> = {
-  sm: "w-full max-w-24",
-  md: "w-full max-w-40",
-  lg: "w-full max-w-64",
+  sm: "w-24 max-w-full",
+  md: "w-40 max-w-full",
+  lg: "w-64 max-w-full",
   full: "w-full",
 };
 
@@ -53,7 +57,7 @@ export type ImageProps = {
    */
   fit?: "cover" | "contain" | undefined;
   /**
-   * `sm` 96px, `md` 160px and `lg` 256px cap the width; `full` fills the parent.
+   * `sm` 96px, `md` 160px and `lg` 256px set the width, capped at the parent's; `full` fills the parent.
    * @default full
    */
   width?: ImageWidth | undefined;
@@ -89,7 +93,7 @@ export function Image({
     );
   }
   return (
-    <div
+    <span
       {...rest}
       {...(alt ? { role: "img", "aria-label": alt } : { "aria-hidden": true })}
       className={cx(box, "grid place-items-center text-slate-400")}
@@ -99,6 +103,6 @@ export function Image({
           <path d={PICTURE} />
         </svg>
       </Icon>
-    </div>
+    </span>
   );
 }

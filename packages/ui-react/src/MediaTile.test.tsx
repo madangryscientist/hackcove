@@ -17,7 +17,7 @@ describe("MediaTile", () => {
     expect(out).not.toContain("<button");
     expect(out).toContain('alt="Status from Anna"');
     expect(out).toContain("aspect-[3/4]");
-    expect(out).toContain("max-w-40");
+    expect(out).toContain("w-40 max-w-full");
     expect(out).not.toContain("bg-black");
   });
 
@@ -58,11 +58,11 @@ describe("MediaTile", () => {
     );
     expect(out).toContain('role="img"');
     expect(out).toContain(">Earlier</span>");
-    expect(out).toContain("max-w-24");
+    expect(out).toContain("w-24 max-w-full");
   });
 
   it("fills its parent at width full", () => {
     const out = renderToStaticMarkup(<MediaTile src="/a.jpg" alt="Photo" width="full" />);
-    expect(out).not.toContain("max-w-");
+    expect(out).not.toContain("max-w");
   });
 });

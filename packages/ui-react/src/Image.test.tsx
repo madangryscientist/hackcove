@@ -30,6 +30,9 @@ function Swap(): ReactElement {
   );
 }
 
+const classes = (width: "sm" | "md" | "lg" | "full") =>
+  /class="([^"]*)"/.exec(renderToStaticMarkup(<Image alt="A" width={width} />))?.[1] ?? "";
+
 describe("Image", () => {
   it("is an <img> named by alt, rounded, framed and cropped to a 4:3 box by default", () => {
     const out = renderToStaticMarkup(<Image src="/a.jpg" alt="A harbour" />);
@@ -48,7 +51,19 @@ describe("Image", () => {
     expect(out).toContain("aspect-square");
     expect(out).toContain("object-contain");
     expect(out).not.toContain("object-cover");
-    expect(out).toContain("max-w-40");
+    expect(out).toContain("w-40 max-w-full");
+  });
+
+  it("sets each size as a real width that a narrow parent still caps", () => {
+    for (const [width, expected] of [
+      ["sm", "w-24 max-w-full"],
+      ["md", "w-40 max-w-full"],
+      ["lg", "w-64 max-w-full"],
+    ] as const) {
+      expect(classes(width)).toContain(expected);
+    }
+    expect(classes("full")).toContain("w-full");
+    expect(classes("full")).not.toContain("max-w");
   });
 
   it("maps every aspect to its own box", () => {
@@ -61,7 +76,7 @@ describe("Image", () => {
 
   it("shows a same-sized placeholder, named by alt, when no src is given", () => {
     const out = renderToStaticMarkup(<Image alt="No preview" aspect="16:9" />);
-    expect(out.startsWith("<div")).toBe(true);
+    expect(out.startsWith("<span")).toBe(true);
     expect(out).toContain('role="img"');
     expect(out).toContain('aria-label="No preview"');
     expect(out).toContain("aspect-video");
