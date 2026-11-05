@@ -1,12 +1,14 @@
 {
   "name": "@hackcove/theme-catppuccin-mocha",
   "version": "0.3.0",
-  "description": "The Catppuccin Mocha dark theme for Hack Cove: one CSS file that remaps the Tailwind utilities @hackcove/ui-react is written against.",
+  "description": "The Catppuccin themes for Hack Cove: Mocha (dark, theme.css) and Latte (light, latte.css), each one CSS file that remaps the Tailwind utilities @hackcove/ui-react is written against.",
   "keywords": [
     "catppuccin",
     "dark-mode",
     "design-system",
     "hackcove",
+    "latte",
+    "light-mode",
     "mocha",
     "tailwind",
     "tailwindcss",
@@ -28,6 +30,7 @@
   },
   "files": [
     "theme.css",
+    "latte.css",
     "NOTICE"
   ],
   "type": "module",
@@ -36,6 +39,7 @@
   ],
   "exports": {
     "./theme.css": "./theme.css",
+    "./latte.css": "./latte.css",
     "./package.json": "./package.json"
   },
   "scripts": {

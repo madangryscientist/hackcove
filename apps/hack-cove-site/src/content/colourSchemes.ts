@@ -1,13 +1,15 @@
 /* Which theme is the site's light scheme and which its dark one, read from the themes themselves: a
-   dark theme declares `@custom-variant dark` in its theme.css. No theme is named here. With more than
-   one of either, the first by folder order is used (`themeNames` is sorted). */
+   dark theme declares `@custom-variant dark` in its CSS. No theme is named here. Only a package's
+   main `theme.css` counts (`primaryThemeNames`), so a package's extra files are listed on /ui/ and
+   picked in Storybook but never become the site's scheme. With more than one of either, the first
+   by folder order is used (`primaryThemeNames` is sorted). */
 
 import { colourSchemeScript } from "@hackcove/ui-react";
 import type { ColourSchemeClasses } from "@hackcove/ui-react";
-import { THEMES, declaresDark, themeNames, themeScope } from "@hackcove/themes-shared";
+import { THEMES, declaresDark, primaryThemeNames, themeScope } from "@hackcove/themes-shared";
 
 const firstScope = (dark: boolean): string => {
-  const folder = themeNames.find((name) => declaresDark(THEMES[name] ?? "") === dark);
+  const folder = primaryThemeNames.find((name) => declaresDark(THEMES[name] ?? "") === dark);
   const scope = folder === undefined ? undefined : themeScope(THEMES[folder] ?? "");
   if (scope === undefined) {
     throw new Error(`The site needs one ${dark ? "dark" : "light"} theme in themes/*.`);

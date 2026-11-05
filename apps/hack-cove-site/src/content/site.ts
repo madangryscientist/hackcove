@@ -145,7 +145,7 @@ const ui = {
   themes: {
     title: "Themes",
     intro:
-      "Each theme is its own package: one CSS file that remaps the components' colours under its own class.",
+      "Each theme is one CSS file that remaps the components' colours under its own class. A package carries one theme, or more than one.",
     scopeLabel: "Class on <html>",
   },
   links: {

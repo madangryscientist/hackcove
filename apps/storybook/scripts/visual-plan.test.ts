@@ -73,7 +73,12 @@ const repo: Repo = {
   read: (path) => files[path],
   storyFiles,
   sections,
-  themes: ["catppuccin-mocha", "thrifty-paper"],
+  themes: ["catppuccin-mocha", "catppuccin-mocha-alt", "thrifty-paper"],
+  themeFolders: {
+    "catppuccin-mocha": "catppuccin-mocha",
+    "catppuccin-mocha-alt": "catppuccin-mocha",
+    "thrifty-paper": "thrifty-paper",
+  },
 };
 
 const grouping = groupStories(sections, storyFiles);
@@ -194,6 +199,25 @@ describe("planCapture", () => {
       expect(group.themes).toEqual(["thrifty-paper"]);
       expect(group.picked).toEqual(group.files);
     }
+  });
+
+  it("a change to one CSS file of a package reaches that theme only, any other file all of its themes", () => {
+    expect(plan(["themes/catppuccin-mocha/alt.css"]).picked[0]?.themes).toEqual([
+      "catppuccin-mocha-alt",
+    ]);
+    expect(plan(["themes/catppuccin-mocha/theme.css"]).picked[0]?.themes).toEqual([
+      "catppuccin-mocha",
+    ]);
+    expect(plan(["themes/catppuccin-mocha/package.json"]).picked[0]?.themes).toEqual([
+      "catppuccin-mocha",
+      "catppuccin-mocha-alt",
+    ]);
+  });
+
+  it("a theme file that is gone from the repo captures everything", () => {
+    const result = plan(["themes/catppuccin-mocha/gone.css"]);
+    expect(result.all).toBe(true);
+    expect(result.notes.join(" ")).toContain("is in no theme there is now");
   });
 
   it("a component and a theme change give the component's group every theme", () => {

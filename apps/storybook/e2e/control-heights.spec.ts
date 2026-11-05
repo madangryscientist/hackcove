@@ -1,14 +1,10 @@
-import { readdirSync } from "node:fs";
 import { expect, test } from "@playwright/test";
+import { themeFiles } from "@hackcove/themes-shared/files";
 
 // The library promises one height per size across every control: the same as an `Input` of that
 // size. jsdom has no layout, so this measures the rendered boxes, under every theme (a theme may
 // change a font, and a font changes a line height).
-const themesDir = `${import.meta.dirname}/../../../themes`;
-const themes = readdirSync(themesDir, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .toSorted();
+const themes = themeFiles(`${import.meta.dirname}/../../../themes`).map((theme) => theme.id);
 
 const HEIGHT = new Map([
   ["sm", 26],

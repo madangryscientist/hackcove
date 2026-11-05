@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Contact } from "../src/components/Contact";
@@ -12,6 +12,7 @@ import { Team } from "../src/components/Team";
 import { UiPage } from "../src/components/UiPage";
 import { componentPages, componentSections } from "../src/content/components/index";
 import { type Person, type Project, sectionOf, site } from "../src/content/site";
+import { themeFiles } from "@hackcove/themes-shared/files";
 import { themes } from "../src/content/themes";
 
 /* The point of these tests is that the words and the people survive rendering as
@@ -48,12 +49,8 @@ describe("logo", () => {
     expect(readFileSync(`${import.meta.dirname}/../public/favicon.svg`, "utf8")).toContain(
       'fill="#4f86f7"',
     );
-    for (const { folder } of themes) {
-      const theme = readFileSync(
-        `${import.meta.dirname}/../../../themes/${folder}/theme.css`,
-        "utf8",
-      );
-      expect(theme).not.toMatch(/--logo|4f86f7/i);
+    for (const theme of themeFiles(`${import.meta.dirname}/../../../themes`)) {
+      expect(theme.css).not.toMatch(/--logo|4f86f7/i);
     }
   });
 });
@@ -249,15 +246,10 @@ describe("the Hack Cove UI page", () => {
     for (const { slug } of componentPages) expect(html).toContain(`href="/ui/${slug}/"`);
   });
 
-  test("the theme list is the themes/* folders, read by the glob and not written in code", () => {
-    const folders = readdirSync(new URL("../../../themes", import.meta.url), {
-      withFileTypes: true,
-    })
-      .filter((entry) => entry.isDirectory())
-      .map((entry) => entry.name)
-      .toSorted();
-    expect(folders.length).toBeGreaterThan(0);
-    expect(themes.map((t) => t.folder)).toEqual(folders);
+  test("the theme list is one entry per themes/*/*.css file, read by the glob and not written in code", () => {
+    const files = themeFiles(`${import.meta.dirname}/../../../themes`);
+    expect(files.length).toBeGreaterThan(0);
+    expect(themes.map((t) => t.id)).toEqual(files.map((f) => f.id));
     for (const theme of themes) {
       const manifest: unknown = JSON.parse(
         readFileSync(
@@ -267,7 +259,7 @@ describe("the Hack Cove UI page", () => {
       );
       expect(manifest).toMatchObject({ name: theme.name });
       expect(theme.scopeClass).not.toBe("");
-      expect(html).toContain(theme.name);
+      expect(html).toContain(theme.specifier);
       expect(html).toContain(`<code`);
       expect(html).toContain(theme.scopeClass);
     }

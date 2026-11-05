@@ -1,21 +1,17 @@
-import { readdirSync, readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
+import { themeFiles } from "@hackcove/themes-shared/files";
+import { PRIMARY_FILE } from "@hackcove/themes-shared/ids";
 import { declaresDark, themeScope } from "@hackcove/themes-shared/scope";
 import { componentPages } from "../src/content/components/index";
 
-// One folder per theme under themes/. The header toggle switches between the first light theme and
-// the first dark one (by folder order), told apart as the site does: a dark theme declares
-// `@custom-variant dark`.
-const themesDir = `${import.meta.dirname}/../../../themes`;
-const folders = readdirSync(themesDir, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .toSorted();
-const cssOf = (folder: string) => readFileSync(`${themesDir}/${folder}/theme.css`, "utf8");
-const scopeOf = (folder: string) => themeScope(cssOf(folder)) ?? "";
-const scopes = folders.map(scopeOf);
+// One theme per CSS file under themes/*/. The header toggle switches between the first light theme and
+// the first dark one among the packages' main `theme.css` files (by folder order), told apart as the
+// site does: a dark theme declares `@custom-variant dark`.
+const themeList = themeFiles(`${import.meta.dirname}/../../../themes`);
+const mainThemes = themeList.filter((theme) => theme.file === PRIMARY_FILE);
+const scopes = themeList.map((theme) => themeScope(theme.css) ?? "");
 const scopeOfScheme = (dark: boolean) =>
-  scopeOf(folders.find((folder) => declaresDark(cssOf(folder)) === dark) ?? "");
+  themeScope(mainThemes.find((theme) => declaresDark(theme.css) === dark)?.css ?? "") ?? "";
 const schemeScope = { light: scopeOfScheme(false), dark: scopeOfScheme(true) };
 type Scheme = keyof typeof schemeScope;
 
@@ -64,7 +60,7 @@ async function setScheme(page: Page, scheme: Scheme) {
 }
 
 test("the themes folder lists at least one theme", () => {
-  expect(folders.length).toBeGreaterThan(0);
+  expect(themeList.length).toBeGreaterThan(0);
 });
 
 for (const { path, heading } of pages) {

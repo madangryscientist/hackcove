@@ -1,13 +1,9 @@
-import { readdirSync, readFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
+import { themeFiles } from "@hackcove/themes-shared/files";
 import { themeScope } from "@hackcove/themes-shared/scope";
 
-// Same source of truth as the toolbar switcher: one folder per theme under themes/.
-const themesDir = `${import.meta.dirname}/../../../themes`;
-const themes = readdirSync(themesDir, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .toSorted();
+// Same source of truth as the toolbar switcher: one theme per CSS file under themes/*/.
+const themes = themeFiles(`${import.meta.dirname}/../../../themes`);
 
 const escapeRegExp = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -42,8 +38,7 @@ function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-for (const theme of themes) {
-  const css = readFileSync(`${themesDir}/${theme}/theme.css`, "utf8");
+for (const { id: theme, css } of themes) {
   const scope = themeScope(css);
 
   test(`theme ${theme}: a hovered Table row takes the theme's hover fill and keeps its text readable`, async ({

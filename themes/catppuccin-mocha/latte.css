@@ -1,0 +1,370 @@
+/*! Catppuccin Latte palette © 2021 Catppuccin, MIT license: https://github.com/catppuccin/catppuccin (full notice in NOTICE) */
+/* ---------------------------------------------------------------------------
+   Catppuccin Latte — the light theme for the Hack Cove design system.
+   ---------------------------------------------------------------------------
+   The @hackcove/ui-react components are written against Tailwind's slate/colour
+   utilities directly (bg-white, text-slate-900, …). This file remaps those
+   utilities to Catppuccin Latte tokens under `.latte`. The rules are
+   unlayered, so they override Tailwind's (layered) utilities.
+
+   Consumers import it AFTER `@import "tailwindcss"` and put `.latte` on <html>
+   (see the README for the import line). It is light, so it declares no `dark`
+   variant.
+
+   Palette:
+     base #eff1f5 · mantle #e6e9ef · crust #dce0e8 · surface0 #ccd0da
+     surface1 #bcc0cc · surface2 #acb0be · overlay1 #8c8fa1 · overlay2 #7c7f93
+     subtext0 #6c6f85 · subtext1 #5c5f77 · text #4c4f69
+     mauve #8839ef · red #d20f39 · maroon #e64553 · peach #fe640b
+     yellow #df8e1d · green #40a02b · teal #179299 · sky #04a5e5
+     sapphire #209fb5 · blue #1e66f5 · lavender #7287fd · pink #ea76cb
+
+   A token moves only where the contrast contract forces it
+   (packages/themes-shared/src/contrastRules.ts, run by theme.test.ts); each
+   such rule says which token it started from and why it moved. The accents are
+   strong on white, so cards are white and lift off the base canvas.
+   --------------------------------------------------------------------------- */
+
+/* The scope: the page is the base canvas with text ink. */
+.latte {
+  color-scheme: light;
+  background-color: #eff1f5; /* base — the canvas the white cards lift off */
+  color: #4c4f69; /* text */
+  /* The type faces: Inter where installed, the system stack otherwise. Custom properties on the
+     scope, so every `font-sans` / `font-mono` below it (AppShell's page font included) follows. */
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --font-mono:
+    ui-monospace, "JetBrains Mono", "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono",
+    monospace;
+  font-family: var(--font-sans);
+}
+
+/* The page canvas — AppShell paints it; white cards lift off the base. */
+.latte .bg-gray-50 {
+  background-color: #eff1f5; /* base */
+}
+
+/* Surfaces — white cards on the base canvas, mantle insets. */
+.latte .bg-white {
+  background-color: #ffffff;
+}
+.latte .bg-white\/80 {
+  background-color: rgba(255, 255, 255, 0.85);
+}
+.latte .bg-slate-50,
+.latte .bg-slate-50\/50,
+.latte .bg-slate-50\/60,
+.latte .bg-slate-50\/70 {
+  background-color: #e6e9ef; /* mantle */
+}
+.latte .bg-slate-100 {
+  background-color: #dce0e8; /* crust — one step deeper than mantle */
+}
+.latte .bg-slate-900 {
+  background-color: #4c4f69; /* text — e.g. the brand badge */
+}
+.latte .backdrop\:bg-slate-900\/35::backdrop {
+  background-color: rgba(76, 79, 105, 0.35); /* text — the modal scrim */
+}
+
+/* The media scrim — Lightbox's full-screen viewer. It stays near-black with light text in this light
+   theme too, so a photo or a video reads against it as it would in any viewer. Latte has no dark
+   token, so the scrim is Mocha crust, the darkest Catppuccin token and the one this package's other
+   file uses for the same scrim. */
+.latte .bg-black\/90 {
+  background-color: rgba(17, 17, 27, 0.94); /* Mocha crust */
+}
+.latte .text-white {
+  color: #eff1f5; /* base */
+}
+.latte .text-white\/70 {
+  color: rgba(239, 241, 245, 0.72); /* base/72 */
+}
+.latte .hover\:bg-white\/10:hover {
+  background-color: rgba(239, 241, 245, 0.12); /* base/12 */
+}
+.latte .focus-visible\:outline-white:focus-visible {
+  outline-color: #eff1f5; /* base */
+}
+
+/* Text */
+.latte .text-slate-900,
+.latte .text-slate-800 {
+  color: #4c4f69; /* text — incl. bold totals/footers */
+}
+.latte .text-slate-700,
+.latte .text-slate-600 {
+  color: #5c5f77; /* subtext1 */
+}
+.latte .text-slate-500 {
+  color: #616277; /* subtext0 #6c6f85, darkened: under 4.5:1 on mantle and crust */
+}
+.latte .text-slate-400 {
+  color: #64677d; /* subtext0 #6c6f85, darkened: under 4.5:1 on mantle and crust */
+}
+.latte .text-slate-300 {
+  color: #8c8fa1; /* overlay1 — dimmed (days outside the month); inactive, so under no contrast bar */
+}
+.latte .placeholder\:text-slate-400::placeholder {
+  color: #64677d; /* as the muted text above */
+}
+
+/* Borders */
+.latte .border-slate-50 {
+  border-color: #e6e9ef; /* same as bg-slate-50: the ring takes the page colour */
+}
+.latte .border-slate-100 {
+  border-color: #dce0e8; /* crust */
+}
+.latte .border-slate-200,
+.latte .border-slate-200\/70 {
+  border-color: #ccd0da; /* surface0 */
+}
+.latte .border-slate-300 {
+  border-color: #828597; /* overlay1 #8c8fa1, darkened: an input's edge needs 3:1 on white and mantle */
+}
+.latte .border-slate-900 {
+  border-color: #4c4f69; /* text */
+}
+
+/* Money + accent text */
+.latte .text-emerald-600 {
+  color: #40a02b; /* green */
+}
+.latte .text-red-600 {
+  color: #d20f39; /* red */
+}
+
+/* Stat-card accent bars */
+.latte .bg-emerald-500 {
+  background-color: #40a02b; /* green */
+}
+.latte .bg-red-500 {
+  background-color: #d20f39; /* red */
+}
+.latte .bg-slate-300 {
+  background-color: #bcc0cc; /* surface1 */
+}
+
+/* Accent: buttons, focus, controls */
+.latte .bg-violet-600 {
+  background-color: #8839ef; /* mauve */
+}
+.latte .hover\:bg-violet-700:hover {
+  background-color: #5e6dd1; /* lavender #7287fd, darkened: the white label needs 4.5:1 on the hovered fill */
+}
+.latte .text-violet-50 {
+  color: #ffffff; /* text on the mauve button */
+}
+.latte .hover\:text-violet-700:hover {
+  color: #525cad; /* lavender #7287fd, darkened: 4.5:1 text on white, mantle and the mauve tint */
+}
+.latte .hover\:bg-violet-50:hover {
+  background-color: rgba(
+    136,
+    57,
+    239,
+    0.06
+  ); /* mauve tint, 0.1 lowered so mauve text keeps 4.5:1 on it */
+}
+.latte .border-violet-600 {
+  border-color: #8839ef; /* mauve */
+}
+.latte .hover\:border-violet-400:hover {
+  border-color: rgba(136, 57, 239, 0.75); /* mauve, 0.6 raised: a hovered field edge needs 3:1 */
+}
+.latte .outline-violet-600 {
+  outline-color: #8839ef; /* mauve */
+}
+.latte .target\:outline-violet-600:target {
+  outline-color: #8839ef; /* mauve */
+}
+.latte .focus-visible\:outline-violet-600:focus-visible {
+  outline-color: #8839ef; /* mauve */
+}
+.latte .has-focus-visible\:outline-violet-600:has(:focus-visible) {
+  outline-color: #8839ef; /* mauve */
+}
+.latte .accent-violet-600 {
+  accent-color: #8839ef; /* mauve */
+}
+
+/* Danger button (Button tone="danger"): solid, outline and ghost */
+.latte .bg-red-600 {
+  background-color: #d20f39; /* red */
+}
+.latte .hover\:bg-red-700:hover {
+  background-color: #d43f4d; /* maroon #e64553, darkened: the white label needs 4.5:1 on the hovered fill */
+}
+.latte .text-red-50 {
+  color: #ffffff; /* text on the red button */
+}
+.latte .border-red-600 {
+  border-color: #d20f39; /* red */
+}
+.latte .hover\:bg-red-50:hover {
+  background-color: rgba(
+    210,
+    15,
+    57,
+    0.06
+  ); /* red tint, 0.08 lowered so red text keeps 4.5:1 on it */
+}
+
+/* Positive button (Button tone="positive"): solid, outline, ghost and the pressed tint.
+   bg-emerald-600 is the green mapped below with the avatar colours. */
+.latte .hover\:bg-emerald-700:hover {
+  background-color: #178289; /* teal #179299, darkened: the white label needs 4.5:1 on the hovered fill */
+}
+.latte .text-emerald-50 {
+  color: #ffffff; /* text on the green button */
+}
+.latte .border-emerald-600 {
+  border-color: #3c9827; /* green #40a02b, darkened: the edge needs 3:1 on white */
+}
+.latte .hover\:bg-emerald-50:hover {
+  background-color: rgba(
+    64,
+    160,
+    43,
+    0.06
+  ); /* green tint, 0.12 lowered so green text keeps 4.5:1 on it */
+}
+
+/* A plain-disabled solid Button (every tone). Half opacity on a saturated fill goes muddy under the
+   white label, so it flattens to the same look as a blocked Button (surface0 fill, subtext0 label)
+   instead. `.disabled\:opacity-50` is the plain-disabled marker: busy keeps its colour and blocked is
+   already flat. */
+.latte .disabled\:opacity-50:disabled:is(.bg-violet-600, .bg-emerald-600, .bg-red-600) {
+  opacity: 1;
+  background-color: #ccd0da; /* surface0 */
+  border-color: #bcc0cc; /* surface1 */
+  color: #6c6f85; /* subtext0 */
+}
+
+/* Avatar identity colours — violet-600 is the accent above; the rest sit on the theme, each darkened
+   from its Latte token until the white initials clear 4.5:1. */
+.latte .bg-orange-600 {
+  background-color: #c5530b; /* peach #fe640b */
+}
+.latte .bg-cyan-600 {
+  background-color: #208192; /* sapphire #209fb5 */
+}
+.latte .bg-emerald-600 {
+  background-color: #338621; /* green #40a02b */
+}
+.latte .bg-sky-600 {
+  background-color: #5e6dd1; /* lavender #7287fd */
+}
+.latte .bg-pink-600 {
+  background-color: #ad5996; /* pink #ea76cb */
+}
+.latte .bg-amber-600 {
+  background-color: #a6681d; /* yellow #df8e1d */
+}
+
+/* Hover states */
+.latte .hover\:bg-slate-50:hover {
+  background-color: #e6e9ef; /* mantle */
+}
+.latte .hover\:bg-slate-100:hover {
+  background-color: #dce0e8; /* crust */
+}
+
+/* Coloured callouts / chips — tint backgrounds, full-strength text & borders. The tints are light
+   (0.06) so the accent text on them clears 4.5:1; the text tones are darkened from their Latte token
+   for the same bar on white, mantle and the tint. */
+.latte .bg-emerald-50,
+.latte .bg-emerald-50\/60,
+.latte .bg-emerald-100 {
+  background-color: rgba(64, 160, 43, 0.06); /* green tint */
+}
+.latte .bg-amber-50,
+.latte .bg-amber-50\/60,
+.latte .bg-amber-100 {
+  background-color: rgba(223, 142, 29, 0.06); /* yellow tint */
+}
+.latte .bg-red-50 {
+  background-color: rgba(210, 15, 57, 0.06); /* red tint */
+}
+.latte .bg-blue-50 {
+  background-color: rgba(30, 102, 245, 0.06); /* blue tint */
+}
+.latte .bg-violet-50 {
+  background-color: rgba(136, 57, 239, 0.06); /* mauve tint */
+}
+.latte .bg-sky-50 {
+  background-color: rgba(4, 165, 229, 0.06); /* sky tint */
+}
+.latte .text-emerald-700,
+.latte .text-emerald-800 {
+  color: #2a7421; /* green #40a02b */
+}
+.latte .text-amber-700,
+.latte .text-amber-800,
+.latte .text-amber-900 {
+  color: #8c591d; /* yellow #df8e1d */
+}
+.latte .text-red-700,
+.latte .text-red-800,
+.latte .text-red-900 {
+  color: #c00f33; /* red #d20f39 */
+}
+.latte .text-blue-600,
+.latte .text-blue-700,
+.latte .text-blue-800,
+.latte .text-blue-900 {
+  color: #1e5bd4; /* blue #1e66f5 */
+}
+.latte .text-violet-600,
+.latte .text-violet-700 {
+  color: #8035e1; /* mauve #8839ef */
+}
+.latte .text-sky-700 {
+  color: #046b96; /* sky #04a5e5 */
+}
+/* Chart-only tones (StackedBar, Legend): neutral is a grey apart from muted (subtext0), violet is
+   the mauve of the accent. */
+.latte .text-neutral-500 {
+  color: #828597; /* overlay1 #8c8fa1, darkened: a chart tone needs 3:1 */
+}
+.latte .text-purple-700 {
+  color: #8839ef; /* mauve */
+}
+.latte .border-emerald-200,
+.latte .border-emerald-300 {
+  border-color: rgba(64, 160, 43, 0.4);
+}
+.latte .border-amber-200,
+.latte .border-amber-300 {
+  border-color: rgba(223, 142, 29, 0.4);
+}
+.latte .border-amber-600 {
+  border-color: #bb761d; /* yellow #df8e1d, darkened: the strong warn edge (Card attention) needs 3:1 */
+}
+.latte .border-red-200 {
+  border-color: rgba(210, 15, 57, 0.65); /* an invalid field's edge */
+}
+.latte .border-red-300,
+.latte .border-red-400 {
+  border-color: rgba(210, 15, 57, 0.45);
+}
+.latte .border-blue-200,
+.latte .border-blue-300 {
+  border-color: rgba(30, 102, 245, 0.4);
+}
+
+/* Inline links — mauve (green is reserved for positive values). Alias of @hackcove/ui-react's
+   TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
+   write class="link" on a bare <a>. */
+.latte .link {
+  color: #8839ef; /* mauve */
+  font-weight: 500;
+  text-underline-offset: 2px;
+  transition: color 0.12s ease;
+}
+.latte .link:hover {
+  color: #525cad; /* lavender, as hover:text-violet-700 above */
+}

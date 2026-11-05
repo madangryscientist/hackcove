@@ -1,13 +1,9 @@
-import { readdirSync, readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
+import { themeFiles } from "@hackcove/themes-shared/files";
 import { themeScope } from "@hackcove/themes-shared/scope";
 
-// Same source of truth as the toolbar switcher: one folder per theme under themes/.
-const themesDir = `${import.meta.dirname}/../../../themes`;
-const themes = readdirSync(themesDir, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .toSorted();
+// Same source of truth as the toolbar switcher: one theme per CSS file under themes/*/.
+const themes = themeFiles(`${import.meta.dirname}/../../../themes`);
 
 const pillStory = "text-body-text--pills";
 
@@ -52,8 +48,8 @@ test("the themes folder lists at least one theme", () => {
   expect(themes.length).toBeGreaterThan(0);
 });
 
-for (const theme of themes) {
-  const scope = themeScope(readFileSync(`${themesDir}/${theme}/theme.css`, "utf8"));
+for (const { id: theme, css } of themes) {
+  const scope = themeScope(css);
 
   test(`theme ${theme} remaps the slate and amber Pills under its own scope`, async ({ page }) => {
     const themed = await snapshot(page, theme);
@@ -81,9 +77,9 @@ test("Overview / All themes lays out every theme, each under its own scope, with
 
   expect(panels).toHaveLength(themes.length);
 
-  for (const theme of themes) {
-    const scope = themeScope(readFileSync(`${themesDir}/${theme}/theme.css`, "utf8"));
-    const panel = panels.find((candidate) => candidate.theme === theme);
+  for (const { id, css } of themes) {
+    const scope = themeScope(css);
+    const panel = panels.find((candidate) => candidate.theme === id);
 
     expect(panel?.classes).toEqual([scope]);
     expect(panel?.background).not.toBe("rgba(0, 0, 0, 0)");
