@@ -1,6 +1,6 @@
-import { Card, ListRow } from "@hackcove/ui-react";
+import { Avatar, Card, ListRow, Text } from "@hackcove/ui-react";
 
-/** A dense ListRow in a small flush Card, and a compact bordered list: a flush Card of `static` `size="sm"` rows. */
+/** A dense ListRow in a small flush Card, and a compact bordered list: a flush Card of `static` `size="sm"` rows, and a static row with `detail`. */
 export function DenseRows() {
   return (
     <>
@@ -15,6 +15,16 @@ export function DenseRows() {
         </ListRow>
         <ListRow static size="sm" divided trailing="R 640">
           Static rows, divided
+        </ListRow>
+      </Card>
+      <Card flush>
+        <ListRow
+          static
+          leading={<Avatar name="Linus T" />}
+          trailing="10:42"
+          detail={<Text as="p">A thread opens under the label.</Text>}
+        >
+          Static row with detail
         </ListRow>
       </Card>
     </>

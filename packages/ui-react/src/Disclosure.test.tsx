@@ -81,4 +81,41 @@ describe("Disclosure", () => {
     expect(root?.getAttribute("aria-describedby")).toBe("why");
     expect(root?.contains(container.querySelector("button"))).toBe(true);
   });
+
+  it("bordered draws a panel: a bordered box, a roomy summary row and a padded body under a hairline", () => {
+    const container = mount(
+      <Disclosure summary="Customise by month" bordered defaultOpen>
+        <p>Twelve months.</p>
+      </Disclosure>,
+    );
+    const root = container.firstElementChild;
+    expect(root?.className).toContain("rounded-xl border border-slate-200/70");
+    expect(trigger(container).className).toContain("px-4 py-3");
+    expect(trigger(container).className).toContain("hover:bg-slate-50");
+    const inner = body(container)?.firstElementChild;
+    expect(inner?.className).toContain("border-t border-slate-200/70");
+    expect(inner?.className).toContain("p-4");
+    expect(inner?.textContent).toBe("Twelve months.");
+    expect(body(container)?.className).not.toContain("pl-6");
+    expect(body(container)?.className).not.toContain("border-t");
+  });
+
+  it("bordered keeps the toggle, aria-expanded and the hidden body", () => {
+    const container = mount(
+      <Disclosure summary="S" bordered>
+        x
+      </Disclosure>,
+    );
+    expect(body(container)?.hasAttribute("hidden")).toBe(true);
+    act(() => trigger(container).click());
+    expect(trigger(container).getAttribute("aria-expanded")).toBe("true");
+    expect(body(container)?.hasAttribute("hidden")).toBe(false);
+  });
+
+  it("plain has no frame, no hairline and the body indented under the chevron", () => {
+    const container = open(true);
+    expect(container.firstElementChild?.hasAttribute("class")).toBe(false);
+    expect(body(container)?.className).toContain("pl-6");
+    expect(body(container)?.className).not.toContain("border-t");
+  });
 });

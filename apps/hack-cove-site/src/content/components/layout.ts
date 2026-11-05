@@ -116,7 +116,7 @@ export const layout: ComponentSection = {
         "`gap` is a scale: `xs` between lines of text, `sm` inside a group, `md` (default) between blocks, `lg` between groups, `xl` between a page's top-level blocks (the one responsive page rhythm).",
         "`width` caps the column at the left edge: `narrow` (a reading measure), `wide`, `full`, or `default` for the parent's width. It is never re-centred.",
         '`as` is `div` (default), `section`, `form`, `ul` or `ol`. `as="form"` takes the form props and spaces its fields; `as="ul"` and `as="ol"` draw no markers and their children are `<li>`s.',
-        "A titled group is a `Section`: `title`, `actions` beside it, then the blocks, at gap `md` (default). It takes `gap` and `width` as `Stack` does.",
+        "A titled group is a `Section`: `title`, `actions` beside it, then the blocks, at gap `md` (default). It takes `gap` and `width` as `Stack` does. `rule` draws a hairline under the title row, `actions` included.",
         "`rowFrom` (`sm`, `md` or `lg`) turns the column into a row from that breakpoint and leaves it a column below: a main block beside a side column on a wide screen, stacked on a phone. Put the block that takes the width left in a `ClusterGrow`.",
         "A row that is a row at every width is a `Cluster`, not a Stack.",
       ],
@@ -185,7 +185,7 @@ export const layout: ComponentSection = {
         "Use it between two parts of a page that are not bordered, such as the content and its footer.",
         "The space around it is the layout's: put it in a `Stack`, never add margin.",
         "Do not draw it between bordered blocks such as `Card`: their borders and the `gap` already separate them.",
-        "For a rule under a section title, `SectionHeading` has `rule`.",
+        "For a rule under a section title, `SectionHeading` and `Section` have `rule`. For a line between two `Section`s, put a `Divider` between them in their `Stack`.",
       ],
       accessibility: [
         "It is an `<hr>`, which assistive tech announces as a separator. Use it only where the content really changes.",

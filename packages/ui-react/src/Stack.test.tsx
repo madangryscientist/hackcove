@@ -109,6 +109,23 @@ describe("Section", () => {
     );
   });
 
+  it("rule draws a hairline under the whole title row, actions included", () => {
+    const out = renderToStaticMarkup(
+      <Section rule title="Recent" actions={<button type="button">All</button>}>
+        body
+      </Section>,
+    );
+    expect(out).toContain(
+      '<div class="flex items-center justify-between gap-4 border-b border-slate-200/70 pb-2">',
+    );
+    expect(out.match(/border-b/g)).toHaveLength(1);
+    expect(out).toContain(">All</button>");
+  });
+
+  it("has no hairline without rule", () => {
+    expect(renderToStaticMarkup(<Section title="Recent">body</Section>)).not.toContain("border-b");
+  });
+
   it("keeps a consumer's aria-labelledby when it has no title of its own", () => {
     expect(renderToStaticMarkup(<Section aria-labelledby="h">body</Section>)).toContain(
       'aria-labelledby="h"',

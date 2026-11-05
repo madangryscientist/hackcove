@@ -209,6 +209,7 @@ export const content: ComponentSection = {
         "Give it a `summary` that says what is inside; the `children` are the body. It starts closed; `defaultOpen` starts it open.",
         "It keeps its own state. Several in a column are independent of each other.",
         "Do not hide what the person must read to carry on, such as an error or the one thing the page is for.",
+        "`bordered` draws it as a panel for a section that opens in place on a page of cards: a bordered box, the summary a full-width row that fills on hover, the body padded under a hairline.",
         "A collapsible section header in a list of rows is a `ListRow` with `expanded`, where the caller owns the state.",
         "It replaces `<details>` and `<summary>`.",
       ],
