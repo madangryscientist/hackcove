@@ -21,6 +21,12 @@ to meet a need that recurs across consumers. Prefer fixed named choices over ope
 Consumers compose the parts and never restyle them: no component takes `className` or `style`, and
 a consumer writes no styling of its own.
 
+The end goal is a site built with components configured through props and nothing else: no custom
+CSS, Tailwind classes or one-off styling. That is why the library ships whole pages (error, 404,
+offline) and a loading skeleton matching each component's and layout's real shape in every theme.
+Docs and site copy lead with the one way to do a thing, with do and don't, rather than a catalogue
+of options.
+
 ## Layout
 
 | Project | Path | What it is |
@@ -43,6 +49,8 @@ what a theme remaps, not a look the repo designs or checks, so Storybook, its Ov
 visual matrix list `themes/*.css` and nothing else.
 
 **The site composes ui components.** `apps/hack-cove-site` is a composition of `@hackcove/ui-react` and a theme and nothing of its own; a custom style or component there is a flag, not a fix. Put it on the list in the site's `README.md` (a swap, a hackcove ticket, or "Custom, by design" with the reason), and do not add the style to the site.
+
+**React Native comes later, in this repo.** `@hackcove/ui-react-native` will be its own Nx project at `packages/ui-react-native`, built natively rather than through react-native-web. What the two renderers share stays in sync through a shared core package and PixelSlash parity.
 
 ## The gate
 
@@ -108,6 +116,12 @@ The type is honest because it drives the version bump:
   after the type, or a `BREAKING CHANGE:` footer → minor. Nothing reaches `1.0.0` by a commit; that
   is a decision for later.
 - `docs`, `test`, `chore`, `refactor`, `build` and `ci` release nothing.
+
+Before 1.0, an API rename or removal is a plain breaking change: a `!` commit, with the mechanical
+swap in the package's `MIGRATING.md`. Consumers migrate in their bump, so the old name goes in the
+same change, since an alias would leave two ways to do one thing.
+
+Versions come only from this bump: `publish.yml` takes no version input and nothing bumps by hand.
 
 Which packages a commit bumps is decided by the files it touches, not by its scope. A `feat(ui-react)`
 that touches only `packages/ui-react` bumps `@hackcove/ui-react`, and nothing else.
