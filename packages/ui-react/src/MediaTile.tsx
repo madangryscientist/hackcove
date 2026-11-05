@@ -2,6 +2,7 @@ import type { ReactElement, ReactNode } from "react";
 import { cx, focusRing } from "./cx.js";
 import { Icon } from "./Icon.js";
 import { IMAGE_WIDTH, Image, type ImageAspect, type ImageWidth } from "./Image.js";
+import { CLOSE } from "./Lightbox.js";
 import type { Passthrough } from "./props.js";
 
 const PLAY =
@@ -17,7 +18,8 @@ export type MediaTileProps = {
   /** Muted text under the picture, e.g. when. */
   caption?: ReactNode;
   /**
-   * The shape of the thumbnail, as `Image`'s `aspect`.
+   * The shape of the thumbnail, as `Image`'s `aspect`; `natural` keeps the picture's own
+   * proportions (a chat image) and crops nothing.
    * @default 3:4
    */
   aspect?: ImageAspect | undefined;
@@ -33,13 +35,20 @@ export type MediaTileProps = {
    * non-interactive block.
    */
   onClick?: (() => void) | undefined;
+  /**
+   * Adds a round remove button on the picture's top-right corner, named "Remove" and `alt`: a
+   * photo attached to a form, until it is sent. It is its own button, beside the tile's, so a tile
+   * with `onClick` still opens its `Lightbox`.
+   */
+  onRemove?: (() => void) | undefined;
 } & Passthrough;
 
 /**
  * A thumbnail tile: a picture in a fixed shape with an optional label on its bottom edge and a
  * caption under it. With `onClick` the whole tile is one button, which is how a grid or a
  * `ScrollStrip` of media opens each item in a `Lightbox`. The label sits on the same near-black
- * media scrim as the Lightbox, in every theme. The thumbnail is cropped to fill its shape.
+ * media scrim as the Lightbox, in every theme. The thumbnail is cropped to fill its shape, or with
+ * `aspect="natural"` shown whole. `onRemove` adds a remove button for a tile that can be taken back out.
  */
 export function MediaTile({
   src,
@@ -50,6 +59,7 @@ export function MediaTile({
   width = "md",
   video = false,
   onClick,
+  onRemove,
   ...rest
 }: MediaTileProps): ReactElement {
   const body = (
@@ -76,15 +86,9 @@ export function MediaTile({
       {caption && <span className="mt-1 block truncate text-xs text-slate-600">{caption}</span>}
     </>
   );
-  const box = cx("block min-w-0 text-left", IMAGE_WIDTH[width]);
-  if (!onClick) {
-    return (
-      <div {...rest} className={box}>
-        {body}
-      </div>
-    );
-  }
-  return (
+  // With a remove button the tile fills a wrapper that carries the width and the button's anchor.
+  const box = cx("block min-w-0 text-left", onRemove ? "w-full" : IMAGE_WIDTH[width]);
+  const tile = onClick ? (
     <button
       {...rest}
       type="button"
@@ -93,5 +97,28 @@ export function MediaTile({
     >
       {body}
     </button>
+  ) : (
+    <div {...rest} className={box}>
+      {body}
+    </div>
+  );
+  if (!onRemove) return tile;
+  return (
+    <div className={cx("relative min-w-0", IMAGE_WIDTH[width])}>
+      {tile}
+      <button
+        type="button"
+        aria-label={`Remove ${alt}`}
+        title="Remove"
+        onClick={onRemove}
+        className="absolute top-1 right-1 inline-flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/90 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+      >
+        <Icon>
+          <svg viewBox="0 0 20 20" fill="currentColor">
+            <path d={CLOSE} />
+          </svg>
+        </Icon>
+      </button>
+    </div>
   );
 }

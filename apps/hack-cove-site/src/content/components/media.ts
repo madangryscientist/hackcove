@@ -10,8 +10,9 @@ export const mediaPages: ComponentPage[] = [
     pairs: ["Image/Fit"],
     usage: [
       "`src` is your own picture, a local path or a data URL, and `alt` says what it shows. The corners are rounded and a hairline frames it on the inset surface.",
-      "`aspect` is the shape it is cropped to: `square`, `4:3` (the default), `3:2`, `16:9`, or the portrait `3:4` and `9:16`. The shape is reserved before the picture loads, so the page does not jump.",
+      "`aspect` is the shape it is cropped to: `square`, `4:3` (the default), `3:2`, `16:9`, or the portrait `3:4` and `9:16`. The shape is reserved before the picture loads, so the page does not jump. `natural` is the exception: the picture keeps its own proportions, with nothing cropped, and the space is not reserved until it loads.",
       '`fit="cover"` (the default) fills the shape and crops what overflows. `fit="contain"` shows the whole picture, for a QR code or a logo that must not lose its edges.',
+      "`framed` sets the picture on a white mat with padding and shows all of it. The mat is white in every theme, dark ones included, so a QR code scans off a dark page. Use it for a code, not for a photo.",
       "`width` is `sm` (96px), `md` (160px) or `lg` (256px), each a cap that a narrower parent still wins over, or `full` (the default) for the parent's width.",
       "With no `src`, or one that fails to load, a placeholder of the same size with a picture mark takes its place. A new `src` tries again.",
       "A person's photo is an `Avatar`; a clickable thumbnail with a label is a `MediaTile`; a video is a `Video`.",
@@ -30,9 +31,10 @@ export const mediaPages: ComponentPage[] = [
       "A photo or video in a grid or a strip, that opens full size when it is picked: a status, a gallery, an attachment.",
     pairs: ["MediaTile/Viewer"],
     usage: [
-      "`src` and `alt` are the thumbnail, cropped to `aspect` (portrait `3:4` by default) at `width` (`md`, 160px, by default; `full` fills a grid cell).",
+      "`src` and `alt` are the thumbnail, cropped to `aspect` (portrait `3:4` by default; `natural` shows the picture whole at its own proportions, as a chat does) at `width` (`md`, 160px, by default; `full` fills a grid cell).",
       '`label` is a short line on the picture\'s bottom edge, on the same near-black scrim as the `Lightbox`, in every theme: who posted it, or "Earlier". `caption` is muted text under the picture, such as when.',
       "`video` draws a play mark; say it is a video in `alt` too.",
+      "`onRemove` adds a round remove button on the picture's corner, named \"Remove\" and `alt`: a photo attached to a form, until it is sent. It is its own button beside the tile's, so the tile can still open a `Lightbox`.",
       "`onClick` makes the whole tile one button. Open a `Lightbox` from it, and keep the open item in your own state. Without `onClick` the tile is a plain block.",
       'With no `src`, the tile shows the `Image` placeholder, so a tile that is only a label ("Earlier") needs no picture.',
       "A row of tiles that runs past the page is a `ScrollStrip`; a wrapping grid is a `CardGrid`.",

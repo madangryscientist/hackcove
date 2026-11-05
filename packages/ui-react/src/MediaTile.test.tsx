@@ -65,4 +65,59 @@ describe("MediaTile", () => {
     const out = renderToStaticMarkup(<MediaTile src="/a.jpg" alt="Photo" width="full" />);
     expect(out).not.toContain("max-w");
   });
+
+  it("shows the picture whole, at its own proportions, for aspect natural", () => {
+    const out = renderToStaticMarkup(
+      <MediaTile src="/chat.jpg" alt="Chat photo" aspect="natural" />,
+    );
+    expect(out).toContain("h-auto");
+    expect(out).not.toContain("aspect-");
+  });
+
+  it("has no remove button without onRemove", () => {
+    const out = renderToStaticMarkup(
+      <MediaTile src="/a.jpg" alt="Photo" onClick={() => undefined} />,
+    );
+    expect(out.match(/<button/g)).toHaveLength(1);
+  });
+
+  it("adds a remove button beside the tile's own, named by Remove and alt", () => {
+    const onClick = vi.fn<() => void>();
+    const onRemove = vi.fn<() => void>();
+    const container = mount(
+      <MediaTile src="/a.jpg" alt="Slip.pdf" width="sm" onClick={onClick} onRemove={onRemove} />,
+    );
+    const buttons = [...container.querySelectorAll("button")];
+    expect(buttons).toHaveLength(2);
+    const [tile, remove] = buttons;
+    // Two sibling buttons, never one inside the other.
+    expect(tile?.contains(remove ?? null)).toBe(false);
+    expect(remove?.getAttribute("aria-label")).toBe("Remove Slip.pdf");
+    expect(remove?.getAttribute("type")).toBe("button");
+    act(() => remove?.click());
+    expect(onRemove).toHaveBeenCalledTimes(1);
+    expect(onClick).not.toHaveBeenCalled();
+    act(() => tile?.click());
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(onRemove).toHaveBeenCalledTimes(1);
+  });
+
+  it("removes a plain tile too, and keeps its width on the wrapper", () => {
+    const container = mount(
+      <MediaTile src="/a.jpg" alt="Photo" width="sm" onRemove={() => undefined} />,
+    );
+    const wrapper = container.firstElementChild;
+    expect(wrapper?.className).toContain("w-24 max-w-full");
+    expect(wrapper?.className).toContain("relative");
+    expect(wrapper?.querySelectorAll("button")).toHaveLength(1);
+    // The tile fills the wrapper instead of repeating its width.
+    expect(wrapper?.firstElementChild?.className).toContain("w-full");
+  });
+
+  it("paints the remove button on the media scrim, in the palette's colours", () => {
+    const out = renderToStaticMarkup(
+      <MediaTile src="/a.jpg" alt="Photo" onRemove={() => undefined} />,
+    );
+    expect(out).toMatch(/<button[^>]*class="[^"]*bg-black\/90[^"]*text-white[^"]*"/);
+  });
 });

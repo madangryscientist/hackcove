@@ -27,6 +27,7 @@ export const Sizes: S = {
       <Avatar name="octocat" size="lg" />
       <Avatar name="octocat" size="xl" />
       <Avatar name="octocat" size="2xl" />
+      <Avatar name="octocat" size="3xl" />
     </div>
   ),
 };
@@ -45,7 +46,7 @@ export const Inline: S = {
 export const PhotoFails: S = {
   render: () => (
     <div className="flex items-center gap-3">
-      {(["xs", "sm", "md", "lg", "xl", "2xl"] as const).map((size) => (
+      {(["xs", "sm", "md", "lg", "xl", "2xl", "3xl"] as const).map((size) => (
         <Avatar key={size} name="Ada Lovelace" src="/missing/ada.jpg" size={size} />
       ))}
     </div>
@@ -56,7 +57,7 @@ export const PhotoFails: S = {
 export const Square: S = {
   render: () => (
     <div className="flex items-center gap-3">
-      {(["sm", "md", "lg", "xl", "2xl"] as const).map((size) => (
+      {(["sm", "md", "lg", "xl", "2xl", "3xl"] as const).map((size) => (
         <Avatar key={size} name="Hack Cove" shape="square" size={size} />
       ))}
       <Avatar name="Jacobus Langner" src={samplePhoto} shape="square" size="xl" />
@@ -67,9 +68,21 @@ export const Square: S = {
 export const Photo: S = {
   render: () => (
     <div className="flex items-center gap-3">
-      {(["md", "lg", "xl", "2xl"] as const).map((size) => (
+      {(["md", "lg", "xl", "2xl", "3xl"] as const).map((size) => (
         <Avatar key={size} name="Jacobus Langner" src={samplePhoto} size={size} />
       ))}
+    </div>
+  ),
+};
+
+/** `onClick` makes the whole Avatar one button, named by `name`: an account menu, a profile. It keeps its shape and size, with a focus ring. */
+export const Interactive: S = {
+  render: () => (
+    <div className="flex items-center gap-3">
+      <Avatar name="Ada Lovelace" size="2xl" onClick={() => undefined} />
+      <Avatar name="Ada Lovelace" size="2xl" src={samplePhoto} onClick={() => undefined} />
+      <Avatar name="Hack Cove" size="2xl" shape="square" onClick={() => undefined} />
+      <Avatar name="Ada Lovelace" size="sm" onClick={() => undefined} />
     </div>
   ),
 };

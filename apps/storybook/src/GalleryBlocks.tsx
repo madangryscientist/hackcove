@@ -25,7 +25,8 @@ import {
   Text,
 } from "@hackcove/ui-react";
 import { samplePhoto } from "./samplePhoto";
-import { sampleScenes } from "./sampleScene";
+import { sampleCode } from "./sampleCode";
+import { samplePortrait, sampleScenes } from "./sampleScene";
 
 /** The page header block of the Gallery: a Display title, a PageHeader and a pill Tabs row of links. */
 export function GalleryHeader() {
@@ -188,7 +189,7 @@ export function GalleryCopy() {
   );
 }
 
-/** The Avatar set: the seven identity colours at md, an AvatarStack with a "+N", a square Avatar, then initials from xs to 2xl and a photo. */
+/** The Avatar set: the seven identity colours at md, an AvatarStack with a "+N", a square Avatar, then initials from xs to 3xl, a photo and a clickable one. */
 export function GalleryAvatars() {
   const names = ["ada", "grace", "linus", "margaret", "dennis", "ken", "barbara"];
   return (
@@ -209,13 +210,15 @@ export function GalleryAvatars() {
         <Avatar name="Ada Lovelace" size="xl" />
         <Avatar name="Ada Lovelace" src={samplePhoto} size="xl" />
         <Avatar name="Ada Lovelace" size="2xl" />
-        <Avatar name="Ada Lovelace" src={samplePhoto} size="2xl" />
+        <Avatar name="Ada Lovelace" size="3xl" />
+        <Avatar name="Ada Lovelace" src={samplePhoto} size="3xl" />
+        <Avatar name="Ada Lovelace" src={samplePhoto} size="2xl" onClick={() => undefined} />
       </div>
     </div>
   );
 }
 
-/** The media set: an Image in three shapes, a MediaTile with a label and caption, a video tile and a placeholder tile in a ScrollStrip, then an Avatar strip. */
+/** The media set: an Image in three shapes, a MediaTile with a label and caption, a natural-shaped tile and a removable one, a video tile and a placeholder tile in a ScrollStrip, then an Avatar strip. */
 export function GalleryMedia() {
   const first = sampleScenes[0]?.src;
   const second = sampleScenes[1]?.src;
@@ -225,6 +228,18 @@ export function GalleryMedia() {
         <Image src={first} alt="Harbour at dusk" aspect="3:2" width="md" />
         <Image src={first} alt="Harbour at dusk, whole" aspect="square" width="md" fit="contain" />
         <Image alt="No preview yet" aspect="square" width="sm" />
+        <Image src={sampleCode} alt="Pairing code" aspect="square" width="sm" framed />
+      </div>
+      <div className="flex items-start gap-4">
+        <MediaTile src={samplePortrait.src} alt={samplePortrait.alt} aspect="natural" width="sm" />
+        <MediaTile
+          src={first}
+          alt="Slip from the shop"
+          aspect="square"
+          width="sm"
+          label="Slip"
+          onRemove={() => undefined}
+        />
       </div>
       <ScrollStrip label="Recent statuses">
         <MediaTile src={first} alt="Harbour at dusk" label="Anna" caption="09:12" />

@@ -16,7 +16,8 @@ const OVERLAP: Record<AvatarSize, string> = {
   md: "-ml-2",
   lg: "-ml-2.5",
   xl: "-ml-3.5",
-  "2xl": "-ml-6",
+  "2xl": "-ml-4",
+  "3xl": "-ml-6",
 };
 
 // The ring in the page colour that keeps two overlapping avatars apart.

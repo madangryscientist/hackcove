@@ -1,5 +1,20 @@
 # Migrating @hackcove/ui-react
 
+## 0.9 → 0.10: Avatar `2xl` is 64px, the old 96px is `3xl`
+
+`Avatar` gained a 64px size. The sizes keep their order (`xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`),
+so the new one is `2xl` and the 96px one moved up to `3xl`. There is no alias, and **TypeScript does
+not flag it**: `size="2xl"` still compiles and now draws 64px, not 96px.
+
+1. Find every `size="2xl"` on an `Avatar` or an `AvatarStack` and write `size="3xl"`.
+2. Where a 64px avatar was wanted all along (a local one drawn with `size-16`), use `size="2xl"`.
+
+New, nothing to change: `Avatar` takes `onClick` (the whole avatar becomes one button, named by `name`);
+`MediaTile` takes `aspect="natural"` and `onRemove`; `Image` takes `aspect="natural"` and `framed`
+(a white mat that stays white in every theme). A theme of your own needs one rule for the mat, as
+the `@hackcove/themes` files have:
+`.your-scope .bg-white\/100 { background-color: #ffffff; }`.
+
 ## 0.7 → 0.8: `@hackcove/ui` is now `@hackcove/ui-react`
 
 Nothing else changed: 0.8.0 is the 0.7.1 components under a new name, so the React package pairs

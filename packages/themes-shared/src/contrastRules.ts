@@ -42,6 +42,11 @@ export const EXEMPTIONS: readonly Exemption[] = [
     why: "the dimming veil behind a modal: a decorative wash, not text or a control edge",
   },
   {
+    role: "media-matte",
+    match: /^/,
+    why: "the white mat under a QR code or a logo: it carries no text, the picture on it is the consumer's own, and a scanner needs it white (themes.test.ts keeps it white in every theme)",
+  },
+  {
     role: "ink",
     match: /^text-slate-300$/,
     why: "dimmed text of an inactive item (a calendar day outside the month, a disabled day): WCAG 1.4.3 exempts inactive components",

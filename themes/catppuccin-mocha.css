@@ -83,6 +83,12 @@
   outline-color: #cdd6f4; /* text */
 }
 
+/* The media matte — Image framed: the white mat a QR code is scanned off. It stays white in every
+   theme, dark ones included, as the scrim above stays black. */
+.dark .bg-white\/100 {
+  background-color: #ffffff;
+}
+
 /* Text */
 .dark .text-slate-900,
 .dark .text-slate-800 {

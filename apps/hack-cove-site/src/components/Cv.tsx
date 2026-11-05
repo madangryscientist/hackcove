@@ -114,7 +114,7 @@ export function Cv() {
             {cv.headline} · {cv.location}
           </>
         }
-        actions={<Avatar name={cv.name} src={cv.photo} size="2xl" />}
+        actions={<Avatar name={cv.name} src={cv.photo} size="3xl" />}
         tabs={
           <MetaList nowrap separator="•">
             {cv.links.map((link) => (
