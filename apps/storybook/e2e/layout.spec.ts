@@ -78,37 +78,18 @@ for (const width of widths) {
   });
 }
 
-test("at 375px the header stays one 56px row: a long nav scrolls and does not wrap", async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 375, height: 800 });
-  // The long page: its seven-item nav is wider than a phone.
-  await page.goto(
-    "/iframe.html?id=layout-appshell--long-page&viewMode=story&globals=theme:default",
-  );
-  const row = page.getByRole("banner").locator("div:has(> nav[aria-label='Main'])");
-  await row.waitFor();
-  const { height, scrollWidth, clientWidth, navHeight } = await row.evaluate((el) => ({
-    height: el.getBoundingClientRect().height,
-    scrollWidth: el.scrollWidth,
-    clientWidth: el.clientWidth,
-    navHeight: el.querySelector("nav")?.getBoundingClientRect().height ?? 0,
-  }));
-  expect(height).toBe(56);
-  expect(scrollWidth).toBeGreaterThan(clientWidth);
-  // One row of tabs: a wrapped nav would be at least two tabs tall.
-  expect(navHeight).toBeGreaterThan(0);
-  expect(navHeight).toBeLessThan(56);
-});
-
 const storyUrl = (id: string) => `/iframe.html?id=${id}&viewMode=story&globals=theme:default`;
 
-test("at 390px an overflowing subnav fades the side with more to scroll, and a fitting row does not", async ({
+test("from md an overflowing subnav fades the side with more to scroll, and a fitting row does not", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 390, height: 800 });
+  await page.setViewportSize({ width: 800, height: 800 });
   await page.goto(storyUrl("layout-appshell--overflowing-subnav"));
-  const subnav = page.getByRole("banner").locator("div:has(> nav[aria-label='Personal'])");
+  const subnav = page
+    .getByRole("banner")
+    .locator("div:has(> nav[aria-label='Personal'])")
+    // The phone menu holds the same nav earlier in the DOM; the row is the last.
+    .last();
   await subnav.waitFor();
   const state = () =>
     subnav.evaluate((el) => ({
@@ -126,7 +107,7 @@ test("at 390px an overflowing subnav fades the side with more to scroll, and a f
   expect((await state()).mask).toContain("linear-gradient");
 
   // Wide enough that the row fits: no cue, no mask.
-  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.setViewportSize({ width: 1600, height: 800 });
   await expect.poll(state).toEqual({ start: false, end: false, mask: "none" });
 });
 

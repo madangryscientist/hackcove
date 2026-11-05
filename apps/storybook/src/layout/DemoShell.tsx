@@ -12,10 +12,11 @@ export function layoutPage(): () => void {
 
 const nav = ["Overview", "Builds", "Snapshots", "Reviews", "Projects", "Members", "Settings"];
 
-/** An app's shell: the brand and a long nav in their slots (it scrolls on a phone). Every Layout story renders inside it. */
+/** An app's shell: the brand and a long nav in their slots (on a phone both are in its menu). Every Layout story renders inside it. */
 export function DemoShell({
   brand,
   subnav,
+  menuLabel,
   controls,
   footer,
   bleed = false,
@@ -25,6 +26,7 @@ export function DemoShell({
   /** Replaces the default brand link. */
   brand?: ReactNode;
   subnav?: ReactNode;
+  menuLabel?: string;
   controls?: ReactNode;
   footer?: ReactNode;
   bleed?: boolean;
@@ -49,6 +51,7 @@ export function DemoShell({
       }
       controls={controls}
       subnav={subnav}
+      {...(menuLabel === undefined ? {} : { menuLabel })}
       footer={footer}
       bleed={bleed}
       hideChromeInPrint={hideChromeInPrint}

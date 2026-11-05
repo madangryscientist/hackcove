@@ -20,6 +20,7 @@ export const layout: ComponentSection = {
         "With a router, give `AppShellBrand` a `render` that draws the app's own `<Link>` instead of an `href`.",
         "Header, main and footer each sit in a `Container`, so a page never sets its own width or padding. Do not add a `Container` inside the shell.",
         "`bleed` drops main's `Container` for a layout that needs the whole width (`FullBleedLayout`); `SidebarLayout` needs no `bleed`.",
+        "On a phone `nav` and `subnav` fold into one Menu button, so a nav of any length stays reachable with no sideways scroll; `menuLabel` renames the button (`Menu` by default), for a translated app.",
         "`hideChromeInPrint` hides the header and footer and main's padding on paper; screen is unchanged.",
         "`header` is for a node no other slot covers. Prefer `brand`, `nav` and `controls`.",
         "Put `appShellRootClassFor(scheme)` on the app's own `<html>`. `AppShell` never touches `<html>`.",
@@ -28,7 +29,8 @@ export const layout: ComponentSection = {
       accessibility: [
         "The header is a `<header>` (the banner landmark), main is `<main>` and the footer is `<footer>`.",
         "`AppShellBrand` is one link named by its `label`; the logo is `aria-hidden`. With `collapse` the label is visually hidden below `sm` and still names the link.",
-        "A header row that is wider than the screen (a long nav) scrolls sideways and never wraps; a link that takes focus scrolls into view, and the side with more to reach fades out.",
+        "On a phone `nav` and `subnav` sit behind one Menu button, a native disclosure: it opens with no JavaScript, from the keyboard (Enter or Space) and for a screen reader, Escape closes it and returns to the button, and following a link closes it. The panel is not in the header's flow, so the header is the same height on every page.",
+        "From `md` a header row that is wider than the screen (a long nav) scrolls sideways and never wraps; a link that takes focus scrolls into view, and the side with more to reach fades out.",
         "Give `nav` and `subnav` pill `Tabs` of links, so each is a labelled `<nav>`.",
       ],
       api: ["AppShell", "AppShellBrand", "AppShellHideBelow"],

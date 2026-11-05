@@ -1,63 +1,16 @@
-import { expect, test, type Page } from "@playwright/test";
-import { themeFiles } from "@hackcove/themes-shared/files";
-import { PRIMARY_FILE } from "@hackcove/themes-shared/ids";
-import { declaresDark, themeScope } from "@hackcove/themes-shared/scope";
+import { expect, test } from "@playwright/test";
 import { componentPages } from "../src/content/components/index";
-
-// One theme per CSS file under themes/*/. The header toggle switches between the first light theme and
-// the first dark one among the packages' main `theme.css` files (by folder order), told apart as the
-// site does: a dark theme declares `@custom-variant dark`.
-const themeList = themeFiles(`${import.meta.dirname}/../../../themes`);
-const mainThemes = themeList.filter((theme) => theme.file === PRIMARY_FILE);
-const scopes = themeList.map((theme) => themeScope(theme.css) ?? "");
-const scopeOfScheme = (dark: boolean) =>
-  themeScope(mainThemes.find((theme) => declaresDark(theme.css) === dark)?.css ?? "") ?? "";
-const schemeScope = { light: scopeOfScheme(false), dark: scopeOfScheme(true) };
-type Scheme = keyof typeof schemeScope;
-
-const pages = [
-  { path: "/ui/", heading: "Getting started" },
-  ...componentPages.map(({ slug, name }) => ({ path: `/ui/${slug}/`, heading: name })),
-];
-
-/** The header's light/dark toggle: one button, named for the scheme it switches to. */
-const toggle = (page: Page) =>
-  page.getByRole("banner").getByRole("button", { name: /^Switch to (light|dark) theme$/ });
-
-/** The scope classes on `<html>`, which is where the toggle puts the scheme's. */
-const scopeClasses = (page: Page) =>
-  page
-    .locator("html")
-    .evaluate((el, all) => all.filter((scope) => el.classList.contains(scope)), scopes);
-
-/**
- * The toggle's own island is hydrated once Astro drops `ssr` from it. Another island on the page can
- * be hydrated first, so this waits for the toggle's, not the first one's.
- */
-const hydrated = (page: Page) =>
-  page.locator('astro-island[component-export="ColourSchemeToggle"]:not([ssr])').waitFor();
-
-/** The scheme `<html>` is in now, read from its classes. */
-const classScheme = async (page: Page): Promise<Scheme> =>
-  (await scopeClasses(page)).includes(schemeScope.dark) ? "dark" : "light";
-
-/** The label the toggle shows for `scheme`: the scheme it would switch to. */
-const labelFor = (scheme: Scheme) => `Switch to ${scheme === "dark" ? "light" : "dark"} theme`;
-
-/**
- * Get the page into `scheme`. The server renders the toggle's label from `initial` (dark), so its label
- * is not evidence of the scheme before React has hydrated it, and a click before that does nothing.
- * So this reads `<html>` (set before any script runs), clicks only while it is not `scheme`, and
- * repeats until it is. A click that landed leaves the page at `scheme`, so it is never repeated.
- */
-async function setScheme(page: Page, scheme: Scheme) {
-  await hydrated(page);
-  await expect(async () => {
-    if ((await classScheme(page)) !== scheme) await toggle(page).click();
-    await expect.poll(() => classScheme(page), { timeout: 1_000 }).toBe(scheme);
-  }).toPass();
-  await expect(toggle(page)).toHaveAttribute("aria-label", labelFor(scheme));
-}
+import {
+  everyPage,
+  pages,
+  schemeScope,
+  scopeClasses,
+  scopes,
+  setScheme,
+  themeList,
+  toggle,
+  hydrated,
+} from "./scheme";
 
 test("the themes folder lists at least one theme", () => {
   expect(themeList.length).toBeGreaterThan(0);
@@ -166,8 +119,6 @@ test("each theme reskins the page: its page paint differs from the stock compone
     expect(await paint()).not.toBe(plain);
   }
 });
-
-const everyPage = ["/", "/contracting/", "/pixelslash/", ...pages.map(({ path }) => path)];
 
 test("the toggle is in the header of every page, and a choice carries to the next", async ({
   page,
