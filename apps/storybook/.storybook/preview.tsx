@@ -1,6 +1,10 @@
 import type { Preview } from "@storybook/react-vite";
-import { ThemeDocument, themeNames } from "./themes";
+import { declaresDark } from "@hackcove/themes-shared";
+import { ThemeDocument, THEMES, themeNames } from "./themes";
 import "./tailwind.css";
+
+// Storybook opens in the dark theme, as it always has. The first theme by id is now a light one.
+const initialTheme = themeNames.find((name) => declaresDark(THEMES[name] ?? "")) ?? themeNames[0];
 
 const preview: Preview = {
   parameters: {
@@ -23,10 +27,10 @@ const preview: Preview = {
       },
     },
   },
-  initialGlobals: { theme: themeNames[0] },
+  initialGlobals: { theme: initialTheme },
   globalTypes: {
     theme: {
-      description: "Theme (one per CSS file under themes/*/)",
+      description: "Theme (one per CSS file in themes/)",
       toolbar: {
         icon: "paintbrush",
         dynamicTitle: true,

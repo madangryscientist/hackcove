@@ -24,11 +24,14 @@
 import { randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { themeFiles } from "@hackcove/themes-shared/files";
+import { baseThemeIds, themesOnBase } from "./theme-reach.js";
 import { indexOf, isRecord, shotsOf } from "./visual-index.js";
 import { groupStories, planCapture, readRepo, type Grouping, type Plan } from "./visual-plan.js";
 import {
   VisualError,
   baseStatic,
+  baselineDir,
   branchStatic,
   buildBase,
   capture,
@@ -159,10 +162,15 @@ async function planMode() {
   reportPlan(plan, grouping, saved, repo.themes.length);
 }
 
-/** The base's capture of `pick`, reused while the base commit and the selection stay the same. */
+/**
+ * The base's capture of `pick`, reused while the base commit, the selection and the branch's themes
+ * stay the same. The base is asked for its own theme ids, so a theme added or removed on the branch
+ * reads as new or removed, not as changed.
+ */
 async function captureBase(dir: string, sha: string, pick: Selection) {
   const keyPath = join(dir, "main.key");
-  const key = JSON.stringify({ sha, titles: pick.titles, themes: pick.themes });
+  const branch = themeFiles(join(repoRoot, "themes")).map((theme) => theme.id);
+  const key = JSON.stringify({ sha, titles: pick.titles, themes: pick.themes, branch });
   if (existsSync(keyPath) && readFileSync(keyPath, "utf8").trim() === key) {
     log(`base ${sha.slice(0, 7)} already captured`);
     return;
@@ -170,7 +178,15 @@ async function captureBase(dir: string, sha: string, pick: Selection) {
   rmSync(keyPath, { force: true });
   await withBaselineLock(async () => {
     await buildBase(sha);
-    await capture(baseStatic, join(dir, "main"), await capturePort(), pick);
+    // buildBase leaves the shared worktree at `sha`, which is the base these ids come from.
+    let ids: string[];
+    try {
+      ids = await baseThemeIds(baselineDir);
+    } catch (error) {
+      throw new VisualError(error instanceof Error ? error.message : String(error));
+    }
+    const themes = themesOnBase(ids, pick.themes, branch);
+    await capture(baseStatic, join(dir, "main"), await capturePort(), { ...pick, themes });
   });
   writeFileSync(keyPath, `${key}\n`);
 }

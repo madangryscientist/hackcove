@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 /* The Catppuccin Mocha palette that makes @hackcove/ui-react's slate-based components dark. It is its own
-   package (@hackcove/theme-catppuccin-mocha, in the hackcove repo, ~/dev/hackcove) so this app and
+   package (@hackcove/themes, in the hackcove repo, ~/dev/hackcove) so this app and
    apps/dashboard share one copy. `.dark` is set on <html> in Base.astro. */
-@import "@hackcove/theme-catppuccin-mocha/theme.css";
+@import "@hackcove/themes/catppuccin-mocha.css";
 
 /* Tailwind skips node_modules, so tell it to scan the components' build for the
    utilities they use — otherwise their classes are absent from the bundle. */
@@ -16,7 +16,7 @@
 /* The Logo's halo (HC-144): the LG TV theme's pulse, opacity and scale only, on a 4s ease-in-out
    alternate loop. Static at rest under prefers-reduced-motion. Flagged in README, "Custom, by design". */
 /* The logo is one fixed brand blue in every theme (HC-144): a custom property of the site, used
-   through `currentColor` by the ink and the halo. It is not a palette utility and no theme.css
+   through `currentColor` by the ink and the halo. It is not a palette utility and no theme
    remaps it, so the scheme toggle never recolours it. */
 :root {
   --logo: #4f86f7;

@@ -8,7 +8,7 @@ import { join } from "node:path";
 import { themeFiles } from "@hackcove/themes-shared/files";
 import { visualSkipped } from "./scripts/visual-shots.js";
 
-// Same list as the toolbar: one id per CSS file under themes/*/.
+// Same list as the toolbar: one id per CSS file in themes/.
 const themes = themeFiles(join(import.meta.dirname, "..", "..", "themes")).map((theme) => theme.id);
 
 /** A JSON array of strings from the environment, or `undefined` when unset. */

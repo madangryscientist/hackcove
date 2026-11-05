@@ -10,8 +10,8 @@
  *
  * A change reaches a story file when the file's static imports (followed through the
  * `@hackcove/ui-react` barrel to the module that exports each name) lead to a changed file. A change
- * to a theme's CSS file, `themes/<folder>/<file>.css`, reaches every group in that theme only; to any other
- * file in a theme folder, every theme of the folder. A change to shared ground (the
+ * to a theme's CSS file, `themes/<id>.css`, reaches every group in that theme only; to any other
+ * file in the themes package, every theme. A change to shared ground (the
  * palette, Storybook's config and what it imports, a manifest or the lockfile, the visual tooling)
  * or a diff that cannot be read reaches everything.
  *
@@ -60,10 +60,8 @@ export type Repo = {
   read: Reader;
   storyFiles: StoryFile[];
   sections: Section[];
-  /** The ids of the themes: each `*.css` file of each folder under `themes/` (`themes-shared`). */
+  /** The ids of the themes: each `*.css` file at the top of `themes/` (`themes-shared`). */
   themes: string[];
-  /** Theme id to the folder under `themes/` it is in. */
-  themeFolders: Record<string, string>;
 };
 
 export const OVERVIEW = "overview";
@@ -232,7 +230,6 @@ export type GroupPick = Group & {
   /** The story files to capture: a subset of `files`. */
   picked: StoryFile[];
   themes: string[];
-  /** Theme id to the folder under `themes/` it is in. */
   why: string[];
 };
 
@@ -392,16 +389,14 @@ export async function readRepo(root: string): Promise<Repo> {
     })
     .toSorted((a, b) => a.path.localeCompare(b.path));
 
-  const found = themeFiles(join(root, "themes"));
-  const themes = found.map((theme) => theme.id);
-  const themeFolders = Object.fromEntries(found.map((theme) => [theme.id, theme.folder]));
+  const themes = themeFiles(join(root, "themes")).map((theme) => theme.id);
 
   const cache = new Map<string, string | undefined>();
   const read: Reader = (path) => {
     if (!cache.has(path)) cache.set(path, safeRead(join(root, path)));
     return cache.get(path);
   };
-  return { read, storyFiles, sections, themes, themeFolders };
+  return { read, storyFiles, sections, themes };
 }
 
 function safeRead(path: string): string | undefined {

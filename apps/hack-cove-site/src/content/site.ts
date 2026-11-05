@@ -4,7 +4,7 @@
    Every word on hack-cove.com comes from Jacobus, so it lives here as data
    rather than being scattered through markup: editing copy means editing this
    file, and nothing else. The one exception is the theme list on /ui/, read from
-   themes/* at build time and never written here. The optional slots (a person's
+   themes/*.css at build time and never written here. The optional slots (a person's
    `bio` / `photo`, and a project's `links`) are seams: they can be filled in later
    without touching a component.
    --------------------------------------------------------------------------- */
@@ -122,7 +122,7 @@ const ui = {
       {
         text: "Add the components and a theme. React, React DOM and Tailwind CSS v4 are peers.",
         language: "bash" as const,
-        code: "bun add @hackcove/ui-react @hackcove/theme-catppuccin-mocha",
+        code: "bun add @hackcove/ui-react @hackcove/themes",
       },
       {
         text: "Import the theme in your CSS, after Tailwind, and point Tailwind at the components' build, since it skips node_modules:",
@@ -130,7 +130,7 @@ const ui = {
         language: "css" as const,
         code: [
           '@import "tailwindcss";',
-          '@import "@hackcove/theme-catppuccin-mocha/theme.css";',
+          '@import "@hackcove/themes/catppuccin-mocha.css";',
           '@source "../node_modules/@hackcove/ui-react/dist";',
         ],
       },
@@ -145,7 +145,7 @@ const ui = {
   themes: {
     title: "Themes",
     intro:
-      "Each theme is one CSS file that remaps the components' colours under its own class. A package carries one theme, or more than one.",
+      "Each theme is one CSS file that remaps the components' colours under its own class, and all of them are in one package.",
     scopeLabel: "Class on <html>",
   },
   links: {

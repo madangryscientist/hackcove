@@ -1,18 +1,17 @@
 import { expect, type Page } from "@playwright/test";
 import { themeFiles } from "@hackcove/themes-shared/files";
-import { PRIMARY_FILE } from "@hackcove/themes-shared/ids";
 import { declaresDark, themeScope } from "@hackcove/themes-shared/scope";
 import { componentPages } from "../src/content/components/index";
 
-// One theme per CSS file under themes/*/. The header toggle switches between the first light theme and
-// the first dark one among the packages' main `theme.css` files (by folder order), told apart as the
-// site does: a dark theme declares `@custom-variant dark`.
+// One theme per CSS file in themes/. The header toggle switches between the last light theme by id
+// and the one scoped `.dark` (the class ui's pre-paint script sets), told apart as the site does: a
+// dark theme declares `@custom-variant dark`.
 export const themeList = themeFiles(`${import.meta.dirname}/../../../themes`);
-export const mainThemes = themeList.filter((theme) => theme.file === PRIMARY_FILE);
 export const scopes = themeList.map((theme) => themeScope(theme.css) ?? "");
-const scopeOfScheme = (dark: boolean) =>
-  themeScope(mainThemes.find((theme) => declaresDark(theme.css) === dark)?.css ?? "") ?? "";
-export const schemeScope = { light: scopeOfScheme(false), dark: scopeOfScheme(true) };
+export const schemeScope = {
+  light: themeScope(themeList.findLast((theme) => !declaresDark(theme.css))?.css ?? "") ?? "",
+  dark: themeScope(themeList.find((theme) => themeScope(theme.css) === "dark")?.css ?? "") ?? "",
+};
 export type Scheme = keyof typeof schemeScope;
 
 export const pages = [

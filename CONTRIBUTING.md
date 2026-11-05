@@ -1,7 +1,7 @@
 # Contributing to hackcove
 
 Thanks for looking. This repo is the Hack Cove design system: React components (`@hackcove/ui-react`) and
-one folder per theme (`@hackcove/theme-<name>`), each its own npm package, in an Nx +
+the themes (`@hackcove/themes`, one CSS file per theme), each its own npm package, in an Nx +
 Bun-workspaces monorepo. By taking part you agree to the [Code of Conduct](CODE_OF_CONDUCT.md). For
 a security problem, follow [SECURITY.md](SECURITY.md) instead of opening an issue.
 
@@ -39,9 +39,9 @@ themes** shows every component in every theme on one page.
 | Folder | Package | What it is |
 | --- | --- | --- |
 | `packages/ui-react` | `@hackcove/ui-react` | The components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, react-dom, tailwindcss v4. No theme CSS. |
-| `themes/<name>` | `@hackcove/theme-<name>` | One CSS file per theme, shipped as-is (`theme.css`, plus an extra `<flavour>.css` when one package carries more than one flavour). |
+| `themes` | `@hackcove/themes` | One CSS file per theme, `<id>.css`, shipped as-is. |
 | `apps/storybook` | (private) | Storybook and the Playwright e2e. |
-| `packages/themes-shared` | (private) | How Storybook and the docs find the themes: the `themes/*/*.css` glob, the theme ids and each theme's scope class. |
+| `packages/themes-shared` | (private) | How Storybook and the docs find the themes: the `themes/*.css` glob, the theme ids and each theme's scope class. |
 | `apps/hack-cove-site` | (private) | The hack-cove.com Astro site, including the `/ui/` component docs; run it with `bunx nx dev hack-cove-site` (http://localhost:4321). Its e2e is `bunx nx e2e hack-cove-site`. |
 | `tools/ui-review` | (private) | Dev tooling for the `ui-review.yml` reusable workflow: a deterministic check of a pull request's added lines and an advisory model review. Not published; no package depends on it. |
 
@@ -78,11 +78,11 @@ to parse them with.
    it there and remap it in every theme in the same change. With no theme the
    components render in Tailwind's own default colours; that works, but it is only what a theme
    remaps, not a look the repo designs or checks, so Storybook offers no unthemed choice.
-2. **A theme is a folder and nothing else registers it.** No theme name appears in code.
+2. **A theme is a file and nothing else registers it.** No theme name appears in code.
 3. **Almost no runtime dependencies.** `@hackcove/ui-react` has one approved dependency,
    `react-aria-components` (with `@internationalized/date`), for the date picker; its peers are react,
    react-dom and tailwindcss v4, plus `@types/react` and `@types/react-dom` as optional peers (types only, so a consumer's
-   tsc resolves `react` under strict linkers). A theme has only the tailwindcss peer. A new dependency needs a
+   tsc resolves `react` under strict linkers). `@hackcove/themes` has only the tailwindcss peer. A new dependency needs a
    maintainer's agreement first.
 4. **Source imports in `packages/ui-react` use `.js` specifiers** (`./ui.js`, resolved to the `.tsx`),
    because a `.tsx` specifier is emitted into the `.d.ts` and breaks consumers' types.
@@ -104,10 +104,10 @@ to parse them with.
 
 ## Adding a theme
 
-A theme is a folder; copy one and change the CSS. The steps are in the README
+A theme is one CSS file in `themes/`; copy one and change it. The steps are in the README
 ([How to add a theme](README.md#how-to-add-a-theme)). Each theme names its own scope class (the
-class of the first top-level `.<class> { … }` rule in its CSS file), and its own `theme.test.ts`
-is the contract for every CSS file in the folder; Storybook and the e2e find them from `themes/*/*.css`, so there is no list to edit. The
+class of the first top-level `.<class> { … }` rule in its CSS file), and `themes/themes.test.ts`
+is the contract for every CSS file there; Storybook and the e2e find them from `themes/*.css`, so there is no list to edit. The
 contract includes WCAG AA contrast, measured from the theme's CSS for every pairing in
 `palette.json` (`packages/themes-shared/src/contrastRules.ts`); a colour that fails is fixed in
 the theme's CSS file, with a comment saying why when a published token moves.
@@ -129,7 +129,7 @@ docs page. The check runs in one of two modes:
 
 - **Affected** (`bunx nx run storybook:visual`, or `bunx nx affected -t visual`): only the stories
   the change reaches, found by following imports from each story file, in every theme; a change
-  only under `themes/<name>/` captures every story in that theme alone. Overview is always
+  only to `themes/<id>.css` captures every story in that theme alone. Overview is always
   captured. Anything shared (the palette, Storybook's config, the lockfile, a `package.json`, the
   visual scripts) or a diff that cannot be read captures everything. The run says at the top what
   it picked and why, and how much it skipped.

@@ -85,7 +85,7 @@ for (const scheme of ["dark", "light"] as const) {
 test("a saved value from the old theme picker is ignored", async ({ browser }) => {
   const context = await browser.newContext({ colorScheme: "light" });
   const page = await context.newPage();
-  await page.addInitScript(() => localStorage.setItem("hackcove-theme", "catppuccin-mocha"));
+  await page.addInitScript(() => localStorage.setItem("hackcove-theme", "some-theme"));
   await page.goto("/");
   await expect.poll(() => scopeClasses(page)).toEqual([schemeScope.light]);
   await context.close();

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { themeFiles } from "@hackcove/themes-shared/files";
 
-// One theme per CSS file under themes/*/, like the toolbar switcher.
+// One theme per CSS file in themes/, like the toolbar switcher.
 const themes = themeFiles(`${import.meta.dirname}/../../../themes`).map((theme) => theme.id);
 
 // A modal <dialog> makes everything outside it inert, and react-aria portals the calendar to

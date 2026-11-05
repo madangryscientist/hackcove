@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       project:
-        description: Leave empty to release every changed project in one dispatch. Set it only to release one project on its own (ui-react, theme-<name>), e.g. a re-publish after a failure.
+        description: Leave empty to release every changed project in one dispatch. Set it only to release one project on its own (ui-react, themes), e.g. a re-publish after a failure.
         type: string
         default: ""
       dry_run:
