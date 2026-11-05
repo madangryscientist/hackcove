@@ -32,6 +32,7 @@ export {
   ProseLayout,
 } from "./PageLayouts.js";
 export { SidebarLayout } from "./SidebarLayout.js";
+export { SideColumn, type SideColumnWidth } from "./SideColumn.js";
 export { StickyBar } from "./StickyBar.js";
 export { ErrorPage, Forbidden, Maintenance, NotFound, Offline } from "./StatusPages.js";
 export {

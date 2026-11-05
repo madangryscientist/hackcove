@@ -182,6 +182,11 @@ const CASES: Record<string, () => ReactElement> = {
     />
   ),
   Select: () => <ui.Select {...A} />,
+  SideColumn: () => (
+    <ui.SideColumn aside="a" {...A}>
+      x
+    </ui.SideColumn>
+  ),
   SidebarLayout: () => (
     <ui.SidebarLayout rail="r" {...A}>
       x

@@ -14,6 +14,7 @@ import {
   Overline,
   ProseLayout,
   SidebarLayout,
+  SideColumn,
   StickyBar,
   Text,
 } from "@hackcove/ui-react";
@@ -168,6 +169,20 @@ export function GalleryGridPages() {
         >
           <Text as="p">The canvas.</Text>
         </SidebarLayout>
+      </PageBox>
+      <PageBox label="SideColumn">
+        <SideColumn
+          aside={
+            <Card title="Reply agent">
+              <Text as="p">A 24rem column from lg.</Text>
+            </Card>
+          }
+          asideLabel="Ask the reply agent"
+        >
+          <Card title="Thread">
+            <Text as="p">The main area takes the room left.</Text>
+          </Card>
+        </SideColumn>
       </PageBox>
     </div>
   );

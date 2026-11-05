@@ -154,6 +154,28 @@ export const layout: ComponentSection = {
       api: ["Cluster", "ClusterGrow"],
     },
     {
+      slug: "side-column",
+      name: "SideColumn",
+      summary: "A main area beside a side column of a fixed width.",
+      whenToUse:
+        "Part of a page that is a main area and a side panel of a known width, such as a thread beside its assistant; a whole page with a header is `DetailLayout`.",
+      pairs: ["SideColumn/FixedColumn"],
+      stories: ["SideColumn"],
+      usage: [
+        "`children` are the main area and `aside` is the side column. From `lg` the aside is `asideWidth` wide on the right and the main area takes the room left; below `lg` the aside stacks under the main area.",
+        "`asideWidth` is `sm` (18rem) or `md` (24rem, the default). The width is exact, whatever the aside holds; there is no other width.",
+        "`asideLabel` is for an aside that should not take a phone's screen: below `lg` it folds, closed, behind a disclosure of that name, and from `lg` it is the same column, always shown, with no toggle. The aside stays mounted while folded, so state inside it is kept. Left out, the aside is always shown.",
+        "It sets no page width, padding, header or stickiness of its own: put it inside a layout, a `Card` or a panel. Space inside each column with a `Stack`.",
+        "A side column that is a share of a page under a `PageHeader` (two thirds and one third) is `DetailLayout`'s `aside`; a rail of links on the left is `SidebarLayout`. A `Stack` with `rowFrom` and a `ClusterGrow` sizes the side by its content, so it is not a fixed column.",
+      ],
+      accessibility: [
+        "The side column is an `<aside>`, a complementary landmark; the main area is a plain `div`. Give the aside a heading, or `aria-label` the `SideColumn`, when it needs a name.",
+        "In the DOM the main area comes first and the aside second, so that is the reading and tab order on every screen.",
+        "With `asideLabel` the aside is a native `<details>` disclosure below `lg`: its `<summary>` is the toggle, on the keyboard like any button. From `lg` the summary is gone and the aside is open.",
+      ],
+      api: ["SideColumn"],
+    },
+    {
       slug: "divider",
       name: "Divider",
       summary: "A hairline rule in the theme's line colour.",

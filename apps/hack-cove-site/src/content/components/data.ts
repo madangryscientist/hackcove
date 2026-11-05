@@ -16,7 +16,7 @@ export const data: ComponentSection = {
         "TableRowStripe/Stripe",
         "TableActions/ActionsColumn",
       ],
-      stories: ["Table", "TableCellOptions", "TableEditCell"],
+      stories: ["Table", "TableCellOptions", "TableEditCell", "TableFields"],
       usage: [
         "Compose a `Table` from `TableHead`, `TableBody` and, for totals, `TableFoot`. A `TableHead` holds one `TableRow` of `TableHeaderCell`s; give the `Table` a `caption` that names it.",
         'Right-align a column of amounts with `align="end"` on its header and its cells, and set `numeric` on the cells so the figures line up. A code or a type is `mono`.',
@@ -25,6 +25,7 @@ export const data: ComponentSection = {
         "Mark a row's status with `tone` (a stripe and a soft fill, or `muted` to fade the row) or with `stripe` (the stripe alone, in the `muted`, `info`, `positive`, `warn` or `danger` tone, which keeps the row's hover). Give one of them, never both, and name the status in a cell as well (a `Pill`), or draw a `Legend` for the colours.",
         'Group rows with a `TableGroupRow` and give it `colSpan` equal to the table\'s column count; `trailing` is a count or a subtotal at the far end. A full-width note or empty state is a `TableCell` with `colSpan`; `align="center"` centres it. `indent` (1 to 3) sets a start-aligned cell in, for the lines under a parent row.',
         'A column with nothing to say in its head (its actions) takes a `TableHeaderCell` with `srLabel="Actions"`. `variant="plain"` drops the card, for a table inside a `Card`.',
+        "A grid of fields, one row per period or item (a plan by month, say), is a `plain` `Table` in a `Card` with an `Input` in each cell, not a custom grid: the first column takes the room left, the others fit their content, and there is no column-template option.",
         "A prose cell wraps; a `numeric` or `mono` cell never breaks. `truncate` cuts a long value to one line and keeps its full text as a `title`; its content is plain text.",
         "To make a whole row clickable, put one `TextLink` with `stretch` in its first cell (with `render` for the app's router link). Keep an action that is not navigation a `Button` in an actions column.",
         "A value edited in place is a `TableEditCell` in place of the `TableCell`: `renderEditor` draws the control in the cell, and calls its `close` once it has saved. A press outside it, Tab out of it and Esc all close it without a save, so save on the control's own change or submit. The control sits in the cell, not in a popover of its own.",

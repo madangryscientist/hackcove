@@ -1,5 +1,6 @@
 import type { ReactElement, ReactNode } from "react";
-import { cx, focusRing } from "./cx.js";
+import { cx } from "./cx.js";
+import { FoldedColumn } from "./foldedColumn.js";
 import type { Passthrough } from "./props.js";
 import { STICKY_ASIDE_MD, STICKY_SCROLL_MD } from "./stickyColumn.js";
 
@@ -34,31 +35,9 @@ export function SidebarLayout({
           {railLabel === undefined ? (
             rail
           ) : (
-            <details className="group md:[&::details-content]:[content-visibility:visible]">
-              <summary
-                className={cx(
-                  "flex cursor-pointer list-none items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-900 select-none hover:bg-slate-50 md:hidden [&::-webkit-details-marker]:hidden",
-                  focusRing,
-                )}
-              >
-                {railLabel}
-                <svg
-                  viewBox="0 0 20 20"
-                  width="16"
-                  height="16"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                  className="shrink-0 text-slate-500 group-open:rotate-180"
-                >
-                  <path d="M5 8l5 5 5-5" />
-                </svg>
-              </summary>
-              <div className="mt-2 md:mt-0">{rail}</div>
-            </details>
+            <FoldedColumn from="md" label={railLabel}>
+              {rail}
+            </FoldedColumn>
           )}
         </div>
       </aside>
