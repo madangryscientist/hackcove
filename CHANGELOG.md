@@ -1,3 +1,14 @@
+## 0.9.2 (2026-11-05)
+
+### 🚀 Features
+
+- **ui-react:** SidebarLayout's rail and DetailLayout's aside stay in view on a long page ([#63](https://github.com/madangryscientist/hackcove/pull/63))
+- **themes:** combine every theme into one package, @hackcove/themes ([#61](https://github.com/madangryscientist/hackcove/pull/61))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.9.1 (2026-11-05)
 
 ### 🚀 Features
