@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { MAX_DIFF_CHARS, fitDiff, isGenerated, leftLines } from "../src/budget.js";
 import { onlyFiles, parseDiff, splitDiff } from "../src/diff.js";
-import { didNotRun, noteInSummary } from "../src/failure.js";
+import { didNotRun, isOutOfCredits, noteInSummary, outOfCredits } from "../src/failure.js";
 import { bodyOf, parseReply, place, summaryOf } from "../src/findings.js";
 import { commandFor } from "../src/opencode.js";
 import { MODEL, buildPrompt, purposeOf } from "../src/prompt.js";
@@ -191,6 +191,30 @@ describe("the diff budget", () => {
       });
       expect(readFileSync(summary, "utf8")).toContain("`props.json` (generated)");
       noteInSummary(["x"], {});
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("a review skipped for lack of credits", () => {
+  it("recognises the provider's refusal, and no other failure", () => {
+    expect(
+      isOutOfCredits(
+        "opencode exited 1: Error: Upstream request failed: Insufficient account funds",
+      ),
+    ).toBe(true);
+    expect(isOutOfCredits("Your credit balance is too low to access the API")).toBe(true);
+    expect(isOutOfCredits("opencode exited 1: File not found: x")).toBe(false);
+    expect(isOutOfCredits("opencode was stopped by SIGTERM (timeout 60000 ms)")).toBe(false);
+  });
+
+  it("is a ::warning annotation and a step summary", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ui-review-credits-"));
+    const summary = join(dir, "summary.md");
+    try {
+      expect(outOfCredits({ GITHUB_STEP_SUMMARY: summary })).toMatch(/^::warning /);
+      expect(readFileSync(summary, "utf8")).toContain("skipped");
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

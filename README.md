@@ -182,7 +182,8 @@ It runs two layers on the lines the pull request adds:
   findings are advisory and never fail the pull request. A review that did not happen does: if the
   model run crashes or times out, the reply cannot be parsed, or the component reference or the
   comments cannot be had, the step prints an error, writes a step summary and goes red. It is
-  skipped, and green, only when there is no `OPENCODE_API_KEY` or no app file changed. The diff is
+  skipped, and green, only when there is no `OPENCODE_API_KEY`, the model account is out of credits
+  (a warning says so), or no app file changed. The diff is
   sent to OpenCode Zen. A large pull request is sent within a size limit (60,000 characters of
   diff): generated files (`props.json`, lockfiles, snapshots, `dist`, minified files) are left
   out, then source files and the largest additions are taken whole until it is full. What was
