@@ -9,7 +9,7 @@ const bellIcon = (
   </svg>
 );
 
-/** The Pill and Badge rows of the Gallery: the seven tones plain, with a dot and round, then red counts alone and on an icon, then a link Pill, a button Pill and a badged IconButton link and button, then Icon in its sizes (feature included) and tones, then the whole icon set at feature size and small. */
+/** The Pill and Badge rows of the Gallery: the seven tones plain, with a dot and round, then red counts alone and on an icon, then a link Pill, a button Pill, two-tone `label` Pills, removable Pills and a badged IconButton link and button, then Icon in its sizes (feature included) and tones, then the whole icon set at feature size and small. */
 export function GalleryPills() {
   return (
     <div className="flex flex-col gap-3">
@@ -58,6 +58,7 @@ export function GalleryPills() {
           {bellIcon}
         </IconButton>
       </div>
+      <GalleryPillParts />
       <div className="flex flex-wrap items-center gap-3">
         {(["sm", "md", "lg", "feature"] as const).map((size) => (
           <Icon key={size} size={size}>
@@ -80,6 +81,39 @@ export function GalleryPills() {
           <Icon key={name} name={name} />
         ))}
       </div>
+    </div>
+  );
+}
+
+/** Two-tone `label` Pills (plain, round, dotted, a link) and removable Pills (plain, on a button, with a label). */
+function GalleryPillParts() {
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <Pill label="Weight">72 kg</Pill>
+      <Pill label="Sleep" tone="sky" round>
+        7 h
+      </Pill>
+      <Pill label="Mood" tone="emerald" dot>
+        Good
+      </Pill>
+      <Pill label="Pain" tone="red" href="#pain">
+        3 / 10
+      </Pill>
+      <Pill onRemove={() => undefined} removeLabel="Remove tag Urgent" tone="amber">
+        Urgent
+      </Pill>
+      <Pill
+        onClick={() => undefined}
+        onRemove={() => undefined}
+        removeLabel="Remove invoice.pdf"
+        tone="sky"
+        round
+      >
+        invoice.pdf
+      </Pill>
+      <Pill label="File" onRemove={() => undefined} removeLabel="Remove report.pdf">
+        report.pdf
+      </Pill>
     </div>
   );
 }
