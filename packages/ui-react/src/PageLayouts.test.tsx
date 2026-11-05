@@ -109,6 +109,20 @@ describe("ProseLayout", () => {
     );
   });
 
+  it.each([
+    ["wide", "max-w-5xl"],
+    ["full", "w-full"],
+  ] as const)("with width %s is one %s column, still left-aligned", (width, cls) => {
+    const wide = renderToStaticMarkup(
+      <ProseLayout title="Pricing" width={width}>
+        x
+      </ProseLayout>,
+    );
+    expect(wide).toMatch(new RegExp(`^<div class="${cls}">`));
+    expect(wide).not.toContain("max-w-3xl");
+    expect(wide).not.toContain("mx-auto");
+  });
+
   it("takes a Stack gap", () => {
     expect(
       renderToStaticMarkup(

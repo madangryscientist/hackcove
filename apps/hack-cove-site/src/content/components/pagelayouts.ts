@@ -82,6 +82,8 @@ export const pagelayouts: ComponentSection = {
         'The text is the `children`: `SectionHeading`s and `Text as="p"` paragraphs, spaced `md` apart.',
         "`gap` picks another spacing from the same scale (`xs` to `xl`) for the whole page; the default is right for most pages.",
         "The header sits inside the column, so its `actions` stay beside the text.",
+        "The `subtitle` is the page's lede, set larger than the paragraphs after it, and the title above it is the strongest text on the page.",
+        "`width` is `narrow` (the reading column, the default), `wide` or `full`. Use `wide` for a page that is not long prose, such as pricing, so it does not leave the right third empty; a paragraph and the lede keep their reading measure.",
         "Data or cards in a grid are not prose: use `ListLayout` or `CardGrid`.",
       ],
       accessibility: [

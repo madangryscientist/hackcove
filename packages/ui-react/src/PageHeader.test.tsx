@@ -44,4 +44,16 @@ describe("PageHeader", () => {
     expect(order).toEqual(order.toSorted((a, b) => a - b));
     expect(out).toContain("sm:flex-row");
   });
+
+  it("sets the title a step above the lede and the lede above body text", () => {
+    const out = renderToStaticMarkup(<PageHeader title="Builds" subtitle="every build" />);
+    expect(out).toMatch(
+      /<h1 class="[^"]*text-3xl\/9 font-bold[^"]*sm:text-4xl\/10[^"]*">Builds<\/h1>/,
+    );
+    // The subtitle is the `Lead`: text-lg/7 (text-xl/8 from `sm`), against `Text`'s text-sm/5.
+    expect(out).toMatch(/<p class="[^"]*text-lg\/7[^"]*sm:text-xl\/8[^"]*">every build<\/p>/);
+    expect(out).not.toContain("text-sm/5");
+    // A reading measure, so a lede in a wide column does not run the whole width.
+    expect(out).toContain("max-w-[60ch]");
+  });
 });
