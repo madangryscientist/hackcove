@@ -1,3 +1,22 @@
+## 0.9.1 (2026-11-05)
+
+### 🚀 Features
+
+- **ui-react:** Field layout=row shares a label column ([#58](https://github.com/madangryscientist/hackcove/pull/58))
+- **ui-react:** Image, MediaTile and ScrollStrip ([#57](https://github.com/madangryscientist/hackcove/pull/57))
+- **ui-react:** Table centred cells, cell indent, emphasis row, inline-edit cell ([#56](https://github.com/madangryscientist/hackcove/pull/56))
+- **ui-react:** two-tone and removable Pill ([#55](https://github.com/madangryscientist/hackcove/pull/55))
+- **ui-react:** full-screen Dialog (size="full") ([#53](https://github.com/madangryscientist/hackcove/pull/53))
+- **ui-react:** layout: Stack rowFrom, ClusterGrow minWidth, CardGrid ratio columns, Card inset ([#52](https://github.com/madangryscientist/hackcove/pull/52))
+- **ui-react:** small props: StatTile warn, SectionHeading description, ListRow secondary, KeyValue total, Field row, Callout centred, EmptyState inset ([#51](https://github.com/madangryscientist/hackcove/pull/51))
+- **ui-react:** typography: align, italic, breakWords and a fixed amount width ([#50](https://github.com/madangryscientist/hackcove/pull/50))
+- **ui-react:** Avatar: a 16px xs size and an initials fallback when the image fails ([#49](https://github.com/madangryscientist/hackcove/pull/49))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+- Jacobus Langner @madangryscientist
+
 ## 0.9.0 (2026-11-05)
 
 ### 🚀 Features
