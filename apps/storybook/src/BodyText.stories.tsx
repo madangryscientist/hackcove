@@ -76,3 +76,75 @@ export const DontLabels: S = {
     </Stack>
   ),
 };
+
+// The options a body run takes: italic, a long string, alignment and a fixed amount width.
+
+export const TextItalicStory: S = {
+  name: "italic",
+  render: () => (
+    <div className="flex max-w-xl flex-col gap-2">
+      <Text as="p" italic color="muted">
+        A muted hint, set italic under the field it explains.
+      </Text>
+      <Caption as="p" italic>
+        Italic fine print: last synced 2 minutes ago.
+      </Caption>
+    </div>
+  ),
+};
+
+export const BreakWordsStory: S = {
+  name: "breakWords",
+  render: () => (
+    <div className="flex w-72 flex-col gap-3">
+      <Text as="p">Without breakWords, a long unbroken string overflows its box:</Text>
+      <Text as="p" color="muted">
+        https://example.com/lookup/trail/0f3a9c1d7b2e4f60a8c5d9e1b3f7a2c4d6e8f0a1b2c3d4e5f6
+      </Text>
+      <Text as="p">With breakWords it breaks at the edge of the box:</Text>
+      <Text as="p" breakWords color="muted">
+        https://example.com/lookup/trail/0f3a9c1d7b2e4f60a8c5d9e1b3f7a2c4d6e8f0a1b2c3d4e5f6
+      </Text>
+      <Caption as="p" breakWords>
+        Caption: 0f3a9c1d7b2e4f60a8c5d9e1b3f7a2c4d6e8f0a1b2c3d4e5f6
+      </Caption>
+    </div>
+  ),
+};
+
+export const AlignStory: S = {
+  name: "align",
+  render: () => (
+    <div className="flex w-80 flex-col gap-3">
+      {(["start", "center", "end"] as const).map((a) => (
+        <div key={a} className="flex flex-col gap-1 rounded-md border border-slate-200/70 p-3">
+          <Overline align={a}>align={a}</Overline>
+          <Text as="p" align={a}>
+            Text aligned {a} in its block.
+          </Text>
+        </div>
+      ))}
+    </div>
+  ),
+};
+
+export const MinWidthStory: S = {
+  name: "minWidth amount",
+  render: () => (
+    <div className="flex w-72 flex-col gap-1">
+      <div className="flex justify-between">
+        <Overline>Funded</Overline>
+        <Overline>Amount</Overline>
+      </div>
+      {["1,111.11", "8,888.88", "120.00"].map((v) => (
+        <div key={v} className="flex items-baseline justify-between gap-3">
+          <Text>Pot</Text>
+          <Text strong minWidth="amount">
+            {v}
+          </Text>
+        </div>
+      ))}
+      <Caption as="p">The amounts share one fixed width, so the figures line up.</Caption>
+    </div>
+  ),
+};

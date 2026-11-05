@@ -50,6 +50,8 @@ export const text: ComponentSection = {
         'A Card or a list with nothing in it yet gets one muted line, `Text as="p" color="muted"`: "Nothing finished yet." A whole empty view, with a way forward, is an `EmptyState` with its `actions`.',
         "`tone` says what a run means: `positive`, `warn`, `danger`, `info` or `muted`. It beats `color`, and the words still say it, so colour is never the only signal. `color` is only the hierarchy of the text.",
         "`numeric` sets tabular figures so a column of amounts lines up, `mono` the monospace face for an id or a path, and `truncate` cuts a run to one line.",
+        '`align` sets a run at `start`, `center` or `end` of its block, for a table header or a right-hand column. `minWidth="amount"` on `Text` fixes a width and right-aligns a money figure in it, so a column of amounts lines up.',
+        "`italic` on `Text` or `Caption` sets a muted hint or a caption in italic. `breakWords` breaks a long unbroken string, such as a URL or a token, at the edge of its box.",
         "`preserveNewlines` on `Text` keeps the line breaks of text a person typed, such as a note.",
         "Never write a bare `<p>`, `<span>`, `<strong>` or `<small>`: they carry none of the theme's type scale or colour.",
       ],

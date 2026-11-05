@@ -26,7 +26,8 @@ import type { Size } from "./size.js";
 
    Meaning axis — the inline roles (Text, Caption, Overline) also take `tone`
    (muted | positive | warn | danger | info), which wins over `color`, and the closed switches
-   `numeric`, `mono` and `truncate`.
+   `numeric`, `mono`, `truncate` and `align`. Text and Caption add the face switches `italic` and
+   `breakWords`; Text alone takes `strong`, `preserveNewlines` and `minWidth`.
 
    Element axis — every component has a semantic default element; the `as` prop
    overrides it (type-safe: the extra props follow the element you pass).
@@ -72,6 +73,15 @@ type OwnProps = {
   children?: ReactNode;
 };
 
+/** Where a run of text sits across its block. */
+export type TextAlign = "start" | "center" | "end";
+
+const ALIGN: Record<TextAlign, string> = {
+  start: "text-start",
+  center: "text-center",
+  end: "text-end",
+};
+
 /** The opt-in props of the inline roles (`Text`, `Caption`, `Overline`). */
 type InlineOwnProps = {
   /** A meaning's colour (see `TextTone`). Wins over `color`. */
@@ -82,6 +92,19 @@ type InlineOwnProps = {
   mono?: boolean | undefined;
   /** One line, cut with an ellipsis where the container ends; the full text is the `title`. */
   truncate?: boolean | undefined;
+  /**
+   * Set the text at `start`, `center` or `end` of its block. The run becomes block-level, so the
+   * alignment has a box to act on (a table header cell, a right-hand column).
+   */
+  align?: TextAlign | undefined;
+};
+
+/** The opt-in props of `Text` and `Caption` only: the face of the run, not a label's. */
+type RunOwnProps = {
+  /** Italic: a muted hint or a caption. */
+  italic?: boolean | undefined;
+  /** Break a long unbroken string (a URL, a token) where the container ends, instead of overflowing. */
+  breakWords?: boolean | undefined;
 };
 
 type Own = OwnProps & InlineOwnProps;
@@ -149,6 +172,7 @@ function pinned(
     numeric,
     mono,
     truncate,
+    align,
     children,
     ...rest
   }: Own & { as?: ElementType | undefined; title?: string | undefined },
@@ -163,12 +187,23 @@ function pinned(
         tone ? TEXT_TONE[tone] : COLOR[color ?? defaultColor],
         numeric && "tabular-nums",
         mono && "font-mono",
-        truncate && "inline-block min-w-0 truncate align-bottom",
+        layoutClass(align, truncate),
       )}
     >
       {children}
     </Tag>
   );
+}
+
+/**
+ * The alignment, and the box it needs. An aligned run is block-level, so text-align has a box to set
+ * the text in. A truncated run clips: inline-block by default, a block when it is aligned too.
+ */
+function layoutClass(align: TextAlign | undefined, truncate: boolean | undefined): string {
+  const box = truncate
+    ? cx("min-w-0 truncate align-bottom", align ? "block" : "inline-block")
+    : align && "block";
+  return cx(align && ALIGN[align], box);
 }
 
 /** The text of `children` when it is all strings and numbers: what a truncated run shows on hover. */
@@ -256,7 +291,7 @@ export function SubsectionHeading<E extends ElementType = "h3">({
 
 /**
  * Small all-caps label above a group. `span`, text-xs semibold uppercase, tertiary. `tone`,
- * `numeric`, `mono` and `truncate` are opt-in, as on `Text`.
+ * `numeric`, `mono`, `truncate` and `align` are opt-in, as on `Text`.
  */
 export const Overline = inlineRole(
   "Overline",
@@ -265,6 +300,9 @@ export const Overline = inlineRole(
   "tertiary",
 );
 
+/** A fixed width for a run of text: `amount` is a money figure, right-aligned, at a width that lines a column up. */
+export type TextMinWidth = "amount";
+
 /**
  * Running text. `span` (inline; `as="p"` for a paragraph), text-sm/5 normal, secondary. A block of it
  * stops at a readable line length (`max-w-[72ch]`), wherever it sits. `strong` emphasises it:
@@ -272,23 +310,37 @@ export const Overline = inlineRole(
  * `preserveNewlines` keeps the line breaks in the text (a user-typed note); runs of spaces still collapse.
  * `tone` colours it by meaning (`positive` for "Saved.", `danger` for an error; it wins over `color`),
  * `numeric` sets tabular figures, `mono` the monospace face, and `truncate` cuts it to one line with an
- * ellipsis (the full text becomes its `title`).
+ * ellipsis (the full text becomes its `title`). `align` sets it at `start`, `center` or `end`.
+ * `italic` slants it, `breakWords` breaks a long unbroken string at the edge of its box, and `minWidth="amount"`
+ * fixes a width and right-aligns the figure in it (a column of amounts lines up); it does not take `align`.
  */
 export function Text<E extends ElementType = "span">({
   strong,
   preserveNewlines,
+  minWidth,
+  italic,
+  breakWords,
   ...props
-}: InlineTypographyProps<E> & {
-  /** Emphasis: font-medium in the primary ink (`color` and `tone` still win). */
-  strong?: boolean | undefined;
-  /** Keep the line breaks in the text (a user-typed note); runs of spaces still collapse. */
-  preserveNewlines?: boolean;
-}): ReactElement {
+}: InlineTypographyProps<E> &
+  RunOwnProps & {
+    /** Emphasis: font-medium in the primary ink (`color` and `tone` still win). */
+    strong?: boolean | undefined;
+    /** Keep the line breaks in the text (a user-typed note); runs of spaces still collapse. */
+    preserveNewlines?: boolean;
+    /** A fixed width: `amount` is a right-aligned money figure, min-w-24, in tabular figures. */
+    minWidth?: TextMinWidth | undefined;
+  }): ReactElement {
   return pinned(
     "span",
-    textVariant(strong, preserveNewlines, true),
+    cx(
+      textVariant(strong, preserveNewlines, true),
+      italic && "italic",
+      breakWords && "break-words",
+      minWidth === "amount" && "inline-block min-w-24 text-end",
+    ),
     strong ? "default" : "secondary",
-    props,
+    // An amount is always in tabular figures, so it lines up; `numeric` already emits them.
+    { ...props, numeric: props.numeric || minWidth === "amount" },
   );
 }
 
@@ -313,5 +365,20 @@ function textVariant(
   );
 }
 
-/** Fine print / metadata. `span` (inline; `as="p"` for a block), text-xs/4 normal, tertiary. Takes `tone`, `numeric`, `mono` and `truncate` like `Text`. */
-export const Caption = inlineRole("Caption", "span", "text-xs/4 font-normal", "tertiary");
+/**
+ * Fine print / metadata. `span` (inline; `as="p"` for a block), text-xs/4 normal, tertiary. Takes `tone`,
+ * `numeric`, `mono`, `truncate` and `align` like `Text`, and `italic` for a muted hint and `breakWords`
+ * for a long unbroken string such as a URL.
+ */
+export function Caption<E extends ElementType = "span">({
+  italic,
+  breakWords,
+  ...props
+}: InlineTypographyProps<E> & RunOwnProps): ReactElement {
+  return pinned(
+    "span",
+    cx("text-xs/4 font-normal", italic && "italic", breakWords && "break-words"),
+    "tertiary",
+    props,
+  );
+}
