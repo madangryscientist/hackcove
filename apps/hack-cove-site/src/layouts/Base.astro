@@ -4,7 +4,7 @@ import { ColourSchemeToggle, appShellRootClassFor } from "@hackcove/ui-react";
 import { THEMES } from "@hackcove/themes-shared";
 import { SiteShell } from "../components/SiteShell";
 import { site } from "../content/site";
-import { colourSchemeHeadScript, schemes } from "../content/colourSchemes";
+import { colourSchemeHeadScript, colourSchemeLabelScript, schemes } from "../content/colourSchemes";
 
 type Props = {
   title?: string;
@@ -45,7 +45,15 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <SiteShell pathname={Astro.url.pathname} hideChromeInPrint={hideChromeInPrint}>
       <slot />
       {Astro.slots.has("footer") && <slot name="footer" slot="footer" />}
-      <ColourSchemeToggle slot="controls" client:load schemes={schemes} initial="dark" size="sm" />
+      <ColourSchemeToggle
+        slot="controls"
+        client:load
+        schemes={schemes}
+        initial="dark"
+        size="sm"
+        data-colour-scheme-toggle
+      />
     </SiteShell>
+    <script is:inline set:html={colourSchemeLabelScript} />
   </body>
 </html>
