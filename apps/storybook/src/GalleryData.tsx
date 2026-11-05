@@ -22,6 +22,7 @@ import {
 import { samplePhoto } from "./samplePhoto";
 import { InsetAndNested } from "./GalleryCardInset";
 import { DenseRows } from "./GalleryDenseRows";
+import { GalleryTableOptions } from "./GalleryTableOptions";
 
 /** A Callout with an action, in info and in danger. */
 function GalleryCalloutActions() {
@@ -159,6 +160,7 @@ function GalleryTables() {
     <>
       <QuotesTable />
       <BudgetTable />
+      <GalleryTableOptions />
       <ClientsCard />
     </>
   );

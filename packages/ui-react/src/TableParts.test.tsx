@@ -189,3 +189,126 @@ describe("TableHeaderCell srLabel", () => {
     expect(out).toContain('<span class="sr-only">Actions</span>');
   });
 });
+
+describe("TableCell align center", () => {
+  it("centres the cell, and a truncate cell's box follows", () => {
+    expect(cell({ align: "center", colSpan: 4, children: "Nothing yet" })).toContain("text-center");
+    expect(cell({ align: "center", truncate: true, children: "x" })).toContain(
+      'class="max-w-xs truncate mx-auto"',
+    );
+  });
+
+  it("centres a column title", () => {
+    const out = renderToStaticMarkup(
+      <table>
+        <thead>
+          <tr>
+            <TableHeaderCell align="center">Status</TableHeaderCell>
+          </tr>
+        </thead>
+      </table>,
+    );
+    expect(out).toContain("text-center");
+  });
+});
+
+describe("TableCell indent", () => {
+  it("sets the cell in one step per level", () => {
+    const looks = [
+      [1, "pl-8"],
+      [2, "pl-12"],
+      [3, "pl-16"],
+    ] as const;
+    for (const [indent, padding] of looks) {
+      expect(cell({ indent, children: "x" })).toContain(padding);
+    }
+  });
+
+  it("has no extra padding without it, and does nothing to a cell that is not start-aligned", () => {
+    expect(cell({ children: "x" })).not.toMatch(/\bpl-/);
+    expect(cell({ indent: 2, align: "end", children: "x" })).not.toMatch(/\bpl-/);
+    expect(cell({ indent: 2, align: "center", children: "x" })).not.toMatch(/\bpl-/);
+  });
+});
+
+const emphasised = (variant: "card" | "plain" = "card"): string =>
+  renderToStaticMarkup(
+    <Table variant={variant}>
+      <TableBody>
+        <TableRow emphasis>
+          <TableCell>Subtotal</TableCell>
+          <TableCell tone="danger">R 1.00</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Next line</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>,
+  );
+
+describe("TableRow emphasis", () => {
+  it("in the body has a foot row's firmer line, strong cells and no hover, in both variants", () => {
+    for (const variant of ["card", "plain"] as const) {
+      const out = emphasised(variant);
+      expect(out).toContain("<tbody>");
+      expect(out).not.toContain("<tfoot");
+      expect(out).toContain(`<tr class="relative border-t border-slate-300 ${lifted}">`);
+      expect(out).toMatch(/font-medium text-slate-900[^>]*>Subtotal/);
+      expect(out).toMatch(/text-red-700 font-medium[^>]*>R 1.00/);
+    }
+  });
+
+  it("does not reach the next row", () => {
+    const out = emphasised();
+    expect(out).toContain(
+      `<tr class="relative border-t border-slate-200/70 ${lifted} hover:bg-slate-50">`,
+    );
+    expect(out).not.toMatch(/font-medium[^>]*>Next line/);
+  });
+
+  it("false is a plain body row, for a condition", () => {
+    const out = renderToStaticMarkup(
+      <table>
+        <TableBody>
+          <TableRow emphasis={false}>
+            <TableCell>x</TableCell>
+          </TableRow>
+        </TableBody>
+      </table>,
+    );
+    expect(out).toContain("hover:bg-slate-50");
+    expect(out).not.toContain("border-slate-300");
+  });
+
+  it("does nothing in the head", () => {
+    const out = renderToStaticMarkup(
+      <table>
+        <thead>
+          <TableRow emphasis>
+            <TableCell>x</TableCell>
+          </TableRow>
+        </thead>
+      </table>,
+    );
+    expect(out).not.toContain("border-slate-300");
+    expect(out).not.toContain("font-medium");
+  });
+
+  it("types out alongside a tone or a stripe", () => {
+    const out = renderToStaticMarkup(
+      <table>
+        <TableBody>
+          {/* @ts-expect-error emphasis takes no tone */}
+          <TableRow emphasis tone="warn">
+            <TableCell>x</TableCell>
+          </TableRow>
+          {/* @ts-expect-error emphasis takes no stripe */}
+          <TableRow emphasis stripe="warn">
+            <TableCell>x</TableCell>
+          </TableRow>
+        </TableBody>
+      </table>,
+    );
+    expect(out).toContain("<tbody>");
+  });
+});

@@ -107,3 +107,48 @@ test("Lightbox: the arrows step, Esc and the scrim close it, the photo does not"
   await page.mouse.click(20, 400);
   await expect(viewer).toBeHidden();
 });
+
+test("TableEditCell: Enter opens the editor, Esc returns the focus to the value", async ({
+  page,
+}) => {
+  await page.goto(story("data-table--inline-edit"));
+  const value = page.getByRole("button", { name: "Groceries Edit category" });
+  await value.focus();
+  await page.keyboard.press("Enter");
+  const select = page.getByRole("combobox", { name: "Category" });
+  await expect(select).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(select).toHaveCount(0);
+  await expect(value).toBeFocused();
+});
+
+test("TableEditCell: Space opens the editor too, and a save returns the focus to the new value", async ({
+  page,
+}) => {
+  await page.goto(story("data-table--inline-edit"));
+  await page.getByRole("button", { name: "Groceries Edit category" }).focus();
+  await page.keyboard.press("Space");
+  await page.getByRole("combobox", { name: "Category" }).selectOption("Transport");
+  await expect(page.getByRole("button", { name: "Transport Edit category" })).toBeFocused();
+});
+
+test("TableEditCell: a click on the editor's own button saves, in every engine", async ({
+  page,
+}) => {
+  await page.goto(story("data-table--inline-edit"));
+  await page.getByRole("button", { name: "Weekly shop Edit note" }).click();
+  const input = page.getByRole("textbox", { name: "Note" });
+  await expect(input).toBeFocused();
+  await input.fill("Monthly shop");
+  await page.getByRole("button", { name: "Save" }).click();
+  await expect(page.getByRole("button", { name: "Monthly shop Edit note" })).toBeFocused();
+});
+
+test("TableEditCell: a press outside closes the editor without a save", async ({ page }) => {
+  await page.goto(story("data-table--inline-edit"));
+  await page.getByRole("button", { name: "Weekly shop Edit note" }).click();
+  await page.getByRole("textbox", { name: "Note" }).fill("Monthly shop");
+  await page.getByRole("cell", { name: "Woolworths" }).click();
+  await expect(page.getByRole("textbox", { name: "Note" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Weekly shop Edit note" })).toBeVisible();
+});

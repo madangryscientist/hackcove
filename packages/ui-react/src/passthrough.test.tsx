@@ -196,6 +196,11 @@ const CASES: Record<string, () => ReactElement> = {
   ),
   TableBody: () => <ui.TableBody {...A}>{null}</ui.TableBody>,
   TableCell: () => <ui.TableCell {...A}>x</ui.TableCell>,
+  TableEditCell: () => (
+    <ui.TableEditCell label="Edit" renderEditor={() => null} {...A}>
+      x
+    </ui.TableEditCell>
+  ),
   TableFoot: () => <ui.TableFoot {...A}>{null}</ui.TableFoot>,
   TableGroupRow: () => <ui.TableGroupRow colSpan={2} label="G" {...A} />,
   TableHead: () => <ui.TableHead {...A}>{null}</ui.TableHead>,

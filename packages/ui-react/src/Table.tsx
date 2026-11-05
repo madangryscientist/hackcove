@@ -4,9 +4,13 @@ import type { CalloutTone } from "./Callout.js";
 import { cx, liftInteractive } from "./cx.js";
 import { TEXT_TONE, type TextTone } from "./typography.js";
 
-type Align = "start" | "end";
+type Align = "start" | "center" | "end";
 
-const ALIGN: Record<Align, string> = { start: "text-left", end: "text-right" };
+const ALIGN: Record<Align, string> = {
+  start: "text-left",
+  center: "text-center",
+  end: "text-right",
+};
 
 /**
  * The text of a cell: its weight and colour. `default`, `strong` and `muted` are the plain ones; the
@@ -41,19 +45,31 @@ const ROW_TONE: Record<RowTone, string> = {
 };
 const STRIPE = "shadow-[inset_4px_0_0_0_currentColor]";
 
-/** The row's status mark: a `tone` (stripe and fill, or faded) or a `stripe` alone, never both. */
+/** The row's mark: a `tone` (stripe and fill, or faded), a `stripe` alone or `emphasis`, only one of them. */
 type RowMark =
   | {
-      /** The row's status: a stripe on the leading edge plus the tone's soft fill, or `muted` to fade the row. Give `tone` or `stripe`, not both. */
+      /** The row's status: a stripe on the leading edge plus the tone's soft fill, or `muted` to fade the row. Give only one of `tone`, `stripe` and `emphasis`. */
       tone?: RowTone | undefined;
-      /** A stripe on the leading edge in this tone, with no fill. Give `stripe` or `tone`, not both. */
+      /** A stripe on the leading edge in this tone, with no fill. Give only one of `tone`, `stripe` and `emphasis`. */
       stripe?: undefined;
+      /** A subtotal in the body: the look of a `TableFoot` row, with strong cells, a firmer line above and no hover. Give only one of `tone`, `stripe` and `emphasis`. */
+      emphasis?: false | undefined;
     }
   | {
-      /** A stripe on the leading edge in this tone, with no fill. Give `stripe` or `tone`, not both. */
+      /** A stripe on the leading edge in this tone, with no fill. Give only one of `tone`, `stripe` and `emphasis`. */
       stripe?: TextTone | undefined;
-      /** The row's status: a stripe on the leading edge plus the tone's soft fill, or `muted` to fade the row. Give `tone` or `stripe`, not both. */
+      /** The row's status: a stripe on the leading edge plus the tone's soft fill, or `muted` to fade the row. Give only one of `tone`, `stripe` and `emphasis`. */
       tone?: undefined;
+      /** A subtotal in the body: the look of a `TableFoot` row, with strong cells, a firmer line above and no hover. Give only one of `tone`, `stripe` and `emphasis`. */
+      emphasis?: false | undefined;
+    }
+  | {
+      /** A subtotal in the body: the look of a `TableFoot` row, with strong cells, a firmer line above and no hover. Give only one of `tone`, `stripe` and `emphasis`. */
+      emphasis: boolean;
+      /** The row's status: a stripe on the leading edge plus the tone's soft fill, or `muted` to fade the row. Give only one of `tone`, `stripe` and `emphasis`. */
+      tone?: undefined;
+      /** A stripe on the leading edge in this tone, with no fill. Give only one of `tone`, `stripe` and `emphasis`. */
+      stripe?: undefined;
     };
 
 const VariantContext = createContext<TableVariant>("card");
@@ -164,20 +180,25 @@ export function TableFoot({
  * linked row's link, not a hover fill, says it is clickable. `stripe` is the stripe alone, in the
  * `TextTone` colours (the first five names of a `StackedBar` segment's `VizTone`), with no fill: the row keeps its hover
  * and its own look. Give `tone` or `stripe`, not both. Body rows only; colour alone does not say it,
- * so name the status in a cell too (a `Pill`). A bold subtotal is not a tone: it is a `TableFoot` row.
+ * so name the status in a cell too (a `Pill`). A bold subtotal is not a tone: a total of the whole
+ * table is a `TableFoot` row, and a subtotal among the body's rows is `emphasis`, the same look.
  */
 export function TableRow({
   tone,
   stripe,
+  emphasis = false,
   children,
   ...rest
 }: RowMark & { children: ReactNode } & Rest<"tr">): ReactElement {
-  const section = useContext(SectionContext);
+  const outer = useContext(SectionContext);
   const plain = useContext(VariantContext) === "plain";
+  const section = emphasis && outer === "body" ? "foot" : outer;
   return (
-    <tr {...rest} className={rowClass(section, plain, tone, stripe)}>
-      {children}
-    </tr>
+    <SectionContext.Provider value={section}>
+      <tr {...rest} className={rowClass(section, plain, tone, stripe)}>
+        {children}
+      </tr>
+    </SectionContext.Provider>
   );
 }
 
@@ -243,7 +264,7 @@ export function TableHeaderCell({
   ...rest
 }: {
   /**
-   * The cell's horizontal alignment; `end` for figures.
+   * The cell's horizontal alignment; `end` for figures, `center` over a centred column.
    * @default start
    */
   align?: Align | undefined;
@@ -276,6 +297,18 @@ function figureClass(numeric: boolean, mono: boolean): string {
 /** The widest a `truncate` cell grows. */
 const TRUNCATE_WIDTH = "max-w-xs";
 
+/** Where a `truncate` cell's capped box sits, so it follows the cell's alignment. */
+const TRUNCATE_ALIGN: Record<Align, string | undefined> = {
+  start: undefined,
+  center: "mx-auto",
+  end: "ml-auto",
+};
+
+/** A step of a hierarchy under a row: the cell's own `pl-4` plus 1rem a level. */
+type Indent = 1 | 2 | 3;
+
+const INDENT: Record<Indent, string> = { 1: "pl-8", 2: "pl-12", 3: "pl-16" };
+
 /**
  * A `<td>`. `tone` is the text weight and colour (see `CellTone`; in a `TableFoot` it defaults to
  * `strong`); `numeric` sets tabular figures, `mono` a small mono face. `secondary` is a second,
@@ -284,7 +317,8 @@ const TRUNCATE_WIDTH = "max-w-xs";
  * cell (a figure, a code, a type) never breaks. `truncate` caps a long value's width, cuts it with
  * an ellipsis on one line and puts the full text in a `title`; the content is then plain text (strings and
  * numbers), since that is what the title shows. `colSpan` passes through: a cell that
- * spans the row is a full-width panel (an empty state, a note under a group).
+ * spans the row is a full-width panel (an empty state, a note under a group), and `align="center"`
+ * centres it. `indent` sets a start-aligned cell in by 1 to 3 levels, for a line under a parent row.
  */
 export function TableCell({
   align = "start",
@@ -292,15 +326,18 @@ export function TableCell({
   numeric = false,
   mono = false,
   truncate = false,
+  indent,
   secondary,
   children,
   ...rest
 }: {
   /**
-   * The cell's horizontal alignment; `end` for figures.
+   * The cell's horizontal alignment; `end` for figures, `center` for a full-width note or empty state.
    * @default start
    */
   align?: Align | undefined;
+  /** Sets the cell in by this many levels (1 to 3), for a line under a parent row. Start-aligned cells only. */
+  indent?: Indent | undefined;
   /** The text weight and colour (see `CellTone`). In a `TableFoot` it defaults to `strong`. */
   tone?: CellTone | undefined;
   /** Tabular figures, and the cell never wraps. */
@@ -315,7 +352,7 @@ export function TableCell({
 } & Rest<"td", "align">): ReactElement {
   const foot = useContext(SectionContext) === "foot";
   return (
-    <td {...rest} className={cellClass({ align, tone, foot, numeric, mono })}>
+    <td {...rest} className={cellClass({ align, indent, tone, foot, numeric, mono })}>
       <CellBody align={align} truncate={truncate} secondary={secondary}>
         {children}
       </CellBody>
@@ -326,12 +363,14 @@ export function TableCell({
 /** The classes of a cell: the tone (`strong` by default in a foot, and a foot's cells are medium whatever the tone), then the wrapping rule. */
 function cellClass({
   align,
+  indent,
   tone,
   foot,
   numeric,
   mono,
 }: {
   align: Align;
+  indent: Indent | undefined;
   tone: CellTone | undefined;
   foot: boolean;
   numeric: boolean;
@@ -340,6 +379,7 @@ function cellClass({
   const resolved = tone ?? (foot ? "strong" : "default");
   return cx(
     "px-4 py-3",
+    align === "start" && indent !== undefined && INDENT[indent],
     ALIGN[align],
     TONE[resolved],
     foot && resolved !== "strong" && "font-medium",
@@ -367,7 +407,7 @@ function CellBody({
   return (
     <>
       {truncate ? (
-        <div className={cx(TRUNCATE_WIDTH, "truncate", align === "end" && "ml-auto")} title={text}>
+        <div className={cx(TRUNCATE_WIDTH, "truncate", TRUNCATE_ALIGN[align])} title={text}>
           {children}
         </div>
       ) : (
