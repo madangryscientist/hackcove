@@ -97,8 +97,9 @@ const personal = [
 ];
 
 /**
- * A subnav of twelve links, far wider than a phone. At 375 px (Phone in the viewport toolbar) the
- * row fades out on the side that still has links; scroll it to the end and that fade goes.
+ * A subnav of twelve links, far wider than the header. From `md` the row fades out on the side that
+ * still has links; scroll it to the end and that fade goes. On a phone it is in the menu, all twelve
+ * reachable (see `PhoneMenu`).
  */
 export const OverflowingSubnav: S = {
   render: () => (
@@ -111,7 +112,34 @@ export const OverflowingSubnav: S = {
         />
       }
     >
-      <PageHeader title="Personal" subtitle="The subnav scrolls sideways." />
+      <PageHeader title="Personal" subtitle="Too wide for one row; the row fades at its edge." />
+    </DemoShell>
+  ),
+};
+
+/**
+ * On a phone (below `md`, 768 px) the header is one 56px row: the brand, the controls and a Menu
+ * button. The `nav` and the `subnav` are in the menu it opens, so every link is reachable and the
+ * page never scrolls sideways. It is a native `<details>`: Enter and Space open it, Tab walks into
+ * the links, Escape closes it and returns to the button, and it works on a page that never hydrates.
+ * Pick Phone (375) in the viewport toolbar and open it.
+ */
+export const PhoneMenu: S = {
+  globals: { viewport: { value: "phone", isRotated: false } },
+  render: () => (
+    <DemoShell subnav={subnav} controls={<ColourSchemeToggle />}>
+      <PageHeader title="Phone menu" subtitle="Nav and subnav behind one button." />
+      <Text as="p">The header is the same height on every page.</Text>
+    </DemoShell>
+  ),
+};
+
+/** `menuLabel` names the phone menu's button, for an app in another language. */
+export const MenuLabel: S = {
+  globals: { viewport: { value: "phone", isRotated: false } },
+  render: () => (
+    <DemoShell subnav={subnav} menuLabel="Navigatie">
+      <PageHeader title="Menu label" subtitle="The button reads Navigatie." />
     </DemoShell>
   ),
 };

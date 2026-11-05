@@ -1,4 +1,5 @@
 import { type HTMLAttributes, type ReactElement, type ReactNode, useEffect, useRef } from "react";
+import { AppShellMenu } from "./AppShellMenu.js";
 import { ContainerFrame } from "./Container.js";
 import { schemeClass, type ColourScheme, type ColourSchemeClasses } from "./colourScheme.js";
 import { cx, focusRing } from "./cx.js";
@@ -125,14 +126,15 @@ export function AppShellHideBelow({
   );
 }
 
-// One fixed-height row that scrolls sideways and never wraps; its children keep their width.
-const ROW = "flex items-center gap-4 overflow-x-auto whitespace-nowrap *:shrink-0";
+// One fixed-height row that never wraps; its children keep their width. From `md` it scrolls sideways
+// if it must; below `md` nothing in the header scrolls (the nav is in the menu), so it only clips.
+const ROW = "items-center gap-4 overflow-x-clip whitespace-nowrap md:overflow-x-auto *:shrink-0";
 
-// While a row has more to scroll to on a side, that edge fades out (a mask, so it follows any theme).
-// `ScrollRow` sets `data-more-start` / `data-more-end` (and `data-more` for either); a row that fits
-// has none and is untouched.
+// From `md`, while a row has more to scroll to on a side, that edge fades out (a mask, so it follows
+// any theme). `ScrollRow` sets `data-more-start` / `data-more-end` (and `data-more` for either); a
+// row that fits has none and is untouched. Below `md` there is no mask, which would clip the menu.
 const FADE =
-  "data-more-start:[--fade-start:2rem] data-more-end:[--fade-end:2rem] data-more:[mask-image:linear-gradient(to_right,transparent,#000_var(--fade-start,0px),#000_calc(100%_-_var(--fade-end,0px)),transparent)]";
+  "md:data-more-start:[--fade-start:2rem] md:data-more-end:[--fade-end:2rem] md:data-more:[mask-image:linear-gradient(to_right,transparent,#000_var(--fade-start,0px),#000_calc(100%_-_var(--fade-end,0px)),transparent)]";
 
 /** A row in a Container, with the fade on whichever side still has content to scroll to. */
 function ScrollRow({ className, children }: { className: string; children: ReactNode }) {
@@ -169,16 +171,21 @@ function ScrollRow({ className, children }: { className: string; children: React
   );
 }
 
-/** The header row's slots in order: brand, nav, the free `children`, then controls at the end. */
+/**
+ * The header row's slots in order: brand, nav (from `md`), the free `children`, then controls and,
+ * below `md`, the menu at the end.
+ */
 function HeaderSlots({
   brand,
   nav,
   controls,
+  menu,
   children,
 }: {
   brand: ReactNode;
   nav: ReactNode;
   controls: ReactNode;
+  menu: ReactNode;
   children: ReactNode;
 }): ReactElement {
   return (
@@ -188,14 +195,68 @@ function HeaderSlots({
           {brand}
         </div>
       )}
-      {nav}
+      {nav && <div className="hidden items-center gap-4 *:shrink-0 md:flex">{nav}</div>}
       {children}
-      {controls && (
-        <div className="ml-auto flex items-center gap-2 *:shrink-0 [&>.w-full]:w-auto">
+      {(controls || menu) && (
+        <div
+          className={
+            controls
+              ? "ml-auto flex items-center gap-2 *:shrink-0 [&>.w-full]:w-auto"
+              : "ml-auto flex items-center gap-2 *:shrink-0 md:hidden"
+          }
+        >
           {controls}
+          {menu}
         </div>
       )}
     </>
+  );
+}
+
+/** The sticky header: the one-row slots, and from `md` the `subnav` row under them. */
+function AppShellHeader({
+  brand,
+  nav,
+  controls,
+  subnav,
+  menuLabel,
+  hideChromeInPrint,
+  children,
+}: {
+  brand: ReactNode;
+  nav: ReactNode;
+  controls: ReactNode;
+  subnav: ReactNode;
+  menuLabel: string;
+  hideChromeInPrint: boolean;
+  children: ReactNode;
+}): ReactElement {
+  return (
+    <header
+      className={cx(
+        "sticky top-0 z-10 border-b border-slate-200 bg-white",
+        hideChromeInPrint && "print:hidden",
+      )}
+    >
+      <ScrollRow className="flex h-14">
+        <HeaderSlots
+          brand={brand}
+          nav={nav}
+          controls={controls}
+          menu={
+            (nav || subnav) && (
+              <AppShellMenu label={menuLabel}>
+                {nav}
+                {subnav}
+              </AppShellMenu>
+            )
+          }
+        >
+          {children}
+        </HeaderSlots>
+      </ScrollRow>
+      {subnav && <ScrollRow className="hidden h-12 md:flex">{subnav}</ScrollRow>}
+    </header>
   );
 }
 
@@ -212,6 +273,12 @@ function HeaderSlots({
  * the slots do not cover), then `controls`, pushed to the end. An app writes no wrapper or
  * styling for any of them: an item that only fits a wide screen goes in `AppShellHideBelow`. A bar
  * that sticks under the header as the page scrolls is a `StickyBar`.
+ *
+ * On a phone (below `md`) the header is one 56px row at every page: `brand`, `header`, `controls`
+ * and a "Menu" button (`menuLabel`), and `nav` and `subnav` move into that menu, so every link is
+ * reachable and nothing scrolls sideways. The menu is a native `<details>`, so it works with the
+ * keyboard, with a screen reader and on a page that never hydrates. From `md` the header is the
+ * row, and the `subnav` row, as they are.
  */
 export function AppShell({
   brand,
@@ -219,6 +286,7 @@ export function AppShell({
   controls,
   header,
   subnav,
+  menuLabel = "Menu",
   footer,
   bleed = false,
   hideChromeInPrint = false,
@@ -227,14 +295,20 @@ export function AppShell({
 }: {
   /** The brand: a logo and a name, in the header's brand type, with the gap between them. `AppShellBrand` makes both one link. */
   brand?: ReactNode;
-  /** The main navigation, e.g. a `Tabs variant="pill"` of links (it is already a `<nav>`). */
+  /** The main navigation, e.g. a `Tabs variant="pill"` of links (it is already a `<nav>`). Below `md` it is in the menu. */
   nav?: ReactNode;
   /** The end of the row: a picker, a theme toggle. Gap-2, vertically centred; no child shrinks, and a full-width control (a `Select` at its default) sizes to its content. */
   controls?: ReactNode;
   /** The escape hatch: a free node in the header row, after `brand` and `nav`. */
   header?: ReactNode;
-  /** A second fixed-height row under the header, e.g. a `Tabs variant="pill"` of links. */
+  /** A second fixed-height row under the header from `md`, e.g. a `Tabs variant="pill"` of links. Below `md` it is in the menu with `nav`. */
   subnav?: ReactNode;
+  /**
+   * The phone menu button's name, for an app in another language. Only drawn below `md`, and only
+   * when `nav` or `subnav` is given.
+   * @default Menu
+   */
+  menuLabel?: string;
   /** The page footer: small muted text in a `Container`, under a hairline. Hidden in print with `hideChromeInPrint`. */
   footer?: ReactNode;
   /** Main without a Container, for a full-bleed layout. */
@@ -252,22 +326,21 @@ export function AppShell({
       className={cx(
         "flex min-h-dvh flex-col bg-gray-50 font-sans text-slate-900 antialiased",
         // The sticky header's height (its rows and the bottom border), for a bar that sticks under it.
-        subnav ? "[--app-header:calc(6.5rem+1px)]" : "[--app-header:calc(3.5rem+1px)]",
+        // Below `md` it is one row whatever the slots are: the subnav is in the menu.
+        "[--app-header:calc(3.5rem+1px)]",
+        subnav ? "md:[--app-header:calc(6.5rem+1px)]" : undefined,
       )}
     >
-      <header
-        className={cx(
-          "sticky top-0 z-10 border-b border-slate-200 bg-white",
-          hideChromeInPrint && "print:hidden",
-        )}
+      <AppShellHeader
+        brand={brand}
+        nav={nav}
+        controls={controls}
+        subnav={subnav}
+        menuLabel={menuLabel}
+        hideChromeInPrint={hideChromeInPrint}
       >
-        <ScrollRow className="h-14">
-          <HeaderSlots brand={brand} nav={nav} controls={controls}>
-            {header}
-          </HeaderSlots>
-        </ScrollRow>
-        {subnav && <ScrollRow className="h-12">{subnav}</ScrollRow>}
-      </header>
+        {header}
+      </AppShellHeader>
       <main className="flex flex-1 flex-col">
         {bleed ? (
           children

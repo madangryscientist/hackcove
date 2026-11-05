@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import {
@@ -11,14 +12,25 @@ import { schemeClass } from "./colourScheme.js";
 
 const EDGE = "max-w-6xl px-4 sm:px-6";
 
+const rootClasses = (node: ReactElement) =>
+  /^<div class="([^"]*)">/.exec(renderToStaticMarkup(node))?.[1]?.split(" ") ?? [];
+
 describe("AppShell", () => {
-  it("puts the header in one sticky, fixed-height row that scrolls sideways and never wraps", () => {
+  it("puts the header in one sticky, fixed-height row that never wraps and never scrolls on a phone", () => {
     const out = renderToStaticMarkup(<AppShell header={<a href="/">Logo</a>}>page</AppShell>);
     expect(out).toMatch(/<header class="sticky top-0 [^"]*">/);
     const row = /<div class="([^"]*)"><a href="\/">Logo<\/a>/.exec(out)?.[1]?.split(" ") ?? [];
     expect(row).toEqual(
-      expect.arrayContaining(["max-w-6xl", "h-14", "overflow-x-auto", "whitespace-nowrap"]),
+      expect.arrayContaining([
+        "max-w-6xl",
+        "flex",
+        "h-14",
+        "overflow-x-clip",
+        "md:overflow-x-auto",
+        "whitespace-nowrap",
+      ]),
     );
+    expect(row).not.toContain("overflow-x-auto");
   });
 
   it("paints the page canvas and sets the type face, ink and smoothing, so an app needs no page rule", () => {
@@ -55,7 +67,7 @@ describe("AppShell", () => {
         page
       </AppShell>,
     );
-    expect(full).toMatch(/overflow-x-auto[^"]*h-12">tabs</);
+    expect(full).toMatch(/class="[^"]*\bhidden\b[^"]*\bh-12 md:flex">tabs</);
     expect(full).toMatch(/<footer [^>]*><div [^>]*>foot<\/div><\/footer>/);
   });
 
@@ -74,7 +86,7 @@ describe("AppShell", () => {
       '<div class="flex items-center gap-2 text-base font-bold tracking-tight text-slate-900"><a href="/">Logo</a></div>',
     );
     expect(out).toContain(
-      '<div class="ml-auto flex items-center gap-2 *:shrink-0 [&amp;&gt;.w-full]:w-auto"><button type="button">Theme</button></div>',
+      '<div class="ml-auto flex items-center gap-2 *:shrink-0 [&amp;&gt;.w-full]:w-auto"><button type="button">Theme</button><details',
     );
     const order = ["Logo", 'aria-label="Main"', "extra", "Theme"].map((part) => out.indexOf(part));
     expect(order).toEqual(order.toSorted((a, b) => a - b));
@@ -85,6 +97,15 @@ describe("AppShell", () => {
     const out = renderToStaticMarkup(<AppShell header={<a href="/">Logo</a>}>page</AppShell>);
     expect(out).not.toContain("tracking-tight");
     expect(out).not.toContain("ml-auto");
+  });
+
+  it("hides the nav below md, since the menu holds it there", () => {
+    const out = renderToStaticMarkup(
+      <AppShell nav={<nav aria-label="Main">tabs</nav>}>page</AppShell>,
+    );
+    expect(out).toContain(
+      '<div class="hidden items-center gap-4 *:shrink-0 md:flex"><nav aria-label="Main">tabs</nav></div>',
+    );
   });
 
   it("prints the header, footer and main's padding unchanged unless asked", () => {
@@ -174,8 +195,15 @@ describe("AppShell header height", () => {
       "[--app-header:calc(3.5rem+1px)]",
     );
     expect(renderToStaticMarkup(<AppShell subnav="S">x</AppShell>)).toContain(
-      "[--app-header:calc(6.5rem+1px)]",
+      "md:[--app-header:calc(6.5rem+1px)]",
     );
+  });
+
+  it("is one row below md whatever the slots are, since the subnav is in the menu", () => {
+    expect(rootClasses(<AppShell subnav="S">x</AppShell>)).toContain(
+      "[--app-header:calc(3.5rem+1px)]",
+    );
+    expect(rootClasses(<AppShell>x</AppShell>)).not.toContain("md:[--app-header:calc(6.5rem+1px)]");
   });
 });
 

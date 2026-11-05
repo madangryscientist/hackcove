@@ -172,10 +172,14 @@ import { AppShell, PageHeader, Section, Stack, Tabs, appShellRootClassFor } from
 </html>;
 ```
 
-- **`AppShell`** is the page frame: a sticky header that is always one `h-14` row (a nav that does
-  not fit scrolls sideways, it never wraps, and the edge with more to scroll to fades out until it
-  is reached), an optional `subnav` second row (same rule), `main`
-  with fixed `py-8`, and an optional `footer`. The header row is filled by slots, left to right:
+- **`AppShell`** is the page frame: a sticky header that is one `h-14` row on a phone and, from
+  `md`, an `h-14` row plus an `h-12` `subnav` row. On a phone `nav` and `subnav` fold behind one
+  **Menu** button (a native `<details>`, so it opens with no JavaScript, on the keyboard and for a
+  screen reader; Escape closes it and a followed link closes it). The panel hangs below the header
+  and never changes its height, nothing wraps and nothing scrolls sideways. `menuLabel` renames the
+  button (default `Menu`). From `md` the nav and the subnav are rows again (a row wider than the
+  screen scrolls sideways, never wraps, and the edge with more to reach fades out). `main`
+  has fixed `py-8`, and an optional `footer`. The header row is filled by slots, left to right:
   `brand` (logo and name, at the brand type with the logo gap), `nav` (pill `Tabs` of links), `header` (a
   free node, the escape hatch) and `controls` (end-aligned, `gap-2`, centred): no wrapper and
   no styling. Nothing in `controls` shrinks, and a full-width control there (a `Select` at its
