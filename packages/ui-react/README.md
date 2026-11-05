@@ -1,7 +1,7 @@
 # @hackcove/ui-react
 
 Hack Cove React components, written against Tailwind v4 utilities. They carry no theme: pair them
-with a `@hackcove/theme-*` package such as `@hackcove/theme-catppuccin-mocha` and put its scope
+with a theme from `@hackcove/themes`, such as `@hackcove/themes/catppuccin-mocha.css`, and put its scope
 class on `<html>` (`.dark` for Mocha). With no theme they render in Tailwind's own default colours,
 a plain light look; it works, but it is not a look Hack Cove designs or checks.
 

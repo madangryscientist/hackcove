@@ -2,7 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { themeFiles } from "@hackcove/themes-shared/files";
 import { themeScope } from "@hackcove/themes-shared/scope";
 
-// Same source of truth as the toolbar switcher: one theme per CSS file under themes/*/.
+// Same source of truth as the toolbar switcher: one theme per CSS file in themes/.
 const themes = themeFiles(`${import.meta.dirname}/../../../themes`);
 
 const pillStory = "text-body-text--pills";

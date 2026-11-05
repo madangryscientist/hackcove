@@ -19,7 +19,7 @@
     "apps/hack-cove-site": {
       "name": "hack-cove-site",
       "dependencies": {
-        "@hackcove/theme-catppuccin-mocha": "workspace:*",
+        "@hackcove/themes": "workspace:*",
         "@hackcove/themes-shared": "workspace:*",
         "@hackcove/ui-react": "workspace:*",
         "react": "^19.2.0",
@@ -101,21 +101,9 @@
         "@types/react-dom",
       ],
     },
-    "themes/catppuccin-mocha": {
-      "name": "@hackcove/theme-catppuccin-mocha",
-      "version": "0.3.1",
-      "devDependencies": {
-        "@types/bun": "1.4.3",
-        "tailwindcss": "^4.3.3",
-        "vitest": "5.0.5",
-      },
-      "peerDependencies": {
-        "tailwindcss": "^4",
-      },
-    },
-    "themes/thrifty-paper": {
-      "name": "@hackcove/theme-thrifty-paper",
-      "version": "0.2.1",
+    "themes": {
+      "name": "@hackcove/themes",
+      "version": "0.1.0",
       "devDependencies": {
         "@types/bun": "1.4.3",
         "tailwindcss": "^4.3.3",
@@ -509,9 +497,7 @@
 
     "@hackcove/storybook": ["@hackcove/storybook@workspace:apps/storybook"],
 
-    "@hackcove/theme-catppuccin-mocha": ["@hackcove/theme-catppuccin-mocha@workspace:themes/catppuccin-mocha"],
-
-    "@hackcove/theme-thrifty-paper": ["@hackcove/theme-thrifty-paper@workspace:themes/thrifty-paper"],
+    "@hackcove/themes": ["@hackcove/themes@workspace:themes"],
 
     "@hackcove/themes-shared": ["@hackcove/themes-shared@workspace:packages/themes-shared"],
 

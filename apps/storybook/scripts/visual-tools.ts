@@ -21,7 +21,7 @@ const pixelslashDir = resolve(
   process.env["PIXELSLASH_DIR"] ?? join(homedir(), "dev", "pixelslash"),
 );
 const pixelslashCli = join(pixelslashDir, "packages", "cli", "src", "index.ts");
-const baselineDir = join(homedir(), "dev", "hackcove.visual-main");
+export const baselineDir = join(homedir(), "dev", "hackcove.visual-main");
 export const branchStatic = join(appDir, "storybook-static");
 export const baseStatic = join(baselineDir, "apps", "storybook", "storybook-static");
 // The base's build, stamped with its commit inside the shared worktree, so whichever checkout last
@@ -101,14 +101,14 @@ export type Selection = { titles: string[]; themes: string[] };
 
 /**
  * One capture of a built storybook-static into a fresh snapshot dir, served on `port`. PixelSlash
- * refuses an include that matches no story, so a selection whose stories are all absent on this
- * side (new on the branch, say) is an empty capture.
+ * refuses an include that matches no story, so a selection whose stories or themes are all absent
+ * on this side (new on the branch, say) is an empty capture.
  */
 export async function capture(staticDir: string, into: string, port: number, pick: Selection) {
   rmSync(into, { recursive: true, force: true });
   const present = indexOf(staticDir);
   const include = pick.titles.filter((title) => present.has(title));
-  if (include.length === 0) {
+  if (include.length === 0 || pick.themes.length === 0) {
     mkdirSync(into, { recursive: true });
     writeFileSync(
       join(into, "manifest.json"),
@@ -385,7 +385,12 @@ async function checkoutBaseline(sha: string) {
 
 /** The baseline worktree's Storybook, built at `sha` unless it already is. Call under the lock. */
 export async function buildBase(sha: string) {
-  if (existsSync(baseStamp) && readFileSync(baseStamp, "utf8").trim() === sha) return;
+  if (existsSync(baseStamp) && readFileSync(baseStamp, "utf8").trim() === sha) {
+    // The static build is the right one, but the worktree is shared: another checkout may have
+    // moved it since. Its files are what the base's theme ids are read from, so put them back.
+    if ((await git(baselineDir, "rev-parse", "HEAD")) !== sha) await checkoutBaseline(sha);
+    return;
+  }
   log(`building base ${sha.slice(0, 7)}`);
   await checkoutBaseline(sha);
   await run(["bunx", "nx", "build", "storybook"], baselineDir);

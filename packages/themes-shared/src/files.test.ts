@@ -20,23 +20,16 @@ function themesDir(files: Record<string, string>): string {
 }
 
 describe("themeFiles", () => {
-  it("lists every top-level .css file of every folder, sorted by id", () => {
+  it("lists every top-level .css file, sorted by id, and nothing else", () => {
     const dir = themesDir({
-      "b/theme.css": ".b{}",
-      "a/theme.css": ".a{}",
-      "a/other.css": ".o{}",
-      "a/package.json": "{}",
-      "a/nested/deep.css": ".d{}",
+      "b.css": ".b{}",
+      "a.css": ".a{}",
+      "package.json": "{}",
+      "nested/deep.css": ".d{}",
     });
-    expect(themeFiles(dir).map((t) => [t.id, t.folder, t.file, t.css])).toEqual([
-      ["a", "a", "theme.css", ".a{}"],
-      ["a-other", "a", "other.css", ".o{}"],
-      ["b", "b", "theme.css", ".b{}"],
+    expect(themeFiles(dir).map((t) => [t.id, t.css])).toEqual([
+      ["a", ".a{}"],
+      ["b", ".b{}"],
     ]);
-  });
-
-  it("throws on two files that share an id", () => {
-    const dir = themesDir({ "a/theme.css": ".a{}", "a-b/theme.css": ".x{}", "a/b.css": ".y{}" });
-    expect(() => themeFiles(dir)).toThrow(/share the id a-b/);
   });
 });

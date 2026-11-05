@@ -34,10 +34,10 @@ One-time setup, by hand:
    deployment branches to `main`. It has no required reviewer while the packages are `0.x`: a
    dispatch from `main` publishes without an approval step. Add one if you want a gate on every
    publish.
-2. On npmjs.com, for each published package (`@hackcove/ui-react`, `@hackcove/theme-catppuccin-mocha`,
-   `@hackcove/theme-thrifty-paper`):
-   Settings → Trusted Publisher → GitHub Actions, repository `madangryscientist/hackcove`, workflow
-   filename `publish.yml`, environment `npm-publish`.
+2. On npmjs.com, for each package that is already on npm (`@hackcove/ui-react` today; a new
+   package's publisher is added after its first publish, below): Settings → Trusted Publisher →
+   GitHub Actions, repository `madangryscientist/hackcove`, workflow filename `publish.yml`,
+   environment `npm-publish`.
 
 The release commit also carries `bun.lock`. The workspace entries in it hold each package's version, so
 `scripts/release-version-actions.cjs` (`release.version.versionActions` in `nx.json`) runs
@@ -57,7 +57,15 @@ first-release steps again. A dry run does not exercise the token, so it cannot c
 Locally, the same dry run of the tagged projects is:
 
 ```sh
-bunx nx release --dry-run --projects ui-react,theme-catppuccin-mocha   # use the tagged projects, see below
+bunx nx release --dry-run --projects ui-react   # the tagged projects, see below
+```
+
+A project with no tag yet cannot be resolved that way (Nx has no base tag). Check a new package's
+first publish with its on-disk version instead, which plans the same release the workflow's
+"First release" step makes:
+
+```sh
+bunx nx release 0.1.0 --first-release --projects themes --dry-run
 ```
 
 ## Tagged projects and new ones
@@ -87,16 +95,16 @@ OIDC trusted publishing cannot make a package's first publish, because npm canno
 publisher to a package that does not exist yet. So the first release authenticates with a
 short-lived token that only the workflow's first-release step sees. If a releasable project has no
 tag and `NPM_TOKEN` is unset, the workflow fails before it versions, tags or pushes anything, and
-names the project. (`theme-thrifty-paper` was the first package to go through this.)
+names the project. (`themes` goes through this once. The earlier `@hackcove/theme-*` packages stay on npm as they are, and their tags stay as history.)
 
 1. On npmjs.com, make a granular access token: publish rights for the `@hackcove` scope, bypass 2FA,
    shortest expiry that covers the run.
 2. `gh secret set NPM_TOKEN --env npm-publish` (paste the token when prompted).
 3. Run the workflow with `dry_run` on and read the log: the version (`0.1.0`), the tag
-   (`theme-thrifty-paper@0.1.0`), the changelog and the GitHub release it would create. Then run it
+   (`themes@0.1.0`), the changelog and the GitHub release it would create. Then run it
    again with `dry_run` off. npm stages a brand-new package's first publish, so a `0.0.0-stage`
    placeholder version may also appear alongside it.
-4. On npmjs.com, add the trusted publisher for `@hackcove/theme-thrifty-paper` (workflow
+4. On npmjs.com, add the trusted publisher for `@hackcove/themes` (workflow
    `publish.yml`, environment `npm-publish`), or `npm trust github …`.
 5. `gh secret delete NPM_TOKEN --env npm-publish`, and revoke the token on npmjs.com.
 

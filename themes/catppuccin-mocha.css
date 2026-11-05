@@ -56,7 +56,7 @@
 .dark .bg-slate-100 {
   /* Between surface0 and surface1 (surface1 is #45475a). The fill under an active row, a Pill or a
      Code span carries muted text (subtext0), which is 4.10:1 on surface1 and 4.79:1 here; AA text
-     needs 4.5:1 (the contrast contract, themes/catppuccin-mocha/theme.test.ts). */
+     needs 4.5:1 (the contrast contract, themes/themes.test.ts). */
   background-color: #3b3d50;
 }
 .dark .bg-slate-900 {

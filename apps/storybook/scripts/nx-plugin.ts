@@ -47,7 +47,7 @@ export const createNodesV2: CreateNodesV2 = [
         {
           name: `visual-${slug}`,
           tags: ["visual-group"],
-          implicitDependencies: ["storybook", "theme-*", "hack-cove-site"],
+          implicitDependencies: ["storybook", "themes", "hack-cove-site"],
           targets: { visual: target(slug, false), "visual-upload": target(slug, true) },
         },
       ]),

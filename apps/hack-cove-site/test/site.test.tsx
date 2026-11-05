@@ -234,7 +234,7 @@ describe("the Hack Cove UI page", () => {
   test("it shows the install commands and the GitHub and npm links", () => {
     // The command is coloured, so its runs sit in spans: compare the text, not the markup.
     const text = html.replace(/<[^>]+>/g, "").replaceAll("&quot;", '"');
-    expect(text).toContain("bun add @hackcove/ui-react @hackcove/theme-catppuccin-mocha");
+    expect(text).toContain("bun add @hackcove/ui-react @hackcove/themes");
     expect(text).toContain('@import "tailwindcss";');
     for (const link of site.ui.links.items) expect(html).toContain(`href="${link.href}"`);
     expect(html).toContain(site.ui.docs.text.replaceAll("'", "&#x27;"));
@@ -246,18 +246,11 @@ describe("the Hack Cove UI page", () => {
     for (const { slug } of componentPages) expect(html).toContain(`href="/ui/${slug}/"`);
   });
 
-  test("the theme list is one entry per themes/*/*.css file, read by the glob and not written in code", () => {
+  test("the theme list is one entry per themes/*.css file, read by the glob and not written in code", () => {
     const files = themeFiles(`${import.meta.dirname}/../../../themes`);
     expect(files.length).toBeGreaterThan(0);
     expect(themes.map((t) => t.id)).toEqual(files.map((f) => f.id));
     for (const theme of themes) {
-      const manifest: unknown = JSON.parse(
-        readFileSync(
-          new URL(`../../../themes/${theme.folder}/package.json`, import.meta.url),
-          "utf8",
-        ),
-      );
-      expect(manifest).toMatchObject({ name: theme.name });
       expect(theme.scopeClass).not.toBe("");
       expect(html).toContain(theme.specifier);
       expect(html).toContain(`<code`);

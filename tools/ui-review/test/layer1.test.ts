@@ -22,7 +22,7 @@ describe("a clean diff", () => {
   it("passes a stylesheet that only wires Tailwind and a theme in", () => {
     const lines = [
       '@import "tailwindcss";',
-      '@import "@hackcove/theme-catppuccin-mocha";',
+      '@import "@hackcove/themes/some-theme.css";',
       '@source "../";',
     ];
     expect(run(diffOf({ path: "src/app.css", isNew: true, lines }))).toEqual([]);
@@ -34,7 +34,7 @@ describe("a clean diff", () => {
       "",
       "/* The theme comes from the hackcove repo (a sibling checkout,",
       "   hackcove repo, ~/dev/hackcove), so the palette stays in one place. */",
-      '@import "@hackcove/theme-catppuccin-mocha";',
+      '@import "@hackcove/themes/some-theme.css";',
       "",
       "/*",
       "   Tailwind scans the app and the ui package for utilities",

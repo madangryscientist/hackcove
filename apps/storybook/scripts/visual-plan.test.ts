@@ -73,12 +73,7 @@ const repo: Repo = {
   read: (path) => files[path],
   storyFiles,
   sections,
-  themes: ["catppuccin-mocha", "catppuccin-mocha-alt", "thrifty-paper"],
-  themeFolders: {
-    "catppuccin-mocha": "catppuccin-mocha",
-    "catppuccin-mocha-alt": "catppuccin-mocha",
-    "thrifty-paper": "thrifty-paper",
-  },
+  themes: ["theme-a", "theme-b", "theme-c"],
 };
 
 const grouping = groupStories(sections, storyFiles);
@@ -193,37 +188,28 @@ describe("planCapture", () => {
   });
 
   it("a theme-only change captures every group in that theme only", () => {
-    const groups = plan(["themes/thrifty-paper/theme.css"]).picked;
+    const groups = plan(["themes/theme-c.css"]).picked;
     expect(groups.map((g) => g.slug)).toEqual(["layout", "content", "actions", "overview"]);
     for (const group of groups) {
-      expect(group.themes).toEqual(["thrifty-paper"]);
+      expect(group.themes).toEqual(["theme-c"]);
       expect(group.picked).toEqual(group.files);
     }
   });
 
-  it("a change to one CSS file of a package reaches that theme only, any other file all of its themes", () => {
-    expect(plan(["themes/catppuccin-mocha/alt.css"]).picked[0]?.themes).toEqual([
-      "catppuccin-mocha-alt",
-    ]);
-    expect(plan(["themes/catppuccin-mocha/theme.css"]).picked[0]?.themes).toEqual([
-      "catppuccin-mocha",
-    ]);
-    expect(plan(["themes/catppuccin-mocha/package.json"]).picked[0]?.themes).toEqual([
-      "catppuccin-mocha",
-      "catppuccin-mocha-alt",
-    ]);
+  it("any other file in the themes package reaches every theme", () => {
+    expect(plan(["themes/package.json"]).picked[0]?.themes).toEqual(repo.themes);
   });
 
   it("a theme file that is gone from the repo captures everything", () => {
-    const result = plan(["themes/catppuccin-mocha/gone.css"]);
+    const result = plan(["themes/gone.css"]);
     expect(result.all).toBe(true);
     expect(result.notes.join(" ")).toContain("is in no theme there is now");
   });
 
   it("a component and a theme change give the component's group every theme", () => {
-    const result = picked(["themes/thrifty-paper/theme.css", "packages/ui-react/src/Stack.tsx"]);
+    const result = picked(["themes/theme-c.css", "packages/ui-react/src/Stack.tsx"]);
     expect(result["layout"]?.themes).toEqual(repo.themes);
-    expect(result["actions"]?.themes).toEqual(["thrifty-paper"]);
+    expect(result["actions"]?.themes).toEqual(["theme-c"]);
   });
 
   it.each([

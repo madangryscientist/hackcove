@@ -12,27 +12,26 @@ under the `@hackcove` scope (MIT, all `0.x`).
 | Folder | Package | What it is |
 | --- | --- | --- |
 | `packages/ui-react` | `@hackcove/ui-react` | The React components: primitives, typography roles, a safe Markdown renderer. Written against Tailwind v4 utilities. No theme CSS. |
-| `themes/catppuccin-mocha` | `@hackcove/theme-catppuccin-mocha` | The Catppuccin themes: Mocha (dark, `theme.css`, scope `.dark`) and Latte (light, `latte.css`, scope `.latte`), each one CSS file that remaps those utilities. |
-| `themes/thrifty-paper` | `@hackcove/theme-thrifty-paper` | The Thrifty Paper light theme (cream paper, ink text, clay accent): one `theme.css` that remaps those utilities under `.thrifty-paper`. |
-| `apps/storybook` | (private) | Storybook for the components, with a toolbar theme switcher that lists every folder under `themes/`. |
+| `themes` | `@hackcove/themes` | Every theme, one CSS file each, remapping those utilities: `catppuccin-mocha.css` (dark, scope `.dark`), `catppuccin-latte.css` (light, scope `.latte`) and `thrifty-paper.css` (light, scope `.thrifty-paper`). |
+| `apps/storybook` | (private) | Storybook for the components, with a toolbar theme switcher that lists every CSS file in `themes/`. |
 | `apps/hack-cove-site` | (private) | The hack-cove.com website (Astro), built on the workspace components and the Mocha theme. |
 
 Each theme scopes under its own class, which goes on `<html>`: `.dark` for Mocha,
-`.thrifty-paper` for Thrifty Paper. Without a theme the components render in Tailwind's own
+`.latte` for Latte, `.thrifty-paper` for Thrifty Paper. Without a theme the components render in Tailwind's own
 default colours, a plain light look: it works, but it is only what a theme remaps, not a look Hack
 Cove designs or checks, so Storybook and the visual check list the themes and nothing else.
 
 ## Use it
 
 ```sh
-bun add @hackcove/ui-react @hackcove/theme-catppuccin-mocha
+bun add @hackcove/ui-react @hackcove/themes
 # peers: react >= 18, react-dom >= 18, tailwindcss ^4
 # optional type peers: @types/react, @types/react-dom (install them in a TypeScript app)
 ```
 
 ```css
 @import "tailwindcss";
-@import "@hackcove/theme-catppuccin-mocha/theme.css";
+@import "@hackcove/themes/catppuccin-mocha.css";
 
 /* The components use Tailwind utilities, and Tailwind skips node_modules, so point it at the
    package's build. The path is relative to this stylesheet. */
@@ -135,33 +134,27 @@ provider. See [`packages/ui-react/README.md`](packages/ui-react/README.md#light-
 
 ## How to add a theme
 
-A theme is a CSS file in a folder; a package may carry more than one (the Catppuccin package has
-`theme.css` for Mocha and `latte.css` for Latte, each with its own scope class and the same contract).
-Copy a folder, rename it, change the CSS:
+A theme is one CSS file in the `themes/` package, and its file name is its id:
 
-```sh
-cp -r themes/catppuccin-mocha themes/<name>
-```
-
-1. In `themes/<name>/package.json` set `name` to `@hackcove/theme-<name>`, `description`, and the
-   Nx project name under `"nx"` to `theme-<name>`. Its scripts are folder-relative, so nothing else
-   needs editing.
-2. Edit `theme.css`. The contract: pick the theme's scope class and make its first top-level rule
+1. Copy a file to `themes/<id>.css`. The id names the switcher entry and the visual shots, so it never
+   changes once it has baselines.
+2. Edit it. The contract: pick the theme's scope class and make its first top-level rule
    `.<scope> { color-scheme: …; }` (Storybook and the e2e read the scope from that rule), remap the
    utilities `@hackcove/ui-react` uses under `.<scope>`, and do not import Tailwind (the consumer does).
    A dark theme also declares `@custom-variant dark (&:where(.<scope>, .<scope> *));`. The colours
-   must also clear WCAG AA: the theme's `theme.test.ts` runs a contrast check
+   must also clear WCAG AA: `themes/themes.test.ts` runs a contrast check
    (`packages/themes-shared/src/contrastRules.ts`) that measures every ink, link, accent and tone
    pairing in `palette.json` on every surface it sits on (4.5:1 for text, 3:1 for the edge of a
    control, a focus ring or a chart mark). A failure names the pair, both colours, the ratio and the
    bar. Decorative and inactive pairings (hairline dividers, the dimming veil, dimmed text) are
    exempt by role, with the reason, in the same file.
-3. Rewrite `README.md` for the new package; keep the MIT `LICENSE` and `"license": "MIT"`.
-4. `bun install`, then `bunx nx run theme-<name>:test` (checks the name, exports, `files` list and
-   the scope in the theme's own `theme.test.ts`; edit it to match your theme).
+3. Add a row to the table in `themes/README.md`, and any upstream licence text to `themes/NOTICE`.
+4. `bunx nx run themes:test`. `themes.test.ts` reads every CSS file there and applies the contract
+   to each, and checks the package carries it.
 
-There is nothing else to register. Storybook finds `themes/*/*.css` on its own, so the new
-theme is in the toolbar the next time it starts. It also appears as a panel in **Overview / All themes**, with no code edit.
+There is nothing else to register: the package's `exports` and `files` are globs, and Storybook finds
+`themes/*.css` on its own, so the new theme is in the toolbar the next time it starts. It also
+appears as a panel in **Overview / All themes**, with no code edit.
 
 ## UI review
 
@@ -243,6 +236,6 @@ bunx nx dev hack-cove-site                      # the website, http://localhost:
 Contributing? Start with [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 Try an unpublished change in a consumer checkout: run `bun link` once inside `packages/ui-react` and
-each `themes/<name>`, then `bun link @hackcove/ui-react` (and the theme) in the consumer. Consumers
+`themes`, then `bun link @hackcove/ui-react` and `bun link @hackcove/themes` in the consumer. Consumers
 install the published `0.x` from npm, so the link is only for checking a change before it is
 published. Rebuild `packages/ui-react` (`bunx nx build ui-react`) after a change; a linked consumer reads its `dist/`.

@@ -9,7 +9,7 @@ export const Default: S = {
   render: () => (
     <div className="max-w-xl">
       <CodeBlock language="bash">
-        {"bun add @hackcove/ui-react\nbun add @hackcove/theme-catppuccin-mocha"}
+        {"bun add @hackcove/ui-react\nbun add @hackcove/themes"}
       </CodeBlock>
     </div>
   ),
@@ -24,7 +24,7 @@ export const Labelled: S = {
         language="css"
         lines={[
           '@import "tailwindcss";',
-          '@import "@hackcove/theme-catppuccin-mocha/theme.css";',
+          '@import "@hackcove/themes/catppuccin-mocha.css";',
           '@source "../node_modules/@hackcove/ui-react/dist";',
         ]}
       />
@@ -106,7 +106,7 @@ export const DoSnippet: S = {
     <CodeBlock
       label="bash"
       language="bash"
-      lines={["bun add @hackcove/ui-react", "bun add @hackcove/theme-catppuccin-mocha"]}
+      lines={["bun add @hackcove/ui-react", "bun add @hackcove/themes"]}
     />
   ),
 };

@@ -79,7 +79,7 @@ function setupOf(): string {
   });
   const list = themes.map(
     (theme) =>
-      `- ${theme.title}: \`${theme.name}\`; ${themesCopy.scopeLabel}: \`${theme.scopeClass}\`. ${theme.description}`,
+      `- ${theme.title}: \`${theme.specifier}\`; ${themesCopy.scopeLabel}: \`${theme.scopeClass}\`.`,
   );
   return [
     `## ${install.title}`,

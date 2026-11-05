@@ -20,7 +20,7 @@
      sapphire #209fb5 · blue #1e66f5 · lavender #7287fd · pink #ea76cb
 
    A token moves only where the contrast contract forces it
-   (packages/themes-shared/src/contrastRules.ts, run by theme.test.ts); each
+   (packages/themes-shared/src/contrastRules.ts, run by themes.test.ts); each
    such rule says which token it started from and why it moved. The accents are
    strong on white, so cards are white and lift off the base canvas.
    --------------------------------------------------------------------------- */

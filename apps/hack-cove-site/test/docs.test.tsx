@@ -193,7 +193,7 @@ describe("/ui/llms.txt", () => {
     expect(text.indexOf("## Install")).toBeLessThan(text.indexOf(`## ${componentPages[0]?.name}`));
     expect(text).toContain('@source "../node_modules/@hackcove/ui-react/dist";');
     for (const theme of themes) {
-      expect(text).toContain(`\`${theme.name}\``);
+      expect(text).toContain(`\`${theme.specifier}\``);
       expect(text).toContain(`\`${theme.scopeClass}\``);
     }
   });

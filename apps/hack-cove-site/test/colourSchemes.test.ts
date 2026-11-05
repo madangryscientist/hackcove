@@ -2,21 +2,15 @@ import { runInNewContext } from "node:vm";
 import { describe, expect, test } from "vitest";
 import { declaresDark, themeScope } from "@hackcove/themes-shared";
 import { themeFiles } from "@hackcove/themes-shared/files";
-import { PRIMARY_FILE } from "@hackcove/themes-shared/ids";
 import { colourSchemeHeadScript, schemes } from "../src/content/colourSchemes";
 
-// Only a package's main `theme.css` can be the site's scheme; its other files are extra themes.
-const primary = themeFiles(`${import.meta.dirname}/../../../themes`)
-  .filter((theme) => theme.file === PRIMARY_FILE)
-  .map((theme) => theme.css);
-
-const first = (dark: boolean) => primary.find((css) => declaresDark(css) === dark) ?? "";
+const css = themeFiles(`${import.meta.dirname}/../../../themes`).map((theme) => theme.css);
 
 describe("light/dark schemes", () => {
-  test("light and dark are the first main themes (theme.css) by folder order that do and do not declare the dark variant", () => {
+  test("light is the last theme by id with no dark variant, dark the one scoped .dark", () => {
     expect(schemes).toEqual({
-      light: themeScope(first(false)),
-      dark: themeScope(first(true)),
+      light: themeScope(css.findLast((theme) => !declaresDark(theme)) ?? ""),
+      dark: themeScope(css.find((theme) => themeScope(theme) === "dark") ?? ""),
     });
     expect(schemes.light).not.toBe(schemes.dark);
   });
@@ -70,7 +64,7 @@ describe("the head script", () => {
   });
 
   test("an old saved theme-picker value is ignored", () => {
-    expect(run({ stored: "thrifty-paper", systemDark: false }).classes).toEqual([schemes.light]);
-    expect(run({ stored: "catppuccin-mocha", systemDark: true }).classes).toEqual(["dark"]);
+    expect(run({ stored: "some-theme", systemDark: false }).classes).toEqual([schemes.light]);
+    expect(run({ stored: "some-theme", systemDark: true }).classes).toEqual(["dark"]);
   });
 });
