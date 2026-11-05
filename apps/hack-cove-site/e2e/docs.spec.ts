@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 import { componentPages } from "../src/content/components/index";
 import {
   everyPage,
+  labelFor,
   pages,
   schemeScope,
   scopeClasses,
@@ -89,6 +90,23 @@ test("a saved value from the old theme picker is ignored", async ({ browser }) =
   await expect.poll(() => scopeClasses(page)).toEqual([schemeScope.light]);
   await context.close();
 });
+
+// The server renders the toggle for dark (`initial="dark"`), so its label is the server's guess until
+// the island hydrates. Blocking the island's JS keeps it un-hydrated: the label must already name the
+// scheme `<html>` is in, which the inline script after the toggle sets.
+for (const scheme of ["dark", "light"] as const) {
+  test(`before hydration the toggle's label names the scheme in place: ${scheme}`, async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({ colorScheme: scheme });
+    const page = await context.newPage();
+    await page.route("**/*.js", (route) => route.abort());
+    await page.goto("/contracting/");
+    await expect.poll(() => scopeClasses(page)).toEqual([schemeScope[scheme]]);
+    await expect(toggle(page)).toHaveAttribute("aria-label", labelFor(scheme));
+    await context.close();
+  });
+}
 
 test("the right scheme is on <html> before the page scripts run: no flash", async ({ browser }) => {
   const context = await browser.newContext({ colorScheme: "light" });
