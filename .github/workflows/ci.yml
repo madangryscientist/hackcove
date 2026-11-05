@@ -20,7 +20,7 @@ jobs:
   gate:
     runs-on: ubuntu-latest
     # Nx runs with its local cache only: NX_NO_CLOUD keeps any run from opening an Nx Cloud pipeline
-    # execution (HC-227). `.nx/cache` is kept between runs with actions/cache. GitHub scopes a cache
+    # execution (HC-227). The cache is kept between runs with actions/cache. GitHub scopes a cache
     # to the ref that wrote it: a pull request reads its own and its base branch's (main) caches and
     # writes only its own, and main cannot read a pull request's, so a branch can never poison main's.
     # e2e is never cached (cache: false), so it runs for real on every commit.
@@ -37,11 +37,13 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
-      # Key: OS, ref, commit. A new commit never finds its own key, so it restores the newest cache of
-      # the same ref, then the newest of main, and saves its own at the end.
+      # Nx 23 keeps its cache and the database that indexes it under ~/.nx/<workspace id>/ (cache,
+      # databases), not in .nx/cache; they have to be restored together, so the whole of ~/.nx is
+      # cached. Key: OS, ref, commit. A new commit never finds its own key, so it restores the newest
+      # cache of the same ref, then the newest of main, and saves its own at the end.
       - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
         with:
-          path: .nx/cache
+          path: ~/.nx
           key: nx-${{ runner.os }}-${{ github.ref }}-${{ github.sha }}
           restore-keys: |
             nx-${{ runner.os }}-${{ github.ref }}-
