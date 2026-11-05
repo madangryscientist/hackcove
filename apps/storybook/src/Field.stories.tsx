@@ -79,6 +79,9 @@ export const Row: S = {
       <Field label="Owner" htmlFor="row-owner" layout="row" error="Pick an owner.">
         <Input id="row-owner" />
       </Field>
+      <Field label="Notification frequency for shared projects" htmlFor="row-long" layout="row">
+        <Input id="row-long" />
+      </Field>
     </div>
   ),
 };
