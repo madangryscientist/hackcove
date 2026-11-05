@@ -20,6 +20,7 @@ import {
   TimelineItem,
 } from "@hackcove/ui-react";
 import { samplePhoto } from "./samplePhoto";
+import { InsetAndNested } from "./GalleryCardInset";
 
 /** A Callout with an action, in info and in danger. */
 function GalleryCalloutActions() {
@@ -81,6 +82,7 @@ export function GalleryData() {
         Dense and toned.
       </Card>
       <Card tone="warn">A toned data panel.</Card>
+      <InsetAndNested />
       <Card href="#shot" title="Dashboard" status={<Pill tone="amber">changed</Pill>}>
         A card that is one link.
       </Card>

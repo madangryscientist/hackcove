@@ -104,6 +104,7 @@ export const pagelayouts: ComponentSection = {
       usage: [
         "Use `columns` 2, 3 or 4 when you know how many; it is one column on a phone, two from `sm` and `columns` from `lg`.",
         'Use `columns="auto"` when the count varies: it fits as many per row as the width allows, none narrower than `minWidth` (`md`, the default, or `sm`).',
+        '`columns="2:1"` or `"1:2"` is two unequal columns from `md` (one on a phone): the wide one twice the narrow one, for a record\'s detail beside its side panel.',
         '`align="start"` keeps each card its own height; by default every card stretches to the tallest in its row.',
         "`CardGrid` goes inside a page layout; it sets no page width of its own.",
         "A single column of blocks is a `Stack`, not a one-column `CardGrid`.",

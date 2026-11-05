@@ -115,3 +115,30 @@ describe("Section", () => {
     );
   });
 });
+
+describe("Stack rowFrom", () => {
+  it("is a column at every width without it", () => {
+    expect(renderToStaticMarkup(<Stack>x</Stack>)).not.toContain("flex-row");
+  });
+
+  it.each([
+    ["sm", "sm:flex-row"],
+    ["md", "md:flex-row"],
+    ["lg", "lg:flex-row"],
+  ] as const)("rowFrom %s keeps the column and adds %s", (rowFrom, cls) => {
+    const out = renderToStaticMarkup(<Stack rowFrom={rowFrom}>x</Stack>);
+    expect(out).toBe(`<div class="flex flex-col ${cls} gap-6 ${DROP}">x</div>`);
+  });
+
+  it("keeps the gap, the width and the element", () => {
+    const out = renderToStaticMarkup(
+      <Stack rowFrom="md" gap="lg" width="wide" as="ul">
+        <li>x</li>
+      </Stack>,
+    );
+    expect(out).toContain("md:flex-row");
+    expect(out).toContain("gap-8");
+    expect(out).toContain("max-w-5xl");
+    expect(out.startsWith("<ul ")).toBe(true);
+  });
+});

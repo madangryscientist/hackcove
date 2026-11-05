@@ -19,6 +19,15 @@ export const STACK_GAP: Record<StackGap, string> = {
   xl: "gap-12 sm:gap-16",
 };
 
+export type StackRowFrom = "sm" | "md" | "lg";
+
+/** The breakpoint where a `rowFrom` Stack turns from a column into a row. */
+export const STACK_ROW_FROM: Record<StackRowFrom, string> = {
+  sm: "sm:flex-row",
+  md: "md:flex-row",
+  lg: "lg:flex-row",
+};
+
 export type StackWidth = "narrow" | "default" | "wide" | "full";
 
 /** `default` adds nothing: the Stack is as wide as its parent. */
@@ -38,6 +47,10 @@ export const STACK_WIDTH: Record<StackWidth, string | undefined> = {
  * is the parent's whole width and `default` sets nothing. A capped Stack starts at its parent's left
  * edge (it is never re-centred), so its first line lines up with every other block on the page.
  *
+ * `rowFrom` turns the column into a row from `sm`, `md` or `lg` (a column below it): the blocks sit
+ * side by side, `gap` apart, and a `ClusterGrow` around one of them takes the width left. Without it the
+ * Stack is always a column; a row that is a row at every width is a `Cluster`.
+ *
  * `as` is a closed set: `div` (default), `section`, `form`, `ul` or `ol`. A `form` takes the form
  * props (`onSubmit`, `action`, `method`, `noValidate`, ...). A `ul` or `ol` is drawn with no
  * markers and its children are `<li>`s, as in `BulletList` and `Timeline`: the Stack does not wrap
@@ -46,6 +59,7 @@ export const STACK_WIDTH: Record<StackWidth, string | undefined> = {
 export function Stack({
   gap = "md",
   width = "default",
+  rowFrom,
   as = "div",
   children,
   ...rest
@@ -56,6 +70,7 @@ export function Stack({
       className={cx(
         "flex flex-col",
         (as === "ul" || as === "ol") && "list-none",
+        rowFrom && STACK_ROW_FROM[rowFrom],
         STACK_GAP[gap],
         STACK_WIDTH[width],
         "*:data-page-header:mb-0",
@@ -86,6 +101,13 @@ type StackBase = {
    * @default default
    */
   width?: StackWidth | undefined;
+  /**
+   * Turns the column into a row from this breakpoint (`sm`, `md` or `lg`), a column below it: a main
+   * area beside a side column on a wide screen, stacked on a phone. In the row the blocks sit side by side
+   * the same `gap` apart and are as tall as the tallest; wrap the one that takes the width left in a
+   * `ClusterGrow`. Left out, the Stack is always a column.
+   */
+  rowFrom?: StackRowFrom | undefined;
   children?: ReactNode;
 };
 

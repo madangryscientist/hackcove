@@ -8,6 +8,9 @@ import type { Size } from "./size.js";
 /** The space under a card's heading, by `size`. */
 const HEADING_GAP: Record<Size, string> = { sm: "mb-2", md: "mb-3", lg: "mb-4" };
 
+/** The negative margin that cancels a card body's side padding (`BODY_PAD` in `Card`), by `size`. */
+const INSET_BLEED: Record<Size, string> = { sm: "-mx-3", md: "-mx-5", lg: "-mx-6" };
+
 /** The padding of a card's bar and footer strips, by `size`. */
 const STRIP_PAD: Record<Size, string> = { sm: "px-3 py-2", md: "px-5 py-3", lg: "px-6 py-4" };
 
@@ -53,6 +56,19 @@ export function CardIcon({ name, size }: { name: IconName; size: Size }) {
       <Icon name={name} size="feature" />
     </div>
   );
+}
+
+/** A card's `inset`: a band that runs edge to edge across the padded body, the heading's gap under it. A flush card has no padding to cancel. */
+export function CardInset({
+  children,
+  size,
+  bleed,
+}: {
+  children: ReactNode;
+  size: Size;
+  bleed: boolean;
+}) {
+  return <div className={cx(bleed && INSET_BLEED[size], HEADING_GAP[size])}>{children}</div>;
 }
 
 function CardActions({ children }: { children: ReactNode }) {

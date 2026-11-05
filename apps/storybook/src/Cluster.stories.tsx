@@ -44,6 +44,30 @@ export const GrowingInput: S = {
   ),
 };
 
+/** `minWidth` (`sm` 12rem or `md` 17rem) gives `ClusterGrow` a width to keep: in a `Cluster` with `wrap` it drops under the other items when the room left is narrower, instead of being squashed beside them. */
+export const GrowMinWidth: S = {
+  render: () => (
+    <Stack>
+      <div className="w-64">
+        <Cluster wrap gap="sm">
+          <Pill tone="emerald">Active</Pill>
+          <ClusterGrow minWidth="md">
+            <Text>With minWidth md it drops under the pill and keeps its width.</Text>
+          </ClusterGrow>
+        </Cluster>
+      </div>
+      <div className="w-64">
+        <Cluster wrap gap="sm">
+          <Pill tone="emerald">Active</Pill>
+          <ClusterGrow>
+            <Text>Without minWidth it is squashed beside the pill.</Text>
+          </ClusterGrow>
+        </Cluster>
+      </div>
+    </Stack>
+  ),
+};
+
 /** `justify` is the main axis: `start` (default), `between` pushes the first and last items to the two ends, `end`. */
 export const Justify: S = {
   render: () => (

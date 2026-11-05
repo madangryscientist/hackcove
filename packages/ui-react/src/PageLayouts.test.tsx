@@ -146,6 +146,19 @@ describe("CardGrid", () => {
     );
   });
 
+  it.each([
+    ["2:1", "md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]"],
+    ["1:2", "md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"],
+  ] as const)(
+    "with columns %s is one column on a phone and the ratio from md",
+    (columns, ratio) => {
+      const classes = classesOf(renderToStaticMarkup(<CardGrid columns={columns}>tiles</CardGrid>));
+      expect(classes).toEqual(expect.arrayContaining(["grid", "grid-cols-1", ratio]));
+      expect(classes).not.toContain("sm:grid-cols-2");
+      expect(classes.some((c) => c.startsWith("lg:grid-cols-"))).toBe(false);
+    },
+  );
+
   it("defaults to three columns", () => {
     expect(classesOf(renderToStaticMarkup(<CardGrid>tiles</CardGrid>))).toContain("lg:grid-cols-3");
   });

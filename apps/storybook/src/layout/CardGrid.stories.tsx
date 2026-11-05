@@ -76,6 +76,28 @@ export const TwoColumns: S = {
   ),
 };
 
+function Ratio({ columns }: { columns: "2:1" | "1:2" }) {
+  return (
+    <DemoShell>
+      <PageHeader title="Transaction" subtitle={`columns="${columns}": one column on a phone.`} />
+      <CardGrid columns={columns}>
+        <Card title="Detail">
+          <Text as="p">The wide column, twice the width of the narrow one from md.</Text>
+        </Card>
+        <Card title="Notes">
+          <Text as="p">The narrow column.</Text>
+        </Card>
+      </CardGrid>
+    </DemoShell>
+  );
+}
+
+/** `columns="2:1"`: two columns from `md`, the first twice as wide as the second; one column on a phone. */
+export const TwoToOne: S = { render: () => <Ratio columns="2:1" /> };
+
+/** `columns="1:2"`: the same split the other way round, the second column twice as wide. */
+export const OneToTwo: S = { render: () => <Ratio columns="1:2" /> };
+
 const shots = [
   ["Dashboard", "One line."],
   [

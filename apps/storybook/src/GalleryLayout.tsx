@@ -30,6 +30,36 @@ const galleryControls = (
   </>
 );
 
+/** Cluster and ClusterGrow (also with `minWidth`) and Stack `rowFrom`. */
+function ClusterAndStackOptions() {
+  return (
+    <>
+      <Cluster>
+        <ClusterGrow>
+          <Input aria-label="Cluster input" placeholder="Cluster: the input grows" />
+        </ClusterGrow>
+        <Button>Save</Button>
+      </Cluster>
+      <Cluster wrap gap="sm">
+        <Button variant="outline">Copy</Button>
+        <ClusterGrow minWidth="md">
+          <Text>ClusterGrow minWidth md: wraps under rather than squashing.</Text>
+        </ClusterGrow>
+      </Cluster>
+      <Stack rowFrom="md" gap="sm">
+        <ClusterGrow>
+          <Card title="Stack rowFrom md">
+            <Text>A column on a phone, a row from md.</Text>
+          </Card>
+        </ClusterGrow>
+        <Card title="Side" size="sm">
+          <Text>Side column.</Text>
+        </Card>
+      </Stack>
+    </>
+  );
+}
+
 /** AppShell (its brand, nav and controls slots, an AppShellHideBelow viewer chip, and the Container inside it), PageHeader, Section, Stack and Cluster, in a box that scrolls under the sticky header. */
 export function GalleryLayout() {
   return (
@@ -90,12 +120,7 @@ export function GalleryLayout() {
               </Card>
             </li>
           </Stack>
-          <Cluster>
-            <ClusterGrow>
-              <Input aria-label="Cluster input" placeholder="Cluster: the input grows" />
-            </ClusterGrow>
-            <Button>Save</Button>
-          </Cluster>
+          <ClusterAndStackOptions />
         </Stack>
         <div className="mt-8">
           <Stack gap="xl" width="narrow">
