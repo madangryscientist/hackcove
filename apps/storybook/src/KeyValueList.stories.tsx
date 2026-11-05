@@ -85,3 +85,34 @@ export const DoAlignStart: S = {
     </KeyValueList>
   ),
 };
+
+/** `total` closes a column of amounts: a firm rule above it and strong text, for the sum the rows add up to. */
+export const Total: S = {
+  render: () => (
+    <div className="max-w-sm">
+      <KeyValueList>
+        <KeyValue label="Salary">R 42 000</KeyValue>
+        <KeyValue label="Rent">−R 9 500</KeyValue>
+        <KeyValue label="Transport">−R 1 850</KeyValue>
+        <KeyValue label="Left over" total>
+          R 30 650
+        </KeyValue>
+      </KeyValueList>
+    </div>
+  ),
+};
+
+/** In an `align="start"` list the total keeps the shared label column. */
+export const TotalAligned: S = {
+  render: () => (
+    <div className="max-w-sm">
+      <KeyValueList align="start">
+        <KeyValue label="Income">R 42 000</KeyValue>
+        <KeyValue label="Costs">R 11 350</KeyValue>
+        <KeyValue label="Net" total>
+          R 30 650
+        </KeyValue>
+      </KeyValueList>
+    </div>
+  ),
+};

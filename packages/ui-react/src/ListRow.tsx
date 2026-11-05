@@ -55,6 +55,8 @@ type Shared = {
   divided?: boolean | undefined;
   /** Content before the label: an Avatar, a thumbnail, an icon. */
   leading?: ReactNode | undefined;
+  /** A second, muted line under the label (a date, a note), like `TableCell`'s `secondary`. */
+  secondary?: ReactNode | undefined;
   /** Content at the far end of the row: a value, a count, a Pill. */
   trailing?: ReactNode | undefined;
   /**
@@ -174,6 +176,7 @@ function look(props: ListRowProps): string {
 function StaticRow(props: ListRowStaticProps & Pieces): ReactElement {
   const {
     leading: _l,
+    secondary: _sec,
     leadingWidth: _lw,
     trailing: _t,
     focused: _f,
@@ -215,6 +218,7 @@ function StaticRow(props: ListRowStaticProps & Pieces): ReactElement {
 function LinkRow(props: ListRowLinkProps & Pieces): ReactElement {
   const {
     leading: _l,
+    secondary: _sec,
     leadingWidth: _lw,
     trailing: _t,
     focused: _f,
@@ -258,6 +262,7 @@ function LinkRow(props: ListRowLinkProps & Pieces): ReactElement {
 function ButtonRow(props: ListRowButtonProps & Pieces): ReactElement {
   const {
     leading: _l,
+    secondary: _sec,
     leadingWidth: _lw,
     trailing: _t,
     focused: _f,
@@ -300,7 +305,7 @@ function ButtonRow(props: ListRowButtonProps & Pieces): ReactElement {
  * collapsible section: `aria-expanded` and a chevron. Rows sit in a `Card flush`; `divided` draws
  * the line between them, on each row after the first.
  *
- * `leading` is content before the label (`leadingWidth="thumbnail"` gives it a fixed picture width),
+ * `secondary` is a second, muted line under the label. `leading` is content before the label (`leadingWidth="thumbnail"` gives it a fixed picture width),
  * `selected` marks the row in view, `focused` the one the keyboard cursor is on and `active` fills
  * the row a list follows (`onPointerEnter`, `onPointerLeave` and `onFocus` reach
  * every form; on a linked row the pointer handlers go on the row itself). The label is a
@@ -309,12 +314,19 @@ function ButtonRow(props: ListRowButtonProps & Pieces): ReactElement {
  * link): `actions` follow `trailing`, and `revealOnHover` shows them only on hover or focus.
  */
 export function ListRow(props: ListRowProps): ReactElement {
-  const { leading, leadingWidth, trailing, children } = props;
+  const { leading, leadingWidth, trailing, secondary, children } = props;
   const pieces: Pieces = {
     start: leading != null && (
       <span className={cx("shrink-0", leadingWidth === "thumbnail" && THUMBNAIL)}>{leading}</span>
     ),
-    label: <div className="min-w-0 flex-1">{children}</div>,
+    label: (
+      <div className="min-w-0 flex-1">
+        {children}
+        {secondary != null && secondary !== false && (
+          <div className="text-xs font-normal text-slate-500">{secondary}</div>
+        )}
+      </div>
+    ),
     end: trailing != null && (
       <span className="shrink-0 tabular-nums text-slate-500">{trailing}</span>
     ),

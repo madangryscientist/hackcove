@@ -165,3 +165,12 @@ export const DontAction: S = {
     </Callout>
   ),
 };
+
+/** `align="center"` centres the text of a notice that stands alone, such as a success state. */
+export const Centred: S = {
+  render: () => (
+    <Callout tone="positive" title="All reviewed." align="center">
+      Every shot in this build has been approved.
+    </Callout>
+  ),
+};

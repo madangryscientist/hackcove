@@ -44,24 +44,30 @@ export function KeyValueList({
   );
 }
 
-/** One row of a KeyValueList: a label on the left, a tabular value on the right (or beside it, in an `align="start"` list). */
+/** One row of a KeyValueList: a label on the left, a tabular value on the right (or beside it, in an `align="start"` list). `total` makes it the sum row: a rule above, strong text. */
 export function KeyValue({
   label,
+  total = false,
   children,
   ...rest
 }: {
   /** The term, on the left. */
   label: ReactNode;
+  /** The sum the rows above add up to: a firm rule above it and the label and value in strong ink. */
+  total?: boolean | undefined;
   children: ReactNode;
 } & Unstyled<HTMLAttributes<HTMLDivElement>>): ReactElement {
   const start = useContext(AlignContext) === "start";
   return (
     <div
       {...rest}
-      className={start ? "col-span-2 grid grid-cols-subgrid" : "flex justify-between gap-3"}
+      className={cx(
+        start ? "col-span-2 grid grid-cols-subgrid" : "flex justify-between gap-3",
+        total && "border-t border-slate-300 pt-1.5 font-semibold",
+      )}
     >
-      <dt className="text-slate-600">{label}</dt>
-      <dd className={start ? "tabular-nums" : "text-right tabular-nums"}>{children}</dd>
+      <dt className={total ? "text-slate-900" : "text-slate-600"}>{label}</dt>
+      <dd className={cx(!start && "text-right", "tabular-nums")}>{children}</dd>
     </div>
   );
 }

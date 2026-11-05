@@ -1,4 +1,5 @@
 import { type ReactElement, type ReactNode, useId } from "react";
+import { cx } from "./cx.js";
 import type { Passthrough } from "./props.js";
 import { SectionHeading } from "./typography.js";
 
@@ -12,6 +13,7 @@ import { SectionHeading } from "./typography.js";
 export function EmptyState({
   title,
   level = 2,
+  padding = "default",
   children,
   actions,
   ...rest
@@ -20,6 +22,12 @@ export function EmptyState({
   title: ReactNode;
   /** The title's heading level, 2 to 6. It does not change how the title looks. */
   level?: 2 | 3 | 4 | 5 | 6 | undefined;
+  /**
+   * `inset` pads all four sides, for an empty state in a `Card flush`, whose body has no padding
+   * of its own. `default` pads above and below only.
+   * @default default
+   */
+  padding?: "default" | "inset" | undefined;
   children?: ReactNode;
   /** Buttons or links in a centred row at the bottom. */
   actions?: ReactNode;
@@ -29,7 +37,10 @@ export function EmptyState({
     <section
       {...rest}
       aria-labelledby={titleId}
-      className="mx-auto flex w-full max-w-xl flex-col items-center gap-4 py-8 text-center"
+      className={cx(
+        "mx-auto flex w-full max-w-xl flex-col items-center gap-4 text-center",
+        padding === "inset" ? "p-8" : "py-8",
+      )}
     >
       <SectionHeading as={`h${level}`} id={titleId}>
         {title}

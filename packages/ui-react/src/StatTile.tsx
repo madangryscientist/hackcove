@@ -4,18 +4,20 @@ import { cx } from "./cx.js";
 import { BAR_FILL } from "./ProgressBar.js";
 import { Overline } from "./typography.js";
 
-/** The colour of a tile's value (and of its accent bar): plain ink, green or red. */
-export type StatTileTone = "neutral" | "positive" | "negative";
+/** The colour of a tile's value (and of its accent bar): plain ink, green, amber or red. */
+export type StatTileTone = "neutral" | "positive" | "warn" | "negative";
 
 const VALUE: Record<StatTileTone, string> = {
   neutral: "text-slate-900",
   positive: "text-emerald-700",
+  warn: "text-amber-700",
   negative: "text-red-700",
 };
 
 const BAR: Record<StatTileTone, string> = {
   neutral: BAR_FILL.accent,
   positive: BAR_FILL.positive,
+  warn: BAR_FILL.warn,
   negative: BAR_FILL.negative,
 };
 

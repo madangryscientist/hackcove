@@ -50,3 +50,12 @@ describe("StatTile", () => {
     expect(markup).toContain('data-testid="tile"');
   });
 });
+
+describe("StatTile warn", () => {
+  it("colours the value and the accent bar amber", () => {
+    const out = renderToStaticMarkup(<StatTile label="Pending" value="R 900" tone="warn" accent />);
+    expect(out).toContain("text-amber-700");
+    expect(out).toContain("bg-amber-600");
+    expect(out).not.toContain("text-slate-900");
+  });
+});

@@ -108,3 +108,14 @@ export const DontInline: S = {
     </Card>
   ),
 };
+
+/** `padding="inset"` pads all four sides, for an empty state in a `Card flush`, which has no padding of its own. */
+export const InsetPadding: S = {
+  render: () => (
+    <Card flush>
+      <EmptyState title="No forecast yet" padding="inset">
+        <Text as="p">Add an income and a bill to see the months ahead.</Text>
+      </EmptyState>
+    </Card>
+  ),
+};

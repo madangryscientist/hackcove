@@ -294,3 +294,22 @@ export const ActiveFollowsPointerAndKeyboard: S = {
     );
   },
 };
+
+/** `secondary` is a muted second line under the label, like `TableCell`'s. */
+export const Secondary: S = {
+  render: () => (
+    <div className="max-w-sm">
+      <Card flush>
+        <ListRow trailing="R 9 500" secondary="Due 1 December">
+          Rent
+        </ListRow>
+        <ListRow divided trailing="R 1 850" secondary="Debit order, FNB">
+          Transport
+        </ListRow>
+        <ListRow divided href="#insurance" trailing="R 640" secondary="Renews in March">
+          Insurance
+        </ListRow>
+      </Card>
+    </div>
+  ),
+};

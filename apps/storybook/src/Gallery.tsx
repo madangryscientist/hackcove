@@ -19,7 +19,6 @@ import {
   FieldDialog,
   FilterGroup,
   fromISODate,
-  Kbd,
   KeyValue,
   KeyValueList,
   Lead,
@@ -41,6 +40,7 @@ import { GalleryControls } from "./GalleryControls";
 import { GalleryButtons } from "./GalleryButtons";
 import { GalleryChoice } from "./GalleryChoice";
 import { GalleryData } from "./GalleryData";
+import { GalleryKeyValues } from "./GalleryKeyValues";
 import { GalleryForm, GalleryNameField, GalleryNotes } from "./GalleryForm";
 import { GalleryContainer, GalleryLayout } from "./GalleryLayout";
 import { GalleryPills } from "./GalleryPills";
@@ -95,24 +95,6 @@ function GalleryChips() {
         Furniture
       </Button>
     </FilterGroup>
-  );
-}
-
-/** The KeyValueList block of the Gallery: a label/value row with a value and a Kbd key, then the left-aligned variant. */
-function GalleryKeyValues() {
-  return (
-    <div className="flex max-w-sm flex-col gap-4">
-      <KeyValueList>
-        <KeyValue label="Size">1280×720</KeyValue>
-        <KeyValue label="Next shot">
-          <Kbd>j</Kbd>
-        </KeyValue>
-      </KeyValueList>
-      <KeyValueList align="start">
-        <KeyValue label="Size">1280×720</KeyValue>
-        <KeyValue label="Changed pixels">0.4%</KeyValue>
-      </KeyValueList>
-    </div>
   );
 }
 

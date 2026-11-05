@@ -246,17 +246,32 @@ export const PageHeading = typography(
 /**
  * Top-level section header. `h2`, text-base/6 semibold, primary text. `rule` sets
  * a hairline under it (the `Divider` line colour) with the space either side of
- * the line built in.
+ * the line built in. `description` is a muted line under the heading, outside the `<h2>`, so the
+ * heading's name stays the title; the rule then sits under the description.
  */
 export function SectionHeading<E extends ElementType = "h2">({
   rule,
+  description,
   ...props
 }: TypographyProps<E> & {
   /** A hairline under the heading, with the space either side of it built in. */
   rule?: boolean;
+  /** A muted line under the heading that says more. It is a paragraph beside the heading, not part of its name. */
+  description?: ReactNode;
 }): ReactElement {
-  const variant = cx(rule && "mb-4 border-b border-slate-200/70 pb-2", "text-base/6 font-semibold");
-  return pinned("h2", variant, "default", props);
+  const hairline = "mb-4 border-b border-slate-200/70 pb-2";
+  const hasDescription = description != null && description !== false;
+  if (!hasDescription) {
+    return pinned("h2", cx(rule && hairline, "text-base/6 font-semibold"), "default", props);
+  }
+  return (
+    <div className={cx("flex flex-col gap-1", rule && hairline)}>
+      {pinned("h2", "text-base/6 font-semibold", "default", props)}
+      <Text as="p" color="tertiary">
+        {description}
+      </Text>
+    </div>
+  );
 }
 
 export type SubsectionHeadingSize = Size;

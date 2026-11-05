@@ -34,6 +34,9 @@ export function GalleryBars() {
         <StatTile label="Left over" value="R 4 250" hint="after all bills" tone="positive" accent />
         <StatTile label="Total interest" value="R 12 400" tone="negative" accent />
       </div>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <StatTile label="Pending" value="R 3 200" hint="2 not cleared" tone="warn" accent />
+      </div>
       <div className="flex flex-col gap-2">
         {tones.map((tone, i) => (
           <ProgressBar key={tone} value={25 * (i + 1)} tone={tone} label={`${tone} progress`} />

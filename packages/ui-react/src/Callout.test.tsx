@@ -79,3 +79,21 @@ describe("Callout link", () => {
     expect(out).toContain("after:absolute after:inset-0");
   });
 });
+
+describe("Callout align", () => {
+  it("centres the text with align=center and not by default", () => {
+    expect(renderToStaticMarkup(<Callout align="center">x</Callout>)).toContain("text-center");
+    expect(renderToStaticMarkup(<Callout>x</Callout>)).not.toContain("text-center");
+    expect(renderToStaticMarkup(<Callout align="center">x</Callout>)).not.toContain('align="');
+  });
+
+  it("centres a titled body and keeps the actions", () => {
+    const out = renderToStaticMarkup(
+      <Callout align="center" tone="positive" title="Done" actions={<a href="#a">Open</a>}>
+        Saved.
+      </Callout>,
+    );
+    expect(out).toContain("text-center");
+    expect(out).toContain("Open");
+  });
+});

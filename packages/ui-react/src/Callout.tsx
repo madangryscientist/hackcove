@@ -26,7 +26,7 @@ const TONE_TEXT: Record<CalloutTone, string> = {
  * A tinted notice box, with an optional bold title above its body. `actions` puts a button or link
  * at the end of the row; `banner` makes it a flat strip (bottom border only, no radius) for the
  * top of a `Card flush` and nowhere else: a padded card or a padded `FullBleedLayout` column
- * would inset it. In a page's column the notice is a plain Callout, first in the column's `Stack`. With `actions` the box is `relative`, so a `TextLink
+ * would inset it. `align="center"` centres the text. In a page's column the notice is a plain Callout, first in the column's `Stack`. With `actions` the box is `relative`, so a `TextLink
  * stretch` there makes the whole callout its click target, like a link in a table row.
  */
 export function Callout({
@@ -34,6 +34,7 @@ export function Callout({
   title,
   actions,
   banner = false,
+  align = "start",
   children,
   ...rest
 }: {
@@ -43,6 +44,12 @@ export function Callout({
   title?: ReactNode;
   /** A flat strip: `border-b` only and no radius, for the top of a `Card flush` only. */
   banner?: boolean;
+  /**
+   * `center` centres the title and body, for a success or empty state that stands alone. With
+   * `actions` only the text is centred.
+   * @default start
+   */
+  align?: "start" | "center" | undefined;
   /** A button or link at the end of the row, beside the title and body. */
   actions?: ReactNode;
   children: ReactNode;
@@ -62,6 +69,7 @@ export function Callout({
         banner ? "border-b px-5 py-3 text-sm" : "rounded-xl border p-4 text-sm",
         TONE_SURFACE[tone],
         TONE_TEXT[tone],
+        align === "center" && "text-center",
       )}
       {...rest}
     >
