@@ -216,7 +216,7 @@ function GalleryCopy() {
   );
 }
 
-/** The Avatar set: the seven identity colours at md, an AvatarStack with a "+N", a square Avatar, then initials and a photo at xl and 2xl. */
+/** The Avatar set: the seven identity colours at md, an AvatarStack with a "+N", a square Avatar, then initials from xs to 2xl and a photo. */
 function GalleryAvatars() {
   const names = ["ada", "grace", "linus", "margaret", "dennis", "ken", "barbara"];
   return (
@@ -233,6 +233,7 @@ function GalleryAvatars() {
       />
       <Avatar name="Hack Cove" size="lg" shape="square" />
       <div className="flex items-center gap-3">
+        <Avatar name="Ada Lovelace" size="xs" />
         <Avatar name="Ada Lovelace" size="xl" />
         <Avatar name="Ada Lovelace" src={samplePhoto} size="xl" />
         <Avatar name="Ada Lovelace" size="2xl" />

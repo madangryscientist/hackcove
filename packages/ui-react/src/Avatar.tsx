@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactElement } from "react";
+import { type HTMLAttributes, type ReactElement, useState } from "react";
 import { cx } from "./cx.js";
 import type { Unstyled } from "./props.js";
 
@@ -14,6 +14,7 @@ const COLOUR_CLASSES = [
 ] as const;
 
 const SIZE_CLASSES = {
+  xs: "size-4 text-[0.5rem]",
   sm: "size-6 text-xs",
   md: "size-8 text-xs",
   lg: "size-10 text-base",
@@ -27,6 +28,7 @@ export type AvatarSize = keyof typeof SIZE_CLASSES;
 export type AvatarShape = "round" | "square";
 
 const SQUARE_CLASSES: Record<AvatarSize, string> = {
+  xs: "rounded-sm",
   sm: "rounded",
   md: "rounded-md",
   lg: "rounded-md",
@@ -64,10 +66,13 @@ export function initialsOf(name: string): string {
 type AvatarProps = {
   /** Whose avatar: its initials, its colour (a hash of the name) and its title or `alt`. */
   name: string;
-  /** The person's photo, a local path. It replaces the initials and is announced as `name`. */
+  /**
+   * The person's photo, a local path. It replaces the initials and is announced as `name`. If it
+   * fails to load, the initials show instead.
+   */
   src?: string | undefined;
   /**
-   * `sm` 24px, `md` 32px, `lg` 40px, `xl` 56px or `2xl` 96px.
+   * `xs` 16px, `sm` 24px, `md` 32px, `lg` 40px, `xl` 56px or `2xl` 96px.
    * @default md
    */
   size?: AvatarSize;
@@ -96,16 +101,23 @@ export function AvatarMark({
   size = "md",
   shape = "round",
   ring = false,
+  onError,
   ...rest
 }: AvatarProps & { ring?: string | false }): ReactElement {
+  // The `src` that failed to load: a new `src` gets its own try, so a broken one never sticks.
+  const [failedSrc, setFailedSrc] = useState<string>();
   const corners = avatarShapeClass(shape, size);
-  if (src) {
+  if (src && src !== failedSrc) {
     return (
       <img
         src={src}
         alt={name}
         title={name}
         className={cx("shrink-0 object-cover", corners, SIZE_CLASSES[size], ring)}
+        onError={(event) => {
+          onError?.(event);
+          setFailedSrc(src);
+        }}
         {...rest}
       />
     );
