@@ -10,7 +10,9 @@
  *   story files and themes the change reaches, and why (`visual-plan.ts`). `--all`, or
  *   `VISUAL_ALL=1`, picks everything.
  * - `--group <slug>` captures that group's picked stories on the branch and on the base, and
- *   compares them; a group the plan skipped does nothing.
+ *   compares them; a group the plan skipped does nothing. It fails, naming the shot, when a branch
+ *   shot is over PixelSlash's 24.5 Mpx limit (`visual-shots.ts`; the Overview pages are shot in
+ *   slices for that reason).
  * - `--summary` reads every group's result and totals them.
  *
  * The base is the branch's merge-base with origin/main (the fork point, so a main that moved since
@@ -32,6 +34,7 @@ import {
   capture,
   capturePort,
   changedSince,
+  checkShotSizes,
   checkUpload,
   compare,
   ensurePixelslashInstall,
@@ -186,6 +189,7 @@ async function groupMode(slug: string) {
   }
   const started = Date.now();
   await capture(branchStatic, join(dir, "branch"), await capturePort(), group);
+  checkShotSizes(join(dir, "branch"), slug);
   await captureBase(dir, plan.sha, group);
   const report = join(dir, "report");
   const counts = await compare(join(dir, "main"), join(dir, "branch"), report);

@@ -11,6 +11,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 import { indexOf, isRecord } from "./visual-index.js";
+import { MAX_SHOT_PIXELS, shotSizes, sizeReport } from "./visual-shots.js";
 
 export const appDir = join(import.meta.dirname, "..");
 export const repoRoot = join(appDir, "..", "..");
@@ -146,6 +147,21 @@ export async function capture(staticDir: string, into: string, port: number, pic
       VISUAL_THEMES: JSON.stringify(pick.themes),
     },
   );
+}
+
+/**
+ * Fails when a captured shot is over PixelSlash's limit (PS-323: the server ends a build at errored
+ * on one), naming each, and logs a shot that is close to it so its section is split first.
+ */
+export function checkShotSizes(dir: string, label: string) {
+  const { over, near } = sizeReport(shotSizes(dir));
+  for (const line of near) log(`${label}: ${line}, near the ${MAX_SHOT_PIXELS / 1e6} Mpx limit`);
+  if (over.length > 0)
+    throw new VisualError(
+      `${label}: over PixelSlash's ${MAX_SHOT_PIXELS / 1e6} Mpx limit for one shot:\n  ` +
+        `${over.join("\n  ")}\nsplit the story (an Overview section is one story per ` +
+        "gallerySections entry)",
+    );
 }
 
 const COUNTS = /^pixelslash: (\d+) changed, (\d+) unchanged, (\d+) new, (\d+) removed/m;

@@ -78,6 +78,15 @@ and why. `bunx nx run storybook:visual --all` (or `VISUAL_ALL=1 bunx nx run-many
 run-many takes `--all` for itself) captures everything. A gate run is `--all`. Every story file is
 named by a docs page (`pairs`, `fullPage` or `stories`); the storybook tests fail on one that is not.
 
+**A shot may not pass PixelSlash's 24.5 Mpx limit** (19140px tall at 1280 wide; PS-323 ends a build
+at errored on one). The two one-page Overviews, **Gallery** and **All themes**, are for people and are not
+shot: the run shoots them in slices instead, one story per entry of `gallerySections`
+(`apps/storybook/src/Gallery.tsx`) in **Overview / Gallery sections** and **Overview / All themes
+sections**, and `visualSkipped` (`scripts/visual-shots.ts`) lists the two skipped pages. A new
+Gallery block goes in a `gallerySections` entry and gets a story in both files (a test fails
+otherwise). The run fails, naming the shot, on one over the limit and warns at 75% of it: split
+that section.
+
 ## Browser support
 
 Hack Cove supports the web platform as of the Baseline digest of August 2026

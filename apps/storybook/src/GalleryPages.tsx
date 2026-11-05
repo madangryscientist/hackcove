@@ -75,10 +75,10 @@ export function PageSequence() {
   );
 }
 
-/** The layouts for a `bleed` shell: FullBleedLayout, plain and padded, and a StickyBar on its own. */
-function BleedPages() {
+/** The layouts for a `bleed` shell: FullBleedLayout, plain and padded, a StickyBar on its own and CenteredLayout. */
+export function GalleryBleedPages() {
   return (
-    <>
+    <div className="flex flex-col gap-6">
       <PageBox label="FullBleedLayout" bleed>
         <FullBleedLayout panel={<Text as="p">Panel</Text>}>
           <div className="flex h-full min-h-48 items-center justify-center bg-slate-100">
@@ -101,11 +101,16 @@ function BleedPages() {
           <Text as="p">The page scrolls under the bar.</Text>
         </div>
       </PageBox>
-    </>
+      <PageBox label="CenteredLayout">
+        <CenteredLayout title="Sign in" subtitle="Use your Hack Cove account.">
+          <Button>Continue</Button>
+        </CenteredLayout>
+      </PageBox>
+    </div>
   );
 }
 
-/** Every page layout in a shell box: the sequence, then the grid, sidebar, full-bleed, StickyBar and centred ones. */
+/** The page sequence, then ProseLayout in its two widths. */
 export function GalleryPages() {
   return (
     <div className="flex flex-col gap-6">
@@ -118,6 +123,14 @@ export function GalleryPages() {
           <StatTiles columns={3} />
         </ProseLayout>
       </PageBox>
+    </div>
+  );
+}
+
+/** The CardGrid layouts and SidebarLayout, each in a shell box. */
+export function GalleryGridPages() {
+  return (
+    <div className="flex flex-col gap-6">
       <PageBox label="CardGrid">
         <StatTiles columns={4} />
       </PageBox>
@@ -156,12 +169,14 @@ export function GalleryPages() {
           <Text as="p">The canvas.</Text>
         </SidebarLayout>
       </PageBox>
-      <BleedPages />
-      <PageBox label="CenteredLayout">
-        <CenteredLayout title="Sign in" subtitle="Use your Hack Cove account.">
-          <Button>Continue</Button>
-        </CenteredLayout>
-      </PageBox>
+    </div>
+  );
+}
+
+/** The status pages: NotFound, ErrorPage, Offline, Maintenance and Forbidden. */
+export function GalleryStatusPages() {
+  return (
+    <div className="flex flex-col gap-6">
       <PageBox label="NotFound">
         <NotFound homeHref="#" />
       </PageBox>
