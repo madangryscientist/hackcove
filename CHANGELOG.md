@@ -1,3 +1,14 @@
+## 0.8.3 (2026-11-05)
+
+### 🚀 Features
+
+- **ui-react:** feature icons: a named icon set, a feature Icon size and an icon slot on Card ([#47](https://github.com/madangryscientist/hackcove/pull/47))
+- **ui-react:** CodeBlock and CodeExample never clip: wrap or a themed scrollbar, plus copy ([#46](https://github.com/madangryscientist/hackcove/pull/46))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.8.2 (2026-11-05)
 
 ### 🚀 Features
