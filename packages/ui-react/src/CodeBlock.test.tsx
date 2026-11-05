@@ -36,6 +36,31 @@ describe("CodeBlock", () => {
     expect(renderToStaticMarkup(<CodeBlock>x</CodeBlock>)).not.toContain("figcaption");
   });
 
+  it('scrolls under a themed thin scrollbar with `overflow="scroll"`, and never wraps then', () => {
+    const out = renderToStaticMarkup(<CodeBlock overflow="scroll">{"a".repeat(200)}</CodeBlock>);
+    expect(out).toContain("overflow-x-auto");
+    expect(out).toContain("[scrollbar-width:thin]");
+    expect(out).toContain("[scrollbar-color:currentColor_transparent]");
+    expect(out).toMatch(/<pre class="[^"]*whitespace-pre"/);
+    expect(out).not.toMatch(/whitespace-pre-wrap|break-words/);
+  });
+
+  it("wraps by default and has no scroller, so it can never clip", () => {
+    const out = renderToStaticMarkup(<CodeBlock>{"a".repeat(200)}</CodeBlock>);
+    expect(out).not.toContain("overflow-x-auto");
+    expect(out).not.toContain("scrollbar");
+  });
+
+  it("has no copy button, and so no client JS, unless `copy` is set", () => {
+    expect(renderToStaticMarkup(<CodeBlock>x</CodeBlock>)).not.toContain("<button");
+  });
+
+  it("with `copy` has a button beside the code, named by its visible text", () => {
+    const out = renderToStaticMarkup(<CodeBlock copy>x</CodeBlock>);
+    expect(out).toMatch(/<button [^>]*type="button"[^>]*>copy<\/button>/);
+    expect(out.indexOf("</pre>")).toBeLessThan(out.indexOf("<button"));
+  });
+
   it("forwards props to the root", () => {
     const out = renderToStaticMarkup(<CodeBlock data-testid="install">x</CodeBlock>);
     expect(out.startsWith("<figure")).toBe(true);

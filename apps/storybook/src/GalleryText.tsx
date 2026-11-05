@@ -74,7 +74,13 @@ export function GalleryText() {
         language="bash"
         lines={["bun add @hackcove/ui-react", "bun install"]}
       />
-      <CodeExample code={"<Button>Save</Button>"}>
+      <CodeBlock copy label="bash" language="bash">
+        bunx playwright test --project=chromium --reporter=list --output=out
+      </CodeBlock>
+      <CodeBlock copy overflow="scroll" label="bash" language="bash">
+        bunx playwright test --project=chromium --reporter=list --output=out
+      </CodeBlock>
+      <CodeExample copy code={"<Button>Save</Button>"}>
         <Button>Save</Button>
       </CodeExample>
       <Divider />

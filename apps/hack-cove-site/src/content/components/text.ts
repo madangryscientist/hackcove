@@ -73,7 +73,9 @@ export const text: ComponentSection = {
         "Use `CodeBlock` for several lines. Give the text as `children`, or as `lines` with one entry per line.",
         "`label` names the language or file (`bash`, `css`) in a caption above the code; `language` says what to colour, from `bash`, `css`, `tsx`, `ts` and `json`.",
         "A line a reader copies is a `CopyLine`, not a one-line `CodeBlock`. A rendered part shown with its code is a `CodeExample`.",
-        "Without a `language` the code is one colour (`text`), which suits an error or a log; a long line wraps rather than scrolling.",
+        "Without a `language` the code is one colour (`text`), which suits an error or a log.",
+        'A long line wraps, so a command is never cut off and still copies as one line. `overflow="scroll"` keeps lines whole and scrolls them sideways under a thin scrollbar in the theme\'s colour, for code whose layout matters.',
+        "`copy` adds a copy button beside the code. It needs client JS, so use it only where the page is hydrated.",
       ],
       accessibility: [
         "`Code` renders a `<code>`. `CodeBlock` renders a `<figure>` with the code in `<pre><code>`, so the line breaks are kept.",
@@ -92,7 +94,8 @@ export const text: ComponentSection = {
         "Put the rendered part in `children` and its source in `code`, a string with the newlines kept.",
         "`caption` is one note on the example, the last band of the frame.",
         "Side by side in a grid, each frame is its own height, so do not pad the previews to match.",
-        "A wide preview or a long line of code scrolls inside the frame; it does not widen the page.",
+        "A wide preview or a long line of code scrolls inside the frame under a thin themed scrollbar; it does not widen the page.",
+        "`copy` adds a button beside the code that copies the code, not the preview. It needs client JS, so use it only where the page is hydrated.",
         "Only for documentation. A command to copy is a `CopyLine`, and code alone is a `CodeBlock`.",
       ],
       accessibility: [

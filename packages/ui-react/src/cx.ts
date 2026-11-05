@@ -16,3 +16,12 @@ export const focusRing =
  */
 export const liftInteractive =
   "isolate [&_:is(a,button,label,select,textarea,input,summary):not(.link-stretch):not(.absolute)]:relative [&_:is(a,button,label,select,textarea,input,summary):not(.link-stretch)]:z-10";
+
+/**
+ * A thin scrollbar in the theme's muted ink instead of the heavy native one, for a box that
+ * scrolls sideways (code). `scrollbar-color` takes no Tailwind colour utility, so the thumb is the
+ * element's own text colour (`currentColor`, a palette utility every theme remaps) and the track is
+ * transparent. The element must not hold text of its own: put the readable colour on an inner box.
+ */
+export const themedScrollbar =
+  "text-slate-400 [scrollbar-width:thin] [scrollbar-color:currentColor_transparent]";

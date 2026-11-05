@@ -25,12 +25,31 @@ describe("CodeExample", () => {
   });
 
   it("scrolls long code sideways and does not wrap it", () => {
-    expect(out).toMatch(/<pre class="[^"]*overflow-x-auto[^"]*whitespace-pre /);
+    const scroller = out.slice(out.indexOf("<pre") - 200, out.indexOf("<pre"));
+    expect(scroller).toContain("overflow-x-auto");
+    expect(out).toMatch(/<pre class="[^"]*whitespace-pre"/);
     expect(out).not.toMatch(/whitespace-pre-wrap|break-words/);
   });
 
   it("scrolls a wide preview inside the frame", () => {
     expect(out).toMatch(/<div class="[^"]*overflow-x-auto/);
+  });
+
+  it("gives both scrollers the themed thin scrollbar, and the preview keeps a readable text colour", () => {
+    expect(out.match(/\[scrollbar-width:thin\]/g)).toHaveLength(2);
+    expect(out.match(/\[scrollbar-color:currentColor_transparent\]/g)).toHaveLength(2);
+    expect(out).toContain('<div class="text-slate-900">PREVIEW</div>');
+  });
+
+  it("has no copy button unless `copy` is set, and then one beside the code", () => {
+    expect(out).not.toContain("<button");
+    const withCopy = renderToStaticMarkup(
+      <CodeExample code="x" copy>
+        PREVIEW
+      </CodeExample>,
+    );
+    expect(withCopy.indexOf("</pre>")).toBeLessThan(withCopy.indexOf("<button"));
+    expect(withCopy).toContain(">copy</button>");
   });
 
   it("draws one divider between the preview and the code", () => {
