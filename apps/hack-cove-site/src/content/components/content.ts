@@ -1,3 +1,4 @@
+import { mediaPages } from "./media";
 import type { ComponentSection } from "./types";
 
 export const content: ComponentSection = {
@@ -252,6 +253,7 @@ export const content: ComponentSection = {
       ],
       api: ["Video"],
     },
+    ...mediaPages,
     {
       slug: "outline-region",
       name: "OutlineRegion",
