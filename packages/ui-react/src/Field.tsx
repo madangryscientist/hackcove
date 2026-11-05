@@ -27,6 +27,7 @@ export function Field({
   hint,
   error,
   span,
+  layout = "column",
   children,
   ...rest
 }: {
@@ -40,15 +41,31 @@ export function Field({
   error?: ReactNode;
   /** `full` spans every column of a `FormGrid`; unset takes one. It does nothing outside a `FormGrid`. */
   span?: "full" | undefined;
+  /**
+   * `row` puts the label beside the control, for a compact setting or a drawer row; the hint or
+   * error sits under the control. `column` puts the label above it.
+   * @default column
+   */
+  layout?: "column" | "row" | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {
+  const row = layout === "row";
+  const note = fieldNote(hint, error);
   return (
-    <div {...rest} className={cx("flex flex-col gap-1.5", span === "full" && "col-span-full")}>
+    <div
+      {...rest}
+      className={cx(
+        row
+          ? "grid grid-cols-[max-content_1fr] items-center gap-x-3 gap-y-1.5"
+          : "flex flex-col gap-1.5",
+        span === "full" && "col-span-full",
+      )}
+    >
       <label htmlFor={htmlFor} className="text-sm font-medium text-slate-700">
         {label}
       </label>
       {children}
-      {fieldNote(hint, error)}
+      {note && row ? <div className="col-start-2">{note}</div> : note}
     </div>
   );
 }

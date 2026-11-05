@@ -37,3 +37,15 @@ describe("EmptyState", () => {
     expect(out.match(/<div/g)).toBeNull();
   });
 });
+
+describe("EmptyState padding", () => {
+  it("pads above and below by default and on all sides with inset", () => {
+    const plain = renderToStaticMarkup(<EmptyState title="None" />);
+    expect(plain).toContain("py-8");
+    expect(plain).not.toContain("p-8");
+    const inset = renderToStaticMarkup(<EmptyState title="None" padding="inset" />);
+    expect(inset).toContain("p-8");
+    expect(inset).not.toContain("py-8");
+    expect(inset).not.toContain("padding=");
+  });
+});

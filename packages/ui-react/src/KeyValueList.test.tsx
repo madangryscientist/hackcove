@@ -55,3 +55,32 @@ describe("KeyValueList", () => {
     expect(out).toContain("text-right");
   });
 });
+
+describe("KeyValue total", () => {
+  it("draws a firm rule above a strong label and value", () => {
+    const out = renderToStaticMarkup(
+      <KeyValueList>
+        <KeyValue label="Rent">1</KeyValue>
+        <KeyValue label="Total" total>
+          2
+        </KeyValue>
+      </KeyValueList>,
+    );
+    expect(out.match(/border-slate-300/g)).toHaveLength(1);
+    expect(out).toContain("font-semibold");
+    expect(out).toContain('<dt class="text-slate-900">Total</dt>');
+    expect(out).toContain('<dt class="text-slate-600">Rent</dt>');
+  });
+
+  it("keeps the grid in an align=start list", () => {
+    const out = renderToStaticMarkup(
+      <KeyValueList align="start">
+        <KeyValue label="Total" total>
+          2
+        </KeyValue>
+      </KeyValueList>,
+    );
+    expect(out).toContain("col-span-2 grid grid-cols-subgrid border-t border-slate-300");
+    expect(out).not.toContain("text-right");
+  });
+});

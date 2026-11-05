@@ -66,6 +66,9 @@ export function GalleryData() {
           <ListRow divided trailing="R 1 850">
             Transport
           </ListRow>
+          <ListRow divided secondary="Debit order" trailing="R 640">
+            Insurance
+          </ListRow>
           <ListRow divided href="#bills" trailing="3">
             A link row
           </ListRow>
@@ -99,6 +102,9 @@ export function GalleryData() {
       <GalleryStaticRows />
       <Card dashed>No statements yet.</Card>
       <Card dashed="filled">No quotes yet.</Card>
+      <Callout tone="positive" title="Callout align" align="center">
+        Centred, as a success state.
+      </Callout>
       <GalleryCalloutActions />
       <GalleryTables />
       <Timeline label="Status history">

@@ -79,3 +79,19 @@ export const DontTone: S = {
     </CardGrid>
   ),
 };
+
+/** `warn` is amber: a figure that needs a look but is not yet a shortfall. */
+export const Warn: S = {
+  render: () => (
+    <div className="grid max-w-xl gap-4 sm:grid-cols-2">
+      <StatTile label="Pending transfers" value="R 3 200" hint="2 not yet cleared" tone="warn" />
+      <StatTile
+        label="Pending transfers"
+        value="R 3 200"
+        hint="2 not yet cleared"
+        tone="warn"
+        accent
+      />
+    </div>
+  ),
+};

@@ -55,3 +55,35 @@ describe("Field", () => {
     expect(fieldWith()).not.toContain("col-span");
   });
 });
+
+const row = (extra: { hint?: string; error?: string } = {}) =>
+  renderToStaticMarkup(
+    <Field label="Rank" htmlFor="rank" layout="row" {...extra}>
+      <input id="rank" />
+    </Field>,
+  );
+
+describe("Field layout", () => {
+  it("is a column by default", () => {
+    expect(fieldWith()).toContain("flex flex-col");
+    expect(fieldWith()).not.toContain("grid-cols");
+  });
+
+  it("puts the label beside the control with layout=row", () => {
+    const out = row();
+    expect(out).toContain("grid grid-cols-[max-content_1fr] items-center");
+    expect(out).not.toContain("flex-col");
+    expect(out).not.toContain("layout=");
+    expect(out.indexOf("<label")).toBeLessThan(out.indexOf("<input"));
+    expect(out).not.toContain("col-start-2");
+  });
+
+  it("keeps the hint or error under the control, in the second column", () => {
+    expect(row({ hint: "Lower first." })).toContain(
+      '<div class="col-start-2"><p class="text-xs text-slate-500">Lower first.</p></div>',
+    );
+    const err = row({ hint: "Lower first.", error: "Required." });
+    expect(err).toContain('role="alert"');
+    expect(err).not.toContain("Lower first.");
+  });
+});

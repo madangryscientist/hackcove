@@ -75,6 +75,14 @@ export function GalleryForm() {
         <Field label="Notes" htmlFor="gallery-notes" span="full">
           <Textarea id="gallery-notes" />
         </Field>
+        <Field
+          label="Field row"
+          htmlFor="gallery-row"
+          layout="row"
+          hint="Label beside the control."
+        >
+          <Input id="gallery-row" size="sm" defaultValue="3" />
+        </Field>
         <FormRow hint="Press Save to apply." action={<Button size="sm">Save</Button>}>
           <FormRowField label="Item" htmlFor="gallery-item" span={3}>
             <Input id="gallery-item" size="sm" defaultValue="Kitchen renovation" />

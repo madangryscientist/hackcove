@@ -273,3 +273,36 @@ describe("typography options: align, italic, breakWords, minWidth", () => {
     expect(renderToStaticMarkup(<Text>x</Text>)).not.toContain("min-w-24");
   });
 });
+
+describe("SectionHeading description", () => {
+  it("puts a muted paragraph under the heading, outside the h2", () => {
+    const out = renderToStaticMarkup(
+      <SectionHeading id="s1" description="What you owe each month.">
+        Plan
+      </SectionHeading>,
+    );
+    expect(out).toContain('<h2 id="s1" class="text-base/6 font-semibold text-slate-900">Plan</h2>');
+    expect(out).toContain("<p ");
+    expect(out).toContain(">What you owe each month.</p>");
+    expect(out).toContain("text-slate-500");
+    expect(out).not.toContain("description=");
+  });
+
+  it("moves the rule under the description", () => {
+    const out = renderToStaticMarkup(
+      <SectionHeading rule description="More">
+        Plan
+      </SectionHeading>,
+    );
+    expect(out.startsWith('<div class="flex flex-col gap-1 mb-4 border-b')).toBe(true);
+    expect(out.match(/border-b/g)).toHaveLength(1);
+  });
+
+  it("is the bare heading without a description", () => {
+    const out = renderToStaticMarkup(<SectionHeading>Plan</SectionHeading>);
+    expect(out.startsWith("<h2")).toBe(true);
+    expect(renderToStaticMarkup(<SectionHeading description={false}>Plan</SectionHeading>)).toBe(
+      out,
+    );
+  });
+});

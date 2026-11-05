@@ -68,3 +68,17 @@ export const DontError: S = {
     </Field>
   ),
 };
+
+/** `layout="row"` puts the label beside the control, for a compact setting or a drawer row. The hint or error sits under the control. */
+export const Row: S = {
+  render: () => (
+    <div className="flex max-w-md flex-col gap-3">
+      <Field label="Rank" htmlFor="row-rank" layout="row" hint="Lower numbers come first.">
+        <Input id="row-rank" defaultValue="3" />
+      </Field>
+      <Field label="Owner" htmlFor="row-owner" layout="row" error="Pick an owner.">
+        <Input id="row-owner" />
+      </Field>
+    </div>
+  ),
+};

@@ -276,3 +276,33 @@ describe("ListRow active", () => {
     expect(shown).not.toContain("opacity-0");
   });
 });
+
+describe("ListRow secondary", () => {
+  it("puts a muted line under the label, inside the label column", () => {
+    const out = renderToStaticMarkup(<ListRow secondary="Due 1 Dec">Rent</ListRow>);
+    expect(out).toContain(
+      '<div class="min-w-0 flex-1">Rent<div class="text-xs font-normal text-slate-500">Due 1 Dec</div></div>',
+    );
+    expect(out).not.toContain("secondary");
+  });
+
+  it("works on a link row and a static row, and draws a zero but not false", () => {
+    expect(
+      renderToStaticMarkup(
+        <ListRow href="/rent" secondary="Due">
+          Rent
+        </ListRow>,
+      ),
+    ).toContain(">Due</div>");
+    expect(
+      renderToStaticMarkup(
+        <ListRow static secondary={0}>
+          Rent
+        </ListRow>,
+      ),
+    ).toContain(">0</div>");
+    expect(renderToStaticMarkup(<ListRow secondary={false}>Rent</ListRow>)).not.toContain(
+      "text-xs",
+    );
+  });
+});

@@ -68,3 +68,17 @@ export const DontHero: S = {
     </Stack>
   ),
 };
+
+/** `description` is a muted line under the heading. It is a paragraph beside the `<h2>`, so the heading's name stays the title. `rule` then sits under the description. */
+export const SectionDescription: S = {
+  render: () => (
+    <Stack gap="lg">
+      <SectionHeading description="What is due each month, before anything extra.">
+        Monthly plan
+      </SectionHeading>
+      <SectionHeading rule description="Bills that repeat on a fixed day.">
+        Recurring
+      </SectionHeading>
+    </Stack>
+  ),
+};

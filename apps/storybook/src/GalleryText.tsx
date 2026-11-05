@@ -1,6 +1,7 @@
 import {
   BulletList,
   Button,
+  Card,
   Caption,
   Code,
   CodeBlock,
@@ -43,6 +44,35 @@ function GalleryTextOptions() {
   );
 }
 
+/** An EmptyState with `padding="inset"` in a flush Card. */
+function GalleryInsetEmpty() {
+  return (
+    <Card flush>
+      <EmptyState title="EmptyState inset" padding="inset">
+        <Text as="p">In a flush card.</Text>
+      </EmptyState>
+    </Card>
+  );
+}
+
+/** An EmptyState with a body, Steps and an action, then one with `padding="inset"` in a flush Card. */
+function GalleryEmpty() {
+  return (
+    <>
+      <EmptyState title="EmptyState" actions={<Button size="sm">Action</Button>}>
+        <Text as="p">A body line under the title.</Text>
+        <Steps>
+          <Step title="Steps, numbered by CSS">
+            With a detail line and <Code>Code</Code>.
+          </Step>
+          <Step title="A second step" />
+        </Steps>
+      </EmptyState>
+      <GalleryInsetEmpty />
+    </>
+  );
+}
+
 /** The text-level block of the Gallery: heading sizes, a ruled heading, preserved newlines, text tones with numeric, mono and truncate, a list, an EmptyState with Steps, inline code, a CodeBlock, a CodeExample, a divider, a video and an OutlineRegion in a RegionFrame. */
 export function GalleryText() {
   return (
@@ -55,7 +85,9 @@ export function GalleryText() {
         </div>
       </div>
       <div>
-        <SectionHeading rule>SectionHeading rule</SectionHeading>
+        <SectionHeading rule description="SectionHeading description under the title.">
+          SectionHeading rule
+        </SectionHeading>
         <BulletList>
           <Text as="li">BulletList item</Text>
           <Text as="li">
@@ -63,15 +95,7 @@ export function GalleryText() {
           </Text>
         </BulletList>
       </div>
-      <EmptyState title="EmptyState" actions={<Button size="sm">Action</Button>}>
-        <Text as="p">A body line under the title.</Text>
-        <Steps>
-          <Step title="Steps, numbered by CSS">
-            With a detail line and <Code>Code</Code>.
-          </Step>
-          <Step title="A second step" />
-        </Steps>
-      </EmptyState>
+      <GalleryEmpty />
       <Text as="p" preserveNewlines>
         {"Text with preserveNewlines:\nthe second line of a note."}
       </Text>
