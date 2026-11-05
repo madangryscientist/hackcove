@@ -35,11 +35,31 @@ export const SideBySide: S = {
   ),
 };
 
-/** A long line of code scrolls sideways inside the frame; it does not wrap or widen the page. */
+/** A long line of code scrolls sideways inside the frame, under a thin themed scrollbar; it does not wrap or widen the page. */
 export const LongCode: S = {
+  parameters: { layout: "padded" },
   render: () => (
     <div className="max-w-sm">
       <CodeExample
+        code={
+          '<Button variant="outline" tone="danger" size="sm" busyLabel="Deleting the build…">Delete build</Button>'
+        }
+      >
+        <Button variant="outline" tone="danger" size="sm">
+          Delete build
+        </Button>
+      </CodeExample>
+    </div>
+  ),
+};
+
+/** `copy` adds a button beside the code that copies the code, not the preview. It needs the page hydrated. */
+export const Copy: S = {
+  parameters: { layout: "padded" },
+  render: () => (
+    <div className="max-w-sm">
+      <CodeExample
+        copy
         code={
           '<Button variant="outline" tone="danger" size="sm" busyLabel="Deleting the build…">Delete build</Button>'
         }

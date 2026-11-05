@@ -63,7 +63,7 @@ describe("ErrorPage", () => {
   it("shows the error detail in a code block", () => {
     const out = renderToStaticMarkup(<ErrorPage detail="Request 4f2a failed" />);
     expect(out).toContain("<figure");
-    expect(out).toContain("Request 4f2a failed");
+    expect(out.replace(/<[^>]+>/g, "")).toContain("Request 4f2a failed");
   });
 
   it("shows no detail block without detail", () => {

@@ -32,12 +32,69 @@ export const Labelled: S = {
   ),
 };
 
-/** Long lines wrap; nothing scrolls sideways. */
+/** Long lines wrap by default; nothing is cut off and nothing scrolls sideways. A wrapped command is still one line when copied. */
 export const LongLine: S = {
+  parameters: { layout: "padded" },
   render: () => (
     <div className="max-w-sm">
       <CodeBlock label="bash" language="bash">
         bunx nx run-many -t typecheck lint test build --skip-nx-cache --output-style=stream
+      </CodeBlock>
+    </div>
+  ),
+};
+
+/** Wrapping breaks at spaces only, so a flag such as `--skip-nx-cache` stays whole. A single word wider than the box (a long URL) is the one thing that breaks inside itself, rather than clip or scroll the page. */
+export const LongToken: S = {
+  parameters: { layout: "padded" },
+  render: () => (
+    <div className="max-w-sm">
+      <CodeBlock label="bash" language="bash">
+        {
+          "curl --fail --location https://registry.example.com/packages/hackcove-ui-react/archive/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef.tgz"
+        }
+      </CodeBlock>
+    </div>
+  ),
+};
+
+/** `overflow="scroll"` keeps each line whole and scrolls it sideways under a thin scrollbar in the theme's muted ink, for code whose layout matters. */
+export const Scroll: S = {
+  parameters: { layout: "padded" },
+  render: () => (
+    <div className="max-w-sm">
+      <CodeBlock
+        label="bash"
+        language="bash"
+        overflow="scroll"
+        lines={[
+          "bunx nx run-many -t typecheck lint test build --skip-nx-cache --output-style=stream",
+          "bun install",
+        ]}
+      />
+    </div>
+  ),
+};
+
+/** `copy` adds a button beside the code that copies it exactly as given, wrapped or not. It needs the page hydrated. */
+export const Copy: S = {
+  parameters: { layout: "padded" },
+  render: () => (
+    <div className="max-w-sm">
+      <CodeBlock copy label="bash" language="bash">
+        bunx playwright test --project=chromium --reporter=list --output=out
+      </CodeBlock>
+    </div>
+  ),
+};
+
+/** `copy` with `overflow="scroll"`: the button stays put while the code scrolls. */
+export const CopyScroll: S = {
+  parameters: { layout: "padded" },
+  render: () => (
+    <div className="max-w-sm">
+      <CodeBlock copy overflow="scroll" label="bash" language="bash">
+        bunx playwright test --project=chromium --reporter=list --output=out
       </CodeBlock>
     </div>
   ),
@@ -54,7 +111,7 @@ export const DoSnippet: S = {
   ),
 };
 
-/** One line a reader copies is a `CopyLine`, which has the copy button. A `CodeBlock` of one line has none. */
+/** One short line a reader copies is a `CopyLine`, the smaller box. A one-line `CodeBlock` is for a command that needs a `label` or colour. */
 export const DontSnippet: S = {
   render: () => <CodeBlock language="bash">bun add @hackcove/ui-react</CodeBlock>,
 };
