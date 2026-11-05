@@ -76,6 +76,7 @@ export {
   TableHeaderCell,
   TableRow,
 } from "./Table.js";
+export { TableEditCell } from "./TableEditCell.js";
 export { EmptyState } from "./EmptyState.js";
 export { Step, Steps } from "./Steps.js";
 export { Timeline, TimelineItem } from "./Timeline.js";

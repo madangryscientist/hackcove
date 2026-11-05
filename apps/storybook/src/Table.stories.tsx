@@ -155,7 +155,7 @@ export const RowTones: S = {
   ),
 };
 
-/** `TableFoot` is the `<tfoot>` for totals and subtotals: strong cells and a firmer line above each row, in a card and in a `plain` table alike. */
+/** `TableFoot` is the `<tfoot>` for totals: strong cells and a firmer line above each row, in a card and in a `plain` table alike. */
 export const Totals: S = {
   render: () => (
     <div className="flex flex-col gap-6">
