@@ -70,6 +70,7 @@ export const data: ComponentSection = {
         'Never put a button or a link inside a button or link row. `size="sm"` is the dense padding for a list that must fit more rows, `size="lg"` the roomy one for a short list of big targets; `md` is the default.',
         "`active` marks the row the pointer or the keyboard is on in a list that follows both, such as a preview beside the list: drive it from the row's `onPointerEnter`, `onPointerLeave` and `onFocus`. It fills the row one step deeper than hover, so it shows on a white card and on a tinted panel (a `FullBleedLayout` panel) alike, and shows the `revealOnHover` actions.",
         'A compact bordered list for read-only data, such as the lines of a split, is a `Card flush` around `static` rows at `size="sm"`, `divided` after the first, with the amount in `trailing`. There is no separate part: a static row has no hover fill and no click target.',
+        "A row that opens in place, such as a chat that shows its conversation under it, is `static` with `detail`: the content sits under the row's line, starting where the label does (past `leading`), and the row's `divided` line, fill and `revealOnHover` cover it. Do not add your own indent or a wrapper around the row. A button or link row takes no `detail`.",
         "Records with several columns to compare are a `Table`, not rows.",
       ],
       accessibility: [

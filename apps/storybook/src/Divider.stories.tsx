@@ -1,5 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Caption, Card, Divider, MetaList, Stack, Text, TextLink } from "@hackcove/ui-react";
+import {
+  Caption,
+  Card,
+  Divider,
+  MetaList,
+  Section,
+  Stack,
+  Text,
+  TextLink,
+} from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Layout/Divider" };
 export default meta;
@@ -42,6 +51,21 @@ export const DoFooter: S = {
       <Text as="p">The last paragraph of a page.</Text>
       <Divider />
       <Caption as="p">Hack Cove (Pty) Ltd</Caption>
+    </Stack>
+  ),
+};
+
+/** A line between two `Section`s of one page is a `Divider` in the `Stack` that holds them: the Stack's gap is the space on both sides. */
+export const BetweenSections: S = {
+  render: () => (
+    <Stack>
+      <Section title="Fixed expenses">
+        <Text as="p">Rent, insurance and transport, every month.</Text>
+      </Section>
+      <Divider />
+      <Section title="One-off costs">
+        <Text as="p">Costs that fall in a single month.</Text>
+      </Section>
     </Stack>
   ),
 };

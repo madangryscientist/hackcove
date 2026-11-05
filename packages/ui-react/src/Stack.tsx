@@ -133,11 +133,14 @@ type StackProps = StackBase &
 
 /**
  * A `<section>` Stack with an optional `SectionHeading` title (which names it) and `actions` beside
- * it. Its blocks are `gap` apart, `md` by default as in a `Stack`.
+ * it. Its blocks are `gap` apart, `md` by default as in a `Stack`. `rule` draws a hairline under the
+ * title row, `actions` included, as `SectionHeading`'s `rule` does for a bare heading. A line
+ * between two sections is a `Divider` in the `Stack` that holds them.
  */
 export function Section({
   title,
   actions,
+  rule = false,
   gap = "md",
   width = "default",
   children,
@@ -147,6 +150,12 @@ export function Section({
   title?: ReactNode;
   /** Buttons or links at the end of the title row. */
   actions?: ReactNode;
+  /**
+   * A hairline under the title row across the section's width, `actions` included. Needs a `title`
+   * or `actions`.
+   * @default false
+   */
+  rule?: boolean | undefined;
   /**
    * The space between blocks: `xs` gap-2, `sm` gap-4, `md` gap-6, `lg` gap-8, `xl` gap-12 (gap-16 from `sm`).
    * @default md
@@ -169,7 +178,12 @@ export function Section({
       aria-labelledby={title ? titleId : rest["aria-labelledby"]}
     >
       {(title || actions) && (
-        <div className="flex items-center justify-between gap-4">
+        <div
+          className={cx(
+            "flex items-center justify-between gap-4",
+            rule && "border-b border-slate-200/70 pb-2",
+          )}
+        >
           {title && <SectionHeading id={titleId}>{title}</SectionHeading>}
           {actions && <div className="ml-auto flex items-center gap-2">{actions}</div>}
         </div>

@@ -48,6 +48,23 @@ export const Several: S = {
   ),
 };
 
+/** `bordered` draws a panel: the summary a roomy row (it fills on hover), the body padded under a hairline. For a section that opens in place on a page of cards. */
+export const Bordered: S = {
+  render: () => (
+    <Stack gap="sm">
+      <Disclosure bordered summary="Customise by month" defaultOpen>
+        <Stack gap="sm">
+          <Text>Override the debt and reno split for individual months.</Text>
+          <Callout tone="info">The default applies everywhere else.</Callout>
+        </Stack>
+      </Disclosure>
+      <Disclosure bordered summary="2027">
+        <Text>Twelve months.</Text>
+      </Disclosure>
+    </Stack>
+  ),
+};
+
 /** Detail the person may not need, behind a summary that says what it is, is a `Disclosure`. */
 export const DoSecondary: S = {
   render: () => (

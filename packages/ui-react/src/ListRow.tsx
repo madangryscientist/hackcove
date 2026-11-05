@@ -25,6 +25,16 @@ const OVERLAY = `link-stretch absolute inset-0 ${INSET_RING}`;
 
 const STATIC = "group/row flex w-full items-center gap-3 text-sm text-slate-900";
 
+/**
+ * A static row with `detail`: the row's own line (the label, `trailing`, `actions`) over the detail,
+ * `leading` in a column of its own beside both, so the detail starts where the label does.
+ */
+const STATIC_DETAIL = "group/row grid w-full items-center gap-3 text-sm text-slate-900";
+const DETAIL_COLUMNS = {
+  withLeading: "grid-cols-[auto_minmax(0,1fr)]",
+  alone: "grid-cols-[minmax(0,1fr)]",
+};
+
 const FILL = "hover:bg-slate-50";
 const SELECTED = "bg-violet-50 hover:bg-violet-50";
 /**
@@ -89,6 +99,7 @@ type NotStatic = {
   static?: undefined;
   actions?: undefined;
   revealOnHover?: undefined;
+  detail?: undefined;
 };
 
 type ListRowButtonProps = Shared &
@@ -141,6 +152,13 @@ type ListRowStaticProps = Shared & {
    * wall of buttons. A touch screen has no hover, so they are always shown there.
    */
   revealOnHover?: boolean | undefined;
+  /**
+   * Content under the row, lined up with the label rather than the row's edge (past `leading`): the
+   * panel of a row that opens in place, such as a conversation under its chat. It sits inside the
+   * row, so `divided`, the fill and `revealOnHover` cover it too. Only a `static` row takes it: a
+   * button or a link row cannot hold controls.
+   */
+  detail?: ReactNode | undefined;
   expanded?: undefined;
   href?: undefined;
   render?: undefined;
@@ -157,8 +175,13 @@ function fillOf(props: ListRowProps): string | undefined {
   return props.static && !props.revealOnHover ? undefined : FILL;
 }
 
+/** `detail={open && <Panel />}` is a common way to write it, so `false` is as empty as `null`. */
+function hasDetail(detail: ReactNode): boolean {
+  return detail != null && detail !== false;
+}
+
 function rowBase(props: ListRowProps): string {
-  if (props.static) return STATIC;
+  if (props.static) return hasDetail(props.detail) ? STATIC_DETAIL : STATIC;
   return props.href !== undefined || props.render !== undefined ? LINK_ROW : ROW;
 }
 
@@ -187,6 +210,7 @@ function StaticRow(props: ListRowStaticProps & Pieces): ReactElement {
     static: _st,
     actions,
     revealOnHover = false,
+    detail,
     expanded: _e,
     href: _h,
     render: _r,
@@ -195,23 +219,52 @@ function StaticRow(props: ListRowStaticProps & Pieces): ReactElement {
     end,
     ...rest
   } = props;
+  const buttons = actions != null && (
+    <span className={cx("flex shrink-0 items-center gap-2", revealOnHover && !active && REVEAL)}>
+      {actions}
+    </span>
+  );
+  const withDetail = hasDetail(detail);
   return (
     <div
       {...rest}
       {...(selected ? { "aria-current": "true" as const } : {})}
-      className={look(props)}
+      className={cx(look(props), withDetail && DETAIL_COLUMNS[start ? "withLeading" : "alone"])}
     >
-      {start}
-      {label}
-      {end}
-      {actions != null && (
-        <span
-          className={cx("flex shrink-0 items-center gap-2", revealOnHover && !active && REVEAL)}
-        >
-          {actions}
-        </span>
+      {withDetail ? (
+        <DetailLines start={start} detail={detail}>
+          {label}
+          {end}
+          {buttons}
+        </DetailLines>
+      ) : (
+        <>
+          {start}
+          {label}
+          {end}
+          {buttons}
+        </>
       )}
     </div>
+  );
+}
+
+/** The cells of a static row with `detail`: `start` beside the row's line (its children), over the detail in the label's column. */
+function DetailLines({
+  start,
+  detail,
+  children,
+}: {
+  start: ReactNode;
+  detail: ReactNode;
+  children: ReactNode;
+}): ReactElement {
+  return (
+    <>
+      {start}
+      <div className="flex min-w-0 items-center gap-3">{children}</div>
+      <div className={cx("min-w-0", Boolean(start) && "col-start-2")}>{detail}</div>
+    </>
   );
 }
 
@@ -230,6 +283,7 @@ function LinkRow(props: ListRowLinkProps & Pieces): ReactElement {
     static: _st,
     actions: _a,
     revealOnHover: _rh,
+    detail: _dt,
     start,
     label,
     end,
@@ -274,6 +328,7 @@ function ButtonRow(props: ListRowButtonProps & Pieces): ReactElement {
     static: _st,
     actions: _a,
     revealOnHover: _rh,
+    detail: _dt,
     href: _h,
     render: _r,
     start,
@@ -312,6 +367,9 @@ function ButtonRow(props: ListRowButtonProps & Pieces): ReactElement {
  * `<div>`, so it can hold block content (a name over a path). `static` makes the
  * row a plain `<div>` for one that holds its own buttons (a button cannot sit inside a button or a
  * link): `actions` follow `trailing`, and `revealOnHover` shows them only on hover or focus.
+ * A `static` row also takes `detail`, content under the row that starts where the label does (a
+ * conversation that opens under its chat); `divided` draws the line above the whole row, detail
+ * included, so a list of them is `divided={index > 0}` on each.
  */
 export function ListRow(props: ListRowProps): ReactElement {
   const { leading, leadingWidth, trailing, secondary, children } = props;

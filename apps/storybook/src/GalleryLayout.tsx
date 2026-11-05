@@ -98,6 +98,9 @@ export function GalleryLayout() {
           <Section title="Another">
             <Text>Each Section stacks its children at gap md.</Text>
           </Section>
+          <Section rule title="With a rule" actions={<Button variant="outline">Action</Button>}>
+            <Text>A hairline under the title row.</Text>
+          </Section>
           <Stack gap="xs">
             <SubsectionHeading>Text block</SubsectionHeading>
             <Text as="p">A Stack at gap xs, in a narrow (max-w-3xl) column.</Text>

@@ -34,6 +34,17 @@ export const DontGap: S = {
   ),
 };
 
+/** `rule` draws a hairline under the title row, across its full width with the actions, for a section that must read as set apart from what follows. */
+export const SectionRule: S = {
+  render: () => (
+    <Section rule title="Recent builds" actions={<Button variant="outline">All builds</Button>}>
+      <Card title="Build 412">
+        <Text>3 changed</Text>
+      </Card>
+    </Section>
+  ),
+};
+
 /** A titled group is a `Section`: the title, the actions beside it and the blocks under it, as one named region. */
 export const DoSectionTitle: S = {
   render: () => (

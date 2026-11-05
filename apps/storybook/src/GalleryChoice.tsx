@@ -1,6 +1,6 @@
 import { Disclosure, Radio, RadioGroup, Text } from "@hackcove/ui-react";
 
-/** The RadioGroup (a description, an error) and the Disclosure (closed, open) of the Gallery. */
+/** The RadioGroup (a description, an error) and the Disclosure (closed, open, `bordered`) of the Gallery. */
 export function GalleryChoice() {
   return (
     <div className="flex max-w-sm flex-col gap-4">
@@ -21,6 +21,12 @@ export function GalleryChoice() {
           <Text>Posted Monday · Sorted Tuesday.</Text>
         </Disclosure>
       </div>
+      <Disclosure bordered summary="Customise by month" defaultOpen>
+        <Text>Override the split for individual months.</Text>
+      </Disclosure>
+      <Disclosure bordered summary="2027">
+        <Text>Twelve months.</Text>
+      </Disclosure>
     </div>
   );
 }
