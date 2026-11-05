@@ -113,6 +113,7 @@ const CASES: Record<string, () => ReactElement> = {
     </ui.IconButton>
   ),
   Input: () => <ui.Input {...A} />,
+  Image: () => <ui.Image src="/x.jpg" alt="X" {...A} />,
   Kbd: () => <ui.Kbd {...A}>k</ui.Kbd>,
   KeyValue: () => (
     <ui.KeyValueList>
@@ -131,6 +132,7 @@ const CASES: Record<string, () => ReactElement> = {
   ListRow: () => <ui.ListRow {...A}>x</ui.ListRow>,
   Maintenance: () => <ui.Maintenance {...A} />,
   Markdown: () => <ui.Markdown md="x" {...A} />,
+  MediaTile: () => <ui.MediaTile src="/x.jpg" alt="X" onClick={noop} {...A} />,
   MetaList: () => <ui.MetaList {...A}>{ITEMS}</ui.MetaList>,
   NotFound: () => <ui.NotFound {...A} />,
   Offline: () => <ui.Offline {...A} />,
@@ -164,6 +166,11 @@ const CASES: Record<string, () => ReactElement> = {
     </ui.ProseLayout>
   ),
   SectionHeading: () => <ui.SectionHeading {...A}>x</ui.SectionHeading>,
+  ScrollStrip: () => (
+    <ui.ScrollStrip label="Strip" {...A}>
+      x
+    </ui.ScrollStrip>
+  ),
   Section: () => <ui.Section {...A}>x</ui.Section>,
   SegmentedControl: () => (
     <ui.SegmentedControl

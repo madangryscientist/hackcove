@@ -123,6 +123,9 @@ export { KeyValue, KeyValueList } from "./KeyValueList.js";
 export { Select } from "./Select.js";
 export { Textarea } from "./Textarea.js";
 export { Video } from "./Video.js";
+export { Image, type ImageAspect, type ImageProps, type ImageWidth } from "./Image.js";
+export { MediaTile, type MediaTileProps } from "./MediaTile.js";
+export { ScrollStrip, type ScrollStripProps } from "./ScrollStrip.js";
 export { TextLink, type TextLinkSize } from "./TextLink.js";
 export {
   Caption,

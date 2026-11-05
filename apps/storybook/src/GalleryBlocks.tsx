@@ -11,9 +11,12 @@ import {
   Lightbox,
   FieldDialog,
   FilterGroup,
+  Image,
   KeyValue,
   KeyValueList,
   Lead,
+  MediaTile,
+  ScrollStrip,
   Tabs,
   PageFade,
   PageHeader,
@@ -208,6 +211,32 @@ export function GalleryAvatars() {
         <Avatar name="Ada Lovelace" size="2xl" />
         <Avatar name="Ada Lovelace" src={samplePhoto} size="2xl" />
       </div>
+    </div>
+  );
+}
+
+/** The media set: an Image in three shapes, a MediaTile with a label and caption, a video tile and a placeholder tile in a ScrollStrip, then an Avatar strip. */
+export function GalleryMedia() {
+  const first = sampleScenes[0]?.src;
+  const second = sampleScenes[1]?.src;
+  return (
+    <div className="flex max-w-xl flex-col gap-4">
+      <div className="flex items-start gap-4">
+        <Image src={first} alt="Harbour at dusk" aspect="3:2" width="md" />
+        <Image src={first} alt="Harbour at dusk, whole" aspect="square" width="md" fit="contain" />
+        <Image alt="No preview yet" aspect="square" width="sm" />
+      </div>
+      <ScrollStrip label="Recent statuses">
+        <MediaTile src={first} alt="Harbour at dusk" label="Anna" caption="09:12" />
+        <MediaTile src={second} alt="Video from Ben" label="Ben" caption="0:14" video />
+        <MediaTile alt="Earlier statuses" label="Earlier" onClick={() => undefined} />
+        <MediaTile src={first} alt="Harbour at dusk" label="Cleo" caption="08:40" />
+      </ScrollStrip>
+      <ScrollStrip label="People" gap="xs">
+        {["ada", "grace", "linus", "margaret", "dennis", "ken", "barbara", "alan"].map((name) => (
+          <Avatar key={name} name={name} size="lg" />
+        ))}
+      </ScrollStrip>
     </div>
   );
 }

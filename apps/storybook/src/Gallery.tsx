@@ -38,6 +38,7 @@ import {
 
 import {
   GalleryAvatars,
+  GalleryMedia,
   GalleryChips,
   GalleryCopy,
   GalleryDialogs,
@@ -114,6 +115,8 @@ export const gallerySections: GallerySection[] = [
         <GalleryButtons />
 
         <GalleryAvatars />
+
+        <GalleryMedia />
 
         <GalleryCopy />
       </>
