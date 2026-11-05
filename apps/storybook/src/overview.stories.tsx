@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Overline } from "@hackcove/ui-react";
-import { ThemeFrame, themeNames } from "../.storybook/themes";
+import { AllThemesGrid } from "./AllThemesGrid";
 import { Gallery as GalleryView } from "./Gallery";
 import { resetColourScheme } from "./resetColourScheme";
 
@@ -23,13 +22,8 @@ export const AllThemes: S = {
   beforeEach: resetColourScheme,
   parameters: { allThemes: true },
   render: () => (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(26rem,1fr))]">
-      {themeNames.map((name) => (
-        <ThemeFrame key={name} theme={name}>
-          <Overline>{name}</Overline>
-          <GalleryView />
-        </ThemeFrame>
-      ))}
-    </div>
+    <AllThemesGrid>
+      <GalleryView />
+    </AllThemesGrid>
   ),
 };

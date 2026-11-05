@@ -6,6 +6,7 @@
  */
 import { join } from "node:path";
 import { themeFiles } from "@hackcove/themes-shared/files";
+import { visualSkipped } from "./scripts/visual-shots.js";
 
 // Same list as the toolbar: one id per CSS file under themes/*/.
 const themes = themeFiles(join(import.meta.dirname, "..", "..", "themes")).map((theme) => theme.id);
@@ -38,7 +39,14 @@ export default {
     command: `STATIC_DIR='${staticDir}' PORT=${port} bun '${join(import.meta.dirname, "e2e", "serve.ts")}'`,
     readyUrl: `${url}/iframe.html`,
   },
-  storybook: { url, globals: { theme: selected }, ...(include === undefined ? {} : { include }) },
+  // The one-page Overviews are for people and too tall for one shot (HC-216, PS-323); their
+  // sections (Overview / Gallery sections, Overview / All themes sections) are shot instead.
+  storybook: {
+    url,
+    globals: { theme: selected },
+    exclude: visualSkipped,
+    ...(include === undefined ? {} : { include }),
+  },
   variants: [{ name: "desktop", viewport: { width: 1280, height: 720 } }],
   // PS-230: pixelslash cannot pause or seek media, so the <video>'s loading spinner is captured at a
   // random rotation and every shot with a video flakes (ui-video-*, overview-gallery,

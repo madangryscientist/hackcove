@@ -1,37 +1,18 @@
-import { useId, useState } from "react";
+import { Fragment, type ReactNode } from "react";
 import {
-  Avatar,
-  AvatarStack,
   Breadcrumbs,
-  Button,
   Callout,
   Caption,
   Card,
   Checkbox,
-  CopyButton,
-  CopyLine,
   DateField,
-  Dialog,
-  Display,
-  Drawer,
-  Lightbox,
   EpicHeader,
-  FieldDialog,
-  FilterGroup,
   fromISODate,
-  KeyValue,
-  KeyValueList,
-  Lead,
   Markdown,
-  Tabs,
   Overline,
-  PageFade,
   PageHeading,
-  PageHeader,
   SectionHeading,
-  SegmentedControl,
   Select,
-  startPageTransition,
   SubsectionHeading,
   Text,
 } from "@hackcove/ui-react";
@@ -48,296 +29,215 @@ import { GallerySwitchers } from "./GallerySwitchers";
 import { GalleryText } from "./GalleryText";
 import { GalleryLinkedRows } from "./GalleryLinkedRows";
 import { GalleryLinks } from "./GalleryLinks";
-import { GalleryPages } from "./GalleryPages";
-import { samplePhoto } from "./samplePhoto";
-import { sampleScenes } from "./sampleScene";
+import {
+  GalleryBleedPages,
+  GalleryGridPages,
+  GalleryPages,
+  GalleryStatusPages,
+} from "./GalleryPages";
 
-/** The page header block of the Gallery: a Display title, a PageHeader and a pill Tabs row of links. */
-function GalleryHeader() {
-  return (
-    <>
-      <div className="flex flex-col gap-2">
-        <Display>Hack Cove</Display>
-        <Lead>The supporting sentence that sits under a Display heading.</Lead>
-      </div>
+import {
+  GalleryAvatars,
+  GalleryChips,
+  GalleryCopy,
+  GalleryDialogs,
+  GalleryHeader,
+  GalleryPageFade,
+} from "./GalleryBlocks";
 
-      <PageHeader title="Status" subtitle="what's happening now" />
+/**
+ * One slice of the Gallery: a few blocks that sit together on the page. Overview / Gallery and
+ * Overview / All themes draw them all in one page for people; the visual check shoots each slice on
+ * its own (Overview / Gallery sections), because PixelSlash ends a build on a shot over 24.5 Mpx
+ * (19140px tall at 1280 wide) and the whole page passed that. A new block goes into the slice it
+ * belongs with; when a slice grows tall (the visual run names any shot near the limit), split it.
+ */
+export type GallerySection = { id: string; title: string; render: () => ReactNode };
 
-      <Tabs
-        variant="pill"
-        label="Main"
-        items={[
-          { label: "Map", href: "/" },
-          { label: "Directory", href: "/stores", active: true },
-          { label: "Events", href: "/events" },
-          { label: "About", href: "/about" },
-          { label: "Traces", href: "https://example.com/traces", external: true },
-        ]}
-      />
-    </>
-  );
-}
+export const gallerySections: GallerySection[] = [
+  {
+    id: "headings",
+    title: "Headings",
+    render: () => (
+      <>
+        <GalleryHeader />
 
-/** The filter chips block of the Gallery: four pressable outline Buttons, one pressed, in a FilterGroup. */
-function GalleryChips() {
-  return (
-    <FilterGroup legend="Type of shop">
-      <Button variant="outline" size="sm" pressed={false}>
-        Charity
-      </Button>
-      <Button variant="outline" size="sm" pressed>
-        Vintage
-      </Button>
-      <Button variant="outline" size="sm" pressed={false}>
-        Books
-      </Button>
-      <Button variant="outline" size="sm" pressed={false}>
-        Furniture
-      </Button>
-    </FilterGroup>
-  );
-}
+        <div className="flex flex-col gap-2">
+          <PageHeading>PageHeading</PageHeading>
+          <SectionHeading>SectionHeading</SectionHeading>
+          <SubsectionHeading>SubsectionHeading</SubsectionHeading>
+          <Overline>Overline</Overline>
+        </div>
 
-/** The PageFade block of the Gallery: a content area that cross-fades when the page below it changes. */
-function GalleryPageFade() {
-  const [page, setPage] = useState("overview");
-  // Overview / All themes draws the Gallery once per theme in one document: each needs its own name.
-  const name = `hc-page-gallery${useId().replace(/\W/g, "")}`;
-  return (
-    <div className="flex max-w-sm flex-col gap-3">
-      <SegmentedControl
-        label="Page"
-        items={[
-          { value: "overview", label: "Overview" },
-          { value: "activity", label: "Activity" },
-        ]}
-        value={page}
-        onChange={(next) => startPageTransition(() => setPage(next))}
-      />
-      <PageFade name={name}>
-        <Text>The {page} page.</Text>
-      </PageFade>
-    </div>
-  );
-}
+        <div className="flex flex-col gap-2">
+          <Text as="p">
+            Text with a <Text strong>strong run</Text> inside it.
+          </Text>
+          <Caption as="p">Caption — fine print and metadata.</Caption>
+        </div>
+      </>
+    ),
+  },
+  { id: "text", title: "Text", render: () => <GalleryText /> },
+  {
+    id: "pills-and-bars",
+    title: "Pills and bars",
+    render: () => (
+      <>
+        <GalleryPills />
 
-/** The two dialogs, the Drawer and the Lightbox, shut: each button opens one over the page (open, they make the page inert). */
-function GalleryDialogs() {
-  const [open, setOpen] = useState<"dialog" | "full" | "field" | "drawer" | "lightbox" | null>(
-    null,
-  );
-  const close = () => setOpen(null);
-  return (
-    <div className="flex flex-wrap gap-2">
-      <Button variant="outline" onClick={() => setOpen("dialog")}>
-        Open Dialog
-      </Button>
-      <Button variant="outline" onClick={() => setOpen("full")}>
-        Open full-screen Dialog
-      </Button>
-      <Button variant="outline" onClick={() => setOpen("field")}>
-        Open FieldDialog
-      </Button>
-      <Button variant="outline" onClick={() => setOpen("drawer")}>
-        Open Drawer
-      </Button>
-      <Button variant="outline" onClick={() => setOpen("lightbox")}>
-        Open Lightbox
-      </Button>
-      {open === "dialog" && (
-        <Dialog
-          title="Delete build"
-          description="This removes the build and every snapshot in it."
-          onClose={close}
-          footer={<Button onClick={close}>Delete</Button>}
-        >
-          <Text>There is no undo.</Text>
-        </Dialog>
-      )}
-      {open === "full" && (
-        <Dialog
-          title="Harbour at dusk"
-          size="full"
-          onClose={close}
-          footer={<Button onClick={close}>Close</Button>}
-        >
-          <Text>Fills the screen.</Text>
-        </Dialog>
-      )}
-      {open === "drawer" && (
-        <Drawer title="HC-65 · Tabs" onClose={close} footer={<Button onClick={close}>Save</Button>}>
-          <KeyValueList>
-            <KeyValue label="Status">In progress</KeyValue>
-            <KeyValue label="Owner">Jacobus</KeyValue>
-          </KeyValueList>
-        </Drawer>
-      )}
-      {open === "lightbox" && sampleScenes[0] && (
-        <Lightbox
-          label="Photo from Anna"
-          title="Anna"
-          caption={sampleScenes[0].caption}
-          onClose={close}
-        >
-          <img src={sampleScenes[0].src} alt={sampleScenes[0].alt} />
-        </Lightbox>
-      )}
-      {open === "field" && (
-        <FieldDialog
-          title="New project"
-          label="Name"
-          inputLabel="Project name"
-          placeholder="my-project"
-          hint="Letters, numbers and dashes."
-          emptyReason="Type a name first."
-          submit="Create"
-          busyLabel="Creating…"
-          onSubmit={() => Promise.resolve()}
-          onClose={close}
+        <GalleryBars />
+      </>
+    ),
+  },
+  {
+    id: "data",
+    title: "Data",
+    render: () => (
+      <>
+        <Card title="Section" count={3}>
+          <div className="flex flex-col gap-4">
+            <EpicHeader color="#cba6f7" label="HC-42 · Voice Inbox" />
+            <Markdown md={"## What I did\n- **HC-42** shipped\n- plain item"} />
+          </div>
+        </Card>
+
+        <GalleryData />
+      </>
+    ),
+  },
+  {
+    id: "buttons",
+    title: "Buttons and avatars",
+    render: () => (
+      <>
+        <GalleryButtons />
+
+        <GalleryAvatars />
+
+        <GalleryCopy />
+      </>
+    ),
+  },
+  {
+    id: "fields",
+    title: "Fields",
+    render: () => (
+      <>
+        <div className="flex max-w-sm flex-col gap-3">
+          <GalleryNameField />
+          <GalleryNotes />
+          <Select defaultValue={5}>
+            <option value={5}>★★★★★ (5)</option>
+            <option value={4}>★★★★ (4)</option>
+            <option value={3}>★★★ (3)</option>
+            <option value={2}>★★ (2)</option>
+            <option value={1}>★ (1)</option>
+          </Select>
+          <Checkbox label="Open now" defaultChecked />
+          <DateField calendar label="Date of birth" defaultValue={fromISODate("1990-05-17")} />
+          <DateField label="Visited on" description="DD/MM/YYYY" />
+        </div>
+
+        <GalleryForm />
+      </>
+    ),
+  },
+  {
+    id: "choices",
+    title: "Controls and choices",
+    render: () => (
+      <>
+        <GalleryControls />
+
+        <GalleryChoice />
+      </>
+    ),
+  },
+  {
+    id: "navigation",
+    title: "Navigation and notices",
+    render: () => (
+      <>
+        <Breadcrumbs
+          crumbs={[
+            { label: "Org", href: "#org" },
+            { label: "Project", href: "#project" },
+            "Build",
+            "Snapshot",
+          ]}
         />
-      )}
-    </div>
-  );
-}
 
-/** The copy pair: a CopyLine (with its own CopyButton) and a bare CopyButton. */
-function GalleryCopy() {
-  return (
-    <div className="flex max-w-sm flex-col gap-3">
-      <CopyLine text="bun add @hackcove/ui-react" />
-      <CopyLine text="bun add @hackcove/ui-react" disabled />
-      <div className="self-start">
-        <CopyButton text="bun add @hackcove/ui-react" />
-      </div>
-    </div>
-  );
-}
+        <Callout tone="warn" title="Draft.">
+          This page has not yet been reviewed by a lawyer.
+        </Callout>
 
-/** The Avatar set: the seven identity colours at md, an AvatarStack with a "+N", a square Avatar, then initials from xs to 2xl and a photo. */
-function GalleryAvatars() {
-  const names = ["ada", "grace", "linus", "margaret", "dennis", "ken", "barbara"];
-  return (
-    <div className="flex flex-wrap items-center gap-6">
-      <div className="flex gap-2">
-        {names.map((name) => (
-          <Avatar key={name} name={name} />
-        ))}
-      </div>
-      <AvatarStack
-        people={["ada", "grace", "linus", "margaret", "dennis"].map((name) => ({ name }))}
-        max={3}
-        size="lg"
-      />
-      <Avatar name="Hack Cove" size="lg" shape="square" />
-      <div className="flex items-center gap-3">
-        <Avatar name="Ada Lovelace" size="xs" />
-        <Avatar name="Ada Lovelace" size="xl" />
-        <Avatar name="Ada Lovelace" src={samplePhoto} size="xl" />
-        <Avatar name="Ada Lovelace" size="2xl" />
-        <Avatar name="Ada Lovelace" src={samplePhoto} size="2xl" />
-      </div>
-    </div>
-  );
-}
+        <GalleryLinks />
+
+        <GalleryLinkedRows />
+
+        <GalleryChips />
+
+        <GallerySwitchers />
+      </>
+    ),
+  },
+  {
+    id: "details",
+    title: "Details and overlays",
+    render: () => (
+      <>
+        <GalleryKeyValues />
+
+        <GalleryPageFade />
+
+        <GalleryDialogs />
+      </>
+    ),
+  },
+  {
+    id: "layout",
+    title: "Layout",
+    render: () => (
+      <>
+        <GalleryLayout />
+
+        <GalleryContainer />
+      </>
+    ),
+  },
+  { id: "page-layouts", title: "Page layouts", render: () => <GalleryPages /> },
+  { id: "page-grids", title: "Grids and sidebars", render: () => <GalleryGridPages /> },
+  { id: "page-bleed", title: "Full-bleed pages", render: () => <GalleryBleedPages /> },
+  {
+    id: "status-pages",
+    title: "Status pages",
+    render: () => (
+      <>
+        <GalleryStatusPages />
+
+        <Text as="p" color="muted">
+          nothing here yet
+        </Text>
+      </>
+    ),
+  },
+];
 
 /** Every component in @hackcove/ui-react, once each. Colour comes from the components and the theme only. */
 export function Gallery() {
   return (
     <div className="flex max-w-3xl flex-col gap-6">
-      <GalleryHeader />
-
-      <div className="flex flex-col gap-2">
-        <PageHeading>PageHeading</PageHeading>
-        <SectionHeading>SectionHeading</SectionHeading>
-        <SubsectionHeading>SubsectionHeading</SubsectionHeading>
-        <Overline>Overline</Overline>
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <Text as="p">
-          Text with a <Text strong>strong run</Text> inside it.
-        </Text>
-        <Caption as="p">Caption — fine print and metadata.</Caption>
-      </div>
-
-      <GalleryText />
-
-      <GalleryPills />
-
-      <GalleryBars />
-
-      <Card title="Section" count={3}>
-        <div className="flex flex-col gap-4">
-          <EpicHeader color="#cba6f7" label="HC-42 · Voice Inbox" />
-          <Markdown md={"## What I did\n- **HC-42** shipped\n- plain item"} />
-        </div>
-      </Card>
-
-      <GalleryData />
-
-      <GalleryButtons />
-
-      <GalleryAvatars />
-
-      <GalleryCopy />
-
-      <div className="flex max-w-sm flex-col gap-3">
-        <GalleryNameField />
-        <GalleryNotes />
-        <Select defaultValue={5}>
-          <option value={5}>★★★★★ (5)</option>
-          <option value={4}>★★★★ (4)</option>
-          <option value={3}>★★★ (3)</option>
-          <option value={2}>★★ (2)</option>
-          <option value={1}>★ (1)</option>
-        </Select>
-        <Checkbox label="Open now" defaultChecked />
-        <DateField calendar label="Date of birth" defaultValue={fromISODate("1990-05-17")} />
-        <DateField label="Visited on" description="DD/MM/YYYY" />
-      </div>
-
-      <GalleryForm />
-
-      <GalleryControls />
-
-      <GalleryChoice />
-
-      <Breadcrumbs
-        crumbs={[
-          { label: "Org", href: "#org" },
-          { label: "Project", href: "#project" },
-          "Build",
-          "Snapshot",
-        ]}
-      />
-
-      <Callout tone="warn" title="Draft.">
-        This page has not yet been reviewed by a lawyer.
-      </Callout>
-
-      <GalleryLinks />
-
-      <GalleryLinkedRows />
-
-      <GalleryChips />
-
-      <GallerySwitchers />
-
-      <GalleryKeyValues />
-
-      <GalleryPageFade />
-
-      <GalleryDialogs />
-
-      <GalleryLayout />
-
-      <GalleryContainer />
-
-      <GalleryPages />
-
-      <Text as="p" color="muted">
-        nothing here yet
-      </Text>
+      {gallerySections.map((section) => (
+        <Fragment key={section.id}>{section.render()}</Fragment>
+      ))}
     </div>
   );
+}
+
+/** One slice of the Gallery on its own, at the Gallery's width. */
+export function GallerySlice({ id }: { id: string }) {
+  const section = gallerySections.find((candidate) => candidate.id === id);
+  if (section === undefined) throw new Error(`the Gallery has no section "${id}"`);
+  return <div className="flex max-w-3xl flex-col gap-6">{section.render()}</div>;
 }

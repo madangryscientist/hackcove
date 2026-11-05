@@ -136,6 +136,13 @@ docs page. The check runs in one of two modes:
 - **Everything** (`bunx nx run storybook:visual --all`, or `VISUAL_ALL=1 bunx nx run-many -t
   visual`): every story in every theme. An upload (`visual-upload`) is always this mode.
 
+PixelSlash ends a build at errored on a shot over 24.5 Mpx (19140px tall at 1280 wide), so the
+one-page **Overview / Gallery** and **Overview / All themes** are not shot whole: the run shoots
+**Overview / Gallery sections** and **Overview / All themes sections** instead, one story per entry
+of `gallerySections` in `apps/storybook/src/Gallery.tsx`. A new Gallery block goes in a section
+(or a new one, with a story in both files). The run fails on a shot over the limit, naming it, and
+warns on one past 75% of it.
+
 What it means for you:
 
 - If you cannot run it, say so in the pull request. A maintainer runs it before merging and reads

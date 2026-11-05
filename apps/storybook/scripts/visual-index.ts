@@ -1,6 +1,7 @@
 /** A built Storybook's `index.json`, read for what a capture of some of its titles takes. */
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { visualSkipped } from "./visual-shots.js";
 
 // PixelSlash shoots a story with this tag once, at the globals' defaults, not once per theme.
 const ONCE_TAG = "pixelslash-once";
@@ -11,15 +12,16 @@ export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-/** A story entry's title and whether it is shot once; `undefined` for a docs entry. */
+/** A story entry's title and whether it is shot once; `undefined` for a docs entry or a skipped story. */
 function storyOf(entry: unknown): { title: string; once: boolean } | undefined {
   if (!isRecord(entry) || entry["type"] !== "story" || typeof entry["title"] !== "string")
     return undefined;
+  if (typeof entry["id"] === "string" && visualSkipped.includes(entry["id"])) return undefined;
   const tags = entry["tags"];
   return { title: entry["title"], once: Array.isArray(tags) && tags.includes(ONCE_TAG) };
 }
 
-/** Per story title in a built Storybook: how many stories, and how many are shot once. */
+/** Per story title in a built Storybook: how many stories the run shoots, and how many are shot once. */
 export function indexOf(staticDir: string): StoryIndex {
   const path = join(staticDir, "index.json");
   if (!existsSync(path)) throw new Error(`${path} is missing: build Storybook first`);
