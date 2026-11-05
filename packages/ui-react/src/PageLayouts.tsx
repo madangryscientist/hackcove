@@ -6,9 +6,10 @@ import {
   type ReactNode,
 } from "react";
 import { Card } from "./Card.js";
-import { cx, focusRing } from "./cx.js";
+import { cx } from "./cx.js";
 import { PageHeader, PageHeaderContent, type PageHeaderProps } from "./PageHeader.js";
 import { STACK_WIDTH, Stack, type StackGap } from "./Stack.js";
+import { STICKY_ASIDE_LG, STICKY_SCROLL_LG } from "./stickyColumn.js";
 import { StickyBar } from "./StickyBar.js";
 import type { Passthrough, Unstyled } from "./props.js";
 
@@ -53,9 +54,15 @@ export function ListLayout({
   );
 }
 
-/** A detail page: header, then `children` (two thirds from `lg`) beside `aside` (one third), which stacks below on a smaller screen. */
+/**
+ * A detail page: header, then `children` (two thirds from `lg`) beside `aside` (one third), which
+ * stacks below on a smaller screen. `stickyAside` keeps the aside in view from `lg` as a long page
+ * scrolls: it sticks under AppShell's header and, if it is taller than the room left, scrolls
+ * itself so its end stays reachable.
+ */
 export function DetailLayout({
   aside,
+  stickyAside = false,
   children,
   breadcrumbs,
   title,
@@ -66,6 +73,13 @@ export function DetailLayout({
 }: PageHeaderProps & {
   /** The side column: one third from `lg`, below `children` on a smaller screen. */
   aside: ReactNode;
+  /**
+   * From `lg`, keeps the aside in view under the header as the page scrolls; an aside taller than
+   * the screen scrolls inside itself. Off by default, since an aside of ordinary cards may be
+   * taller than the screen. Below `lg` the aside stacks as ever.
+   * @default false
+   */
+  stickyAside?: boolean | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {
   return (
@@ -81,8 +95,10 @@ export function DetailLayout({
         <div className="min-w-0 lg:col-span-2">
           <Stack>{children}</Stack>
         </div>
-        <aside className="min-w-0">
-          <Stack>{aside}</Stack>
+        <aside className={cx("min-w-0", stickyAside && STICKY_ASIDE_LG)}>
+          <div className={stickyAside ? STICKY_SCROLL_LG : undefined}>
+            <Stack>{aside}</Stack>
+          </div>
         </aside>
       </div>
     </>
@@ -255,66 +271,6 @@ export function CardGrid({
           ))
         : children}
     </Tag>
-  );
-}
-
-/**
- * A `rail` of links beside the `children` canvas, in the Container the shell already gives every
- * page (a plain `<AppShell>`, no `bleed`): the rail starts at the header logo's x and the canvas
- * ends at the header's right edge. The rail has no background and no border, so it is a list of
- * links on the page; a `Tabs variant="pill" orientation="vertical"` is its content. From `md` it is `w-56` with
- * the canvas filling the rest; below `md` it stacks above the canvas. A long rail sets `railLabel`:
- * below `md` it then folds behind a disclosure of that name, closed, so the page comes first on a
- * phone, and from `md` it is the same rail. Upgrading from 0.2: the rail no longer has a fill, a
- * border or a fixed height, and it no longer sits beside the canvas on a phone.
- */
-export function SidebarLayout({
-  rail,
-  railLabel,
-  children,
-  ...rest
-}: {
-  /** The links beside the canvas, usually a `Tabs variant="pill" orientation="vertical"`. */
-  rail: ReactNode;
-  /** Folds the rail behind a disclosure with this name below `md` (a long rail). Left out, the rail is always open. */
-  railLabel?: string | undefined;
-  children: ReactNode;
-} & Passthrough): ReactElement {
-  return (
-    <div {...rest} className="flex flex-col gap-8 md:flex-row md:gap-10">
-      <aside className="w-full shrink-0 md:w-56">
-        {railLabel === undefined ? (
-          rail
-        ) : (
-          <details className="group md:[&::details-content]:[content-visibility:visible]">
-            <summary
-              className={cx(
-                "flex cursor-pointer list-none items-center justify-between rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-900 select-none hover:bg-slate-50 md:hidden [&::-webkit-details-marker]:hidden",
-                focusRing,
-              )}
-            >
-              {railLabel}
-              <svg
-                viewBox="0 0 20 20"
-                width="16"
-                height="16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-                className="shrink-0 text-slate-500 group-open:rotate-180"
-              >
-                <path d="M5 8l5 5 5-5" />
-              </svg>
-            </summary>
-            <div className="mt-2 md:mt-0">{rail}</div>
-          </details>
-        )}
-      </aside>
-      <div className="min-w-0 flex-1">{children}</div>
-    </div>
   );
 }
 

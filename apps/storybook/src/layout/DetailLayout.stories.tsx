@@ -13,7 +13,7 @@ import {
 import { DemoShell, layoutPage } from "./DemoShell";
 import { DetailPage } from "./pages";
 
-/** Main two thirds and aside one third from `lg`; the aside stacks below main under it. */
+/** Main two thirds and aside one third from `lg`; the aside stacks below main under it. `stickyAside` keeps the aside in view under the header from `lg` as a long page scrolls. */
 const meta: Meta = {
   title: "Page layouts/DetailLayout",
   parameters: { layout: "fullscreen", bare: true },
@@ -66,6 +66,36 @@ export const MainAndAside: S = {
   render: () => (
     <DemoShell>
       <DetailPage />
+    </DemoShell>
+  ),
+};
+
+const longMain = Array.from({ length: 12 }, (_, i) => (
+  <Card key={i} title={`Block ${i + 1}`}>
+    <Text as="p">A block of a long record. The aside stays in view while this scrolls.</Text>
+  </Card>
+));
+
+/** `stickyAside` on a long page: from `lg` the aside sticks under the header; taller than the room left, it scrolls itself. Below `lg` it stacks. */
+export const StickyAside: S = {
+  render: () => (
+    <DemoShell>
+      <DetailLayout
+        title="Quote Q-1042"
+        subtitle="Naledi Mokoena"
+        actions={<Button variant="outline">Edit</Button>}
+        stickyAside
+        aside={
+          <Card title="Details">
+            <KeyValueList>
+              <KeyValue label="Status">Sent</KeyValue>
+              <KeyValue label="Premium">R 1 240 / mo</KeyValue>
+            </KeyValueList>
+          </Card>
+        }
+      >
+        {longMain}
+      </DetailLayout>
     </DemoShell>
   ),
 };
