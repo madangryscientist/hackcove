@@ -11,6 +11,7 @@ import type { Passthrough } from "./props.js";
 
 // Each avatar after the first overlaps the one before it by about a quarter of its width.
 const OVERLAP: Record<AvatarSize, string> = {
+  xs: "-ml-1",
   sm: "-ml-1.5",
   md: "-ml-2",
   lg: "-ml-2.5",

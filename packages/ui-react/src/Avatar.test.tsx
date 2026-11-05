@@ -48,6 +48,7 @@ describe("Avatar", () => {
 
   it("is md by default and sizes by class", () => {
     expect(renderToStaticMarkup(<Avatar name="a" />)).toContain("size-8");
+    expect(renderToStaticMarkup(<Avatar name="a" size="xs" />)).toContain("size-4");
     expect(renderToStaticMarkup(<Avatar name="a" size="sm" />)).toContain("size-6");
     expect(renderToStaticMarkup(<Avatar name="a" size="lg" />)).toContain("size-10");
   });
@@ -59,6 +60,7 @@ describe("Avatar", () => {
   it("is round by default and square (rounded corners) for an org, at every size", () => {
     expect(classes(renderToStaticMarkup(<Avatar name="a" />))).toContain("rounded-full");
     const corners = [
+      ["xs", "rounded-sm"],
       ["sm", "rounded"],
       ["md", "rounded-md"],
       ["lg", "rounded-md"],

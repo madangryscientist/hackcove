@@ -25,6 +25,9 @@ describe("AvatarStack", () => {
       classes(renderToStaticMarkup(<AvatarStack people={people} size="sm" />), "GR"),
     ).toContain("-ml-1.5");
     expect(
+      classes(renderToStaticMarkup(<AvatarStack people={people} size="xs" />), "GR"),
+    ).toContain("-ml-1");
+    expect(
       classes(renderToStaticMarkup(<AvatarStack people={people} size="2xl" />), "GR"),
     ).toContain("-ml-6");
   });

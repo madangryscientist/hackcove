@@ -21,11 +21,33 @@ export const Colours: S = {
 export const Sizes: S = {
   render: () => (
     <div className="flex items-center gap-3">
+      <Avatar name="octocat" size="xs" />
       <Avatar name="octocat" size="sm" />
       <Avatar name="octocat" size="md" />
       <Avatar name="octocat" size="lg" />
       <Avatar name="octocat" size="xl" />
       <Avatar name="octocat" size="2xl" />
+    </div>
+  ),
+};
+
+/** `xs` is 16px, for an inline mention in a line of text, such as a chat message's sender. */
+export const Inline: S = {
+  render: () => (
+    <p className="flex items-center gap-1.5">
+      <Avatar name="Ada Lovelace" size="xs" />
+      <span>Ada Lovelace replied to the thread</span>
+    </p>
+  ),
+};
+
+/** When `src` fails to load the initials show instead, so a missing photo never leaves a broken-image icon. */
+export const PhotoFails: S = {
+  render: () => (
+    <div className="flex items-center gap-3">
+      {(["xs", "sm", "md", "lg", "xl", "2xl"] as const).map((size) => (
+        <Avatar key={size} name="Ada Lovelace" src="/missing/ada.jpg" size={size} />
+      ))}
     </div>
   ),
 };

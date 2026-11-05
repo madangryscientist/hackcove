@@ -68,8 +68,8 @@ export const content: ComponentSection = {
       pairs: ["Avatar/Identity", "Avatar/Beside"],
       usage: [
         "Pass the person's full `name`, the same string everywhere: the colour and the initials are worked out from it, so one person looks the same in every list and header.",
-        "`size` is `sm`, `md` (default), `lg`, `xl` or `2xl`; use `sm` or `md` in a row and a larger one at the head of a profile.",
-        "`src` is the person's photo, as a path your app serves. It replaces the initials, and the Avatar never loads an image from another server on its own, so use your own local image.",
+        "`size` is `xs` (16px, for an inline mention in a line of text), `sm`, `md` (default), `lg`, `xl` or `2xl`; use `sm` or `md` in a row and a larger one at the head of a profile.",
+        "`src` is the person's photo, as a path your app serves. It replaces the initials, and the Avatar never loads an image from another server on its own, so use your own local image. If the photo fails to load, the initials show instead.",
         '`shape="square"` is for an org, a team or a project, not a person: rounded corners that scale with the size. Round (the default) is a person.',
         "Several people as one group is an `AvatarStack`, not a row of Avatars.",
         "Put the person's name beside the Avatar as text; the Avatar is a mark, not a label.",
