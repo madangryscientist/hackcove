@@ -11,6 +11,7 @@
     "hover:bg-white/10",
     "focus-visible:outline-white"
   ],
+  "media-matte": ["bg-white/100"],
   "line": ["border-slate-200", "border-slate-200/70", "border-slate-300"],
   "ink": [
     "text-slate-900",

@@ -70,15 +70,17 @@ export const content: ComponentSection = {
       pairs: ["Avatar/Identity", "Avatar/Beside"],
       usage: [
         "Pass the person's full `name`, the same string everywhere: the colour and the initials are worked out from it, so one person looks the same in every list and header.",
-        "`size` is `xs` (16px, for an inline mention in a line of text), `sm`, `md` (default), `lg`, `xl` or `2xl`; use `sm` or `md` in a row and a larger one at the head of a profile.",
+        "`size` is `xs` (16px, for an inline mention in a line of text), `sm`, `md` (default), `lg`, `xl`, `2xl` (64px) or `3xl` (96px); use `sm` or `md` in a row and a larger one at the head of a profile.",
         "`src` is the person's photo, as a path your app serves. It replaces the initials, and the Avatar never loads an image from another server on its own, so use your own local image. If the photo fails to load, the initials show instead.",
         '`shape="square"` is for an org, a team or a project, not a person: rounded corners that scale with the size. Round (the default) is a person.',
+        "`onClick` makes the whole Avatar one button, for a profile or an account menu: it is named by `name`, keeps its shape and takes the focus ring. Without it the Avatar is a mark, and a click handler on it would be one no keyboard can reach.",
         "Several people as one group is an `AvatarStack`, not a row of Avatars.",
         "Put the person's name beside the Avatar as text; the Avatar is a mark, not a label.",
       ],
       accessibility: [
         'Initials are drawn in a `<span>` with `aria-hidden="true"` and a `title` of the name, so a screen reader skips them: the name has to be on the page as text.',
         "With `src` the Avatar is an `<img>` whose `alt` and `title` are the name.",
+        'With `onClick` the Avatar is a `<button type="button">` whose `aria-label` is the name, so the initials need no text beside them to name the button. `onError` still reports a photo that failed to load; the initials take its place.',
         "`aria-*` and `data-*` props go on the root element.",
       ],
       api: ["Avatar"],

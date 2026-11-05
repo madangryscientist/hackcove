@@ -21,3 +21,11 @@ export const sampleScenes = [
     caption: "The bay by moonlight.",
   },
 ];
+
+/** A tall phone photo, 2:3: a picture whose own proportions are not any of `Image`'s shapes. */
+export const samplePortrait = {
+  src: `data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300"><rect width="200" height="300" fill="#bae6fd"/><circle cx="70" cy="70" r="24" fill="#fefce8"/><path d="M0 210 60 150l50 40 50-60 40 40v140H0z" fill="#166534"/><rect y="250" width="200" height="50" fill="#0369a1"/></svg>`,
+  )}`,
+  alt: "A photo taken upright",
+};

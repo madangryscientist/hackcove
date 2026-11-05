@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { Cluster, Lightbox, MediaTile } from "@hackcove/ui-react";
-import { sampleScenes } from "./sampleScene";
+import { samplePortrait, sampleScenes } from "./sampleScene";
 
 const meta: Meta = { title: "Content/MediaTile" };
 export default meta;
@@ -45,9 +45,60 @@ export const Shapes: S = {
   ),
 };
 
-/** A tile with no picture, as the "Earlier" tile at the end of a strip: a placeholder with its label. */
+/** `aspect="natural"` shows the picture whole at its own proportions, as a chat does; nothing is cropped. The other shapes crop to fill. */
+export const Natural: S = {
+  render: () => (
+    <div className="flex items-start gap-4">
+      <MediaTile src={samplePortrait.src} alt={samplePortrait.alt} aspect="natural" label="Anna" />
+      <MediaTile src={first.src} alt={first.alt} aspect="natural" label="Anna" caption="09:12" />
+      <MediaTile src={samplePortrait.src} alt={samplePortrait.alt} label="3:4, cropped" />
+    </div>
+  ),
+};
+
+/** `onRemove` adds a round remove button on the corner, its own button beside the tile's: a photo attached to a form, until it is sent. */
+export const Removable: S = {
+  render: () => (
+    <div className="flex items-start gap-4">
+      <MediaTile
+        src={first.src}
+        alt="Slip from the shop"
+        width="sm"
+        aspect="square"
+        onRemove={() => undefined}
+      />
+      <MediaTile
+        src={second.src}
+        alt={second.alt}
+        label="Anna"
+        caption="09:12"
+        onClick={() => undefined}
+        onRemove={() => undefined}
+      />
+      <MediaTile
+        src={samplePortrait.src}
+        alt={samplePortrait.alt}
+        aspect="natural"
+        onRemove={() => undefined}
+      />
+    </div>
+  ),
+};
+
+/** A tile with no picture, as the "Earlier" tile at the end of a strip: a placeholder with its label, at the same size and shape as its neighbours. */
 export const Placeholder: S = {
-  render: () => <MediaTile alt="Earlier statuses" label="Earlier" onClick={() => undefined} />,
+  render: () => (
+    <div className="flex items-start gap-4">
+      <MediaTile src={first.src} alt={first.alt} label="Anna" width="sm" aspect="square" />
+      <MediaTile
+        alt="Earlier statuses"
+        label="Earlier"
+        width="sm"
+        aspect="square"
+        onClick={() => undefined}
+      />
+    </div>
+  ),
 };
 
 /** A thumbnail that opens a photo is a `MediaTile` with `onClick` that opens a `Lightbox`, which steps through the set. */

@@ -148,6 +148,12 @@ describe.each(files)("%s", (file) => {
     expect(luminance(painted("bg-black/90", "background-color", canvas))).toBeLessThan(0.05);
   });
 
+  it("keeps the media matte white", () => {
+    // Image `framed` paints `bg-white/100` under a QR code, which is scanned off a dark page: it must
+    // stay white on a dark theme too, unlike `bg-white`, the surface.
+    expect(luminance(painted("bg-white/100", "background-color", canvas))).toBeGreaterThan(0.99);
+  });
+
   it("flattens a plain-disabled solid Button instead of fading it, where it restyles one", () => {
     // Half opacity on a saturated fill is muddy under the label (HC-148). The rule is keyed on the
     // plain-disabled marker, so busy (keeps its colour) and blocked (already flat) are untouched.

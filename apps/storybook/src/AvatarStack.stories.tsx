@@ -30,7 +30,7 @@ export const Overflow: S = {
 export const Sizes: S = {
   render: () => (
     <Stack gap="sm">
-      {(["sm", "md", "lg", "xl", "2xl"] as const).map((size) => (
+      {(["sm", "md", "lg", "xl", "2xl", "3xl"] as const).map((size) => (
         <AvatarStack key={size} people={team} max={3} size={size} />
       ))}
     </Stack>

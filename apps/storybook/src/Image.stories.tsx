@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Image } from "@hackcove/ui-react";
 import { sampleCode } from "./sampleCode";
-import { sampleScenes } from "./sampleScene";
+import { samplePortrait, sampleScenes } from "./sampleScene";
 
 const meta: Meta = { title: "Content/Image" };
 export default meta;
@@ -35,6 +35,32 @@ export const Widths: S = {
       {(["sm", "md", "lg", "full"] as const).map((width) => (
         <Image key={width} src={harbour.src} alt={`Harbour, ${width}`} width={width} />
       ))}
+    </div>
+  ),
+};
+
+/** `natural` keeps the picture's own proportions: nothing is cropped or letterboxed, and the space is not reserved before it loads. */
+export const Natural: S = {
+  render: () => (
+    <div className="flex items-start gap-4">
+      <Image src={samplePortrait.src} alt={samplePortrait.alt} aspect="natural" width="md" />
+      <Image src={harbour.src} alt={harbour.alt} aspect="natural" width="md" />
+    </div>
+  ),
+};
+
+/** `framed` sets a QR code on a white mat with padding. The mat stays white in every theme, so the code scans off a dark page. */
+export const Framed: S = {
+  render: () => (
+    <div className="flex items-start gap-4">
+      <Image src={sampleCode} alt="Pairing code" aspect="square" width="md" framed />
+      <Image
+        src={sampleCode}
+        alt="Pairing code, unframed"
+        aspect="square"
+        width="md"
+        fit="contain"
+      />
     </div>
   ),
 };

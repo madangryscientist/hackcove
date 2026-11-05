@@ -83,6 +83,12 @@
   outline-color: #fdfbf7; /* canvas — the accent is 2.4:1 on the scrim */
 }
 
+/* The media matte — Image framed: the white mat a QR code is scanned off. It stays white in every
+   theme, dark ones included, as the scrim above stays black. */
+.thrifty-paper .bg-white\/100 {
+  background-color: #ffffff;
+}
+
 /* Text */
 .thrifty-paper .text-slate-900,
 .thrifty-paper .text-slate-800 {

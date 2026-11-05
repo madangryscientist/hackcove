@@ -74,6 +74,42 @@ describe("Image", () => {
     expect(new Set(boxes).size).toBe(6);
   });
 
+  it("keeps the picture's own proportions for natural, with no aspect box", () => {
+    const out = renderToStaticMarkup(<Image src="/chat.jpg" alt="Chat photo" aspect="natural" />);
+    expect(out).toContain("h-auto");
+    expect(out).not.toContain("aspect-");
+  });
+
+  it("gives a natural image that is missing a 4:3 placeholder, as it has no proportions", () => {
+    const out = renderToStaticMarkup(<Image alt="Chat photo" aspect="natural" />);
+    expect(out).toContain("aspect-[4/3]");
+    expect(out).not.toContain("h-auto");
+  });
+
+  it("is on the inset surface, not the white mat, by default", () => {
+    const out = renderToStaticMarkup(<Image src="/a.jpg" alt="A" />);
+    expect(out).toContain("bg-slate-100");
+    expect(out).not.toContain("bg-white/100");
+  });
+
+  it("framed sets the picture on a white padded mat and always shows all of it", () => {
+    const out = renderToStaticMarkup(
+      <Image src="/qr.png" alt="Pairing code" aspect="square" fit="cover" framed />,
+    );
+    expect(out).toContain("bg-white/100");
+    expect(out).toContain("p-3");
+    expect(out).toContain("object-contain");
+    expect(out).not.toContain("object-cover");
+    expect(out).not.toContain("bg-slate-100");
+    expect(out).not.toMatch(/(^|[ "])bg-white([ "]|$)/);
+  });
+
+  it("does not mat a placeholder, framed or not", () => {
+    const out = renderToStaticMarkup(<Image alt="Pairing code" framed />);
+    expect(out).not.toContain("bg-white/100");
+    expect(out).toContain("bg-slate-100");
+  });
+
   it("shows a same-sized placeholder, named by alt, when no src is given", () => {
     const out = renderToStaticMarkup(<Image alt="No preview" aspect="16:9" />);
     expect(out.startsWith("<span")).toBe(true);

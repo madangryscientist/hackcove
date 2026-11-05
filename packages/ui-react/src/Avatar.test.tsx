@@ -65,7 +65,8 @@ describe("Avatar", () => {
       ["md", "rounded-md"],
       ["lg", "rounded-md"],
       ["xl", "rounded-lg"],
-      ["2xl", "rounded-xl"],
+      ["2xl", "rounded-lg"],
+      ["3xl", "rounded-xl"],
     ] as const;
     for (const [size, corner] of corners) {
       for (const src of [undefined, "/acme.png"]) {
@@ -78,9 +79,17 @@ describe("Avatar", () => {
     }
   });
 
-  it("has xl (56px) and 2xl (96px) sizes", () => {
+  it("has xl (56px), 2xl (64px) and 3xl (96px) sizes", () => {
     expect(renderToStaticMarkup(<Avatar name="a" size="xl" />)).toContain("size-14");
-    expect(renderToStaticMarkup(<Avatar name="a" size="2xl" />)).toContain("size-24");
+    expect(renderToStaticMarkup(<Avatar name="a" size="2xl" />)).toContain("size-16");
+    expect(renderToStaticMarkup(<Avatar name="a" size="3xl" />)).toContain("size-24");
+  });
+
+  it("is a plain mark, not a button, without onClick", () => {
+    expect(renderToStaticMarkup(<Avatar name="Ada Lovelace" />)).not.toContain("<button");
+    expect(renderToStaticMarkup(<Avatar name="Ada Lovelace" src="/a.jpg" />)).not.toContain(
+      "<button",
+    );
   });
 
   it("renders a round, cropped image named for the person when given a src", () => {
