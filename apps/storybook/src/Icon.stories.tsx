@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Icon, Stack, Text } from "@hackcove/ui-react";
+import { Button, Caption, Icon, Stack, Text } from "@hackcove/ui-react";
+import { iconIdeas, iconNames } from "./iconIdeas.js";
 
 const meta: Meta = { title: "Actions/Icon" };
 export default meta;
@@ -11,14 +12,46 @@ const flagIcon = (
   </svg>
 );
 
-/** `sm` (14px), `md` (16px, the default) and `lg` (20px). The `<svg>` fills the box. */
+/** `sm` (14px), `md` (16px, the default), `lg` (20px) and `feature` (32px). The `<svg>` fills the box. */
 export const Sizes: S = {
   render: () => (
     <div className="flex items-center gap-4">
-      {(["sm", "md", "lg"] as const).map((size) => (
+      {(["sm", "md", "lg", "feature"] as const).map((size) => (
         <Icon key={size} size={size}>
           {flagIcon}
         </Icon>
+      ))}
+    </div>
+  ),
+};
+
+/** `name` picks an icon from the set: one grid, one stroke, round caps and joins, in `currentColor`. At `feature` size each reads as its idea with no label. */
+export const Names: S = {
+  render: () => (
+    <div className="grid grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-3 lg:grid-cols-5">
+      {iconNames.map((name) => (
+        <div key={name} className="flex flex-col items-start gap-2">
+          <Icon name={name} size="feature" tone="info" />
+          <Text as="p" mono>
+            {name}
+          </Text>
+          <Caption as="p">{iconIdeas[name]}</Caption>
+        </div>
+      ))}
+    </div>
+  ),
+};
+
+/** The set at each size, in the colour of the text around it: the strokes stay one weight, so a small icon is as legible as a large one. */
+export const SetSizes: S = {
+  render: () => (
+    <div className="flex flex-col gap-3">
+      {(["sm", "md", "lg", "feature"] as const).map((size) => (
+        <div key={size} className="flex items-center gap-4">
+          {iconNames.map((name) => (
+            <Icon key={name} name={name} size={size} />
+          ))}
+        </div>
       ))}
     </div>
   ),

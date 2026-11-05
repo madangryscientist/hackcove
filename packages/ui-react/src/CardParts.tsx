@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { cx } from "./cx.js";
+import { Icon } from "./Icon.js";
+import type { IconName } from "./icons.js";
 import { Overline } from "./typography.js";
 import type { Size } from "./size.js";
 
@@ -40,6 +42,15 @@ export function CardHeading({
       </Overline>
       {count !== undefined && <span className={cx("text-xs font-medium", ink)}>{count}</span>}
       {status}
+    </div>
+  );
+}
+
+/** A card's `icon`: the feature-size mark above the heading, in the accent colour. */
+export function CardIcon({ name, size }: { name: IconName; size: Size }) {
+  return (
+    <div className={cx("flex text-violet-600", HEADING_GAP[size])}>
+      <Icon name={name} size="feature" />
     </div>
   );
 }

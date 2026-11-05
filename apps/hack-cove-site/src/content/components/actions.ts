@@ -58,13 +58,14 @@ export const actions: ComponentSection = {
     {
       slug: "icon",
       name: "Icon",
-      summary: "Sizes and tones one `<svg>` glyph.",
+      summary: "The library's own icons, and a sizer and toner for one `<svg>` glyph.",
       whenToUse:
-        "A glyph beside text or inside a control: a flag in a row, a camera in a Button, a mark in a card.",
+        "A glyph beside text or inside a control: a flag in a row, a camera in a Button, or a feature icon (`name` at `feature` size) that stands for an idea.",
       pairs: ["Icon/Icon"],
       usage: [
-        "Put a bare `<svg>` (with a `viewBox`, no size or colour classes) in an `Icon`; it fills the box.",
-        "`size` is `sm` (14px), `md` (16px, the default) or `lg` (20px).",
+        "`name` picks one of the library's icons, all on one grid and one stroke: `diff`, `baseline`, `review`, `ci`, `self-host`, `privacy`, `capture`, `branch`, `theme` and `speed`. Each is named for its idea, not a product. Prefer one to drawing your own.",
+        "For a glyph the set lacks, put a bare `<svg>` (with a `viewBox`, no size or colour classes) in an `Icon`; it fills the box.",
+        "`size` is `sm` (14px), `md` (16px, the default), `lg` (20px) or `feature` (32px), for an icon that stands for an idea on its own. A feature card takes its icon through `Card`'s `icon`.",
         "`tone` is a text tone (`muted`, `positive`, `warn`, `danger`, `info`); `inherit`, the default, takes the colour of the text around it, so draw the glyph with `currentColor`.",
         "An icon that is a button is an `IconButton`.",
       ],

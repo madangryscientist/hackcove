@@ -90,6 +90,7 @@ export { Dialog, type DialogProps } from "./Dialog.js";
 export { Drawer, type DrawerProps } from "./Drawer.js";
 export { Lightbox, type LightboxProps } from "./Lightbox.js";
 export { Icon } from "./Icon.js";
+export type { IconName } from "./icons.js";
 export { IconButton, type IconButtonTone, type IconButtonVariant } from "./IconButton.js";
 export { ColourSchemeToggle } from "./ColourSchemeToggle.js";
 export {

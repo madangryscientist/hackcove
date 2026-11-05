@@ -1,33 +1,55 @@
 import type { ReactElement, ReactNode } from "react";
 import { cx } from "./cx.js";
+import { type IconName, iconGlyph } from "./icons.js";
 import type { Passthrough } from "./props.js";
 import type { Size } from "./size.js";
 import { TEXT_TONE, type TextTone } from "./typography.js";
 
-const BOX: Record<Size, string> = { sm: "size-3.5", md: "size-4", lg: "size-5" };
+const BOX: Record<Size | "feature", string> = {
+  sm: "size-3.5",
+  md: "size-4",
+  lg: "size-5",
+  feature: "size-8",
+};
+
+type IconProps = Passthrough & {
+  /** The box: sm 14px, md 16px (the default), lg 20px, `feature` 32px for an icon that stands for an idea on its own (a feature card). */
+  size?: Size | "feature";
+  /** A text tone, or `inherit` (the default) for the colour of the text around it. */
+  tone?: TextTone | "inherit";
+  /** Names the icon (`role="img"`). Without one the icon is hidden from assistive tech. */
+  label?: string;
+};
 
 /**
- * One inline icon: an `<svg>` child sized to a fixed box (sm 14px, md 16px, lg 20px) and drawn in
- * `currentColor`, so it takes the text colour around it unless a `tone` says otherwise. It is
- * decorative (`aria-hidden`) by default; a `label` makes it an image with that name, for an icon
- * that carries meaning no text beside it says.
+ * One inline icon, sized to a fixed box (sm 14px, md 16px, lg 20px, `feature` 32px) and drawn in
+ * `currentColor`, so it takes the text colour around it unless a `tone` says otherwise. `name`
+ * picks one of the library's own icons, all drawn on one grid with one stroke (`diff`,
+ * `baseline`, `review`, `ci`, `self-host`, `privacy`, `capture`, `branch`, `theme`, `speed`);
+ * without a name, a bare `<svg>` child fills the box. It is decorative (`aria-hidden`) by
+ * default; a `label` makes it an image with that name, for an icon that carries meaning no text
+ * beside it says.
  */
 export function Icon({
   size = "md",
   tone = "inherit",
   label,
+  name,
   children,
   ...rest
-}: Passthrough & {
-  /** The box: sm 14px, md 16px (the default), lg 20px. */
-  size?: Size;
-  /** A text tone, or `inherit` (the default) for the colour of the text around it. */
-  tone?: TextTone | "inherit";
-  /** Names the icon (`role="img"`). Without one the icon is hidden from assistive tech. */
-  label?: string;
-  /** The `<svg>`, drawn in `currentColor`; it fills the box. */
-  children: ReactNode;
-}): ReactElement {
+}: IconProps &
+  (
+    | {
+        /** One of the library's icons, named for the idea it stands for. */
+        name: IconName;
+        children?: undefined;
+      }
+    | {
+        name?: undefined;
+        /** The `<svg>`, drawn in `currentColor`; it fills the box. */
+        children: ReactNode;
+      }
+  )): ReactElement {
   return (
     <span
       {...rest}
@@ -38,7 +60,7 @@ export function Icon({
         tone !== "inherit" && TEXT_TONE[tone],
       )}
     >
-      {children}
+      {name === undefined ? children : iconGlyph(name)}
     </span>
   );
 }

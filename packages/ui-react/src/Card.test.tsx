@@ -237,3 +237,89 @@ describe("Card that is a link: root attributes", () => {
     expect(card(root)?.hasAttribute("aria-label")).toBe(false);
   });
 });
+
+describe("Card icon", () => {
+  it("puts the icon at feature size in the accent colour above the title, with no tile behind it", () => {
+    const out = renderToStaticMarkup(
+      <Card title="Diff" icon="diff">
+        body
+      </Card>,
+    );
+    expect(out).toContain("<svg");
+    expect(out).toContain("size-8");
+    expect(out).toContain("text-violet-600");
+    expect(out.indexOf("<svg")).toBeLessThan(out.indexOf("Diff"));
+    expect(out).not.toMatch(/gradient|rounded-(?:2xl|full|lg|md)/);
+  });
+
+  it("hides the icon from assistive tech: the title names the card", () => {
+    const out = renderToStaticMarkup(
+      <Card title="Diff" icon="diff">
+        body
+      </Card>,
+    );
+    expect(out).toContain('aria-hidden="true"');
+    expect(out).toContain("aria-labelledby");
+  });
+
+  it("is not passed to the DOM, and a plain card has no icon", () => {
+    const out = renderToStaticMarkup(
+      <Card title="Diff" icon="diff">
+        body
+      </Card>,
+    );
+    expect(out).not.toContain('icon="');
+    expect(renderToStaticMarkup(<Card title="Diff">body</Card>)).not.toContain("<svg");
+  });
+
+  it("works on a link card too", () => {
+    const out = renderToStaticMarkup(
+      <Card href="/x" title="Diff" icon="diff">
+        body
+      </Card>,
+    );
+    expect(out).toContain("<svg");
+    expect(out).not.toContain('icon="');
+  });
+
+  it("has none in a bar, flush or dashed card, which have no padded body to hold it", () => {
+    expect(
+      renderToStaticMarkup(
+        <Card title="T" bar icon="diff">
+          b
+        </Card>,
+      ),
+    ).not.toContain("<svg");
+    expect(
+      renderToStaticMarkup(
+        <Card flush icon="diff">
+          b
+        </Card>,
+      ),
+    ).not.toContain("<svg");
+    expect(
+      renderToStaticMarkup(
+        <Card dashed icon="diff">
+          b
+        </Card>,
+      ),
+    ).not.toContain("<svg");
+  });
+
+  it("spaces the icon from the title by the card's size", () => {
+    expect(
+      renderToStaticMarkup(
+        <Card title="T" icon="diff" size="sm">
+          b
+        </Card>,
+      ),
+    ).toContain("mb-2");
+    expect(
+      renderToStaticMarkup(
+        <Card title="T" icon="diff" size="lg">
+          b
+        </Card>,
+      ),
+    ).toContain("mb-4");
+  });
+});

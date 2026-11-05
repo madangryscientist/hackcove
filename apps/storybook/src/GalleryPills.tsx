@@ -1,4 +1,5 @@
 import { Badge, Icon, IconButton, Pill, type PillTone } from "@hackcove/ui-react";
+import { iconNames } from "./iconIdeas.js";
 
 const tones: PillTone[] = ["slate", "amber", "emerald", "blue", "red", "violet", "sky"];
 
@@ -8,7 +9,7 @@ const bellIcon = (
   </svg>
 );
 
-/** The Pill and Badge rows of the Gallery: the seven tones plain, with a dot and round, then red counts alone and on an icon, then a link Pill, a button Pill and a badged IconButton link and button, then Icon in its sizes and tones. */
+/** The Pill and Badge rows of the Gallery: the seven tones plain, with a dot and round, then red counts alone and on an icon, then a link Pill, a button Pill and a badged IconButton link and button, then Icon in its sizes (feature included) and tones, then the whole icon set at feature size and small. */
 export function GalleryPills() {
   return (
     <div className="flex flex-col gap-3">
@@ -58,7 +59,7 @@ export function GalleryPills() {
         </IconButton>
       </div>
       <div className="flex flex-wrap items-center gap-3">
-        {(["sm", "md", "lg"] as const).map((size) => (
+        {(["sm", "md", "lg", "feature"] as const).map((size) => (
           <Icon key={size} size={size}>
             {bellIcon}
           </Icon>
@@ -67,6 +68,16 @@ export function GalleryPills() {
           <Icon key={tone} tone={tone}>
             {bellIcon}
           </Icon>
+        ))}
+      </div>
+      <div className="flex flex-wrap items-center gap-4">
+        {iconNames.map((name) => (
+          <Icon key={name} name={name} size="feature" tone="info" />
+        ))}
+      </div>
+      <div className="flex flex-wrap items-center gap-4">
+        {iconNames.map((name) => (
+          <Icon key={name} name={name} />
         ))}
       </div>
     </div>
