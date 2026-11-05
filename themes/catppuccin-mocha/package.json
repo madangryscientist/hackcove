@@ -1,6 +1,6 @@
 {
   "name": "@hackcove/theme-catppuccin-mocha",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "The Catppuccin themes for Hack Cove: Mocha (dark, theme.css) and Latte (light, latte.css), each one CSS file that remaps the Tailwind utilities @hackcove/ui-react is written against.",
   "keywords": [
     "catppuccin",
