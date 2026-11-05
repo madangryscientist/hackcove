@@ -14,7 +14,7 @@ describe("typography", () => {
   it("renders the semantic default element and pinned classes", () => {
     const out = renderToStaticMarkup(<PageHeading>Status</PageHeading>);
     expect(out).toMatch(/^<h1 /);
-    expect(out).toContain("text-2xl/8 font-semibold");
+    expect(out).toContain("text-3xl/9 font-bold");
     expect(out).toContain("text-slate-900");
   });
 

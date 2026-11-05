@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   AppShell,
+  Button,
   Card,
+  CardGrid,
   ListLayout,
   Tabs,
   ProseLayout,
@@ -63,6 +65,28 @@ export const DoArticle: S = {
       <SectionHeading>Who sees it</SectionHeading>
       <Text as="p">Only you and the people you invite to your organisation.</Text>
     </ProseLayout>
+  ),
+};
+
+/** `width="wide"` is for a page that is not long prose, such as pricing: the column is `max-w-5xl`, so cards fill the width instead of leaving the right third empty. Paragraphs and the lede keep their reading measure. */
+export const Wide: S = {
+  render: () => (
+    <DemoShell>
+      <ProseLayout
+        width="wide"
+        title="Pricing"
+        subtitle="Pay for what you review. Every plan includes unlimited projects."
+        actions={<Button>Contact sales</Button>}
+      >
+        <CardGrid columns={3}>
+          {["Free", "Team", "Business"].map((plan) => (
+            <Card key={plan} title={plan}>
+              <Text as="p">Everything you need to review a visual change before it ships.</Text>
+            </Card>
+          ))}
+        </CardGrid>
+      </ProseLayout>
+    </DemoShell>
   ),
 };
 

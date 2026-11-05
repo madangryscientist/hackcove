@@ -184,9 +184,8 @@ function plainText(children: ReactNode): string | undefined {
 /**
  * Marketing-scale headline — the one line at the top of a public page. `h1`,
  * text-4xl/tight semibold, primary text, growing to text-6xl on wider screens.
- * `PageHeading`'s scale is deliberately dev-tool sized; a brochure
- * hero needs a display scale, so it gets its own pinned role rather than callers
- * overriding PageHeading's size.
+ * `PageHeading` is the title of an ordinary page, a step below; a brochure hero needs a display
+ * scale, so it gets its own pinned role rather than callers overriding PageHeading's size.
  */
 export const Display = typography(
   "Display",
@@ -198,11 +197,14 @@ export const Display = typography(
 /** The supporting sentence under a `Display`. `p`, text-lg/7 normal, secondary. */
 export const Lead = typography("Lead", "p", "text-lg/7 font-normal sm:text-xl/8", "secondary");
 
-/** Page title. `h1`, text-2xl/8 semibold, primary text. */
+/**
+ * Page title. `h1`, text-3xl/9 bold (text-4xl/10 from `sm`), tight, primary text: well above the
+ * `Lead` under it and the body text after it, so the page's title reads first.
+ */
 export const PageHeading = typography(
   "PageHeading",
   "h1",
-  "text-2xl/8 font-semibold tracking-tight",
+  "text-3xl/9 font-bold tracking-tight sm:text-4xl/10",
   "default",
 );
 
@@ -291,8 +293,8 @@ export function Text<E extends ElementType = "span">({
 }
 
 /**
- * The supporting line under a `PageHeader` or `Dialog` title: `Text as="p"` without the measure, so
- * it runs the width of its header. Internal; not exported from the package.
+ * The supporting line under a `Dialog` title: `Text as="p"` without the measure, so
+ * it runs the width of its dialog. Internal; not exported from the package.
  */
 export function HeaderText({ children }: { children: ReactNode }): ReactElement {
   return pinned("p", textVariant(false, false, false), "secondary", { children });

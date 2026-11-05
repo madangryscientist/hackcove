@@ -1,13 +1,13 @@
 import type { ReactElement, ReactNode } from "react";
 import type { Passthrough } from "./props.js";
-import { HeaderText, PageHeading } from "./typography.js";
+import { Lead, PageHeading } from "./typography.js";
 
 export type PageHeaderProps = {
   /** A `Breadcrumbs` above the title. */
   breadcrumbs?: ReactNode;
   /** The page's `h1`. */
   title: ReactNode;
-  /** A muted line under the title. */
+  /** The lede under the title: a `Lead`, so it outranks the body text after it. */
   subtitle?: ReactNode;
   /** Right of the title on `sm` and up, below it on a phone. */
   actions?: ReactNode;
@@ -32,8 +32,8 @@ export function PageHeaderContent({
         <div className="min-w-0">
           <PageHeading>{title}</PageHeading>
           {subtitle && (
-            <div className="mt-1">
-              <HeaderText>{subtitle}</HeaderText>
+            <div className="mt-2 max-w-[60ch]">
+              <Lead>{subtitle}</Lead>
             </div>
           )}
         </div>

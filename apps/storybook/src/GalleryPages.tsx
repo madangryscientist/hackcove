@@ -12,6 +12,7 @@ import {
   NotFound,
   Offline,
   Overline,
+  ProseLayout,
   SidebarLayout,
   StickyBar,
   Text,
@@ -93,6 +94,11 @@ export function GalleryPages() {
       <PageSequence />
       <PageBox label="ProseLayout">
         <ProsePage />
+      </PageBox>
+      <PageBox label="ProseLayout width wide">
+        <ProseLayout width="wide" title="Pricing" subtitle="Pay for what you review.">
+          <StatTiles columns={3} />
+        </ProseLayout>
       </PageBox>
       <PageBox label="CardGrid">
         <StatTiles columns={4} />

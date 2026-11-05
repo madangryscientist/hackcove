@@ -117,12 +117,16 @@ export function FormLayout({
 }
 
 /**
- * A text page: header, then `children` stacked `gap` apart (`md` by default), all in one `narrow`
- * (`max-w-3xl`) reading column that starts at the Container's left edge (it is not re-centred, so
- * the title does not jump). Unlike `FormLayout` the header sits inside the column, so its `actions`
- * stay beside the text instead of at the Container's far edge.
+ * A text page: header, then `children` stacked `gap` apart (`md` by default), all in one column that
+ * starts at the Container's left edge (it is not re-centred, so the title does not jump). `width`
+ * sets the column: `narrow` (`max-w-3xl`, the default) is a reading measure; `wide` (`max-w-5xl`) and
+ * `full` (the Container's whole width) suit a page that is not long prose, such as a pricing page.
+ * Paragraphs (`Text`) and the header's lede keep their own reading measure whatever the width.
+ * Unlike `FormLayout` the header sits inside the column, so its `actions` stay beside the text
+ * instead of at the Container's far edge.
  */
 export function ProseLayout({
+  width = "narrow",
   gap = "md",
   children,
   breadcrumbs,
@@ -137,10 +141,15 @@ export function ProseLayout({
    * @default md
    */
   gap?: StackGap | undefined;
+  /**
+   * The column's width: `narrow` max-w-3xl, `wide` max-w-5xl, `full` the Container's width.
+   * @default narrow
+   */
+  width?: "narrow" | "wide" | "full" | undefined;
   children?: ReactNode;
 } & Passthrough): ReactElement {
   return (
-    <div {...rest} className={STACK_WIDTH.narrow}>
+    <div {...rest} className={STACK_WIDTH[width]}>
       <PageHeader
         breadcrumbs={breadcrumbs}
         title={title}
