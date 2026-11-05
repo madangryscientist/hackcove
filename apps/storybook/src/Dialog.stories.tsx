@@ -10,6 +10,7 @@ import {
   Stack,
   Text,
 } from "@hackcove/ui-react";
+import { sampleScenes } from "./sampleScene";
 
 const meta: Meta = { title: "Feedback/Dialog" };
 export default meta;
@@ -205,6 +206,38 @@ export const Large: S = {
             <KeyValue label="Rows">42</KeyValue>
             <KeyValue label="Skipped">3</KeyValue>
           </KeyValueList>
+        </Dialog>
+      )}
+    </Opened>
+  ),
+};
+
+/**
+ * `size="full"`: the whole screen, for media or a player. The body takes the height between the
+ * header and the footer, and there is no backdrop to click, so the footer holds a close action
+ * on a `method="dialog"` form.
+ */
+export const Full: S = {
+  render: () => (
+    <Opened>
+      {(close) => (
+        <Dialog
+          title="Harbour at dusk"
+          description="Anna · Today, 09:12"
+          size="full"
+          onClose={close}
+          footer={
+            <form method="dialog">
+              <Button type="submit" variant="outline" autoFocus>
+                Close
+              </Button>
+            </form>
+          }
+        >
+          <Stack gap="sm">
+            <img src={sampleScenes[0]?.src} alt={sampleScenes[0]?.alt} />
+            <Text>{sampleScenes[0]?.caption}</Text>
+          </Stack>
         </Dialog>
       )}
     </Opened>

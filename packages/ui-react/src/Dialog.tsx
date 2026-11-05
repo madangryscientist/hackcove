@@ -5,9 +5,16 @@ import type { Passthrough } from "./props.js";
 import type { Size } from "./size.js";
 import { HeaderText, SectionHeading } from "./typography.js";
 
-const PANEL =
-  "mx-auto mt-28 max-w-[calc(100vw-2rem)] overflow-visible rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-2xl -translate-y-2 opacity-0 transition-[opacity,translate,overlay,display] transition-discrete duration-200 open:translate-y-0 open:opacity-100 starting:open:-translate-y-2 starting:open:opacity-0 backdrop:bg-slate-900/35 backdrop:opacity-0 backdrop:transition-[opacity,overlay,display] backdrop:transition-discrete backdrop:duration-200 open:backdrop:opacity-100 starting:open:backdrop:opacity-0 motion-reduce:transition-none motion-reduce:backdrop:transition-none";
-const SIZE: Record<Size, string> = { sm: "w-80", md: "w-110", lg: "w-160" };
+/** Shared by every size: the surface, its colours and the fade (and the scrim's) in and out. */
+const BASE =
+  "bg-white p-0 text-slate-900 opacity-0 transition-[opacity,translate,overlay,display] transition-discrete duration-200 open:opacity-100 starting:open:opacity-0 backdrop:bg-slate-900/35 backdrop:opacity-0 backdrop:transition-[opacity,overlay,display] backdrop:transition-discrete backdrop:duration-200 open:backdrop:opacity-100 starting:open:backdrop:opacity-0 motion-reduce:transition-none motion-reduce:backdrop:transition-none";
+/** A floating panel under the top edge: it also slides down 8px as it fades in. */
+const WINDOW =
+  "mx-auto mt-28 max-w-[calc(100vw-2rem)] overflow-visible rounded-2xl border border-slate-200 shadow-2xl -translate-y-2 open:translate-y-0 starting:open:-translate-y-2";
+const WIDTH: Record<Size, string> = { sm: "w-80", md: "w-110", lg: "w-160" };
+/** The whole viewport, edge to edge: no margin, radius, border or shadow, and a column so the body can fill it. */
+const FULL =
+  "fixed inset-0 m-0 size-full max-h-none max-w-none flex-col overflow-hidden rounded-none border-0 open:flex";
 
 export type DialogProps = {
   /** The dialog's accessible name, shown as its heading. */
@@ -19,10 +26,12 @@ export type DialogProps = {
   footer?: ReactNode;
   /**
    * The panel's width: `sm` (320px) is a list, `md` (440px) holds a form, `lg` (640px) a wider
-   * form or a table.
+   * form or a table. `full` fills the whole screen, for media or a player: the body takes the
+   * height between the header and the footer and scrolls if it is taller. It has no backdrop to
+   * click, so give it a close action in the `footer` (a `<form method="dialog">` button).
    * @default md
    */
-  size?: Size;
+  size?: Size | "full";
   /** Called when the dialog closes: Esc, a click on the backdrop, or a `<form method="dialog">` submit. */
   onClose: () => void;
 } & Passthrough;
@@ -45,6 +54,7 @@ export function Dialog({
   const titleId = useId();
 
   const closed = useModal(dialog, onClose);
+  const full = size === "full";
 
   return (
     <dialog
@@ -53,17 +63,21 @@ export function Dialog({
       aria-labelledby={titleId}
       onClose={closed}
       onClick={(event) => event.target === dialog.current && dialog.current?.close()}
-      className={cx(PANEL, SIZE[size])}
+      className={cx(BASE, size === "full" ? FULL : `${WINDOW} ${WIDTH[size]}`)}
     >
-      <div className="p-5.5">
+      <div className={cx("p-5.5", full && "flex min-h-0 flex-1 flex-col")}>
         <SectionHeading id={titleId}>{title}</SectionHeading>
         {description && (
           <div className="mt-1">
             <HeaderText>{description}</HeaderText>
           </div>
         )}
-        {children && <div className="mt-4">{children}</div>}
-        {footer && <div className="mt-5 flex justify-end gap-2">{footer}</div>}
+        {children && (
+          <div className={cx("mt-4", full && "min-h-0 flex-1 overflow-auto")}>{children}</div>
+        )}
+        {footer && (
+          <div className={cx("mt-5 flex justify-end gap-2", full && "shrink-0")}>{footer}</div>
+        )}
       </div>
     </dialog>
   );

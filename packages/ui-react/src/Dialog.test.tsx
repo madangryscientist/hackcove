@@ -112,4 +112,45 @@ describe("Dialog", () => {
     const md = renderToStaticMarkup(<Dialog title="t" onClose={() => {}} />);
     expect(md).toContain("w-110");
   });
+
+  it("fills the screen at size full, with a body that takes the height between header and footer", () => {
+    const out = renderToStaticMarkup(
+      <Dialog
+        title="t"
+        size="full"
+        footer={<button type="button">Close</button>}
+        onClose={() => {}}
+      >
+        <p>Player</p>
+      </Dialog>,
+    );
+    expect(out).toContain("fixed inset-0");
+    expect(out).toContain("size-full");
+    expect(out).toContain("rounded-none");
+    expect(out).toContain("min-h-0 flex-1 overflow-auto");
+    expect(out).toContain("shrink-0");
+    // Not a floating panel: no width, offset or slide.
+    for (const windowed of ["mt-28", "w-80", "w-110", "w-160", "translate-y"]) {
+      expect(out).not.toContain(windowed);
+    }
+  });
+
+  it("keeps the fade at size full and still opens as a modal", async () => {
+    const onClose = vi.fn<() => void>();
+    const out = mount(<Dialog title="t" size="full" onClose={onClose} />);
+    const dialog = dialogOf(out);
+    expect(showModal).toHaveBeenCalledExactlyOnceWith(dialog);
+    expect(dialog.className).toContain("starting:open:opacity-0");
+    expect(dialog.className).toContain("motion-reduce:transition-none");
+    await act(async () => dialog.close());
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("leaves the windowed sizes without the full-screen classes", () => {
+    for (const size of ["sm", "md", "lg"] as const) {
+      const out = renderToStaticMarkup(<Dialog title="t" size={size} onClose={() => {}} />);
+      expect(out).not.toContain("fixed inset-0");
+      expect(out).toContain("rounded-2xl");
+    }
+  });
 });
