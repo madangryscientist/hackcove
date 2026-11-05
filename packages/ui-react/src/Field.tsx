@@ -43,7 +43,8 @@ export function Field({
   span?: "full" | undefined;
   /**
    * `row` puts the label beside the control, for a compact setting or a drawer row; the hint or
-   * error sits under the control. `column` puts the label above it.
+   * error sits under the control. Every row label takes the same fixed column, so stacked rows line
+   * their controls up; a long label wraps inside it. `column` puts the label above it.
    * @default column
    */
   layout?: "column" | "row" | undefined;
@@ -55,13 +56,14 @@ export function Field({
     <div
       {...rest}
       className={cx(
-        row
-          ? "grid grid-cols-[max-content_1fr] items-center gap-x-3 gap-y-1.5"
-          : "flex flex-col gap-1.5",
+        row ? "grid grid-cols-[8rem_1fr] items-center gap-x-3 gap-y-1.5" : "flex flex-col gap-1.5",
         span === "full" && "col-span-full",
       )}
     >
-      <label htmlFor={htmlFor} className="text-sm font-medium text-slate-700">
+      <label
+        htmlFor={htmlFor}
+        className={cx("text-sm font-medium text-slate-700", row && "min-w-0 wrap-anywhere")}
+      >
         {label}
       </label>
       {children}

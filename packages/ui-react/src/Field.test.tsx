@@ -56,6 +56,8 @@ describe("Field", () => {
   });
 });
 
+const labelTrack = (out: string) => out.match(/grid-cols-\[[^\]]+\]/)?.[0];
+
 const row = (extra: { hint?: string; error?: string } = {}) =>
   renderToStaticMarkup(
     <Field label="Rank" htmlFor="rank" layout="row" {...extra}>
@@ -71,11 +73,27 @@ describe("Field layout", () => {
 
   it("puts the label beside the control with layout=row", () => {
     const out = row();
-    expect(out).toContain("grid grid-cols-[max-content_1fr] items-center");
+    expect(out).toContain("grid grid-cols-[8rem_1fr] items-center");
     expect(out).not.toContain("flex-col");
     expect(out).not.toContain("layout=");
     expect(out.indexOf("<label")).toBeLessThan(out.indexOf("<input"));
     expect(out).not.toContain("col-start-2");
+  });
+
+  it("gives every row the same label column, whatever the label says", () => {
+    const short = renderToStaticMarkup(
+      <Field label="Rank" htmlFor="a" layout="row">
+        <input id="a" />
+      </Field>,
+    );
+    const long = renderToStaticMarkup(
+      <Field label="Notification frequency for shared projects" htmlFor="b" layout="row">
+        <input id="b" />
+      </Field>,
+    );
+    expect(labelTrack(short)).toBe("grid-cols-[8rem_1fr]");
+    expect(labelTrack(long)).toBe(labelTrack(short));
+    expect(long).toContain("min-w-0 wrap-anywhere");
   });
 
   it("keeps the hint or error under the control, in the second column", () => {
