@@ -3,6 +3,9 @@ import {
   AppShell,
   Button,
   Card,
+  DetailLayout,
+  KeyValue,
+  KeyValueList,
   Tabs,
   PageHeader,
   SidebarLayout,
@@ -15,7 +18,9 @@ import { DemoShell, layoutPage } from "./DemoShell";
  * A vertical link list beside the canvas, both inside the shell's Container, so the rail starts at
  * the header logo's x and the canvas ends at the header's right edge. The rail has no background;
  * it stacks above the canvas below `md`, or folds behind a disclosure when it sets `railLabel`. Not in the no-jump title check (its canvas sits right of
- * the rail); the e2e asserts the shared edges on their own terms.
+ * the rail); the e2e asserts the shared edges on their own terms. From `md` the rail stays in view
+ * under the shell's header as a long page scrolls, with or without `railLabel`; a rail taller than
+ * the screen scrolls itself. Below `md` nothing sticks.
  */
 const meta: Meta = {
   title: "Page layouts/SidebarLayout",
@@ -124,6 +129,99 @@ export const LongRail: S = {
             <Text as="p">The page is first on a phone; the rail opens from the disclosure.</Text>
           </Card>
         </Stack>
+      </SidebarLayout>
+    </DemoShell>
+  ),
+};
+
+const longPage = Array.from({ length: 12 }, (_, i) => (
+  <Card key={i} title={`Block ${i + 1}`}>
+    <Text as="p">
+      A block of a long page. The rail beside it stays in view under the header while this scrolls.
+    </Text>
+  </Card>
+));
+
+/** A long page: from `md` the rail stays in view under the header as it scrolls, with `railLabel` set. */
+export const StickyRail: S = {
+  render: () => (
+    <DemoShell>
+      <SidebarLayout
+        railLabel="All sections"
+        rail={
+          <Tabs
+            variant="pill"
+            orientation="vertical"
+            label="Sections"
+            items={sections
+              .slice(0, 8)
+              .map((label, i) => ({ label, href: `#${label}`, active: i === 0 }))}
+          />
+        }
+      >
+        <PageHeader title="Section 1" subtitle="8 sections." />
+        <Stack>{longPage}</Stack>
+      </SidebarLayout>
+    </DemoShell>
+  ),
+};
+
+const manySections = Array.from({ length: 60 }, (_, i) => `Section ${i + 1}`);
+
+/** A rail taller than the screen scrolls inside itself, so its last link is reachable while the page scrolls. */
+export const TallRail: S = {
+  render: () => (
+    <DemoShell>
+      <SidebarLayout
+        railLabel="All sections"
+        rail={
+          <Tabs
+            variant="pill"
+            orientation="vertical"
+            label="Sections"
+            items={manySections.map((label, i) => ({ label, href: `#${label}`, active: i === 0 }))}
+          />
+        }
+      >
+        <PageHeader title="Section 1" subtitle="60 sections." />
+        <Stack>{longPage}</Stack>
+      </SidebarLayout>
+    </DemoShell>
+  ),
+};
+
+/** A rail and a `DetailLayout` with `stickyAside` in its canvas, as the docs use them: both stay in view. */
+export const WithDetail: S = {
+  render: () => (
+    <DemoShell>
+      <SidebarLayout
+        railLabel="All sections"
+        rail={
+          <Tabs
+            variant="pill"
+            orientation="vertical"
+            label="Sections"
+            items={sections
+              .slice(0, 8)
+              .map((label, i) => ({ label, href: `#${label}`, active: i === 0 }))}
+          />
+        }
+      >
+        <DetailLayout
+          title="Section 1"
+          subtitle="A record with its facts."
+          stickyAside
+          aside={
+            <Card title="On this page">
+              <KeyValueList>
+                <KeyValue label="Blocks">12</KeyValue>
+                <KeyValue label="Status">Draft</KeyValue>
+              </KeyValueList>
+            </Card>
+          }
+        >
+          {longPage}
+        </DetailLayout>
       </SidebarLayout>
     </DemoShell>
   ),

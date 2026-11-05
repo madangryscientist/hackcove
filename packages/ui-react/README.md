@@ -253,6 +253,9 @@ except the last four.
   `children` is the list, replaced by `empty` when `isEmpty`.
 - **`DetailLayout`**: use this when a page is one thing with facts beside it. `children` take two
   thirds from `lg` and `aside` one third; below `lg` the aside stacks under the main column.
+  `stickyAside` (off by default, since an aside of ordinary cards may be taller than the screen)
+  keeps the aside in view from `lg` as a long page scrolls: it sticks under the shell's header and
+  scrolls itself when it is taller than the room left.
 - **`FormLayout`**: use this for a create or edit page. A `max-w-3xl` `<form>` that starts at the
   Container's left edge (it is not re-centred, so the title does not jump), with an `actions` row at
   the end. Other props (`onSubmit`, `action`) go on the `<form>`.
@@ -271,8 +274,10 @@ except the last four.
   plain `<AppShell>`, no `bleed`: it sits in the Container like every other layout, so the rail
   starts at the header logo's x and the canvas ends at the header's right edge. The rail has no fill
   and no border (pill `Tabs` with `orientation="vertical"` is its content); from `md` it is `md:w-56` beside
-  the canvas, and below `md` it stacks above it. A long rail sets `railLabel`: below `md` the rail
-  then folds, closed, behind a disclosure of that name, so a phone shows the page first.
+  the canvas, and below `md` it stacks above it. From `md` the rail also stays in view under the
+  shell's header as a long page scrolls (always, with or without `railLabel`); a rail taller than
+  the screen scrolls itself, so its last link is reachable. A long rail sets `railLabel`: below `md`
+  the rail then folds, closed, behind a disclosure of that name, so a phone shows the page first.
 - **`FullBleedLayout`**: use this for a viewer that needs the whole width. Render it in
   `<AppShell bleed>`; `children` fill the width, and an optional `panel` takes `lg:w-72` on the
   right and stacks below under `lg`. It adds no padding, so a viewer fills the width; set `padded`

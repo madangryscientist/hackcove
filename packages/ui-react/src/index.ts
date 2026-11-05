@@ -30,8 +30,8 @@ export {
   FullBleedLayout,
   ListLayout,
   ProseLayout,
-  SidebarLayout,
 } from "./PageLayouts.js";
+export { SidebarLayout } from "./SidebarLayout.js";
 export { StickyBar } from "./StickyBar.js";
 export { ErrorPage, Forbidden, Maintenance, NotFound, Offline } from "./StatusPages.js";
 export {

@@ -8,7 +8,6 @@ import {
   FullBleedLayout,
   ListLayout,
   ProseLayout,
-  SidebarLayout,
 } from "./PageLayouts.js";
 
 const classesOf = (out: string) => /class="([^"]*)"/.exec(out)?.[1]?.split(" ") ?? [];
@@ -65,6 +64,28 @@ describe("DetailLayout", () => {
 
   it("orders the aside after main, so it stacks below on a smaller screen", () => {
     expect(inOrder(out, ["Quote 7", "MAIN", "SIDE"])).toBe(true);
+  });
+
+  it("leaves the aside in the flow unless stickyAside", () => {
+    expect(out).not.toMatch(/sticky|overflow|max-h-/);
+  });
+
+  it("with stickyAside sticks the aside under the header from lg and scrolls it within the room left", () => {
+    const sticky = renderToStaticMarkup(
+      <DetailLayout title="Quote 7" aside="SIDE" stickyAside>
+        MAIN
+      </DetailLayout>,
+    );
+    const aside = /<aside class="([^"]*)"/.exec(sticky)?.[1]?.split(" ") ?? [];
+    expect(aside).toEqual(
+      expect.arrayContaining(["lg:sticky", "lg:top-[var(--app-header,0px)]", "lg:self-start"]),
+    );
+    expect(sticky).toMatch(
+      /<aside[^>]*><div class="[^"]*lg:max-h-\[calc\(100dvh-var\(--app-header,0px\)-2rem\)\][^"]*lg:overflow-y-auto[^"]*lg:p-1/,
+    );
+    // Below lg the aside stacks as ever: nothing sticks or scrolls without the breakpoint.
+    expect(sticky).not.toMatch(/(^|[ "])(sticky|overflow-y-auto|max-h-)/);
+    expect(inOrder(sticky, ["MAIN", "SIDE"])).toBe(true);
   });
 });
 
@@ -195,42 +216,6 @@ describe("CardGrid", () => {
         ),
       ),
     ).toContain("items-start");
-  });
-});
-
-describe("SidebarLayout", () => {
-  const out = renderToStaticMarkup(<SidebarLayout rail="RAIL">CANVAS</SidebarLayout>);
-
-  it("lives in the shell's Container: no height, no full-bleed edge, no own padding", () => {
-    expect(out).not.toMatch(/calc\(|100vh|57px|h-\[|min-h-0|flex-1 flex-col/);
-    expect(out).not.toMatch(/\bpx-|\bpy-/);
-  });
-
-  it("stacks the rail above the canvas below md and makes it w-56 from md", () => {
-    expect(out).toMatch(/^<div class="[^"]*flex-col[^"]* md:flex-row/);
-    expect(out).toMatch(/<aside class="[^"]*w-full[^"]*md:w-56[^"]*">RAIL<\/aside>/);
-    expect(inOrder(out, ["RAIL", "CANVAS"])).toBe(true);
-  });
-
-  it("leaves the rail on the page background: no fill and no border", () => {
-    const aside = /<aside class="([^"]*)"/.exec(out)?.[1] ?? "";
-    expect(aside).not.toMatch(/\bbg-|\bborder/);
-  });
-
-  it("lets the canvas shrink so a wide table scrolls inside it", () => {
-    expect(out).toMatch(/<div class="min-w-0 flex-1">CANVAS<\/div>/);
-  });
-
-  it("folds a long rail behind a closed disclosure, summary first, only with railLabel", () => {
-    const folded = renderToStaticMarkup(
-      <SidebarLayout rail="RAIL" railLabel="All sections">
-        CANVAS
-      </SidebarLayout>,
-    );
-    expect(folded).toContain("<details");
-    expect(folded).not.toContain("<details open");
-    expect(inOrder(folded, ["All sections", "RAIL", "CANVAS"])).toBe(true);
-    expect(out).not.toContain("<details");
   });
 });
 
