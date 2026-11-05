@@ -123,12 +123,17 @@ function GalleryPageFade() {
 
 /** The two dialogs, the Drawer and the Lightbox, shut: each button opens one over the page (open, they make the page inert). */
 function GalleryDialogs() {
-  const [open, setOpen] = useState<"dialog" | "field" | "drawer" | "lightbox" | null>(null);
+  const [open, setOpen] = useState<"dialog" | "full" | "field" | "drawer" | "lightbox" | null>(
+    null,
+  );
   const close = () => setOpen(null);
   return (
     <div className="flex flex-wrap gap-2">
       <Button variant="outline" onClick={() => setOpen("dialog")}>
         Open Dialog
+      </Button>
+      <Button variant="outline" onClick={() => setOpen("full")}>
+        Open full-screen Dialog
       </Button>
       <Button variant="outline" onClick={() => setOpen("field")}>
         Open FieldDialog
@@ -147,6 +152,16 @@ function GalleryDialogs() {
           footer={<Button onClick={close}>Delete</Button>}
         >
           <Text>There is no undo.</Text>
+        </Dialog>
+      )}
+      {open === "full" && (
+        <Dialog
+          title="Harbour at dusk"
+          size="full"
+          onClose={close}
+          footer={<Button onClick={close}>Close</Button>}
+        >
+          <Text>Fills the screen.</Text>
         </Dialog>
       )}
       {open === "drawer" && (
