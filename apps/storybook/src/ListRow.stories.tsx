@@ -76,6 +76,20 @@ export const Small: S = {
   ),
 };
 
+/** A compact bordered list, such as a split's summary: a `Card flush` around `static` rows at `size="sm"`, `divided` after the first; no hover fill, no click target. */
+export const CompactList: S = {
+  render: () => (
+    <Card flush>
+      <ListRow static size="sm" trailing="R 1 200">
+        Groceries
+      </ListRow>
+      <ListRow static size="sm" divided trailing="R 640">
+        Household
+      </ListRow>
+    </Card>
+  ),
+};
+
 /** `leading` before the label, and `selected` on the row whose detail is open: a violet fill. */
 export const LeadingAndSelected: S = {
   render: () => (

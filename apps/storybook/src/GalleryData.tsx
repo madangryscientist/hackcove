@@ -21,6 +21,7 @@ import {
 } from "@hackcove/ui-react";
 import { samplePhoto } from "./samplePhoto";
 import { InsetAndNested } from "./GalleryCardInset";
+import { DenseRows } from "./GalleryDenseRows";
 
 /** A Callout with an action, in info and in danger. */
 function GalleryCalloutActions() {
@@ -44,7 +45,7 @@ function GalleryCalloutActions() {
   );
 }
 
-/** The Card variants (flush, header bar, dashed, dashed filled, dense, toned), the Callout actions (info and danger), banner and link, the ListRow set (a static row with leading, selected and hover actions), a link Card, a Table with a stretched row link and toned rows, a Table with a group row, cell tones, a truncated cell and a totals foot, a plain Table with a second-line cell and an `srLabel` actions column and a Timeline. */
+/** The Card variants (flush, header bar, dashed, dashed filled, dense, toned), the Callout actions (info and danger), banner and link, the ListRow set (a dense row and a compact bordered list of `static` `size="sm"` rows, a static row with leading, selected and hover actions), a link Card, a Table with a stretched row link and toned rows, a Table with a group row, cell tones, a truncated cell and a totals foot, a plain Table with a second-line cell and an `srLabel` actions column and a Timeline. */
 export function GalleryData() {
   return (
     <div className="flex flex-col gap-4">
@@ -96,11 +97,7 @@ export function GalleryData() {
       >
         A linked callout.
       </Callout>
-      <Card flush size="sm">
-        <ListRow size="sm" trailing="R 9 500">
-          Dense row
-        </ListRow>
-      </Card>
+      <DenseRows />
       <GalleryStaticRows />
       <Card dashed>No statements yet.</Card>
       <Card dashed="filled">No quotes yet.</Card>

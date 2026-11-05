@@ -73,3 +73,44 @@ export const DontLink: S = {
     </TextLink>
   ),
 };
+
+/** `label` makes a two-tone `label: value` pill: the label keeps the tone's tint and the children, the value, sit on the surface beside it. Keep the label to a word or two. */
+export const TwoTone: S = {
+  render: () => (
+    <Cluster>
+      <Pill label="Weight">72 kg</Pill>
+      <Pill label="Sleep" tone="sky" round>
+        7 h 20 min
+      </Pill>
+      <Pill label="Mood" tone="emerald" dot>
+        Good
+      </Pill>
+      <Pill label="Pain" tone="red" href="#pain">
+        3 / 10
+      </Pill>
+    </Cluster>
+  ),
+};
+
+/** `onRemove` adds an x button after the text, named by `removeLabel`. On a link or button pill the x is a button beside it, not inside it. */
+export const Removable: S = {
+  render: () => (
+    <Cluster>
+      <Pill onRemove={() => undefined} removeLabel="Remove tag Urgent" tone="amber">
+        Urgent
+      </Pill>
+      <Pill
+        onClick={() => undefined}
+        onRemove={() => undefined}
+        removeLabel="Remove invoice.pdf"
+        tone="sky"
+        round
+      >
+        invoice.pdf
+      </Pill>
+      <Pill href="#a" onRemove={() => undefined} removeLabel="Remove report.pdf" label="File">
+        report.pdf
+      </Pill>
+    </Cluster>
+  ),
+};
