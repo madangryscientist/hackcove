@@ -1,3 +1,13 @@
+## 0.8.2 (2026-11-05)
+
+### 🚀 Features
+
+- **ui-react:** a stronger page title and lede, and a ProseLayout width ([#45](https://github.com/madangryscientist/hackcove/pull/45))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.2.0 (2026-11-04)
 
 ### 🚀 Features
