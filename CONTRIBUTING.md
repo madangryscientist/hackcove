@@ -61,9 +61,9 @@ bunx nx e2e hack-cove-site                      # Playwright: builds the site, f
 `bunx nx affected -t <target>` runs just what changed. Lint rules are all errors: fix the code, do
 not disable a rule.
 
-CI uses an Nx Cloud remote cache (`nxCloudId` in `nx.json`). Without credentials, Nx prints
-"Nx Cloud encountered some problems … (code: 401)" after a run. That is expected: the task still
-runs locally and the exit code is unaffected. `NX_NO_CLOUD=true` silences it.
+Nx caches locally only; there is no Nx Cloud. CI keeps `.nx/cache` between runs with
+`actions/cache` (`.github/workflows/ci.yml`): a pull request restores its own cache or `main`'s and
+saves its own, so one branch never reads another's. `e2e` is never cached.
 
 The shared compiler options live in `tsconfig.shared.json`, not a root `tsconfig.base.json` or
 `tsconfig.json`: Nx reads only those two names, and TypeScript 7 has no classic compiler API for it

@@ -35,8 +35,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: npm-publish
-    # A release builds from scratch and never reads the Nx Cloud remote cache: what is published is
-    # what this job built.
+    # A release builds from scratch and restores no cache and never talks to Nx Cloud: what is
+    # published is what this job built.
     env:
       NX_NO_CLOUD: "true"
     permissions:

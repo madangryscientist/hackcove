@@ -136,6 +136,7 @@ jobs:
         id: rubric
         if: ${{ env.KEY_SET == 'true' }}
         env:
+          NX_NO_CLOUD: "true" # the build below runs nx; an older pinned hackcove-ref may still be wired to Nx Cloud
           BUILD_RUBRIC: ${{ inputs.build-rubric }}
           LLMS_URL: ${{ inputs.llms-url }}
         run: |

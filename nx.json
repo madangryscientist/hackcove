@@ -67,6 +67,5 @@
       }
     }
   },
-  "plugins": ["./apps/storybook/scripts/nx-plugin.ts"],
-  "nxCloudId": "6aea466108eac5e3f522ac58"
+  "plugins": ["./apps/storybook/scripts/nx-plugin.ts"]
 }
