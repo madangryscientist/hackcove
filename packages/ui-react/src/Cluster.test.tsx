@@ -55,3 +55,27 @@ describe("ClusterGrow", () => {
     );
   });
 });
+
+describe("ClusterGrow minWidth", () => {
+  it.each([
+    ["sm", "min-w-0 flex-[1_1_12rem]"],
+    ["md", "min-w-0 flex-[1_1_17rem]"],
+  ] as const)(
+    "minWidth %s grows from a %s basis, so a wrapping row drops it under",
+    (minWidth, cls) => {
+      expect(renderToStaticMarkup(<ClusterGrow minWidth={minWidth}>x</ClusterGrow>)).toBe(
+        `<div class="${cls}">x</div>`,
+      );
+    },
+  );
+
+  it("still shrinks to nothing without it", () => {
+    expect(renderToStaticMarkup(<ClusterGrow>x</ClusterGrow>)).toContain("min-w-0 flex-1");
+  });
+
+  it("does not leak minWidth onto the element", () => {
+    expect(renderToStaticMarkup(<ClusterGrow minWidth="sm">x</ClusterGrow>)).not.toContain(
+      "minwidth",
+    );
+  });
+});

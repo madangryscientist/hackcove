@@ -168,6 +168,12 @@ const COLUMNS = {
   4: "lg:grid-cols-4",
 } as const;
 
+/** Two unequal columns, one on a phone, the ratio from `md`; `minmax(0,…)` lets a long value shrink instead of widening its column. */
+const RATIOS = {
+  "2:1": "md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]",
+  "1:2": "md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]",
+} as const;
+
 /** `columns="auto"` fits as many cards per row as the width allows, none narrower than this. */
 const AUTO_MIN_WIDTH = {
   sm: "grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]",
@@ -177,10 +183,11 @@ const AUTO_MIN_WIDTH = {
 type CardGridProps = (
   | {
       /**
-       * Cards per row from `lg` (one on a phone, two from `sm`), or `auto` for as many as fit.
+       * Cards per row from `lg` (one on a phone, two from `sm`), `auto` for as many as fit, or a ratio:
+       * `2:1` or `1:2` is two columns, the first or the second twice as wide, from `md` (one on a phone).
        * @default 3
        */
-      columns?: keyof typeof COLUMNS | undefined;
+      columns?: keyof typeof COLUMNS | keyof typeof RATIOS | undefined;
       /** With `columns="auto"`, the narrowest a card gets: `md` 17rem or `sm` 12rem. */
       minWidth?: undefined;
     }
@@ -204,9 +211,19 @@ type CardGridProps = (
   children: ReactNode;
 } & Passthrough;
 
+function gridColumns(
+  columns: keyof typeof COLUMNS | keyof typeof RATIOS | "auto",
+  minWidth: keyof typeof AUTO_MIN_WIDTH,
+): string {
+  if (columns === "auto") return AUTO_MIN_WIDTH[minWidth];
+  if (typeof columns === "string") return cx("grid-cols-1", RATIOS[columns]);
+  return cx("grid-cols-1 sm:grid-cols-2", COLUMNS[columns]);
+}
+
 /**
  * A responsive grid of tiles: one column on a phone, two from `sm`, `columns` from `lg`.
- * `columns="auto"` instead fits as many per row as the width allows, each at least `minWidth` wide:
+ * `columns="2:1"` or `"1:2"` is instead two unequal columns from `md`, one on a phone: a main card beside a
+ * narrow one (a record's detail and its side panel). `columns="auto"` instead fits as many per row as the width allows, each at least `minWidth` wide:
  * `md` (17rem, the default) or `sm` (12rem). `align="start"` keeps each card its own height
  * instead of stretching it to the tallest in its row. `as="ul"` makes it a list of cards for a
  * screen reader: the grid is a `<ul>` and each child is wrapped in an `<li>`, still stretched.
@@ -225,9 +242,7 @@ export function CardGrid({
       {...(Tag === "ul" ? { role: "list" } : {})}
       className={cx(
         "grid gap-4",
-        columns === "auto"
-          ? AUTO_MIN_WIDTH[minWidth]
-          : cx("grid-cols-1 sm:grid-cols-2", COLUMNS[columns]),
+        gridColumns(columns, minWidth),
         align === "start" && "items-start",
       )}
     >

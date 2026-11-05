@@ -20,6 +20,24 @@ import {
 import { DemoShell } from "./layout/DemoShell";
 import { DetailPage, FormPage, ListPage, ProsePage, StatTiles } from "./layout/pages";
 
+/** CardGrid `columns` as a ratio: 2:1 and 1:2, each a card beside a narrower one. */
+function RatioGrids() {
+  return (
+    <div className="flex flex-col gap-4">
+      {(["2:1", "1:2"] as const).map((columns) => (
+        <CardGrid key={columns} columns={columns}>
+          <Card title={`Wide ${columns}`}>
+            <Text as="p">First column.</Text>
+          </Card>
+          <Card title="Narrow">
+            <Text as="p">Second column.</Text>
+          </Card>
+        </CardGrid>
+      ))}
+    </div>
+  );
+}
+
 /** An AppShell in a box that scrolls under its sticky header; `bleed` is for the full-height layouts. */
 function PageBox({
   label,
@@ -102,6 +120,9 @@ export function GalleryPages() {
       </PageBox>
       <PageBox label="CardGrid">
         <StatTiles columns={4} />
+      </PageBox>
+      <PageBox label="CardGrid columns 2:1 and 1:2">
+        <RatioGrids />
       </PageBox>
       <PageBox label="CardGrid columns auto, align start">
         <CardGrid columns="auto" minWidth="sm" align="start">

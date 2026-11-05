@@ -1,7 +1,7 @@
 import { type ComponentPropsWithoutRef, type ReactElement, type ReactNode, useId } from "react";
 import { type CalloutTone, TONE_SURFACE } from "./Callout.js";
 import { CardBadge } from "./CardBadge.js";
-import { CardBar, CardFooter, CardHeader, CardHeading, CardIcon } from "./CardParts.js";
+import { CardBar, CardFooter, CardHeader, CardHeading, CardIcon, CardInset } from "./CardParts.js";
 import { cx, focusRing, liftInteractive } from "./cx.js";
 import type { IconName } from "./icons.js";
 import { type LinkRender, renderLink } from "./link.js";
@@ -102,6 +102,8 @@ type CardBase = {
   tone?: CalloutTone;
   /** One of the library's icons, drawn at feature size in the accent colour above the title: the mark of a feature card. Ignored with `bar`, `flush` and `dashed`. */
   icon?: IconName;
+  /** A band across the card, edge to edge inside its padding, under the title and above the children: a `ProgressBar` or a strip of colour that runs the card's full width. Ignored with `dashed`. */
+  inset?: ReactNode;
   /** A `Pill` (or any small node) pinned in the top-right corner, over the content and inside the radius, with no change to the layout. On a card that is a link it is part of the link's name, and a link or button in it is clickable on its own. */
   badge?: ReactNode;
   /** The warn tone's strong border in place of the card's own, for the one card in a set that needs a look (a run that differed). It keeps the card's fill. Ignored with `dashed`. */
@@ -206,6 +208,7 @@ function PanelCard(props: CardPanelProps): ReactElement {
     dashed,
     tone,
     badge,
+    inset,
     attention,
     icon,
     size = "md",
@@ -226,7 +229,7 @@ function PanelCard(props: CardPanelProps): ReactElement {
     rest["aria-labelledby"] === undefined;
   return (
     <Tag {...(named ? { "aria-labelledby": headingId } : {})} {...rest} className={cardClass(form)}>
-      {cardBody(form, { title, count, status, actions, children, headingId })}
+      {cardBody(form, { title, count, status, actions, inset, children, headingId })}
       {form.footer && <CardFooter size={form.size}>{footer}</CardFooter>}
       {badge && <CardBadge size={form.size}>{badge}</CardBadge>}
     </Tag>
@@ -260,6 +263,7 @@ function LinkCard(props: CardLinkProps): ReactElement {
     dashed,
     tone,
     badge,
+    inset,
     attention,
     icon,
     size = "md",
@@ -289,9 +293,18 @@ function LinkCard(props: CardLinkProps): ReactElement {
         ),
         children: null,
       })}
-      {cardBody(form, { title, count, status, actions, children, headingId: undefined })}
+      {cardBody(form, { title, count, status, actions, inset, children, headingId: undefined })}
       {badge && <CardBadge size={form.size}>{badge}</CardBadge>}
     </div>
+  );
+}
+
+function insetBand(form: ReturnType<typeof cardForm>, inset: ReactNode): ReactNode {
+  if (!inset || form.dashed) return null;
+  return (
+    <CardInset size={form.size} bleed={!form.flush}>
+      {inset}
+    </CardInset>
   );
 }
 
@@ -302,6 +315,7 @@ function cardBody(
     count,
     status,
     actions,
+    inset,
     children,
     headingId,
   }: {
@@ -309,6 +323,7 @@ function cardBody(
     count: number | undefined;
     status: ReactNode;
     actions: ReactNode;
+    inset: ReactNode;
     children: ReactNode;
     headingId: string | undefined;
   },
@@ -325,11 +340,15 @@ function cardBody(
     />
   );
   const grow = form.footer && "flex-1";
+  const band = insetBand(form, inset);
   if (form.bar) {
     return (
       <>
         <CardBar heading={heading} actions={actions} size={form.size} />
-        <div className={cx(grow, !form.flush && BODY_PAD[form.size]) || undefined}>{children}</div>
+        <div className={cx(grow, !form.flush && BODY_PAD[form.size]) || undefined}>
+          {band}
+          {children}
+        </div>
       </>
     );
   }
@@ -337,6 +356,7 @@ function cardBody(
     <>
       {form.icon && <CardIcon name={form.icon} size={form.size} />}
       <CardHeader heading={heading} actions={actions} size={form.size} />
+      {band}
       {children}
     </>
   );

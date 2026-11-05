@@ -10,7 +10,7 @@ export const content: ComponentSection = {
       summary: "A bordered panel that groups one thing on a page.",
       whenToUse: "A titled block of related content: a record, a status, a list, an empty state.",
       pairs: ["Card/Status", "Card/Spacing"],
-      stories: ["CardBadge", "CardIcon"],
+      stories: ["CardBadge", "CardIcon", "CardInset"],
       usage: [
         "Name the Card with `title`; add a `count` or a `status` and they sit beside the title.",
         "`actions` sit at the far end of the header; use `bar` to put the header in a tinted strip.",
@@ -18,7 +18,8 @@ export const content: ComponentSection = {
         "`flush` is for a table that runs edge to edge, and it needs a `bar` for its title.",
         "A Card with `href` is one link; a `TextLink` or `Button` inside it sits above that link and is clickable on its own, and a click elsewhere on the card follows the link.",
         "`footer` is a strip across the bottom for the card's own actions or a total; it stays at the foot of a stretched card in a `CardGrid`.",
-        '`CardGrid` takes `columns` 2, 3 or 4, or `columns="auto"` with `minWidth` `sm` or `md` to fill by width; `align="start"` stops cards stretching to the tallest in their row.',
+        '`CardGrid` takes `columns` 2, 3 or 4, `"2:1"` or `"1:2"` for unequal columns, or `columns="auto"` with `minWidth` `sm` or `md` to fill by width; `align="start"` stops cards stretching to the tallest in their row.',
+        '`inset` is a band across the card, edge to edge inside its padding, under the title: a `ProgressBar` that runs the card\'s full width. A bordered sub-card inside a card is a nested `Card tone="neutral"`, not a hand-built box.',
         "`dashed` is the empty state.",
         '`badge` pins a `Pill` to the top-right corner, over the content, on a panel or a link card: a category (`Pill tone="sky"`) or a flag on the thing itself.',
         '`attention` draws the strong warn edge round a card that needs a look (a flaky shot, a failing check); add `tone="warn"` for the warn surface too. It does nothing on a `dashed` card.',

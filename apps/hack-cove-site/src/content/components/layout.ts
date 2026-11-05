@@ -117,7 +117,8 @@ export const layout: ComponentSection = {
         "`width` caps the column at the left edge: `narrow` (a reading measure), `wide`, `full`, or `default` for the parent's width. It is never re-centred.",
         '`as` is `div` (default), `section`, `form`, `ul` or `ol`. `as="form"` takes the form props and spaces its fields; `as="ul"` and `as="ol"` draw no markers and their children are `<li>`s.',
         "A titled group is a `Section`: `title`, `actions` beside it, then the blocks, at gap `md` (default). It takes `gap` and `width` as `Stack` does.",
-        "A row of items is a `Cluster`, not a Stack.",
+        "`rowFrom` (`sm`, `md` or `lg`) turns the column into a row from that breakpoint and leaves it a column below: a main block beside a side column on a wide screen, stacked on a phone. Put the block that takes the width left in a `ClusterGrow`.",
+        "A row that is a row at every width is a `Cluster`, not a Stack.",
       ],
       accessibility: [
         "`Section` is a `<section>` named by its `title` (`aria-labelledby`), so it is a region; with no `title` give it an `aria-label`.",
@@ -141,6 +142,7 @@ export const layout: ComponentSection = {
         "`wrap` lets the items flow onto more lines on a phone; without it the row stays on one line.",
         "Wrap the one item that should fill the row in `ClusterGrow`; it can shrink to nothing, so a long value truncates and the others stay.",
         "An empty `ClusterGrow` is a spacer: what follows it goes to the end.",
+        "`ClusterGrow` takes `minWidth` (`sm` 12rem or `md` 17rem) when it must keep a width: in a `Cluster` with `wrap` it then drops under the other items instead of being squashed beside them. A `ClusterGrow` also works inside a `Stack` with `rowFrom`.",
         "A row of buttons is a `ButtonGroup`, which wraps on a phone and can pin an item to the end. Use `Cluster` for every other row.",
         '`justify="between"` is for two items; with more, the middle one floats, so use a spacer.',
         '`as="span"` makes the row a `span`, for inside a paragraph where a `div` is not allowed; its items must then be phrasing content, so no `ClusterGrow`.',

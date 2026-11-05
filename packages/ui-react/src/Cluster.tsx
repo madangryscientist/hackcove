@@ -75,17 +75,32 @@ export function Cluster({
   );
 }
 
+export type ClusterGrowMinWidth = "sm" | "md";
+
+/** The narrowest a `ClusterGrow` gets before it wraps under, the same two steps as `CardGrid`'s `minWidth`. */
+const GROW_MIN_WIDTH: Record<ClusterGrowMinWidth, string> = {
+  sm: "min-w-0 flex-[1_1_12rem]",
+  md: "min-w-0 flex-[1_1_17rem]",
+};
+
 /**
- * The one child of a `Cluster` that grows to the room left in the row. It can shrink to nothing
- * (`min-w-0`), so the items beside it stay on the line and a long value truncates instead of
- * pushing them out. Empty, it is a spacer.
+ * The one child of a `Cluster` (or of a `Stack` with `rowFrom`) that grows to the room left in the
+ * row. By default it can shrink to nothing (`min-w-0`), so the items beside it stay on the line and
+ * a long value truncates instead of pushing them out. With `minWidth` it instead keeps that width
+ * (`sm` 12rem, `md` 17rem) and, in a `Cluster` with `wrap`, drops onto the next line when the room
+ * left is narrower, rather than being squashed. Empty, it is a spacer.
  */
 export function ClusterGrow({
+  minWidth,
   children,
   ...rest
-}: { children?: ReactNode } & Passthrough): ReactElement {
+}: {
+  /** The narrowest it gets: `sm` 12rem or `md` 17rem. In a `Cluster` with `wrap` it wraps under the other items below this width. Left out, it shrinks to nothing. */
+  minWidth?: ClusterGrowMinWidth | undefined;
+  children?: ReactNode;
+} & Passthrough): ReactElement {
   return (
-    <div {...rest} className="min-w-0 flex-1">
+    <div {...rest} className={minWidth ? GROW_MIN_WIDTH[minWidth] : "min-w-0 flex-1"}>
       {children}
     </div>
   );

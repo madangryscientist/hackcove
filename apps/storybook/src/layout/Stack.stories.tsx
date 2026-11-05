@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   Button,
   Card,
+  ClusterGrow,
   Field,
   Input,
   PageHeader,
@@ -164,6 +165,25 @@ export const AsList: S = {
             <Text>2. Import the theme.</Text>
           </li>
         </Stack>
+      </Stack>
+    </DemoShell>
+  ),
+};
+
+/** `rowFrom` keeps the Stack a column on a phone and makes it a row from that breakpoint (`sm`, `md` or `lg`): the main block takes the width in a `ClusterGrow`, the side column keeps its own. */
+export const RowFromMd: S = {
+  render: () => (
+    <DemoShell>
+      <PageHeader title="Chat" subtitle='Stack rowFrom="md": stacked on a phone, a row from md.' />
+      <Stack rowFrom="md" gap="sm">
+        <ClusterGrow>
+          <Card title="Conversation">
+            <Text as="p">The thread takes the width that is left.</Text>
+          </Card>
+        </ClusterGrow>
+        <Card title="Details" size="sm">
+          <Text as="p">Side column.</Text>
+        </Card>
       </Stack>
     </DemoShell>
   ),
