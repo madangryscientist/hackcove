@@ -44,6 +44,20 @@ export const LongLine: S = {
   ),
 };
 
+/** Wrapping breaks at spaces only, so a flag such as `--skip-nx-cache` stays whole. A single word wider than the box (a long URL) is the one thing that breaks inside itself, rather than clip or scroll the page. */
+export const LongToken: S = {
+  parameters: { layout: "padded" },
+  render: () => (
+    <div className="max-w-sm">
+      <CodeBlock label="bash" language="bash">
+        {
+          "curl --fail --location https://registry.example.com/packages/hackcove-ui-react/archive/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef.tgz"
+        }
+      </CodeBlock>
+    </div>
+  ),
+};
+
 /** `overflow="scroll"` keeps each line whole and scrolls it sideways under a thin scrollbar in the theme's muted ink, for code whose layout matters. */
 export const Scroll: S = {
   parameters: { layout: "padded" },
