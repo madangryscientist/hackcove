@@ -135,10 +135,12 @@ const looksOf = (name: string) =>
   );
 
 describe("props.json", () => {
+  // generateProps builds a TypeScript program over all of ui-react: about 2s idle, and it has run
+  // past vitest's 5s default under load (HC-213). The budget covers that build; it is not a retry.
   test("is current: it equals what react-docgen-typescript reads from packages/ui-react now", () => {
     const onDisk: unknown = JSON.parse(readFileSync(PROPS_JSON, "utf8"));
     expect(onDisk).toEqual(generateProps());
-  });
+  }, 30_000);
 
   test("leaves out className and style, which a component takes only to refuse to restyle", () => {
     for (const name of ["Button", "Card", "Tabs"]) {
