@@ -34,9 +34,15 @@ export function log(message: string) {
   process.stdout.write(`visual: ${message}\n`);
 }
 
+/** A step that did not exit 0: a signal-killed one names the signal (someone else's `pkill`, say). */
+export function stepFailure(cmd: string, cwd: string, signal?: string | number | null): string {
+  return signal ? `\`${cmd}\` killed by ${signal} in ${cwd}` : `\`${cmd}\` failed in ${cwd}`;
+}
+
 async function run(cmd: string[], cwd: string, env: Record<string, string> = {}) {
   const proc = Bun.spawn(cmd, { cwd, env: { ...process.env, ...env }, stdio: ["ignore", 2, 2] });
-  if ((await proc.exited) !== 0) throw new VisualError(`\`${cmd.join(" ")}\` failed in ${cwd}`);
+  if ((await proc.exited) !== 0)
+    throw new VisualError(stepFailure(cmd.join(" "), cwd, proc.signalCode));
 }
 
 export async function git(cwd: string, ...args: string[]): Promise<string> {
