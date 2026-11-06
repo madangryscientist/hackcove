@@ -16,6 +16,8 @@ export const pages: ComponentSection = {
         "The copy is fixed, so every site reads the same. Change the heading with `title` and the text with children only when the state needs a specific line.",
         '`homeHref` adds a "Back to home" button; with a router, `renderHome` draws it with the app\'s own `<Link>`.',
         '`onRetry` adds a "Try again" button on `ErrorPage` and `Offline`; `action` replaces it with the one action that fits, and the home link turns outline beside it. Do not offer a retry where trying again cannot help.',
+        'On `NotFound`, `numeral` draws a large "404" above the title, for a designed 404. Off by default; the digits are fixed.',
+        'A button worded differently is `action` with no `homeHref`, so there is no "Back to home" link. There is no label prop.',
         "On `ErrorPage`, `detail` is a request id or a short message a reader can quote. Never a stack trace.",
         "Render one as the content of an `AppShell`, or on its own in a `Container`.",
       ],

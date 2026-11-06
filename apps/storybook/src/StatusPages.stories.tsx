@@ -19,6 +19,24 @@ export const NotFoundPage: S = {
   ),
 };
 
+/** A designed 404: the large numeral above the title. */
+export const NotFoundWithNumeral: S = {
+  render: () => (
+    <DemoShell>
+      <NotFound numeral homeHref="#" />
+    </DemoShell>
+  ),
+};
+
+/** A 404 whose button says what it does: `action` with no `homeHref`, so no "Back to home". */
+export const NotFoundOwnAction: S = {
+  render: () => (
+    <DemoShell>
+      <NotFound action={<Button href="#">Open the map</Button>} />
+    </DemoShell>
+  ),
+};
+
 export const ErrorWithRetry: S = {
   render: () => (
     <DemoShell>

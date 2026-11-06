@@ -15,6 +15,8 @@ New, nothing to change: `Avatar` takes `onClick` (the whole avatar becomes one b
 the `@hackcove/themes` files have:
 `.your-scope .bg-white\/100 { background-color: #ffffff; }`.
 
+`AppShell` renders its own `<main>`, so a page inside it must not render another; a page's root is a `<div>` or a fragment.
+
 `ColourSchemeToggle` is named by its content now, so it is right before hydration with no script: a
 test that reads its `aria-label` attribute reads the name instead (`getByRole("button", { name })`,
 `toHaveAccessibleName`). The name is the same; `title` appears only after hydration.

@@ -14,7 +14,11 @@ type StatusPageProps = {
   title?: ReactNode;
   /** Replaces the default body copy. */
   children?: ReactNode;
-  /** The primary action; the home link turns outline beside it. */
+  /**
+   * The primary action; the home link turns outline beside it. This is the one way to a button
+   * worded differently: pass `action` and leave out `homeHref`, so there is no "Back to home" link.
+   * There is no label prop.
+   */
   action?: ReactNode;
   /** Adds a "Back to home" button linking here. With neither this nor `renderHome` there is no home link. */
   homeHref?: string;
@@ -23,6 +27,8 @@ type StatusPageProps = {
 } & Passthrough;
 
 type Copy = { title: string; body: string };
+
+type StatusPageInner = StatusPageProps & { copy: Copy; extra?: ReactNode; mark?: ReactNode };
 
 function homeLink(
   variant: "primary" | "outline",
@@ -52,11 +58,17 @@ function StatusPage({
   homeHref,
   renderHome,
   extra,
+  mark,
   ...rest
-}: StatusPageProps & { copy: Copy; extra?: ReactNode }): ReactElement {
+}: StatusPageInner): ReactElement {
   const home = homeLink(action === undefined ? "primary" : "outline", homeHref, renderHome);
   return (
-    <CenteredLayout {...rest} title={title ?? copy.title} subtitle={children ?? copy.body}>
+    <CenteredLayout
+      {...rest}
+      mark={mark}
+      title={title ?? copy.title}
+      subtitle={children ?? copy.body}
+    >
       {extra}
       {(action || home) && (
         <div className="flex flex-wrap items-center gap-2">
@@ -71,14 +83,28 @@ function StatusPage({
 const retry = (onRetry: (() => void) | undefined): ReactNode =>
   onRetry && <Button onClick={onRetry}>Try again</Button>;
 
-/** 404: the page is not there. */
-export function NotFound(props: StatusPageProps): ReactElement {
+/**
+ * 404: the page is not there. `numeral` draws a large "404" above the title, for a site whose 404
+ * is a designed page; the digits are fixed. Off, the page is the title and copy alone.
+ */
+export function NotFound({
+  numeral = false,
+  ...props
+}: StatusPageProps & {
+  /** Draws a large "404" above the title. Off by default. The digits are fixed: there is no text prop. */
+  numeral?: boolean | undefined;
+}): ReactElement {
   return (
     <StatusPage
       copy={{
         title: "Page not found",
         body: "The page you are looking for does not exist or has moved.",
       }}
+      mark={
+        numeral ? (
+          <p className="text-6xl font-semibold tracking-tight text-violet-600">404</p>
+        ) : undefined
+      }
       {...props}
     />
   );
