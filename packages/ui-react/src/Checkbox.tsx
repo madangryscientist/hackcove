@@ -1,5 +1,6 @@
-import { type ComponentPropsWithoutRef, type ReactElement, type ReactNode, useId } from "react";
+import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
 import { cx, focusRing } from "./cx.js";
+import { useDescription, Words } from "./labelWords.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 
@@ -9,34 +10,6 @@ const SIZE: Record<Size, { label: string; box: string; start: string }> = {
   md: { label: "gap-2 text-sm", box: "h-4 w-4", start: "mt-0.5" },
   lg: { label: "gap-2.5 text-base", box: "h-5 w-5", start: "mt-0.5" },
 };
-
-/** The label, with its muted description under it when there is one. */
-function Words({
-  label,
-  description,
-  id,
-}: {
-  label: ReactNode;
-  description: ReactNode;
-  id: string | undefined;
-}): ReactNode {
-  if (id === undefined) return label;
-  return (
-    <span className="flex flex-col gap-0.5">
-      <span>{label}</span>
-      <span id={id} className="text-xs text-slate-500">
-        {description}
-      </span>
-    </span>
-  );
-}
-
-/** The description's id (none without a description) and the box's whole `aria-describedby`. */
-function useDescription(description: ReactNode, describedBy: string | undefined) {
-  const generatedId = useId();
-  const descriptionId = description != null && description !== false ? generatedId : undefined;
-  return { descriptionId, describedIds: [describedBy, descriptionId].filter(Boolean).join(" ") };
-}
 
 /**
  * A native checkbox with its label. Every prop but the label goes on the input.

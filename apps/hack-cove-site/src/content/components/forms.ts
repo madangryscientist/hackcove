@@ -95,6 +95,7 @@ export const forms: ComponentSection = {
         '`align="start"` puts the box on the first line of a label that wraps onto several; the default centres it.',
         "A `description` is a muted line under the label for an option that needs a sentence; the box sits on the label's first line and is described by it.",
         "Do not wrap a `Checkbox` in a `Field`; it is its own label.",
+        "A setting that takes effect the moment it is flipped, usually by saving it, is a `Switch`. A `Checkbox` is ticked and then submitted with the form.",
         "Choosing one of several is a `RadioGroup`, a `Select` or a `SegmentedControl`, not a row of checkboxes.",
       ],
       accessibility: [
@@ -104,6 +105,31 @@ export const forms: ComponentSection = {
         "The focus ring comes from the component.",
       ],
       api: ["Checkbox"],
+    },
+    {
+      slug: "switch",
+      name: "Switch",
+      summary: "An on/off setting that takes effect at once.",
+      whenToUse:
+        "A setting that acts the moment it is flipped, usually by saving it to a server: a flag per environment, notifications on or off.",
+      pairs: ["Switch/Label", "Switch/Row"],
+      usage: [
+        "Control it: you own `checked`, and `onChange` gets the next value. There is no uncontrolled mode.",
+        'Give a `Switch` a `label`; the whole label is the click target. In a table cell leave the `label` out, use `size="sm"` and name it with `aria-label`: one of the two is required.',
+        "Keep `checked` as it was while the change saves and pass `busy`: a click or a key does nothing, and it keeps its colour and its focus. Flip `checked` when the save lands.",
+        "A `description` is a muted line under the label for a setting that needs a sentence; the switch sits on the label's first line and is described by it.",
+        "`size` is `sm`, `md` (default) or `lg`, the same scale as a `Checkbox`.",
+        "A value sent with a form, ticked and then submitted, is a `Checkbox`. One of several is a `RadioGroup`, a `Select` or a `SegmentedControl`.",
+        "Do not wrap a `Switch` in a `Field`; it is its own label.",
+      ],
+      accessibility: [
+        'A native `<button type="button" role="switch">` with `aria-checked`, inside a `<label>`, so clicking the text flips it and the label is its name. Space and Enter flip it.',
+        "A bare switch has no name of its own: `aria-label` is required.",
+        "`busy` sets `aria-busy` and `aria-disabled` and keeps focus on the switch; `disabled` is the native one and takes it out of the tab order.",
+        "A `description` is the switch's `aria-describedby`, added to any you pass.",
+        "The thumb's slide stops under `prefers-reduced-motion`. The focus ring comes from the component.",
+      ],
+      api: ["Switch"],
     },
     {
       slug: "radio-group",
@@ -216,7 +242,7 @@ export const forms: ComponentSection = {
       usage: [
         "Two to five short options. The caller owns `value` and `onChange`; `label` names the group.",
         "`size` is `sm`, `md` (default) or `lg`, the heights of a `Button`.",
-        "An on/off setting is a `Checkbox`; a long list is a `Select`.",
+        "An on/off setting is a `Checkbox` or a `Switch`; a long list is a `Select`.",
         "Switching the panel under a row of headings is `Tabs`.",
         "A `count` sits muted after the label.",
         "A disabled option keeps a `title` as the reason; `disabled` on the group disables every option.",

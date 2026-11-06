@@ -109,6 +109,7 @@ export { Tabs, type Tab, type TabsProps } from "./Tabs.js";
 export { SegmentedControl, type Segment } from "./SegmentedControl.js";
 export { FilterGroup } from "./FilterGroup.js";
 export { Checkbox } from "./Checkbox.js";
+export { Switch } from "./Switch.js";
 export { Radio, RadioGroup } from "./RadioGroup.js";
 export { FileDrop } from "./FileDrop.js";
 export { CopyButton } from "./CopyButton.js";
