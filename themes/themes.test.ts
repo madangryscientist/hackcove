@@ -148,6 +148,34 @@ describe.each(files)("%s", (file) => {
     expect(luminance(painted("bg-black/90", "background-color", canvas))).toBeLessThan(0.05);
   });
 
+  it("exposes the six colours of chrome the kit cannot draw, each the value its utility paints", () => {
+    // A map popup or marker reads these with var(--hc-…) (README, "Colours for chrome the kit cannot
+    // draw"). Each must equal the hex its utility's rule sets under this scope, so a palette edit
+    // that forgets one fails here. The utilities are read by selector; no value or theme is listed.
+    const block =
+      new RegExp(`^\\.${escapeRe(scope)}\\s*\\{([^{}]*)\\}`, "m").exec(rules)?.[1] ?? "";
+    const exposed = new Map(
+      [...block.matchAll(/--hc-([\w-]+)\s*:\s*([^;]+);/g)].map((match) => [
+        match[1] ?? "",
+        (match[2] ?? "").trim().toLowerCase(),
+      ]),
+    );
+    const chrome: Record<string, [utility: string, property: string]> = {
+      surface: ["bg-white", "background-color"],
+      subtle: ["bg-slate-50", "background-color"],
+      line: ["border-slate-200", "border-color"],
+      ink: ["text-slate-900", "color"],
+      mute: ["text-slate-500", "color"],
+      accent: ["text-violet-600", "color"],
+    };
+    expect([...exposed.keys()].toSorted()).toEqual(Object.keys(chrome).toSorted());
+    for (const [name, [utility, property]] of Object.entries(chrome)) {
+      const value = utilities.get(utility)?.[property] ?? "";
+      expect(value, `${utility} sets a hex ${property}`).toMatch(/^#[0-9a-f]{6}$/i);
+      expect(exposed.get(name), `--hc-${name} equals ${utility}`).toBe(value.toLowerCase());
+    }
+  });
+
   it("keeps the media matte white", () => {
     // Image `framed` paints `bg-white/100` under a QR code, which is scanned off a dark page: it must
     // stay white on a dark theme too, unlike `bg-white`, the surface.

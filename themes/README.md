@@ -47,6 +47,34 @@ the docs and the e2e all read this folder. `themes.test.ts` is the contract, and
 file here. Run it with `bunx nx run themes:test`. The repo's
 [README](https://github.com/madangryscientist/hackcove#how-to-add-a-theme) has the steps.
 
+## Colours for chrome the kit cannot draw
+
+Some third-party DOM is not made of `@hackcove/ui-react` parts, so it cannot take a utility: a
+MapLibre popup or control, a map marker. Each theme therefore sets six custom properties on its scope,
+each equal to the value that theme's remap gives the utility named beside it:
+
+| Property | Same value as |
+| --- | --- |
+| `--hc-surface` | `.bg-white` background |
+| `--hc-subtle` | `.bg-slate-50` background |
+| `--hc-line` | `.border-slate-200` border |
+| `--hc-ink` | `.text-slate-900` colour |
+| `--hc-mute` | `.text-slate-500` colour |
+| `--hc-accent` | `.text-violet-600` colour |
+
+Read them in your own CSS, with a fallback for the page that has no theme:
+
+```css
+.maplibregl-popup-content {
+  background: var(--hc-surface, #fff);
+  color: var(--hc-ink, #111);
+}
+```
+
+With no theme on the page the properties are unset, so the `var()` fallback is yours to choose. The
+values are the theme's own, and `themes.test.ts` checks that each equals its utility's, so a palette
+edit cannot leave them behind.
+
 ## Palettes and attribution
 
 ### Catppuccin Mocha and Latte
