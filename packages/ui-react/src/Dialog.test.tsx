@@ -8,6 +8,40 @@ import { dialogOf, mount, showModal, stubDialog, unmount } from "./dom.harness.j
 beforeEach(stubDialog);
 afterEach(unmount);
 
+/** The callbacks of every observer the dialog has started, so a test can say the body was resized. */
+const observers: Array<() => void> = [];
+/** jsdom has no layout and no ResizeObserver: say how tall the body's content is and how much of it shows. */
+const overflowing = (scrollHeight: number, clientHeight: number) => {
+  Object.defineProperty(HTMLElement.prototype, "scrollHeight", {
+    configurable: true,
+    value: scrollHeight,
+  });
+  Object.defineProperty(HTMLElement.prototype, "clientHeight", {
+    configurable: true,
+    value: clientHeight,
+  });
+  // As in a browser, an observer reports once as soon as it starts observing.
+  vi.stubGlobal(
+    "ResizeObserver",
+    class {
+      constructor(private readonly notify: () => void) {
+        observers.push(notify);
+      }
+      observe() {
+        this.notify();
+      }
+      disconnect() {}
+    },
+  );
+};
+afterEach(() => {
+  Reflect.deleteProperty(HTMLElement.prototype, "scrollHeight");
+  Reflect.deleteProperty(HTMLElement.prototype, "clientHeight");
+  vi.unstubAllGlobals();
+  observers.length = 0;
+});
+const bodyOf = (out: HTMLElement) => dialogOf(out).querySelector<HTMLElement>("h2 ~ div");
+
 describe("Dialog", () => {
   it("opens as a modal on mount", () => {
     const out = mount(<Dialog title="Rename" onClose={() => {}} />);
@@ -152,5 +186,129 @@ describe("Dialog", () => {
       expect(out).not.toContain("fixed inset-0");
       expect(out).toContain("rounded-2xl");
     }
+  });
+  it("caps a windowed dialog to the viewport and scrolls its body, leaving the <dialog> unclipped", () => {
+    for (const size of ["sm", "md", "lg"] as const) {
+      const out = renderToStaticMarkup(
+        <Dialog title="t" size={size} footer={<button type="button">Ok</button>} onClose={() => {}}>
+          <p>Body</p>
+        </Dialog>,
+      );
+      expect(out).toContain("max-h-[calc(100dvh-8rem-2px)]");
+      expect(out).toContain("overflow-y-auto");
+      expect(out).toContain("overflow-visible");
+      expect(out).not.toContain("overflow-auto");
+    }
+  });
+
+  it("keeps the focus ring of a field at the body's edge whole, with padding and a matching negative margin", () => {
+    const out = renderToStaticMarkup(
+      <Dialog title="t" onClose={() => {}}>
+        <p>Body</p>
+      </Dialog>,
+    );
+    for (const cls of ["-mx-1", "px-1", "pt-1", "-mb-1", "pb-1"]) expect(out).toContain(cls);
+  });
+
+  it("does not cap or scroll the full-screen dialog differently", () => {
+    const out = renderToStaticMarkup(
+      <Dialog title="t" size="full" onClose={() => {}}>
+        <p>Body</p>
+      </Dialog>,
+    );
+    expect(out).not.toContain("max-h-[calc");
+    expect(out).not.toContain("overflow-y-auto");
+  });
+
+  describe("the body's tab stop", () => {
+    it("takes one when it overflows and holds nothing the keyboard can reach", () => {
+      overflowing(900, 400);
+      const out = mount(
+        <Dialog title="Terms" onClose={() => {}}>
+          <p>Long text</p>
+        </Dialog>,
+      );
+      const body = bodyOf(out);
+      expect(body?.getAttribute("tabindex")).toBe("0");
+      expect(body?.getAttribute("role")).toBe("group");
+      expect(body?.getAttribute("aria-labelledby")).toBe(dialogOf(out).querySelector("h2")?.id);
+    });
+
+    it("takes none when it fits", () => {
+      overflowing(300, 400);
+      const out = mount(
+        <Dialog title="t" onClose={() => {}}>
+          <p>Short text</p>
+        </Dialog>,
+      );
+      expect(bodyOf(out)?.hasAttribute("tabindex")).toBe(false);
+    });
+
+    it("takes no tab stop when a form field in it is already reachable, so the first focus stays on the field", () => {
+      overflowing(900, 400);
+      for (const field of [
+        <input key="i" aria-label="Name" />,
+        <a key="a" href="/x">
+          Link
+        </a>,
+        <div key="d" tabIndex={0}>
+          Stop
+        </div>,
+      ]) {
+        const out = mount(
+          <Dialog title="t" onClose={() => {}}>
+            {field}
+          </Dialog>,
+        );
+        expect(bodyOf(out)?.hasAttribute("tabindex")).toBe(false);
+        unmount();
+      }
+    });
+
+    it("still takes one when the only focusable things are disabled or out of the tab order", () => {
+      overflowing(900, 400);
+      const out = mount(
+        <Dialog title="t" onClose={() => {}}>
+          <button type="button" disabled>
+            Off
+          </button>
+          <div tabIndex={-1}>Skipped</div>
+          <input type="hidden" />
+        </Dialog>,
+      );
+      expect(bodyOf(out)?.getAttribute("tabindex")).toBe("0");
+    });
+
+    it("re-measures when the body is resized", () => {
+      overflowing(300, 400);
+      const out = mount(
+        <Dialog title="t" onClose={() => {}}>
+          <p>Text</p>
+        </Dialog>,
+      );
+      expect(bodyOf(out)?.hasAttribute("tabindex")).toBe(false);
+      overflowing(900, 400);
+      act(() => observers.forEach((notify) => notify()));
+      expect(bodyOf(out)?.getAttribute("tabindex")).toBe("0");
+    });
+
+    it("takes none, and does not throw, where there is no ResizeObserver", () => {
+      const out = mount(
+        <Dialog title="t" onClose={() => {}}>
+          <p>Text</p>
+        </Dialog>,
+      );
+      expect(bodyOf(out)?.hasAttribute("tabindex")).toBe(false);
+    });
+
+    it("never gives the full-screen body one", () => {
+      overflowing(900, 400);
+      const out = mount(
+        <Dialog title="t" size="full" onClose={() => {}}>
+          <p>Text</p>
+        </Dialog>,
+      );
+      expect(bodyOf(out)?.hasAttribute("tabindex")).toBe(false);
+    });
   });
 });
