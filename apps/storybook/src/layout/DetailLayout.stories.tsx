@@ -100,6 +100,35 @@ export const StickyAside: S = {
   ),
 };
 
+const notes = Array.from({ length: 18 }, (_, i) => (
+  <Text key={i} as="p">
+    Note {i + 1}: the client asked for a call back about the cover, and for the quote to be sent by
+    email, not post.
+  </Text>
+));
+
+/**
+ * A sticky aside of plain text, no links or fields: taller than the room left, it scrolls itself,
+ * and since nothing in it takes the keyboard it takes a tab stop, so the arrow keys can scroll it.
+ * `asideLabel` names the aside and that stop.
+ */
+export const StickyAsideText: S = {
+  render: () => (
+    <DemoShell>
+      <DetailLayout
+        title="Quote Q-1042"
+        subtitle="Naledi Mokoena"
+        actions={<Button variant="outline">Edit</Button>}
+        stickyAside
+        asideLabel="Quote notes"
+        aside={notes}
+      >
+        {longMain}
+      </DetailLayout>
+    </DemoShell>
+  ),
+};
+
 /** The record's content is the main column; the facts about it go in `aside`. */
 export const DoRecord: S = {
   render: () => (

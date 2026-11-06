@@ -2,16 +2,15 @@ import {
   type HTMLAttributes,
   type ReactElement,
   type ReactNode,
-  useEffect,
   useId,
   useLayoutEffect,
   useRef,
   type RefObject,
-  useState,
 } from "react";
-import { cx, focusRing } from "./cx.js";
+import { cx } from "./cx.js";
 import { useModal } from "./modal.js";
 import type { Passthrough } from "./props.js";
+import { scrollStopProps, TABBABLE, useScrollStop } from "./scrollStop.js";
 import type { Size } from "./size.js";
 import { HeaderText, SectionHeading } from "./typography.js";
 
@@ -35,10 +34,6 @@ const CAP = "max-h-[calc(100dvh-8rem-2px)]";
  * so the body sits where an unpadded one would.
  */
 const SCROLL_BODY = "mt-3 -mb-1 -mx-1 min-h-0 flex-1 scroll-py-1 overflow-y-auto px-1 pt-1 pb-1";
-/** Anything the keyboard can reach on its own. */
-const TABBABLE =
-  ':is(a[href], button, input:not([type="hidden"]), select, textarea, summary, iframe, audio[controls], video[controls], [contenteditable]:not([contenteditable="false"]), [tabindex]):not([disabled], [tabindex="-1"])';
-
 /** The whole viewport, edge to edge: no margin, radius, border or shadow, and a column so the body can fill it. */
 const FULL =
   "fixed inset-0 m-0 size-full max-h-none max-w-none flex-col overflow-hidden rounded-none border-0 open:flex";
@@ -61,8 +56,7 @@ function useScrollingBody(
   props: HTMLAttributes<HTMLDivElement>;
   className: string;
 } {
-  const [body, setBody] = useState<HTMLDivElement | null>(null);
-  const [stop, setStop] = useState(false);
+  const { element: body, attach, stop } = useScrollStop();
   const tabStop = stop && !full;
 
   // After `useModal`'s own layout effect (the caller's earlier hook), so the dialog is open.
@@ -72,33 +66,11 @@ function useScrollingBody(
     }
   }, [body, dialog, full]);
 
-  useEffect(() => {
-    // jsdom (a consumer's own tests) has no ResizeObserver.
-    if (!body || typeof ResizeObserver === "undefined") return undefined;
-    const measure = () =>
-      setStop(body.scrollHeight > body.clientHeight && !body.querySelector(TABBABLE));
-    // Each observer reports once when it starts, and again when the body is resized, its content
-    // changes or something in it becomes (un)reachable by the keyboard.
-    const resize = new ResizeObserver(measure);
-    resize.observe(body);
-    for (const child of body.children) resize.observe(child);
-    const change = new MutationObserver(measure);
-    change.observe(body, {
-      childList: true,
-      subtree: true,
-      characterData: true,
-      attributeFilter: ["disabled", "tabindex", "href", "type", "contenteditable"],
-    });
-    return () => {
-      resize.disconnect();
-      change.disconnect();
-    };
-  }, [body]);
-
+  const { props, ring } = scrollStopProps(tabStop, { labelledBy: titleId });
   return {
-    attach: setBody,
-    props: tabStop ? { tabIndex: 0, role: "group", "aria-labelledby": titleId } : {},
-    className: cx(full ? "mt-4 min-h-0 flex-1 overflow-auto" : SCROLL_BODY, tabStop && focusRing),
+    attach,
+    props,
+    className: cx(full ? "mt-4 min-h-0 flex-1 overflow-auto" : SCROLL_BODY, ring),
   };
 }
 

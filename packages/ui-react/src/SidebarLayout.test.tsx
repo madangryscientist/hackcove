@@ -69,4 +69,14 @@ describe("SidebarLayout", () => {
     expect(inOrder(folded, ["All sections", "RAIL", "CANVAS"])).toBe(true);
     expect(out).not.toContain("<details");
   });
+
+  it("names the <aside> with railLabel, and leaves it unnamed without", () => {
+    const named = renderToStaticMarkup(
+      <SidebarLayout rail="RAIL" railLabel="All sections">
+        CANVAS
+      </SidebarLayout>,
+    );
+    expect(named).toMatch(/<aside [^>]*aria-label="All sections"/);
+    expect(out).not.toContain("aria-label");
+  });
 });

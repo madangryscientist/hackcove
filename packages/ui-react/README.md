@@ -256,6 +256,8 @@ except the last four.
   `stickyAside` (off by default, since an aside of ordinary cards may be taller than the screen)
   keeps the aside in view from `lg` as a long page scrolls: it sticks under the shell's header and
   scrolls itself when it is taller than the room left.
+  `asideLabel` names the aside's landmark (it never folds it), for a page with another complementary
+  landmark.
 - **`FormLayout`**: use this for a create or edit page. A `max-w-3xl` `<form>` that starts at the
   Container's left edge (it is not re-centred, so the title does not jump), with an `actions` row at
   the end. Other props (`onSubmit`, `action`) go on the `<form>`.
@@ -277,13 +279,14 @@ except the last four.
   the canvas, and below `md` it stacks above it. From `md` the rail also stays in view under the
   shell's header as a long page scrolls (always, with or without `railLabel`); a rail taller than
   the screen scrolls itself, so its last link is reachable. A long rail sets `railLabel`: below `md`
-  the rail then folds, closed, behind a disclosure of that name, so a phone shows the page first.
+  the rail then folds, closed, behind a disclosure of that name, so a phone shows the page first;
+  `railLabel` also names the rail's `<aside>` landmark.
 - **`SideColumn`**: use this when part of a page is a main area beside a side column of a known width,
   such as a thread beside an assistant. `children` are the main area and `aside` the column; from `lg`
   the aside is `asideWidth` wide on the right (`sm` 18rem, `md` 24rem, the default) and the main area
   takes the room left, and below `lg` the aside stacks under it. `asideLabel` folds the aside, closed,
   behind a native disclosure of that name below `lg` (the aside stays mounted, so state inside it is
-  kept); from `lg` it is the same column, always shown. It sets no page width, padding or header of
+  kept) and names the `<aside>` landmark; from `lg` it is the same column, always shown. It sets no page width, padding or header of
   its own, so it sits inside a layout or a card; a share of a page under a `PageHeader` is
   `DetailLayout`'s aside. A `Stack` with `rowFrom` and a `ClusterGrow` sizes the side by its content
   and is not a fixed column. A grid of fields, one row per item, is a `plain` `Table` in a `Card`.
@@ -292,7 +295,8 @@ except the last four.
   right and stacks below under `lg`. It adds no padding, so a viewer fills the width; set `padded`
   for a body that is not a viewer, which gives the canvas the other layouts' page padding. A `bar`
   (a viewer's title and actions) runs full width above both on the surface with a bottom line, and
-  sticks under the shell's header as the page scrolls; `padded` does not pad it.
+  sticks under the shell's header as the page scrolls; `padded` does not pad it. `panelLabel` names
+  the panel's `<aside>` landmark.
 
   **`FullBleedLayout` deliberately breaks the shared left edge from `lg` up.** An edge-to-edge
   viewer needs the viewport's edges, so it cannot sit inside the Container the header uses. At

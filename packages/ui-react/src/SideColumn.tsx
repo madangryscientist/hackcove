@@ -36,14 +36,14 @@ export function SideColumn({
    * @default md
    */
   asideWidth?: SideColumnWidth | undefined;
-  /** Folds the aside behind a disclosure with this name below `lg`. Left out, the aside is always shown. */
+  /** Folds the aside behind a disclosure with this name below `lg`, and names the `<aside>` landmark. Left out, the aside is always shown and unnamed. */
   asideLabel?: string | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {
   return (
     <div {...rest} className={cx("grid grid-cols-1 gap-6", COLUMNS[asideWidth])}>
       <div className="min-w-0">{children}</div>
-      <aside className="min-w-0">
+      <aside className="min-w-0" aria-label={asideLabel}>
         {asideLabel === undefined ? (
           aside
         ) : (
