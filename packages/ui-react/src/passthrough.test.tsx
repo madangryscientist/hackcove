@@ -205,6 +205,7 @@ const CASES: Record<string, () => ReactElement> = {
     <ui.StackedBar segments={[{ label: "a", value: 1, tone: "info" }]} label="L" {...A} />
   ),
   StatTile: () => <ui.StatTile label="L" value="1" {...A} />,
+  Switch: () => <ui.Switch aria-label="Flag" checked onChange={noop} {...A} />,
   SubsectionHeading: () => <ui.SubsectionHeading {...A}>x</ui.SubsectionHeading>,
   Table: () => (
     <ui.Table {...A}>
