@@ -11,9 +11,10 @@ export const content: ComponentSection = {
       summary: "A bordered panel that groups one thing on a page.",
       whenToUse: "A titled block of related content: a record, a status, a list, an empty state.",
       pairs: ["Card/Status", "Card/Spacing"],
-      stories: ["CardBadge", "CardIcon", "CardInset"],
+      stories: ["CardBadge", "CardIcon", "CardInset", "CardTitle"],
       usage: [
         "Name the Card with `title`; add a `count` or a `status` and they sit beside the title.",
+        '`titleStyle="name"` sets the title in sentence case and the primary ink, for a card that is a thing with a name (a shop, a listing, an event). The default `overline` is the small uppercase label of a panel (Status, Activity). Count, status, actions and `bar` work with both.',
         "`actions` sit at the far end of the header; use `bar` to put the header in a tinted strip.",
         "Space several Cards with a `Stack` or a `CardGrid`; never stack them with nothing between.",
         "`flush` is for a table that runs edge to edge, and it needs a `bar` for its title.",

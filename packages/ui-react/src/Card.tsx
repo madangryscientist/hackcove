@@ -86,8 +86,15 @@ function cardClass(form: ReturnType<typeof cardForm>): string {
 }
 
 type CardBase = {
-  /** The card's heading, a small uppercase `h2`; on a `section` or `article` it names the card. */
+  /** The card's heading, an `h2` (a small uppercase label unless `titleStyle` says otherwise); on a `section` or `article` it names the card. */
   title?: string;
+  /**
+   * How the `title` is set. `overline` is the small uppercase label of a panel; `name` is the same
+   * `h2` in sentence case and the primary ink, for a card whose title is a name (a shop, a listing,
+   * an event). Count, status, actions, `bar` and `size` work the same with both.
+   * @default overline
+   */
+  titleStyle?: "overline" | "name";
   /** A small number beside the title (how many rows the card holds). Needs a `title`. */
   count?: number;
   /** A `Pill` (or any node) directly beside the title and count, not at the far end like `actions`. Needs a `title`. */
@@ -199,6 +206,7 @@ export function Card(props: CardPanelProps | CardLinkProps): ReactElement {
 function PanelCard(props: CardPanelProps): ReactElement {
   const {
     title,
+    titleStyle,
     count,
     status,
     actions,
@@ -229,7 +237,7 @@ function PanelCard(props: CardPanelProps): ReactElement {
     rest["aria-labelledby"] === undefined;
   return (
     <Tag {...(named ? { "aria-labelledby": headingId } : {})} {...rest} className={cardClass(form)}>
-      {cardBody(form, { title, count, status, actions, inset, children, headingId })}
+      {cardBody(form, { title, titleStyle, count, status, actions, inset, children, headingId })}
       {form.footer && <CardFooter size={form.size}>{footer}</CardFooter>}
       {badge && <CardBadge size={form.size}>{badge}</CardBadge>}
     </Tag>
@@ -255,6 +263,7 @@ function splitRootAttrs(props: object): [Record<string, unknown>, Record<string,
 function LinkCard(props: CardLinkProps): ReactElement {
   const {
     title,
+    titleStyle,
     count,
     status,
     actions,
@@ -293,7 +302,16 @@ function LinkCard(props: CardLinkProps): ReactElement {
         ),
         children: null,
       })}
-      {cardBody(form, { title, count, status, actions, inset, children, headingId: undefined })}
+      {cardBody(form, {
+        title,
+        titleStyle,
+        count,
+        status,
+        actions,
+        inset,
+        children,
+        headingId: undefined,
+      })}
       {badge && <CardBadge size={form.size}>{badge}</CardBadge>}
     </div>
   );
@@ -312,6 +330,7 @@ function cardBody(
   form: ReturnType<typeof cardForm>,
   {
     title,
+    titleStyle,
     count,
     status,
     actions,
@@ -320,6 +339,7 @@ function cardBody(
     headingId,
   }: {
     title: string | undefined;
+    titleStyle: "overline" | "name" | undefined;
     count: number | undefined;
     status: ReactNode;
     actions: ReactNode;
@@ -332,6 +352,7 @@ function cardBody(
     <CardHeading
       id={headingId}
       title={title}
+      titleStyle={titleStyle}
       count={count}
       status={status}
       bar={form.bar}

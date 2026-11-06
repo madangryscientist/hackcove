@@ -85,3 +85,23 @@ export const Row: S = {
     </div>
   ),
 };
+
+/** `hideLabel` keeps the label for assistive tech and draws no text, for a control whose purpose is plain from what surrounds it. */
+export const HiddenLabel: S = {
+  render: () => (
+    <div className="flex max-w-md flex-col gap-4">
+      <Field label="Search shops" htmlFor="hidden-search" hideLabel>
+        <Input id="hidden-search" type="search" placeholder="Search shops" />
+      </Field>
+      <Field
+        label="Search shops"
+        htmlFor="hidden-row"
+        hideLabel
+        layout="row"
+        hint="By name or town."
+      >
+        <Input id="hidden-row" type="search" placeholder="Search shops" />
+      </Field>
+    </div>
+  ),
+};

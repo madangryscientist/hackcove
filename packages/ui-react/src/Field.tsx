@@ -28,6 +28,7 @@ export function Field({
   error,
   span,
   layout = "column",
+  hideLabel = false,
   children,
   ...rest
 }: {
@@ -48,9 +49,17 @@ export function Field({
    * @default column
    */
   layout?: "column" | "row" | undefined;
+  /**
+   * Keeps the `label` in the page for assistive tech and draws no text, for a control whose purpose
+   * is plain from what surrounds it (a search box in a toolbar). `label` stays required, so the
+   * control always has a name. With `layout="row"` the field draws as a column: an empty label
+   * column helps nobody.
+   * @default false
+   */
+  hideLabel?: boolean | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {
-  const row = layout === "row";
+  const row = layout === "row" && !hideLabel;
   const note = fieldNote(hint, error);
   return (
     <div
@@ -62,7 +71,11 @@ export function Field({
     >
       <label
         htmlFor={htmlFor}
-        className={cx("text-sm font-medium text-slate-700", row && "min-w-0 wrap-anywhere")}
+        className={
+          hideLabel
+            ? "sr-only"
+            : cx("text-sm font-medium text-slate-700", row && "min-w-0 wrap-anywhere")
+        }
       >
         {label}
       </label>
