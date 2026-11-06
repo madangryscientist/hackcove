@@ -8,10 +8,12 @@ export const forms: ComponentSection = {
       slug: "field",
       name: "Field",
       summary: "A label over one control, with a hint or an error under it.",
-      whenToUse: "Every text, select or file control: it gets a visible label.",
+      whenToUse:
+        "Every text, select or file control: it gets a label, visible unless its purpose is plain from what surrounds it.",
       pairs: ["Field/Label", "Field/Error"],
       usage: [
-        "Wrap every `Input`, `Textarea`, `Select` and `FileDrop` in a `Field`; the `label` is always visible, and `htmlFor` is the control's `id`.",
+        "Wrap every `Input`, `Textarea`, `Select` and `FileDrop` in a `Field`; `htmlFor` is the control's `id`, and the `label` is always in the accessibility tree.",
+        '`hideLabel` draws no label text but keeps it for assistive tech: use it only when the control\'s purpose is plain from what surrounds it (a search box in a toolbar). Otherwise leave the label visible; a placeholder is not a label. With `layout="row"` it draws as a column.',
         "A `hint` is the one line of help under the control.",
         "A validation message is `error`, not `hint`: it replaces the hint, in red.",
         'Inside a `FormGrid` a `Field` takes one column; `span="full"` runs it across both.',

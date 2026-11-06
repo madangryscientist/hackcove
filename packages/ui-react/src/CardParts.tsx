@@ -14,9 +14,19 @@ const INSET_BLEED: Record<Size, string> = { sm: "-mx-3", md: "-mx-5", lg: "-mx-6
 /** The padding of a card's bar and footer strips, by `size`. */
 const STRIP_PAD: Record<Size, string> = { sm: "px-3 py-2", md: "px-5 py-3", lg: "px-6 py-4" };
 
+/** The `h2` of a card whose title is a name: sentence case, in the primary ink. */
+function NameTitle({ id, children }: { id: string | undefined; children: ReactNode }) {
+  return (
+    <h2 id={id} className="text-base font-semibold text-slate-900">
+      {children}
+    </h2>
+  );
+}
+
 export function CardHeading({
   id,
   title,
+  titleStyle,
   count,
   status,
   bar,
@@ -25,6 +35,7 @@ export function CardHeading({
 }: {
   id: string | undefined;
   title: string;
+  titleStyle: "overline" | "name" | undefined;
   count: number | undefined;
   status: ReactNode;
   bar: boolean;
@@ -40,9 +51,13 @@ export function CardHeading({
         spaced && HEADING_GAP[size],
       )}
     >
-      <Overline as="h2" id={id} color={bar ? "tertiary" : "muted"}>
-        {title}
-      </Overline>
+      {titleStyle === "name" ? (
+        <NameTitle id={id}>{title}</NameTitle>
+      ) : (
+        <Overline as="h2" id={id} color={bar ? "tertiary" : "muted"}>
+          {title}
+        </Overline>
+      )}
       {count !== undefined && <span className={cx("text-xs font-medium", ink)}>{count}</span>}
       {status}
     </div>
