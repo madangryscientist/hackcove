@@ -74,8 +74,7 @@ for (const scheme of ["dark", "light"] as const) {
     await page.goto("/contracting/");
     await expect.poll(() => scopeClasses(page)).toEqual([schemeScope[scheme]]);
     await hydrated(page);
-    await expect(toggle(page)).toHaveAttribute(
-      "aria-label",
+    await expect(toggle(page)).toHaveAccessibleName(
       scheme === "dark" ? "Switch to light theme" : "Switch to dark theme",
     );
     await context.close();
@@ -91,9 +90,9 @@ test("a saved value from the old theme picker is ignored", async ({ browser }) =
   await context.close();
 });
 
-// The server renders the toggle for dark (`initial="dark"`), so its label is the server's guess until
-// the island hydrates. Blocking the island's JS keeps it un-hydrated: the label must already name the
-// scheme `<html>` is in, which the inline script after the toggle sets.
+// The server renders the toggle for dark (`initial="dark"`), so its markup is the server's guess until
+// the island hydrates. Blocking the island's JS keeps it un-hydrated: the name must already be the
+// scheme `<html>` is in, which the toggle's own CSS picks (HC-218): no script.
 for (const scheme of ["dark", "light"] as const) {
   test(`before hydration the toggle's label names the scheme in place: ${scheme}`, async ({
     browser,
@@ -103,7 +102,7 @@ for (const scheme of ["dark", "light"] as const) {
     await page.route("**/*.js", (route) => route.abort());
     await page.goto("/contracting/");
     await expect.poll(() => scopeClasses(page)).toEqual([schemeScope[scheme]]);
-    await expect(toggle(page)).toHaveAttribute("aria-label", labelFor(scheme));
+    await expect(toggle(page)).toHaveAccessibleName(labelFor(scheme));
     await context.close();
   });
 }
@@ -145,7 +144,7 @@ test("the toggle is in the header of every page, and a choice carries to the nex
   await setScheme(page, "light");
   for (const path of ["/contracting/", "/pixelslash/", "/ui/tabs/"]) {
     await page.goto(path);
-    await expect(toggle(page)).toHaveAttribute("aria-label", "Switch to dark theme");
+    await expect(toggle(page)).toHaveAccessibleName("Switch to dark theme");
     await expect.poll(() => scopeClasses(page)).toEqual([schemeScope.light]);
   }
 });
@@ -180,7 +179,7 @@ test("at 375px the header is one row on every page: no sideways scroll, the togg
     const { overflow, button, brand } = await page.evaluate(() => ({
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       button: document
-        .querySelector("header button[aria-label^='Switch to']")
+        .querySelector("header button:has([data-scheme-name])")
         ?.getBoundingClientRect(),
       brand: document.querySelector("header a[href='/']")?.getBoundingClientRect(),
     }));

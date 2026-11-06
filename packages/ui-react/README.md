@@ -350,14 +350,16 @@ Two states, light and dark. The stored choice wins; with nothing stored the syst
    <ColourSchemeToggle onChange={(scheme) => track(scheme)} />;
    ```
 
-   It is an `IconButton` showing the scheme you would switch *to* (a sun on a dark page, a moon on a
+   It is an icon button showing the scheme you would switch *to* (a sun on a dark page, a moon on a
    light one), labelled "Switch to light theme" / "Switch to dark theme". A click applies the scheme
    to `<html>` and stores it under `localStorage["hackcove:colour-scheme"]`; a storage error (private
    mode) is swallowed and the page still switches. It reads the current state from the `dark` class
    when it mounts, so it agrees with the script and renders the same on the server and the client.
    It draws both icons and a small `<style>` shows one from the class on `<html>`, so a dark visitor
    with no cookie and no `initial` sees the sun from the first frame, not the server's light-page moon;
-   the button's name catches up on hydration.
+   the button's name is drawn the same way (both names are in the markup, visually hidden, and the
+   rule hides the wrong one), so a screen reader hears the right one before hydration too, with no
+   script. Only the tooltip waits for hydration.
 
 4. **A light theme with a class of its own, or a scheme the server knows.** An app that picks the
    scheme from a cookie and whose light theme has a scope class passes both:

@@ -73,8 +73,8 @@ type IconButtonAsLink = IconButtonProps & {
       }
   );
 
-/** The classes for a variant, tone and size, each at its default when left out. */
-function look({
+/** The classes for a variant, tone and size, each at its default when left out. Shared with `ColourSchemeToggle`, which draws its own `<button>`; not exported from `index.ts`. */
+export function look({
   variant = "outline",
   tone = "default",
   size = "md",

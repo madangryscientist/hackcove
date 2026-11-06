@@ -38,11 +38,3 @@ export const schemes: ColourSchemeClasses = {
  * `ColourSchemeToggle` island does the rest.
  */
 export const colourSchemeHeadScript = `${colourSchemeScript};document.documentElement.classList.toggle(${JSON.stringify(schemes.light)},!document.documentElement.classList.contains("dark"))`;
-
-/**
- * The toggle's label, set from the scheme `<html>` is in. The server renders the toggle for dark, and
- * the head script may switch to light, so the label would otherwise name the wrong switch until the
- * island hydrates. It runs at the end of `<body>`, after the toggle (`data-colour-scheme-toggle`) is
- * in the DOM. The two labels are `ColourSchemeToggle`'s; `docs.spec` checks they still match.
- */
-export const colourSchemeLabelScript = `(function(){var b=document.querySelector("[data-colour-scheme-toggle]");if(b)b.setAttribute("aria-label",document.documentElement.classList.contains(${JSON.stringify(schemes.dark)})?"Switch to light theme":"Switch to dark theme")})()`;

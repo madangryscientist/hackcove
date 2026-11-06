@@ -22,6 +22,9 @@ const buttonOf = (container: HTMLElement): HTMLButtonElement => {
   return button;
 };
 
+/** The tooltip, which follows the scheme the client reads once it has hydrated; the name is CSS's. */
+const titleOf = (button: HTMLButtonElement): string | null => button.getAttribute("title");
+
 // The toggle follows <html> through a MutationObserver, which reports on a microtask.
 const click = (button: HTMLButtonElement) => act(async () => button.click());
 
@@ -35,8 +38,28 @@ afterEach(() => {
 describe("ColourSchemeToggle", () => {
   it("renders the light state on the server, with no document to read", () => {
     const out = renderToStaticMarkup(<ColourSchemeToggle />);
-    expect(out).toContain('aria-label="Switch to dark theme"');
     expect(out).toContain("<svg");
+    expect(out).not.toContain("aria-label");
+  });
+
+  it("names itself from two visually hidden spans in the server markup, and a rule hides the wrong one", () => {
+    const out = renderToStaticMarkup(<ColourSchemeToggle />);
+    expect(out).toContain(
+      '<span class="sr-only" data-scheme-name="dark">Switch to dark theme</span>',
+    );
+    expect(out).toContain(
+      '<span class="sr-only" data-scheme-name="light">Switch to light theme</span>',
+    );
+    // Light page: the "dark" name only. Dark page: the "light" name only; `display:none` drops the
+    // other from the accessible name as well.
+    expect(out).toContain('[data-scheme-name="light"]{display:none}');
+    expect(out).toContain(':root[class~="dark"] [data-scheme-name="light"]{display:inline}');
+    expect(out).toContain(':root[class~="dark"] [data-scheme-name="dark"]{display:none}');
+  });
+
+  it("renders no title on the server, so no wrong tooltip is ever in the markup", () => {
+    expect(renderToStaticMarkup(<ColourSchemeToggle />)).not.toContain("title=");
+    expect(renderToStaticMarkup(<ColourSchemeToggle initial="dark" />)).not.toContain("title=");
   });
 
   it("draws both icons and picks one from the class on <html>, so the first frame needs no hydration", () => {
@@ -55,12 +78,16 @@ describe("ColourSchemeToggle", () => {
       <ColourSchemeToggle schemes={{ light: "my-light", dark: "ink" }} />,
     );
     expect(own).toContain(':root[class~="ink"] [data-scheme-icon="sun"]');
-    expect(own).not.toContain('"dark"');
+    expect(own).toContain(':root[class~="ink"] [data-scheme-name="light"]{display:inline}');
+    expect(own).not.toContain('[class~="dark"]');
     const bare = renderToStaticMarkup(
       <ColourSchemeToggle schemes={{ light: "my-light", dark: "" }} />,
     );
     expect(bare).toContain(
       ':root:not([class~="my-light"]) [data-scheme-icon="sun"]{display:inline}',
+    );
+    expect(bare).toContain(
+      ':root:not([class~="my-light"]) [data-scheme-name="dark"]{display:none}',
     );
     const none = renderToStaticMarkup(<ColourSchemeToggle schemes={{ light: "", dark: "" }} />);
     expect(none).not.toContain(":root");
@@ -69,33 +96,33 @@ describe("ColourSchemeToggle", () => {
   it("offers dark on a light page and flips the class, color-scheme and stored key on click", async () => {
     const onChange = vi.fn<(scheme: ColourScheme) => void>();
     const button = buttonOf(mount(<ColourSchemeToggle onChange={onChange} />));
-    expect(button.getAttribute("aria-label")).toBe("Switch to dark theme");
+    expect(titleOf(button)).toBe("Switch to dark theme");
 
     await click(button);
     expect(root.classList.contains("dark")).toBe(true);
     expect(root.style.colorScheme).toBe("dark");
     expect(localStorage.getItem(KEY)).toBe("dark");
     expect(onChange).toHaveBeenLastCalledWith("dark");
-    expect(button.getAttribute("aria-label")).toBe("Switch to light theme");
+    expect(titleOf(button)).toBe("Switch to light theme");
 
     await click(button);
     expect(root.classList.contains("dark")).toBe(false);
     expect(root.style.colorScheme).toBe("light");
     expect(localStorage.getItem(KEY)).toBe("light");
     expect(onChange).toHaveBeenLastCalledWith("light");
-    expect(button.getAttribute("aria-label")).toBe("Switch to dark theme");
+    expect(titleOf(button)).toBe("Switch to dark theme");
   });
 
   it("agrees with the dark class the head script left on <html> when it mounts", () => {
     root.classList.add("dark");
     const button = buttonOf(mount(<ColourSchemeToggle />));
-    expect(button.getAttribute("aria-label")).toBe("Switch to light theme");
+    expect(titleOf(button)).toBe("Switch to light theme");
   });
 
   it("follows a change to <html> made elsewhere", async () => {
     const button = buttonOf(mount(<ColourSchemeToggle />));
     await act(async () => root.classList.add("dark"));
-    expect(button.getAttribute("aria-label")).toBe("Switch to light theme");
+    expect(titleOf(button)).toBe("Switch to light theme");
   });
 
   it("still switches when storage throws", async () => {
@@ -105,7 +132,7 @@ describe("ColourSchemeToggle", () => {
     const button = buttonOf(mount(<ColourSchemeToggle />));
     await click(button);
     expect(root.classList.contains("dark")).toBe(true);
-    expect(button.getAttribute("aria-label")).toBe("Switch to light theme");
+    expect(titleOf(button)).toBe("Switch to light theme");
   });
 
   it("takes its scheme classes from `schemes` and swaps them on click", async () => {
@@ -113,26 +140,27 @@ describe("ColourSchemeToggle", () => {
     root.classList.add("my-light");
     const onChange = vi.fn<(scheme: ColourScheme) => void>();
     const button = buttonOf(mount(<ColourSchemeToggle schemes={schemes} onChange={onChange} />));
-    expect(button.getAttribute("aria-label")).toBe("Switch to dark theme");
+    expect(titleOf(button)).toBe("Switch to dark theme");
 
     await click(button);
     expect([...root.classList]).toEqual(["dark"]);
     expect(root.style.colorScheme).toBe("dark");
     expect(onChange).toHaveBeenLastCalledWith("dark");
-    expect(button.getAttribute("aria-label")).toBe("Switch to light theme");
+    expect(titleOf(button)).toBe("Switch to light theme");
 
     await click(button);
     expect([...root.classList]).toEqual(["my-light"]);
     expect(root.style.colorScheme).toBe("light");
-    expect(button.getAttribute("aria-label")).toBe("Switch to dark theme");
+    expect(titleOf(button)).toBe("Switch to dark theme");
   });
 
   it("puts id and data-* on the button, and leaves its own props alone", () => {
     const button = buttonOf(mount(<ColourSchemeToggle id="theme" data-testid="toggle" />));
     expect(button.id).toBe("theme");
     expect(button.dataset["testid"]).toBe("toggle");
-    expect(button.getAttribute("aria-label")).toBe("Switch to dark theme");
+    expect(titleOf(button)).toBe("Switch to dark theme");
     expect(button.hasAttribute("aria-pressed")).toBe(false);
+    expect(button.hasAttribute("aria-label")).toBe(false);
   });
 
   it("with store={false} switches and calls onChange but writes no localStorage", async () => {
@@ -158,7 +186,7 @@ describe("ColourSchemeToggle", () => {
       const hydrated = await act(async () =>
         hydrateRoot(container, <ColourSchemeToggle schemes={paper} initial={initial} />),
       );
-      const label = buttonOf(container).getAttribute("aria-label");
+      const label = titleOf(buttonOf(container));
       act(() => hydrated.unmount());
       container.remove();
       return { label, errors: errors.mock.calls };

@@ -56,7 +56,7 @@ export async function setScheme(page: Page, scheme: Scheme) {
     if ((await classScheme(page)) !== scheme) await toggle(page).click();
     await expect.poll(() => classScheme(page), { timeout: 1_000 }).toBe(scheme);
   }).toPass();
-  await expect(toggle(page)).toHaveAttribute("aria-label", labelFor(scheme));
+  await expect(toggle(page)).toHaveAccessibleName(labelFor(scheme));
 }
 
 /** Every page the header is on: the three sections' pages and every component page. */

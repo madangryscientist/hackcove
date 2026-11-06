@@ -130,7 +130,7 @@ export const actions: ComponentSection = {
         "Do not build a switch from your own buttons; the functions below are what the toggle itself calls.",
       ],
       accessibility: [
-        "It is an `IconButton` named `Switch to dark theme` or `Switch to light theme`, so the name says the action, and the icon is `aria-hidden`.",
+        "It is a button named `Switch to dark theme` or `Switch to light theme`, so the name says the action, and the icon is `aria-hidden`. The name follows the class on `<html>` through CSS before hydration, with no script; only the tooltip waits for the client.",
         "The icon shown is the scheme you would switch to: the moon on a light page, the sun on a dark one. It follows the class on `<html>` through CSS, so it is right on the first frame.",
         "`applyColourScheme` also sets `color-scheme` on `<html>`, so native controls and scrollbars follow.",
       ],
