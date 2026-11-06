@@ -19,6 +19,7 @@ import {
 import { GalleryBars } from "./GalleryBars";
 import { GalleryControls } from "./GalleryControls";
 import { GalleryButtons } from "./GalleryButtons";
+import { GalleryChat } from "./GalleryChat";
 import { GalleryChoice } from "./GalleryChoice";
 import { GalleryData } from "./GalleryData";
 import { GalleryKeyValues } from "./GalleryKeyValues";
@@ -191,6 +192,8 @@ export const gallerySections: GallerySection[] = [
     render: () => (
       <>
         <GalleryKeyValues />
+
+        <GalleryChat />
 
         <GalleryPageFade />
 

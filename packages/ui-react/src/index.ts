@@ -82,6 +82,9 @@ export { TableEditCell } from "./TableEditCell.js";
 export { EmptyState } from "./EmptyState.js";
 export { Step, Steps } from "./Steps.js";
 export { Timeline, TimelineItem } from "./Timeline.js";
+export { ChatComposer } from "./ChatComposer.js";
+export { ChatMessage } from "./ChatMessage.js";
+export { ChatThread } from "./ChatThread.js";
 export { Code } from "./Code.js";
 export { CodeBlock } from "./CodeBlock.js";
 export type { CodeLanguage } from "./highlight.js";
@@ -130,6 +133,7 @@ export { Image, type ImageAspect, type ImageProps, type ImageWidth } from "./Ima
 export { MediaTile, type MediaTileProps } from "./MediaTile.js";
 export { ScrollStrip, type ScrollStripProps } from "./ScrollStrip.js";
 export { TextLink, type TextLinkSize } from "./TextLink.js";
+export { ToolCallCard } from "./ToolCallCard.js";
 export {
   Caption,
   Display,

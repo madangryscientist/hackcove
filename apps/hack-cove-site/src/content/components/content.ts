@@ -1,3 +1,4 @@
+import { chatPages } from "./chat";
 import { mediaPages } from "./media";
 import type { ComponentSection } from "./types";
 
@@ -259,6 +260,7 @@ export const content: ComponentSection = {
       api: ["Video"],
     },
     ...mediaPages,
+    ...chatPages,
     {
       slug: "outline-region",
       name: "OutlineRegion",
