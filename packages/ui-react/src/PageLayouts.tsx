@@ -343,11 +343,14 @@ export function FullBleedLayout({
 
 /** A narrow card (`max-w-md`) centred in the Container at a fixed offset from the top, for sign-in, landing, not-found and error pages. The one layout that does not share the left edge. */
 export function CenteredLayout({
+  mark,
   title,
   subtitle,
   children,
   ...rest
 }: {
+  /** Drawn first in the card, above the title, e.g. a large status numeral. Not a heading. */
+  mark?: ReactNode;
   /** The card's `h1`. */
   title: ReactNode;
   /** A muted line under the title. */
@@ -358,6 +361,7 @@ export function CenteredLayout({
     <div {...rest} className="mx-auto w-full max-w-md pt-16">
       <Card as="div">
         <Stack>
+          {mark}
           <PageHeaderContent title={title} subtitle={subtitle} />
           {children}
         </Stack>

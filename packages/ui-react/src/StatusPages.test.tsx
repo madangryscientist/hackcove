@@ -83,3 +83,33 @@ describe("Offline", () => {
     expect(renderToStaticMarkup(<Offline onRetry={() => {}} />)).toContain("Try again");
   });
 });
+
+describe("NotFound numeral", () => {
+  it("draws 404 above the heading when numeral is on, and the heading stays the only h1", () => {
+    const out = renderToStaticMarkup(<NotFound numeral homeHref="/" />);
+    expect(out).toContain(
+      '<p class="text-6xl font-semibold tracking-tight text-violet-600">404</p>',
+    );
+    expect(out.indexOf("404")).toBeLessThan(out.indexOf("<h1"));
+    expect(out.match(/<h[1-6][\s>]/g)).toEqual(["<h1 "]);
+  });
+
+  it("draws no 404 by default", () => {
+    expect(renderToStaticMarkup(<NotFound homeHref="/" />)).not.toContain("404");
+  });
+
+  it("does not draw the numeral on the other status pages", () => {
+    expect(renderToStaticMarkup(<Forbidden homeHref="/" />)).not.toContain("404");
+    expect(renderToStaticMarkup(<ErrorPage />)).not.toContain("404");
+  });
+});
+
+describe("NotFound with its own action", () => {
+  it("renders the action's wording and no Back to home link", () => {
+    const out = renderToStaticMarkup(
+      <NotFound action={<Button href="/map">Open the map</Button>} />,
+    );
+    expect(out).toContain("Open the map");
+    expect(out).not.toContain("Back to home");
+  });
+});
