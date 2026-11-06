@@ -61,6 +61,8 @@ bunx nx e2e hack-cove-site                      # Playwright: builds the site, f
 `bunx nx affected -t <target>` runs just what changed. Lint rules are all errors: fix the code, do
 not disable a rule.
 
+Stop a process by the pid you started or by its port. Never `pkill -f` or `killall` a word such as storybook, nx, bun or vite: a shared machine can be running someone else's capture or upload.
+
 Nx caches locally only; there is no Nx Cloud. CI keeps `.nx/cache` and `.nx/workspace-data` (the cache and its index) between runs with `actions/cache` (`.github/workflows/ci.yml`): a pull request restores its own cache or `main`'s and
 saves its own, so one branch never reads another's. `e2e` is never cached.
 
