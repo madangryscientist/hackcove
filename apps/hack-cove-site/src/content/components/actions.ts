@@ -16,6 +16,7 @@ export const actions: ComponentSection = {
         "Button/Destructive",
         "ButtonGroup/Row",
       ],
+      stories: ["ButtonCount"],
       usage: [
         'Put one primary Button in a view. The other actions use `variant="outline"`, `"ghost"` or `"link"`; `variant="dashed"` is the full-width "add another" row at the foot of a list.',
         "Group the actions in a `ButtonGroup`, so the row spaces and wraps the same everywhere; `end` pushes one item, such as a Back link, to the far side, and `label` names the group.",
@@ -23,6 +24,7 @@ export const actions: ComponentSection = {
         "Going to another page is a `Button` with `href`, or `render` for the app's router link: a real `<a>` with the same look.",
         'A destructive action is `tone="danger"`, an accept is `tone="positive"`; `size="sm"` is for a button inside a row or a card header, `size="lg"` for the one action of a hero or a sign-in form.',
         "`pressed` makes a toggle; `busyLabel` replaces the label while `busy`.",
+        '`count` puts a number chip after the label, for how many are behind the button (the splits of a row, the comments on a thread): `<Button variant="ghost" size="sm" count={3}>Splits</Button>`. A button that opens something also takes `aria-expanded`, and `aria-controls` for what it opens; the caller owns that state.',
         "An icon-only action is an `IconButton`, not a Button holding a glyph.",
       ],
       accessibility: [
@@ -30,6 +32,7 @@ export const actions: ComponentSection = {
         "`disabledReason` disables the button and sets the reason as its `title`, so a pointer user sees why.",
         "`busy` sets `aria-busy` and disables the button until the work is done.",
         "Every Button has a focus ring from the component, so the keyboard focus is always visible.",
+        "The `count` chip is part of the button's name: `Splits, 3` (a `count` of 0 is shown as `Splits, 0`). Pass `aria-expanded` on a button that opens something, so a screen reader hears whether it is open.",
       ],
       api: ["Button", "ButtonGroup"],
     },

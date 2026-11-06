@@ -152,3 +152,35 @@ test("TableEditCell: a press outside closes the editor without a save", async ({
   await expect(page.getByRole("textbox", { name: "Note" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Weekly shop Edit note" })).toBeVisible();
 });
+
+test("InlineEdit in a cell: Enter opens the editor, a save and Esc return the focus, the cell keeps its other content", async ({
+  page,
+}) => {
+  await page.goto(story("data-table--inline-edit-in-cell"));
+  const value = page.getByRole("button", { name: "Groceries Edit category" });
+  await value.focus();
+  await page.keyboard.press("Enter");
+  const select = page.getByRole("combobox", { name: "Category" });
+  await expect(select).toBeFocused();
+  await expect(page.getByText("Card ending 4417")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(select).toHaveCount(0);
+  await expect(value).toBeFocused();
+  await page.keyboard.press("Space");
+  await page.getByRole("combobox", { name: "Category" }).selectOption("Transport");
+  await expect(page.getByRole("button", { name: "Transport Edit category" }).first()).toBeFocused();
+});
+
+test("Button count: the chip is in the name and the toggle sets aria-expanded", async ({
+  page,
+}) => {
+  await page.goto(story("actions-button--with-count"));
+  const toggle = page.getByRole("button", { name: /^Splits\s*, 3$/ });
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await toggle.focus();
+  await page.keyboard.press("Enter");
+  await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  await expect(page.locator("#splits-panel")).toBeVisible();
+  await page.keyboard.press("Space");
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+});

@@ -7,6 +7,7 @@ import {
 } from "react";
 import { cx } from "./cx.js";
 import type { Unstyled } from "./props.js";
+import { TEXT_TONE, type TextTone } from "./typography.js";
 
 type KeyValueAlign = "end" | "start";
 
@@ -44,10 +45,15 @@ export function KeyValueList({
   );
 }
 
-/** One row of a KeyValueList: a label on the left, a tabular value on the right (or beside it, in an `align="start"` list). `total` makes it the sum row: a rule above, strong text. */
+/**
+ * One row of a KeyValueList: a label on the left, a tabular value on the right (or beside it, in an
+ * `align="start"` list). `total` makes it the sum row: a rule above, strong text. `tone` colours the
+ * value, on any row: a total that does not reconcile is `total tone="warn"`.
+ */
 export function KeyValue({
   label,
   total = false,
+  tone,
   children,
   ...rest
 }: {
@@ -55,6 +61,8 @@ export function KeyValue({
   label: ReactNode;
   /** The sum the rows above add up to: a firm rule above it and the label and value in strong ink. */
   total?: boolean | undefined;
+  /** The meaning of the value, in the colours of a `Table` cell's `tone` (`muted`, `positive`, `warn`, `danger`, `info`); the label keeps its ink. Colour alone does not say it, so the value or the label says it too: a sign, a word. */
+  tone?: TextTone | undefined;
   children: ReactNode;
 } & Unstyled<HTMLAttributes<HTMLDivElement>>): ReactElement {
   const start = useContext(AlignContext) === "start";
@@ -67,7 +75,9 @@ export function KeyValue({
       )}
     >
       <dt className={total ? "text-slate-900" : "text-slate-600"}>{label}</dt>
-      <dd className={cx(!start && "text-right", "tabular-nums")}>{children}</dd>
+      <dd className={cx(!start && "text-right", "tabular-nums", tone && TEXT_TONE[tone])}>
+        {children}
+      </dd>
     </div>
   );
 }

@@ -77,6 +77,7 @@ export {
   TableHeaderCell,
   TableRow,
 } from "./Table.js";
+export { InlineEdit } from "./InlineEdit.js";
 export { TableEditCell } from "./TableEditCell.js";
 export { EmptyState } from "./EmptyState.js";
 export { Step, Steps } from "./Steps.js";

@@ -16,7 +16,7 @@ export const data: ComponentSection = {
         "TableRowStripe/Stripe",
         "TableActions/ActionsColumn",
       ],
-      stories: ["Table", "TableCellOptions", "TableEditCell", "TableFields"],
+      stories: ["Table", "TableCellOptions", "TableEditCell", "TableFields", "TableInlineEdit"],
       usage: [
         "Compose a `Table` from `TableHead`, `TableBody` and, for totals, `TableFoot`. A `TableHead` holds one `TableRow` of `TableHeaderCell`s; give the `Table` a `caption` that names it.",
         'Right-align a column of amounts with `align="end"` on its header and its cells, and set `numeric` on the cells so the figures line up. A code or a type is `mono`.',
@@ -29,6 +29,8 @@ export const data: ComponentSection = {
         "A prose cell wraps; a `numeric` or `mono` cell never breaks. `truncate` cuts a long value to one line and keeps its full text as a `title`; its content is plain text.",
         "To make a whole row clickable, put one `TextLink` with `stretch` in its first cell (with `render` for the app's router link). Keep an action that is not navigation a `Button` in an actions column.",
         "A value edited in place is a `TableEditCell` in place of the `TableCell`: `renderEditor` draws the control in the cell, and calls its `close` once it has saved. A press outside it, Tab out of it and Esc all close it without a save, so save on the control's own change or submit. The control sits in the cell, not in a popover of its own.",
+        "A cell that holds more than the value (a second line, a `Pill`) is a `TableCell` with an `InlineEdit` in it, which is the edit trigger without the cell. `TableEditCell` is a `TableCell` around one `InlineEdit`; the keyboard and focus behaviour is the same.",
+        "`emphasis` on a `TableRow` already gives a body row the firmer rule above it (the `TableFoot` row's look), so a sign row or a subtotal needs no other part.",
       ],
       accessibility: [
         "A Table renders a native `<table>`; `caption` is its accessible name, visually hidden.",
@@ -37,7 +39,7 @@ export const data: ComponentSection = {
         "Colour alone never carries a row's or a cell's status; name it in text.",
         "A `truncate` cell puts its full text in a `title`.",
         "A stretched `TextLink` is a real link and the only tab stop in its row; the row's whole area is its click target.",
-        "A `TableEditCell` is a native `<button>` named by its value and its `label`. Opening moves the focus to the editor, a group named by `label`; Esc and `close` move it back to the value.",
+        "A `TableEditCell` or `InlineEdit` is a native `<button>` named by its value and its `label`. Opening moves the focus to the editor, a group named by `label`; Esc and `close` move it back to the value.",
         "On a narrow screen the card scrolls sideways instead of squeezing its columns.",
       ],
       api: [
@@ -49,6 +51,7 @@ export const data: ComponentSection = {
         "TableHeaderCell",
         "TableCell",
         "TableEditCell",
+        "InlineEdit",
         "TableGroupRow",
       ],
     },
