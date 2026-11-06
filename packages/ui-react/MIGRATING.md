@@ -15,6 +15,10 @@ New, nothing to change: `Avatar` takes `onClick` (the whole avatar becomes one b
 the `@hackcove/themes` files have:
 `.your-scope .bg-white\/100 { background-color: #ffffff; }`.
 
+`ColourSchemeToggle` is named by its content now, so it is right before hydration with no script: a
+test that reads its `aria-label` attribute reads the name instead (`getByRole("button", { name })`,
+`toHaveAccessibleName`). The name is the same; `title` appears only after hydration.
+
 ## 0.7 → 0.8: `@hackcove/ui` is now `@hackcove/ui-react`
 
 Nothing else changed: 0.8.0 is the 0.7.1 components under a new name, so the React package pairs
