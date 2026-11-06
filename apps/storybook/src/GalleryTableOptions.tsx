@@ -1,5 +1,7 @@
 import { useState } from "react";
 import {
+  InlineEdit,
+  Pill,
   Select,
   Table,
   TableBody,
@@ -38,7 +40,38 @@ function CategoryCell() {
   );
 }
 
-/** A Table's indented lines, an `emphasis` subtotal, a `TableEditCell` and a centred `colSpan` note. */
+function CategoryInCell() {
+  const [category, setCategory] = useState("Transport");
+  return (
+    <TableCell>
+      <InlineEdit
+        label="Edit category"
+        renderEditor={(close) => (
+          <Select
+            aria-label="Category"
+            size="sm"
+            value={category}
+            onChange={(event) => {
+              setCategory(event.target.value);
+              close();
+            }}
+          >
+            {CATEGORIES.map((name) => (
+              <option key={name}>{name}</option>
+            ))}
+          </Select>
+        )}
+      >
+        {category}
+      </InlineEdit>
+      <Pill tone="amber" dot>
+        Needs a receipt
+      </Pill>
+    </TableCell>
+  );
+}
+
+/** A Table's indented lines, a `TableEditCell`, an `InlineEdit` in a cell with other content, an `emphasis` subtotal and a centred `colSpan` note. */
 export function GalleryTableOptions() {
   return (
     <Table caption="Forecast">
@@ -57,11 +90,18 @@ export function GalleryTableOptions() {
             R 349.00
           </TableCell>
         </TableRow>
+        <TableRow>
+          <TableCell indent={1}>Engen</TableCell>
+          <CategoryInCell />
+          <TableCell align="end" numeric>
+            R 880.00
+          </TableCell>
+        </TableRow>
         <TableRow emphasis>
           <TableCell>Subtotal</TableCell>
           <TableCell>Home</TableCell>
           <TableCell align="end" numeric>
-            R 349.00
+            R 1 229.00
           </TableCell>
         </TableRow>
         <TableRow>

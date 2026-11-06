@@ -14,7 +14,31 @@ const moonIcon = (
   </svg>
 );
 
-/** The Button rows of the Gallery: the variants, a full-width dashed one, the sizes, the positive and danger tones, a pressed toggle, the blocked and busy states, a Button that is a link and a ButtonGroup, then an IconButton (ghost, danger) and the ColourSchemeToggle. */
+/** The full-width dashed Button, then buttons with a `count` chip: a ghost toggle that opens something, an outline and a pressed one. */
+function DashedAndCountButtons() {
+  return (
+    <>
+      <div className="max-w-sm">
+        <Button variant="dashed">
+          <span aria-hidden="true">+</span> Add a line
+        </Button>
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <Button variant="ghost" size="sm" count={3} aria-expanded={false}>
+          Splits
+        </Button>
+        <Button variant="outline" count={12}>
+          Comments
+        </Button>
+        <Button variant="outline" size="sm" pressed count={8}>
+          Open
+        </Button>
+      </div>
+    </>
+  );
+}
+
+/** The Button rows of the Gallery: the variants, a full-width dashed one, the sizes, the positive and danger tones, a pressed toggle, buttons with a `count` chip, the blocked and busy states, a Button that is a link and a ButtonGroup, then an IconButton (ghost, danger) and the ColourSchemeToggle. */
 export function GalleryButtons() {
   return (
     <div className="flex flex-col gap-3">
@@ -71,11 +95,7 @@ export function GalleryButtons() {
           {moonIcon}
         </IconButton>
       </div>
-      <div className="max-w-sm">
-        <Button variant="dashed">
-          <span aria-hidden="true">+</span> Add a line
-        </Button>
-      </div>
+      <DashedAndCountButtons />
       <ButtonGroup
         label="Quote actions"
         end={

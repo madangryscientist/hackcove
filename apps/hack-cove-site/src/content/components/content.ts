@@ -230,6 +230,7 @@ export const content: ComponentSection = {
         "Put a `KeyValue` with a `label` for each fact; the value is its children.",
         '`align="end"` is the default: each label at the left and its value right-aligned. `align="start"` puts every value left-aligned in one column beside the labels, which suits long values.',
         "A value can be any content, such as a `Kbd` for a shortcut.",
+        '`total` closes a column of amounts: a firm rule above it and strong text. `tone` (`muted`, `positive`, `warn`, `danger`, `info`) colours the value on any row; a total that does not reconcile is `total tone="warn"`. Say it in words too, with a sign or "off", since colour alone does not.',
         "Do not build the rows by hand from a `Cluster`; a grid of records is a `Table`.",
       ],
       accessibility: [

@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { KeyValue, KeyValueList } from "./KeyValueList.js";
+import type { TextTone } from "./typography.js";
 
 describe("KeyValueList", () => {
   it("renders a dl with the rows as flex justify-between rows", () => {
@@ -82,5 +83,61 @@ describe("KeyValue total", () => {
     );
     expect(out).toContain("col-span-2 grid grid-cols-subgrid border-t border-slate-300");
     expect(out).not.toContain("text-right");
+  });
+});
+
+describe("KeyValue tone", () => {
+  it("colours the value in the Table cell's tone and leaves the label's ink", () => {
+    const out = renderToStaticMarkup(
+      <KeyValueList>
+        <KeyValue label="Difference" tone="warn">
+          −R 12.40
+        </KeyValue>
+      </KeyValueList>,
+    );
+    expect(out).toContain('<dd class="text-right tabular-nums text-amber-700">−R 12.40</dd>');
+    expect(out).toContain('<dt class="text-slate-600">Difference</dt>');
+  });
+
+  it("takes every text tone, the same colours as a TableCell's", () => {
+    const tones: [TextTone, string][] = [
+      ["muted", "text-slate-500"],
+      ["info", "text-blue-700"],
+      ["positive", "text-emerald-700"],
+      ["warn", "text-amber-700"],
+      ["danger", "text-red-700"],
+    ];
+    for (const [tone, colour] of tones) {
+      const out = renderToStaticMarkup(
+        <KeyValueList>
+          <KeyValue label="A" tone={tone}>
+            1
+          </KeyValue>
+        </KeyValueList>,
+      );
+      expect(out).toContain(`<dd class="text-right tabular-nums ${colour}">1</dd>`);
+    }
+  });
+
+  it("is the sum row's warn tone: the rule and strong text stay, the value goes amber", () => {
+    const out = renderToStaticMarkup(
+      <KeyValueList>
+        <KeyValue label="Reconciled" total tone="warn">
+          R 30 650
+        </KeyValue>
+      </KeyValueList>,
+    );
+    expect(out).toContain("border-t border-slate-300 pt-1.5 font-semibold");
+    expect(out).toContain('<dt class="text-slate-900">Reconciled</dt>');
+    expect(out).toContain("text-amber-700");
+  });
+
+  it("sets no colour on a row with no tone", () => {
+    const out = renderToStaticMarkup(
+      <KeyValueList>
+        <KeyValue label="A">1</KeyValue>
+      </KeyValueList>,
+    );
+    expect(out).not.toMatch(/<dd[^>]*text-(amber|red|emerald|blue)/);
   });
 });

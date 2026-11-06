@@ -116,3 +116,38 @@ export const TotalAligned: S = {
     </div>
   ),
 };
+
+/** `tone` colours the value: a total that does not reconcile is `total tone="warn"`. The rule and strong text stay; the figure says it too, with a sign or a word. */
+export const TotalWarn: S = {
+  render: () => (
+    <div className="max-w-sm">
+      <KeyValueList>
+        <KeyValue label="Bank balance">R 31 200.00</KeyValue>
+        <KeyValue label="Ledger balance">R 30 650.00</KeyValue>
+        <KeyValue label="Unreconciled" total tone="warn">
+          R 550.00 off
+        </KeyValue>
+      </KeyValueList>
+    </div>
+  ),
+};
+
+/** `tone` works on any row, not only a total: `positive` for a gain, `danger` for an overspend, `warn` for a figure to check. */
+export const Tones: S = {
+  render: () => (
+    <div className="max-w-sm">
+      <KeyValueList>
+        <KeyValue label="Income">R 42 000</KeyValue>
+        <KeyValue label="Overspent" tone="danger">
+          −R 1 200 over
+        </KeyValue>
+        <KeyValue label="Saved" tone="positive">
+          +R 3 000
+        </KeyValue>
+        <KeyValue label="Pending" tone="warn">
+          R 550 to check
+        </KeyValue>
+      </KeyValueList>
+    </div>
+  ),
+};

@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef, ReactElement } from "react";
+import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
 import { cx, focusRing } from "./cx.js";
 import { type LinkRender, renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
@@ -68,6 +68,23 @@ const TOGGLE_OFF: Look = {
   color: "border-slate-200 bg-white text-slate-600",
   hover: "hover:border-violet-400",
 };
+
+// The count chip: a pill in the button's own text colour (a hairline of `currentColor`), so it reads
+// on every variant and tone and needs no palette entry. The size is a Badge's.
+const COUNT =
+  "inline-flex h-4 min-w-4 items-center justify-center rounded-full border border-current px-1 text-[10px] font-semibold leading-none tabular-nums";
+
+/** The label, then the count chip. The comma is for a screen reader only, so the name reads "Splits, 3". */
+function withCount(children: ReactNode, count: number | undefined): ReactNode {
+  if (count === undefined) return children;
+  return (
+    <>
+      {children}
+      <span className="sr-only">, </span>
+      <span className={COUNT}>{count}</span>
+    </>
+  );
+}
 
 function lookOf(variant: ButtonVariant, tone: ButtonTone, pressed?: boolean): Look {
   if (variant === "dashed") return DASHED;
@@ -151,6 +168,12 @@ type ButtonAsButton = ButtonLook & {
    * Left out, the button is not a toggle, has no `aria-pressed` and keeps its variant's look.
    */
   pressed?: boolean | undefined;
+  /**
+   * A small number in a chip after the label: how many are behind the button (the splits a row
+   * has, the comments on a thread). It is part of the button's name, "Splits, 3", and `0` is
+   * shown. For a button that opens something, also pass `aria-expanded`.
+   */
+  count?: number | undefined;
   href?: undefined;
   render?: undefined;
   external?: undefined;
@@ -163,6 +186,12 @@ type ButtonAsLink = ButtonLook & {
   busy?: undefined;
   busyLabel?: undefined;
   pressed?: undefined;
+  /**
+   * A small number in a chip after the label: how many are behind the button (the splits a row
+   * has, the comments on a thread). It is part of the button's name, "Splits, 3", and `0` is
+   * shown. For a button that opens something, also pass `aria-expanded`.
+   */
+  count?: number | undefined;
 } & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href">> &
   (
     | {
@@ -211,7 +240,9 @@ function stateClass(
  * underline on hover, for an in-line action; `dashed` is the full-width "add" row, a dashed
  * outline with muted text that fills its container, with an optional leading icon in the
  * children). `size="sm"` is compact and `size="lg"` larger; `tone="positive"` is green and `tone="danger"` is red;
- * `pressed` makes it a toggle: neutral when off, the tone's fill when on.
+ * `pressed` makes it a toggle: neutral when off, the tone's fill when on. `count` puts a small
+ * number chip after the label; the chip is part of the name, and a button that opens something
+ * also takes `aria-expanded`.
  * Defaults to `type="button"`. `disabledReason` and `busy` are the two disabled states that say
  * more than a plain `disabled`, which keeps its half-opacity look. `href` makes it a link instead,
  * with the same look (a plain `<a>`, or with `render` the app's own router `<Link>`:
@@ -228,6 +259,7 @@ function LinkButton({
   href,
   render,
   external = false,
+  count,
   children,
   ...rest
 }: ButtonAsLink): ReactElement {
@@ -237,7 +269,7 @@ function LinkButton({
     render,
     external,
     className: buttonClass(variant, { size, tone }),
-    children,
+    children: withCount(children, count),
   });
 }
 
@@ -249,6 +281,7 @@ function PlainButton({
   busy = false,
   busyLabel,
   pressed,
+  count,
   children,
   title,
   disabled,
@@ -266,7 +299,7 @@ function PlainButton({
       title={blocked ? disabledReason : title}
       {...rest}
     >
-      {busy && busyLabel ? busyLabel : children}
+      {busy && busyLabel ? busyLabel : withCount(children, count)}
     </button>
   );
 }

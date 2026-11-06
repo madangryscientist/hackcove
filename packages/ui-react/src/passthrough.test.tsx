@@ -112,6 +112,11 @@ const CASES: Record<string, () => ReactElement> = {
       x
     </ui.IconButton>
   ),
+  InlineEdit: () => (
+    <ui.InlineEdit label="Edit" renderEditor={() => null} {...A}>
+      x
+    </ui.InlineEdit>
+  ),
   Input: () => <ui.Input {...A} />,
   Image: () => <ui.Image src="/x.jpg" alt="X" {...A} />,
   Kbd: () => <ui.Kbd {...A}>k</ui.Kbd>,
