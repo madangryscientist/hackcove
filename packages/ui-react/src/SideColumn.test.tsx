@@ -62,4 +62,14 @@ describe("SideColumn", () => {
     );
     expect(named).toMatch(/^<div data-testid="chat" aria-label="Chat"/);
   });
+
+  it("names the <aside> with asideLabel, and leaves it unnamed without", () => {
+    const named = renderToStaticMarkup(
+      <SideColumn aside="ASIDE" asideLabel="Ask the reply agent">
+        MAIN
+      </SideColumn>,
+    );
+    expect(named).toMatch(/<aside [^>]*aria-label="Ask the reply agent"/);
+    expect(out).not.toContain("aria-label");
+  });
 });

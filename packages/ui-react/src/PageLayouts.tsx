@@ -9,6 +9,7 @@ import { Card } from "./Card.js";
 import { cx } from "./cx.js";
 import { PageHeader, PageHeaderContent, type PageHeaderProps } from "./PageHeader.js";
 import { STACK_WIDTH, Stack, type StackGap } from "./Stack.js";
+import { scrollStopProps, useScrollStop } from "./scrollStop.js";
 import { STICKY_ASIDE_LG, STICKY_SCROLL_LG } from "./stickyColumn.js";
 import { StickyBar } from "./StickyBar.js";
 import type { Passthrough, Unstyled } from "./props.js";
@@ -62,6 +63,7 @@ export function ListLayout({
  */
 export function DetailLayout({
   aside,
+  asideLabel,
   stickyAside = false,
   children,
   breadcrumbs,
@@ -73,6 +75,8 @@ export function DetailLayout({
 }: PageHeaderProps & {
   /** The side column: one third from `lg`, below `children` on a smaller screen. */
   aside: ReactNode;
+  /** Names the aside's landmark (`aria-label`), so a page with another complementary landmark can tell them apart. It does not fold the aside. Left out, the aside is unnamed. */
+  asideLabel?: string | undefined;
   /**
    * From `lg`, keeps the aside in view under the header as the page scrolls; an aside taller than
    * the screen scrolls inside itself. Off by default, since an aside of ordinary cards may be
@@ -82,6 +86,8 @@ export function DetailLayout({
   stickyAside?: boolean | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {
+  const { attach, stop } = useScrollStop();
+  const { props, ring } = scrollStopProps(stickyAside && stop, { label: asideLabel });
   return (
     <>
       <PageHeader
@@ -95,8 +101,12 @@ export function DetailLayout({
         <div className="min-w-0 lg:col-span-2">
           <Stack>{children}</Stack>
         </div>
-        <aside className={cx("min-w-0", stickyAside && STICKY_ASIDE_LG)}>
-          <div className={stickyAside ? STICKY_SCROLL_LG : undefined}>
+        <aside className={cx("min-w-0", stickyAside && STICKY_ASIDE_LG)} aria-label={asideLabel}>
+          <div
+            ref={stickyAside ? attach : undefined}
+            {...props}
+            className={stickyAside ? cx(STICKY_SCROLL_LG, ring) : undefined}
+          >
             <Stack>{aside}</Stack>
           </div>
         </aside>
@@ -285,6 +295,7 @@ export function CardGrid({
 export function FullBleedLayout({
   bar,
   panel,
+  panelLabel,
   padded = false,
   children,
   ...rest
@@ -293,6 +304,8 @@ export function FullBleedLayout({
   bar?: ReactNode;
   /** A side column on the right (`lg:w-72`) on a tinted surface; below `lg` it stacks under `children`. */
   panel?: ReactNode;
+  /** Names the panel's `<aside>` landmark (`aria-label`). Left out, the panel is unnamed. */
+  panelLabel?: string | undefined;
   /**
    * Pads `children` as the Container pads every other page. Off, they run to the viewport's edges.
    * A notice in the column is a plain `Callout` in a `Stack`, never a `Callout banner`.
@@ -304,7 +317,10 @@ export function FullBleedLayout({
     <>
       <div className={cx("min-w-0 flex-1", padded && "px-4 py-8 sm:px-6")}>{children}</div>
       {panel && (
-        <aside className="w-full shrink-0 border-t border-slate-200 bg-slate-50 p-4 lg:w-72 lg:border-t-0 lg:border-l">
+        <aside
+          className="w-full shrink-0 border-t border-slate-200 bg-slate-50 p-4 lg:w-72 lg:border-t-0 lg:border-l"
+          aria-label={panelLabel}
+        >
           {panel}
         </aside>
       )}
