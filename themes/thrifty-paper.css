@@ -35,6 +35,14 @@
     ui-monospace, "JetBrains Mono", "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono",
     monospace;
   font-family: var(--font-sans);
+  /* Colours for chrome the kit cannot draw (a MapLibre popup, a map marker): the value each named
+     utility paints under this scope. A consumer's own CSS reads them with var(--hc-…, fallback). */
+  --hc-surface: #ffffff; /* bg-white */
+  --hc-subtle: #f7f2e9; /* bg-slate-50 */
+  --hc-line: #ece3d4; /* border-slate-200 */
+  --hc-ink: #1c1917; /* text-slate-900 */
+  --hc-mute: #6b6259; /* text-slate-500 */
+  --hc-accent: #c2410c; /* text-violet-600 */
 }
 
 /* The page canvas — AppShell paints it; white cards lift off the cream. */
