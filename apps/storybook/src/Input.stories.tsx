@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Input } from "@hackcove/ui-react";
+import { Button, Card, Input } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Forms/Input" };
 export default meta;
@@ -20,6 +20,41 @@ export const Default: S = {
 };
 export const WithIcon: S = {
   render: () => <Input type="search" placeholder="Search by name, suburb or tag…" icon={search} />,
+};
+/** Inside a Card (or a ListRow), where a field is lifted above a stretched link, the leading icon still shows, for a plain field and a search field alike. */
+export const IconInCard: S = {
+  render: () => (
+    <Card title="Filter stores">
+      <div className="flex flex-col gap-2">
+        <Input aria-label="Name" placeholder="Name" icon={search} />
+        <Input
+          type="search"
+          aria-label="Search"
+          placeholder="Search by name, suburb or tag…"
+          icon={search}
+        />
+        <Input
+          type="search"
+          aria-label="Search, filled"
+          defaultValue="Thrifty paper"
+          icon={search}
+        />
+      </div>
+    </Card>
+  ),
+};
+/** A placeholder longer than the field ends with an ellipsis instead of being cut mid-word. */
+export const LongPlaceholder: S = {
+  render: () => (
+    <div className="w-48">
+      <Input
+        type="search"
+        aria-label="Search"
+        placeholder="Search by name, suburb or tag…"
+        icon={search}
+      />
+    </div>
+  ),
 };
 /** `prefix`: short text inside the border, before the value, such as a currency symbol. */
 export const WithPrefix: S = {

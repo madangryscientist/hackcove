@@ -52,7 +52,7 @@ export function Input({
         <input
           {...rest}
           className={cx(
-            "min-w-0 flex-1 bg-transparent px-1 outline-none placeholder:text-slate-400",
+            "min-w-0 flex-1 bg-transparent px-1 text-ellipsis outline-none placeholder:text-slate-400",
             CONTROL_ALIGN[align],
           )}
         />

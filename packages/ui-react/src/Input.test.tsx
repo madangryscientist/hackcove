@@ -52,6 +52,41 @@ describe("Input", () => {
   });
 });
 
+const iconClass = (markup: string): string => {
+  const match = /<span aria-hidden="true" class="([^"]*)"/.exec(markup);
+  if (!match?.[1]) throw new Error("no icon span rendered");
+  return match[1];
+};
+
+describe("Input icon inside a lifted container (HC-242)", () => {
+  // `liftInteractive` (Card, ListRow, TableRow) gives a descendant input `relative z-10` and the
+  // field is opaque, so the absolute icon must rank above it there. A browser lays that out (the
+  // storybook e2e asserts it with elementFromPoint); here the icon carries the class that does it.
+  it("ranks the icon above the lifted field (z-20) when an isolate ancestor holds it", () => {
+    for (const out of [
+      renderToStaticMarkup(<Input icon={icon} />),
+      renderToStaticMarkup(<Input type="search" icon={icon} />),
+    ]) {
+      expect(iconClass(out)).toContain("in-[.isolate]:z-20");
+    }
+  });
+
+  it("leaves the icon unraised outside an isolate, so it never outranks a sticky header", () => {
+    expect(iconClass(renderToStaticMarkup(<Input icon={icon} />))).not.toMatch(/(^| )z-/);
+  });
+
+  it("ends an overflowing placeholder with an ellipsis, on every field kind", () => {
+    for (const out of [
+      renderToStaticMarkup(<Input />),
+      renderToStaticMarkup(<Input icon={icon} />),
+      renderToStaticMarkup(<Input type="search" icon={icon} />),
+      renderToStaticMarkup(<Input prefix="R" />),
+    ]) {
+      expect(out).toContain("text-ellipsis");
+    }
+  });
+});
+
 const field = (c: HTMLElement): HTMLInputElement => {
   const input = c.querySelector("input");
   if (!input) throw new Error("no <input> rendered");
