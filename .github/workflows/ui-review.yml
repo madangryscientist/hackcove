@@ -15,7 +15,7 @@ name: UI review
 #   on: pull_request
 #   jobs:
 #     ui-review:
-#       if: github.event.pull_request.head.repo.full_name == github.repository
+#       if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
 #       permissions: { contents: read, pull-requests: write }
 #       uses: madangryscientist/hackcove/.github/workflows/ui-review.yml@main
 #       with: { runs-on: proxmox }
