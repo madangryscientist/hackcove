@@ -37,7 +37,7 @@
      utility paints under this scope. A consumer's own CSS reads them with var(--hc-…, fallback). */
   --hc-surface: #1e1e2e; /* bg-white */
   --hc-subtle: #313244; /* bg-slate-50 */
-  --hc-line: #313244; /* border-slate-200 */
+  --hc-line: #45475a; /* border-slate-200 */
   --hc-ink: #cdd6f4; /* text-slate-900 */
   --hc-mute: #a6adc8; /* text-slate-500 */
   --hc-accent: #cba6f7; /* text-violet-600 */
@@ -130,7 +130,11 @@
 }
 .dark .border-slate-200,
 .dark .border-slate-200\/70 {
-  border-color: #313244; /* surface0 */
+  /* surface1, not surface0 (#313244): surface0 is the fill of bg-slate-50, so a neutral Callout's
+     edge vanished (1.00:1), and on a bg-white (#1e1e2e) Card it was 1.31:1. Surface1 is 1.38:1
+     against bg-slate-50 (#313244) and 1.80:1 against bg-white (#1e1e2e). A decorative edge, not a
+     control's (that is border-slate-300), and the kit's everyday line, so no heavier than this. */
+  border-color: #45475a; /* surface1 */
 }
 .dark .border-slate-300 {
   /* overlay1, not surface1 (#45475a): this is the edge of an input, a select, a neutral button,
