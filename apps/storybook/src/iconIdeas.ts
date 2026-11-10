@@ -12,6 +12,7 @@ export const iconIdeas: Record<IconName, string> = {
   branch: "A line of work off the trunk",
   theme: "The look of a site",
   speed: "Fast",
+  search: "Finding something in a list",
 };
 
 const NAMES = [
@@ -25,6 +26,7 @@ const NAMES = [
   "branch",
   "theme",
   "speed",
+  "search",
 ] as const;
 
 /** `true` only while `NAMES` lists every `IconName`: a missing one makes this line a type error. */

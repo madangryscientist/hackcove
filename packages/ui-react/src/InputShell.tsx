@@ -2,11 +2,15 @@ import type { ReactElement, ReactNode } from "react";
 import { CONTROL_WIDTH, type ControlProps, type ControlSize, controlClass } from "./control.js";
 import { cx } from "./cx.js";
 
-/** Where a leading icon sits, and its size, by the control's size. */
+/**
+ * Where a leading icon sits, and its size, by the control's size. The wrapper is a flex box centred
+ * on the field, so the icon's own box centres too, and its one child is sized whether it is a bare
+ * `<svg>` or an `Icon`.
+ */
 const ICON: Record<ControlSize, string> = {
-  sm: "left-2 [&>svg]:h-3.5 [&>svg]:w-3.5",
-  md: "left-3 [&>svg]:h-4 [&>svg]:w-4",
-  lg: "left-4 [&>svg]:h-5 [&>svg]:w-5",
+  sm: "left-2 [&>*]:size-3.5",
+  md: "left-3 [&>*]:size-4",
+  lg: "left-4 [&>*]:size-5",
 };
 
 /** The prefix text's inset and size, by the control's size. */
@@ -43,7 +47,7 @@ export function InputShell({
         <span
           aria-hidden="true"
           className={cx(
-            "pointer-events-none absolute top-1/2 -translate-y-1/2 text-slate-400 in-[.isolate]:z-20",
+            "pointer-events-none absolute top-1/2 flex -translate-y-1/2 items-center leading-none text-slate-400 in-[.isolate]:z-20",
             ICON[size],
           )}
         >
