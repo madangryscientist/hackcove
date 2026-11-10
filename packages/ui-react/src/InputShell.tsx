@@ -16,7 +16,15 @@ const PREFIX: Record<ControlSize, string> = {
   lg: "pl-4 text-base",
 };
 
-/** The relative wrapper of an `Input` that holds more than the field: a leading `icon` and, for search, the clear button. Not exported from the package. */
+/**
+ * The relative wrapper of an `Input` that holds more than the field: a leading `icon` and, for search, the clear button. Not exported from the package.
+ *
+ * Inside a Card or row (`liftInteractive`, which is `isolate`) the field is lifted to `z-10`, and
+ * its opaque background would paint over a z-auto icon. So the icon ranks `z-20` there. It is
+ * scoped to an `isolate` ancestor so a field elsewhere on the page never outranks AppShell's
+ * sticky header (`z-10`). The clear button is a lifted `button` and comes after the field, so it
+ * already sits above it.
+ */
 export function InputShell({
   icon,
   size = "md",
@@ -35,7 +43,7 @@ export function InputShell({
         <span
           aria-hidden="true"
           className={cx(
-            "pointer-events-none absolute top-1/2 -translate-y-1/2 text-slate-400",
+            "pointer-events-none absolute top-1/2 -translate-y-1/2 text-slate-400 in-[.isolate]:z-20",
             ICON[size],
           )}
         >

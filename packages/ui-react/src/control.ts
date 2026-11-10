@@ -58,7 +58,7 @@ export function controlClass(size: ControlSize = "md", width: ControlWidth = "fu
   return [
     CONTROL_WIDTH[width],
     CONTROL_SIZE[size],
-    `rounded-lg border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 transition hover:border-violet-400 disabled:opacity-50 ${focusRing}`,
+    `rounded-lg border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 text-ellipsis transition hover:border-violet-400 disabled:opacity-50 ${focusRing}`,
   ]
     .filter(Boolean)
     .join(" ");
