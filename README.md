@@ -172,6 +172,10 @@ jobs:
     secrets: inherit
 ```
 
+A private repo can run it on its own self-hosted runner with `with: { runs-on: <runner> }`
+(default `ubuntu-latest`) and an `if: github.event.pull_request.head.repo.full_name == github.repository`
+on the calling job. The input is for private repos only: a public repo never uses the proxmox runner.
+
 It runs two layers on the lines the pull request adds:
 
 - **Rules (no model).** Fails the check with a `file:line` annotation on a new CSS file or

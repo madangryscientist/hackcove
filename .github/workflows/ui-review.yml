@@ -9,6 +9,22 @@ name: UI review
 #       uses: madangryscientist/hackcove/.github/workflows/ui-review.yml@main
 #       secrets: inherit
 #
+# A private repo can run it on its own self-hosted runner with the `runs-on` input. Guard the
+# calling job as well, so a fork's pull request never reaches that runner:
+#
+#   on: pull_request
+#   jobs:
+#     ui-review:
+#       if: github.event.pull_request.head.repo.full_name == github.repository
+#       permissions: { contents: read, pull-requests: write }
+#       uses: madangryscientist/hackcove/.github/workflows/ui-review.yml@main
+#       with: { runs-on: proxmox }
+#       secrets: inherit
+#
+# `runs-on` is for private repos only: a public repo must never use the proxmox runner (Jacobus,
+# 2026-11-11). Whatever runner a caller picks, the jobs below skip a fork's pull request on any
+# runner but `ubuntu-latest`.
+#
 # Layer 1 (`rules`) is deterministic and has no model: it reads the lines the pull request adds
 # and fails with file:line annotations. Layer 2 (`review`) is a model review through OpenCode Zen.
 # Its findings are advisory and never fail the pull request. A review that did not happen does:
@@ -22,6 +38,12 @@ name: UI review
 on:
   workflow_call:
     inputs:
+      runs-on:
+        description: >-
+          The runner for every job. For private repos only: a public repo must never use the
+          proxmox runner. A fork's pull request is skipped on any runner but `ubuntu-latest`.
+        type: string
+        default: ubuntu-latest
       paths:
         description: >-
           Globs of the app code to review, one per line; a leading `!` excludes. Empty means every
@@ -70,7 +92,8 @@ env:
 jobs:
   rules:
     name: Hack Cove rules
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
+    if: inputs.runs-on == 'ubuntu-latest' || github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
       # The pull request's head, not the merge commit, so line numbers match what the diff shows.
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
@@ -97,7 +120,8 @@ jobs:
 
   review:
     name: Hack Cove model review (advisory)
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runs-on }}
+    if: inputs.runs-on == 'ubuntu-latest' || github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     # No `continue-on-error`: it would report a crash as green. The findings are advisory (the step
     # exits 0 with them); only "the review did not run" turns this red.
     permissions:
