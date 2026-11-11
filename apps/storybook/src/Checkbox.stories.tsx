@@ -78,7 +78,10 @@ export const Sizes: S = {
   render: () => (
     <div className="flex flex-col gap-2">
       {(["sm", "md", "lg"] as const).map((size) => (
-        <Checkbox key={size} size={size} label={`Paid, ${size}`} defaultChecked />
+        <Cluster key={size} gap="md">
+          <Checkbox size={size} label={`Paid, ${size}`} />
+          <Checkbox size={size} label={`Paid, ${size}`} defaultChecked />
+        </Cluster>
       ))}
     </div>
   ),

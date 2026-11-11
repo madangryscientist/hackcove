@@ -12,7 +12,9 @@ const SIZE: Record<Size, { label: string; box: string; start: string }> = {
 };
 
 /**
- * A native checkbox with its label. Every prop but the label goes on the input.
+ * A checkbox with its label. It is a real `<input type="checkbox">`, drawn by the library (an
+ * empty outlined box, then a filled violet one with a check mark) so it reads the same in every
+ * theme and browser. Every prop but the label goes on the input.
  * `size="sm"` is `text-xs` and a smaller box, for a dense row; `size="lg"` is `text-base` and a
  * larger box. Leave `label` out for a bare box in
  * a table cell, and name it with `aria-label`. `align="start"` puts the box on the label's first
@@ -49,18 +51,41 @@ export function Checkbox({
   return (
     <label
       className={cx(
-        "inline-flex cursor-pointer text-slate-700",
+        // Faded and default-cursor unless the box is enabled. Written as `has-enabled` so the
+        // label carries no `disabled` class text: the disabled state belongs on the input.
+        "group/checkbox inline-flex cursor-default text-slate-700 opacity-50 has-enabled:cursor-pointer has-enabled:opacity-100",
         start ? "items-start" : "items-center",
         SIZE[size].label,
       )}
     >
+      {/* The checked box: a filled violet square at the input's own place (an absolutely
+          positioned flex child sits where the first flex item would, so it needs no insets), shown
+          by the label's `:has(:checked)` so an uncontrolled Checkbox changes with no re-render. */}
+      <span
+        aria-hidden="true"
+        className={cx(
+          SIZE[size].box,
+          start && SIZE[size].start,
+          "pointer-events-none invisible absolute z-10 block rounded border border-violet-600 bg-violet-600 text-violet-50 group-has-checked/checkbox:visible",
+        )}
+      >
+        <svg viewBox="0 0 16 16" fill="none" className="h-full w-full">
+          <path
+            d="M4 8.5l2.5 2.5L12 5.5"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </span>
       <input
         type="checkbox"
         className={cx(
           SIZE[size].box,
           "shrink-0",
           start && SIZE[size].start,
-          "accent-violet-600",
+          "appearance-none rounded border border-slate-300 bg-white hover:border-violet-400",
           focusRing,
         )}
         {...(describedIds ? { "aria-describedby": describedIds } : {})}
