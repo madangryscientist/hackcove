@@ -4,22 +4,31 @@
  * highlighted code exactly as it recolours everything else.
  *
  * The grammars are deliberately shallow — enough for examples, not a compiler front end. `text`
- * returns the code as one plain run, so nothing is coloured where no language is named.
+ * returns the code as one plain run, so nothing is coloured where no language is named. The
+ * languages: `text`, `tsx`, `ts`, `js`, `json`, `bash`, `console` (a shell session: `$ ` commands
+ * scanned as bash, everything else output), `css`, `html` (with `<script>` scanned as JS and
+ * `<style>` as CSS) and `yaml`.
  */
 
-export type CodeLanguage = "text" | "tsx" | "ts" | "json" | "bash" | "css";
+import { scanConsole } from "./highlightConsole.js";
+import { scanHtml } from "./highlightHtml.js";
+import { scanYaml } from "./highlightYaml.js";
+import type { Emit, Token, TokenKind } from "./highlightKit.js";
 
-export type TokenKind =
-  | "plain"
-  | "comment"
-  | "keyword"
-  | "string"
-  | "number"
-  | "tag"
-  | "attr"
-  | "function";
+export { consoleCommands } from "./highlightConsole.js";
+export type { Token, TokenKind } from "./highlightKit.js";
 
-export type Token = { text: string; kind: TokenKind };
+export type CodeLanguage =
+  | "text"
+  | "tsx"
+  | "ts"
+  | "js"
+  | "json"
+  | "bash"
+  | "console"
+  | "css"
+  | "html"
+  | "yaml";
 
 /** One run found at a position: where it ends and what colour it takes. */
 type Match = { kind: TokenKind; end: number };
@@ -30,8 +39,6 @@ type Rule = {
   /** A fixed colour, or one decided from the match (a keyword, a call, a CSS property). */
   kind: TokenKind | ((code: string, start: number, end: number) => TokenKind);
 };
-
-type Emit = (kind: TokenKind, text: string) => void;
 
 /** The coloured runs of `code`. The text of every token joined back together is `code`. */
 export function highlight(code: string, language: CodeLanguage): Token[] {
@@ -44,8 +51,12 @@ export function highlight(code: string, language: CodeLanguage): Token[] {
   };
   if (language === "text") emit("plain", code);
   else if (language === "bash") scanBash(code, emit);
+  else if (language === "console") scanConsole(code, emit, scanBash);
   else if (language === "css") scanCss(code, emit);
-  // JSON is JS with no code around it: keys are strings, `true`/`false`/`null` are keywords.
+  else if (language === "html") scanHtml(code, emit, scanJs, scanCss);
+  else if (language === "yaml") scanYaml(code, emit);
+  // JS, TS and TSX share one scanner. JSON is JS with no code around it: keys are strings,
+  // `true`/`false`/`null` are keywords.
   else scanJs(code, emit);
   return tokens;
 }

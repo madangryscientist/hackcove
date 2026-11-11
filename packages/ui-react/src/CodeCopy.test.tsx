@@ -78,6 +78,48 @@ describe("the copy button on a code block", () => {
     expect(button.textContent).toBe("copy");
   });
 
+  it("copies only the commands of a console block, without the prompt or the output", async () => {
+    const container = mount(
+      <CodeBlock
+        copy
+        language="console"
+        lines={[
+          "$ bun add @hackcove/ui-react",
+          "installed @hackcove/ui-react@0.1.0",
+          "$ bunx playwright test \\",
+          "  --project=chromium",
+          "2 passed",
+        ]}
+      />,
+    );
+    await press(buttonOf(container));
+    expect(writeText).toHaveBeenCalledExactlyOnceWith(
+      "bun add @hackcove/ui-react\nbunx playwright test \\\n  --project=chromium",
+    );
+  });
+
+  it("copies a console block with no command exactly as given", async () => {
+    const code = "installed 1 package\n$HOME";
+    const container = mount(
+      <CodeBlock copy language="console">
+        {code}
+      </CodeBlock>,
+    );
+    await press(buttonOf(container));
+    expect(writeText).toHaveBeenCalledExactlyOnceWith(code);
+  });
+
+  it("still copies everything in any other language, a leading $ included", async () => {
+    const code = "$ bun add a\nadded 1 package";
+    const container = mount(
+      <CodeBlock copy language="bash">
+        {code}
+      </CodeBlock>,
+    );
+    await press(buttonOf(container));
+    expect(writeText).toHaveBeenCalledExactlyOnceWith(code);
+  });
+
   it("is a real button, reachable and pressable from the keyboard", () => {
     const container = mount(<CodeBlock copy>x</CodeBlock>);
     const button = buttonOf(container);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { highlight, type CodeLanguage, type Token } from "./highlight.js";
+import { consoleCommands, highlight, type CodeLanguage, type Token } from "./highlight.js";
 
 const INSTALL =
   "bun add @hackcove/ui-react\nbunx nx run-many -t typecheck lint test build --skip-nx-cache";
@@ -29,6 +29,14 @@ const SAMPLES: { language: CodeLanguage; code: string }[] = [
     language: "css",
     code: '@import "tailwindcss";\n\n.dark .bg-white {\n  background-color: #1e1e2e;\n}',
   },
+  { language: "js", code: "export const a = 1; // one" },
+  { language: "yaml", code: "name: CI\non:\n  push:\n    branches: [main]\n" },
+  { language: "yaml", code: "- run: |\n    echo # hi\n\n  - next: 1\r\nkey: 'a' # c\n" },
+  {
+    language: "html",
+    code: "<!doctype html>\n<p class=a>Don't</p>\n<script>let a = '</p>';</script><i",
+  },
+  { language: "console", code: "$ bun add a \\\n  b\nadded 2\n$ bun test\r\nok" },
 ];
 
 const kinds = (tokens: Token[]): string[] => tokens.map((token) => token.kind);
@@ -100,5 +108,70 @@ describe("highlight", () => {
     const tokens = highlight('@import "tailwindcss";', "css");
     expect(textOf(tokens, "keyword")).toEqual(["@import"]);
     expect(textOf(tokens, "string")).toEqual(['"tailwindcss"']);
+  });
+
+  describe("js", () => {
+    it("is scanned as ts is", () => {
+      const code = "export async function load(id) { return await fetch(`/a/${id}`); } // go";
+      expect(highlight(code, "js")).toEqual(highlight(code, "ts"));
+    });
+  });
+
+  describe("console", () => {
+    it("dims the prompt, colours the command as bash and leaves output plain", () => {
+      const code = "$ bun add --dev vitest\nbun add v1.3 (abc)\n+ vitest@5\n$ bun test # all";
+      expect(highlight(code, "console")).toEqual([
+        { kind: "prompt", text: "$ " },
+        { kind: "function", text: "bun" },
+        { kind: "plain", text: " add " },
+        { kind: "attr", text: "--dev" },
+        { kind: "plain", text: " vitest\nbun add v1.3 (abc)\n+ vitest@5\n" },
+        { kind: "prompt", text: "$ " },
+        { kind: "function", text: "bun" },
+        { kind: "plain", text: " test " },
+        { kind: "comment", text: "# all" },
+      ]);
+    });
+
+    it("scans the lines after a trailing \\ as bash too, with no prompt", () => {
+      const code =
+        "$ bunx playwright test \\\n  --project=chromium \\\n  --reporter=list\ndone --not-a-flag";
+      expect(highlight(code, "console")).toEqual([
+        { kind: "prompt", text: "$ " },
+        { kind: "function", text: "bunx" },
+        { kind: "plain", text: " playwright test \\\n  " },
+        { kind: "attr", text: "--project" },
+        { kind: "plain", text: "=chromium \\\n  " },
+        { kind: "attr", text: "--reporter" },
+        { kind: "plain", text: "=list\ndone --not-a-flag" },
+      ]);
+    });
+
+    it("takes a $ that is not followed by a space, or not at the line start, as output", () => {
+      expect(highlight("$HOME\n $ x\n$", "console")).toEqual([
+        { kind: "plain", text: "$HOME\n $ x\n$" },
+      ]);
+    });
+  });
+
+  describe("consoleCommands", () => {
+    it("lists each command without its prompt and leaves the output out", () => {
+      expect(consoleCommands("$ bun add a\nadded 1 package\n$ bun test\nok")).toBe(
+        "bun add a\nbun test",
+      );
+    });
+
+    it("keeps continuation lines as written, the backslash and indentation included", () => {
+      const code =
+        "$ bunx playwright test \\\n  --project=chromium \\\n  --reporter=list\n2 passed\n$ echo done";
+      expect(consoleCommands(code)).toBe(
+        "bunx playwright test \\\n  --project=chromium \\\n  --reporter=list\necho done",
+      );
+    });
+
+    it("gives back a session with no command exactly as given", () => {
+      const code = "added 1 package\n  $HOME\n";
+      expect(consoleCommands(code)).toBe(code);
+    });
   });
 });
