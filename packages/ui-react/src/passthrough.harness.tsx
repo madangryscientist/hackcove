@@ -170,6 +170,7 @@ export const CASES: Record<string, () => ReactElement> = {
   ),
   Pill: () => <ui.Pill {...A}>x</ui.Pill>,
   ProgressBar: () => <ui.ProgressBar value={1} label="L" {...A} />,
+  Prose: () => <ui.Prose {...A}>x</ui.Prose>,
   ProseLayout: () => (
     <ui.ProseLayout title="T" {...A}>
       x

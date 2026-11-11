@@ -30,6 +30,30 @@ export const text: ComponentSection = {
       api: ["Display", "PageHeading", "SectionHeading", "SubsectionHeading"],
     },
     {
+      slug: "prose",
+      name: "Prose",
+      summary:
+        "The long-form type scale for a docs page or an article: body 16, h4 16 semibold, h3 20 and h2 24.",
+      whenToUse:
+        "The body of a docs page or an article, where a reader scans headings. An app screen never uses it.",
+      pairs: ["Prose/Docs"],
+      stories: ["Prose"],
+      usage: [
+        "Wrap the body of a docs page or an article in `Prose`, inside a `ProseLayout`, a `SidebarLayout` or anywhere else. `ProseLayout` takes no prop for it.",
+        'Write the page with the usual parts: `SectionHeading` is the h2, `SubsectionHeading` the h3 and `SubsectionHeading size="sm"` (as `h4`) the h4, `Text` the paragraph. Inside `Prose` they take the long-form sizes; nothing else about them changes.',
+        "`Callout` text, `BulletList` items, inline `Code` and a `TextLink` follow the body size. `Caption`, `Overline`, `Table`, `CodeBlock` and the form controls keep theirs.",
+        "A `Dialog`, `Drawer` or `EmptyState` inside `Prose` looks as it does on any app screen.",
+        "Never use `Prose` on an app screen. A dashboard, a form or a list keeps the dense app sizes.",
+        "The sizes are fixed: `Prose` has no size to choose.",
+      ],
+      accessibility: [
+        "`Prose` renders a `div` and adds nothing to the page outline or to what a screen reader announces.",
+        "The heading elements are unchanged: pick `as` to keep the outline in order, as everywhere else.",
+        "`id`, `aria-*` and `data-*` go on the `div`.",
+      ],
+      api: ["Prose"],
+    },
+    {
       slug: "body-text",
       name: "Body text",
       summary:

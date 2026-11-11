@@ -4,7 +4,7 @@ import { Icon } from "./Icon.js";
 import { IconButton } from "./IconButton.js";
 import { useModal } from "./modal.js";
 import type { Passthrough } from "./props.js";
-import { SectionHeading } from "./typography.js";
+import { AppScale, SectionHeading } from "./typography.js";
 
 const PANEL =
   "fixed inset-y-0 right-0 left-auto m-0 h-dvh max-h-none max-w-full flex-col overflow-hidden border-l border-slate-200 bg-white p-0 text-slate-900 shadow-2xl translate-x-full transition-[translate,overlay,display] transition-discrete duration-200 open:flex open:translate-x-0 starting:open:translate-x-full backdrop:bg-slate-900/35 backdrop:opacity-0 backdrop:transition-[opacity,overlay,display] backdrop:transition-discrete backdrop:duration-200 open:backdrop:opacity-100 starting:open:backdrop:opacity-0 motion-reduce:transition-none motion-reduce:backdrop:transition-none";
@@ -46,30 +46,32 @@ export function Drawer({
   const closed = useModal(dialog, onClose);
 
   return (
-    <dialog
-      {...rest}
-      ref={dialog}
-      aria-labelledby={titleId}
-      onClose={closed}
-      onClick={(event) => event.target === dialog.current && dialog.current?.close()}
-      className={cx(PANEL, SIZE[size])}
-    >
-      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 px-5.5 py-3.5">
-        <SectionHeading id={titleId}>{title}</SectionHeading>
-        <IconButton label={closeLabel} onClick={() => dialog.current?.close()}>
-          <Icon>
-            <svg viewBox="0 0 20 20" fill="currentColor">
-              <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L8.94 10l-4.72 4.72a.75.75 0 1 0 1.06 1.06L10 11.06l4.72 4.72a.75.75 0 1 0 1.06-1.06L11.06 10l4.72-4.72a.75.75 0 0 0-1.06-1.06L10 8.94 5.28 4.22Z" />
-            </svg>
-          </Icon>
-        </IconButton>
-      </header>
-      <div className="min-h-0 flex-1 overflow-y-auto px-5.5 py-4">{children}</div>
-      {footer && (
-        <footer className="flex shrink-0 justify-end gap-2 border-t border-slate-200 px-5.5 py-3.5">
-          {footer}
-        </footer>
-      )}
-    </dialog>
+    <AppScale>
+      <dialog
+        {...rest}
+        ref={dialog}
+        aria-labelledby={titleId}
+        onClose={closed}
+        onClick={(event) => event.target === dialog.current && dialog.current?.close()}
+        className={cx(PANEL, SIZE[size])}
+      >
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 px-5.5 py-3.5">
+          <SectionHeading id={titleId}>{title}</SectionHeading>
+          <IconButton label={closeLabel} onClick={() => dialog.current?.close()}>
+            <Icon>
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L8.94 10l-4.72 4.72a.75.75 0 1 0 1.06 1.06L10 11.06l4.72 4.72a.75.75 0 1 0 1.06-1.06L11.06 10l4.72-4.72a.75.75 0 0 0-1.06-1.06L10 8.94 5.28 4.22Z" />
+              </svg>
+            </Icon>
+          </IconButton>
+        </header>
+        <div className="min-h-0 flex-1 overflow-y-auto px-5.5 py-4">{children}</div>
+        {footer && (
+          <footer className="flex shrink-0 justify-end gap-2 border-t border-slate-200 px-5.5 py-3.5">
+            {footer}
+          </footer>
+        )}
+      </dialog>
+    </AppScale>
   );
 }

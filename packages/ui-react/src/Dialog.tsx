@@ -12,7 +12,7 @@ import { useModal } from "./modal.js";
 import type { Passthrough } from "./props.js";
 import { scrollStopProps, TABBABLE, useScrollStop } from "./scrollStop.js";
 import type { Size } from "./size.js";
-import { HeaderText, SectionHeading } from "./typography.js";
+import { AppScale, HeaderText, SectionHeading } from "./typography.js";
 
 /** Shared by every size: the surface, its colours and the fade (and the scrim's) in and out. */
 const BASE =
@@ -122,28 +122,30 @@ export function Dialog({
   } = useScrollingBody(dialog, titleId, full);
 
   return (
-    <dialog
-      {...rest}
-      ref={dialog}
-      aria-labelledby={titleId}
-      onClose={closed}
-      onClick={(event) => event.target === dialog.current && dialog.current?.close()}
-      className={cx(BASE, size === "full" ? FULL : `${WINDOW} ${WIDTH[size]}`)}
-    >
-      <div className={cx("flex flex-col p-5.5", full ? "min-h-0 flex-1" : CAP)}>
-        <SectionHeading id={titleId}>{title}</SectionHeading>
-        {description && (
-          <div className="mt-1">
-            <HeaderText>{description}</HeaderText>
-          </div>
-        )}
-        {children && (
-          <div ref={attach} {...bodyProps} className={bodyClass}>
-            {children}
-          </div>
-        )}
-        {footer && <div className="mt-5 flex shrink-0 justify-end gap-2">{footer}</div>}
-      </div>
-    </dialog>
+    <AppScale>
+      <dialog
+        {...rest}
+        ref={dialog}
+        aria-labelledby={titleId}
+        onClose={closed}
+        onClick={(event) => event.target === dialog.current && dialog.current?.close()}
+        className={cx(BASE, size === "full" ? FULL : `${WINDOW} ${WIDTH[size]}`)}
+      >
+        <div className={cx("flex flex-col p-5.5", full ? "min-h-0 flex-1" : CAP)}>
+          <SectionHeading id={titleId}>{title}</SectionHeading>
+          {description && (
+            <div className="mt-1">
+              <HeaderText>{description}</HeaderText>
+            </div>
+          )}
+          {children && (
+            <div ref={attach} {...bodyProps} className={bodyClass}>
+              {children}
+            </div>
+          )}
+          {footer && <div className="mt-5 flex shrink-0 justify-end gap-2">{footer}</div>}
+        </div>
+      </dialog>
+    </AppScale>
   );
 }
