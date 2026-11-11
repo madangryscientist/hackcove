@@ -97,7 +97,8 @@ export const text: ComponentSection = {
       usage: [
         "Use `Code` for one short run inside a sentence. It takes the text colour and size around it, and keeps no line breaks.",
         "Use `CodeBlock` for several lines. Give the text as `children`, or as `lines` with one entry per line.",
-        "`label` names the language or file (`bash`, `css`) in a caption above the code; `language` says what to colour, from `bash`, `css`, `tsx`, `ts` and `json`.",
+        "`label` names the language or file (`bash`, `css`) in a caption above the code; `language` says what to colour, from `tsx`, `ts`, `js`, `json`, `bash`, `console`, `css`, `html` and `yaml`.",
+        "A shell session is `console`: a line starting with `$ ` is a command, coloured as bash, and every other line is output. With `copy`, only the commands are copied, without the `$ `.",
         "A line a reader copies is a `CopyLine`, not a one-line `CodeBlock`. A rendered part shown with its code is a `CodeExample`.",
         "Without a `language` the code is one colour (`text`), which suits an error or a log.",
         'A long line wraps, so a command is never cut off and still copies as one line. `overflow="scroll"` keeps lines whole and scrolls them sideways under a thin scrollbar in the theme\'s colour, for code whose layout matters.',

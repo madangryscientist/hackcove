@@ -2,11 +2,12 @@ import type { ReactElement } from "react";
 import { CodeText } from "./CodeText.js";
 import { CopyButton } from "./CopyButton.js";
 import { cx, themedScrollbar } from "./cx.js";
-import type { CodeLanguage } from "./highlight.js";
+import { consoleCommands, type CodeLanguage } from "./highlight.js";
 
 /**
  * The code of a `CodeBlock` or a `CodeExample`: the `<pre>` and, with `copy`, a `CopyButton` beside
- * it that copies `code` exactly as given (wrapping is CSS, so it adds no characters). `wrap` wraps
+ * it that copies `code` exactly as given (wrapping is CSS, so it adds no characters), except in a
+ * `console` block, where it copies only the commands (see `consoleCommands`). `wrap` wraps
  * long lines at whitespace only (a flag with hyphens stays whole; a word wider than the box still
  * breaks inside itself); without it they scroll sideways under a themed thin scrollbar. The button's column has
  * a fixed width, so "copy" turning into "copied" never rewraps the code beside it. The button needs
@@ -37,7 +38,7 @@ export function CodeBody({
       </div>
       {copy && (
         <div className="flex w-14 shrink-0 justify-end pt-2">
-          <CopyButton text={code} />
+          <CopyButton text={language === "console" ? consoleCommands(code) : code} />
         </div>
       )}
     </div>

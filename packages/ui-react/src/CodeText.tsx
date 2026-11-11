@@ -5,6 +5,8 @@ import { highlight, type CodeLanguage, type TokenKind } from "./highlight.js";
  * Each kind borrows a colour family already in `palette.json`, so a theme recolours code like
  * anything else: keywords and element names read as the accent (violet), strings as positive
  * (emerald), numbers as warn (amber), attribute names as sky, calls as info (blue), comments muted.
+ * The `$ ` prompt of a console block is dimmer still and `select-none`, so selecting a command by
+ * hand does not pick it up.
  */
 const TOKEN_CLASS: Record<TokenKind, string> = {
   plain: "",
@@ -15,6 +17,7 @@ const TOKEN_CLASS: Record<TokenKind, string> = {
   string: "text-emerald-700",
   number: "text-amber-700",
   function: "text-blue-700",
+  prompt: "text-slate-400 select-none",
 };
 
 /** One coloured run: bare text for plain, a span with the kind's palette utility otherwise. */

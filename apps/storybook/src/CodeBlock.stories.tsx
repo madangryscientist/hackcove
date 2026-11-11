@@ -115,3 +115,126 @@ export const DoSnippet: S = {
 export const DontSnippet: S = {
   render: () => <CodeBlock language="bash">bun add @hackcove/ui-react</CodeBlock>,
 };
+
+/** `yaml` colours keys, strings, numbers and comments. The lines of a `run: |` script are left in one colour, since they are another language. */
+export const Yaml: S = {
+  render: () => (
+    <div className="max-w-xl">
+      <CodeBlock
+        label=".github/workflows/ci.yml"
+        language="yaml"
+        lines={[
+          "# Run the checks on every pull request.",
+          "name: CI",
+          "on:",
+          "  pull_request:",
+          "    branches: [main]",
+          "jobs:",
+          "  gate:",
+          "    runs-on: ubuntu-latest",
+          "    timeout-minutes: 15",
+          "    steps:",
+          "      - uses: actions/checkout@v4",
+          "      - uses: oven-sh/setup-bun@v2",
+          "        with:",
+          '          bun-version: "1.3"',
+          "      - name: Gate # typecheck, lint, test, build",
+          "        if: ${{ github.event.pull_request.draft == false }}",
+          "        run: |",
+          "          bun install --frozen-lockfile",
+          "          # the e2e flips every theme",
+          "          bunx nx run-many -t typecheck lint test build",
+          "      - name: Upload report",
+          "        if: always()",
+          "        continue-on-error: true",
+        ]}
+      />
+    </div>
+  ),
+};
+
+/** `js` is scanned as `ts` and `tsx` are, without the types. */
+export const Js: S = {
+  render: () => (
+    <div className="max-w-xl">
+      <CodeBlock
+        label="theme.js"
+        language="js"
+        lines={[
+          'import { colourScheme } from "@hackcove/ui-react";',
+          "",
+          "// Read the saved choice before the first paint.",
+          "export function applyTheme(root = document.documentElement) {",
+          '  const saved = localStorage.getItem("theme");',
+          "  const dark = saved === null ? matchMedia(`(prefers-color-scheme: dark)`).matches : saved === `dark`;",
+          '  root.classList.toggle("dark", dark);',
+          "  return dark ? 1 : 0;",
+          "}",
+        ]}
+      />
+    </div>
+  ),
+};
+
+/** `html` colours tags, attributes, strings and comments. A `<script>` is scanned as JS and a `<style>` as CSS. */
+export const Html: S = {
+  render: () => (
+    <div className="max-w-xl">
+      <CodeBlock
+        label="index.html"
+        language="html"
+        lines={[
+          "<!doctype html>",
+          '<html lang="en">',
+          "  <head>",
+          "    <!-- The theme sets the colours. -->",
+          '    <meta charset="utf-8" />',
+          "    <title>Hack Cove</title>",
+          "    <style>",
+          "      body {",
+          "        margin: 0;",
+          "        font-family: system-ui;",
+          "      }",
+          "    </style>",
+          "  </head>",
+          "  <body>",
+          '    <button id="save" class="primary" disabled>Don\'t save yet</button>',
+          '    <script type="module">',
+          '      const save = document.querySelector("#save");',
+          '      save.addEventListener("click", () => console.log(1)); // log it',
+          "    </script>",
+          "  </body>",
+          "</html>",
+        ]}
+      />
+    </div>
+  ),
+};
+
+/** `console` is a shell session: a `$ ` line is a command, coloured as bash, and every other line is output. With `copy`, only the commands are copied. */
+export const Console: S = {
+  parameters: { layout: "padded" },
+  render: () => (
+    <div className="max-w-xl">
+      <CodeBlock
+        copy
+        label="console"
+        language="console"
+        lines={[
+          "$ bun add @hackcove/ui-react @hackcove/themes",
+          "bun add v1.3.0",
+          "",
+          "installed @hackcove/ui-react@0.1.0",
+          "installed @hackcove/themes@0.1.0",
+          "",
+          "2 packages installed [312.00ms]",
+          "$ bunx playwright test \\",
+          "    --project=chromium \\",
+          "    --reporter=list",
+          "Running 24 tests using 4 workers",
+          "  24 passed (18.2s)",
+        ]}
+      />
+    </div>
+  ),
+};
