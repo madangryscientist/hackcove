@@ -1,3 +1,15 @@
+## 0.10.2 (2026-11-11)
+
+### 🚀 Features
+
+- **ui-react:** yaml, js, html and console in CodeBlock ([3466c16](https://github.com/madangryscientist/hackcove/commit/3466c16))
+- **ui-react:** Prose, a long-form type scale for docs pages ([3e61c88](https://github.com/madangryscientist/hackcove/commit/3e61c88))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+- Jacobus Langner @madangryscientist
+
 ## 0.9.2 (2026-11-05)
 
 ### 🚀 Features

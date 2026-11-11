@@ -1,6 +1,6 @@
 {
   "name": "@hackcove/ui-react",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "Hack Cove React components: primitives, typography roles and a safe Markdown renderer, written against Tailwind v4 utilities. Pair with a theme from @hackcove/themes.",
   "keywords": [
     "components",
