@@ -13,6 +13,14 @@ export const iconIdeas: Record<IconName, string> = {
   theme: "The look of a site",
   speed: "Fast",
   search: "Finding something in a list",
+  "chevron-right": "A link or the next step",
+  "chevron-down": "A disclosure or a menu that opens",
+  close: "Dismissing something",
+  "external-link": "A link that leaves the site",
+  settings: "Preferences",
+  bell: "Notifications",
+  check: "Done or selected",
+  plus: "Adding or creating something",
 };
 
 const NAMES = [
@@ -27,6 +35,14 @@ const NAMES = [
   "theme",
   "speed",
   "search",
+  "chevron-right",
+  "chevron-down",
+  "close",
+  "external-link",
+  "settings",
+  "bell",
+  "check",
+  "plus",
 ] as const;
 
 /** `true` only while `NAMES` lists every `IconName`: a missing one makes this line a type error. */

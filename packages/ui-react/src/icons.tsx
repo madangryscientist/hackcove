@@ -5,7 +5,7 @@ import type { ReactElement, ReactNode } from "react";
  * two units of padding (its ink lives in 2..22), is drawn as an outline with a 1.5 stroke, round
  * caps and round joins, and never fills: `GLYPH` below is the only place those are set, so an
  * icon's own shapes carry no `fill`, `stroke` or `stroke-width` (`Icon.test.tsx` holds them to
- * that). A name is the idea the icon stands for, not a product.
+ * that). A name is the idea or action the icon stands for, not a product.
  */
 const NAMES = [
   "diff",
@@ -19,9 +19,17 @@ const NAMES = [
   "theme",
   "speed",
   "search",
+  "chevron-right",
+  "chevron-down",
+  "close",
+  "external-link",
+  "settings",
+  "bell",
+  "check",
+  "plus",
 ] as const;
 
-/** The names of the icon set, one per idea. */
+/** The names of the icon set: feature ideas, then UI glyphs. */
 export type IconName = (typeof NAMES)[number];
 
 const GLYPHS: Record<IconName, ReactNode> = {
@@ -98,6 +106,37 @@ const GLYPHS: Record<IconName, ReactNode> = {
       <path d="M15.5 15.5 20.5 20.5" />
     </>
   ),
+  /** A link or next step: an open chevron pointing right. */
+  "chevron-right": <path d="m9 5.5 6.5 6.5L9 18.5" />,
+  /** A disclosure or menu: an open chevron pointing down. */
+  "chevron-down": <path d="m5.5 9 6.5 6.5L18.5 9" />,
+  /** Dismiss: two strokes crossing in an X. */
+  close: <path d="m5.5 5.5 13 13M18.5 5.5l-13 13" />,
+  /** Leaves the site: a box open at its top right, with an arrow out to the top right. */
+  "external-link": (
+    <>
+      <path d="M10.5 6H7a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-3.5" />
+      <path d="M14 4h6v6M20 4l-9.5 9.5" />
+    </>
+  ),
+  /** Preferences: a cog, a ring of teeth round a hole. */
+  settings: (
+    <>
+      <path d="M10.59 5.35L10.75 3.09L13.25 3.09L13.41 5.35A6.8 6.8 0 0 1 15.7 6.3L17.42 4.81L19.19 6.58L17.7 8.3A6.8 6.8 0 0 1 18.65 10.59L20.91 10.75L20.91 13.25L18.65 13.41A6.8 6.8 0 0 1 17.7 15.7L19.19 17.42L17.42 19.19L15.7 17.7A6.8 6.8 0 0 1 13.41 18.65L13.25 20.91L10.75 20.91L10.59 18.65A6.8 6.8 0 0 1 8.3 17.7L6.58 19.19L4.81 17.42L6.3 15.7A6.8 6.8 0 0 1 5.35 13.41L3.09 13.25L3.09 10.75L5.35 10.59A6.8 6.8 0 0 1 6.3 8.3L4.81 6.58L6.58 4.81L8.3 6.3A6.8 6.8 0 0 1 10.59 5.35Z" />
+      <circle cx="12" cy="12" r="2.75" />
+    </>
+  ),
+  /** Notifications: a bell with its clapper. */
+  bell: (
+    <>
+      <path d="M6 9.5a6 6 0 0 1 12 0c0 5 2 6.5 2 6.5H4s2-1.5 2-6.5Z" />
+      <path d="M10 19.5a2.2 2.2 0 0 0 4 0" />
+    </>
+  ),
+  /** Done or selected: a single tick. */
+  check: <path d="m4.5 12.5 5 5L19.5 7" />,
+  /** Add or create: two strokes crossing, upright. */
+  plus: <path d="M12 5v14M5 12h14" />,
 };
 
 /** The icon `name` as an `<svg>`: the set's one grid, stroke, caps and joins, drawn in `currentColor`. */
