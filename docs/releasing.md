@@ -1,7 +1,8 @@
 # Releasing
 
 Maintainer notes for publishing the `@hackcove/*` packages. Contributors do not need any of this: a
-release is started by a maintainer, from Actions.
+release is started by a maintainer, from Actions, whenever one is needed. Every release is a
+pre-release: versions stay `0.x`.
 
 Releases are change-driven. `nx release` looks at the commits since each package's last tag
 (`<project>@<version>`), bumps only the packages that changed, writes each one's `CHANGELOG.md`,
