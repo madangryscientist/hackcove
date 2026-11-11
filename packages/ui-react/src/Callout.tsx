@@ -1,6 +1,7 @@
 import type { HTMLAttributes, ReactElement, ReactNode } from "react";
 import { cx } from "./cx.js";
 import type { Unstyled } from "./props.js";
+import { useProse } from "./typography.js";
 
 /** The colour family of a callout. */
 export type CalloutTone = "neutral" | "info" | "positive" | "warn" | "danger";
@@ -23,7 +24,8 @@ const TONE_TEXT: Record<CalloutTone, string> = {
 };
 
 /**
- * A tinted notice box, with an optional bold title above its body. `actions` puts a button or link
+ * A tinted notice box, with an optional bold title above its body. Its text is text-sm (text-base/7
+ * inside a `Prose`, boxed or `banner`). `actions` puts a button or link
  * at the end of the row; `banner` makes it a flat strip (bottom border only, no radius) for the
  * top of a `Card flush` and nowhere else: a padded card or a padded `FullBleedLayout` column
  * would inset it. `align="center"` centres the text. In a page's column the notice is a plain Callout, first in the column's `Stack`. With `actions` the box is `relative`, so a `TextLink
@@ -54,6 +56,7 @@ export function Callout({
   actions?: ReactNode;
   children: ReactNode;
 } & Unstyled<Omit<HTMLAttributes<HTMLDivElement>, "title">>): ReactElement {
+  const size = useProse() ? "text-base/7" : "text-sm";
   const content = title ? (
     <>
       <p className="font-semibold">{title}</p>
@@ -66,7 +69,8 @@ export function Callout({
     <div
       className={cx(
         Boolean(actions) && "relative",
-        banner ? "border-b px-5 py-3 text-sm" : "rounded-xl border p-4 text-sm",
+        banner ? "border-b px-5 py-3" : "rounded-xl border p-4",
+        size,
         TONE_SURFACE[tone],
         TONE_TEXT[tone],
         align === "center" && "text-center",

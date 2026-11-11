@@ -1,6 +1,6 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import * as ui from "./index.js";
-import type { TypographyProps } from "./index.js";
+import type { Prose, TypographyProps } from "./index.js";
 
 // Components take no `className` and no `style`: a consumer composes the parts and never restyles
 // them. This is the type-level guard: every exported component's props must lack both keys.
@@ -32,6 +32,14 @@ describe("components take no className or style", () => {
     expectTypeOf<Styling<TypographyProps<"p">>>().toEqualTypeOf<never>();
     expectTypeOf<Styling<TypographyProps<"a">>>().toEqualTypeOf<never>();
     expectTypeOf<Styling<TypographyProps<"h2">>>().toEqualTypeOf<never>();
+  });
+
+  it("Prose accepts neither, and only the Passthrough props", () => {
+    expectTypeOf<Styling<Parameters<typeof Prose>[0]>>().toEqualTypeOf<never>();
+    // @ts-expect-error no className on Prose
+    void (() => <ui.Prose className="x" />);
+    // @ts-expect-error no style on Prose
+    void (() => <ui.Prose style={{ color: "red" }} />);
   });
 
   it("every component is callable (a function, or a forwardRef component), so the check above covers it", () => {

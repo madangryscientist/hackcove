@@ -9,6 +9,7 @@ import {
   Divider,
   EmptyState,
   OutlineRegion,
+  Prose,
   RegionFrame,
   SectionHeading,
   Step,
@@ -18,6 +19,7 @@ import {
   Text,
   Video,
 } from "@hackcove/ui-react";
+import { ProseDoc } from "./ProseDoc";
 import { samplePhoto } from "./samplePhoto";
 import { sampleShot, sampleShotSize } from "./sampleShot";
 import { sampleVideo } from "./sampleVideo";
@@ -144,6 +146,11 @@ export function GalleryText() {
             hatched
           />
         </RegionFrame>
+      </div>
+      <div className="max-w-xl">
+        <Prose>
+          <ProseDoc />
+        </Prose>
       </div>
     </div>
   );

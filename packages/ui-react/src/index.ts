@@ -140,6 +140,7 @@ export {
   Lead,
   Overline,
   PageHeading,
+  Prose,
   SectionHeading,
   SubsectionHeading,
   type SubsectionHeadingSize,

@@ -1,7 +1,7 @@
 import { type ReactElement, type ReactNode, useId } from "react";
 import { cx } from "./cx.js";
 import type { Passthrough } from "./props.js";
-import { SectionHeading } from "./typography.js";
+import { AppScale, SectionHeading } from "./typography.js";
 
 /**
  * What a list or a page shows when there is nothing in it yet: a centred `title`, the `children`
@@ -34,21 +34,23 @@ export function EmptyState({
 } & Passthrough): ReactElement {
   const titleId = useId();
   return (
-    <section
-      {...rest}
-      aria-labelledby={titleId}
-      className={cx(
-        "mx-auto flex w-full max-w-xl flex-col items-center gap-4 text-center",
-        padding === "inset" ? "p-8" : "py-8",
-      )}
-    >
-      <SectionHeading as={`h${level}`} id={titleId}>
-        {title}
-      </SectionHeading>
-      {children != null && (
-        <div className="flex w-full flex-col items-center gap-5">{children}</div>
-      )}
-      {actions != null && <div className="flex flex-wrap justify-center gap-2">{actions}</div>}
-    </section>
+    <AppScale>
+      <section
+        {...rest}
+        aria-labelledby={titleId}
+        className={cx(
+          "mx-auto flex w-full max-w-xl flex-col items-center gap-4 text-center",
+          padding === "inset" ? "p-8" : "py-8",
+        )}
+      >
+        <SectionHeading as={`h${level}`} id={titleId}>
+          {title}
+        </SectionHeading>
+        {children != null && (
+          <div className="flex w-full flex-col items-center gap-5">{children}</div>
+        )}
+        {actions != null && <div className="flex flex-wrap justify-center gap-2">{actions}</div>}
+      </section>
+    </AppScale>
   );
 }
