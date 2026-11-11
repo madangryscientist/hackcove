@@ -170,11 +170,14 @@ global rule; what is particular to hackcove:
    inside `packages/ui-react` is internal. `ContainerFrame` and `PageHeaderContent` take a
    `className` for the library's own layouts and are not exported from `index.ts`.
    `noStyling.test.tsx` fails if a public component's props accept either.
-6. **Only the Action publishes, and changes reach `main` only through a merged PR.** Nothing is published from
-   a laptop, a first publish included: `.github/workflows/publish.yml` (which runs `nx release`)
-   is the only path. Jacobus or the hackcove planner dispatches it; the `npm-publish` environment
-   has no approval step and accepts runs from `main` only. Never run `nx release publish`, a bare `npm publish`
-   or `npm login`. A new package's first publish uses the workflow's `NPM_TOKEN` step
+6. **Releases go only through the Action, and stay pre-release.** `.github/workflows/publish.yml`
+   (which runs `nx release`) is the only way a package reaches npm: nothing is published from a
+   laptop, a first publish included. Never run `nx release publish`, a bare `npm publish` or
+   `npm login`. Jacobus or the hackcove planner dispatches it whenever a release is needed, with no
+   sign-off; the `npm-publish` environment has no approval step and accepts runs from `main` only.
+   Every release is a pre-release: versions stay `0.x`, and moving a package to `1.0.0` is
+   Jacobus's decision. A new package's first publish uses the workflow's `NPM_TOKEN` step
    (`docs/releasing.md`, "First publish of a new package"); Jacobus sets and deletes that secret.
-   Nobody pushes to `main` directly; the release workflow's release commit is the one exception. Every package is MIT (a `LICENSE` in each
-   package and at the root); versions stay `0.x`.
+7. **Changes reach `main` only through a merged PR.** Nobody pushes to `main` directly; the
+   release workflow's release commit is the one exception. Every package is MIT (a `LICENSE` in
+   each package and at the root).
