@@ -137,6 +137,19 @@ docs page. The check runs in one of two modes:
 - **Everything** (`bunx nx run storybook:visual --all`, or `VISUAL_ALL=1 bunx nx run-many -t
   visual`): every story in every theme. An upload (`visual-upload`) is always this mode.
 
+The local run (`visual`) builds the merge-base's Storybook in a shared worktree, captures it and
+writes one report per group to `apps/storybook/.pixelslash/<slug>/report/index.html`. An upload
+(`bunx nx run storybook:visual-upload`, which needs `PIXELSLASH_SERVER` and a token) builds and
+captures no base at all. It has two modes, picked from the checkout:
+
+- **A branch rebased on origin/main** captures the branch only and uploads it. The server diffs it
+  against the `main` build it already holds, so `--summary` prints the server's counts and the
+  build's page. Before any capture it checks that each project holds a `main` build at the
+  merge-base or an ancestor, and fails naming the project when none does.
+- **A checkout at origin/main's tip** (clean; a detached HEAD in a throwaway worktree counts)
+  uploads that commit as branch `main` and compares nothing. This is the step after a merge that
+  keeps those `main` builds on the server. Any other commit on `main` is refused.
+
 PixelSlash ends a build at errored on a shot over 24.5 Mpx (19140px tall at 1280 wide), so the
 one-page **Overview / Gallery** and **Overview / All themes** are not shot whole: the run shoots
 **Overview / Gallery sections** and **Overview / All themes sections** instead, one story per entry

@@ -133,7 +133,13 @@ global rule; what is particular to hackcove:
 
 - **Screenshots before the merge.** The planner gates the PR's head, reads the PixelSlash
   reports, and uploads that commit's screenshots (`nx run storybook:visual-upload`, every group
-  whole, each to its own `hackcove-ui-<section>` project) before it merges.
+  whole, each to its own `hackcove-ui-<section>` project) before it merges. The upload captures
+  the branch only: the PixelSlash server diffs it against the `main` build it already holds, and
+  the run fails naming the project if it holds none at the merge-base or an ancestor.
+- **Screenshots after the merge.** The planner then runs `nx run storybook:visual-upload` on a
+  worktree at the merge commit (a detached HEAD at origin/main's tip is fine). Nothing else seeds
+  `main`'s builds, so a merge without this step leaves the next branch with no baseline. A release
+  commit that `publish.yml` pushes needs no upload of its own: the server picks its parent's build.
 - **The squash subject stays conventional** (`gh pr merge <pr> --squash --subject "…"`),
   because `nx release` reads it.
 - **No branch protection.** `publish.yml` pushes its release commit straight to `main`, so

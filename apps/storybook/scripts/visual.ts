@@ -15,11 +15,22 @@
  *   slices for that reason).
  * - `--summary` reads every group's result and totals them.
  *
- * The base is the branch's merge-base with origin/main (the fork point, so a main that moved since
- * stays out of the diff); `VISUAL_BASE` names another ref. `--upload` also sends each group's
- * captures to its PixelSlash project on `PIXELSLASH_SERVER`: origin/main's once per commit (as
- * branch `main`, which the server auto-accepts as the baseline), then the branch's. An upload
- * always takes a whole group in every theme, since a partial capture would read as removals.
+ * Locally the base is the branch's merge-base with origin/main (the fork point, so a main that
+ * moved since stays out of the diff); `VISUAL_BASE` names another ref. It is built in a shared
+ * worktree and captured, and `pixelslash compare` writes the local report.
+ *
+ * `--upload` builds and captures no base at all. It captures the working tree and sends it to the
+ * group's PixelSlash project on `PIXELSLASH_SERVER`, in one of two modes (`visual-upload.ts`):
+ *
+ * - On a branch (rebased on origin/main), it uploads the branch and the server diffs it against the
+ *   main build it already holds. It first checks that each project holds one at the merge-base or
+ *   an ancestor, and fails naming the project when not.
+ * - On a checkout at origin/main's tip, it uploads that commit as branch `main`, which the server
+ *   auto-accepts as the baseline. This is the post-merge step that keeps those main builds there.
+ *
+ * Either way it waits for the server to finish diffing and takes the counts and the build's page
+ * from the server. An upload always takes a whole group in every theme, since a partial capture
+ * would read as removals.
  */
 import { randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -38,18 +49,18 @@ import {
   capturePort,
   changedSince,
   checkShotSizes,
-  checkUpload,
   compare,
   ensurePixelslashInstall,
   log,
   out,
   repoRoot,
   resolveBase,
-  uploadGroup,
   withBaselineLock,
   type Counts,
   type Selection,
 } from "./visual-tools.js";
+import { checkUpload, uploadGroup } from "./visual-remote.js";
+import type { UploadMode } from "./visual-upload.js";
 
 const upload = process.argv.includes("--upload");
 const everything = process.argv.includes("--all") || process.env["VISUAL_ALL"] === "1";
@@ -57,7 +68,14 @@ const planPath = join(out, "plan.json");
 const countKeys: (keyof Counts)[] = ["changed", "unchanged", "new", "removed"];
 
 type PlannedGroup = Selection & { slug: string; project: string; skipped: boolean };
-type SavedPlan = { id: string; upload: boolean; sha: string; groups: PlannedGroup[] };
+// `mode` is the upload's: the branch alone, or this commit as `main`; absent for a local run.
+type SavedPlan = {
+  id: string;
+  upload: boolean;
+  mode: UploadMode | null;
+  sha: string;
+  groups: PlannedGroup[];
+};
 
 const isStrings = (value: unknown): value is string[] =>
   Array.isArray(value) && value.every((item) => typeof item === "string");
@@ -92,8 +110,15 @@ function readPlan(): SavedPlan {
     throw new VisualError(
       `${planPath} is missing or from another mode; run nx run storybook:${target}`,
     );
-  return { id: plan["id"], sha: plan["sha"], upload, groups: plan["groups"] };
+  const mode = plan["mode"];
+  if (!isModeFor(mode, upload))
+    throw new VisualError(`${planPath} has no upload mode; run nx run storybook:${target}`);
+  return { id: plan["id"], sha: plan["sha"], upload, mode, groups: plan["groups"] };
 }
+
+/** An upload plan names its mode; a local one has none. */
+const isModeFor = (mode: unknown, uploading: boolean): mode is UploadMode | null =>
+  uploading ? mode === "branch" || mode === "main" : mode === null;
 
 /** The repo's groups, failing on a story file no docs page names, or a page naming no story file. */
 function checked(result: Grouping): Grouping {
@@ -142,7 +167,7 @@ async function planMode() {
     changed: await changedSince(base.sha),
     everything: everything || upload,
   });
-  if (upload) await checkUpload(grouping.groups.map((g) => g.project));
+  const mode = upload ? await checkUpload(grouping.groups.map((g) => g.project)) : null;
   const picked = new Map(plan.picked.map((g) => [g.slug, g]));
   const groups = grouping.groups.map((group) => {
     const pick = picked.get(group.slug);
@@ -155,10 +180,13 @@ async function planMode() {
       themes: pick?.themes ?? [],
     };
   });
-  const saved: SavedPlan = { id: randomUUID(), upload, sha: base.sha, groups };
+  const saved: SavedPlan = { id: randomUUID(), upload, mode, sha: base.sha, groups };
   mkdirSync(out, { recursive: true });
   writeFileSync(planPath, `${JSON.stringify(saved, null, 2)}\n`);
-  log(`base: ${base.label} ${base.sha.slice(0, 7)}`);
+  if (mode === "main")
+    log(`main: uploading ${base.sha.slice(0, 7)} as the baseline, nothing compared`);
+  else if (mode === "branch") log("branch: the server diffs it against the main build it holds");
+  else log(`base: ${base.label} ${base.sha.slice(0, 7)}`);
   reportPlan(plan, grouping, saved, repo.themes.length);
 }
 
@@ -206,17 +234,29 @@ async function groupMode(slug: string) {
   const started = Date.now();
   await capture(branchStatic, join(dir, "branch"), await capturePort(), group);
   checkShotSizes(join(dir, "branch"), slug);
+  if (plan.mode !== null) {
+    // An upload builds and captures nothing of main: the server holds the baseline and diffs.
+    const build = await uploadGroup(group.project, dir, plan.mode);
+    log(`${slug}: done in ${Math.round((Date.now() - started) / 1000)}s`);
+    writeFileSync(
+      result,
+      `${JSON.stringify({ id: plan.id, slug, skipped: false, counts: build.counts, url: build.url })}\n`,
+    );
+    return;
+  }
   await captureBase(dir, plan.sha, group);
   const report = join(dir, "report");
   const counts = await compare(join(dir, "main"), join(dir, "branch"), report);
-  if (plan.upload) await uploadGroup(group.project, plan.sha, dir);
   log(`${slug}: done in ${Math.round((Date.now() - started) / 1000)}s`);
   log(`${slug}: report: ${join(report, "index.html")}`);
   writeFileSync(result, `${JSON.stringify({ id: plan.id, slug, skipped: false, counts })}\n`);
 }
 
-/** A group's counts from its last run for this plan; `undefined` when the plan skipped it. */
-function readResult(id: string, slug: string): Counts | undefined {
+/**
+ * A group's counts from its last run for this plan, and where to read them: the server's build
+ * page for an upload, the local report otherwise; `undefined` when the plan skipped it.
+ */
+function readResult(id: string, slug: string): { counts: Counts; where: string } | undefined {
   const path = join(out, slug, "result.json");
   const result = readJson(path);
   if (!isRecord(result) || result["id"] !== id)
@@ -229,11 +269,15 @@ function readResult(id: string, slug: string): Counts | undefined {
     if (typeof value !== "number") throw new VisualError(`${path} has no ${key} count`);
     return value;
   };
+  const url = result["url"];
   return {
-    changed: read("changed"),
-    unchanged: read("unchanged"),
-    new: read("new"),
-    removed: read("removed"),
+    counts: {
+      changed: read("changed"),
+      unchanged: read("unchanged"),
+      new: read("new"),
+      removed: read("removed"),
+    },
+    where: typeof url === "string" && url !== "" ? url : join(out, slug, "report", "index.html"),
   };
 }
 
@@ -244,13 +288,13 @@ function summaryMode() {
   const plan = readPlan();
   const total: Counts = { changed: 0, unchanged: 0, new: 0, removed: 0 };
   for (const group of plan.groups) {
-    const counts = readResult(plan.id, group.slug);
-    if (counts === undefined) {
+    const result = readResult(plan.id, group.slug);
+    if (result === undefined) {
       log(`${group.slug}: skipped, unaffected`);
       continue;
     }
-    for (const key of countKeys) total[key] += counts[key];
-    log(`${group.slug}: ${countsLine(counts)} — ${join(out, group.slug, "report", "index.html")}`);
+    for (const key of countKeys) total[key] += result.counts[key];
+    log(`${group.slug}: ${countsLine(result.counts)}; ${result.where}`);
   }
   log(`total: ${countsLine(total)}`);
 }
