@@ -10,8 +10,11 @@
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
-import { indexOf, isRecord } from "./visual-index.js";
+import { indexOf } from "./visual-index.js";
 import { MAX_SHOT_PIXELS, shotSizes, sizeReport } from "./visual-shots.js";
+import type { Counts } from "./visual-upload.js";
+
+export type { Counts };
 
 export const appDir = join(import.meta.dirname, "..");
 export const repoRoot = join(appDir, "..", "..");
@@ -20,7 +23,7 @@ const config = join(appDir, "pixelslash.config.ts");
 const pixelslashDir = resolve(
   process.env["PIXELSLASH_DIR"] ?? join(homedir(), "dev", "pixelslash"),
 );
-const pixelslashCli = join(pixelslashDir, "packages", "cli", "src", "index.ts");
+export const pixelslashCli = join(pixelslashDir, "packages", "cli", "src", "index.ts");
 export const baselineDir = join(homedir(), "dev", "hackcove.visual-main");
 export const branchStatic = join(appDir, "storybook-static");
 export const baseStatic = join(baselineDir, "apps", "storybook", "storybook-static");
@@ -39,7 +42,7 @@ export function stepFailure(cmd: string, cwd: string, signal?: string | number |
   return signal ? `\`${cmd}\` killed by ${signal} in ${cwd}` : `\`${cmd}\` failed in ${cwd}`;
 }
 
-async function run(cmd: string[], cwd: string, env: Record<string, string> = {}) {
+export async function run(cmd: string[], cwd: string, env: Record<string, string> = {}) {
   const proc = Bun.spawn(cmd, { cwd, env: { ...process.env, ...env }, stdio: ["ignore", 2, 2] });
   if ((await proc.exited) !== 0)
     throw new VisualError(stepFailure(cmd.join(" "), cwd, proc.signalCode));
@@ -172,8 +175,6 @@ export function checkShotSizes(dir: string, label: string) {
 
 const COUNTS = /^pixelslash: (\d+) changed, (\d+) unchanged, (\d+) new, (\d+) removed/m;
 
-export type Counts = { changed: number; unchanged: number; new: number; removed: number };
-
 /** `pixelslash compare`, its output passed through and its counts line read. */
 export async function compare(mainDir: string, branchDir: string, report: string): Promise<Counts> {
   rmSync(report, { recursive: true, force: true });
@@ -206,23 +207,6 @@ export async function compare(mainDir: string, branchDir: string, report: string
   };
 }
 
-const tokenPathFlags = () => {
-  const tokenPath = process.env["PIXELSLASH_TOKEN_PATH"];
-  return tokenPath ? ["--token-path", tokenPath] : [];
-};
-
-/**
- * `pixelslash upload` into `project`, run from `cwd`, the checkout whose commit, branch and
- * merge-base it sends. Not `bun run --cwd` like the other calls: that would read git from the
- * pixelslash checkout.
- */
-async function uploadSnapshots(dir: string, cwd: string, project: string, ...flags: string[]) {
-  await run(
-    ["bun", pixelslashCli, "upload", dir, "--project", project, ...tokenPathFlags(), ...flags],
-    cwd,
-  );
-}
-
 /**
  * PIXELSLASH_DIR's dependencies, in step with its lockfile. `--frozen-lockfile` never rewrites the
  * lockfile and is a no-op when `node_modules` is current; when it cannot install, the message names
@@ -240,109 +224,6 @@ export async function ensurePixelslashInstall() {
     throw new VisualError(
       `\`${command}\` failed in ${pixelslashDir}; run it there and read why (node_modules behind its lockfile, or the lockfile out of step with package.json)`,
     );
-}
-
-/**
- * The newest build of `project` (on `branch`, if given): its URL, `""` for none, or `undefined`
- * when the server refused (no such project, or a token that cannot see it). `upload` itself prints
- * no link; `builds --json` has it.
- */
-async function newestBuild(project: string, branch?: string): Promise<string | undefined> {
-  const proc = Bun.spawn(
-    [
-      "bun",
-      pixelslashCli,
-      "builds",
-      "--project",
-      project,
-      ...(branch === undefined ? [] : ["--branch", branch]),
-      "--limit",
-      "1",
-      "--json",
-      ...tokenPathFlags(),
-    ],
-    { cwd: repoRoot, stdout: "pipe", stderr: "inherit" },
-  );
-  const text = await new Response(proc.stdout).text();
-  if ((await proc.exited) !== 0) return undefined;
-  const listing: unknown = JSON.parse(text);
-  const builds = isRecord(listing) && Array.isArray(listing["builds"]) ? listing["builds"] : [];
-  const [build]: unknown[] = builds;
-  return isRecord(build) && typeof build["web_url"] === "string" ? build["web_url"] : "";
-}
-
-/**
- * What `--upload` needs, checked before any capture. The server takes a branch's baseline from its
- * merge-base, and a `main` upload is auto-accepted, so only a clean branch on origin/main's tip
- * uploads: anything else would read "new" everywhere or seed a wrong baseline. One token uploads
- * to every group's project, so it must be one that names a project, and each project must exist.
- */
-/** The branch `--upload` sends: committed, not main, and on origin/main's tip. */
-async function checkBranch() {
-  if ((await git(repoRoot, "branch", "--show-current")) === "main")
-    throw new VisualError("on main: the server would auto-accept the working tree as the baseline");
-  if (await git(repoRoot, "status", "--porcelain"))
-    throw new VisualError("uncommitted changes: the upload names HEAD; commit first");
-  const [tip, mergeBase] = await Promise.all([
-    git(repoRoot, "rev-parse", "origin/main"),
-    git(repoRoot, "merge-base", "HEAD", "origin/main"),
-  ]);
-  if (mergeBase !== tip)
-    throw new VisualError(
-      "not based on origin/main's tip, so its baseline is out of reach; rebase",
-    );
-}
-
-function token(): string {
-  const tokenPath = process.env["PIXELSLASH_TOKEN_PATH"];
-  if (process.env["PIXELSLASH_TOKEN"]) return process.env["PIXELSLASH_TOKEN"];
-  return tokenPath && existsSync(tokenPath) ? readFileSync(tokenPath, "utf8").trim() : "";
-}
-
-/**
- * What `--upload` needs, checked before any capture. The server takes a branch's baseline from its
- * merge-base, and a `main` upload is auto-accepted, so only a clean branch on origin/main's tip
- * uploads: anything else would read "new" everywhere or seed a wrong baseline. One token uploads
- * to every group's project, so it must be one that names a project, and each project must exist.
- */
-export async function checkUpload(projects: string[]) {
-  if (!process.env["PIXELSLASH_SERVER"]) throw new VisualError("--upload needs PIXELSLASH_SERVER");
-  if (process.env["VISUAL_BASE"])
-    throw new VisualError("--upload seeds origin/main as the baseline; unset VISUAL_BASE");
-  await checkBranch();
-  if (token().startsWith("psci_"))
-    throw new VisualError(
-      "the PixelSlash token is a project CI token (psci_), which uploads to its one project only; " +
-        "each docs section has its own project, so use an org token (psorg_) or a personal one (psu_)",
-    );
-  const missing: string[] = [];
-  for (const project of projects)
-    if ((await newestBuild(project)) === undefined) missing.push(project);
-  if (missing.length > 0)
-    throw new VisualError(
-      `the server has no PixelSlash project ${missing.join(", ")} (or the token cannot see it); ` +
-        "create each with `pixelslash project create <name>` and re-run",
-    );
-}
-
-/** origin/main's capture as `main` in `project`, once per commit and server, then the branch's. */
-export async function uploadGroup(project: string, sha: string, dir: string) {
-  const uploaded = join(dir, "main.uploaded");
-  const seeded = `${sha} ${process.env["PIXELSLASH_SERVER"] ?? ""} ${project}`;
-  if (existsSync(uploaded) && readFileSync(uploaded, "utf8").trim() === seeded) {
-    log(`origin/main ${sha.slice(0, 7)} already uploaded to ${project}`);
-  } else {
-    log(`uploading origin/main ${sha.slice(0, 7)} to ${project}`);
-    await withBaselineLock(async () => {
-      await checkoutBaseline(sha);
-      await uploadSnapshots(join(dir, "main"), baselineDir, project, "--branch", "main");
-    });
-    writeFileSync(uploaded, `${seeded}\n`);
-  }
-  log(`uploading the working tree to ${project}`);
-  await uploadSnapshots(join(dir, "branch"), repoRoot, project);
-  const url = await newestBuild(project, await git(repoRoot, "branch", "--show-current"));
-  log(url ? `build: ${url}` : `uploaded, but ${project} lists no build for this branch`);
 }
 
 /* ---------------------------------------------------------------------------
