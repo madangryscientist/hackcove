@@ -24,8 +24,10 @@ type IconProps = Passthrough & {
 /**
  * One inline icon, sized to a fixed box (sm 14px, md 16px, lg 20px, `feature` 32px) and drawn in
  * `currentColor`, so it takes the text colour around it unless a `tone` says otherwise. `name`
- * picks one of the library's own icons, all drawn on one grid with one stroke (`diff`,
- * `baseline`, `review`, `ci`, `self-host`, `privacy`, `capture`, `branch`, `theme`, `speed`);
+ * picks one of the library's own icons, all drawn on one grid with one stroke: feature ideas
+ * (`diff`, `baseline`, `review`, `ci`, `self-host`, `privacy`, `capture`, `branch`, `theme`,
+ * `speed`, `search`) and UI glyphs (`chevron-right`, `chevron-down`, `close`, `external-link`,
+ * `settings`, `bell`, `check`, `plus`);
  * without a name, a bare `<svg>` child fills the box. It is decorative (`aria-hidden`) by
  * default; a `label` makes it an image with that name, for an icon that carries meaning no text
  * beside it says.
