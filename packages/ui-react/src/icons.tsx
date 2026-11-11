@@ -18,6 +18,7 @@ const NAMES = [
   "branch",
   "theme",
   "speed",
+  "search",
 ] as const;
 
 /** The names of the icon set, one per idea. */
@@ -90,6 +91,13 @@ const GLYPHS: Record<IconName, ReactNode> = {
   ),
   /** Fast: a bolt. */
   speed: <path d="M13.25 3 5 13.5h6.25L10.75 21 19 10.5h-6.25Z" />,
+  /** Finding something: a magnifying glass, a circle with its handle to the lower right. */
+  search: (
+    <>
+      <circle cx="10.5" cy="10.5" r="6.5" />
+      <path d="M15.5 15.5 20.5 20.5" />
+    </>
+  ),
 };
 
 /** The icon `name` as an `<svg>`: the set's one grid, stroke, caps and joins, drawn in `currentColor`. */
