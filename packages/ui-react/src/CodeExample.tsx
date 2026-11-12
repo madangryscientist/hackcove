@@ -2,6 +2,7 @@ import type { ReactElement, ReactNode } from "react";
 import { CodeBody } from "./CodeBody.js";
 import { themedScrollbar } from "./cx.js";
 import type { Passthrough } from "./props.js";
+import { AppScale } from "./typography.js";
 
 /**
  * One framed example: the rendered `children` on top and the `code` that makes them attached
@@ -10,7 +11,8 @@ import type { Passthrough } from "./props.js";
  * it is coloured as TSX. The preview is its own height, never padded to match a neighbour, down to
  * a shared minimum so two frames side by side start alike. A wide preview or a long line of code
  * scrolls inside the frame, under a thin themed scrollbar, instead of widening the page or
- * wrapping.
+ * wrapping. Inside a `Prose` the preview stays on the app scale, so a demo looks as the component
+ * does anywhere else; the caption is outside it.
  */
 export function CodeExample({
   code,
@@ -34,7 +36,9 @@ export function CodeExample({
   return (
     <figure {...rest} className="overflow-hidden rounded-lg border border-slate-200 bg-white">
       <div className={`min-h-24 overflow-x-auto p-5 ${themedScrollbar}`}>
-        <div className="text-slate-900">{children}</div>
+        <div className="text-slate-900">
+          <AppScale>{children}</AppScale>
+        </div>
       </div>
       <div className="border-t border-slate-200 bg-slate-50">
         <CodeBody code={code} language="tsx" wrap={false} copy={copy} />

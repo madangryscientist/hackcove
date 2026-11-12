@@ -59,7 +59,7 @@ export function CodeBlock({
   return (
     <figure
       {...rest}
-      className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50 font-mono text-[12.5px] text-slate-900"
+      className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50 font-mono text-[12.5px] leading-normal text-slate-900"
     >
       {label && (
         <figcaption className="border-b border-slate-200 px-3 py-1.5 text-xs text-slate-500">

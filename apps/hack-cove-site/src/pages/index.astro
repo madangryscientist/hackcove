@@ -2,8 +2,7 @@
 import { Stack } from "@hackcove/ui-react";
 import { Contact } from "../components/Contact";
 import { Hero } from "../components/Hero";
-import { Projects } from "../components/Projects";
-import { SectionCards } from "../components/SectionCards";
+import { HomeBody } from "../components/HomeBody";
 import { site } from "../content/site";
 import Base from "../layouts/Base.astro";
 
@@ -16,8 +15,7 @@ import Base from "../layouts/Base.astro";
 <Base title={`${site.name} — ${site.tagline}`}>
   <Stack gap="xl">
     <Hero />
-    <SectionCards />
-    <Projects />
+    <HomeBody />
   </Stack>
   <Contact slot="footer" />
 </Base>

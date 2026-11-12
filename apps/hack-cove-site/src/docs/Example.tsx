@@ -1,5 +1,5 @@
 import { CodeExample } from "@hackcove/ui-react";
-import { Prose } from "./Prose.js";
+import { InlineCode } from "./InlineCode.js";
 import { findStory } from "./stories.js";
 
 /**
@@ -13,7 +13,7 @@ export function Example({ of }: { of: string }) {
   if (story === undefined) throw new Error(`<Example of="${of}">: no such story with a render`);
   const { Story, code, caption } = story;
   return (
-    <CodeExample code={code} caption={caption ? <Prose text={caption} /> : undefined}>
+    <CodeExample code={code} caption={caption ? <InlineCode text={caption} /> : undefined}>
       <div inert>
         <Story />
       </div>

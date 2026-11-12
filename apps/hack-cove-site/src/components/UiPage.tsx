@@ -4,6 +4,7 @@ import {
   Code,
   CodeBlock,
   MetaList,
+  Prose,
   Section,
   Stack,
   Text,
@@ -43,7 +44,7 @@ function Themes() {
         {themes.map((theme) => (
           <Card key={theme.id} as="article" icon="theme" title={theme.title}>
             <Stack gap="xs">
-              <Text as="p" color="tertiary">
+              <Text as="p" color="tertiary" breakWords>
                 <Code>{theme.specifier}</Code>
               </Text>
               <Text as="p" color="tertiary">
@@ -90,32 +91,34 @@ function Components() {
 /** Getting started: the purpose, install, themes, the component docs and where to find it. */
 export function UiPage() {
   return (
-    <Stack gap="xl">
-      <Stack gap="md">
-        {ui.intro.map((paragraph) => (
-          <Text as="p" key={paragraph}>
-            {paragraph}
-          </Text>
-        ))}
-      </Stack>
-      <Install />
-      <Themes />
-      <Components />
-      <StatusCard
-        title={ui.docs.title}
-        status={ui.docs.status}
-        summary={ui.docs.text}
-        links={ui.docs.links}
-      />
-      <Section title={ui.links.title}>
-        <MetaList nowrap>
-          {ui.links.items.map((link) => (
-            <TextLink key={link.href} href={link.href}>
-              {link.label}
-            </TextLink>
+    <Prose>
+      <Stack gap="xl">
+        <Stack gap="md">
+          {ui.intro.map((paragraph) => (
+            <Text as="p" key={paragraph}>
+              {paragraph}
+            </Text>
           ))}
-        </MetaList>
-      </Section>
-    </Stack>
+        </Stack>
+        <Install />
+        <Themes />
+        <Components />
+        <StatusCard
+          title={ui.docs.title}
+          status={ui.docs.status}
+          summary={ui.docs.text}
+          links={ui.docs.links}
+        />
+        <Section title={ui.links.title}>
+          <MetaList nowrap>
+            {ui.links.items.map((link) => (
+              <TextLink key={link.href} href={link.href}>
+                {link.label}
+              </TextLink>
+            ))}
+          </MetaList>
+        </Section>
+      </Stack>
+    </Prose>
   );
 }
