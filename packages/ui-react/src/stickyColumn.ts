@@ -14,6 +14,15 @@
 export const STICKY_ASIDE_MD = "md:sticky md:top-[var(--app-header,0px)] md:self-start";
 export const STICKY_SCROLL_MD =
   "md:-m-1 md:max-h-[calc(100dvh-var(--app-header,0px)-2rem)] md:overflow-y-auto md:p-1";
+/**
+ * The thin themed scrollbar (`themedScrollbar` in `cx.ts`) on a rail's scroller from `md`, where it
+ * scrolls, instead of the heavy native one with arrow buttons. Its thumb is the scroller's own text
+ * colour, so the rail's real ink goes back on an inner box (`STICKY_INK_MD`), the colour the shell
+ * gives every page.
+ */
+export const STICKY_BAR_MD =
+  "md:text-slate-400 md:[scrollbar-width:thin] md:[scrollbar-color:currentColor_transparent]";
+export const STICKY_INK_MD = "md:text-slate-900";
 export const STICKY_ASIDE_LG = "lg:sticky lg:top-[var(--app-header,0px)] lg:self-start";
 export const STICKY_SCROLL_LG =
   "lg:-m-1 lg:max-h-[calc(100dvh-var(--app-header,0px)-2rem)] lg:overflow-y-auto lg:p-1";

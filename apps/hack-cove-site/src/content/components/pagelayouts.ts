@@ -135,6 +135,7 @@ export const pagelayouts: ComponentSection = {
         "From `md` the rail stays in view under the shell's header as a long page scrolls, with or without `railLabel`; it is always on, not an option. A rail taller than the screen scrolls inside itself, so its last link is reachable. Below `md` nothing sticks.",
         "The rail has no background or border: it is a list of links on the page.",
         "A long rail sets `railLabel`: below `md` it folds behind a closed disclosure of that name, so the page comes first on a phone; from `md` it is the same rail. A short rail leaves it out.",
+        'Once the page has loaded, a rail that scrolls shows its current link (the one with `aria-current`) in view, with its own thin scrollbar, and the folded disclosure reads `railLabel` and the current link, such as "All components: Button". Nothing to set; in Astro, hydrate the layout (`client:load`).',
         "Facts about one record go in `DetailLayout`'s aside, not a rail.",
       ],
       accessibility: [

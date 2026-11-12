@@ -58,6 +58,20 @@ describe("SidebarLayout", () => {
     }
   });
 
+  it("puts the thin themed scrollbar on the scroller from md, and the rail's ink on an inner box", () => {
+    const scroller = /<\/?aside[^>]*><div class="([^"]*)"><div class="([^"]*)"/.exec(out);
+    expect(scroller?.[1]?.split(" ")).toEqual(
+      expect.arrayContaining([
+        "md:text-slate-400",
+        "md:[scrollbar-width:thin]",
+        "md:[scrollbar-color:currentColor_transparent]",
+      ]),
+    );
+    expect(scroller?.[2]).toBe("md:text-slate-900");
+    // Nothing themed below md, where the rail does not scroll.
+    expect(out).not.toMatch(/(^|[ "])(text-slate-400|\[scrollbar-)/);
+  });
+
   it("folds a long rail behind a closed disclosure, summary first, only with railLabel", () => {
     const folded = renderToStaticMarkup(
       <SidebarLayout rail="RAIL" railLabel="All sections">

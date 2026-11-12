@@ -170,6 +170,25 @@ export function GalleryGridPages() {
           <Text as="p">The canvas.</Text>
         </SidebarLayout>
       </PageBox>
+      <PageBox label="SidebarLayout, current link low in a long rail">
+        <SidebarLayout
+          railLabel="All sections"
+          rail={
+            <Tabs
+              variant="pill"
+              orientation="vertical"
+              label="Sections"
+              items={Array.from({ length: 60 }, (_, i) => ({
+                label: `Section ${i + 1}`,
+                href: `#section-${i + 1}`,
+                active: i === 44,
+              }))}
+            />
+          }
+        >
+          <Text as="p">Section 45, scrolled into view in the rail.</Text>
+        </SidebarLayout>
+      </PageBox>
       <PageBox label="SideColumn">
         <SideColumn
           aside={
