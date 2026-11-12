@@ -1,3 +1,15 @@
+## 0.10.3 (2026-11-12)
+
+### 🩹 Fixes
+
+- **ui-react:** a sticky column that scrolls fades the edge it can still scroll to ([#92](https://github.com/madangryscientist/hackcove/pull/92))
+- **ui-react:** show the Avatar and Image fallback when the picture failed before hydration ([#91](https://github.com/madangryscientist/hackcove/pull/91))
+- **ui-react:** draw the Checkbox box so an unchecked one reads as empty in every theme ([#90](https://github.com/madangryscientist/hackcove/pull/90))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.10.2 (2026-11-11)
 
 ### 🚀 Features

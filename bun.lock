@@ -74,7 +74,7 @@
     },
     "packages/ui-react": {
       "name": "@hackcove/ui-react",
-      "version": "0.10.2",
+      "version": "0.10.3",
       "dependencies": {
         "@internationalized/date": "^3.12.4",
         "react-aria-components": "^1.22.1",
