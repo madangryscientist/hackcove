@@ -8,6 +8,7 @@ import {
   type Rgb,
 } from "../packages/themes-shared/src/colour.js";
 import { contrastFailures } from "../packages/themes-shared/src/contrast.js";
+import { distanceOf, distinctionFailures } from "../packages/themes-shared/src/distinction.js";
 import { declaresDark, themeScope } from "../packages/themes-shared/src/scope.js";
 import { utilitiesOf } from "../packages/themes-shared/src/utilities.js";
 
@@ -70,6 +71,19 @@ it("keeps the plain-disabled Button flattened in at least one theme", () => {
   expect(files.filter((file) => DISABLED.test(read(file))).length).toBeGreaterThan(0);
 });
 
+it("gives a link a visible step apart from the primary fill in at least one theme", () => {
+  // A theme may paint a link in the primary button's fill (the Tailwind default, and Mocha's): one
+  // accent is a palette choice, not a defect, so this is not a rule for every theme. At least one
+  // theme keeps a link ink a reader can see is not the button, so a page of links stays quieter than
+  // the one primary button somewhere, and that cannot quietly vanish; the plain-disabled rule above
+  // is kept the same way. A step under 0.08 reads as the fill's colour.
+  const spans = files.map((file) => distanceOf(read(file), "text-violet-600", "bg-violet-600"));
+  expect(
+    Math.max(...spans),
+    "no theme gives a link its own ink, 0.08 apart from the primary fill",
+  ).toBeGreaterThanOrEqual(0.08);
+});
+
 describe.each(files)("%s", (file) => {
   const css = read(file);
   const rules = strip(css);
@@ -126,6 +140,12 @@ describe.each(files)("%s", (file) => {
     // packages/themes-shared/src/contrastRules.ts says which pairs and which bar; a failure names
     // the pair, both colours, the ratio and the bar.
     expect(contrastFailures(css, palette)).toEqual([]);
+  });
+
+  it("meets the distinction contract: the tones a page must tell apart, told apart", () => {
+    // packages/themes-shared/src/distinction.ts says which pairs two colours must read apart as, and
+    // by how much in OKLab; a failure names the pair, both colours, the distance and the bar.
+    expect(distinctionFailures(css)).toEqual([]);
   });
 
   it("owns the page canvas and the type faces", () => {

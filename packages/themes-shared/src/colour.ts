@@ -107,13 +107,45 @@ export function composite(colour: Colour, backdrop: Rgb): Rgb {
   return [mix(0), mix(1), mix(2)];
 }
 
+/** One sRGB channel, 0 to 255, as a linear-light value 0 to 1. */
+const linear = (channel: number): number => {
+  const value = channel / 255;
+  return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+};
+
 /** WCAG 2.x relative luminance. */
 export function luminance(rgb: Rgb): number {
-  const [red = 0, green = 0, blue = 0] = rgb.map((channel) => {
-    const value = channel / 255;
-    return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
-  });
+  const [red = 0, green = 0, blue = 0] = rgb.map(linear);
   return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+}
+
+/** A colour in OKLab: perceptual lightness 0 to 1, then the two opponent-colour axes. */
+type Oklab = readonly [number, number, number];
+
+/**
+ * sRGB to OKLab (Björn Ottosson's transform, the space `oklch()` is built on). A WCAG ratio says how
+ * strongly one colour stands out from the colour painted underneath it; it says nothing about two
+ * colours that are never on top of each other, which is what OKLab measures.
+ */
+export function oklab(rgb: Rgb): Oklab {
+  const [red = 0, green = 0, blue = 0] = rgb.map(linear);
+  const [long = 0, medium = 0, short = 0] = [
+    0.4122214708 * red + 0.5363325363 * green + 0.0514459929 * blue,
+    0.2119034982 * red + 0.6806995451 * green + 0.1073969566 * blue,
+    0.0883024619 * red + 0.2817188376 * green + 0.6299787005 * blue,
+  ].map((cone) => Math.cbrt(cone));
+  return [
+    0.2104542553 * long + 0.793617785 * medium - 0.0040720468 * short,
+    1.9779984951 * long - 2.428592205 * medium + 0.4505937099 * short,
+    0.0259040371 * long + 0.7827717662 * medium - 0.808675766 * short,
+  ];
+}
+
+/** How far apart two colours look: their OKLab distance, 0 for the same colour, about 1 at the widest. */
+export function distance(a: Rgb, b: Rgb): number {
+  const [aL, aA, aB] = oklab(a);
+  const [bL, bA, bB] = oklab(b);
+  return Math.hypot(aL - bL, aA - bA, aB - bB);
 }
 
 /** WCAG contrast ratio of two opaque colours, 1 to 21. */

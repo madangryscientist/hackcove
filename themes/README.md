@@ -96,9 +96,12 @@ darkens it just enough, and the rule's comment names the token it started from.
 ### Thrifty Paper
 
 From Thrifty's light theme. Thrifty has no danger colour of its own, so the red utilities map to a
-matching red (danger `#b91c1c`, danger-hover `#991b1b`, danger-soft `#fef2f2`).
+deep wine red that sits clear of the clay (danger `#7a1220`, danger-hover `#5f0e1a`, danger-soft
+`#fdf2f4`). The accent is two tones: its fills are the bright clay, and its text (a link, an outline
+button's label) is the deeper `accent-ink`, so a page of links reads as text rather than as a block of
+the primary button.
 
 canvas `#fdfbf7` · surface `#ffffff` · subtle `#f7f2e9` · line `#ece3d4` · ink `#1c1917` ·
 ink-body `#3b342e` · ink-mute `#6b6259` · accent `#c2410c` · accent-hover `#9a3412` ·
-accent-soft `#fdf5f0` · positive `#047857` / `#ecfdf5` · warn `#b45309` / `#fffbeb` ·
-note `#0f766e` / `#f0fdfa`
+accent-ink `#9a3412` · accent-ink-hover `#7c2d12` · accent-soft `#fdf5f0` ·
+positive `#047857` / `#ecfdf5` · warn `#b45309` / `#fffbeb` · note `#0f766e` / `#f0fdfa`
