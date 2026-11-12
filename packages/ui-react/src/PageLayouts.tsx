@@ -9,8 +9,9 @@ import { Card } from "./Card.js";
 import { cx } from "./cx.js";
 import { PageHeader, PageHeaderContent, type PageHeaderProps } from "./PageHeader.js";
 import { STACK_WIDTH, Stack, type StackGap } from "./Stack.js";
+import { useScrollEdges } from "./scrollEdges.js";
 import { scrollStopProps, useScrollStop } from "./scrollStop.js";
-import { STICKY_ASIDE_LG, STICKY_SCROLL_LG } from "./stickyColumn.js";
+import { STICKY_ASIDE_LG, STICKY_FADE_LG, STICKY_SCROLL_LG } from "./stickyColumn.js";
 import { StickyBar } from "./StickyBar.js";
 import type { Passthrough, Unstyled } from "./props.js";
 
@@ -86,7 +87,8 @@ export function DetailLayout({
   stickyAside?: boolean | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {
-  const { attach, stop } = useScrollStop();
+  const { element, attach, stop } = useScrollStop();
+  useScrollEdges(element, "y");
   const { props, ring } = scrollStopProps(stickyAside && stop, { label: asideLabel });
   return (
     <>
@@ -105,7 +107,7 @@ export function DetailLayout({
           <div
             ref={stickyAside ? attach : undefined}
             {...props}
-            className={stickyAside ? cx(STICKY_SCROLL_LG, ring) : undefined}
+            className={stickyAside ? cx(STICKY_SCROLL_LG, STICKY_FADE_LG, ring) : undefined}
           >
             <Stack>{aside}</Stack>
           </div>

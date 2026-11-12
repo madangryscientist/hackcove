@@ -17,3 +17,16 @@ export const STICKY_SCROLL_MD =
 export const STICKY_ASIDE_LG = "lg:sticky lg:top-[var(--app-header,0px)] lg:self-start";
 export const STICKY_SCROLL_LG =
   "lg:-m-1 lg:max-h-[calc(100dvh-var(--app-header,0px)-2rem)] lg:overflow-y-auto lg:p-1";
+
+/**
+ * While a sticky column's scroller has more to scroll to on a side, that edge fades out (a mask, so
+ * it follows any theme), the way AppShell's header row does. `useScrollEdges` sets `data-more-start`
+ * / `data-more-end` (and `data-more` for either); a column that fits has none and is untouched.
+ * Each is prefixed with its breakpoint, below which the column neither sticks nor scrolls and gets
+ * no mask. While the scroller itself holds the keyboard's tab stop (`focus-visible`) the mask is
+ * off, since it would hide the focus ring (an outline) at the faded edges.
+ */
+export const STICKY_FADE_MD =
+  "md:data-more-start:[--fade-start:1.5rem] md:data-more-end:[--fade-end:1.5rem] md:data-more:[mask-image:linear-gradient(to_bottom,transparent,#000_var(--fade-start,0px),#000_calc(100%_-_var(--fade-end,0px)),transparent)] md:data-more:focus-visible:[mask-image:none]";
+export const STICKY_FADE_LG =
+  "lg:data-more-start:[--fade-start:1.5rem] lg:data-more-end:[--fade-end:1.5rem] lg:data-more:[mask-image:linear-gradient(to_bottom,transparent,#000_var(--fade-start,0px),#000_calc(100%_-_var(--fade-end,0px)),transparent)] lg:data-more:focus-visible:[mask-image:none]";

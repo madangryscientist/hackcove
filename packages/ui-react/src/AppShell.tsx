@@ -1,10 +1,11 @@
-import { type HTMLAttributes, type ReactElement, type ReactNode, useEffect, useRef } from "react";
+import { type HTMLAttributes, type ReactElement, type ReactNode, useState } from "react";
 import { AppShellMenu } from "./AppShellMenu.js";
 import { ContainerFrame } from "./Container.js";
 import { schemeClass, type ColourScheme, type ColourSchemeClasses } from "./colourScheme.js";
 import { cx, focusRing } from "./cx.js";
 import { type LinkRender, renderLink } from "./link.js";
 import type { Passthrough, Unstyled } from "./props.js";
+import { useScrollEdges } from "./scrollEdges.js";
 import type { Size } from "./size.js";
 
 /**
@@ -138,34 +139,10 @@ const FADE =
 
 /** A row in a Container, with the fade on whichever side still has content to scroll to. */
 function ScrollRow({ className, children }: { className: string; children: ReactNode }) {
-  const row = useRef<HTMLElement | null>(null);
-  // Every render: the children may have changed, and each needs observing.
-  useEffect(() => {
-    const el = row.current;
-    if (!el) return undefined;
-    const update = () => {
-      const start = el.scrollLeft > 1;
-      const end = el.scrollWidth - el.clientWidth - el.scrollLeft > 1;
-      el.toggleAttribute("data-more-start", start);
-      el.toggleAttribute("data-more-end", end);
-      el.toggleAttribute("data-more", start || end);
-    };
-    update();
-    el.addEventListener("scroll", update, { passive: true });
-    // jsdom (a consumer's own tests) has no ResizeObserver.
-    const resize = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(update);
-    resize?.observe(el);
-    for (const child of el.children) resize?.observe(child);
-    return () => {
-      el.removeEventListener("scroll", update);
-      resize?.disconnect();
-    };
-  });
+  const [row, setRow] = useState<HTMLElement | null>(null);
+  useScrollEdges(row, "x");
   return (
-    <ContainerFrame
-      elementRef={(el) => void (row.current = el)}
-      className={cx(ROW, FADE, className)}
-    >
+    <ContainerFrame elementRef={setRow} className={cx(ROW, FADE, className)}>
       {children}
     </ContainerFrame>
   );

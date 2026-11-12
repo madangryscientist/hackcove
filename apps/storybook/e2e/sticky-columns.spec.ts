@@ -184,3 +184,88 @@ test("a DetailLayout aside stacks under lg even with stickyAside", async ({ page
   await aside.waitFor();
   expect(await aside.evaluate((el) => getComputedStyle(el).position)).toBe("static");
 });
+
+/**
+ * A sticky column that scrolls fades the edge it can still scroll to (`useScrollEdges`): the scroller
+ * carries `data-more-start` / `data-more-end` and a `mask-image` while there is more; a column that
+ * fits carries neither.
+ */
+const fadeOf = (scroller: Locator) =>
+  scroller.evaluate((el) => ({
+    start: el.hasAttribute("data-more-start"),
+    end: el.hasAttribute("data-more-end"),
+    mask: getComputedStyle(el).maskImage,
+  }));
+
+const scrollerAt = async (page: Page, id: string, width = desktop.width) => {
+  await page.setViewportSize({ width, height: desktop.height });
+  await page.goto(storyUrl(id));
+  const scroller = page.getByRole("complementary").first().locator("> div");
+  await scroller.waitFor();
+  return scroller;
+};
+
+for (const [id, what] of [
+  ["page-layouts-sidebarlayout--tall-rail", "SidebarLayout rail"],
+  ["page-layouts-detaillayout--sticky-aside-text", "DetailLayout stickyAside"],
+] as const) {
+  test(`the ${what} fades the end at the top of its scroll and the start at the end`, async ({
+    page,
+  }) => {
+    const scroller = await scrollerAt(page, id);
+    expect(
+      await scroller.evaluate((el) => el.scrollHeight > el.clientHeight),
+      "the column is taller than the room",
+    ).toBe(true);
+    await expect.poll(() => fadeOf(scroller).then((f) => [f.start, f.end])).toEqual([false, true]);
+    expect((await fadeOf(scroller)).mask).not.toBe("none");
+
+    await scroller.evaluate((el) => el.scrollTo(0, el.scrollHeight));
+    await expect.poll(() => fadeOf(scroller).then((f) => [f.start, f.end])).toEqual([true, false]);
+    expect((await fadeOf(scroller)).mask).not.toBe("none");
+
+    // Halfway, both edges fade.
+    await scroller.evaluate((el) => el.scrollTo(0, (el.scrollHeight - el.clientHeight) / 2));
+    await expect.poll(() => fadeOf(scroller).then((f) => [f.start, f.end])).toEqual([true, true]);
+  });
+}
+
+for (const [id, what] of [
+  ["page-layouts-sidebarlayout--sticky-rail", "SidebarLayout rail"],
+  ["page-layouts-detaillayout--sticky-aside", "DetailLayout stickyAside"],
+] as const) {
+  test(`the ${what} that fits its box has no fade`, async ({ page }) => {
+    const scroller = await scrollerAt(page, id);
+    expect(
+      await scroller.evaluate((el) => el.scrollHeight <= el.clientHeight),
+      "the column fits the room",
+    ).toBe(true);
+    expect(await fadeOf(scroller)).toEqual({ start: false, end: false, mask: "none" });
+  });
+}
+
+test("a DetailLayout aside has no mask below lg, however tall", async ({ page }) => {
+  const scroller = await scrollerAt(page, "page-layouts-detaillayout--sticky-aside-text", 390);
+  expect(await fadeOf(scroller)).toEqual({ start: false, end: false, mask: "none" });
+});
+
+test("a SidebarLayout rail has no mask below md, however tall", async ({ page }) => {
+  const scroller = await scrollerAt(page, "page-layouts-sidebarlayout--tall-rail", 390);
+  expect(await fadeOf(scroller)).toEqual({ start: false, end: false, mask: "none" });
+});
+
+test("a scroller holding the tab stop drops its mask while focused from the keyboard, so the ring shows", async ({
+  page,
+}) => {
+  const scroller = await scrollerAt(page, "page-layouts-detaillayout--sticky-aside-text");
+  await expect(scroller).toHaveAttribute("tabindex", "0");
+  await expect(scroller).toHaveAttribute("data-more-end", "");
+  expect((await fadeOf(scroller)).mask).not.toBe("none");
+  // Tab, not focus(): `:focus-visible` is what draws the ring.
+  await scroller.focus();
+  await page.keyboard.press("Shift+Tab");
+  await page.keyboard.press("Tab");
+  await expect(scroller).toBeFocused();
+  expect(await scroller.evaluate((el) => el.matches(":focus-visible"))).toBe(true);
+  expect((await fadeOf(scroller)).mask).toBe("none");
+});
