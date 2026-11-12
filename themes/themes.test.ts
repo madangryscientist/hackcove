@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import {
   composite,
   luminance,
+  oklabDistance,
   parseColour,
   type Rgb,
 } from "../packages/themes-shared/src/colour.js";
@@ -176,6 +177,22 @@ describe.each(files)("%s", (file) => {
     }
   });
 
+  it("tells the primary fill from the danger fill, and link text from danger text", () => {
+    // One accent doing three jobs read as one colour (HC-262). The distance is OKLab, so it is how
+    // far apart the eye sees them, on the page canvas: 0.12 for the two buttons (a glance, hue and
+    // all), 0.09 for the two text colours (thinner marks need less).
+    const fills = oklabDistance(
+      painted("bg-violet-600", "background-color", canvas),
+      painted("bg-red-600", "background-color", canvas),
+    );
+    const text = oklabDistance(
+      painted("text-violet-600", "color", canvas),
+      painted("text-red-700", "color", canvas),
+    );
+    expect(fills, "bg-violet-600 against bg-red-600").toBeGreaterThanOrEqual(0.12);
+    expect(text, "text-violet-600 against text-red-700").toBeGreaterThanOrEqual(0.09);
+  });
+
   it("keeps the media matte white", () => {
     // Image `framed` paints `bg-white/100` under a QR code, which is scanned off a dark page: it must
     // stay white on a dark theme too, unlike `bg-white`, the surface.
@@ -195,4 +212,20 @@ describe.each(files)("%s", (file) => {
     expect(rule[2]).toMatch(/background-color:\s*#[0-9a-f]{6};/);
     expect(rule[2]).toMatch(/(^|[\s;])color:\s*#[0-9a-f]{6};/);
   });
+});
+
+it("keeps a Thrifty Paper link apart from its primary button", () => {
+  // The accent text (links, outline labels) is the deeper clay; the fill is the bright clay. A page
+  // of links must not read as the button's colour (HC-262). Named here because Latte and Mocha
+  // use one accent for both on purpose.
+  const css = read("thrifty-paper.css");
+  const utilities = utilitiesOf(css);
+  const colour = (utility: string, property: string): Rgb => {
+    const parsed = parseColour(utilities.get(utility)?.[property] ?? "");
+    if (!parsed) throw new Error(`${utility} sets no ${property}`);
+    return parsed.rgb;
+  };
+  const link = colour("text-violet-600", "color");
+  const fill = colour("bg-violet-600", "background-color");
+  expect(oklabDistance(link, fill)).toBeGreaterThanOrEqual(0.08);
 });

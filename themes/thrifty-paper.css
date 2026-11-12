@@ -14,9 +14,9 @@
    Palette (Thrifty's @theme block):
      canvas #fdfbf7 · surface #ffffff · subtle #f7f2e9 · line #ece3d4
      ink #1c1917 · ink-body #3b342e · ink-mute #6b6259
-     accent #c2410c · accent-hover #9a3412 · accent-soft #fdf5f0
+     accent #c2410c · accent-hover #9a3412 (also the link text) · accent-text-hover #7c2d12 · accent-soft #fdf5f0
      positive #047857 / #ecfdf5 · warn #b45309 / #fffbeb · note #0f766e / #f0fdfa
-     danger #b91c1c / #fef2f2
+     danger #9f1d5c / #fdf2f6
    Added for 3:1 control edges (not in Thrifty's block): edge #948a7c
 
    --------------------------------------------------------------------------- */
@@ -42,7 +42,7 @@
   --hc-line: #ece3d4; /* border-slate-200 */
   --hc-ink: #1c1917; /* text-slate-900 */
   --hc-mute: #6b6259; /* text-slate-500 */
-  --hc-accent: #c2410c; /* text-violet-600 */
+  --hc-accent: #9a3412; /* text-violet-600: the deeper clay, so a page of links is quieter than the button */
 }
 
 /* The page canvas — AppShell paints it; white cards lift off the cream. */
@@ -157,7 +157,7 @@
   color: #ffffff; /* text on the accent button */
 }
 .thrifty-paper .hover\:text-violet-700:hover {
-  color: #9a3412; /* accent-hover */
+  color: #7c2d12; /* accent-text-hover: a darker clay than the link */
 }
 .thrifty-paper .hover\:bg-violet-50:hover {
   background-color: #fdf5f0; /* accent-soft */
@@ -186,19 +186,19 @@
 
 /* Danger button (Button tone="danger"): solid, outline and ghost */
 .thrifty-paper .bg-red-600 {
-  background-color: #b91c1c; /* danger */
+  background-color: #9f1d5c; /* danger */
 }
 .thrifty-paper .hover\:bg-red-700:hover {
-  background-color: #991b1b; /* danger-hover */
+  background-color: #831843; /* danger-hover */
 }
 .thrifty-paper .text-red-50 {
   color: #ffffff; /* text on the danger button */
 }
 .thrifty-paper .border-red-600 {
-  border-color: #b91c1c; /* danger */
+  border-color: #9f1d5c; /* danger */
 }
 .thrifty-paper .hover\:bg-red-50:hover {
-  background-color: #fef2f2; /* danger-soft */
+  background-color: #fdf2f6; /* danger-soft */
 }
 
 /* Positive button (Button tone="positive"): solid, outline, ghost and the pressed tint */
@@ -264,7 +264,7 @@
   background-color: #eff6fa; /* steel blue, soft */
 }
 .thrifty-paper .bg-red-50 {
-  background-color: #fef2f2; /* danger-soft */
+  background-color: #fdf2f6; /* danger-soft */
 }
 .thrifty-paper .text-emerald-700,
 .thrifty-paper .text-emerald-800 {
@@ -282,10 +282,10 @@
   color: #0f766e; /* note */
 }
 .thrifty-paper .text-violet-600 {
-  color: #c2410c; /* accent */
+  color: #9a3412; /* accent-hover shade: links and accent labels, deeper than the button fill so they stay apart from it */
 }
 .thrifty-paper .text-violet-700 {
-  color: #9a3412; /* accent-hover */
+  color: #7c2d12; /* accent-text-hover: a darker clay than the link */
 }
 .thrifty-paper .text-sky-700 {
   color: #1e6a8f; /* steel blue */
@@ -301,7 +301,7 @@
 .thrifty-paper .text-red-700,
 .thrifty-paper .text-red-800,
 .thrifty-paper .text-red-900 {
-  color: #b91c1c; /* danger */
+  color: #9f1d5c; /* danger */
 }
 .thrifty-paper .border-emerald-200,
 .thrifty-paper .border-emerald-300 {
@@ -316,11 +316,11 @@
 }
 .thrifty-paper .border-red-200 {
   border-color: rgba(
-    185,
-    28,
-    28,
+    159,
+    29,
+    92,
     0.7
-  ); /* danger/70: an invalid field's edge, 3.62:1 on danger-soft (danger/30 was 1.67:1) */
+  ); /* danger/70: an invalid field's edge, 3.80:1 on danger-soft (danger/30 was 1.67:1) */
 }
 .thrifty-paper .border-blue-200,
 .thrifty-paper .border-blue-300 {
@@ -331,11 +331,11 @@
    hover:text-violet-700, remapped above), kept for consumers that still write class="link" on a
    bare <a>. */
 .thrifty-paper .link {
-  color: #c2410c; /* accent */
+  color: #9a3412; /* link: the deeper clay */
   font-weight: 500;
   text-underline-offset: 2px;
   transition: color 0.12s ease;
 }
 .thrifty-paper .link:hover {
-  color: #9a3412; /* accent-hover */
+  color: #7c2d12; /* accent-text-hover: a darker clay than the link */
 }

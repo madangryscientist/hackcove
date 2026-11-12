@@ -60,7 +60,7 @@ each equal to the value that theme's remap gives the utility named beside it:
 | `--hc-line` | `.border-slate-200` border |
 | `--hc-ink` | `.text-slate-900` colour |
 | `--hc-mute` | `.text-slate-500` colour |
-| `--hc-accent` | `.text-violet-600` colour |
+| `--hc-accent` | `.text-violet-600` colour (the link colour; in Thrifty Paper a deeper clay than the primary button's fill) |
 
 Read them in your own CSS, with a fallback for the page that has no theme:
 
@@ -96,9 +96,11 @@ darkens it just enough, and the rule's comment names the token it started from.
 ### Thrifty Paper
 
 From Thrifty's light theme. Thrifty has no danger colour of its own, so the red utilities map to a
-matching red (danger `#b91c1c`, danger-hover `#991b1b`, danger-soft `#fef2f2`).
+crimson that sits well clear of the clay accent (danger `#9f1d5c`, danger-hover `#831843`,
+danger-soft `#fdf2f6`). The primary fill stays the bright clay, and link and other accent text use
+the deeper clay, so the button, a link and the danger button read apart.
 
 canvas `#fdfbf7` · surface `#ffffff` · subtle `#f7f2e9` · line `#ece3d4` · ink `#1c1917` ·
-ink-body `#3b342e` · ink-mute `#6b6259` · accent `#c2410c` · accent-hover `#9a3412` ·
-accent-soft `#fdf5f0` · positive `#047857` / `#ecfdf5` · warn `#b45309` / `#fffbeb` ·
+ink-body `#3b342e` · ink-mute `#6b6259` · accent `#c2410c` · accent-hover `#9a3412` (the link text) ·
+accent-text-hover `#7c2d12` · accent-soft `#fdf5f0` · positive `#047857` / `#ecfdf5` · warn `#b45309` / `#fffbeb` ·
 note `#0f766e` / `#f0fdfa`

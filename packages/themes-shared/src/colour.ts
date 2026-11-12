@@ -41,6 +41,12 @@ function fromHsl(hue: number, saturation: number, lightness: number): Rgb {
 const toGamma = (linear: number): number =>
   255 * (linear <= 0.0031308 ? 12.92 * linear : 1.055 * linear ** (1 / 2.4) - 0.055);
 
+/** An 8-bit sRGB channel as linear light, 0 to 1. */
+const toLinear = (channel: number): number => {
+  const value = channel / 255;
+  return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+};
+
 function fromOklch(lightness: number, chroma: number, hue: number): Rgb {
   const a = chroma * Math.cos((hue * Math.PI) / 180);
   const b = chroma * Math.sin((hue * Math.PI) / 180);
@@ -109,10 +115,7 @@ export function composite(colour: Colour, backdrop: Rgb): Rgb {
 
 /** WCAG 2.x relative luminance. */
 export function luminance(rgb: Rgb): number {
-  const [red = 0, green = 0, blue = 0] = rgb.map((channel) => {
-    const value = channel / 255;
-    return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
-  });
+  const [red = 0, green = 0, blue = 0] = rgb.map(toLinear);
   return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
 }
 
@@ -131,4 +134,27 @@ export function toHex(rgb: Rgb): string {
         .padStart(2, "0"),
     )
     .join("")}`;
+}
+
+/** An opaque colour in OKLab (Ottosson): lightness `L` and the two colour axes `a` and `b`. */
+const toOklab = (rgb: Rgb): [number, number, number] => {
+  const [red = 0, green = 0, blue = 0] = rgb.map(toLinear);
+  const l = Math.cbrt(0.4122214708 * red + 0.5363325363 * green + 0.0514459929 * blue);
+  const m = Math.cbrt(0.2119034982 * red + 0.6806995451 * green + 0.1073969566 * blue);
+  const s = Math.cbrt(0.0883024619 * red + 0.2817188376 * green + 0.6299787005 * blue);
+  return [
+    0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
+    1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
+    0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s,
+  ];
+};
+
+/**
+ * How far apart two opaque colours look, as the Euclidean distance in OKLab (the perceptual
+ * space). About 0.02 is the edge of a visible difference; black to white is 1.
+ */
+export function oklabDistance(a: Rgb, b: Rgb): number {
+  const [l1, a1, b1] = toOklab(a);
+  const [l2, a2, b2] = toOklab(b);
+  return Math.hypot(l1 - l2, a1 - a2, b1 - b2);
 }

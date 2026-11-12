@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { composite, contrastRatio, luminance, parseColour, toHex } from "./colour.js";
+import {
+  composite,
+  contrastRatio,
+  luminance,
+  oklabDistance,
+  parseColour,
+  toHex,
+} from "./colour.js";
 
 describe("parseColour", () => {
   it("reads hex in 3, 4, 6 and 8 digits", () => {
@@ -55,5 +62,23 @@ describe("contrast maths", () => {
   it("prints a hex a person can read", () => {
     expect(toHex([30, 30, 46])).toBe("#1e1e2e");
     expect(toHex([300, -4, 127.6])).toBe("#ff0080");
+  });
+});
+
+const rgb = (hex: string): [number, number, number] => {
+  const parsed = parseColour(hex);
+  if (!parsed) throw new Error(hex);
+  return [...parsed.rgb];
+};
+
+describe("oklabDistance", () => {
+  it("is 0 for a colour and itself, and 1 from black to white", () => {
+    expect(oklabDistance(rgb("#c2410c"), rgb("#c2410c"))).toBe(0);
+    expect(oklabDistance(rgb("#000"), rgb("#fff"))).toBeCloseTo(1, 2);
+  });
+
+  it("measures two reds by how they look", () => {
+    expect(oklabDistance(rgb("#c2410c"), rgb("#b91c1c"))).toBeCloseTo(0.061, 3);
+    expect(oklabDistance(rgb("#cba6f7"), rgb("#f38ba8"))).toBeCloseTo(0.125, 3);
   });
 });
