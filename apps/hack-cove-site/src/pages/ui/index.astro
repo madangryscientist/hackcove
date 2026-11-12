@@ -10,7 +10,7 @@ const section = sectionOf("ui");
 ---
 
 <Base title={`${section.name} — ${site.name}`} description={section.description}>
-  <DocsFrame pathname={Astro.url.pathname}>
+  <DocsFrame client:load pathname={Astro.url.pathname}>
     <Stack gap="xl">
       <PageHeader title="Getting started" subtitle={site.ui.subtitle} />
       <UiPage />

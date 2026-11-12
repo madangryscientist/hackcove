@@ -269,3 +269,64 @@ test("a scroller holding the tab stop drops its mask while focused from the keyb
   expect(await scroller.evaluate((el) => el.matches(":focus-visible"))).toBe(true);
   expect((await fadeOf(scroller)).mask).toBe("none");
 });
+
+/**
+ * The rail shows where you are: once the layout has hydrated, a rail that scrolls puts its current
+ * link in view (the rail's scroller moves, never the page), its scrollbar is the thin themed one,
+ * and the folded disclosure below md names the current link.
+ */
+test("a SidebarLayout rail with its current link low in the list scrolls it into view, not the page", async ({
+  page,
+}) => {
+  const scroller = await scrollerAt(page, "page-layouts-sidebarlayout--current-low");
+  const current = scroller.locator("[aria-current]");
+  await expect(current).toHaveText("Section 45");
+  await expect.poll(() => scroller.evaluate((el) => el.scrollTop)).toBeGreaterThan(0);
+  const [box, at] = await Promise.all([
+    boxOf(scroller, "scroller"),
+    boxOf(current, "current link"),
+  ]);
+  expect(at.y, "the current link is below the scroller's top").toBeGreaterThanOrEqual(box.y);
+  expect(at.y + at.height, "the current link is above the scroller's end").toBeLessThanOrEqual(
+    box.y + box.height,
+  );
+  expect(await page.evaluate(() => window.scrollY), "the page did not move").toBe(0);
+  // The fade follows the scroll: more above and below.
+  await expect.poll(() => fadeOf(scroller).then((f) => [f.start, f.end])).toEqual([true, true]);
+});
+
+test("a SidebarLayout rail whose current link is at the top stays at the top", async ({ page }) => {
+  const scroller = await scrollerAt(page, "page-layouts-sidebarlayout--tall-rail");
+  await expect(scroller.locator("[aria-current]")).toHaveText("Section 1");
+  expect(await scroller.evaluate((el) => el.scrollTop)).toBe(0);
+});
+
+const scrollbarOf = (el: Element) => ({
+  width: getComputedStyle(el).scrollbarWidth,
+  bar: getComputedStyle(el).scrollbarColor,
+  scroller: getComputedStyle(el).color,
+  // The rail's ink is the inner box's (text-slate-900), not the scrollbar's (text-slate-400).
+  ink: getComputedStyle(el.firstElementChild ?? el).color,
+  current: getComputedStyle(el.querySelector("[aria-current]") ?? el).color,
+});
+
+test("a SidebarLayout rail scrolls with the thin scrollbar and keeps the rail's ink", async ({
+  page,
+  browserName,
+}) => {
+  const scroller = await scrollerAt(page, "page-layouts-sidebarlayout--current-low");
+  const got = await scroller.evaluate(scrollbarOf);
+  // Headless Firefox reports `scrollbar-width: none` for every element (overlay scrollbars), as in
+  // code-block.spec.ts, so the width is asserted in the other two engines only.
+  if (browserName !== "firefox") expect(got.width).toBe("thin");
+  expect(got.bar).toContain(got.scroller);
+  expect(got.ink).not.toBe(got.scroller);
+  expect(got.current).toBe(got.ink);
+});
+
+test("below md the folded rail's summary names the current link", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: desktop.height });
+  await page.goto(storyUrl("page-layouts-sidebarlayout--current-low"));
+  const summary = page.getByRole("complementary").locator("summary");
+  await expect(summary).toHaveText("All sections: Section 45");
+});

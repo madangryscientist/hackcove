@@ -190,6 +190,36 @@ export const TallRail: S = {
   ),
 };
 
+/**
+ * A rail whose current link is low in the list, as on the docs' Button page: once the page has
+ * loaded, the rail scrolls itself (never the page) so the current link is in view, its scrollbar is
+ * the thin themed one, and below `md` the disclosure reads the label and the current link.
+ */
+export const CurrentLow: S = {
+  render: () => (
+    <DemoShell>
+      <SidebarLayout
+        railLabel="All sections"
+        rail={
+          <Tabs
+            variant="pill"
+            orientation="vertical"
+            label="Sections"
+            items={manySections.map((label, i) => ({
+              label,
+              href: `#${label}`,
+              active: i === 44,
+            }))}
+          />
+        }
+      >
+        <PageHeader title="Section 45" subtitle="60 sections, the 45th is current." />
+        <Stack>{longPage}</Stack>
+      </SidebarLayout>
+    </DemoShell>
+  ),
+};
+
 /** A rail and a `DetailLayout` with `stickyAside` in its canvas, as the docs use them: both stay in view. */
 export const WithDetail: S = {
   render: () => (
