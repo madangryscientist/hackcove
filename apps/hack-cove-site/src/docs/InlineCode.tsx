@@ -2,7 +2,7 @@ import { Code } from "@hackcove/ui-react";
 import { Fragment } from "react";
 
 /** Text with `backticked` runs drawn as `Code`: how a prop's JSDoc and the page copy name code. */
-export function Prose({ text }: { text: string }) {
+export function InlineCode({ text }: { text: string }) {
   return (
     <>
       {text.split("`").map((part, i) =>

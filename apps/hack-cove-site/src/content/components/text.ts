@@ -124,6 +124,7 @@ export const text: ComponentSection = {
         "Side by side in a grid, each frame is its own height, so do not pad the previews to match.",
         "A wide preview or a long line of code scrolls inside the frame under a thin themed scrollbar; it does not widen the page.",
         "`copy` adds a button beside the code that copies the code, not the preview. It needs client JS, so use it only where the page is hydrated.",
+        "Inside a `Prose` the preview stays on the app scale, so the part looks as it does on an app screen; the caption is outside it.",
         "Only for documentation. A command to copy is a `CopyLine`, and code alone is a `CodeBlock`.",
       ],
       accessibility: [

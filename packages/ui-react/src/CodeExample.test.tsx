@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { CodeExample } from "./CodeExample.js";
+import { Prose, Text } from "./typography.js";
 
 describe("CodeExample", () => {
   const out = renderToStaticMarkup(
@@ -66,5 +67,21 @@ describe("CodeExample", () => {
     expect(withCaption.indexOf("<pre")).toBeLessThan(withCaption.indexOf("NOTE"));
     expect(withCaption.match(/border-t/g)).toHaveLength(2);
     expect(out).not.toContain("figcaption");
+  });
+
+  it("keeps its demo on the app scale inside a Prose, while the Prose body stays text-base", () => {
+    const html = renderToStaticMarkup(
+      <Prose>
+        <Text>BODY</Text>
+        <CodeExample code="x">
+          <Text>DEMO</Text>
+        </CodeExample>
+      </Prose>,
+    );
+    const classOfText = (word: string) =>
+      new RegExp(`<span class="([^"]*)">${word}</span>`).exec(html)?.[1] ?? "";
+    expect(classOfText("BODY")).toContain("text-base/7");
+    expect(classOfText("DEMO")).toContain("text-sm/5");
+    expect(classOfText("DEMO")).not.toContain("text-base/7");
   });
 });

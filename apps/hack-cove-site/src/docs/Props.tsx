@@ -9,7 +9,7 @@ import {
   Text,
 } from "@hackcove/ui-react";
 import propsJson from "../generated/props.json";
-import { Prose } from "./Prose.js";
+import { InlineCode } from "./InlineCode.js";
 import type { ComponentDoc, PropDoc, PropsJson } from "./types.js";
 
 const all: PropsJson = propsJson;
@@ -32,8 +32,8 @@ function PropEntry({ prop }: { prop: PropDoc }) {
         {prop.required && <Caption> required</Caption>}
       </div>
       {prop.description && (
-        <Text as="p">
-          <Prose text={prop.description} />
+        <Text as="p" breakWords>
+          <InlineCode text={prop.description} />
         </Text>
       )}
       <KeyValueList align="start">
@@ -57,8 +57,8 @@ export function Props({ of }: { of: string }) {
     <Stack gap="sm">
       <SubsectionHeading>{name}</SubsectionHeading>
       {description && (
-        <Text as="p">
-          <Prose text={description.replace(/\s*\n\s*/g, " ")} />
+        <Text as="p" breakWords>
+          <InlineCode text={description.replace(/\s*\n\s*/g, " ")} />
         </Text>
       )}
       {props.map((prop) => (
