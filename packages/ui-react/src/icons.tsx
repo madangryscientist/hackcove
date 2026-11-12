@@ -27,9 +27,19 @@ const NAMES = [
   "bell",
   "check",
   "plus",
+  "grid",
+  "window",
+  "type",
+  "card",
+  "pointer",
+  "field",
+  "table",
+  "compass",
+  "page",
+  "briefcase",
 ] as const;
 
-/** The names of the icon set: feature ideas, then UI glyphs. */
+/** The names of the icon set: feature ideas, then UI glyphs, then the ideas the docs sections stand for. */
 export type IconName = (typeof NAMES)[number];
 
 const GLYPHS: Record<IconName, ReactNode> = {
@@ -137,6 +147,68 @@ const GLYPHS: Record<IconName, ReactNode> = {
   check: <path d="m4.5 12.5 5 5L19.5 7" />,
   /** Add or create: two strokes crossing, upright. */
   plus: <path d="M12 5v14M5 12h14" />,
+  /** Things laid out in a grid: four tiles. */
+  grid: (
+    <>
+      <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+      <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+      <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+      <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+    </>
+  ),
+  /** A whole page's frame: a window with a title bar and a panel down the side. */
+  window: (
+    <>
+      <rect x="3" y="4.5" width="18" height="15" rx="2.5" />
+      <path d="M3 9h18M9.5 9v10.5M6.5 6.75h.01M9 6.75h.01" />
+    </>
+  ),
+  /** Text and its styles: a capital T. */
+  type: <path d="M5.5 7V5h13v2M12 5v14M9 19h6" />,
+  /** A unit of content: a card with a title line and lines of body. */
+  card: (
+    <>
+      <rect x="3" y="4.5" width="18" height="15" rx="2.5" />
+      <path d="M7 9h5M7 12.5h10M7 15.75h7" />
+    </>
+  ),
+  /** Something to press: a pointer arrow. */
+  pointer: <path d="M7 4.5v13.2l3.3-3.1 2.4 5 2.2-1-2.3-4.9h4.6Z" />,
+  /** Something to type in: a text field with its text and caret. */
+  field: (
+    <>
+      <rect x="3" y="7.5" width="18" height="9" rx="2.5" />
+      <path d="M7 12h4M13.5 9.5v5" />
+    </>
+  ),
+  /** Rows and columns of data: a table with a header row and a first column. */
+  table: (
+    <>
+      <rect x="3" y="4.5" width="18" height="15" rx="2.5" />
+      <path d="M3 9.5h18M3 14.5h18M9.5 9.5v10" />
+    </>
+  ),
+  /** Finding your way around: a compass with its needle. */
+  compass: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m15.5 8.5-2 5-5 2 2-5Z" />
+    </>
+  ),
+  /** A whole page of its own: a sheet with a folded corner and lines of text. */
+  page: (
+    <>
+      <path d="M7.5 3H14l5 5v10.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 5 18.5v-13A2.5 2.5 0 0 1 7.5 3Z" />
+      <path d="M14 3v3.5A1.5 1.5 0 0 0 15.5 8H19M9 13h6M9 16.5h6" />
+    </>
+  ),
+  /** Work for hire: a briefcase with its handle and clasp. */
+  briefcase: (
+    <>
+      <rect x="3" y="7.5" width="18" height="12" rx="2.5" />
+      <path d="M8.5 7.5V6a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v1.5M3 13h18M12 12v2.5" />
+    </>
+  ),
 };
 
 /** The icon `name` as an `<svg>`: the set's one grid, stroke, caps and joins, drawn in `currentColor`. */

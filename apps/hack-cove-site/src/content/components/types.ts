@@ -7,6 +7,8 @@
    extending a component and no styling escape hatch.
    --------------------------------------------------------------------------- */
 
+import type { IconName } from "@hackcove/ui-react";
+
 export type ComponentPage = {
   /** The page's path segment: /ui/<slug>/. */
   slug: string;
@@ -40,6 +42,8 @@ export type ComponentPage = {
 /** A group in the rail and on the Getting started page. */
 export type ComponentSection = {
   title: string;
+  /** The card's icon on Getting started: the idea of the group. */
+  icon: IconName;
   /** One line under the group's title on Getting started. */
   description: string;
   pages: ComponentPage[];

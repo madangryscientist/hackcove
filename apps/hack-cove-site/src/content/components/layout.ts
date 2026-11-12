@@ -2,6 +2,7 @@ import type { ComponentSection } from "./types";
 
 export const layout: ComponentSection = {
   title: "Layout",
+  icon: "grid",
   description: "Where things go on the page: the shell, the width, the spacing between parts.",
   pages: [
     {

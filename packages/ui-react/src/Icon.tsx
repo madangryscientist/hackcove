@@ -27,7 +27,8 @@ type IconProps = Passthrough & {
  * picks one of the library's own icons, all drawn on one grid with one stroke: feature ideas
  * (`diff`, `baseline`, `review`, `ci`, `self-host`, `privacy`, `capture`, `branch`, `theme`,
  * `speed`, `search`) and UI glyphs (`chevron-right`, `chevron-down`, `close`, `external-link`,
- * `settings`, `bell`, `check`, `plus`);
+ * `settings`, `bell`, `check`, `plus`) and the ideas the docs sections stand for (`grid`, `window`,
+ * `type`, `card`, `pointer`, `field`, `table`, `compass`, `page`, `briefcase`);
  * without a name, a bare `<svg>` child fills the box. It is decorative (`aria-hidden`) by
  * default; a `label` makes it an image with that name, for an icon that carries meaning no text
  * beside it says.

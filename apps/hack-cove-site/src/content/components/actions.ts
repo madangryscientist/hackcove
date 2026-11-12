@@ -2,6 +2,7 @@ import type { ComponentSection } from "./types";
 
 export const actions: ComponentSection = {
   title: "Actions",
+  icon: "pointer",
   description: "Things a person presses.",
   pages: [
     {
@@ -66,7 +67,7 @@ export const actions: ComponentSection = {
         "A glyph beside text or inside a control: a flag in a row, a camera in a Button, or a feature icon (`name` at `feature` size) that stands for an idea.",
       pairs: ["Icon/Icon"],
       usage: [
-        "`name` picks one of the library's icons, all on one grid and one stroke: `diff`, `baseline`, `review`, `ci`, `self-host`, `privacy`, `capture`, `branch`, `theme`, `speed`, `search`, `chevron-right`, `chevron-down`, `close`, `external-link`, `settings`, `bell`, `check` and `plus`. Each is named for its idea or action, not a product. Prefer one to drawing your own.",
+        "`name` picks one of the library's icons, all on one grid and one stroke: `diff`, `baseline`, `review`, `ci`, `self-host`, `privacy`, `capture`, `branch`, `theme`, `speed`, `search`, `chevron-right`, `chevron-down`, `close`, `external-link`, `settings`, `bell`, `check`, `plus`, `grid`, `window`, `type`, `card`, `pointer`, `field`, `table`, `compass`, `page` and `briefcase`. Each is named for its idea or action, not a product. Prefer one to drawing your own.",
         "For a glyph the set lacks, put a bare `<svg>` (with a `viewBox`, no size or colour classes) in an `Icon`; it fills the box.",
         "`size` is `sm` (14px), `md` (16px, the default), `lg` (20px) or `feature` (32px), for an icon that stands for an idea on its own. A feature card takes its icon through `Card`'s `icon`.",
         "`tone` is a text tone (`muted`, `positive`, `warn`, `danger`, `info`); `inherit`, the default, takes the colour of the text around it, so draw the glyph with `currentColor`.",

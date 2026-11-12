@@ -7,7 +7,7 @@ export function SectionCards() {
     <Section title="Explore">
       <CardGrid>
         {site.sections.map((section) => (
-          <Card key={section.slug} as="article" title={section.name}>
+          <Card key={section.slug} as="article" icon={section.icon} title={section.name}>
             <Text as="p">{section.summary}</Text>
             <Text as="p">
               <TextLink href={section.href}>{section.cta}</TextLink>

@@ -2,6 +2,7 @@ import type { ComponentSection } from "./types";
 
 export const pagelayouts: ComponentSection = {
   title: "Page layouts",
+  icon: "window",
   description:
     "The whole-page templates: pick the one for the kind of page, and it fixes the width and the rhythm.",
   pages: [

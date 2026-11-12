@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
-import { componentPages } from "../src/content/components/index";
+import { componentPages, componentSections } from "../src/content/components/index";
+import { site } from "../src/content/site";
 import {
   everyPage,
   labelFor,
@@ -288,3 +289,25 @@ test("the logo ink and halo are the same fixed blue under both schemes' scope cl
     expect(await colours()).toEqual(["rgb(79, 134, 247)", "rgb(79, 134, 247)"]);
   }
 });
+
+// Every card on the home and /ui/ index pages carries its icon, in each scheme the site flips.
+const iconCards = [
+  { path: "/", region: "Explore", count: site.sections.length },
+  { path: "/ui/", region: "Themes", count: themeList.length },
+  { path: "/ui/", region: "Components", count: componentSections.length },
+];
+
+for (const { path, region, count } of iconCards) {
+  test(`${path}: every card in ${region} has its icon, in both schemes`, async ({ page }) => {
+    await page.goto(path);
+    const cards = page.getByRole("region", { name: region, exact: true }).getByRole("article");
+    await expect(cards).toHaveCount(count);
+    for (const scheme of ["light", "dark"] as const) {
+      await setScheme(page, scheme);
+      for (const card of await cards.all()) {
+        await expect(card.locator("svg")).toHaveCount(1);
+        await expect(card.locator("svg")).toBeVisible();
+      }
+    }
+  });
+}

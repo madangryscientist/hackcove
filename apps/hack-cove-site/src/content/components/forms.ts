@@ -2,6 +2,7 @@ import type { ComponentSection } from "./types";
 
 export const forms: ComponentSection = {
   title: "Forms",
+  icon: "field",
   description: "Fields, controls and how a form is laid out.",
   pages: [
     {

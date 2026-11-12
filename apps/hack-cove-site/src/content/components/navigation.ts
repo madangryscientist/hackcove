@@ -2,6 +2,7 @@ import type { ComponentSection } from "./types";
 
 export const navigation: ComponentSection = {
   title: "Navigation",
+  icon: "compass",
   description: "Moving between pages and views.",
   pages: [
     {

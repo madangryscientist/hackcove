@@ -2,6 +2,7 @@ import type { ComponentSection } from "./types";
 
 export const data: ComponentSection = {
   title: "Data",
+  icon: "table",
   description: "Tables, rows, figures and bars.",
   pages: [
     {
