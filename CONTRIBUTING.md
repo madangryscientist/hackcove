@@ -139,7 +139,8 @@ docs page. The check runs in one of two modes:
 
 The local run (`visual`) builds the merge-base's Storybook in a shared worktree, captures it and
 writes one report per group to `apps/storybook/.pixelslash/<slug>/report/index.html`. An upload
-(`bunx nx run storybook:visual-upload`, which needs `PIXELSLASH_SERVER` and a token) builds and
+(`VISUAL_PARALLEL=3 bunx nx run storybook:visual-upload --parallel=3`, which needs `PIXELSLASH_SERVER` and a token;
+see "Uploads can run side by side" below) builds and
 captures no base at all. It has two modes, picked from the checkout:
 
 - **A branch rebased on origin/main** captures the branch only and uploads it. The server diffs it
@@ -149,6 +150,28 @@ captures no base at all. It has two modes, picked from the checkout:
 - **A checkout at origin/main's tip** (clean; a detached HEAD in a throwaway worktree counts)
   uploads that commit as branch `main` and compares nothing. This is the step after a merge that
   keeps those `main` builds on the server. Any other commit on `main` is refused.
+
+**Uploads can run side by side.** The groups of an upload each write their own
+`.pixelslash/<section>/` and send to their own PixelSlash project, so Nx can run several at once,
+and the slowest group, not the sum, then sets the wall time. Give the count twice, because Nx does
+not hand `--parallel` to a task:
+
+```bash
+VISUAL_PARALLEL=3 bunx nx run storybook:visual-upload --parallel=3
+```
+
+Nx runs 3 tasks at once unless told otherwise, so a bare `bunx nx run storybook:visual-upload` has 3
+groups at once with the workers of one; always give both. `VISUAL_PARALLEL` (a whole number, default
+1) is how a group learns how many run beside it. Only an upload reads it. Each
+group's capture then takes `max(1, min(10, floor(cpus / VISUAL_PARALLEL)))` workers, where `cpus` is
+what `os.availableParallelism()` reports (the CPUs the process may use, so a CPU-limited scope
+counts its own), and ten is PixelSlash's own ceiling. Three groups on 12 CPUs take 4 workers each;
+with the default of 1 a group takes PixelSlash's own `min(10, cpus)`. Groups times workers stays
+within the CPUs, so a `VISUAL_PARALLEL` above the CPU count is refused. The run logs
+`capturing with N workers` for each group. A capture's port is picked free and bound a moment
+later, so two groups can pick the same one; the one that finds it taken picks another and tries
+again, up to 3 times. The local compare (`visual`) stays serial: it builds and captures the base
+under one lock.
 
 PixelSlash ends a build at errored on a shot over 24.5 Mpx (19140px tall at 1280 wide), so the
 one-page **Overview / Gallery** and **Overview / All themes** are not shot whole: the run shoots

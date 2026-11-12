@@ -8,7 +8,7 @@
  * is built and captured under a lock.
  */
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { homedir } from "node:os";
+import { availableParallelism, homedir } from "node:os";
 import { join, resolve } from "node:path";
 import { indexOf } from "./visual-index.js";
 import { MAX_SHOT_PIXELS, shotSizes, sizeReport } from "./visual-shots.js";
@@ -56,6 +56,34 @@ export async function git(cwd: string, ...args: string[]): Promise<string> {
   return text.trim();
 }
 
+const OUTPUT_TAIL = 16_384;
+
+/**
+ * `run`, with the child's output still going to the terminal (stderr, as `run` sends it) and its
+ * last few KB kept, so a caller can read what the child said when it failed.
+ */
+async function runTeed(cmd: string[], cwd: string, env: Record<string, string>) {
+  const proc = Bun.spawn(cmd, {
+    cwd,
+    env: { ...process.env, ...env },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  let tail = "";
+  const pump = async (stream: ReadableStream<Uint8Array>) => {
+    const decoder = new TextDecoder();
+    for await (const chunk of stream) {
+      process.stderr.write(chunk);
+      tail = (tail + decoder.decode(chunk, { stream: true })).slice(-OUTPUT_TAIL);
+    }
+  };
+  const pumps = Promise.all([pump(proc.stdout), pump(proc.stderr)]);
+  const exitCode = await proc.exited;
+  // Something the child started (its server) can outlive it holding the pipes: read what is left
+  // for a moment, then report the exit instead of waiting on it.
+  await Promise.race([pumps, Bun.sleep(2000)]);
+  return { exitCode, signal: proc.signalCode, tail };
+}
+
 /** A port nothing listens on now: the OS hands out a free one, and the probe server stops at once. */
 async function freePort(): Promise<number> {
   const probe = Bun.serve({ hostname: "127.0.0.1", port: 0, fetch: () => new Response() });
@@ -66,12 +94,93 @@ async function freePort(): Promise<number> {
 }
 
 /** The port this run serves on: `VISUAL_PORT` if set, else one free now. */
-export async function capturePort(): Promise<number> {
+async function capturePort(): Promise<number> {
   const given = process.env["VISUAL_PORT"];
   if (!given) return freePort();
   const port = Number(given);
   if (!Number.isInteger(port) || port <= 0) throw new VisualError(`VISUAL_PORT is not a port`);
   return port;
+}
+
+/** A port that was free when picked but was taken by the time the capture bound it. */
+export class PortTaken extends VisualError {
+  constructor(readonly port: number) {
+    super(`port ${port} was taken by something else`);
+  }
+}
+
+/** Whether a capture's output says the server could not bind its port. */
+export const bindFailed = (output: string): boolean => output.includes("EADDRINUSE");
+
+const PORT_TRIES = 3;
+
+/**
+ * Runs `attempt` on a port from `pick`. A port is free when picked and bound later, so a second
+ * group started at the same moment can pick the same one; the run that finds its port taken
+ * (`PortTaken`) picks another and tries again, up to `tries` times, then fails naming the port.
+ * Any other failure is not retried. A `VISUAL_PORT` the caller fixed is one port, so it gets one try.
+ */
+export async function withFreePort<T>(
+  attempt: (port: number) => Promise<T>,
+  pick: () => Promise<number> = capturePort,
+  tries = process.env["VISUAL_PORT"] ? 1 : PORT_TRIES,
+): Promise<T> {
+  const taken: number[] = [];
+  for (let n = 1; ; n++) {
+    const port = await pick();
+    try {
+      return await attempt(port);
+    } catch (error) {
+      if (!(error instanceof PortTaken)) throw error;
+      taken.push(error.port);
+      if (n >= tries)
+        throw new VisualError(
+          `port ${taken.join(", ")} was taken${tries > 1 ? ` on each of ${tries} tries` : " (VISUAL_PORT)"}; stop what answers there and re-run`,
+        );
+      log(`port ${error.port} was taken, trying another (${n} of ${tries})`);
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Parallel groups
+   --------------------------------------------------------------------------- */
+
+/** PixelSlash's own ceiling for its capture workers (its default is `min(10, CPUs)`). */
+const MAX_WORKERS = 10;
+
+/**
+ * How many groups run at once, from `VISUAL_PARALLEL` (a whole number, default 1). Nx does not
+ * hand `--parallel` to a task, so the run is told the count here; the documented command sets both.
+ */
+export function parallelFrom(raw: string | undefined): number {
+  if (raw === undefined || raw === "") return 1;
+  if (!/^[1-9]\d*$/.test(raw))
+    throw new VisualError(`VISUAL_PARALLEL is not a whole number of 1 or more: ${raw}`);
+  return Number(raw);
+}
+
+/**
+ * The workers an upload's group takes: the CPUs this process may use, shared between the
+ * `VISUAL_PARALLEL` groups that run beside it. Logged, so each run states its count.
+ */
+export function uploadWorkers(): number {
+  const parallel = parallelFrom(process.env["VISUAL_PARALLEL"]);
+  const workers = captureWorkers(parallel, availableParallelism());
+  log(`capturing with ${workers} workers (${parallel} groups at once)`);
+  return workers;
+}
+
+/**
+ * The capture workers one group takes when `parallel` groups share `cpus`: groups times workers
+ * stays within the CPUs, and a group never takes more than PixelSlash's ten.
+ */
+export function captureWorkers(parallel: number, cpus: number): number {
+  if (parallel > cpus)
+    throw new VisualError(
+      `VISUAL_PARALLEL=${parallel} is more than the ${cpus} CPUs available; groups times workers must fit`,
+    );
+  return Math.max(1, Math.min(MAX_WORKERS, Math.floor(cpus / parallel)));
 }
 
 /**
@@ -109,11 +218,13 @@ export async function withBaselineLock<T>(task: () => Promise<T>): Promise<T> {
 export type Selection = { titles: string[]; themes: string[] };
 
 /**
- * One capture of a built storybook-static into a fresh snapshot dir, served on `port`. PixelSlash
+ * One capture of a built storybook-static into a fresh snapshot dir, served on a free port. PixelSlash
  * refuses an include that matches no story, so a selection whose stories or themes are all absent
- * on this side (new on the branch, say) is an empty capture.
+ * on this side (new on the branch, say) is an empty capture. The port is picked here, and picked
+ * again when something takes it first (`withFreePort`). `workers` is how many shots PixelSlash
+ * takes at once; unset, PixelSlash's own default.
  */
-export async function capture(staticDir: string, into: string, port: number, pick: Selection) {
+export async function capture(staticDir: string, into: string, pick: Selection, workers?: number) {
   rmSync(into, { recursive: true, force: true });
   const present = indexOf(staticDir);
   const include = pick.titles.filter((title) => present.has(title));
@@ -125,6 +236,20 @@ export async function capture(staticDir: string, into: string, port: number, pic
     );
     return;
   }
+  await withFreePort((port) =>
+    captureOn(port, { staticDir, into, include, themes: pick.themes, workers }),
+  );
+}
+
+type CaptureJob = {
+  staticDir: string;
+  into: string;
+  include: string[];
+  themes: string[];
+  workers: number | undefined;
+};
+
+async function captureOn(port: number, job: CaptureJob) {
   // PixelSlash takes any answer on the ready URL for its own server, so a server left on the port
   // (or another worktree's run) would be captured instead, and the report could say 0 changed.
   const taken = await fetch(`http://127.0.0.1:${port}/`, {
@@ -133,29 +258,30 @@ export async function capture(staticDir: string, into: string, port: number, pic
     () => true,
     () => false,
   );
-  if (taken) throw new VisualError(`something already answers on port ${port}; stop it and re-run`);
-  await run(
-    [
-      "bun",
-      "run",
-      "--cwd",
-      pixelslashDir,
-      "pixelslash",
-      "--",
-      "capture",
-      "--config",
-      config,
-      "--out",
-      into,
-    ],
+  if (taken) throw new PortTaken(port);
+  const cmd = [
+    "bun",
+    "run",
+    "--cwd",
     pixelslashDir,
-    {
-      VISUAL_STATIC_DIR: staticDir,
-      VISUAL_PORT: String(port),
-      VISUAL_INCLUDE: JSON.stringify(include),
-      VISUAL_THEMES: JSON.stringify(pick.themes),
-    },
-  );
+    "pixelslash",
+    "--",
+    "capture",
+    "--config",
+    config,
+    "--out",
+    job.into,
+  ];
+  const { exitCode, signal, tail } = await runTeed(cmd, pixelslashDir, {
+    VISUAL_STATIC_DIR: job.staticDir,
+    VISUAL_PORT: String(port),
+    VISUAL_INCLUDE: JSON.stringify(job.include),
+    VISUAL_THEMES: JSON.stringify(job.themes),
+    ...(job.workers === undefined ? {} : { VISUAL_CONCURRENCY: String(job.workers) }),
+  });
+  if (exitCode === 0) return;
+  if (bindFailed(tail)) throw new PortTaken(port);
+  throw new VisualError(stepFailure(cmd.join(" "), pixelslashDir, signal));
 }
 
 /**

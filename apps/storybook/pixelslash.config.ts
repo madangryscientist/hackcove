@@ -34,7 +34,13 @@ const staticDir = process.env["VISUAL_STATIC_DIR"] ?? join(import.meta.dirname, 
 const port = process.env["VISUAL_PORT"] ?? "6008";
 const url = `http://127.0.0.1:${port}`;
 
+// How many shots one capture takes at once. The script sets it from VISUAL_PARALLEL so that groups
+// run side by side (nx --parallel) times workers fit the CPUs; unset (a bare run, `pixelslash dev`)
+// it is PixelSlash's own default.
+const concurrency = process.env["VISUAL_CONCURRENCY"];
+
 export default {
+  ...(concurrency === undefined ? {} : { concurrency: Number(concurrency) }),
   start: {
     command: `STATIC_DIR='${staticDir}' PORT=${port} bun '${join(import.meta.dirname, "e2e", "serve.ts")}'`,
     readyUrl: `${url}/iframe.html`,

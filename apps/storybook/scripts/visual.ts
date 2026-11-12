@@ -46,7 +46,6 @@ import {
   branchStatic,
   buildBase,
   capture,
-  capturePort,
   changedSince,
   checkShotSizes,
   compare,
@@ -55,6 +54,7 @@ import {
   out,
   repoRoot,
   resolveBase,
+  uploadWorkers,
   withBaselineLock,
   type Counts,
   type Selection,
@@ -214,7 +214,7 @@ async function captureBase(dir: string, sha: string, pick: Selection) {
       throw new VisualError(error instanceof Error ? error.message : String(error));
     }
     const themes = themesOnBase(ids, pick.themes, branch);
-    await capture(baseStatic, join(dir, "main"), await capturePort(), { ...pick, themes });
+    await capture(baseStatic, join(dir, "main"), { ...pick, themes });
   });
   writeFileSync(keyPath, `${key}\n`);
 }
@@ -232,7 +232,12 @@ async function groupMode(slug: string) {
     return;
   }
   const started = Date.now();
-  await capture(branchStatic, join(dir, "branch"), await capturePort(), group);
+  await capture(
+    branchStatic,
+    join(dir, "branch"),
+    group,
+    plan.mode === null ? undefined : uploadWorkers(),
+  );
   checkShotSizes(join(dir, "branch"), slug);
   if (plan.mode !== null) {
     // An upload builds and captures nothing of main: the server holds the baseline and diffs.
