@@ -41,7 +41,7 @@ function Themes() {
       <Text as="p">{ui.themes.intro}</Text>
       <CardGrid columns={2}>
         {themes.map((theme) => (
-          <Card key={theme.id} as="article" title={theme.title}>
+          <Card key={theme.id} as="article" icon="theme" title={theme.title}>
             <Stack gap="xs">
               <Text as="p" color="tertiary">
                 <Code>{theme.specifier}</Code>
@@ -63,7 +63,13 @@ function Components() {
       <Text as="p">{ui.components.intro}</Text>
       <CardGrid columns={2}>
         {componentSections.map((section) => (
-          <Card key={section.title} as="article" title={section.title} count={section.pages.length}>
+          <Card
+            key={section.title}
+            as="article"
+            icon={section.icon}
+            title={section.title}
+            count={section.pages.length}
+          >
             <Stack gap="sm">
               <Text as="p">{section.description}</Text>
               <MetaList nowrap separator="none">

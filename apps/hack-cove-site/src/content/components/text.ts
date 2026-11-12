@@ -2,6 +2,7 @@ import type { ComponentSection } from "./types";
 
 export const text: ComponentSection = {
   title: "Text",
+  icon: "type",
   description: "Headings, body copy, links, code and the small text parts.",
   pages: [
     {

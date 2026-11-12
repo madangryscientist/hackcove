@@ -4,6 +4,7 @@ import type { ComponentSection } from "./types";
 
 export const content: ComponentSection = {
   title: "Content",
+  icon: "card",
   description: "Panels, people, media and the rest of what a page shows.",
   pages: [
     {

@@ -2,6 +2,7 @@ import type { ComponentSection } from "./types";
 
 export const feedback: ComponentSection = {
   title: "Feedback",
+  icon: "bell",
   description: "Status, notices and the layers over the page.",
   pages: [
     {
