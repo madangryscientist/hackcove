@@ -83,6 +83,15 @@ and why. `bunx nx run storybook:visual --all` (or `VISUAL_ALL=1 bunx nx run-many
 run-many takes `--all` for itself) captures everything. A gate run is `--all`. Every story file is
 named by a docs page (`pairs`, `fullPage` or `stories`); the storybook tests fail on one that is not.
 
+**Uploads run their groups in parallel; the local compare does not.** Only the `visual-upload`
+targets have `parallelism: true` (`nx-plugin.ts`); `visual` stays serial, since it builds and
+captures the base under the baseline lock. Nx does not hand `--parallel` to a task, so always give
+the count twice, as `VISUAL_PARALLEL=3 bunx nx run storybook:visual-upload --parallel=3` (a bare
+run has Nx's 3 groups at once with one group's workers). Each group takes
+`max(1, min(10, floor(cpus / VISUAL_PARALLEL)))` capture workers, `cpus` from
+`os.availableParallelism()`, so never run `--parallel` above the CPUs: groups times workers must
+fit. `CONTRIBUTING.md`, "The visual check", has the rest, including the port retry.
+
 **A shot may not pass PixelSlash's 24.5 Mpx limit** (19140px tall at 1280 wide; PS-323 ends a build
 at errored on one). The two one-page Overviews, **Gallery** and **All themes**, are for people and are not
 shot: the run shoots them in slices instead, one story per entry of `gallerySections`
@@ -132,11 +141,11 @@ hackcove lands through pull requests (Jacobus, 2026-10-27). Who opens and who me
 global rule; what is particular to hackcove:
 
 - **Screenshots before the merge.** The planner gates the PR's head, reads the PixelSlash
-  reports, and uploads that commit's screenshots (`nx run storybook:visual-upload`, every group
+  reports, and uploads that commit's screenshots (`VISUAL_PARALLEL=3 nx run storybook:visual-upload --parallel=3`, every group
   whole, each to its own `hackcove-ui-<section>` project) before it merges. The upload captures
   the branch only: the PixelSlash server diffs it against the `main` build it already holds, and
   the run fails naming the project if it holds none at the merge-base or an ancestor.
-- **Screenshots after the merge.** The planner then runs `nx run storybook:visual-upload` on a
+- **Screenshots after the merge.** The planner then runs `VISUAL_PARALLEL=3 nx run storybook:visual-upload --parallel=3` on a
   worktree at the merge commit (a detached HEAD at origin/main's tip is fine). Nothing else seeds
   `main`'s builds, so a merge without this step leaves the next branch with no baseline. A release
   commit that `publish.yml` pushes needs no upload of its own: the server picks its parent's build.

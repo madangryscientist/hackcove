@@ -28,7 +28,9 @@ function target(slug: string, upload: boolean): TargetConfiguration {
     ],
     inputs: [],
     cache: false,
-    parallelism: false,
+    // Only the upload overlaps its groups: each writes its own `.pixelslash/<slug>/` and uploads to
+    // its own server project. The local compare builds and captures the base under one lock.
+    parallelism: upload,
   };
 }
 
