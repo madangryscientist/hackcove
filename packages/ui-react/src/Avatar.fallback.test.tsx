@@ -2,7 +2,7 @@
 import { act, type ReactElement, useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Avatar } from "./Avatar.js";
-import { mount, unmount } from "./dom.harness.js";
+import { hydrateWith, mount, unmount } from "./dom.harness.js";
 
 afterEach(unmount);
 
@@ -55,6 +55,40 @@ describe("Avatar when its photo fails to load", () => {
     act(() => swap?.click());
     const retry = container.querySelector("img");
     expect(retry?.getAttribute("src")).toBe("/ada.jpg");
+  });
+});
+
+describe("Avatar whose photo failed before it hydrated", () => {
+  const avatar = <Avatar name="Sam Cole" src="/missing.jpg" size="xl" />;
+
+  it("shows the initials, and no img", async () => {
+    const container = await hydrateWith(avatar, { complete: true, naturalWidth: 0 });
+    expect(container.querySelector("img")).toBeNull();
+    expect(container.querySelector("span")?.textContent).toBe("SA");
+    container.remove();
+  });
+
+  it("does not call the consumer's onError, as there is no event to pass", async () => {
+    const onError = vi.fn<() => void>();
+    const container = await hydrateWith(
+      <Avatar name="Sam Cole" src="/missing.jpg" onError={onError} />,
+      { complete: true, naturalWidth: 0 },
+    );
+    expect(container.querySelector("span")?.textContent).toBe("SA");
+    expect(onError).not.toHaveBeenCalled();
+    container.remove();
+  });
+
+  it("keeps the photo when it loaded", async () => {
+    const container = await hydrateWith(avatar, { complete: true, naturalWidth: 56 });
+    expect(container.querySelector("img")?.getAttribute("src")).toBe("/missing.jpg");
+    container.remove();
+  });
+
+  it("keeps the photo while it is still loading", async () => {
+    const container = await hydrateWith(avatar, { complete: false, naturalWidth: 0 });
+    expect(container.querySelector("img")?.getAttribute("src")).toBe("/missing.jpg");
+    container.remove();
   });
 });
 

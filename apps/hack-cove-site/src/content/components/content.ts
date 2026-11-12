@@ -82,7 +82,7 @@ export const content: ComponentSection = {
       accessibility: [
         'Initials are drawn in a `<span>` with `aria-hidden="true"` and a `title` of the name, so a screen reader skips them: the name has to be on the page as text.',
         "With `src` the Avatar is an `<img>` whose `alt` and `title` are the name.",
-        'With `onClick` the Avatar is a `<button type="button">` whose `aria-label` is the name, so the initials need no text beside them to name the button. `onError` still reports a photo that failed to load; the initials take its place.',
+        'With `onClick` the Avatar is a `<button type="button">` whose `aria-label` is the name, so the initials need no text beside them to name the button. `onError` still reports a photo that fails to load while the page is live, and the initials take its place; a photo that already failed before the page hydrated shows the initials too, without calling `onError`.',
         "`aria-*` and `data-*` props go on the root element.",
       ],
       api: ["Avatar"],

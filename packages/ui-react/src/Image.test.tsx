@@ -2,7 +2,7 @@
 import { act, type ReactElement, useState } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it } from "vitest";
-import { mount, unmount } from "./dom.harness.js";
+import { hydrateWith, mount, unmount } from "./dom.harness.js";
 import { Image } from "./Image.js";
 
 afterEach(unmount);
@@ -141,5 +141,30 @@ describe("Image", () => {
     expect(container.querySelector("img")).toBeNull();
     act(() => container.querySelector("button")?.click());
     expect(container.querySelector("img")?.getAttribute("src")).toBe("/code.png");
+  });
+});
+
+describe("Image whose picture failed before it hydrated", () => {
+  const image = <Image src="/missing.png" alt="Pairing code" aspect="square" />;
+
+  it("shows the placeholder named by alt, and no img", async () => {
+    const container = await hydrateWith(image, { complete: true, naturalWidth: 0 });
+    expect(container.querySelector("img")).toBeNull();
+    const placeholder = container.querySelector('[role="img"]');
+    expect(placeholder?.getAttribute("aria-label")).toBe("Pairing code");
+    expect(placeholder?.className).toContain("aspect-square");
+    container.remove();
+  });
+
+  it("keeps the picture when it loaded", async () => {
+    const container = await hydrateWith(image, { complete: true, naturalWidth: 120 });
+    expect(container.querySelector("img")?.getAttribute("src")).toBe("/missing.png");
+    container.remove();
+  });
+
+  it("keeps the picture while it is still loading", async () => {
+    const container = await hydrateWith(image, { complete: false, naturalWidth: 0 });
+    expect(container.querySelector("img")?.getAttribute("src")).toBe("/missing.png");
+    container.remove();
   });
 });
