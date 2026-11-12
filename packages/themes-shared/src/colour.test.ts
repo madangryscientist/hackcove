@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { composite, contrastRatio, luminance, parseColour, toHex } from "./colour.js";
+import {
+  composite,
+  contrastRatio,
+  distance,
+  luminance,
+  oklab,
+  parseColour,
+  toHex,
+} from "./colour.js";
 
 describe("parseColour", () => {
   it("reads hex in 3, 4, 6 and 8 digits", () => {
@@ -55,5 +63,24 @@ describe("contrast maths", () => {
   it("prints a hex a person can read", () => {
     expect(toHex([30, 30, 46])).toBe("#1e1e2e");
     expect(toHex([300, -4, 127.6])).toBe("#ff0080");
+  });
+});
+
+describe("OKLab maths", () => {
+  it("puts white at full lightness, black at none, and red on its known axes", () => {
+    const [wL, wA, wB] = oklab([255, 255, 255]);
+    expect(wL).toBeCloseTo(1, 5);
+    expect(wA).toBeCloseTo(0, 5);
+    expect(wB).toBeCloseTo(0, 5);
+    expect(oklab([0, 0, 0])).toEqual([0, 0, 0]);
+    const [lightness, a, b] = oklab([255, 0, 0]);
+    expect(lightness).toBeCloseTo(0.628, 3);
+    expect(a).toBeCloseTo(0.2249, 3);
+    expect(b).toBeCloseTo(0.1258, 3);
+  });
+
+  it("measures distance as how far apart two colours look", () => {
+    expect(distance([30, 30, 46], [30, 30, 46])).toBe(0);
+    expect(distance([255, 0, 0], [0, 255, 0])).toBeCloseTo(0.52, 2);
   });
 });

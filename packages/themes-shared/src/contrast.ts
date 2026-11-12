@@ -19,7 +19,7 @@ export function propertyOf(utility: string): string | undefined {
 }
 
 /** Read the colour a theme gives a utility; throws a message naming the utility if it cannot. */
-function colourOf(utilities: Map<string, Declarations>, utility: string): Colour {
+export function colourOf(utilities: Map<string, Declarations>, utility: string): Colour {
   const property = propertyOf(utility);
   const value = property === undefined ? undefined : utilities.get(utility)?.[property];
   if (value === undefined) throw new Error(`${utility}: the theme sets no ${property ?? "colour"}`);
