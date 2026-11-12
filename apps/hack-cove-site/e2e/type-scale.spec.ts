@@ -83,3 +83,29 @@ for (const scheme of schemes) {
     });
   });
 }
+
+for (const scheme of schemes) {
+  test.describe(`${scheme} theme code`, () => {
+    test.beforeEach(async ({ page }) => {
+      await page.setViewportSize({ width: 1440, height: 900 });
+      await page.addInitScript((value) => localStorage.setItem("hackcove-theme", value), scheme);
+    });
+
+    test("/ui/button/: code under an example keeps its own line height inside Prose", async ({
+      page,
+    }) => {
+      await page.goto("/ui/button/");
+      await setScheme(page, scheme);
+      const pre = page.locator("figure pre").first();
+      const { lineHeight, fontSize } = await pre.evaluate((el) => {
+        const style = getComputedStyle(el);
+        return {
+          lineHeight: Number.parseFloat(style.lineHeight),
+          fontSize: Number.parseFloat(style.fontSize),
+        };
+      });
+      // 1.5 of the font size: what the code has outside a Prose, not the prose 28px.
+      expect(lineHeight).toBeCloseTo(fontSize * 1.5, 1);
+    });
+  });
+}

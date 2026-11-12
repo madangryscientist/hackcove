@@ -29,7 +29,7 @@ export function CodeBody({
       <div className={cx("min-w-0 flex-1", !wrap && `overflow-x-auto ${themedScrollbar}`)}>
         <pre
           className={cx(
-            "px-3 py-2.5 font-mono text-[12.5px] text-slate-900",
+            "px-3 py-2.5 font-mono text-[12.5px] leading-normal text-slate-900",
             wrap ? "break-words whitespace-pre-wrap" : "w-max min-w-full whitespace-pre",
           )}
         >

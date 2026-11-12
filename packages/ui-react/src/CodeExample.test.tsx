@@ -1,7 +1,18 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { CodeExample } from "./CodeExample.js";
+import { CodeBlock } from "./CodeBlock.js";
+import { CopyLine } from "./CopyLine.js";
 import { Prose, Text } from "./typography.js";
+
+const codeParts = () => (
+  <>
+    <CodeExample code="x">DEMO</CodeExample>
+    <CodeBlock language="bash">bun add x</CodeBlock>
+    <CopyLine text="bun add x" />
+  </>
+);
+const countLeadings = (html: string) => html.match(/leading-normal/g)?.length ?? 0;
 
 describe("CodeExample", () => {
   const out = renderToStaticMarkup(
@@ -83,5 +94,13 @@ describe("CodeExample", () => {
     expect(classOfText("BODY")).toContain("text-base/7");
     expect(classOfText("DEMO")).toContain("text-sm/5");
     expect(classOfText("DEMO")).not.toContain("text-base/7");
+  });
+
+  it("keeps the code's own line height inside a Prose, the same as outside", () => {
+    const outside = renderToStaticMarkup(codeParts());
+    const inside = renderToStaticMarkup(<Prose>{codeParts()}</Prose>);
+    // CodeExample (its code pane), CodeBlock, CopyLine: each sets leading-normal itself.
+    expect(countLeadings(outside)).toBe(countLeadings(inside));
+    expect(countLeadings(inside)).toBeGreaterThanOrEqual(3);
   });
 });
