@@ -1,8 +1,9 @@
-import { type ReactElement, useState } from "react";
+import type { ReactElement } from "react";
 import { cx } from "./cx.js";
 import { Icon } from "./Icon.js";
 import type { Passthrough } from "./props.js";
 import type { Size } from "./size.js";
+import { useImageFailed } from "./useImageFailed.js";
 
 /**
  * The shapes an image is cropped or letterboxed to, or `natural`: no shape of its own, so the
@@ -107,17 +108,17 @@ export function Image({
   framed = false,
   ...rest
 }: ImageProps): ReactElement {
-  // The `src` that failed to load: a new `src` gets its own try, so a broken one never sticks.
-  const [failedSrc, setFailedSrc] = useState<string>();
+  const { ref, failed, markFailed } = useImageFailed(src);
   const box = cx(FRAME, IMAGE_WIDTH[width]);
-  if (src && src !== failedSrc) {
+  if (src && !failed) {
     return (
       <img
         {...rest}
+        ref={ref}
         src={src}
         alt={alt}
         className={cx(box, ASPECT[aspect], pictureLook(fit, framed))}
-        onError={() => setFailedSrc(src)}
+        onError={markFailed}
       />
     );
   }

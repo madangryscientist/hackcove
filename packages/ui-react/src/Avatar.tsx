@@ -1,6 +1,7 @@
-import { type HTMLAttributes, type ReactElement, useState } from "react";
+import type { HTMLAttributes, ReactElement } from "react";
 import { cx, focusRing } from "./cx.js";
 import type { Unstyled } from "./props.js";
+import { useImageFailed } from "./useImageFailed.js";
 
 /** The identity colours, in hash order. Each is a stock background utility; a theme remaps them. */
 const COLOUR_CLASSES = [
@@ -113,21 +114,21 @@ export function AvatarMark({
   onClick,
   ...rest
 }: AvatarProps & { ring?: string | false }): ReactElement {
-  // The `src` that failed to load: a new `src` gets its own try, so a broken one never sticks.
-  const [failedSrc, setFailedSrc] = useState<string>();
+  const { ref, failed, markFailed } = useImageFailed(src);
   const corners = avatarShapeClass(shape, size);
   // As a button, the button takes the consumer's props and the mark inside keeps only its look.
   const markProps = onClick ? {} : rest;
   const mark =
-    src && src !== failedSrc ? (
+    src && !failed ? (
       <img
+        ref={ref}
         src={src}
         alt={name}
         title={name}
         className={cx("shrink-0 object-cover", corners, SIZE_CLASSES[size], ring)}
         onError={(event) => {
           onError?.(event);
-          setFailedSrc(src);
+          markFailed();
         }}
         {...markProps}
       />
