@@ -2,8 +2,9 @@ import type { ReactElement, ReactNode } from "react";
 import { cx } from "./cx.js";
 import { FoldedColumn } from "./foldedColumn.js";
 import type { Passthrough } from "./props.js";
+import { useScrollEdges } from "./scrollEdges.js";
 import { scrollStopProps, useScrollStop } from "./scrollStop.js";
-import { STICKY_ASIDE_MD, STICKY_SCROLL_MD } from "./stickyColumn.js";
+import { STICKY_ASIDE_MD, STICKY_FADE_MD, STICKY_SCROLL_MD } from "./stickyColumn.js";
 
 /**
  * A `rail` of links beside the `children` canvas, in the Container the shell already gives every
@@ -32,12 +33,13 @@ export function SidebarLayout({
   railLabel?: string | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {
-  const { attach, stop } = useScrollStop();
+  const { element, attach, stop } = useScrollStop();
+  useScrollEdges(element, "y");
   const { props, ring } = scrollStopProps(stop, { label: railLabel });
   return (
     <div {...rest} className="flex flex-col gap-8 md:flex-row md:gap-10">
       <aside className={cx("w-full shrink-0 md:w-56", STICKY_ASIDE_MD)} aria-label={railLabel}>
-        <div ref={attach} {...props} className={cx(STICKY_SCROLL_MD, ring)}>
+        <div ref={attach} {...props} className={cx(STICKY_SCROLL_MD, STICKY_FADE_MD, ring)}>
           {railLabel === undefined ? (
             rail
           ) : (
