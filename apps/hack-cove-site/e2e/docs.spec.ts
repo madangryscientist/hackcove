@@ -293,7 +293,6 @@ test("the logo ink and halo are the same fixed blue under both schemes' scope cl
 // Every card on the home and /ui/ index pages carries its icon, in each scheme the site flips.
 const iconCards = [
   { path: "/", region: "Explore", count: site.sections.length },
-  { path: "/ui/", region: "Themes", count: themeList.length },
   { path: "/ui/", region: "Components", count: componentSections.length },
 ];
 
@@ -311,3 +310,17 @@ for (const { path, region, count } of iconCards) {
     }
   });
 }
+
+test("/ui/ lists one table row per theme and does not scroll the page sideways on a phone", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 900 });
+  await page.goto("/ui/");
+  await expect(page.getByRole("table", { name: "Themes" }).locator("tbody tr")).toHaveCount(
+    themeList.length,
+  );
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+});
