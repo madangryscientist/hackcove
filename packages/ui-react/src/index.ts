@@ -117,6 +117,7 @@ export { Switch } from "./Switch.js";
 export { Radio, RadioGroup } from "./RadioGroup.js";
 export { FileDrop } from "./FileDrop.js";
 export { CopyButton } from "./CopyButton.js";
+export { copyScript } from "./copyScript.js";
 export { CopyLine } from "./CopyLine.js";
 export { Field } from "./Field.js";
 export { FormGrid, FormRow, FormRowField, type FormRowSpan } from "./FormRow.js";

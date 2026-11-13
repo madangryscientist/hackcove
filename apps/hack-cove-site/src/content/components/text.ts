@@ -103,7 +103,7 @@ export const text: ComponentSection = {
         "A line a reader copies is a `CopyLine`, not a one-line `CodeBlock`. A rendered part shown with its code is a `CodeExample`.",
         "Without a `language` the code is one colour (`text`), which suits an error or a log.",
         'A long line wraps, so a command is never cut off and still copies as one line. `overflow="scroll"` keeps lines whole and scrolls them sideways under a thin scrollbar in the theme\'s colour, for code whose layout matters.',
-        "`copy` adds a copy button beside the code. It needs client JS, so use it only where the page is hydrated.",
+        "`copy` adds a copy button beside the code. It needs client JS; on a page rendered to static HTML, inline `copyScript` once (see CopyButton).",
       ],
       accessibility: [
         "`Code` renders a `<code>`. `CodeBlock` renders a `<figure>` with the code in `<pre><code>`, so the line breaks are kept.",
@@ -123,7 +123,7 @@ export const text: ComponentSection = {
         "`caption` is one note on the example, the last band of the frame.",
         "Side by side in a grid, each frame is its own height, so do not pad the previews to match.",
         "A wide preview or a long line of code scrolls inside the frame under a thin themed scrollbar; it does not widen the page.",
-        "`copy` adds a button beside the code that copies the code, not the preview. It needs client JS, so use it only where the page is hydrated.",
+        "`copy` adds a button beside the code that copies the code, not the preview. It needs client JS; on a page rendered to static HTML, inline `copyScript` once (see CopyButton).",
         "Inside a `Prose` the preview stays on the app scale, so the part looks as it does on an app screen; the caption is outside it.",
         "Only for documentation. A command to copy is a `CopyLine`, and code alone is a `CodeBlock`.",
       ],

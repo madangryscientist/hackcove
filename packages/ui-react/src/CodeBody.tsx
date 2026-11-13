@@ -11,7 +11,8 @@ import { consoleCommands, type CodeLanguage } from "./highlight.js";
  * long lines at whitespace only (a flag with hyphens stays whole; a word wider than the box still
  * breaks inside itself); without it they scroll sideways under a themed thin scrollbar. The button's column has
  * a fixed width, so "copy" turning into "copied" never rewraps the code beside it. The button needs
- * client JS, which is why it is opt-in: a statically rendered page would show a dead one.
+ * client JS, which is why it is opt-in: a page rendered to static HTML needs `copyScript` inlined
+ * or the button is dead.
  */
 export function CodeBody({
   code,

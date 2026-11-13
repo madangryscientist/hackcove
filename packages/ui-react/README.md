@@ -320,6 +320,15 @@ except the last four.
 </AppShell>
 ```
 
+## Copy on a static page
+
+`CopyButton` copies from a React click handler, so on a page rendered to static HTML and never
+hydrated (an Astro page whose body is not an island) it draws and does nothing. Inline `copyScript`
+once, as you do `colourSchemeScript`, and every copy button works there, `CopyLine` and a `CodeBlock`
+or `CodeExample` with `copy` included. It is one click listener on `document`; in Astro, use
+`<script is:inline set:html={copyScript} />`. A hydrated button and the script share each click and
+copy it once between them, so the script is safe on a hydrated page too.
+
 ## Light and dark
 
 A dark theme does its colour work under `.dark`; this only decides whether `.dark` is on `<html>`.

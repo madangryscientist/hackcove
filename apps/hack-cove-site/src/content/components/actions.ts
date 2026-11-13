@@ -90,6 +90,7 @@ export const actions: ComponentSection = {
         'Name what is copied in `label` and `copiedLabel` (`"Copy token"`, `"Token copied"`) when the page has more than one.',
         "A command or token in its own box is a `CopyLine`, which carries this button.",
         "Do not write the clipboard call by hand in a `Button`.",
+        "On a page rendered to static HTML and never hydrated, inline `copyScript` once, as `colourSchemeScript` is: every `CopyButton`, `CopyLine`, and `CodeBlock` or `CodeExample` with `copy` then works. A hydrated button copies for itself and the script stays out of its way.",
       ],
       accessibility: [
         'A native `<button>` with `type="button"` and a focus ring from the component.',
@@ -97,6 +98,12 @@ export const actions: ComponentSection = {
         "A refused or missing clipboard leaves the label unchanged; nothing is announced.",
       ],
       api: ["CopyButton"],
+      functions: [
+        {
+          name: "copyScript",
+          text: "A string of JavaScript to inline once on a page rendered to static HTML: one click listener on `document` that makes every copy button work without hydration.",
+        },
+      ],
     },
     {
       slug: "copy-line",

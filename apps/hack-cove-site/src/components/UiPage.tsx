@@ -32,6 +32,7 @@ function Install() {
               lines={[step.code].flat()}
               label={step.label ?? "bash"}
               language={step.language}
+              copy
             />
           )}
         </Stack>

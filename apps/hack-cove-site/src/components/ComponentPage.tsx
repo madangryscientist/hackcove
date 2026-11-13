@@ -55,7 +55,7 @@ export function ComponentPage({ page }: { page: Page }) {
           </Section>
           {page.fullPage !== undefined && (
             <Section title="Full page" gap="md">
-              <Example of={page.fullPage} />
+              <Example of={page.fullPage} copy />
             </Section>
           )}
           <Section title="Usage" gap="md">
