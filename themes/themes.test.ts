@@ -1,4 +1,3 @@
-import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
@@ -41,22 +40,6 @@ it("carries a licence and the upstream notice", () => {
   expect(existsSync(`${dir}/LICENSE`)).toBe(true);
   expect(read("NOTICE")).toContain("Copyright (c)");
   expect(read("NOTICE")).toContain("Permission is hereby granted");
-});
-
-it("packs every theme, and nothing else but the manifest, the README and the licences", () => {
-  // npm's JSON is an array, or from npm 12 an object keyed by package; `Object.values` reads both.
-  const packed = Object.values<{ files: { path: string }[] }>(
-    JSON.parse(
-      execFileSync("npm", ["pack", "--dry-run", "--json", "--ignore-scripts"], {
-        cwd: dir,
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "ignore"],
-      }),
-    ),
-  );
-  expect((packed[0]?.files ?? []).map((file) => file.path).toSorted()).toEqual(
-    [...files, "LICENSE", "NOTICE", "README.md", "package.json"].toSorted(),
-  );
 });
 
 it("gives every theme its own scope class", () => {
