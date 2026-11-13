@@ -102,10 +102,10 @@ const sections: Section[] = [
     name: "PixelSlash",
     navLabel: "PixelSlash",
     summary:
-      "Open-source visual review: see what your change did to the page before you merge. Free, MIT, local first.",
+      "Visual review: see what your change did to the page before you merge. Free, source available, local first.",
     cta: "About PixelSlash",
     description:
-      "PixelSlash is an open-source visual review tool: it screenshots your main branch and your branch, sets real change apart from rendering noise, and shows a report cropped to what moved. Free, MIT, on npm.",
+      "PixelSlash is a visual review tool: it screenshots your main branch and your branch, sets real change apart from rendering noise, and shows a report cropped to what moved. Free, source available under the Elastic License 2.0, on npm.",
   },
 ];
 
@@ -133,8 +133,8 @@ const pixelslash = {
     title: "See what your change did to the page, before you merge it.",
     lead: "PixelSlash screenshots your main branch and your branch, sets real change apart from rendering noise, and gives you a report cropped to what moved.",
     pills: [
-      { label: "Open source", tone: "emerald" },
-      { label: "MIT", tone: "slate" },
+      { label: "Source available", tone: "emerald" },
+      { label: "ELv2", tone: "slate" },
       { label: "Local first", tone: "violet" },
     ] as const,
     install: "npm i -D @hackcove/pixelslash",
@@ -241,9 +241,9 @@ const pixelslash = {
     ],
   },
   free: {
-    title: "Free and open source",
+    title: "Free and source available",
     items: [
-      "MIT licensed, with the code on GitHub.",
+      "Source available under the Elastic License 2.0, with all of it on GitHub.",
       "Self-host all of it: with Docker, on your own Cloudflare account or on a box on your own network.",
       "Paid hosting is planned, not available yet. No feature will ever sit behind a paid plan.",
     ],
