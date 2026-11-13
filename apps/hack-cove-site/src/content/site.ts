@@ -34,6 +34,8 @@ export type Product = {
   pitch: string;
   /** The card's one action. Left out while the product has no site of its own. */
   action?: { label: string; href: string; external: boolean };
+  /** What kind of thing it is, in a word or two: the label over a product that has its own block. */
+  kind?: string;
   /** A real screenshot. Left out where none exists: the card shows no picture rather than a made-up one. */
   image?: { src: string; alt: string };
 };
@@ -67,19 +69,25 @@ const products: Product[] = [
     slug: "ui",
     name: "Hack Cove UI",
     status: "available",
+    kind: "Component library",
     pitch:
       "Our opinionated React component library, fully integrated with its themes. This site is built with it.",
     action: { label: "Read the docs", href: "/ui/", external: false },
+    image: {
+      src: "/home/hack-cove-ui.webp",
+      alt: "The same Hack Cove UI components twice, side by side: in the light Catppuccin Latte theme and the dark Catppuccin Mocha theme.",
+    },
   },
   {
     slug: "pixelslash",
     name: "PixelSlash",
     status: "available",
+    kind: "Visual review",
     pitch: "See what your change did to the page.",
     action: { label: "Visit pixelslash.dev", href: "https://pixelslash.dev", external: true },
     image: {
-      src: "/pixelslash/report.png",
-      alt: "A PixelSlash report showing what changed on a page",
+      src: "/home/pixelslash.webp",
+      alt: "PixelSlash comparing two versions of a billing page: Main left of the slash, Branch right of it, with boxes around the regions that changed.",
     },
   },
   {
@@ -176,9 +184,9 @@ const pixelslash = {
       "The command is pixelslash. It runs on Bun, and npx @hackcove/pixelslash works too.",
   },
   report: {
-    src: "/pixelslash/report.png",
-    width: 1100,
-    height: 400,
+    src: "/pixelslash/report.webp",
+    width: 1600,
+    height: 920,
     alt: "A PixelSlash report for one changed card: the Main, Branch and Diff shots side by side, each cropped to the changed region, with the change marked in magenta on the Diff.",
     caption:
       "A real report.html. One card changed, so the report shows Main, Branch and the diff of that region, and nothing else.",
@@ -322,6 +330,14 @@ export const site = {
 
   /** The three sections, in the order of the header tabs. */
   sections,
+
+  /** The top of the home page, above the cards. */
+  home: {
+    overline: "Products",
+    title: "Software we make, and the tools we make it with.",
+    lead: "A component library and a visual review tool you can use today, two more developer tools on the way, and ThriftLoop, a home for South Africa's second-hand shops.",
+    coming: { overline: "On the way", title: "What we are building next." },
+  },
 
   /** The home page's cards, in order. */
   products,

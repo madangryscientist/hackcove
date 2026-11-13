@@ -119,12 +119,26 @@ describe("sections", () => {
   });
 });
 
+/** A split part's markup up to its element's close. */
+const inner = (part: string, tag: string) => part.split(`</${tag}>`)[0] ?? "";
+
 describe("the home page", () => {
   const html = renderToStaticMarkup(<ProductCards />);
-  const cards = html.split("<article").slice(1);
+  // Each product's markup, from inside its opening tag to its close: the two blocks of the
+  // products ready to use (each a <section>), then the cards in the last <section>.
+  const sections = html.split("<section").slice(1);
+  const coming = sections.at(-1) ?? "";
+  const cards = [
+    ...sections.slice(0, -1).map((part) => inner(part, "section")),
+    ...coming
+      .split("<article")
+      .slice(1)
+      .map((part) => inner(part, "article")),
+  ];
 
   const expected = [
     {
+      overline: "01 / Component library",
       name: "Hack Cove UI",
       label: "Available now",
       pitch:
@@ -133,6 +147,7 @@ describe("the home page", () => {
       action: "Read the docs",
     },
     {
+      overline: "02 / Visual review",
       name: "PixelSlash",
       label: "Available now",
       pitch: "See what your change did to the page.",
@@ -161,8 +176,11 @@ describe("the home page", () => {
     },
   ];
 
-  test("opens on a Products heading, not a claim", () => {
+  test("opens on one h1 under a Products overline, with a lead", () => {
+    expect(html.match(/<h1/g)).toHaveLength(1);
     expect(html).toContain(">Products<");
+    expect(html).toContain(site.home.title);
+    expect(wordsOf(html)).toContain(site.home.lead);
     expect(html).not.toContain(site.tagline);
     expect(html).not.toContain(site.legalName);
   });
@@ -170,10 +188,18 @@ describe("the home page", () => {
   test("has the five products in order, each with its name, status and pitch", () => {
     expect(cards).toHaveLength(5);
     expected.forEach((product, i) => {
-      // The card's whole text, so extra copy on a card fails, not only missing copy.
-      // `cards` are split on `<article`, so each starts inside its own opening tag.
+      // The product's whole text, so extra copy fails, not only missing copy. Each part of
+      // `cards` starts inside its own opening tag.
       expect(wordsOf((cards[i] ?? "").replace(/^[^>]*>/, "")).trim()).toBe(
-        [product.name, product.label, product.pitch, product.action].filter(Boolean).join(" "),
+        [
+          "overline" in product ? product.overline : undefined,
+          product.name,
+          product.label,
+          product.pitch,
+          product.action,
+        ]
+          .filter(Boolean)
+          .join(" "),
       );
     });
     expect(site.products.map((p) => p.name)).toEqual(expected.map((p) => p.name));
@@ -191,14 +217,18 @@ describe("the home page", () => {
     for (const card of cards.slice(1, 4)) expect(card).toContain('target="_blank"');
   });
 
-  test("only PixelSlash has a picture, a real report with alt text", () => {
-    expect(html.match(/<img /g)).toHaveLength(1);
-    const pixelslash = cards[1] ?? "";
-    expect(pixelslash).toContain('src="/pixelslash/report.png"');
-    expect(pixelslash).toMatch(/alt="[^"]+"/);
-    expect(
-      readFileSync(new URL("../public/pixelslash/report.png", import.meta.url)).length,
-    ).toBeGreaterThan(0);
+  test("the two products ready to use come first, each a block with a real picture and alt text", () => {
+    expect(sections).toHaveLength(3);
+    // Three section headings and the three cards' titles (a Card's title is always an h2).
+    expect(html.match(/<h2/g)).toHaveLength(6);
+    expect(coming).toContain(`>${site.home.coming.title}<`);
+    expect(coming.match(/<article/g)).toHaveLength(3);
+    expect(html.match(/<img /g)).toHaveLength(2);
+    ["/home/hack-cove-ui.webp", "/home/pixelslash.webp"].forEach((src, i) => {
+      expect(cards[i]).toContain(`src="${src}"`);
+      expect(cards[i]).toMatch(/alt="[^"]+"/);
+      expect(readFileSync(new URL(`../public${src}`, import.meta.url)).length).toBeGreaterThan(0);
+    });
   });
 });
 
@@ -220,11 +250,11 @@ describe("the PixelSlash page", () => {
   });
 
   test("the proof is the real report image, with alt text and a caption", () => {
-    expect(html).toContain('src="/pixelslash/report.png"');
+    expect(html).toContain('src="/pixelslash/report.webp"');
     expect(html).toContain(`alt="${pixelslash.report.alt}"`);
     expect(html).toContain("<figcaption");
-    expect(readFileSync(new URL("../public/pixelslash/report.png", import.meta.url)).length).toBe(
-      26214,
+    expect(readFileSync(new URL("../public/pixelslash/report.webp", import.meta.url)).length).toBe(
+      38254,
     );
   });
 
