@@ -42,6 +42,26 @@ export const Default: S = {
   ),
 };
 
+/**
+ * Resolves with what `find` returns, checking again on every DOM change and focus move. No timer or
+ * frame: the visual capture pauses the page clock, so neither would ever fire.
+ */
+function until<T>(find: () => T | null | undefined): Promise<T> {
+  return new Promise((resolve) => {
+    const check = () => {
+      const found = find();
+      if (!found) return;
+      observer.disconnect();
+      document.removeEventListener("focusin", check);
+      resolve(found);
+    };
+    const observer = new MutationObserver(check);
+    observer.observe(document.body, { subtree: true, childList: true, attributes: true });
+    document.addEventListener("focusin", check);
+    check();
+  });
+}
+
 /** Open, with "dia" typed: Dialog first (its name starts with it), then FieldDialog. */
 export const Open: S = {
   render: () => (
@@ -49,16 +69,30 @@ export const Open: S = {
       <SiteSearch items={pages} label="Search components" />
     </div>
   ),
+  // Waits for the settled state (both rows rendered, the fade done), so every capture is the same.
   play: async ({ canvasElement }) => {
     const trigger = [...canvasElement.querySelectorAll("button")].find(
       (button) => button.offsetParent !== null,
     );
     trigger?.click();
-    await new Promise<void>((resolve) => setTimeout(resolve, 0));
-    const field = document.querySelector<HTMLInputElement>("dialog input");
-    if (!field) return;
+    // The field is in the page while closed; type only once the open dialog has focused it.
+    const field = await until(() =>
+      document.activeElement instanceof HTMLInputElement &&
+      document.activeElement.matches("dialog[open] input")
+        ? document.activeElement
+        : null,
+    );
     Reflect.set(HTMLInputElement.prototype, "value", "dia", field);
     field.dispatchEvent(new Event("input", { bubbles: true }));
+    const dialog = await until(() =>
+      document.querySelectorAll("dialog a[href]").length === 2
+        ? document.querySelector("dialog")
+        : null,
+    );
+    // getAnimations flushes style, so it sees the fade the open started.
+    await Promise.all(
+      dialog.getAnimations({ subtree: true }).map((animation) => animation.finished),
+    );
   },
 };
 
