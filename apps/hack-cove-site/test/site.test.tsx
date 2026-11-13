@@ -2,16 +2,14 @@ import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Contact } from "../src/components/Contact";
-import { Hero } from "../src/components/Hero";
 import { Logo } from "../src/components/Logo";
 import { PixelSlashHero, PixelSlashPage } from "../src/components/PixelSlashPage";
-import { Projects } from "../src/components/Projects";
-import { SectionCards } from "../src/components/SectionCards";
+import { ProductCards } from "../src/components/ProductCards";
 import { SiteNav } from "../src/components/SiteNav";
 import { Team } from "../src/components/Team";
 import { UiPage } from "../src/components/UiPage";
 import { componentPages, componentSections } from "../src/content/components/index";
-import { type Person, type Project, sectionOf, site } from "../src/content/site";
+import { type Person, sectionOf, site } from "../src/content/site";
 import { themeFiles } from "@hackcove/themes-shared/files";
 import { themes } from "../src/content/themes";
 
@@ -55,14 +53,7 @@ describe("logo", () => {
   });
 });
 
-const countWith = (status: Project["status"]) =>
-  site.projects.filter((p) => p.status === status).length;
-
 describe("static HTML", () => {
-  test("the hero renders the tagline", () => {
-    expect(renderToStaticMarkup(<Hero />)).toContain(site.tagline);
-  });
-
   test("every person reaches the markup with their role", () => {
     const html = renderToStaticMarkup(<Team />);
     for (const person of site.team) {
@@ -88,54 +79,6 @@ describe("static HTML", () => {
     }
   });
 
-  test("the project renders with its name and status", () => {
-    expect(site.projects).toHaveLength(1);
-    const html = renderToStaticMarkup(<Projects />);
-    expect(html.match(/<article/g)).toHaveLength(1);
-    for (const project of site.projects) expect(html).toContain(project.name);
-    expect(html.match(/>Available</g) ?? []).toHaveLength(countWith("available"));
-    expect(html.match(/>Coming soon</g) ?? []).toHaveLength(countWith("coming-soon"));
-  });
-
-  test("links render exactly where the content has them", () => {
-    const html = renderToStaticMarkup(<Projects />);
-    const links = site.projects.flatMap((p) => p.links ?? []);
-    expect(html.match(/<a /g) ?? []).toHaveLength(links.length);
-    for (const link of links) expect(html).toContain(`href="${link.href}"`);
-  });
-
-  test("a project's copy, status and links come from the content file alone", () => {
-    const original = [...site.projects];
-    const extra: Project = {
-      slug: "x",
-      name: "A new project",
-      status: "available",
-      summary: "What it is.",
-      details: ["One detail."],
-      links: [{ label: "Home", href: "https://example.com/x" }],
-    };
-    site.projects.splice(0, site.projects.length, extra);
-    try {
-      const html = renderToStaticMarkup(<Projects />);
-      expect(html).toContain("A new project");
-      expect(html).toContain("One detail.");
-      expect(html).toContain('href="https://example.com/x"');
-      expect(html).toContain(">Home<");
-    } finally {
-      site.projects.splice(0, site.projects.length, ...original);
-    }
-  });
-
-  test("the projects section renders nothing while there are none", () => {
-    const original = [...site.projects];
-    site.projects.splice(0, site.projects.length);
-    try {
-      expect(renderToStaticMarkup(<Projects />)).toBe("");
-    } finally {
-      site.projects.splice(0, site.projects.length, ...original);
-    }
-  });
-
   test("the footer offers email, privacy, terms, and no form", () => {
     const html = renderToStaticMarkup(<Contact />);
     expect(html).toContain(`mailto:${site.contactEmail}`);
@@ -146,6 +89,13 @@ describe("static HTML", () => {
     expect(html).not.toContain("<input");
   });
 });
+
+/** The words of some markup, tags dropped and the apostrophe decoded. */
+const wordsOf = (fragment: string) =>
+  fragment
+    .replace(/<[^>]+>/g, " ")
+    .replaceAll("&#x27;", "'")
+    .replace(/\s+/g, " ");
 
 const hrefs = (html: string) => [...html.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
 
@@ -167,11 +117,88 @@ describe("sections", () => {
     expect(html.match(/aria-current="page"/g)).toHaveLength(1);
     expect(html).toMatch(new RegExp(`aria-current="page"[^>]*>${label}<`));
   });
+});
 
-  test("the home page has one card per section, linking to its page", () => {
-    const html = renderToStaticMarkup(<SectionCards />);
-    expect(html.match(/<article/g)).toHaveLength(site.sections.length);
-    expect(hrefs(html)).toEqual(site.sections.map((s) => s.href));
+describe("the home page", () => {
+  const html = renderToStaticMarkup(<ProductCards />);
+  const cards = html.split("<article").slice(1);
+
+  const expected = [
+    {
+      name: "Hack Cove UI",
+      label: "Available now",
+      pitch:
+        "Our opinionated React component library, fully integrated with its themes. This site is built with it.",
+      href: "/ui/",
+      action: "Read the docs",
+    },
+    {
+      name: "PixelSlash",
+      label: "Available now",
+      pitch: "See what your change did to the page.",
+      href: "https://pixelslash.dev",
+      action: "Visit pixelslash.dev",
+    },
+    {
+      name: "ToggleSlash",
+      label: "In early development",
+      pitch: "It keeps track of feature switches, so you know what turning one on will do.",
+      href: "https://slashslash.build/developers",
+      action: "Read more on slashslash.build",
+    },
+    {
+      name: "FlakeSlash",
+      label: "In early development",
+      pitch:
+        "It spots automated checks that pass and fail at random, so a failure means something.",
+      href: "https://slashslash.build/developers",
+      action: "Read more on slashslash.build",
+    },
+    {
+      name: "ThriftLoop",
+      label: "Coming soon",
+      pitch: "A home for South Africa's thrift, charity and second-hand shops.",
+    },
+  ];
+
+  test("opens on a Products heading, not a claim", () => {
+    expect(html).toContain(">Products<");
+    expect(html).not.toContain(site.tagline);
+    expect(html).not.toContain(site.legalName);
+  });
+
+  test("has the five products in order, each with its name, status and pitch", () => {
+    expect(cards).toHaveLength(5);
+    expected.forEach((product, i) => {
+      // The card's whole text, so extra copy on a card fails, not only missing copy.
+      // `cards` are split on `<article`, so each starts inside its own opening tag.
+      expect(wordsOf((cards[i] ?? "").replace(/^[^>]*>/, "")).trim()).toBe(
+        [product.name, product.label, product.pitch, product.action].filter(Boolean).join(" "),
+      );
+    });
+    expect(site.products.map((p) => p.name)).toEqual(expected.map((p) => p.name));
+  });
+
+  test("every product but ThriftLoop has one link out, and ThriftLoop has none", () => {
+    expected.forEach((product, i) => {
+      const links = [...(cards[i] ?? "").matchAll(/<a [^>]*href="([^"]+)"/g)].map((m) => m[1]);
+      expect(links).toEqual(product.href ? [product.href] : []);
+    });
+  });
+
+  test("only the external links open in a new tab", () => {
+    expect(cards[0]).not.toContain("_blank");
+    for (const card of cards.slice(1, 4)) expect(card).toContain('target="_blank"');
+  });
+
+  test("only PixelSlash has a picture, a real report with alt text", () => {
+    expect(html.match(/<img /g)).toHaveLength(1);
+    const pixelslash = cards[1] ?? "";
+    expect(pixelslash).toContain('src="/pixelslash/report.png"');
+    expect(pixelslash).toMatch(/alt="[^"]+"/);
+    expect(
+      readFileSync(new URL("../public/pixelslash/report.png", import.meta.url)).length,
+    ).toBeGreaterThan(0);
   });
 });
 
@@ -223,9 +250,9 @@ describe("the PixelSlash page", () => {
     // or aria-label could carry the claim. Hack Cove UI is MIT, so only PixelSlash's own
     // card and page are read; a licence claim in the page's Hack Cove UI proof block would
     // be a true one and would need this check scoped to the PixelSlash blocks.
-    const homeCard = renderToStaticMarkup(<SectionCards />)
+    const homeCard = renderToStaticMarkup(<ProductCards />)
       .split("<article")
-      .find((card) => card.includes("About PixelSlash"));
+      .find((card) => card.includes(">PixelSlash<"));
     expect(homeCard).toBeDefined();
     for (const copy of [homeCard ?? "", html, section.summary, section.description]) {
       expect(copy).not.toMatch(/open[-\s]?source/i);

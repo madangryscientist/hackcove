@@ -1,6 +1,5 @@
 import { expect, test } from "@playwright/test";
 import { componentPages, componentSections } from "../src/content/components/index";
-import { site } from "../src/content/site";
 import {
   everyPage,
   labelFor,
@@ -290,12 +289,9 @@ test("the logo ink and halo are the same fixed blue under both schemes' scope cl
   }
 });
 
-// Every card on the home and /ui/ index pages carries its icon, in each scheme the site flips. The
+// Every card on the /ui/ index page carries its icon, in each scheme the site flips. The
 // themes are a table, not cards: its own test follows.
-const iconCards = [
-  { path: "/", region: "Explore", count: site.sections.length },
-  { path: "/ui/", region: "Components", count: componentSections.length },
-];
+const iconCards = [{ path: "/ui/", region: "Components", count: componentSections.length }];
 
 for (const { path, region, count } of iconCards) {
   test(`${path}: every card in ${region} has its icon, in both schemes`, async ({ page }) => {
