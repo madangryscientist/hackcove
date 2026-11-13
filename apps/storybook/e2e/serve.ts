@@ -7,9 +7,7 @@ const port = Number(process.env["PORT"] ?? 6007);
 /** A missing file: Cloudflare Pages answers with the build's own `404.html` and status 404 when it has one, and a bare 404 when it does not (a Storybook build has none). */
 async function notFound() {
   const page = Bun.file(join(root, "404.html"));
-  if (page.name?.startsWith(root) && (await page.exists())) {
-    return new Response(page, { status: 404 });
-  }
+  if (await page.exists()) return new Response(page, { status: 404 });
   return new Response("not found", { status: 404 });
 }
 
