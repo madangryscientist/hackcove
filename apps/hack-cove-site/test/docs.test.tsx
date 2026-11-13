@@ -84,6 +84,15 @@ describe("the component pages", () => {
     expect(onThisPageHrefs(withFullPage?.slug ?? "")).toContain("full-page");
   });
 
+  // The list names each section by hand in two places: the ids it links to, and the Sections that
+  // carry them. This is the guard against the two drifting apart.
+  test.each(componentPages)("$name: every On this page link lands on a heading", (page) => {
+    const html = renderToStaticMarkup(<ComponentPage page={page} />);
+    const ids = onThisPageHrefs(page.slug);
+    expect(ids.length).toBe(page.fullPage === undefined ? 4 : 5);
+    for (const id of ids) expect(html).toContain(`<h2 id="${id}"`);
+  });
+
   test("previous and next walk the rail's order, and the ends have one", () => {
     const first = componentPages[0];
     const last = componentPages.at(-1);
