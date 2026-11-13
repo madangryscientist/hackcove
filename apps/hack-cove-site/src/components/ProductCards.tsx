@@ -1,7 +1,9 @@
 import {
+  BulletList,
   Button,
   Card,
   CardGrid,
+  CodeBlock,
   Display,
   Image,
   Lead,
@@ -30,10 +32,11 @@ function ActionButton({ action, size }: Pick<Product, "action"> & { size?: "lg" 
 
 /**
  * A product you can use today, across the page: a number and what it is over its name at
- * display size, its status, its pitch and its action, then its real screenshot, large.
+ * display size, its status, its pitch, what it does and its action, then its real screenshot,
+ * large, or its real terminal output where it has no screenshot.
  */
 function Feature({ number, product }: { number: number; product: Product }) {
-  const { slug, name, kind, status, pitch, action, image } = product;
+  const { slug, name, kind, status, pitch, action, image, sample, features } = product;
   const { label, tone } = STATUS[status];
   const titleId = `product-${slug}`;
   return (
@@ -52,11 +55,51 @@ function Feature({ number, product }: { number: number; product: Product }) {
           <Pill tone={tone}>{label}</Pill>
         </div>
         <Lead>{pitch}</Lead>
+        {features && (
+          <BulletList>
+            {features.map((feature) => (
+              <Text as="li" key={feature}>
+                {feature}
+              </Text>
+            ))}
+          </BulletList>
+        )}
         <div>
           <ActionButton action={action} size="lg" />
         </div>
       </Stack>
       {image && <Image src={image.src} alt={image.alt} aspect="16:9" />}
+      {sample && <CodeBlock label={sample.label} language="console" lines={sample.lines} />}
+    </Stack>
+  );
+}
+
+/** How the slash tools fit: each one's question about a change, the tool, and how it answers. */
+function Fit() {
+  const { overline, title, lead, questions } = site.home.fit;
+  return (
+    <Stack as="section" gap="lg" aria-labelledby="product-fit">
+      <Stack gap="sm" width="narrow">
+        <header>
+          <Overline mono>{overline}</Overline>
+          <Display as="h2" id="product-fit">
+            {title}
+          </Display>
+        </header>
+        <Lead>{lead}</Lead>
+      </Stack>
+      <CardGrid as="ul" columns="auto">
+        {questions.map(({ question, product, answer }) => (
+          <Card as="article" key={product} titleStyle="name" title={question}>
+            <Stack gap="xs">
+              <div>
+                <Overline mono>{product}</Overline>
+              </div>
+              <Text as="p">{answer}</Text>
+            </Stack>
+          </Card>
+        ))}
+      </CardGrid>
     </Stack>
   );
 }
@@ -79,7 +122,8 @@ function ComingCard({ name, status, pitch, action }: Product) {
 
 /**
  * The home page, after slashslash.build: a display headline and a lead, then each product you can
- * use today as a numbered block with its screenshot, then what is still coming as a row of cards.
+ * use today as a numbered block with its screenshot, how the slash tools fit together, then what
+ * is still coming as a row of cards.
  */
 export function ProductCards() {
   const { home, products } = site;
@@ -97,6 +141,7 @@ export function ProductCards() {
       {ready.map((product, i) => (
         <Feature key={product.slug} number={i + 1} product={product} />
       ))}
+      <Fit />
       <Stack as="section" gap="lg" aria-labelledby="product-coming">
         <header>
           <Overline mono>{home.coming.overline}</Overline>
