@@ -103,7 +103,7 @@
     },
     "themes": {
       "name": "@hackcove/themes",
-      "version": "0.2.1",
+      "version": "0.2.2",
       "devDependencies": {
         "@types/bun": "1.4.3",
         "tailwindcss": "^4.3.3",
