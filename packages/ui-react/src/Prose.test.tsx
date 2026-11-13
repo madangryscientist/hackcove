@@ -89,9 +89,11 @@ describe("Prose", () => {
 
   it("a Section `title` (the titled Stack) inside a Prose takes the prose h2 classes", () => {
     const html = inProse(<Section title="Install">x</Section>);
-    expect(classOf(html, "h2")).toBe("text-2xl/8 font-semibold tracking-tight text-slate-900");
+    expect(classOf(html, "h2")).toBe(
+      "text-2xl/8 font-semibold tracking-tight scroll-mt-28 text-slate-900",
+    );
     expect(classOf(render(<Section title="Install">x</Section>), "h2")).toBe(
-      "text-base/6 font-semibold text-slate-900",
+      "text-base/6 font-semibold scroll-mt-28 text-slate-900",
     );
   });
 

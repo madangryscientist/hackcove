@@ -131,6 +131,32 @@ describe("Section", () => {
       'aria-labelledby="h"',
     );
   });
+
+  it("an `id` puts the anchor on the heading, and the section is named by it", () => {
+    const out = renderToStaticMarkup(
+      <Section id="usage" title="Usage">
+        body
+      </Section>,
+    );
+    expect(out).toContain('<h2 id="usage"');
+    expect(out).toContain("scroll-mt-28");
+    expect(out).toContain('aria-labelledby="usage"');
+    expect(out).toMatch(/^<section class="[^"]*" aria-labelledby="usage">/);
+  });
+
+  it("without an `id` the heading still gets a generated one the section points at", () => {
+    const out = renderToStaticMarkup(<Section title="Recent">body</Section>);
+    const id = /<h2 id="([^"]+)"/.exec(out)?.[1];
+    expect(id).toBeDefined();
+    expect(out).toContain(`aria-labelledby="${id}"`);
+    expect(out).toContain("scroll-mt-28");
+  });
+
+  it("an `id` with no title puts nothing anywhere", () => {
+    expect(renderToStaticMarkup(<Section id="usage">body</Section>)).toBe(
+      `<section class="flex flex-col gap-6 ${DROP}">body</section>`,
+    );
+  });
 });
 
 describe("Stack rowFrom", () => {
