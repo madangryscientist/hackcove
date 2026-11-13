@@ -12,6 +12,7 @@ import {
   Overline,
   PageHeading,
   SectionHeading,
+  SiteSearch,
   Select,
   SubsectionHeading,
   Text,
@@ -169,6 +170,14 @@ export const gallerySections: GallerySection[] = [
             { label: "Project", href: "#project" },
             "Build",
             "Snapshot",
+          ]}
+        />
+
+        <SiteSearch
+          label="Search components"
+          items={[
+            { label: "Dialog", description: "A modal window.", href: "#dialog" },
+            { label: "Tabs", description: "Switch a view in place.", href: "#tabs" },
           ]}
         />
 

@@ -203,6 +203,7 @@ export const CASES: Record<string, () => ReactElement> = {
       x
     </ui.SidebarLayout>
   ),
+  SiteSearch: () => <ui.SiteSearch items={[]} label="Search" {...A} />,
   Legend: () => <ui.Legend items={[{ label: "a", tone: "info" }]} {...A} />,
   SplitBar: () => <ui.SplitBar a={1} b={2} label="L" names={["a", "b"]} {...A} />,
   Stack: () => <ui.Stack {...A}>x</ui.Stack>,
