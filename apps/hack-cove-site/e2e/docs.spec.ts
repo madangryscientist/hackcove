@@ -290,10 +290,10 @@ test("the logo ink and halo are the same fixed blue under both schemes' scope cl
   }
 });
 
-// Every card on the home and /ui/ index pages carries its icon, in each scheme the site flips.
+// Every card on the home and /ui/ index pages carries its icon, in each scheme the site flips. The
+// themes are a table, not cards: its own test follows.
 const iconCards = [
   { path: "/", region: "Explore", count: site.sections.length },
-  { path: "/ui/", region: "Themes", count: themeList.length },
   { path: "/ui/", region: "Components", count: componentSections.length },
 ];
 

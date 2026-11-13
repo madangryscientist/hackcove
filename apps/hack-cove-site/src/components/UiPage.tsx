@@ -1,12 +1,16 @@
 import {
   Card,
-  CardGrid,
-  Code,
   CodeBlock,
   MetaList,
   Prose,
   Section,
   Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
   Text,
   TextLink,
 } from "@hackcove/ui-react";
@@ -40,20 +44,24 @@ function Themes() {
   return (
     <Section title={ui.themes.title} gap="md">
       <Text as="p">{ui.themes.intro}</Text>
-      <CardGrid columns={2}>
-        {themes.map((theme) => (
-          <Card key={theme.id} as="article" icon="theme" title={theme.title}>
-            <Stack gap="xs">
-              <Text as="p" color="tertiary" breakWords>
-                <Code>{theme.specifier}</Code>
-              </Text>
-              <Text as="p" color="tertiary">
-                {ui.themes.scopeLabel}: <Code>{theme.scopeClass}</Code>
-              </Text>
-            </Stack>
-          </Card>
-        ))}
-      </CardGrid>
+      <Table caption={ui.themes.title}>
+        <TableHead>
+          <TableRow>
+            <TableHeaderCell>{ui.themes.themeLabel}</TableHeaderCell>
+            <TableHeaderCell>{ui.themes.scopeLabel}</TableHeaderCell>
+            <TableHeaderCell>{ui.themes.importLabel}</TableHeaderCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {themes.map((theme) => (
+            <TableRow key={theme.id}>
+              <TableCell tone="strong">{theme.title}</TableCell>
+              <TableCell mono>{theme.scopeClass}</TableCell>
+              <TableCell mono>{theme.specifier}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </Section>
   );
 }
@@ -62,7 +70,7 @@ function Components() {
   return (
     <Section title={ui.components.title} gap="md">
       <Text as="p">{ui.components.intro}</Text>
-      <CardGrid columns={2}>
+      <Stack gap="sm">
         {componentSections.map((section) => (
           <Card
             key={section.title}
@@ -73,7 +81,7 @@ function Components() {
           >
             <Stack gap="sm">
               <Text as="p">{section.description}</Text>
-              <MetaList nowrap separator="none">
+              <MetaList nowrap>
                 {section.pages.map((page) => (
                   <TextLink key={page.slug} href={`/ui/${page.slug}/`}>
                     {page.name}
@@ -83,7 +91,7 @@ function Components() {
             </Stack>
           </Card>
         ))}
-      </CardGrid>
+      </Stack>
     </Section>
   );
 }

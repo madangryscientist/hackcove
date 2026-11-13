@@ -38,6 +38,9 @@ export const ui = {
     title: "Themes",
     intro:
       "Each theme is one CSS file that remaps the components' colours under its own class, and all of them are in one package.",
+    /** The three columns of the theme table on /ui/. */
+    themeLabel: "Theme",
+    importLabel: "Import",
     scopeLabel: "Class on <html>",
   },
   links: {
