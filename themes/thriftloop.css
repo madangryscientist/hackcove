@@ -1,0 +1,358 @@
+/*! Thriftloop light palette, the shop sign: butter paper, brown ink, clay accent. From the Thrifty repo at docs/brand/theme/thriftloop-light.css (df3e8c8), with the tones the contrast and distinction contracts need nudged. */
+
+.thriftloop {
+  color-scheme: light;
+  background-color: #f8f1d8;
+  color: #352d13;
+  --font-sans:
+    "DM Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --font-mono:
+    ui-monospace, "JetBrains Mono", "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono",
+    monospace;
+  --font-heading: "DM Serif Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  font-family: var(--font-sans);
+  --hc-surface: #fffaea;
+  --hc-subtle: #f5eac7;
+  --hc-line: #eedca0;
+  --hc-ink: #352d13;
+  --hc-mute: #6d5f33;
+  --hc-accent: #be3d04;
+}
+
+.thriftloop :is(h1, h2, h3, .font-heading) {
+  font-family: var(--font-heading);
+}
+
+.thriftloop .bg-gray-50 {
+  background-color: #f8f1d8;
+}
+
+.thriftloop .bg-white {
+  background-color: #fffaea;
+}
+
+.thriftloop .bg-white\/80 {
+  background-color: rgba(255, 250, 234, 0.85);
+}
+
+.thriftloop .bg-slate-50,
+.thriftloop .bg-slate-50\/50,
+.thriftloop .bg-slate-50\/60,
+.thriftloop .bg-slate-50\/70 {
+  background-color: #f5eac7;
+}
+
+.thriftloop .bg-slate-100 {
+  background-color: #eedca0;
+}
+
+.thriftloop .bg-slate-900 {
+  background-color: #352d13;
+}
+
+.thriftloop .backdrop\:bg-slate-900\/35::backdrop {
+  background-color: rgba(53, 45, 19, 0.35);
+}
+
+.thriftloop .bg-black\/90 {
+  background-color: rgba(53, 45, 19, 0.94);
+}
+
+.thriftloop .text-white {
+  color: #f8f1d8;
+}
+
+.thriftloop .text-white\/70 {
+  color: rgba(248, 241, 216, 0.72);
+}
+
+.thriftloop .hover\:bg-white\/10:hover {
+  background-color: rgba(248, 241, 216, 0.12);
+}
+
+.thriftloop .focus-visible\:outline-white:focus-visible {
+  outline-color: #f8f1d8;
+}
+
+.thriftloop .bg-white\/100 {
+  background-color: #ffffff;
+}
+
+.thriftloop .text-slate-900,
+.thriftloop .text-slate-800 {
+  color: #352d13;
+}
+
+.thriftloop .text-slate-700,
+.thriftloop .text-slate-600 {
+  color: #635527;
+}
+
+.thriftloop .text-slate-500,
+.thriftloop .text-slate-400 {
+  color: #6d5f33;
+}
+
+.thriftloop .text-slate-300 {
+  color: #6d5f33;
+}
+
+.thriftloop .placeholder\:text-slate-400::placeholder {
+  color: #77693d;
+}
+
+.thriftloop .border-slate-50 {
+  border-color: #f5eac7;
+}
+
+.thriftloop .border-slate-100 {
+  border-color: #eedca0;
+}
+
+.thriftloop .border-slate-200,
+.thriftloop .border-slate-200\/70 {
+  border-color: #eedca0;
+}
+
+.thriftloop .border-slate-300 {
+  border-color: #756738;
+}
+
+.thriftloop .border-slate-900 {
+  border-color: #352d13;
+}
+
+.thriftloop .text-emerald-600 {
+  color: #047857;
+}
+
+.thriftloop .bg-emerald-500 {
+  background-color: #047857;
+}
+
+.thriftloop .bg-slate-300 {
+  background-color: #eedca0;
+}
+
+.thriftloop .bg-violet-600 {
+  background-color: #c2410c;
+}
+
+.thriftloop .hover\:bg-violet-700:hover {
+  background-color: #8f2f0a;
+}
+
+.thriftloop .text-violet-50 {
+  color: #ffffff;
+}
+
+.thriftloop .hover\:text-violet-700:hover {
+  color: #8f2f0a;
+}
+
+.thriftloop .hover\:bg-violet-50:hover {
+  background-color: #fdf0e0;
+}
+
+.thriftloop .border-violet-600 {
+  border-color: #c2410c;
+}
+
+.thriftloop .hover\:border-violet-400:hover {
+  border-color: #c2410c;
+}
+
+.thriftloop .outline-violet-600 {
+  outline-color: #c2410c;
+}
+
+.thriftloop .target\:outline-violet-600:target {
+  outline-color: #c2410c;
+}
+
+.thriftloop .focus-visible\:outline-violet-600:focus-visible {
+  outline-color: #c2410c;
+}
+
+.thriftloop .has-focus-visible\:outline-violet-600:has(:focus-visible) {
+  outline-color: #c2410c;
+}
+
+.thriftloop .accent-violet-600 {
+  accent-color: #c2410c;
+}
+
+.thriftloop .bg-red-600 {
+  background-color: #b31960;
+}
+
+.thriftloop .hover\:bg-red-700:hover {
+  background-color: #941950;
+}
+
+.thriftloop .text-red-50 {
+  color: #ffffff;
+}
+
+.thriftloop .border-red-600 {
+  border-color: #b31960;
+}
+
+.thriftloop .hover\:bg-red-50:hover {
+  background-color: #fef2f2;
+}
+
+.thriftloop .hover\:bg-emerald-700:hover {
+  background-color: #065f46;
+}
+
+.thriftloop .text-emerald-50 {
+  color: #ffffff;
+}
+
+.thriftloop .border-emerald-600 {
+  border-color: #047857;
+}
+
+.thriftloop .hover\:bg-emerald-50:hover {
+  background-color: #ecfdf5;
+}
+
+.thriftloop .bg-orange-600 {
+  background-color: #8c5a2b;
+}
+
+.thriftloop .bg-cyan-600 {
+  background-color: #0e7490;
+}
+
+.thriftloop .bg-emerald-600 {
+  background-color: #047857;
+}
+
+.thriftloop .bg-sky-600 {
+  background-color: #1e6a8f;
+}
+
+.thriftloop .bg-pink-600 {
+  background-color: #a8325e;
+}
+
+.thriftloop .bg-amber-600 {
+  background-color: #7a6a1a;
+}
+
+.thriftloop .hover\:bg-slate-50:hover {
+  background-color: #f5eac7;
+}
+
+.thriftloop .hover\:bg-slate-100:hover {
+  background-color: #eedca0;
+}
+
+.thriftloop .bg-emerald-50,
+.thriftloop .bg-emerald-50\/60,
+.thriftloop .bg-emerald-100 {
+  background-color: #ecfdf5;
+}
+
+.thriftloop .bg-amber-50,
+.thriftloop .bg-amber-50\/60,
+.thriftloop .bg-amber-100 {
+  background-color: #fffbeb;
+}
+
+.thriftloop .bg-blue-50 {
+  background-color: #f0fdfa;
+}
+
+.thriftloop .bg-violet-50 {
+  background-color: #fdf0e0;
+}
+
+.thriftloop .bg-sky-50 {
+  background-color: #eff6fa;
+}
+
+.thriftloop .bg-red-50 {
+  background-color: #fef2f2;
+}
+
+.thriftloop .text-emerald-700,
+.thriftloop .text-emerald-800 {
+  color: #047857;
+}
+
+.thriftloop .text-amber-700,
+.thriftloop .text-amber-800,
+.thriftloop .text-amber-900 {
+  color: #ad4d00;
+}
+
+.thriftloop .text-blue-600,
+.thriftloop .text-blue-700,
+.thriftloop .text-blue-800,
+.thriftloop .text-blue-900 {
+  color: #0f766e;
+}
+
+.thriftloop .text-violet-600 {
+  color: #be3d04;
+}
+
+.thriftloop .text-violet-700 {
+  color: #8f2f0a;
+}
+
+.thriftloop .text-sky-700 {
+  color: #1e6a8f;
+}
+
+.thriftloop .text-neutral-500 {
+  color: #928458;
+}
+
+.thriftloop .text-purple-700 {
+  color: #7e3fb0;
+}
+
+.thriftloop .text-red-700,
+.thriftloop .text-red-800,
+.thriftloop .text-red-900 {
+  color: #b31960;
+}
+
+.thriftloop .border-emerald-200,
+.thriftloop .border-emerald-300 {
+  border-color: rgba(4, 120, 87, 0.3);
+}
+
+.thriftloop .border-amber-200,
+.thriftloop .border-amber-300 {
+  border-color: rgba(180, 83, 9, 0.3);
+}
+
+.thriftloop .border-amber-600 {
+  border-color: #b45309;
+}
+
+.thriftloop .border-red-200 {
+  border-color: rgba(179, 25, 96, 0.7);
+}
+
+.thriftloop .border-blue-200,
+.thriftloop .border-blue-300 {
+  border-color: rgba(15, 118, 110, 0.3);
+}
+
+.thriftloop .link {
+  color: #be3d04;
+  font-weight: 500;
+  text-underline-offset: 2px;
+  transition: color 0.12s ease;
+}
+
+.thriftloop .link:hover {
+  color: #8f2f0a;
+}

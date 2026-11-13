@@ -9,6 +9,8 @@ own tokens. Each also ships a `.link` class.
 | Catppuccin Mocha | `catppuccin-mocha.css` | `.dark` | dark; also declares the class-based `dark` variant |
 | Catppuccin Latte | `catppuccin-latte.css` | `.latte` | light |
 | Thrifty Paper | `thrifty-paper.css` | `.thrifty-paper` | light: cream paper, ink text, clay accent |
+| Thriftloop | `thriftloop.css` | `.thriftloop` | light: butter paper, brown ink, clay accent |
+| Thriftloop Dark | `thriftloop-dark.css` | `.thriftloop-dark` | dark: deep teal night, lit-window clay; declares the `dark` variant on its own scope |
 
 Status: `0.x`. License: MIT.
 
@@ -33,11 +35,14 @@ the class on `<html>`; the scopes do not overlap. The rules are unlayered, so th
 Tailwind's layered utilities.
 
 The scope paints the canvas, so the cards lift off it and the app needs no page-background rule of
-its own. The theme also owns the type faces: it sets `--font-sans` and `--font-mono` on the scope
-(Inter, then the system stack; the mono stack starts at `ui-monospace`). It ships no font file, so
-Inter shows only where the page loads or the machine has it. `AppShell` paints the canvas
-(`bg-gray-50`, which the theme remaps) and sets `font-sans` and the ink, so an app ships no
-page-background or font CSS.
+its own. The theme also sets the page font from `--font-sans` and the mono stack from `--font-mono`
+(which starts at `ui-monospace`), so an app ships no page-background or font CSS: `AppShell` paints
+the canvas (`bg-gray-50`, which the theme remaps) and sets `font-sans` and the ink.
+
+Each theme chooses its own type faces. Most use Inter, then the system stack; Thriftloop uses DM
+Sans, with DM Serif Display for headings through `--font-heading`. A theme ships no font file, so a
+face shows only where the app loads it or the machine has it; Thriftloop's two come from Google
+Fonts.
 
 ## How to add a theme
 
@@ -105,3 +110,21 @@ canvas `#fdfbf7` · surface `#ffffff` · subtle `#f7f2e9` · line `#ece3d4` · i
 ink-body `#3b342e` · ink-mute `#6b6259` · accent `#c2410c` · accent-hover `#9a3412` ·
 accent-ink `#9a3412` · accent-ink-hover `#7c2d12` · accent-soft `#fdf5f0` ·
 positive `#047857` / `#ecfdf5` · warn `#b45309` / `#fffbeb` · note `#0f766e` / `#f0fdfa`
+
+### Thriftloop
+
+From Thriftloop's brand theme, the shop sign: butter paper and brown ink by day, a deep teal night
+where the clay accent glows like a lit window. Both files come from Thrifty's `docs/brand/theme/`
+at `df3e8c8`, one per mode, and the dark file is scoped to `.thriftloop-dark` here so it can sit
+beside Mocha, which owns `.dark`.
+
+Thriftloop's danger red is a crimson, clear of the clay in OKLab, so the destructive button does not
+read as the primary one; its accent text is the same clay a step darker than the fill, so a link
+clears 4.5:1 on the cream band while the fill and the focus rings keep the brand `#c2410c`. On the
+dark side the accent text is a step lighter than the fill, for the same reason.
+
+light: canvas `#f8f1d8` · surface `#fffaea` · subtle `#f5eac7` · line `#eedca0` · ink `#352d13` ·
+accent `#c2410c` · accent-ink `#be3d04` · danger `#b31960` · warn `#ad4d00` · positive `#047857`
+
+dark: canvas `#0c191d` · surface `#102026` · subtle `#18333c` · line `#214450` · ink `#e6edef` ·
+accent `#e2622b` · accent-ink `#f2703b` · danger `#fca5a5` · warn `#fcd34d` · positive `#6ee7b7`

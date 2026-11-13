@@ -37,7 +37,7 @@ export const products: Product[] = [
     features: [
       "Components and themes are made together: switch the theme and the whole site changes, with no component edits.",
       "No component takes a class or a style, so you compose the parts and the look stays right.",
-      "Three themes, Catppuccin Mocha, Catppuccin Latte and Thrifty Paper, each checked for WCAG AA contrast.",
+      "Five themes, Catppuccin Mocha, Catppuccin Latte, Thrifty Paper, Thriftloop and Thriftloop Dark, each checked for WCAG AA contrast.",
       "Whole pages for errors, not found and offline, and a loading skeleton in every component's real shape.",
       "MIT licensed, on npm as @hackcove/ui-react.",
     ],
