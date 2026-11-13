@@ -2,7 +2,7 @@ import {
   type KeyboardEvent,
   type MouseEvent,
   type ReactElement,
-  useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   useSyncExternalStore,
@@ -75,8 +75,10 @@ function isShortcut(event: globalThis.KeyboardEvent): boolean {
   );
 }
 
-// A link that stays on the page (a hash, an app's router) still closes the search.
+// A link that stays on the page (a hash, an app's router) still closes the search; one opened in a
+// new tab or window leaves it open.
 function onListClick(event: MouseEvent<HTMLUListElement>): void {
+  if (event.ctrlKey || event.metaKey || event.shiftKey) return;
   if (event.target instanceof Element && event.target.closest("a[href]")) {
     event.currentTarget.closest("dialog")?.close();
   }
@@ -186,17 +188,16 @@ export function SiteSearch({
   const apple = useSyncExternalStore(noSubscribe, isApple, () => false);
   const keys = apple ? "⌘ K" : "Ctrl K";
 
-  useEffect(() => {
+  // Before paint, so a client-rendered trigger that is on screen already answers the shortcut.
+  useLayoutEffect(() => {
     const onKey = (event: globalThis.KeyboardEvent) => {
       if (event.defaultPrevented || event.repeat || !isShortcut(event)) return;
       event.preventDefault();
-      setOpen((wasOpen) => {
-        if (!wasOpen) {
-          opener.current =
-            document.activeElement instanceof HTMLElement ? document.activeElement : null;
-        }
-        return true;
-      });
+      // Only the press that opens it records the opener; `close` clears it.
+      if (!opener.current && document.activeElement instanceof HTMLElement) {
+        opener.current = document.activeElement;
+      }
+      setOpen(true);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);

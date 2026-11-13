@@ -16,6 +16,12 @@ const open = async (page: Page) => {
 
 const dialogOf = (page: Page) => page.getByRole("dialog", { name: "Search components" });
 
+/** Ctrl+K, then wait for the field to take focus, so nothing is typed before it opens. */
+const openByKey = async (page: Page) => {
+  await page.keyboard.press("Control+k");
+  await expect(dialogOf(page).getByRole("searchbox")).toBeFocused();
+};
+
 for (const shortcut of ["Control+k", "Meta+k"]) {
   test(`${shortcut} opens it with focus in the field, and "dia" lists Dialog then FieldDialog`, async ({
     page,
@@ -39,7 +45,7 @@ for (const shortcut of ["Control+k", "Meta+k"]) {
 
 test("Enter in the field follows the first result", async ({ page }) => {
   await open(page);
-  await page.keyboard.press("Control+k");
+  await openByKey(page);
   await page.keyboard.type("dia");
   await expect(dialogOf(page).getByRole("link").first()).toBeVisible();
   await page.keyboard.press("Enter");
@@ -64,7 +70,7 @@ test("ArrowDown moves from the field to the first link, then between the links, 
   page,
 }) => {
   await open(page);
-  await page.keyboard.press("Control+k");
+  await openByKey(page);
   const dialog = dialogOf(page);
   await page.keyboard.type("dia");
   const links = dialog.getByRole("link");
@@ -79,7 +85,7 @@ test("ArrowDown moves from the field to the first link, then between the links, 
 
 test('"zzz" says there are no results, and the live region reads the count', async ({ page }) => {
   await open(page);
-  await page.keyboard.press("Control+k");
+  await openByKey(page);
   const dialog = dialogOf(page);
   const status = dialog.getByRole("status");
   await expect(dialog.getByText("Type a name")).toBeVisible();
