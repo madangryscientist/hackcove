@@ -7,6 +7,7 @@ import {
   componentPageOf,
   componentPages,
   componentSections,
+  neighboursOf,
 } from "../src/content/components/index";
 import { site } from "../src/content/site";
 import { themes } from "../src/content/themes";
@@ -17,6 +18,13 @@ import { pairOf } from "../src/docs/pairs";
 import { storyParts } from "../src/docs/source";
 import { GET } from "../src/pages/ui/llms.txt";
 import { generateProps, PROPS_JSON } from "../scripts/generate-props";
+
+/** The section ids a page's "On this page" list links to, in the order it lists them. */
+function onThisPageHrefs(slug: string): string[] {
+  const html = renderToStaticMarkup(<ComponentPage page={componentPageOf(slug)} />);
+  const nav = /<nav aria-label="On this page">([\s\S]*?)<\/nav>/.exec(html)?.[1] ?? "";
+  return [...nav.matchAll(/href="#([^"]+)"/g)].map((m) => m[1] ?? "");
+}
 
 describe("the component pages", () => {
   test("a page is found by its slug, and an unknown slug fails", () => {
@@ -59,14 +67,38 @@ describe("the component pages", () => {
 
   test.each(componentPages)("$name: the right way leads, before the props table", (page) => {
     const html = renderToStaticMarkup(<ComponentPage page={page} />);
-    const rightWayAt = html.indexOf(">Overview<");
+    const rightWayAt = html.indexOf(">Overview</h2>");
     expect(rightWayAt).toBeGreaterThan(-1);
-    expect(rightWayAt).toBeLessThan(html.indexOf(">API<"));
+    expect(rightWayAt).toBeLessThan(html.indexOf(">API</h2>"));
     for (const heading of ["Overview", "Usage", "Accessibility", "API"]) {
-      expect(html).toContain(`>${heading}<`);
+      expect(html).toContain(`>${heading}</h2>`);
     }
     expect(html).toContain(">Do<");
     for (const name of page.api) expect(html).toContain(`>${name}<`);
+  });
+
+  test("the On this page list names the sections the page has, in page order", () => {
+    expect(onThisPageHrefs("button")).toEqual(["overview", "usage", "accessibility", "api"]);
+    const withFullPage = componentPages.find((p) => p.fullPage !== undefined);
+    expect(withFullPage).toBeDefined();
+    expect(onThisPageHrefs(withFullPage?.slug ?? "")).toContain("full-page");
+  });
+
+  test("previous and next walk the rail's order, and the ends have one", () => {
+    const first = componentPages[0];
+    const last = componentPages.at(-1);
+    expect(first).toBeDefined();
+    expect(last).toBeDefined();
+    if (!first || !last) return;
+    const order = componentPages.map((p) => p.slug);
+    expect(neighboursOf(first.slug)).toEqual({ next: componentPages[1] });
+    expect(neighboursOf(last.slug)).toEqual({ previous: componentPages.at(-2) });
+    const middle = order[Math.floor(order.length / 2)] ?? "";
+    expect(neighboursOf(middle)).toEqual({
+      previous: componentPages[order.indexOf(middle) - 1],
+      next: componentPages[order.indexOf(middle) + 1],
+    });
+    expect(() => neighboursOf("nope")).toThrow(/nope/);
   });
 
   test.each(componentPages)("$name: every API name is in props.json", (page) => {
