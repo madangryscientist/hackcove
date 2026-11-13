@@ -119,12 +119,28 @@ describe("sections", () => {
   });
 });
 
+/** A split part's markup up to its element's close. */
+const inner = (part: string, tag: string) => part.split(`</${tag}>`)[0] ?? "";
+
+const product = (name: string) => site.products.find((p) => p.name === name);
+
 describe("the home page", () => {
   const html = renderToStaticMarkup(<ProductCards />);
-  const cards = html.split("<article").slice(1);
+  // Each <section>'s markup: the three products ready to use, how they fit, the cards to come.
+  const sections = html.split("<section").slice(1);
+  const fit = sections.at(-2) ?? "";
+  const coming = sections.at(-1) ?? "";
+  const cards = [
+    ...sections.slice(0, -2).map((part) => inner(part, "section")),
+    ...coming
+      .split("<article")
+      .slice(1)
+      .map((part) => inner(part, "article")),
+  ];
 
   const expected = [
     {
+      overline: "01 / Component library",
       name: "Hack Cove UI",
       label: "Available now",
       pitch:
@@ -133,6 +149,7 @@ describe("the home page", () => {
       action: "Read the docs",
     },
     {
+      overline: "02 / Visual review",
       name: "PixelSlash",
       label: "Available now",
       pitch: "See what your change did to the page.",
@@ -140,8 +157,9 @@ describe("the home page", () => {
       action: "Visit pixelslash.dev",
     },
     {
+      overline: "03 / Feature switches",
       name: "ToggleSlash",
-      label: "In early development",
+      label: "Available now",
       pitch: "It keeps track of feature switches, so you know what turning one on will do.",
       href: "https://slashslash.build/developers",
       action: "Read more on slashslash.build",
@@ -161,44 +179,68 @@ describe("the home page", () => {
     },
   ];
 
-  test("opens on a Products heading, not a claim", () => {
+  test("opens on one h1 under a Products overline, with a lead", () => {
+    expect(html.match(/<h1/g)).toHaveLength(1);
     expect(html).toContain(">Products<");
+    expect(html).toContain(site.home.title);
+    expect(wordsOf(html)).toContain(site.home.lead);
     expect(html).not.toContain(site.tagline);
     expect(html).not.toContain(site.legalName);
   });
 
-  test("has the five products in order, each with its name, status and pitch", () => {
+  test("has the five products in order, each with its name, status, pitch and what it does", () => {
     expect(cards).toHaveLength(5);
-    expected.forEach((product, i) => {
-      // The card's whole text, so extra copy on a card fails, not only missing copy.
-      // `cards` are split on `<article`, so each starts inside its own opening tag.
+    expected.forEach((want, i) => {
+      const { features, sample } = product(want.name) ?? {};
+      // The product's whole text (from inside its opening tag), so extra copy fails too.
       expect(wordsOf((cards[i] ?? "").replace(/^[^>]*>/, "")).trim()).toBe(
-        [product.name, product.label, product.pitch, product.action].filter(Boolean).join(" "),
+        [
+          "overline" in want ? want.overline : undefined,
+          want.name,
+          want.label,
+          want.pitch,
+          ...(features ?? []),
+          want.action,
+          sample?.label,
+          ...(sample?.lines ?? []),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .replace(/\s+/g, " "),
       );
     });
     expect(site.products.map((p) => p.name)).toEqual(expected.map((p) => p.name));
   });
 
-  test("every product but ThriftLoop has one link out, and ThriftLoop has none", () => {
-    expected.forEach((product, i) => {
+  test("every product but ThriftLoop has one link out, only an external one in a new tab", () => {
+    expected.forEach((want, i) => {
       const links = [...(cards[i] ?? "").matchAll(/<a [^>]*href="([^"]+)"/g)].map((m) => m[1]);
-      expect(links).toEqual(product.href ? [product.href] : []);
+      expect(links).toEqual(want.href ? [want.href] : []);
+      expect(cards[i]?.includes("_blank")).toBe(want.href?.startsWith("https://") ?? false);
     });
+    expect(fit).not.toContain("<a ");
   });
 
-  test("only the external links open in a new tab", () => {
-    expect(cards[0]).not.toContain("_blank");
-    for (const card of cards.slice(1, 4)) expect(card).toContain('target="_blank"');
+  test("the three products ready to use come first, each a block with a picture or real output", () => {
+    expect(sections).toHaveLength(5);
+    // Five section headings, three questions and two coming cards (a Card's title is an h2).
+    expect(html.match(/<h2/g)).toHaveLength(10);
+    expect(coming).toContain(`>${site.home.coming.title}<`);
+    expect(coming.match(/<article/g)).toHaveLength(2);
+    expect(html.match(/<img /g)).toHaveLength(2);
+    ["/home/hack-cove-ui.webp", "/home/pixelslash.webp"].forEach((src, i) => {
+      expect(cards[i]).toContain(`src="${src}"`);
+      expect(cards[i]).toMatch(/alt="[^"]+"/);
+      expect(readFileSync(new URL(`../public${src}`, import.meta.url)).length).toBeGreaterThan(0);
+    });
+    expect(cards[2]).toContain("<pre");
   });
 
-  test("only PixelSlash has a picture, a real report with alt text", () => {
-    expect(html.match(/<img /g)).toHaveLength(1);
-    const pixelslash = cards[1] ?? "";
-    expect(pixelslash).toContain('src="/pixelslash/report.png"');
-    expect(pixelslash).toMatch(/alt="[^"]+"/);
-    expect(
-      readFileSync(new URL("../public/pixelslash/report.png", import.meta.url)).length,
-    ).toBeGreaterThan(0);
+  test("how they fit asks one question per slash tool, and names the tool that answers it", () => {
+    expect(fit).toContain(`>${site.home.fit.title}<`);
+    expect(fit.match(/<article/g)).toHaveLength(3);
+    for (const { question, product: name, answer } of site.home.fit.questions)
+      for (const copy of [`>${question}<`, `>${name}<`, answer]) expect(fit).toContain(copy);
   });
 });
 
@@ -220,11 +262,11 @@ describe("the PixelSlash page", () => {
   });
 
   test("the proof is the real report image, with alt text and a caption", () => {
-    expect(html).toContain('src="/pixelslash/report.png"');
+    expect(html).toContain('src="/pixelslash/report.webp"');
     expect(html).toContain(`alt="${pixelslash.report.alt}"`);
     expect(html).toContain("<figcaption");
-    expect(readFileSync(new URL("../public/pixelslash/report.png", import.meta.url)).length).toBe(
-      26214,
+    expect(readFileSync(new URL("../public/pixelslash/report.webp", import.meta.url)).length).toBe(
+      39310,
     );
   });
 
@@ -246,13 +288,14 @@ describe("the PixelSlash page", () => {
 
   test("it calls PixelSlash source available, never open source or MIT, here or on the home card", () => {
     const section = sectionOf("pixelslash");
-    // The card as the home page renders it, and the page itself. Markup too, since an alt
+    // The block as the home page renders it, and the page itself. Markup too, since an alt
     // or aria-label could carry the claim. Hack Cove UI is MIT, so only PixelSlash's own
-    // card and page are read; a licence claim in the page's Hack Cove UI proof block would
+    // block and page are read; a licence claim in the page's Hack Cove UI proof block would
     // be a true one and would need this check scoped to the PixelSlash blocks.
     const homeCard = renderToStaticMarkup(<ProductCards />)
-      .split("<article")
-      .find((card) => card.includes(">PixelSlash<"));
+      .split("<section")
+      .find((block) => block.includes('aria-labelledby="product-pixelslash"'))
+      ?.split("</section>")[0];
     expect(homeCard).toBeDefined();
     for (const copy of [homeCard ?? "", html, section.summary, section.description]) {
       expect(copy).not.toMatch(/open[-\s]?source/i);

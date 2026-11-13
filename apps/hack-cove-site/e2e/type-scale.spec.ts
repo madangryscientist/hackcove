@@ -35,11 +35,14 @@ for (const scheme of schemes) {
       expect(h1, "h1 is larger than h2").toBeGreaterThan(h2);
     });
 
-    test("/: 'Products' is on the long-form scale, at least 24px", async ({ page }) => {
+    test("/: the h1 is a display heading, a step above the cards' titles", async ({ page }) => {
       await page.goto("/");
       await setScheme(page, scheme);
-      const products = await size(page.getByRole("heading", { level: 1, name: "Products" }));
-      expect(products).toBeGreaterThanOrEqual(24);
+      const h1 = await size(page.getByRole("heading", { level: 1 }));
+      // The product blocks' names are display headings too, so compare with a card's title.
+      const card = await size(page.getByRole("article").first().getByRole("heading", { level: 2 }));
+      expect(h1).toBeGreaterThanOrEqual(36);
+      expect(h1, "h1 is larger than a card title").toBeGreaterThan(card);
     });
 
     test("/ui/button/: docs paragraphs and list items hold 72ch of their own font", async ({

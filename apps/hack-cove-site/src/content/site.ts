@@ -10,7 +10,10 @@
    --------------------------------------------------------------------------- */
 
 import type { IconName } from "@hackcove/ui-react";
+import { home, products } from "./products";
 import { ui } from "./ui";
+
+export type { Product, Status } from "./products";
 
 export type Person = {
   /** First name only — how the team is introduced on this site. */
@@ -20,22 +23,6 @@ export type Person = {
   bio?: string;
   /** Path under public/, e.g. "/team/erin.jpg". Falls back to an initial monogram. */
   photo?: string;
-};
-
-/** How far along a product is: its label and the tone of its pill. */
-export type Status = "available" | "early-development" | "coming-soon";
-
-/** One card on the home page: a product, its status, its pitch, and the one action that links out. */
-export type Product = {
-  slug: string;
-  name: string;
-  status: Status;
-  /** The one-line pitch, from the product's own source. */
-  pitch: string;
-  /** The card's one action. Left out while the product has no site of its own. */
-  action?: { label: string; href: string; external: boolean };
-  /** A real screenshot. Left out where none exists: the card shows no picture rather than a made-up one. */
-  image?: { src: string; alt: string };
 };
 
 /** One of the three sections: a tab in the header and a page of its own. */
@@ -58,51 +45,6 @@ export type Section = {
   /** The page's meta description. */
   description: string;
 };
-
-const slashSite = "https://slashslash.build/developers";
-
-/** The home page's cards, shipped first, then in development, then coming. */
-const products: Product[] = [
-  {
-    slug: "ui",
-    name: "Hack Cove UI",
-    status: "available",
-    pitch:
-      "Our opinionated React component library, fully integrated with its themes. This site is built with it.",
-    action: { label: "Read the docs", href: "/ui/", external: false },
-  },
-  {
-    slug: "pixelslash",
-    name: "PixelSlash",
-    status: "available",
-    pitch: "See what your change did to the page.",
-    action: { label: "Visit pixelslash.dev", href: "https://pixelslash.dev", external: true },
-    image: {
-      src: "/pixelslash/report.png",
-      alt: "A PixelSlash report showing what changed on a page",
-    },
-  },
-  {
-    slug: "toggleslash",
-    name: "ToggleSlash",
-    status: "early-development",
-    pitch: "It keeps track of feature switches, so you know what turning one on will do.",
-    action: { label: "Read more on slashslash.build", href: slashSite, external: true },
-  },
-  {
-    slug: "flakeslash",
-    name: "FlakeSlash",
-    status: "early-development",
-    pitch: "It spots automated checks that pass and fail at random, so a failure means something.",
-    action: { label: "Read more on slashslash.build", href: slashSite, external: true },
-  },
-  {
-    slug: "thriftloop",
-    name: "ThriftLoop",
-    status: "coming-soon",
-    pitch: "A home for South Africa's thrift, charity and second-hand shops.",
-  },
-];
 
 const sections: Section[] = [
   {
@@ -176,12 +118,12 @@ const pixelslash = {
       "The command is pixelslash. It runs on Bun, and npx @hackcove/pixelslash works too.",
   },
   report: {
-    src: "/pixelslash/report.png",
-    width: 1100,
-    height: 400,
-    alt: "A PixelSlash report for one changed card: the Main, Branch and Diff shots side by side, each cropped to the changed region, with the change marked in magenta on the Diff.",
+    src: "/pixelslash/report.webp",
+    width: 1600,
+    height: 920,
+    alt: "A PixelSlash report for a pricing page: the Main, Branch and Diff shots side by side, cropped to the four changed regions (a new price, a new button and a fuller storage bar), with the changes marked in magenta on the Diff.",
     caption:
-      "A real report.html. One card changed, so the report shows Main, Branch and the diff of that region, and nothing else.",
+      "A real report.html. Four regions changed, so the report shows Main, Branch and the diff cropped to them, lists each region, and leaves the rest of the page out.",
   },
   how: {
     title: "How it works",
@@ -322,6 +264,9 @@ export const site = {
 
   /** The three sections, in the order of the header tabs. */
   sections,
+
+  /** The top of the home page, above the cards. */
+  home,
 
   /** The home page's cards, in order. */
   products,
