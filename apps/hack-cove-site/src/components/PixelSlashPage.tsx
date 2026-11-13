@@ -168,7 +168,7 @@ function ForCi() {
   );
 }
 
-/** A titled bullet list with links under it: the privacy and the open-source blocks. */
+/** A titled bullet list with links under it: the privacy and the source-available blocks. */
 function Points({
   title,
   items,

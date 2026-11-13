@@ -184,7 +184,8 @@ describe("the PixelSlash page", () => {
   test("the hero says what it is, with the badges, the calls to action and the install line", () => {
     expect(html.match(/<h1/g)).toHaveLength(1);
     expect(html).toContain(pixelslash.hero.title);
-    for (const label of ["Open source", "MIT", "Local first"]) expect(html).toContain(`>${label}<`);
+    for (const label of ["Source available", "ELv2", "Local first"])
+      expect(html).toContain(`>${label}<`);
     expect(html).toContain('href="https://pixelslash.dev/docs"');
     expect(html).toContain('href="https://github.com/madangryscientist/pixelslash"');
     expect(html).toContain(">npm i -D @hackcove/pixelslash</code>");
@@ -209,11 +210,27 @@ describe("the PixelSlash page", () => {
       expect(text).toContain(command);
   });
 
-  test("privacy, free and open source, and the Hack Cove UI proof", () => {
+  test("privacy, free and source available, and the Hack Cove UI proof", () => {
     expect(text).toContain("--upload");
     expect(text).toContain("Self-host");
     expect(text).toContain("Paid hosting is planned, not available yet.");
     expect(html).toContain('href="/ui/"');
+  });
+
+  test("it calls PixelSlash source available, never open source or MIT, here or on the home card", () => {
+    const section = sectionOf("pixelslash");
+    // The card as the home page renders it, and the page itself. Markup too, since an alt
+    // or aria-label could carry the claim. Hack Cove UI is MIT, so only PixelSlash's own
+    // card and page are read; a licence claim in the page's Hack Cove UI proof block would
+    // be a true one and would need this check scoped to the PixelSlash blocks.
+    const homeCard = renderToStaticMarkup(<SectionCards />)
+      .split("<article")
+      .find((card) => card.includes("About PixelSlash"));
+    expect(homeCard).toBeDefined();
+    for (const copy of [homeCard ?? "", html, section.summary, section.description]) {
+      expect(copy).not.toMatch(/open[-\s]?source/i);
+      expect(copy).not.toMatch(/\bMIT\b/i);
+    }
   });
 
   test("it no longer says PixelSlash is unreleased, here or on the home card", () => {
