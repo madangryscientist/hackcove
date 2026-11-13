@@ -19,6 +19,32 @@ const palette: Record<string, string[]> = JSON.parse(read("../packages/ui-react/
 const escapeRe = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 /** The plain-disabled marker of a solid Button, which a theme that restyles one flattens (HC-148). */
 const DISABLED = /\.disabled\\:opacity-50:disabled:is\(/;
+/** The families of a custom property's stack, in order. */
+const families = (block: string, name: string): string[] =>
+  new RegExp(`--${name}:\\s*([^;]+);`)
+    .exec(block)?.[1]
+    ?.split(",")
+    .map((family) => family.trim())
+    .filter((family) => family !== "") ?? [];
+
+/**
+ * What a theme's scope block is missing of the type faces. A theme chooses its own faces, so this
+ * asks only for a real stack in each property and the page font set from `--font-sans`; a block with
+ * no `--font-sans` at all fails.
+ */
+function typeFaceFailures(block: string): string[] {
+  const failures: string[] = [];
+  if (families(block, "font-sans").at(-1) !== "sans-serif") {
+    failures.push("--font-sans: a stack ending in sans-serif");
+  }
+  if (families(block, "font-mono")[0] !== "ui-monospace") {
+    failures.push("--font-mono: a stack starting with ui-monospace");
+  }
+  if (!/font-family:\s*var\(--font-sans\)/.test(block)) {
+    failures.push("font-family: var(--font-sans)");
+  }
+  return failures;
+}
 
 // Every CSS file here is its own theme with its own scope class, and each meets the same contract.
 // The scope and the dark flag are read from the file, so this names no theme.
@@ -65,6 +91,23 @@ it("gives a link a visible step apart from the primary fill in at least one them
     Math.max(...spans),
     "no theme gives a link its own ink, 0.08 apart from the primary fill",
   ).toBeGreaterThanOrEqual(0.08);
+});
+
+it("fails a theme block that sets no type-face stack", () => {
+  // The check above is only worth having if it rejects: a scope block with no `--font-sans` must
+  // fail, and the two faces of a block that has them must pass whatever families the theme chose.
+  const complete =
+    '--font-sans: "DM Sans", sans-serif; --font-mono: ui-monospace, monospace; font-family: var(--font-sans);';
+  expect(typeFaceFailures(complete)).toEqual([]);
+  expect(
+    typeFaceFailures("--font-mono: ui-monospace, monospace; font-family: var(--font-sans);"),
+  ).toEqual(["--font-sans: a stack ending in sans-serif"]);
+  expect(
+    typeFaceFailures('--font-sans: "DM Sans", sans-serif; font-family: var(--font-sans);'),
+  ).toEqual(["--font-mono: a stack starting with ui-monospace"]);
+  expect(
+    typeFaceFailures('--font-sans: "DM Sans", sans-serif; --font-mono: ui-monospace, monospace;'),
+  ).toEqual(["font-family: var(--font-sans)"]);
 });
 
 describe.each(files)("%s", (file) => {
@@ -132,7 +175,8 @@ describe.each(files)("%s", (file) => {
   });
 
   it("owns the page canvas and the type faces", () => {
-    // AppShell paints `bg-gray-50` (the palette's canvas role) and sets `font-sans`.
+    // AppShell paints `bg-gray-50` (the palette's canvas role) and sets `font-sans`. Which faces the
+    // theme chooses is the theme's own call; that it sets a real stack for each is not.
     expect(rules).toMatch(
       new RegExp(
         `\\.${escapeRe(scope)} \\.bg-gray-50\\s*\\{\\s*background-color:\\s*#[0-9a-f]{6};`,
@@ -140,9 +184,7 @@ describe.each(files)("%s", (file) => {
     );
     const block =
       new RegExp(`^\\.${escapeRe(scope)}\\s*\\{([^{}]*)\\}`, "m").exec(rules)?.[1] ?? "";
-    expect(block).toMatch(/--font-sans:\s*Inter,/);
-    expect(block).toMatch(/--font-mono:\s*ui-monospace,/);
-    expect(block).toMatch(/font-family:\s*var\(--font-sans\)/);
+    expect(typeFaceFailures(block)).toEqual([]);
   });
 
   it("keeps the media scrim dark", () => {

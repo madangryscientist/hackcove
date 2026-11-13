@@ -32,7 +32,7 @@ of options.
 | Project | Path | What it is |
 | --- | --- | --- |
 | `ui-react` | `packages/ui-react` | `@hackcove/ui-react`: the components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, react-dom, tailwindcss v4, and optional `@types/react` + `@types/react-dom` (types reach consumers under isolated linkers); one runtime dependency, react-aria-components (the date picker). No theme CSS. |
-| `themes` | `themes` | `@hackcove/themes`: every theme, one CSS file each, shipped as-is: `catppuccin-mocha.css` (dark; scope `.dark`), `catppuccin-latte.css` (light; scope `.latte`) and `thrifty-paper.css` (light; scope `.thrifty-paper`). |
+| `themes` | `themes` | `@hackcove/themes`: every theme, one CSS file each, shipped as-is: `catppuccin-mocha.css` (dark; scope `.dark`), `catppuccin-latte.css` (light; scope `.latte`), `thrifty-paper.css` (light; scope `.thrifty-paper`), `thriftloop.css` (light; scope `.thriftloop`) and `thriftloop-dark.css` (dark; scope `.thriftloop-dark`). |
 | `storybook` | `apps/storybook` | Storybook for the components; a toolbar switcher lists every theme CSS file in `themes/`. Its `e2e/` is the Playwright layer (`test:e2e`). Private. |
 | `themes-shared` | `packages/themes-shared` | `@hackcove/themes-shared`: how Storybook and the docs find themes (the `themes/*.css` glob, the theme ids and each theme's scope class). Private; not in `nx release`. |
 | `hack-cove-site` | `apps/hack-cove-site` | The hack-cove.com Astro site, with the `/ui/` component docs (pages built from the Storybook stories, a generated `props.json` and `/ui/llms.txt`). Builds `dist/` against the workspace `@hackcove/ui-react` and `@hackcove/themes` (`workspace:*`). `deploy.sh` direct-uploads to Cloudflare Pages; only Jacobus runs it. Private; not in `nx release`. |
@@ -43,10 +43,10 @@ theme"); nothing else registers it: the package's `exports` and `files` are glob
 file name without `.css` (`catppuccin-latte`); it names the switcher entry and the visual shots, so an
 id never changes once it has baselines. **Each theme names its own scope class**: the class of the
 first top-level `.<class> { … }` rule in its CSS file (Mocha's is `.dark`, Latte's `.latte`,
-thrifty-paper's `.thrifty-paper`). Storybook and the e2e read it from there. With no
-theme the components render in Tailwind's own default colours, a plain light look; that is only
-what a theme remaps, not a look the repo designs or checks, so Storybook, its Overview and the
-visual matrix list `themes/*.css` and nothing else.
+thrifty-paper's `.thrifty-paper`, Thriftloop Dark's `.thriftloop-dark`). Storybook and the e2e read
+it from there. With no theme the components render in Tailwind's own default colours, a plain light
+look; that is only what a theme remaps, not a look the repo designs or checks, so Storybook, its
+Overview and the visual matrix list `themes/*.css` and nothing else.
 
 **The site composes ui components.** `apps/hack-cove-site` is a composition of `@hackcove/ui-react` and a theme and nothing of its own; a custom style or component there is a flag, not a fix. Put it on the list in the site's `README.md` (a swap, a hackcove ticket, or "Custom, by design" with the reason), and do not add the style to the site.
 
