@@ -266,7 +266,7 @@ describe("the PixelSlash page", () => {
     expect(html).toContain(`alt="${pixelslash.report.alt}"`);
     expect(html).toContain("<figcaption");
     expect(readFileSync(new URL("../public/pixelslash/report.webp", import.meta.url)).length).toBe(
-      38254,
+      39310,
     );
   });
 

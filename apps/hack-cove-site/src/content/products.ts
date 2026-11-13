@@ -61,7 +61,7 @@ export const products: Product[] = [
     ],
     image: {
       src: "/home/pixelslash.webp",
-      alt: "PixelSlash comparing two versions of a billing page: Main left of the slash, Branch right of it, with boxes around the regions that changed.",
+      alt: "A PixelSlash review server build of Hack Cove UI: 178 changed shots to review, a progress bar with Review next and Accept all, and the first changed shots cropped to what moved, each with its theme, size and the AI judge's verdict.",
     },
   },
   {
