@@ -42,7 +42,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "oxlint -c ../.oxlintrc.json --type-aware --deny-warnings && bun ../scripts/check-slop.ts",
     "test": "vitest run",
-    "pack-check": "npm pack --dry-run"
+    "pack-check": "npm pack --dry-run --json --ignore-scripts | bun scripts/pack-files.ts"
   },
   "devDependencies": {
     "@types/bun": "1.4.3",

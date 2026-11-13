@@ -158,7 +158,8 @@ A theme is one CSS file in the `themes/` package, and its file name is its id:
    exempt by role, with the reason, in the same file.
 3. Add a row to the table in `themes/README.md`, and any upstream licence text to `themes/NOTICE`.
 4. `bunx nx run themes:test`. `themes.test.ts` reads every CSS file there and applies the contract
-   to each, and checks the package carries it.
+   to each. `bunx nx run themes:pack-check` then checks the tarball would carry every theme, the
+   manifest, the README and both licences, and nothing else.
 
 There is nothing else to register: the package's `exports` and `files` are globs, and Storybook finds
 `themes/*.css` on its own, so the new theme is in the toolbar the next time it starts. It also
