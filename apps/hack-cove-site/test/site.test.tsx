@@ -184,7 +184,8 @@ describe("the PixelSlash page", () => {
   test("the hero says what it is, with the badges, the calls to action and the install line", () => {
     expect(html.match(/<h1/g)).toHaveLength(1);
     expect(html).toContain(pixelslash.hero.title);
-    for (const label of ["Open source", "MIT", "Local first"]) expect(html).toContain(`>${label}<`);
+    for (const label of ["Source available", "ELv2", "Local first"])
+      expect(html).toContain(`>${label}<`);
     expect(html).toContain('href="https://pixelslash.dev/docs"');
     expect(html).toContain('href="https://github.com/madangryscientist/pixelslash"');
     expect(html).toContain(">npm i -D @hackcove/pixelslash</code>");
@@ -209,11 +210,19 @@ describe("the PixelSlash page", () => {
       expect(text).toContain(command);
   });
 
-  test("privacy, free and open source, and the Hack Cove UI proof", () => {
+  test("privacy, free and source available, and the Hack Cove UI proof", () => {
     expect(text).toContain("--upload");
     expect(text).toContain("Self-host");
     expect(text).toContain("Paid hosting is planned, not available yet.");
     expect(html).toContain('href="/ui/"');
+  });
+
+  test("it says PixelSlash is source available, never open source or MIT, here or on the home card", () => {
+    const section = sectionOf("pixelslash");
+    for (const copy of [text, section.summary, section.description]) {
+      expect(copy).not.toMatch(/open[\s-]?source|\bMIT\b/i);
+    }
+    expect(text).toContain("Elastic License 2.0");
   });
 
   test("it no longer says PixelSlash is unreleased, here or on the home card", () => {
