@@ -163,8 +163,12 @@ describe("Dialog", () => {
     expect(out).toContain("rounded-none");
     expect(out).toContain("min-h-0 flex-1 overflow-auto");
     expect(out).toContain("shrink-0");
-    // Not a floating panel: no width, offset or slide.
-    for (const windowed of ["mt-28", "w-80", "w-110", "w-160", "translate-y"]) {
+    // Not a floating panel: no width, offset or slide. The offset is matched as a whole class
+    // token, so a heading's `scroll-mt-28` is not read as `mt-28`; the rest match as substrings,
+    // which is what catches a variant such as `-translate-y-2`.
+    const classes = [...out.matchAll(/class="([^"]*)"/g)].flatMap((m) => m[1]?.split(" ") ?? []);
+    expect(classes).not.toContain("mt-28");
+    for (const windowed of ["w-80", "w-110", "w-160", "translate-y"]) {
       expect(out).not.toContain(windowed);
     }
   });

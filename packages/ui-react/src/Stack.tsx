@@ -131,6 +131,12 @@ type StackProps = StackBase &
       } & Unstyled<Omit<ComponentPropsWithoutRef<"ol">, "children">>)
   );
 
+/** The id a `Section`'s heading takes: the caller's, or one of React's. */
+function useHeadingId(id: string | undefined): string {
+  const generated = useId();
+  return id ?? generated;
+}
+
 /**
  * A `<section>` Stack with an optional `SectionHeading` title (which names it) and `actions` beside
  * it. Its blocks are `gap` apart, `md` by default as in a `Stack`. `rule` draws a hairline under the
@@ -138,6 +144,7 @@ type StackProps = StackBase &
  * between two sections is a `Divider` in the `Stack` that holds them.
  */
 export function Section({
+  id,
   title,
   actions,
   rule = false,
@@ -146,6 +153,11 @@ export function Section({
   children,
   ...rest
 }: {
+  /**
+   * Makes the section a link target: `#<id>` scrolls to its heading, which stops below the sticky
+   * AppShell header. Needs a `title`: with no title the heading that carries it is not rendered.
+   */
+  id?: string | undefined;
   /** A `SectionHeading` at the top, which names the section. */
   title?: ReactNode;
   /** Buttons or links at the end of the title row. */
@@ -168,7 +180,7 @@ export function Section({
   width?: StackWidth | undefined;
   children?: ReactNode;
 } & Passthrough): ReactElement {
-  const titleId = useId();
+  const titleId = useHeadingId(id);
   return (
     <Stack
       as="section"

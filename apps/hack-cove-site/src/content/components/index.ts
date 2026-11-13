@@ -40,3 +40,16 @@ export function sectionOfPage(slug: string): ComponentSection {
   if (!section) throw new Error(`No section holds the component page "${slug}"`);
   return section;
 }
+
+/**
+ * The component pages either side of `slug` in the rail's order, for the page's previous and next
+ * links. The first component page has no previous and the last no next; Getting started (`/ui/`) is
+ * not part of the walk.
+ */
+export function neighboursOf(slug: string): { previous?: ComponentPage; next?: ComponentPage } {
+  const at = componentPages.findIndex((p) => p.slug === slug);
+  if (at === -1) throw new Error(`No component page "${slug}" in componentPages`);
+  const previous = componentPages[at - 1];
+  const next = componentPages[at + 1];
+  return { ...(previous && { previous }), ...(next && { next }) };
+}

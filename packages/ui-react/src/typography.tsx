@@ -296,6 +296,9 @@ const SECTION: Scale = {
   prose: "text-2xl/8 font-semibold tracking-tight",
 };
 
+/** The offset an anchored heading keeps from the top, so the sticky header does not cover it. */
+const SCROLL_TARGET = "scroll-mt-28";
+
 /**
  * Top-level section header. `h2`, text-base/6 semibold, primary text (text-2xl/8 semibold tight
  * inside a `Prose`). `rule` sets
@@ -316,12 +319,14 @@ export function SectionHeading<E extends ElementType = "h2">({
   const hairline = "mb-4 border-b border-slate-200/70 pb-2";
   const size = useProse() ? SECTION.prose : SECTION.app;
   const hasDescription = description != null && description !== false;
+  // An `id` makes the heading a link target, so an anchor jump leaves it clear of the sticky header.
+  const scroll = props.id === undefined ? undefined : SCROLL_TARGET;
   if (!hasDescription) {
-    return pinned("h2", cx(rule && hairline, size), "default", props);
+    return pinned("h2", cx(rule && hairline, size, scroll), "default", props);
   }
   return (
     <div className={cx("flex flex-col gap-1", rule && hairline)}>
-      {pinned("h2", size, "default", props)}
+      {pinned("h2", cx(size, scroll), "default", props)}
       <Text as="p" color="tertiary">
         {description}
       </Text>
