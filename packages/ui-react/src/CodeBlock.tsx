@@ -18,7 +18,7 @@ type CodeBlockSource =
 
 /**
  * A block of code: mono, in a bordered inset box. No client JS unless `copy` adds a copy button
- * beside the code, which copies it exactly as given and needs the page hydrated. `language` colours
+ * beside the code, which copies it exactly as given. `language` colours
  * it: `tsx`, `ts`, `js`, `json`, `bash`, `console`, `css`, `html` or `yaml`. `console` is a shell
  * session: a line starting with `$ ` is a command (coloured as bash, its `$ ` dimmed and not
  * selectable) and any other line is output; with `copy` only the commands are copied, without the
@@ -50,7 +50,7 @@ export function CodeBlock({
   overflow?: "wrap" | "scroll";
   /**
    * A copy button beside the code, which copies it exactly as given (a `console` block copies only
-   * its commands). It is a client component: leave it off on a page that is rendered to static HTML without hydration.
+   * its commands). On a page rendered to static HTML without hydration, inline `copyScript` and it works there too.
    * @default false
    */
   copy?: boolean;

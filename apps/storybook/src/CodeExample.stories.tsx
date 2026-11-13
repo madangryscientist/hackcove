@@ -53,7 +53,7 @@ export const LongCode: S = {
   ),
 };
 
-/** `copy` adds a button beside the code that copies the code, not the preview. It needs the page hydrated. */
+/** `copy` adds a button beside the code that copies the code, not the preview. */
 export const Copy: S = {
   parameters: { layout: "padded" },
   render: () => (

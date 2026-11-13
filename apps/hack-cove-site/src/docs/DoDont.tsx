@@ -15,7 +15,7 @@ function Side({ story, tone }: { story: DocStory; tone: "emerald" | "red" }) {
       <div>
         <Pill tone={tone}>{SIDE[tone]}</Pill>
       </div>
-      <Example of={story.id} />
+      <Example of={story.id} copy={tone === "emerald"} />
     </Stack>
   );
 }

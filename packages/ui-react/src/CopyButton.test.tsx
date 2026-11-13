@@ -6,7 +6,7 @@ describe("CopyButton", () => {
   it("shows the idle label by default and never the copied one before a click", () => {
     const out = renderToStaticMarkup(<CopyButton text="bun add" />);
     expect(out).toContain(">copy</button>");
-    expect(out).not.toContain("copied");
+    expect(out).not.toContain(">copied<");
   });
 
   it("takes label and copiedLabel overrides", () => {

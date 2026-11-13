@@ -132,6 +132,12 @@ applies the stored choice, else the system preference, before first paint), drop
 `class="dark"` from `<html>`, and place `<ColourSchemeToggle />` in the header. Two states, no
 provider. See [`packages/ui-react/README.md`](packages/ui-react/README.md#light-and-dark).
 
+## Copy buttons on a static page
+
+On a page rendered to static HTML and never hydrated, inline `copyScript` (from `@hackcove/ui-react`)
+once, as `colourSchemeScript` is, and every `CopyButton`, `CopyLine` and `copy` code block works there.
+See [`packages/ui-react/README.md`](packages/ui-react/README.md#copy-on-a-static-page).
+
 ## How to add a theme
 
 A theme is one CSS file in the `themes/` package, and its file name is its id:

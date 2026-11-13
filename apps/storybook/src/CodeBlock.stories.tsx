@@ -76,7 +76,7 @@ export const Scroll: S = {
   ),
 };
 
-/** `copy` adds a button beside the code that copies it exactly as given, wrapped or not. It needs the page hydrated. */
+/** `copy` adds a button beside the code that copies it exactly as given, wrapped or not. */
 export const Copy: S = {
   parameters: { layout: "padded" },
   render: () => (

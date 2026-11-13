@@ -26,8 +26,8 @@ export function CodeExample({
   /** One note on the example, under the code. */
   caption?: ReactNode;
   /**
-   * A copy button beside the code. It is a client component: leave it off on a page that is
-   * rendered to static HTML without hydration.
+   * A copy button beside the code. On a page rendered to static HTML without hydration, inline
+   * `copyScript` and it works there too.
    * @default false
    */
   copy?: boolean;

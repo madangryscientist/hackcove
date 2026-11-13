@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import { ColourSchemeToggle, SiteSearch, appShellRootClassFor } from "@hackcove/ui-react";
+import { ColourSchemeToggle, SiteSearch, appShellRootClassFor, copyScript } from "@hackcove/ui-react";
 import { THEMES } from "@hackcove/themes-shared";
 import { SiteShell } from "../components/SiteShell";
 import { componentPages } from "../content/components";
@@ -49,6 +49,7 @@ const searchItems = componentPages.map((page) => ({
     <meta name="twitter:card" content="summary" />
     <style set:html={themeCss} />
     <script is:inline set:html={colourSchemeHeadScript} />
+    <script is:inline set:html={copyScript} />
   </head>
   <body>
     <SiteShell pathname={Astro.url.pathname} hideChromeInPrint={hideChromeInPrint}>
