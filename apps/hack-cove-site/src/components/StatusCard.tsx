@@ -1,5 +1,4 @@
 import { BulletList, Card, MetaList, Pill, Stack, Text, TextLink } from "@hackcove/ui-react";
-import type { Status } from "../content/site";
 
 const STATUS = {
   available: { label: "Available", tone: "emerald" },
@@ -7,8 +6,8 @@ const STATUS = {
 } as const;
 
 /**
- * A card titled with a status pill, an optional summary, a bulleted list and optional links: a
- * project on the home page and the component docs on /ui/.
+ * A card titled with a status pill, an optional summary, a bulleted list and optional links, as on the
+ * component docs on /ui/.
  */
 export function StatusCard({
   title,
@@ -18,7 +17,7 @@ export function StatusCard({
   links,
 }: {
   title: string;
-  status: Status;
+  status: keyof typeof STATUS;
   summary?: string | undefined;
   items?: string[] | undefined;
   links?: { label: string; href: string }[] | undefined;

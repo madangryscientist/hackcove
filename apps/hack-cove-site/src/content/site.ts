@@ -5,7 +5,7 @@
    rather than being scattered through markup: editing copy means editing this
    file, and nothing else. The one exception is the theme list on /ui/, read from
    themes/*.css at build time and never written here. The optional slots (a person's
-   `bio` / `photo`, and a project's `links`) are seams: they can be filled in later
+   `bio` / `photo`, and a product's `image`) are seams: they can be filled in later
    without touching a component.
    --------------------------------------------------------------------------- */
 
@@ -22,20 +22,23 @@ export type Person = {
   photo?: string;
 };
 
-export type Status = "available" | "coming-soon";
+/** How far along a product is: its label and the tone of its pill. */
+export type Status = "available" | "early-development" | "coming-soon";
 
-export type Project = {
+/** One card on the home page: a product, its status, its pitch, and the one action that links out. */
+export type Product = {
   slug: string;
   name: string;
   status: Status;
-  summary: string;
-  /** A short list under the summary. */
-  details: string[];
-  /** Only public places: leave a private repo or an unlaunched site out. */
-  links?: { label: string; href: string }[];
+  /** The one-line pitch, from the product's own source. */
+  pitch: string;
+  /** The card's one action. Left out while the product has no site of its own. */
+  action?: { label: string; href: string; external: boolean };
+  /** A real screenshot. Left out where none exists: the card shows no picture rather than a made-up one. */
+  image?: { src: string; alt: string };
 };
 
-/** One of the three sections: a card on the home page, a tab in the header and a page of its own. */
+/** One of the three sections: a tab in the header and a page of its own. */
 export type Section = {
   slug: "contracting" | "ui" | "pixelslash";
   /** The page's path, with its trailing slash. */
@@ -44,11 +47,11 @@ export type Section = {
   name: string;
   /** The header tab. */
   navLabel: string;
-  /** The card's icon on the home page. */
+  /** The section's icon. */
   icon: IconName;
-  /** The card on the home page. */
+  /** One line on what the section is. */
   summary: string;
-  /** The card's link. */
+  /** The link text into the section. */
   cta: string;
   /** Other paths that belong to this section, so its tab stays current there. */
   alsoPaths?: string[];
@@ -56,17 +59,48 @@ export type Section = {
   description: string;
 };
 
-const projects: Project[] = [
+const slashSite = "https://slashslash.build/developers";
+
+/** The home page's cards, shipped first, then in development, then coming. */
+const products: Product[] = [
+  {
+    slug: "ui",
+    name: "Hack Cove UI",
+    status: "available",
+    pitch:
+      "Our opinionated React component library, fully integrated with its themes. This site is built with it.",
+    action: { label: "Read the docs", href: "/ui/", external: false },
+  },
+  {
+    slug: "pixelslash",
+    name: "PixelSlash",
+    status: "available",
+    pitch: "See what your change did to the page.",
+    action: { label: "Visit pixelslash.dev", href: "https://pixelslash.dev", external: true },
+    image: {
+      src: "/pixelslash/report.png",
+      alt: "A PixelSlash report showing what changed on a page",
+    },
+  },
+  {
+    slug: "toggleslash",
+    name: "ToggleSlash",
+    status: "early-development",
+    pitch: "It keeps track of feature switches, so you know what turning one on will do.",
+    action: { label: "Read more on slashslash.build", href: slashSite, external: true },
+  },
+  {
+    slug: "flakeslash",
+    name: "FlakeSlash",
+    status: "early-development",
+    pitch: "It spots automated checks that pass and fail at random, so a failure means something.",
+    action: { label: "Read more on slashslash.build", href: slashSite, external: true },
+  },
   {
     slug: "thriftloop",
     name: "ThriftLoop",
     status: "coming-soon",
-    summary: "A home for South Africa's thrift, charity and second-hand shops.",
-    details: [
-      "Started as a map of Cape Town's thrift shops, with opening hours and an open-now filter.",
-      "Shops will claim their listing, sell stock online and run clearance events.",
-      "Growing from Cape Town to the whole country.",
-    ],
+    pitch: "A home for South Africa's thrift, charity and second-hand shops.",
   },
 ];
 
@@ -272,7 +306,7 @@ export const site = {
   legalName: "Hack Cove (Pty) Ltd",
   url: "https://hack-cove.com",
 
-  /** The hero line. */
+  /** The meta description and the home page's title. */
   tagline: "Hack Cove builds software for small businesses.",
 
   /** What we actually do: under the Contracting title. */
@@ -286,11 +320,11 @@ export const site = {
     { name: "Silindile", role: "Client Service agent" },
   ] satisfies Person[],
 
-  /** The three sections, in the order of the home cards and the header tabs. */
+  /** The three sections, in the order of the header tabs. */
   sections,
 
-  /** Shown on the home page under the section cards; the block renders nothing when empty. */
-  projects,
+  /** The home page's cards, in order. */
+  products,
 
   contracting,
   ui,
