@@ -1,8 +1,9 @@
 ---
 import "../styles/global.css";
-import { ColourSchemeToggle, appShellRootClassFor } from "@hackcove/ui-react";
+import { ColourSchemeToggle, SiteSearch, appShellRootClassFor } from "@hackcove/ui-react";
 import { THEMES } from "@hackcove/themes-shared";
 import { SiteShell } from "../components/SiteShell";
+import { componentPages } from "../content/components";
 import { site } from "../content/site";
 import { colourSchemeHeadScript, schemes } from "../content/colourSchemes";
 
@@ -20,6 +21,14 @@ const {
 // script swaps to the remembered or system scheme before first paint.
 const themeCss = Object.values(THEMES).join("\n");
 const canonical = new URL(Astro.url.pathname, site.url).href;
+// Every component page, in rail order, for the header's search. The summaries are written in
+// Markdown, so their code ticks are dropped for the plain result line.
+const searchItems = componentPages.map((page) => ({
+  label: page.name,
+  description: page.summary.replaceAll("`", ""),
+  href: `/ui/${page.slug}/`,
+  keywords: page.api,
+}));
 ---
 
 <html lang="en" class={appShellRootClassFor("dark", schemes)}>
@@ -45,6 +54,7 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <SiteShell pathname={Astro.url.pathname} hideChromeInPrint={hideChromeInPrint}>
       <slot />
       {Astro.slots.has("footer") && <slot name="footer" slot="footer" />}
+      <SiteSearch slot="controls" client:load label="Search components" items={searchItems} />
       <ColourSchemeToggle
         slot="controls"
         client:load

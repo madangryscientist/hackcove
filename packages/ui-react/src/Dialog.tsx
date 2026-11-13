@@ -16,7 +16,7 @@ import { AppScale, HeaderText, SectionHeading } from "./typography.js";
 
 /** Shared by every size: the surface, its colours and the fade (and the scrim's) in and out. */
 const BASE =
-  "bg-white p-0 text-slate-900 opacity-0 transition-[opacity,translate,overlay,display] transition-discrete duration-200 open:opacity-100 starting:open:opacity-0 backdrop:bg-slate-900/35 backdrop:opacity-0 backdrop:transition-[opacity,overlay,display] backdrop:transition-discrete backdrop:duration-200 open:backdrop:opacity-100 starting:open:backdrop:opacity-0 motion-reduce:transition-none motion-reduce:backdrop:transition-none";
+  "bg-white p-0 text-slate-900 whitespace-normal opacity-0 transition-[opacity,translate,overlay,display] transition-discrete duration-200 open:opacity-100 starting:open:opacity-0 backdrop:bg-slate-900/35 backdrop:opacity-0 backdrop:transition-[opacity,overlay,display] backdrop:transition-discrete backdrop:duration-200 open:backdrop:opacity-100 starting:open:backdrop:opacity-0 motion-reduce:transition-none motion-reduce:backdrop:transition-none";
 /** A floating panel under the top edge: it also slides down 8px as it fades in. */
 const WINDOW =
   "mx-auto mt-28 max-w-[calc(100vw-2rem)] overflow-visible rounded-2xl border border-slate-200 shadow-2xl -translate-y-2 open:translate-y-0 starting:open:-translate-y-2";
