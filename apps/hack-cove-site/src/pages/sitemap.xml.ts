@@ -13,9 +13,13 @@ const topLevel = Object.keys(import.meta.glob("./*.astro"))
 
 const paths = ["/", ...topLevel, "/ui/", ...componentPages.map((page) => `/ui/${page.slug}/`)];
 
+/** XML text: a URL carrying `&` or `<` would otherwise make the document invalid. A loc is element text, so only these three are needed. */
+const xmlText = (text: string) =>
+  text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+
 export function GET() {
   const urls = paths
-    .map((path) => `  <url><loc>${new URL(path, site.url).href}</loc></url>`)
+    .map((path) => `  <url><loc>${xmlText(new URL(path, site.url).href)}</loc></url>`)
     .join("\n");
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',

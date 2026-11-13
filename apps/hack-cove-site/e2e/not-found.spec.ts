@@ -13,6 +13,10 @@ const topLevel = readdirSync(new URL("../src/pages", import.meta.url))
   .filter((name) => name !== "index" && name !== "404")
   .map((name) => `/${name}/`);
 
+// A loc is XML text: `&` and `<` are escaped, so read it back before it is used as a URL.
+const unescape = (text: string) =>
+  text.replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&amp;", "&");
+
 test("/ui/no-such-page/ is a 404 in the site frame, with the way home", async ({ page }) => {
   const response = await page.goto("/ui/no-such-page/");
   expect(response?.status()).toBe(404);
@@ -28,13 +32,15 @@ test("/sitemap.xml lists every page, and every page it lists is there", async ({
   const xml = await response.text();
   expect(xml).toContain('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
   const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].flatMap((match) => match[1] ?? []);
-  const paths = locs.map((loc) => new URL(loc).pathname);
+  const paths = locs.map((loc) => new URL(unescape(loc)).pathname);
   const expected = ["/", ...topLevel, "/ui/", ...componentPages.map((page) => `/ui/${page.slug}/`)];
   for (const path of expected) expect(paths, path).toContain(path);
   expect(new Set(locs).size, "a URL is listed twice").toBe(locs.length);
   for (const loc of locs) {
-    expect(new URL(loc).origin, loc).toBe(site.url);
-    const page = await request.get(new URL(loc).pathname);
+    // A `&` in a URL must reach the sitemap as `&amp;`, or the document is not valid XML.
+    expect(loc, "a loc is escaped XML text").not.toMatch(/&(?!(?:amp|lt|gt);)/);
+    expect(new URL(unescape(loc)).origin, loc).toBe(site.url);
+    const page = await request.get(new URL(unescape(loc)).pathname);
     expect(page.status(), loc).toBe(200);
   }
 });
