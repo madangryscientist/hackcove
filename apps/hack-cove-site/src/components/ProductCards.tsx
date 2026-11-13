@@ -104,7 +104,9 @@ export function ProductCards() {
             {home.coming.title}
           </Display>
         </header>
-        <CardGrid as="ul" columns={3}>
+        {/* As many per row as fit at 17rem each, so a zoomed page drops a column instead of
+            wrapping a card's status and action: three at 1280px. */}
+        <CardGrid as="ul" columns="auto">
           {coming.map((product) => (
             <ComingCard key={product.slug} {...product} />
           ))}
