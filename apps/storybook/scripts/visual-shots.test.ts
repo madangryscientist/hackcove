@@ -2,6 +2,7 @@ import { deflateSync } from "node:zlib";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, posix } from "node:path";
+import { parseAst } from "vite";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   MAX_SHOT_PIXELS,
@@ -12,6 +13,7 @@ import {
   visualSkipped,
 } from "./visual-shots.js";
 import { barrelOf, closureOf } from "./import-graph.js";
+import { isRecord } from "./visual-index.js";
 import { readRepo } from "./visual-plan.js";
 
 const src = join(import.meta.dirname, "..", "src");
@@ -158,24 +160,34 @@ const GALLERY = "apps/storybook/src/Gallery.tsx";
 /** Where `Gallery.tsx` stops building sections: the two wrappers that render them are not shot. */
 const WRAPPERS = "export function Gallery(";
 
+/** Every JSX tag name in an ESTree node: strings, templates, regexes and comments hold none. */
+function tagsOf(node: unknown, into: Set<string>): Set<string> {
+  if (Array.isArray(node)) for (const child of node) tagsOf(child, into);
+  else if (isRecord(node)) {
+    const { type, name } = node;
+    if (type === "JSXOpeningElement" && isRecord(name) && typeof name["name"] === "string")
+      into.add(name["name"]);
+    for (const child of Object.values(node)) tagsOf(child, into);
+  }
+  return into;
+}
+
 /**
- * `Gallery.tsx` up to its wrappers, and every file it imports from `src/` or `src/layout/`,
- * transitively, with their text and without their comments or their double-quoted and template
- * strings (a `<Name>` in either renders nothing). Single quotes stay: JSX text has apostrophes.
+ * The JSX tags `Gallery.tsx` renders up to its wrappers, and every file it imports from `src/` or
+ * `src/layout/` renders, transitively, read from each file's parsed syntax tree.
  */
-async function galleryText(): Promise<string> {
+async function galleryTags(): Promise<Set<string>> {
   const { read: readFile } = await readRepo(root);
   const folders = new Set(["apps/storybook/src", "apps/storybook/src/layout"]);
   const gallery = readFile(GALLERY) ?? "";
   expect(gallery).toContain(WRAPPERS);
-  return [...closureOf(GALLERY, readFile, barrelOf(readFile))]
-    .filter((file) => folders.has(posix.dirname(file)))
-    .map((file) => (file === GALLERY ? gallery.split(WRAPPERS)[0] : readFile(file)) ?? "")
-    .join("\n")
-    .replaceAll(/\/\*[\s\S]*?\*\//g, "")
-    .replaceAll(/(^|[^:])\/\/.*$/gm, "$1")
-    .replaceAll(/"(?:[^"\\\n]|\\.)*"/g, '""')
-    .replaceAll(/`(?:[^`\\]|\\.)*`/g, "``");
+  const tags = new Set<string>();
+  for (const file of closureOf(GALLERY, readFile, barrelOf(readFile))) {
+    if (!folders.has(posix.dirname(file))) continue;
+    const text = (file === GALLERY ? gallery.split(WRAPPERS)[0] : readFile(file)) ?? "";
+    tagsOf(parseAst(text, { lang: file.endsWith(".tsx") ? "tsx" : "ts" }), tags);
+  }
+  return tags;
 }
 
 describe("the Gallery sections", () => {
@@ -184,8 +196,8 @@ describe("the Gallery sections", () => {
   it("render every component @hackcove/ui-react exports", async () => {
     const components = exportedComponents();
     expect(components.length).toBeGreaterThan(50);
-    const text = await galleryText();
-    const missing = components.filter((name) => !new RegExp(`<${name}[\\s>/]`).test(text));
+    const tags = await galleryTags();
+    const missing = components.filter((name) => !tags.has(name));
     expect(missing).toEqual([]);
   });
 });
