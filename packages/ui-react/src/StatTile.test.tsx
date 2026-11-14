@@ -59,3 +59,24 @@ describe("StatTile warn", () => {
     expect(out).not.toContain("text-slate-900");
   });
 });
+
+describe("StatTile trend", () => {
+  it("draws trend as one hidden polyline in the tile's tone colour, on a scale from 0", () => {
+    const markup = renderToStaticMarkup(
+      <StatTile label="A" value="5" tone="positive" trend={[1, 3, 2]} />,
+    );
+    expect(markup.match(/<svg/g)).toHaveLength(1);
+    expect(markup.match(/<polyline/g)).toHaveLength(1);
+    expect(markup).toMatch(/<svg aria-hidden="true"[^>]*class="[^"]*text-emerald-700/);
+    expect(markup).toContain('points="0,75 50,25 100,50"');
+    expect(markup).toContain('stroke="currentColor"');
+  });
+
+  it("draws nothing extra without trend", () => {
+    const props = { label: "A", value: "1", hint: "h", tone: "warn" } as const;
+    const markup = renderToStaticMarkup(<StatTile {...props} />);
+    expect(markup).toBe(
+      '<div class="relative overflow-hidden rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">A</p><p class="mt-2 text-3xl font-bold tabular-nums text-amber-700">1</p><p class="mt-1 text-xs text-slate-500">h</p></div>',
+    );
+  });
+});

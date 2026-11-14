@@ -95,3 +95,32 @@ export const Warn: S = {
     </div>
   ),
 };
+
+/** `trend` draws the figure over time under the value, in its colour; `hint` says the trend in words. */
+export const WithTrend: S = {
+  render: () => (
+    <div className="grid max-w-3xl gap-4 sm:grid-cols-3">
+      <StatTile
+        label="Closed this week"
+        value="16"
+        hint="up from 13 last week"
+        trend={[4, 7, 3, 9, 12, 8, 6, 11, 14, 9, 13, 16]}
+      />
+      <StatTile
+        label="Saved"
+        value="R 9 800"
+        hint="up R 1 200 this month"
+        tone="positive"
+        accent
+        trend={[2100, 3400, 4000, 5200, 6100, 7300, 8600, 9800]}
+      />
+      <StatTile
+        label="Open bugs"
+        value="23"
+        hint="up 8 in two weeks"
+        tone="negative"
+        trend={[12, 14, 13, 15, 18, 20, 23]}
+      />
+    </div>
+  ),
+};

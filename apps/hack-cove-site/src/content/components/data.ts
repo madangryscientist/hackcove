@@ -97,6 +97,7 @@ export const data: ComponentSection = {
         "`label` names the figure; `hint` is one short line under it.",
         "`tone` is `neutral`, `positive` or `negative`. A tone colours the value, so give it a sign or a `hint` that says the same; `accent` adds a bar in the same tone across the top.",
         "Lay several tiles out in a `CardGrid`. A tile is not a button or a link.",
+        "`trend` takes the figure over time, oldest first, and draws a small line under the value in its colour, on a scale from 0. The line is decoration, so say the trend in `hint` too (`up 12% on last month`). A chart with axes is a `TrendChart`.",
       ],
       accessibility: [
         "A StatTile is plain text in a `<div>`: the caption, the value and the hint are read in that order.",
@@ -163,6 +164,27 @@ export const data: ComponentSection = {
         "A `Legend` is a list. Its swatches are hidden from assistive tech and its labels are always drawn, so colour is never the only signal.",
       ],
       api: ["StackedBar", "Legend"],
+    },
+    {
+      slug: "trend-chart",
+      name: "TrendChart",
+      summary: "One or two series over ordered time buckets, as bars or a line.",
+      whenToUse: "A figure over ordered time buckets: weekly counts, a trend.",
+      pairs: ["TrendChart/Kind"],
+      usage: [
+        "`buckets` are the x-axis labels in order (`W12`, `Mar`); each series' `values` has one value per bucket, in the same order. `label` names the chart.",
+        "`series` is one or two `{ label, tone, values }`, never more; `tone` is a `VizTone`. Two series draw a `Legend` under the chart; one is named by `label`.",
+        "`kind` is `bar` (default) for a count in each bucket, or `line` for a level over time. Do not draw a line through categories that have no order.",
+        "Values are counts or amounts from 0 up. A negative value is drawn as 0. A missing value, a `null` or a `values` list shorter than `buckets`, draws nothing for that bucket: no bar, and the line breaks there. Values past the last bucket are ignored.",
+        "The y-axis runs from 0 to a rounded maximum (2, 4 or 10 times a power of ten) and is labelled at 0, half and the top. With more than 8 buckets, every k-th x label is drawn, starting with the first.",
+        "A trend inside a `StatTile` is its `trend` prop, not a chart.",
+      ],
+      accessibility: [
+        "The chart is a `figure` named by `label`. The plot and its axis labels are hidden from assistive tech.",
+        "A visually hidden table carries every figure: `label` as its caption, a column per series and a row per bucket, with an empty cell for a missing value.",
+        "Two series are named by a `Legend`, so colour is never the only way to tell them apart.",
+      ],
+      api: ["TrendChart"],
     },
   ],
 };

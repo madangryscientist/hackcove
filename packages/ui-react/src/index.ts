@@ -12,6 +12,7 @@ export {
   type StackedSegment,
   type VizTone,
 } from "./StackedBar.js";
+export { TrendChart, type TrendSeries } from "./TrendChart.js";
 export { Markdown } from "./Markdown.js";
 export {
   AppShell,
