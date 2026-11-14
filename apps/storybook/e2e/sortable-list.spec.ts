@@ -37,14 +37,34 @@ async function press(page: Page, keys: string[]) {
   for (const key of keys) await page.keyboard.press(key);
 }
 
+/** The Default story's item titles, top to bottom: Urgent, then High. */
+const ROWS = [
+  ...URGENT,
+  "Ship the invoice export",
+  "Answer the landlord about the lease",
+  "Book the car service",
+  "Review the quote template",
+  "Archive last year's receipts",
+] as const;
+
 /**
- * The keyboard move, as the docs write it: Tab into the list (the first row), ArrowDown to the row,
+ * The keyboard move, as the docs write it: focus on the list's first row, ArrowDown to the row,
  * ArrowRight to its "Reorder" handle, Enter to pick it up. Each ArrowUp or ArrowDown then moves the
- * drop line one gap, across section headings too, and Enter drops. The drag takes the keyboard just
- * after the Enter, so this waits for it (startDrag) before the next key.
+ * drop line one gap, across section headings too, and Enter drops. A key sent before focus has
+ * moved for the last one can land on the wrong element, so each step waits for where focus lands.
  */
 async function pickUp(page: Page, rowIndex: number) {
-  await press(page, ["Tab", ...Array.from({ length: rowIndex }, () => "ArrowDown"), "ArrowRight"]);
+  const grid = list(page);
+  // Focus the first row as the other keyboard specs do: under load a WebKit page can still be
+  // inactive when the test starts, and a first Tab then lands nowhere.
+  await row(grid, ROWS[0]).focus();
+  await expect(row(grid, ROWS[0])).toBeFocused();
+  for (let index = 1; index <= rowIndex; index++) {
+    await page.keyboard.press("ArrowDown");
+    await expect(row(grid, ROWS[index] ?? "")).toBeFocused();
+  }
+  await page.keyboard.press("ArrowRight");
+  await expect(grid.getByRole("button", { name: `Reorder ${ROWS[rowIndex] ?? ""}` })).toBeFocused();
   await startDrag(page);
 }
 
