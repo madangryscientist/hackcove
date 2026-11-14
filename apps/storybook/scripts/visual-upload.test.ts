@@ -79,7 +79,7 @@ describe("baselineFailure", () => {
     expect(failure).toContain("hackcove-ui-text");
     expect(failure).not.toContain("hackcove-ui-layout");
     expect(failure).toContain("upload main first");
-    expect(failure).toContain("nx run storybook:visual-upload");
+    expect(failure).toContain("bunx moon run storybook:visual-upload");
     expect(failure).toContain("origin/main");
   });
 

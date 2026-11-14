@@ -1,0 +1,66 @@
+$schema: "../../.moon/cache/schemas/project.json"
+
+# The hack-cove.com Astro site and its /ui/ component docs. Each task runs the package.json script
+# of its name (`e2e` runs `test:e2e`).
+dependsOn:
+  - "ui-react"
+  - "themes"
+  - "themes-shared"
+
+# moon does not hash a dependency's files, so they are listed here (node_modules, dist and the
+# other build output are left out by .moon/tasks/all.yml). The docs pages are built from the
+# Storybook stories, so those are read too.
+fileGroups:
+  deps:
+    - "/packages/ui-react/**/*"
+    - "/themes/**/*"
+    - "/packages/themes-shared/**/*"
+    - "/apps/storybook/src/**/*"
+
+tasks:
+  dev:
+    command: "bun run dev"
+    preset: "server"
+  # The component reference (src/generated/props.json) from ui-react's source. Never cached; it
+  # rewrites the same bytes when nothing changed, so the tasks after it still hit the cache.
+  props:
+    command: "bun run props"
+    inputs:
+      - "scripts/**/*"
+      - "/packages/ui-react/src/**/*"
+      - "/packages/ui-react/tsconfig*.json"
+    outputs: ["src/generated/props.json"]
+    options:
+      cache: false
+  build:
+    command: "bun run build"
+    inputs: ["**/*", "@group(deps)"]
+    outputs: ["dist"]
+    deps: ["~:props", "^:build"]
+  preview:
+    command: "bun run preview"
+    deps: ["~:build"]
+    preset: "server"
+  typecheck:
+    command: "bun run typecheck"
+    inputs: ["**/*", "@group(deps)"]
+    deps: ["~:props", "^:build"]
+  lint:
+    command: "bun run lint"
+    inputs: ["**/*", "@group(deps)"]
+    deps: ["~:props", "^:build"]
+  test:
+    command: "bun run test"
+    inputs: ["**/*", "@group(deps)"]
+    deps: ["~:props", "^:build"]
+  deploy:
+    command: "bun run deploy"
+    deps: ["~:build"]
+    options:
+      cache: false
+  # Playwright against the built site, in every theme.
+  e2e:
+    command: "bun run test:e2e"
+    deps: ["~:build"]
+    options:
+      cache: false

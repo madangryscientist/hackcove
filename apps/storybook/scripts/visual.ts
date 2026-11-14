@@ -1,20 +1,21 @@
 /**
- * `nx run storybook:visual`: what did this change do to the stories it reaches, in the themes it
- * reaches?
+ * `bunx moon run storybook:visual`: what did this change do to the stories it reaches, in the
+ * themes it reaches?
  *
- * The stories are split into groups, one per section of the site's component docs (`--groups`
- * lists them), and each group is its own Nx project (`visual-<slug>`, from `nx-plugin.ts`) and its
- * own PixelSlash project (`hackcove-ui-<slug>`). A run has three steps, each a mode of this script:
+ * The stories are split into groups, one per section of the site's component docs, and each group
+ * is its own PixelSlash project (`hackcove-ui-<slug>`). `--run` (the `visual` and `visual:upload`
+ * scripts) does three steps, after moon has built Storybook:
  *
- * - `--plan` reads the diff against the base and writes `.pixelslash/plan.json`: which groups,
+ * - The plan reads the diff against the base and writes `.pixelslash/plan.json`: which groups,
  *   story files and themes the change reaches, and why (`visual-plan.ts`): every story in the
  *   reference theme, the Gallery sections in every other. `--all`, or
  *   `VISUAL_ALL=1`, picks everything.
- * - `--group <slug>` captures that group's picked stories on the branch and on the base, and
- *   compares them; a group the plan skipped does nothing. It fails, naming the shot, when a branch
- *   shot is over PixelSlash's 24.5 Mpx limit (`visual-shots.ts`; the Overview pages are shot in
- *   slices for that reason).
- * - `--summary` reads every group's result and totals them.
+ * - Each group captures its picked stories on the branch and on the base, and compares them; a
+ *   group the plan skipped does nothing. It fails, naming the shot, when a branch shot is over
+ *   PixelSlash's 24.5 Mpx limit (`visual-shots.ts`; the Overview pages are shot in slices for that
+ *   reason). The local compare runs its groups one at a time, since they build and capture the base
+ *   under one lock; an upload runs `VISUAL_PARALLEL` of them at once (default 1).
+ * - The summary reads every group's result and totals them. It runs only when every group passed.
  *
  * Locally the base is the branch's merge-base with origin/main (the fork point, so a main that
  * moved since stays out of the diff); `VISUAL_BASE` names another ref. It is built in a shared
@@ -55,10 +56,10 @@ import {
   out,
   repoRoot,
   resolveBase,
-  uploadWorkers,
   withBaselineLock,
   type Selection,
 } from "./visual-tools.js";
+import { eachAtOnce, parallelFrom, uploadWorkers } from "./visual-parallel.js";
 import { checkUpload, uploadGroup } from "./visual-remote.js";
 import {
   uploadSummaryLine,
@@ -83,50 +84,9 @@ type SavedPlan = {
   groups: PlannedGroup[];
 };
 
-const isStrings = (value: unknown): value is string[] =>
-  Array.isArray(value) && value.every((item) => typeof item === "string");
-
-function isPlannedGroup(value: unknown): value is PlannedGroup {
-  return (
-    isRecord(value) &&
-    typeof value["slug"] === "string" &&
-    typeof value["project"] === "string" &&
-    typeof value["skipped"] === "boolean" &&
-    Array.isArray(value["captures"]) &&
-    value["captures"].every(
-      (pick: unknown) => isRecord(pick) && isStrings(pick["titles"]) && isStrings(pick["themes"]),
-    )
-  );
-}
-
 function readJson(path: string): unknown {
   return existsSync(path) ? JSON.parse(readFileSync(path, "utf8")) : null;
 }
-
-/** The plan `--plan` wrote, for the same mode (an upload plan for an upload run). */
-function readPlan(): SavedPlan {
-  const plan = readJson(planPath);
-  const target = upload ? "visual-upload" : "visual";
-  if (
-    !isRecord(plan) ||
-    typeof plan["id"] !== "string" ||
-    typeof plan["sha"] !== "string" ||
-    plan["upload"] !== upload ||
-    !Array.isArray(plan["groups"]) ||
-    !plan["groups"].every(isPlannedGroup)
-  )
-    throw new VisualError(
-      `${planPath} is missing or from another mode; run nx run storybook:${target}`,
-    );
-  const mode = plan["mode"];
-  if (!isModeFor(mode, upload))
-    throw new VisualError(`${planPath} has no upload mode; run nx run storybook:${target}`);
-  return { id: plan["id"], sha: plan["sha"], upload, mode, groups: plan["groups"] };
-}
-
-/** An upload plan names its mode; a local one has none. */
-const isModeFor = (mode: unknown, uploading: boolean): mode is UploadMode | null =>
-  uploading ? mode === "branch" || mode === "main" : mode === null;
 
 /** The repo's groups, failing on a story file no docs page names, or a page naming no story file. */
 function checked(result: Grouping): Grouping {
@@ -181,7 +141,7 @@ function reportPlan(plan: Plan, grouping: Grouping, saved: SavedPlan, whole: Pla
   log(`shots per theme: ${perTheme.join(", ")}; shot once: ${now.once} of ${all.once}`);
 }
 
-async function planMode() {
+async function planMode(): Promise<SavedPlan> {
   await ensurePixelslashInstall();
   const repo = await readRepo(repoRoot);
   const grouping = checked(groupStories(repo.sections, repo.storyFiles));
@@ -209,6 +169,7 @@ async function planMode() {
   else log(`base: ${base.label} ${base.sha.slice(0, 7)}`);
   const whole = planCapture({ repo, grouping, changed: [], everything: true });
   reportPlan(plan, grouping, saved, whole);
+  return saved;
 }
 
 /**
@@ -240,10 +201,8 @@ async function captureBase(dir: string, sha: string, captures: Selection[]) {
   writeFileSync(keyPath, `${key}\n`);
 }
 
-async function groupMode(slug: string) {
-  const plan = readPlan();
-  const group = plan.groups.find((g) => g.slug === slug);
-  if (group === undefined) throw new VisualError(`the plan has no group ${slug}`);
+async function groupMode(plan: SavedPlan, group: PlannedGroup) {
+  const { slug } = group;
   const dir = join(out, slug);
   mkdirSync(dir, { recursive: true });
   const result = join(dir, "result.json");
@@ -324,8 +283,7 @@ function readResult(id: string, slug: string): GroupResult | undefined {
   };
 }
 
-function summaryMode() {
-  const plan = readPlan();
+function summaryMode(plan: SavedPlan) {
   const results: GroupResult[] = [];
   for (const group of plan.groups) {
     const result = readResult(plan.id, group.slug);
@@ -339,18 +297,18 @@ function summaryMode() {
   log(uploadTotalLine(results, plan.mode));
 }
 
+/**
+ * The plan, then each group, then the summary: what the moon task runs. The local compare takes one
+ * group at a time (they build and capture the base under one lock); an upload takes
+ * `VISUAL_PARALLEL` at once, each writing its own `.pixelslash/<slug>/` and uploading to its own
+ * server project. A failed group does not stop the others; the summary runs only when none failed.
+ */
 async function main() {
-  const at = process.argv.indexOf("--group");
-  if (process.argv.includes("--groups")) {
-    // The Nx plugin reads this to make the projects, so a story file outside every section does
-    // not stop the graph: `--plan` and this repo's test fail on it instead.
-    const repo = await readRepo(repoRoot);
-    const { groups } = groupStories(repo.sections, repo.storyFiles);
-    process.stdout.write(`${groups.map((g) => g.slug).join("\n")}\n`);
-  } else if (process.argv.includes("--plan")) await planMode();
-  else if (at !== -1) await groupMode(process.argv[at + 1] ?? "");
-  else if (process.argv.includes("--summary")) summaryMode();
-  else throw new VisualError("give --groups, --plan, --group <slug> or --summary");
+  if (!process.argv.includes("--run")) throw new VisualError("give --run [--upload] [--all]");
+  const plan = await planMode();
+  const parallel = upload ? parallelFrom(process.env["VISUAL_PARALLEL"]) : 1;
+  await eachAtOnce(plan.groups, parallel, (group) => groupMode(plan, group));
+  summaryMode(plan);
 }
 
 try {

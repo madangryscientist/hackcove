@@ -1,7 +1,7 @@
 # Contributing to hackcove
 
 Thanks for looking. This repo is the Hack Cove design system: React components (`@hackcove/ui-react`) and
-the themes (`@hackcove/themes`, one CSS file per theme), each its own npm package, in an Nx +
+the themes (`@hackcove/themes`, one CSS file per theme), each its own npm package, in a moon +
 Bun-workspaces monorepo. By taking part you agree to the [Code of Conduct](CODE_OF_CONDUCT.md). For
 a security problem, follow [SECURITY.md](SECURITY.md) instead of opening an issue.
 
@@ -28,7 +28,7 @@ You need [Bun](https://bun.sh) and Node. Then:
 ```sh
 bun install
 bunx playwright install chromium firefox webkit   # once per machine, for the e2e (all three engines)
-bunx nx run storybook:storybook    # http://localhost:6006
+bunx moon run storybook:storybook   # http://localhost:6006
 ```
 
 Open Storybook, flip the theme switcher in the toolbar, and read the stories. **Overview / All
@@ -42,7 +42,7 @@ themes** shows every component in every theme on one page.
 | `themes` | `@hackcove/themes` | One CSS file per theme, `<id>.css`, shipped as-is. |
 | `apps/storybook` | (private) | Storybook and the Playwright e2e. |
 | `packages/themes-shared` | (private) | How Storybook and the docs find the themes: the `themes/*.css` glob, the theme ids and each theme's scope class. |
-| `apps/hack-cove-site` | (private) | The hack-cove.com Astro site, including the `/ui/` component docs; run it with `bunx nx dev hack-cove-site` (http://localhost:4321). Its e2e is `bunx nx e2e hack-cove-site`. |
+| `apps/hack-cove-site` | (private) | The hack-cove.com Astro site, including the `/ui/` component docs; run it with `bunx moon run hack-cove-site:dev` (http://localhost:4321). Its e2e is `bunx moon run hack-cove-site:e2e`. |
 | `tools/ui-review` | (private) | Dev tooling for the `ui-review.yml` reusable workflow: a deterministic check of a pull request's added lines and an advisory model review. Not published; no package depends on it. |
 
 ## The gate
@@ -51,26 +51,31 @@ A change is ready when all of this passes:
 
 ```sh
 bun install
-bunx nx run-many -t typecheck lint test build   # tsc strict · oxlint + check-slop · Vitest · dist + Storybook build
-bun run format:check                            # oxfmt --check (`bun run format` fixes)
-bunx nx run-many -t pack-check                  # npm pack --dry-run for every package; ui-react also typechecks its tarball in a consumer app
-bunx nx e2e storybook                           # Playwright, in Chromium, Firefox and WebKit: builds Storybook, flips every theme
-bunx nx e2e hack-cove-site                      # Playwright: builds the site, flips every theme on the /ui/ pages
+bunx moon run :typecheck :lint :test :build      # tsc strict · oxlint + check-slop · Vitest · dist + Storybook build
+bun run format:check                             # oxfmt --check (`bun run format` fixes)
+bunx moon run :pack-check                        # npm pack --dry-run for every package; ui-react also typechecks its tarball in a consumer app
+bunx moon run storybook:e2e                      # Playwright, in Chromium, Firefox and WebKit: builds Storybook, flips every theme
+bunx moon run hack-cove-site:e2e                 # Playwright: builds the site, flips every theme on the /ui/ pages
 ```
 
-`bunx nx affected -t <target>` runs just what changed. Lint rules are all errors: fix the code, do
-not disable a rule.
+moon runs every task through the cache, so an unchanged project is a cache hit; `--force` reruns
+one anyway. Lint rules are all errors: fix the code, do not disable a rule.
 
 **Nothing is time dependent.** Jacobus, 2026-11-14: "The architecture of the test is wrong if it relies on timings for displaying it. We should be able to pass it in a value and then render that. It should not be time dependent. The component itself should not be time dependent." A component renders from the value it is given, and a test passes that value and asserts what renders. No fake timers, no waiting on a delay, no story driven by a timer, no `waitForTimeout` in an e2e spec. A visual delay, a fade or a label that reverts is CSS (an animation and its delay), as `CopyButton` and `NavigationProgress` do; a pending state is a value the story holds (a promise that never settles, or a button that lands it). The lint (`scripts/slopRules.ts`) fails a test, story or e2e file that uses a fake or real timer, and a `@hackcove/ui-react` component that calls `setTimeout` or `setInterval`; a line with `// time-dependent: <why>` on it or above it is exempt, and needs a reason a reviewer accepts.
 
-Stop a process by the pid you started or by its port. Never `pkill -f` or `killall` a word such as storybook, nx, bun or vite: a shared machine can be running someone else's capture or upload.
+Stop a process by the pid you started or by its port. Never `pkill -f` or `killall` a word such as storybook, moon, bun or vite: a shared machine can be running someone else's capture or upload.
 
-Nx caches locally only; there is no Nx Cloud. CI keeps `.nx/cache` and `.nx/workspace-data` (the cache and its index) between runs with `actions/cache` (`.github/workflows/ci.yml`): a pull request restores its own cache or `main`'s and
-saves its own, so one branch never reads another's. `e2e` is never cached.
+Tasks are declared in `.moon/workspace.yml`, `.moon/tasks/all.yml` and each project's `moon.yml`;
+each runs the `package.json` script of its name. moon hashes no dependency's files on its own, so a
+task that reads another project lists that project's files in its inputs. moon caches locally only;
+there is no remote cache. CI keeps `.moon/cache` between runs with `actions/cache`
+(`.github/workflows/ci.yml`): a pull request restores its own cache or `main`'s and saves its own,
+so one branch never reads another's. `e2e` is never cached. Nx is still installed, for one job
+only: `nx release` versions and publishes the packages (`docs/releasing.md`).
 
 The shared compiler options live in `tsconfig.shared.json`, not a root `tsconfig.base.json` or
-`tsconfig.json`: Nx reads only those two names, and TypeScript 7 has no classic compiler API for it
-to parse them with.
+`tsconfig.json`: Nx, which `nx release` still runs, reads those two names, and TypeScript 7 has no
+classic compiler API for it to parse them with.
 
 ## Rules of the repo
 
@@ -124,7 +129,7 @@ contributors have no access to.
 
 The stories are split into groups, one per section of the [component docs](https://hack-cove.com/ui/)
 (Layout, Page layouts, Text, … and Overview), read from
-`apps/hack-cove-site/src/content/components`. Each group is its own Nx project (`visual-<section>`)
+`apps/hack-cove-site/src/content/components`. Each group is its own folder (`.pixelslash/<section>/`)
 and its own PixelSlash project (`hackcove-ui-<section>`), with its own baseline and review queue.
 A story file goes in the section of the docs page that names it in `pairs`, `fullPage` or
 `stories`; one that no page names fails the storybook tests, so a new story file comes with its
@@ -143,7 +148,7 @@ shot) stay shot once.
 
 The check runs in one of two modes:
 
-- **Affected** (`bunx nx run storybook:visual`, or `bunx nx affected -t visual`): only the stories
+- **Affected** (`bunx moon run storybook:visual`): only the stories
   the change reaches, found by following imports from each story file. They are shot in the
   reference theme, and when the Gallery sections are among them (a component change usually
   reaches them), those are shot in every theme. A change to the reference theme's CSS file captures
@@ -153,17 +158,17 @@ The check runs in one of two modes:
   Overview is always captured. Anything shared (the palette, Storybook's config, the lockfile, a
   `package.json`, the visual scripts) or a diff that cannot be read captures everything. The run
   says at the top what it picked and why, how much it skipped, and the shots per theme.
-- **Everything** (`bunx nx run storybook:visual --all`, or `VISUAL_ALL=1 bunx nx run-many -t
-  visual`): every group whole. An upload (`visual-upload`) is always this mode.
+- **Everything** (`bunx moon run storybook:visual -- --all`, or
+  `VISUAL_ALL=1 bunx moon run storybook:visual`): every group whole. An upload (`visual-upload`) is always this mode.
 
 The local run (`visual`) builds the merge-base's Storybook in a shared worktree, captures it and
 writes one report per group to `apps/storybook/.pixelslash/<slug>/report/index.html`. An upload
-(`VISUAL_PARALLEL=3 bunx nx run storybook:visual-upload --parallel=3`, which needs `PIXELSLASH_SERVER` and a token;
+(`VISUAL_PARALLEL=3 bunx moon run storybook:visual-upload`, which needs `PIXELSLASH_SERVER` and a token;
 see "Uploads can run side by side" below) builds and
 captures no base at all. It has two modes, picked from the checkout:
 
 - **A branch rebased on origin/main** captures the branch only and uploads it. The server diffs it
-  against the `main` build it already holds, so `--summary` prints the server's counts against main
+  against the `main` build it already holds, so the run's summary prints the server's counts against main
   (changed and new, and how many shots are to review, with the build's status) and the
   build's page. Before any capture it checks that each project holds a `main` build at the
   merge-base or an ancestor, and fails naming the project when none does.
@@ -172,17 +177,16 @@ captures no base at all. It has two modes, picked from the checkout:
   keeps those `main` builds on the server. Any other commit on `main` is refused.
 
 **Uploads can run side by side.** The groups of an upload each write their own
-`.pixelslash/<section>/` and send to their own PixelSlash project, so Nx can run several at once,
-and the slowest group, not the sum, then sets the wall time. Give the count twice, because Nx does
-not hand `--parallel` to a task:
+`.pixelslash/<section>/` and send to their own PixelSlash project, so the run can take several at
+once, and the slowest group, not the sum, then sets the wall time. `VISUAL_PARALLEL` (a whole
+number, default 1) is how many groups run at once:
 
 ```bash
-VISUAL_PARALLEL=3 bunx nx run storybook:visual-upload --parallel=3
+VISUAL_PARALLEL=3 bunx moon run storybook:visual-upload
 ```
 
-Nx runs 3 tasks at once unless told otherwise, so a bare `bunx nx run storybook:visual-upload` has 3
-groups at once with the workers of one; always give both. `VISUAL_PARALLEL` (a whole number, default
-1) is how a group learns how many run beside it. Only an upload reads it. Each
+A bare `bunx moon run storybook:visual-upload` takes one group at a time. Only an upload reads
+`VISUAL_PARALLEL`. Each
 group's capture then takes `max(1, min(10, floor(cpus / VISUAL_PARALLEL)))` workers, where `cpus` is
 what `os.availableParallelism()` reports (the CPUs the process may use, so a CPU-limited scope
 counts its own), and ten is PixelSlash's own ceiling. Three groups on 12 CPUs take 4 workers each;
@@ -208,13 +212,13 @@ What it means for you:
   `0 changed`. A component or theme CSS change will show changes: say in the pull request which
   stories should look different and why. Attach a before/after screenshot from Storybook if you can.
 - You can get most of the benefit without it: run Storybook, flip each theme, and read the
-  affected stories (and **Overview / All themes**); `bunx nx e2e storybook` checks every theme under
+  affected stories (and **Overview / All themes**); `bunx moon run storybook:e2e` checks every theme under
   its scope class.
 
 ## Commit messages
 
 Commits are [Conventional Commits](https://www.conventionalcommits.org): `<type>(<scope>): <subject>`,
-for example `fix(ui-react): keep the Pill label on one line`. Nx reads them to version and release each
+for example `fix(ui-react): keep the Pill label on one line`. `nx release` reads them to version and release each
 package, so the type is honest:
 
 - `feat`, `fix` and `perf` release a patch while a package is `0.x`. A `!` after the type, or a

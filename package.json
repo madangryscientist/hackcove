@@ -9,16 +9,17 @@
   ],
   "type": "module",
   "scripts": {
-    "build": "nx run-many -t build",
-    "typecheck": "nx run-many -t typecheck",
-    "lint": "nx run-many -t lint",
+    "build": "moon run --concurrency 3 :build",
+    "typecheck": "moon run --concurrency 3 :typecheck",
+    "lint": "moon run --concurrency 3 :lint",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
-    "test": "nx run-many -t test",
-    "pack:check": "nx run-many -t pack-check",
-    "storybook": "nx run storybook:storybook"
+    "test": "moon run --concurrency 3 :test",
+    "pack:check": "moon run --concurrency 3 :pack-check",
+    "storybook": "moon run storybook:storybook"
   },
   "devDependencies": {
+    "@moonrepo/cli": "2.6.5",
     "@nx/js": "23.3.0",
     "@playwright/test": "1.64.1",
     "@types/bun": "1.4.3",

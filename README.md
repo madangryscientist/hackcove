@@ -6,7 +6,7 @@ utility the components use, so switching theme reskins a whole site with no comp
 nothing to configure. It fixes the look and feel so agents reliably build good-looking sites; it is
 not an extensible framework with every option in the world.
 
-It is an Nx + Bun-workspaces monorepo. Every package here is published on its own and is on npm
+It is a moon + Bun-workspaces monorepo. Every package here is published on its own and is on npm
 under the `@hackcove` scope (MIT, all `0.x`).
 
 | Folder | Package | What it is |
@@ -158,8 +158,8 @@ A theme is one CSS file in the `themes/` package, and its file name is its id:
    bar. Decorative and inactive pairings (hairline dividers, the dimming veil, dimmed text) are
    exempt by role, with the reason, in the same file.
 3. Add a row to the table in `themes/README.md`, and any upstream licence text to `themes/NOTICE`.
-4. `bunx nx run themes:test`. `themes.test.ts` reads every CSS file there and applies the contract
-   to each. `bunx nx run themes:pack-check` then checks the tarball would carry every theme, the
+4. `bunx moon run themes:test`. `themes.test.ts` reads every CSS file there and applies the contract
+   to each. `bunx moon run themes:pack-check` then checks the tarball would carry every theme, the
    manifest, the README and both licences, and nothing else.
 
 There is nothing else to register: the package's `exports` and `files` are globs, and Storybook finds
@@ -235,17 +235,17 @@ manual GitHub Actions workflow. Nothing publishes on a push. The maintainer note
 
 ## Develop
 
-Everything goes through Nx:
+Every task goes through moon (Nx is here only for `nx release`):
 
 ```sh
 bun install
-bunx nx run-many -t typecheck lint test build   # the gate
-bun run format:check                            # oxfmt, workspace-wide
-bunx nx run-many -t pack-check                  # npm pack --dry-run per package; ui-react also typechecks its tarball in a consumer app
-bunx nx e2e storybook                           # Playwright over the built Storybook, in Chromium, Firefox and WebKit (first time: bunx playwright install chromium firefox webkit)
-bunx nx e2e hack-cove-site                      # Playwright over the built site: the /ui/ pages under every theme
-bunx nx run storybook:storybook                 # http://localhost:6006
-bunx nx dev hack-cove-site                      # the website, http://localhost:4321
+bunx moon run :typecheck :lint :test :build      # the gate
+bun run format:check                             # oxfmt, workspace-wide
+bunx moon run :pack-check                        # npm pack --dry-run per package; ui-react also typechecks its tarball in a consumer app
+bunx moon run storybook:e2e                      # Playwright over the built Storybook, in Chromium, Firefox and WebKit (first time: bunx playwright install chromium firefox webkit)
+bunx moon run hack-cove-site:e2e                 # Playwright over the built site: the /ui/ pages under every theme
+bunx moon run storybook:storybook                # http://localhost:6006
+bunx moon run hack-cove-site:dev                 # the website, http://localhost:4321
 ```
 
 Contributing? Start with [`CONTRIBUTING.md`](CONTRIBUTING.md).
@@ -253,4 +253,4 @@ Contributing? Start with [`CONTRIBUTING.md`](CONTRIBUTING.md).
 Try an unpublished change in a consumer checkout: run `bun link` once inside `packages/ui-react` and
 `themes`, then `bun link @hackcove/ui-react` and `bun link @hackcove/themes` in the consumer. Consumers
 install the published `0.x` from npm, so the link is only for checking a change before it is
-published. Rebuild `packages/ui-react` (`bunx nx build ui-react`) after a change; a linked consumer reads its `dist/`.
+published. Rebuild `packages/ui-react` (`bunx moon run ui-react:build`) after a change; a linked consumer reads its `dist/`.

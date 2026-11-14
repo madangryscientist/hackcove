@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "moon": {
+      "command": "bunx",
+      "args": ["moon", "mcp"]
+    }
+  }
+}

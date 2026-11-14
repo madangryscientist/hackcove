@@ -10,10 +10,8 @@
     "lint": "oxlint -c ../../.oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
     "test": "vitest run scripts",
     "test:e2e": "playwright test",
-    "visual": "bun scripts/visual.ts --summary",
-    "visual:upload": "bun scripts/visual.ts --summary --upload",
-    "visual:plan": "bun scripts/visual.ts --plan",
-    "visual:plan-upload": "bun scripts/visual.ts --plan --upload"
+    "visual": "bun scripts/visual.ts --run",
+    "visual:upload": "bun scripts/visual.ts --run --upload"
   },
   "dependencies": {
     "@hackcove/themes-shared": "workspace:*",
@@ -33,92 +31,6 @@
     "vitest": "5.0.5"
   },
   "nx": {
-    "name": "storybook",
-    "tags": [
-      "kind:app"
-    ],
-    "targets": {
-      "build": {
-        "inputs": [
-          "default",
-          "{workspaceRoot}/themes/*.css",
-          "{workspaceRoot}/packages/themes-shared/src/**/*",
-          "{workspaceRoot}/packages/ui-react/src/**/*",
-          "{workspaceRoot}/apps/hack-cove-site/src/content/components/**/*"
-        ],
-        "outputs": [
-          "{projectRoot}/storybook-static"
-        ]
-      },
-      "e2e": {
-        "executor": "nx:run-script",
-        "options": {
-          "script": "test:e2e"
-        },
-        "dependsOn": [
-          "build"
-        ],
-        "cache": false
-      },
-      "visual": {
-        "executor": "nx:run-script",
-        "options": {
-          "script": "visual"
-        },
-        "dependsOn": [
-          {
-            "projects": "tag:visual-group",
-            "target": "visual",
-            "params": "forward"
-          }
-        ],
-        "inputs": [],
-        "cache": false
-      },
-      "visual-upload": {
-        "executor": "nx:run-script",
-        "options": {
-          "script": "visual:upload"
-        },
-        "dependsOn": [
-          {
-            "projects": "tag:visual-group",
-            "target": "visual-upload",
-            "params": "forward"
-          }
-        ],
-        "inputs": [],
-        "cache": false
-      },
-      "visual-plan": {
-        "executor": "nx:run-script",
-        "options": {
-          "script": "visual:plan"
-        },
-        "dependsOn": [
-          "build"
-        ],
-        "inputs": [],
-        "cache": false
-      },
-      "visual-plan-upload": {
-        "executor": "nx:run-script",
-        "options": {
-          "script": "visual:plan-upload"
-        },
-        "dependsOn": [
-          "build"
-        ],
-        "inputs": [],
-        "cache": false
-      },
-      "test": {
-        "inputs": [
-          "default",
-          "{workspaceRoot}/apps/hack-cove-site/src/content/components/**/*",
-          "{workspaceRoot}/packages/ui-react/src/**/*"
-        ]
-      }
-    }
+    "name": "storybook"
   }
 }

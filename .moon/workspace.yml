@@ -1,0 +1,25 @@
+# moon runs every task in this repo. The project ids are the release's project names
+# (`bunx moon run ui-react:test`). Projects are listed, not globbed. Releasing is the one job moon
+# does not do (docs/releasing.md).
+#
+# No toolchain is declared (no .moon/toolchains.yml): every task runs on the `system` toolchain, so
+# moon runs our bun commands as they are and never downloads Bun or runs `bun install`.
+# The cache lives in .moon/cache (gitignored); moon has no setting to move it.
+$schema: "./cache/schemas/workspace.json"
+
+projects:
+  ui-react: "packages/ui-react"
+  themes-shared: "packages/themes-shared"
+  themes: "themes"
+  storybook: "apps/storybook"
+  hack-cove-site: "apps/hack-cove-site"
+  ui-review: "tools/ui-review"
+
+vcs:
+  client: "git"
+  defaultBranch: "main"
+
+pipeline:
+  installDependencies: false
+
+telemetry: false

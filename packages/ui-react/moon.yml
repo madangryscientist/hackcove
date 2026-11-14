@@ -1,0 +1,21 @@
+$schema: "../../.moon/cache/schemas/project.json"
+
+# @hackcove/ui-react. Each task runs the package.json script of its name (`prepack` is npm's, not a task).
+tasks:
+  build:
+    command: "bun run build"
+    inputs: ["**/*"]
+    outputs: ["dist"]
+  typecheck:
+    command: "bun run typecheck"
+    inputs: ["**/*"]
+  lint:
+    command: "bun run lint"
+    inputs: ["**/*"]
+  test:
+    command: "bun run test"
+    inputs: ["**/*"]
+  pack-check:
+    command: "bun run pack-check"
+    inputs: ["**/*"]
+    deps: ["~:build"]

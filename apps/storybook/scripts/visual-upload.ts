@@ -11,7 +11,7 @@
 import { isRecord } from "./visual-index.js";
 
 /** The command that puts a main build on the server, quoted by every failure that needs one. */
-const MAIN_COMMAND = "nx run storybook:visual-upload";
+const MAIN_COMMAND = "bunx moon run storybook:visual-upload";
 
 export type UploadState = {
   /** The checked-out branch; empty for a detached HEAD. */

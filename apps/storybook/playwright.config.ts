@@ -15,7 +15,7 @@ export default defineConfig({
     { name: "firefox", use: { ...devices["Desktop Firefox"] } },
     { name: "webkit", use: { ...devices["Desktop Safari"] } },
   ],
-  // The `e2e` Nx target builds Storybook first; this only serves the result.
+  // The `e2e` moon task builds Storybook first; this only serves the result.
   webServer: {
     command: "bun e2e/serve.ts",
     url: `http://127.0.0.1:${port}/iframe.html`,

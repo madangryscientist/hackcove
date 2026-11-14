@@ -116,7 +116,7 @@ jobs:
       - name: Gate
         run: |
           bun run format:check
-          bunx nx run-many -t typecheck lint test build pack-check
+          bunx moon run --concurrency 3 :typecheck :lint :test :build :pack-check
 
       # A new project's first publish, at the version already in its package.json. Each one gets its
       # own `nx release <that version> --first-release`: the explicit specifier is the on-disk version,

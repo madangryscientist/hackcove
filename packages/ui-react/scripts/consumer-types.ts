@@ -22,7 +22,7 @@ const pkg: { version: string; devDependencies: Record<string, string> } = JSON.p
 );
 
 if (!existsSync(join(root, "dist", "index.d.ts"))) {
-  throw new Error("packages/ui-react/dist is missing: run `bunx nx build ui-react` first");
+  throw new Error("packages/ui-react/dist is missing: run `bunx moon run ui-react:build` first");
 }
 
 // One dir per checkout, so concurrent worktrees do not collide and the bun global store, which
@@ -44,7 +44,7 @@ function run(cmd: string[], cwd: string): void {
 }
 
 try {
-  // --ignore-scripts: `prepack` would rebuild dist, which the caller (nx) has just built.
+  // --ignore-scripts: `prepack` would rebuild dist, which the caller (moon) has just built.
   run(["npm", "pack", "--ignore-scripts", "--pack-destination", app], root);
   const tarball = join(app, `hackcove-ui-react-${pkg.version}.tgz`);
 

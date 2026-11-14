@@ -1,0 +1,24 @@
+$schema: "../.moon/cache/schemas/project.json"
+
+# @hackcove/themes: one CSS file per theme. Each task runs the package.json script of its name.
+# themes.test.ts holds every theme to the palette ui-react uses and to the contrast and
+# distinction contracts in themes-shared, so those files are inputs of every task that reads it.
+fileGroups:
+  contract:
+    - "/packages/ui-react/palette.json"
+    - "/packages/themes-shared/**/*"
+
+tasks:
+  typecheck:
+    command: "bun run typecheck"
+    inputs: ["**/*", "@group(contract)"]
+  lint:
+    command: "bun run lint"
+    inputs: ["**/*", "@group(contract)"]
+  test:
+    command: "bun run test"
+    inputs: ["**/*", "@group(contract)"]
+  # No build: the CSS files ship as they are.
+  pack-check:
+    command: "bun run pack-check"
+    inputs: ["**/*"]

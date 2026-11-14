@@ -1,7 +1,8 @@
 # hackcove — repo conventions
 
 The Hack Cove design system: React components (`@hackcove/ui-react`) and the themes
-(`@hackcove/themes`, one CSS file per theme), each its own npm package, in an Nx + Bun-workspaces monorepo.
+(`@hackcove/themes`, one CSS file per theme), each its own npm package, in a moon + Bun-workspaces monorepo. moon runs every task; Nx is
+here only for `nx release` (`docs/releasing.md`).
 `README.md` is the user-facing contract (install, usage, how to add a theme);
 `CONTRIBUTING.md` is the guide for contributors.
 
@@ -50,25 +51,29 @@ Overview and the visual matrix list `themes/*.css` and nothing else.
 
 **The site composes ui components.** `apps/hack-cove-site` is a composition of `@hackcove/ui-react` and a theme and nothing of its own; a custom style or component there is a flag, not a fix. Put it on the list in the site's `README.md` (a swap, a hackcove ticket, or "Custom, by design" with the reason), and do not add the style to the site.
 
-**React Native comes later, in this repo.** `@hackcove/ui-react-native` will be its own Nx project at `packages/ui-react-native`, built natively rather than through react-native-web. What the two renderers share stays in sync through a shared core package and PixelSlash parity.
+**React Native comes later, in this repo.** `@hackcove/ui-react-native` will be its own moon project at `packages/ui-react-native`, built natively rather than through react-native-web. What the two renderers share stays in sync through a shared core package and PixelSlash parity.
 
 ## The gate
 
-Everything runs through Nx (Bun, strict tsconfig, oxlint + oxfmt, Vitest). A change is green when
+Everything runs through moon 2.6.5 (Bun, strict tsconfig, oxlint + oxfmt, Vitest). Tasks are
+declared in `.moon/workspace.yml`, `.moon/tasks/all.yml` and each project's `moon.yml`, and each
+runs the `package.json` script of its name. moon hashes no dependency's files on its own, so a task
+that reads another project lists that project's files in its inputs; a new cross-project read adds
+one there. A change is green when
 all of these pass **from the checkout**:
 
 ```bash
 bun install                                        # a fresh checkout has no node_modules
-bunx nx run-many -t typecheck lint test build      # tsc strict · oxlint --type-aware --deny-warnings + check-slop · Vitest · dist + Storybook build
+bunx moon run --concurrency 3 :typecheck :lint :test :build   # tsc strict · oxlint --type-aware --deny-warnings + check-slop · Vitest · dist + Storybook build
 bun run format:check                               # oxfmt --check  (`bun run format` fixes)
-bunx nx run-many -t pack-check                     # npm pack --dry-run for every package; ui-react also typechecks its tarball in a consumer app
-bunx nx e2e storybook                              # Playwright (Chromium, Firefox, WebKit): builds Storybook, serves it on 127.0.0.1:6007, flips every theme
-bunx nx e2e hack-cove-site                         # Playwright: builds the site, serves it on 127.0.0.1:4322, flips every theme on the /ui/ pages
+bunx moon run --concurrency 3 :pack-check        # npm pack --dry-run for every package; ui-react also typechecks its tarball in a consumer app
+bunx moon run storybook:e2e                      # Playwright (Chromium, Firefox, WebKit): builds Storybook, serves it on 127.0.0.1:6007, flips every theme
+bunx moon run hack-cove-site:e2e                 # Playwright: builds the site, serves it on 127.0.0.1:4322, flips every theme on the /ui/ pages
 ```
 
-`bunx nx affected -t ...` for just what changed; `--skip-nx-cache` to force a rerun. Lint rules are
-all errors; fix the code, do not disable a rule. Stop a process by the pid you started or by its port. Never `pkill -f` or `killall` a word such as storybook, nx, bun or vite: a shared machine can be running someone else's capture or upload. A change to a component or a theme's CSS file also gets
-a look: `bunx nx run storybook:storybook`, flip the theme switcher, and read the stories. Every component exported from `packages/ui-react/src/index.ts` has its own story and appears in `apps/storybook/src/Gallery.tsx`. A new component adds both in the same change. **A story's title is `<Section>/<Page name>`, taken from the site's `componentSections` (`apps/hack-cove-site/src/content/components/`), never written from memory:** add the component to a page there first, then give its story file that page's section and name. The Storybook sidebar is built from the same list, in the site's rail order (`apps/storybook/scripts/visual-plan.ts`, `sidebarOrder`), so there is no sort list to edit; `visual-plan.test.ts` fails on a title that is not the site's, or a story file no page names. **Overview / All themes** is the one-page check of every component in every theme.
+An unchanged project is a cache hit; `--force` on `moon run` forces a rerun. Lint rules are
+all errors; fix the code, do not disable a rule. Stop a process by the pid you started or by its port. Never `pkill -f` or `killall` a word such as storybook, moon, bun or vite: a shared machine can be running someone else's capture or upload. A change to a component or a theme's CSS file also gets
+a look: `bunx moon run storybook:storybook`, flip the theme switcher, and read the stories. Every component exported from `packages/ui-react/src/index.ts` has its own story and appears in `apps/storybook/src/Gallery.tsx`. A new component adds both in the same change. **A story's title is `<Section>/<Page name>`, taken from the site's `componentSections` (`apps/hack-cove-site/src/content/components/`), never written from memory:** add the component to a page there first, then give its story file that page's section and name. The Storybook sidebar is built from the same list, in the site's rail order (`apps/storybook/scripts/visual-plan.ts`, `sidebarOrder`), so there is no sort list to edit; `visual-plan.test.ts` fails on a title that is not the site's, or a story file no page names. **Overview / All themes** is the one-page check of every component in every theme.
 
 **Nothing is time dependent.** Jacobus, 2026-11-14: "The architecture of the test is wrong if it relies on timings for displaying it. We should be able to pass it in a value and then render that. It should not be time dependent. The component itself should not be time dependent." A component renders from the value it is given, and a test passes that value and asserts what renders. No fake timers, no waiting on a delay, no story driven by a timer, no `waitForTimeout` in an e2e spec. A visual delay, a fade or a label that reverts is CSS (an animation and its delay), as `CopyButton` and `NavigationProgress` do; a pending state is a value the story holds (a promise that never settles, or a button that lands it). The lint (`scripts/slopRules.ts`) fails a test, story or e2e file that uses a fake or real timer, and a `@hackcove/ui-react` component that calls `setTimeout` or `setInterval`; a line with `// time-dependent: <why>` on it or above it is exempt, and needs a reason a reviewer accepts.
 
@@ -77,26 +82,25 @@ from `themes/*.css` like the switcher does and asserts each one under the scope 
 names, so a new theme needs no test edit.
 
 **The visual check** (PixelSlash, `CONTRIBUTING.md`, "The visual check") is split into one group
-per section of the site's component docs, read from `componentSections`: one Nx project
-`visual-<section>` and one PixelSlash project `hackcove-ui-<section>` each, plus Overview, which is
+per section of the site's component docs, read from `componentSections`: one `.pixelslash/<section>/` folder
+and one PixelSlash project `hackcove-ui-<section>` each, plus Overview, which is
 always captured. Every story is shot in the reference theme, the first theme file
 in sorted order (`themeFiles`), read from `themes/`, never named in code. Every other theme is shot
 in **Overview / Gallery sections** only, which must render every component `index.ts` exports
 (`visual-shots.test.ts`), so a theme added costs one Gallery, not every story. A theme whose file
-sorts first becomes the reference and moves the full set to it. `bunx nx run storybook:visual` (or `bunx nx affected -t visual`) captures only the
+sorts first becomes the reference and moves the full set to it. `bunx moon run storybook:visual` captures only the
 stories and themes the change reaches against the merge-base, and its report says what it picked
-and why. `bunx nx run storybook:visual --all` (or `VISUAL_ALL=1 bunx nx run-many -t visual`;
-run-many takes `--all` for itself) captures everything. A gate run is `--all`. Every story file is
+and why. `bunx moon run storybook:visual -- --all` (or `VISUAL_ALL=1 bunx moon run storybook:visual`)
+captures everything. A gate run is `--all`. Every story file is
 named by a docs page (`pairs`, `fullPage` or `stories`); the storybook tests fail on one that is not.
 
-**Uploads run their groups in parallel; the local compare does not.** Only the `visual-upload`
-targets have `parallelism: true` (`nx-plugin.ts`); `visual` stays serial, since it builds and
-captures the base under the baseline lock. Nx does not hand `--parallel` to a task, so always give
-the count twice, as `VISUAL_PARALLEL=3 bunx nx run storybook:visual-upload --parallel=3` (a bare
-run has Nx's 3 groups at once with one group's workers). Each group takes
-`max(1, min(10, floor(cpus / VISUAL_PARALLEL)))` capture workers, `cpus` from
-`os.availableParallelism()`, so never run `--parallel` above the CPUs: groups times workers must
-fit. `CONTRIBUTING.md`, "The visual check", has the rest, including the port retry.
+**Uploads run their groups in parallel; the local compare does not.** `scripts/visual.ts --run`
+plans, runs each group and totals them in one process. `visual-upload` runs `VISUAL_PARALLEL`
+groups at once (default 1), as `VISUAL_PARALLEL=3 bunx moon run storybook:visual-upload`; a bare
+upload takes one at a time. `visual` stays serial, since it builds and captures the base under the
+baseline lock. Each group takes `max(1, min(10, floor(cpus / VISUAL_PARALLEL)))` capture workers,
+`cpus` from `os.availableParallelism()`, so never set `VISUAL_PARALLEL` above the CPUs: groups times
+workers must fit. `CONTRIBUTING.md`, "The visual check", has the rest, including the port retry.
 
 **A shot may not pass PixelSlash's 24.5 Mpx limit** (19140px tall at 1280 wide; PS-323 ends a build
 at errored on one). The two one-page Overviews, **Gallery** and **All themes**, are for people and are not
@@ -147,11 +151,11 @@ hackcove lands through pull requests (Jacobus, 2026-10-27). Who opens and who me
 global rule; what is particular to hackcove:
 
 - **Screenshots before the merge.** The planner gates the PR's head, reads the PixelSlash
-  reports, and uploads that commit's screenshots (`VISUAL_PARALLEL=3 nx run storybook:visual-upload --parallel=3`, every group
+  reports, and uploads that commit's screenshots (`VISUAL_PARALLEL=3 bunx moon run storybook:visual-upload`, every group
   whole, each to its own `hackcove-ui-<section>` project) before it merges. The upload captures
   the branch only: the PixelSlash server diffs it against the `main` build it already holds, and
   the run fails naming the project if it holds none at the merge-base or an ancestor.
-- **Screenshots after the merge.** The planner then runs `VISUAL_PARALLEL=3 nx run storybook:visual-upload --parallel=3` on a
+- **Screenshots after the merge.** The planner then runs `VISUAL_PARALLEL=3 bunx moon run storybook:visual-upload` on a
   worktree at the merge commit (a detached HEAD at origin/main's tip is fine). Nothing else seeds
   `main`'s builds, so a merge without this step leaves the next branch with no baseline. A release
   commit that `publish.yml` pushes needs no upload of its own: the server picks its parent's build.
