@@ -13,7 +13,7 @@ const CODE_IN_COMMENT =
 // renders: nothing waits on elapsed time. A timer is bare when it is the global one (or reached
 // through `window`, `globalThis` or `self`), so a method of the same name, Playwright's
 // `test.setTimeout` (the test's own time limit), does not hit.
-const BARE_TIMER = /(?:^|[^\w$.])(?:(?:window|globalThis|self)\.)?set(?:Timeout|Interval)\(/;
+const BARE_TIMER = /(?:^|[^\w$.])(?:(?:window|globalThis|self)\.)?set(?:Timeout|Interval)\s*\(/;
 /** A fake or waited-on clock, in any file, a test harness included: Vitest's and Playwright's. */
 const FAKE_CLOCK =
   /\b(?:useFakeTimers|advanceTimers\w*|runAllTimers\w*|runOnlyPendingTimers\w*|setSystemTime|waitForTimeout)\b|\.clock\.(?:install|runFor|fastForward|pauseAt|resume|setFixedTime|setSystemTime)\(/;
