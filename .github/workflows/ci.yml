@@ -35,8 +35,9 @@ jobs:
       # "ambiguous argument 'main'". `moon run` picks no task by that diff, so the base is HEAD
       # itself: an empty diff and no history to fetch.
       MOON_BASE: HEAD
-      # A push takes the write token and nothing else, so a missing one fails the guard below rather
-      # than falling back to the read token and leaving main's cache unfilled with the job green.
+      # A push takes the write token and nothing else, so a missing one fails the check below rather
+      # than falling back to the read token. The check sees only a missing token: a revoked one shows
+      # as WARN lines about failed uploads in main's log, with the job still green.
       MOON_REMOTE_TOKEN: ${{ github.event_name == 'push' && secrets.MOON_CACHE_WRITE_TOKEN || github.event_name != 'push' && secrets.MOON_CACHE_READ_TOKEN || '' }}
     steps:
       - name: Check main can write the remote cache
