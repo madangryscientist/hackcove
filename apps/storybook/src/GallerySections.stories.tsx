@@ -6,8 +6,8 @@ import { resetColourScheme } from "./resetColourScheme";
  * The Gallery in slices, one story each, in the toolbar's theme. This is what the visual check
  * shoots: Overview / Gallery is one 19000px page, over PixelSlash's 24.5 Mpx limit for a shot as
  * soon as it grows, so the check skips it (`visualSkipped`) and shoots these instead. Each slice's
- * name is the section's `title` in `gallerySections`; the test in `GallerySections.test.ts` keeps
- * the two lists the same.
+ * name is the section's `title` in `gallerySections`; `scripts/visual-shots.test.ts` keeps the two
+ * lists the same, and checks that the sections render every component the library exports.
  */
 const meta: Meta = { title: "Overview/Gallery sections", parameters: { layout: "fullscreen" } };
 export default meta;

@@ -77,7 +77,11 @@ names, so a new theme needs no test edit.
 **The visual check** (PixelSlash, `CONTRIBUTING.md`, "The visual check") is split into one group
 per section of the site's component docs, read from `componentSections`: one Nx project
 `visual-<section>` and one PixelSlash project `hackcove-ui-<section>` each, plus Overview, which is
-always captured. `bunx nx run storybook:visual` (or `bunx nx affected -t visual`) captures only the
+always captured. Every story is shot in the reference theme, the first theme file
+in sorted order (`themeFiles`), read from `themes/`, never named in code. Every other theme is shot
+in **Overview / Gallery sections** only, which must render every component `index.ts` exports
+(`visual-shots.test.ts`), so a theme added costs one Gallery, not every story. A theme whose file
+sorts first becomes the reference and moves the full set to it. `bunx nx run storybook:visual` (or `bunx nx affected -t visual`) captures only the
 stories and themes the change reaches against the merge-base, and its report says what it picked
 and why. `bunx nx run storybook:visual --all` (or `VISUAL_ALL=1 bunx nx run-many -t visual`;
 run-many takes `--all` for itself) captures everything. A gate run is `--all`. Every story file is

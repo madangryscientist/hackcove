@@ -226,7 +226,7 @@ const pixelslash = {
   },
   proof: {
     title: "In use on every Hack Cove UI change",
-    text: "Hack Cove UI's visual check captures every Storybook story in every theme and uploads it to a PixelSlash project per docs section, where each change is reviewed before it merges.",
+    text: "Hack Cove UI's visual check captures every Storybook story in one theme and every component in each of the others, and uploads it to a PixelSlash project per docs section, where each change is reviewed before it merges.",
     link: { label: "See Hack Cove UI", href: "/ui/" },
   },
   closing: {

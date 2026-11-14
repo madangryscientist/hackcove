@@ -7,7 +7,8 @@
  * own PixelSlash project (`hackcove-ui-<slug>`). A run has three steps, each a mode of this script:
  *
  * - `--plan` reads the diff against the base and writes `.pixelslash/plan.json`: which groups,
- *   story files and themes the change reaches, and why (`visual-plan.ts`). `--all`, or
+ *   story files and themes the change reaches, and why (`visual-plan.ts`): every story in the
+ *   reference theme, the Gallery sections in every other. `--all`, or
  *   `VISUAL_ALL=1`, picks everything.
  * - `--group <slug>` captures that group's picked stories on the branch and on the base, and
  *   compares them; a group the plan skipped does nothing. It fails, naming the shot, when a branch
@@ -29,15 +30,15 @@
  *   auto-accepts as the baseline. This is the post-merge step that keeps those main builds there.
  *
  * Either way it waits for the server to finish diffing and takes the counts and the build's page
- * from the server. An upload always takes a whole group in every theme, since a partial capture
- * would read as removals.
+ * from the server. An upload always takes a whole group (every story in the reference theme, the
+ * Gallery sections in the others; `visual-plan.ts`), since a partial capture would read as removals.
  */
 import { randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { themeFiles } from "@hackcove/themes-shared/files";
-import { baseThemeIds, themesOnBase } from "./theme-reach.js";
-import { indexOf, isRecord, shotsOf } from "./visual-index.js";
+import { baseThemeIds, capturesOnBase } from "./theme-reach.js";
+import { indexOf, isRecord, shotsByTheme, shotsOf } from "./visual-index.js";
 import { groupStories, planCapture, readRepo, type Grouping, type Plan } from "./visual-plan.js";
 import {
   VisualError,
@@ -67,7 +68,8 @@ const everything = process.argv.includes("--all") || process.env["VISUAL_ALL"] =
 const planPath = join(out, "plan.json");
 const countKeys: (keyof Counts)[] = ["changed", "unchanged", "new", "removed"];
 
-type PlannedGroup = Selection & { slug: string; project: string; skipped: boolean };
+/** A group's captures, in order: the reference theme's, then the Gallery sections' in the others. */
+type PlannedGroup = { slug: string; project: string; skipped: boolean; captures: Selection[] };
 // `mode` is the upload's: the branch alone, or this commit as `main`; absent for a local run.
 type SavedPlan = {
   id: string;
@@ -86,8 +88,10 @@ function isPlannedGroup(value: unknown): value is PlannedGroup {
     typeof value["slug"] === "string" &&
     typeof value["project"] === "string" &&
     typeof value["skipped"] === "boolean" &&
-    isStrings(value["titles"]) &&
-    isStrings(value["themes"])
+    Array.isArray(value["captures"]) &&
+    value["captures"].every(
+      (pick: unknown) => isRecord(pick) && isStrings(pick["titles"]) && isStrings(pick["themes"]),
+    )
   );
 }
 
@@ -134,25 +138,43 @@ function checked(result: Grouping): Grouping {
   return result;
 }
 
-/** What the plan says, at the top of the run: what is captured and why, and what is skipped. */
-function reportPlan(plan: Plan, grouping: Grouping, saved: SavedPlan, themes: number) {
+/** Two story files may share a title (a page's extra stories), and PixelSlash includes by title. */
+const titlesOf = (captures: { files: { title: string }[]; themes: string[] }[]) =>
+  captures.map((c) => ({ titles: [...new Set(c.files.map((f) => f.title))], themes: c.themes }));
+
+/**
+ * What the plan says, at the top of the run: what is captured and why, and what is skipped, then
+ * the shots per theme against what a run of everything takes (`whole`).
+ */
+function reportPlan(plan: Plan, grouping: Grouping, saved: SavedPlan, whole: Plan) {
   const index = indexOf(branchStatic);
-  const allTitles = grouping.groups.flatMap((g) => g.files.map((f) => f.title));
-  const shots = saved.groups.reduce((n, g) => n + shotsOf(index, g.titles, g.themes.length), 0);
+  const shots = (captures: Selection[]) =>
+    captures.reduce(
+      (n, c) => n + (c.themes.length > 0 ? shotsOf(index, c.titles, c.themes.length) : 0),
+      0,
+    );
+  const planned = saved.groups.flatMap((g) => g.captures);
+  const wholeCaptures = whole.picked.flatMap((g) => titlesOf(g.captures));
   const files = plan.picked.reduce((n, g) => n + g.picked.length, 0);
+  const allFiles = grouping.groups.reduce((n, g) => n + g.files.length, 0);
   log(
     `${plan.all ? "everything" : "affected"}: ${plan.picked.length} of ${grouping.groups.length} groups, ` +
-      `${files} of ${allTitles.length} story files, ${shots} of ${shotsOf(index, allTitles, themes)} shots`,
+      `${files} of ${allFiles} story files, ${shots(planned)} of ${shots(wholeCaptures)} shots`,
   );
   for (const note of plan.notes) log(`  ${note}`);
   for (const g of plan.picked) {
     const why = g.why.length > 0 ? ` (${g.why.join("; ")})` : "";
-    log(
-      `  ${g.slug}: ${g.picked.length} of ${g.files.length} story files in ${g.themes.join(", ")}${why}`,
-    );
+    const captures = g.captures
+      .filter((c) => c.themes.length > 0)
+      .map((c) => `${c.files.length} of ${g.files.length} story files in ${c.themes.join(", ")}`);
+    log(`  ${g.slug}: ${captures.join("; ")}${why}`);
   }
   const skipped = plan.skipped.map((g) => `${g.slug} (${g.files.length} story files)`);
   if (skipped.length > 0) log(`skipped as unaffected: ${skipped.join(", ")}`);
+  const now = shotsByTheme(index, planned);
+  const all = shotsByTheme(index, wholeCaptures);
+  const perTheme = [...all.themes].map(([id, n]) => `${id} ${now.themes.get(id) ?? 0} of ${n}`);
+  log(`shots per theme: ${perTheme.join(", ")}; shot once: ${now.once} of ${all.once}`);
 }
 
 async function planMode() {
@@ -171,14 +193,8 @@ async function planMode() {
   const picked = new Map(plan.picked.map((g) => [g.slug, g]));
   const groups = grouping.groups.map((group) => {
     const pick = picked.get(group.slug);
-    const titles = (pick?.picked ?? []).map((file) => file.title);
-    return {
-      slug: group.slug,
-      project: group.project,
-      skipped: !pick,
-      titles,
-      themes: pick?.themes ?? [],
-    };
+    const captures = titlesOf(pick?.captures ?? []);
+    return { slug: group.slug, project: group.project, skipped: !pick, captures };
   });
   const saved: SavedPlan = { id: randomUUID(), upload, mode, sha: base.sha, groups };
   mkdirSync(out, { recursive: true });
@@ -187,18 +203,20 @@ async function planMode() {
     log(`main: uploading ${base.sha.slice(0, 7)} as the baseline, nothing compared`);
   else if (mode === "branch") log("branch: the server diffs it against the main build it holds");
   else log(`base: ${base.label} ${base.sha.slice(0, 7)}`);
-  reportPlan(plan, grouping, saved, repo.themes.length);
+  const whole = planCapture({ repo, grouping, changed: [], everything: true });
+  reportPlan(plan, grouping, saved, whole);
 }
 
 /**
- * The base's capture of `pick`, reused while the base commit, the selection and the branch's themes
- * stay the same. The base is asked for its own theme ids, so a theme added or removed on the branch
- * reads as new or removed, not as changed.
+ * The base's capture of `captures`, reused while the base commit, the selection and the branch's
+ * themes stay the same. The base is asked for its own theme ids, and `capturesOnBase` maps the
+ * branch's captures onto them: a theme added on the branch reads as new, a theme it removed, or a
+ * reference it moved, as removed.
  */
-async function captureBase(dir: string, sha: string, pick: Selection) {
+async function captureBase(dir: string, sha: string, captures: Selection[]) {
   const keyPath = join(dir, "main.key");
   const branch = themeFiles(join(repoRoot, "themes")).map((theme) => theme.id);
-  const key = JSON.stringify({ sha, titles: pick.titles, themes: pick.themes, branch });
+  const key = JSON.stringify({ sha, captures, branch });
   if (existsSync(keyPath) && readFileSync(keyPath, "utf8").trim() === key) {
     log(`base ${sha.slice(0, 7)} already captured`);
     return;
@@ -213,8 +231,7 @@ async function captureBase(dir: string, sha: string, pick: Selection) {
     } catch (error) {
       throw new VisualError(error instanceof Error ? error.message : String(error));
     }
-    const themes = themesOnBase(ids, pick.themes, branch);
-    await capture(baseStatic, join(dir, "main"), { ...pick, themes });
+    await capture(baseStatic, join(dir, "main"), capturesOnBase(captures, ids, branch));
   });
   writeFileSync(keyPath, `${key}\n`);
 }
@@ -235,7 +252,7 @@ async function groupMode(slug: string) {
   await capture(
     branchStatic,
     join(dir, "branch"),
-    group,
+    group.captures,
     plan.mode === null ? undefined : uploadWorkers(),
   );
   checkShotSizes(join(dir, "branch"), slug);
@@ -249,7 +266,7 @@ async function groupMode(slug: string) {
     );
     return;
   }
-  await captureBase(dir, plan.sha, group);
+  await captureBase(dir, plan.sha, group.captures);
   const report = join(dir, "report");
   const counts = await compare(join(dir, "main"), join(dir, "branch"), report);
   log(`${slug}: done in ${Math.round((Date.now() - started) / 1000)}s`);

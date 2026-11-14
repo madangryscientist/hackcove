@@ -47,3 +47,22 @@ export function shotsOf(index: StoryIndex, titles: string[], themes: number): nu
   }
   return shots;
 }
+
+/**
+ * The shots `captures` take, per theme, and the shots of stories that are shot once (at the
+ * globals' defaults, so in no theme of their own).
+ */
+export function shotsByTheme(
+  index: StoryIndex,
+  captures: { titles: string[]; themes: string[] }[],
+): { themes: Map<string, number>; once: number } {
+  const themes = new Map<string, number>();
+  let once = 0;
+  for (const { titles, themes: ids } of captures) {
+    if (ids.length === 0) continue;
+    once += shotsOf(index, titles, 0);
+    const each = shotsOf(index, titles, 1) - shotsOf(index, titles, 0);
+    for (const id of ids) themes.set(id, (themes.get(id) ?? 0) + each);
+  }
+  return { themes, once };
+}

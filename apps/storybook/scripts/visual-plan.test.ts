@@ -1,91 +1,31 @@
+import { globSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { themeFiles } from "@hackcove/themes-shared/files";
 import { describe, expect, it } from "vitest";
-import {
-  closureOf,
-  barrelOf,
-  groupStories,
-  planCapture,
-  readRepo,
-  type Repo,
-  type Section,
-  type StoryFile,
-} from "./visual-plan.js";
+import { GALLERY_TITLE, groupStories, planCapture, readRepo } from "./visual-plan.js";
+import { referenceOf } from "./theme-reach.js";
+import { grouping, repo, storyFiles } from "./visual-plan.fixture.js";
 import { sidebarOrder, titleOf } from "./sidebar-order.js";
 
-const story = (stem: string, title: string, dir = "apps/storybook/src"): StoryFile => ({
-  path: `${dir}/${stem}.stories.tsx`,
-  stem,
-  title,
-});
-
-const storyFiles = [
-  story("Button", "Actions/Button"),
-  story("Card", "Content/Card"),
-  story("CardBadge", "Content/Card"),
-  story("Stack", "Layout/Stack", "apps/storybook/src/layout"),
-  story("overview", "Overview"),
-  story("palette", "Overview/Palette"),
-];
-
-const files: Record<string, string> = {
-  "packages/ui-react/src/index.ts": [
-    'export { Button, type ButtonProps } from "./Button.js";',
-    'export {\n  Card,\n  type CardProps,\n} from "./Card.js";',
-    'export { Stack } from "./Stack.js";',
-  ].join("\n"),
-  "packages/ui-react/src/Button.tsx": 'import { focusRing } from "./focus.js";',
-  "packages/ui-react/src/focus.ts": "export const focusRing = '';",
-  "packages/ui-react/src/Card.tsx": 'import type { ButtonProps } from "./Button.js";',
-  "packages/ui-react/src/Stack.tsx": "",
-  "apps/storybook/src/Button.stories.tsx": 'import { Button } from "@hackcove/ui-react";',
-  "apps/storybook/src/Card.stories.tsx":
-    'import { Card, type CardProps } from "@hackcove/ui-react";\nimport { sample } from "./sample";',
-  "apps/storybook/src/CardBadge.stories.tsx": 'import { Card } from "@hackcove/ui-react";',
-  "apps/storybook/src/sample.ts": "export const sample = 1;",
-  "apps/storybook/src/layout/Stack.stories.tsx": 'import { Stack } from "@hackcove/ui-react";',
-  "apps/storybook/src/overview.stories.tsx": 'import { Gallery } from "./Gallery";',
-  "apps/storybook/src/Gallery.tsx": 'import * as ui from "@hackcove/ui-react";',
-  "apps/storybook/src/palette.stories.tsx": "",
-  "apps/storybook/.storybook/preview.tsx": 'import { ThemeDocument } from "./themes";',
-  "apps/storybook/.storybook/themes.tsx": 'import { useTheme } from "../src/useTheme";',
-  "apps/storybook/src/useTheme.ts": "",
-};
-
-const sections: Section[] = [
-  {
-    title: "Layout",
-    pages: [{ slug: "stack", name: "Stack", pairs: [], stories: ["Stack"] }],
-  },
-  {
-    title: "Content",
-    pages: [{ slug: "card", name: "Card", pairs: ["Card/Title"], stories: ["CardBadge"] }],
-  },
-  {
-    title: "Actions",
-    pages: [
-      { slug: "button", name: "Button", pairs: ["Button/Variants", "Button/Sizes"] },
-      { slug: "card-action", name: "Card action", pairs: ["Card/Action"] },
-    ],
-  },
-];
-
-const repo: Repo = {
-  read: (path) => files[path],
-  storyFiles,
-  sections,
-  themes: ["theme-a", "theme-b", "theme-c"],
-};
-
-const grouping = groupStories(sections, storyFiles);
 const plan = (changed: string[] | undefined, everything = false) =>
   planCapture({ repo, grouping, changed, everything });
-const picked = (changed: string[] | undefined) =>
+/** Per group picked, its captures as `[stems, themes]`. */
+const capturesOf = (result: ReturnType<typeof plan>) =>
   Object.fromEntries(
-    plan(changed).picked.map((group) => [
+    result.picked.map((group) => [
       group.slug,
-      { stems: group.picked.map((file) => file.stem), themes: group.themes },
+      group.captures.map((c) => [c.files.map((file) => file.stem), c.themes]),
     ]),
   );
+const picked = (changed: string[] | undefined) => capturesOf(plan(changed));
+
+const [reference = "", ...others] = repo.themes;
+const allOverview = ["overview", "palette", "GallerySections"];
+/** The Overview group's captures when the Gallery sections are reached: every theme. */
+const overviewEverywhere = [
+  [allOverview, [reference]],
+  [["GallerySections"], others],
+];
 
 describe("groupStories", () => {
   it("puts every story file in exactly one group, the first section that names it", () => {
@@ -93,7 +33,7 @@ describe("groupStories", () => {
       ["layout", "hackcove-ui-layout", ["Stack"]],
       ["content", "hackcove-ui-content", ["Card", "CardBadge"]],
       ["actions", "hackcove-ui-actions", ["Button"]],
-      ["overview", "hackcove-ui-overview", ["overview", "palette"]],
+      ["overview", "hackcove-ui-overview", allOverview],
     ]);
     expect(grouping.unsectioned).toEqual([]);
   });
@@ -128,6 +68,7 @@ describe("the sidebar", () => {
     ]);
     expect(sidebarOrder(grouping)).toEqual([
       "apps/storybook/src/overview.stories.tsx",
+      "apps/storybook/src/GallerySections.stories.tsx",
       "apps/storybook/src/palette.stories.tsx",
       "apps/storybook/src/layout/Stack.stories.tsx",
       "apps/storybook/src/Card.stories.tsx",
@@ -154,50 +95,73 @@ describe("the sidebar", () => {
   });
 });
 
-describe("closureOf", () => {
-  const barrel = barrelOf(repo.read);
+describe("planCapture", () => {
+  it("takes the first theme as the reference", () => {
+    expect(referenceOf(repo.themes)).toBe("theme-a");
+    expect(referenceOf([])).toBeUndefined();
+  });
 
-  it("follows a named import through the barrel to its module only", () => {
-    const closure = closureOf("apps/storybook/src/Button.stories.tsx", repo.read, barrel);
-    expect([...closure].toSorted()).toEqual([
-      "apps/storybook/src/Button.stories.tsx",
-      "packages/ui-react/src/Button.tsx",
-      "packages/ui-react/src/focus.ts",
-      "packages/ui-react/src/index.ts",
+  it("--all shoots every story in the reference theme and the Gallery sections in the others", () => {
+    expect(capturesOf(plan([], true))).toEqual({
+      layout: [[["Stack"], [reference]]],
+      content: [[["Card", "CardBadge"], [reference]]],
+      actions: [[["Button"], [reference]]],
+      overview: overviewEverywhere,
+    });
+  });
+
+  it("--all on a branch with one theme keeps the Gallery sections' capture, in no theme", () => {
+    const one = planCapture({
+      repo: { ...repo, themes: [reference] },
+      grouping,
+      changed: [],
+      everything: true,
+    });
+    expect(capturesOf(one).overview).toEqual([
+      [allOverview, [reference]],
+      [["GallerySections"], []],
     ]);
   });
 
-  it("skips type-only imports and follows a namespace import to every module", () => {
-    const card = closureOf("apps/storybook/src/Card.stories.tsx", repo.read, barrel);
-    expect(card.has("packages/ui-react/src/Button.tsx")).toBe(false);
-    expect(card.has("apps/storybook/src/sample.ts")).toBe(true);
-    const overview = closureOf("apps/storybook/src/overview.stories.tsx", repo.read, barrel);
-    expect(overview.has("packages/ui-react/src/Stack.tsx")).toBe(true);
-  });
-});
-
-describe("planCapture", () => {
-  it("a one-component change captures the stories it reaches, in every theme, and Overview", () => {
+  it("a component change captures its stories in the reference theme, and the Gallery sections in every theme", () => {
     expect(picked(["packages/ui-react/src/focus.ts"])).toEqual({
-      actions: { stems: ["Button"], themes: repo.themes },
-      overview: { stems: ["overview", "palette"], themes: repo.themes },
+      actions: [[["Button"], [reference]]],
+      overview: overviewEverywhere,
     });
     const { skipped, all } = plan(["packages/ui-react/src/focus.ts"]);
     expect(all).toBe(false);
     expect(skipped.map((g) => g.slug)).toEqual(["layout", "content"]);
   });
 
-  it("a theme-only change captures every group in that theme only", () => {
-    const groups = plan(["themes/theme-c.css"]).picked;
-    expect(groups.map((g) => g.slug)).toEqual(["layout", "content", "actions", "overview"]);
-    for (const group of groups) {
-      expect(group.themes).toEqual(["theme-c"]);
-      expect(group.picked).toEqual(group.files);
-    }
+  it("a change to another theme's CSS captures only the Gallery sections in that theme, beside Overview", () => {
+    const result = plan(["themes/theme-c.css"]);
+    expect(capturesOf(result)).toEqual({
+      overview: [
+        [allOverview, [reference]],
+        [["GallerySections"], ["theme-c"]],
+      ],
+    });
+    expect(result.skipped.map((g) => g.slug)).toEqual(["layout", "content", "actions"]);
+    expect(result.picked[0]?.why).toEqual(["theme theme-c changed", "always captured"]);
+  });
+
+  it("a change to the reference theme's CSS captures every group whole in that theme, and the Gallery sections in the rest", () => {
+    expect(picked(["themes/theme-a.css"])).toEqual({
+      layout: [[["Stack"], [reference]]],
+      content: [[["Card", "CardBadge"], [reference]]],
+      actions: [[["Button"], [reference]]],
+      overview: overviewEverywhere,
+    });
+  });
+
+  it("a change to the Gallery captures the Gallery sections in every theme, and nothing else", () => {
+    const result = plan(["apps/storybook/src/Gallery.tsx"]);
+    expect(capturesOf(result)).toEqual({ overview: overviewEverywhere });
+    expect(result.skipped.map((g) => g.slug)).toEqual(["layout", "content", "actions"]);
   });
 
   it("any other file in the themes package reaches every theme", () => {
-    expect(plan(["themes/package.json"]).picked[0]?.themes).toEqual(repo.themes);
+    expect(picked(["themes/package.json"])).toEqual(capturesOf(plan([], true)));
   });
 
   it("a theme file that is gone from the repo captures everything", () => {
@@ -206,10 +170,11 @@ describe("planCapture", () => {
     expect(result.notes.join(" ")).toContain("is in no theme there is now");
   });
 
-  it("a component and a theme change give the component's group every theme", () => {
-    const result = picked(["themes/theme-c.css", "packages/ui-react/src/Stack.tsx"]);
-    expect(result["layout"]?.themes).toEqual(repo.themes);
-    expect(result["actions"]?.themes).toEqual(["theme-c"]);
+  it("a component and another theme's change keep the component's group in the reference theme", () => {
+    expect(picked(["themes/theme-c.css", "packages/ui-react/src/Stack.tsx"])).toEqual({
+      layout: [[["Stack"], [reference]]],
+      overview: overviewEverywhere,
+    });
   });
 
   it.each([
@@ -234,16 +199,44 @@ describe("planCapture", () => {
     expect(plan([], true).all).toBe(true);
   });
 
-  it("a docs-only change captures only Overview, and says so", () => {
+  it("a docs-only change captures only Overview, in the reference theme, and says so", () => {
     const result = plan(["AGENTS.md", "docs/releasing.md"]);
-    expect(Object.keys(picked(["AGENTS.md"]))).toEqual(["overview"]);
+    expect(picked(["AGENTS.md"])).toEqual({ overview: [[allOverview, [reference]]] });
     expect(result.notes).toContain(
       "nothing a component story shows changed: only Overview is captured",
     );
   });
 });
 
+/** A theme id as code would name it: a string, alone or as its file name, not a word in a comment. */
+const escaped = (text: string) => text.replaceAll(/[.*+?^$|()[\]{}\\]/g, "\\$&");
+const quoted = (id: string) => new RegExp(`["'\`/]${escaped(id)}(\\.css)?["'\`]`);
+
 describe("this repo", () => {
+  it("takes the first theme file in sorted order as the reference, and names no theme in code", async () => {
+    const root = join(import.meta.dirname, "..", "..", "..");
+    const real = await readRepo(root);
+    const ids = themeFiles(join(root, "themes")).map((theme) => theme.id);
+    expect(ids).toEqual(ids.toSorted());
+    expect(real.themes).toEqual(ids);
+    expect(referenceOf(real.themes)).toBe(ids[0]);
+    const code = globSync("apps/storybook/{scripts/*.ts,pixelslash.config.ts}", { cwd: root })
+      .filter((path) => !path.endsWith(".test.ts"))
+      .map((path) => [path, readFileSync(join(root, path), "utf8")] as const);
+    expect(code.map(([path]) => path)).toContain("apps/storybook/scripts/visual-plan.ts");
+    const named = code.flatMap(([path, text]) =>
+      ids.filter((id) => quoted(id).test(text)).map((id) => `${path}: ${id}`),
+    );
+    expect(named).toEqual([]);
+  });
+
+  it("has the Gallery sections in the Overview group", async () => {
+    const real = await readRepo(join(import.meta.dirname, "..", "..", ".."));
+    const { groups } = groupStories(real.sections, real.storyFiles);
+    const overview = groups.find((g) => g.slug === "overview");
+    expect(overview?.files.map((f) => f.title)).toContain(GALLERY_TITLE);
+  });
+
   it("has no story file the site docs leave out of every section", async () => {
     const real = await readRepo(join(import.meta.dirname, "..", "..", ".."));
     const { groups, unsectioned, unknown } = groupStories(real.sections, real.storyFiles);
