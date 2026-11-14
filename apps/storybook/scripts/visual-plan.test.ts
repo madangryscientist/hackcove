@@ -209,7 +209,8 @@ describe("planCapture", () => {
 });
 
 /** A theme id as code would name it: a string, alone or as its file name, not a word in a comment. */
-const quoted = (id: string) => new RegExp(`["'\`/]${RegExp.escape(id)}(\\.css)?["'\`]`);
+const escaped = (text: string) => text.replaceAll(/[.*+?^$|()[\]{}\\]/g, "\\$&");
+const quoted = (id: string) => new RegExp(`["'\`/]${escaped(id)}(\\.css)?["'\`]`);
 
 describe("this repo", () => {
   it("takes the first theme file in sorted order as the reference, and names no theme in code", async () => {

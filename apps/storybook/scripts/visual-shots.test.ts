@@ -160,7 +160,7 @@ const WRAPPERS = "export function Gallery(";
 
 /**
  * `Gallery.tsx` up to its wrappers, and every file it imports from `src/` or `src/layout/`,
- * transitively, with their text.
+ * transitively, with their text and without their comments (a `<Name>` in one renders nothing).
  */
 async function galleryText(): Promise<string> {
   const { read: readFile } = await readRepo(root);
@@ -170,7 +170,9 @@ async function galleryText(): Promise<string> {
   return [...closureOf(GALLERY, readFile, barrelOf(readFile))]
     .filter((file) => folders.has(posix.dirname(file)))
     .map((file) => (file === GALLERY ? gallery.split(WRAPPERS)[0] : readFile(file)) ?? "")
-    .join("\n");
+    .join("\n")
+    .replaceAll(/\/\*[\s\S]*?\*\//g, "")
+    .replaceAll(/(^|[^:])\/\/.*$/gm, "$1");
 }
 
 describe("the Gallery sections", () => {
