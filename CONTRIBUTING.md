@@ -67,10 +67,13 @@ Stop a process by the pid you started or by its port. Never `pkill -f` or `killa
 
 Tasks are declared in `.moon/workspace.yml`, `.moon/tasks/all.yml` and each project's `moon.yml`;
 each runs the `package.json` script of its name. moon hashes no dependency's files on its own, so a
-task that reads another project lists that project's files in its inputs. moon caches locally only;
-there is no remote cache. CI keeps `.moon/cache` between runs with `actions/cache`
-(`.github/workflows/ci.yml`): a pull request restores its own cache or `main`'s and saves its own,
-so one branch never reads another's. `e2e` is never cached. Nx is still installed, for one job
+task that reads another project lists that project's files in its inputs. On top of the local
+cache in `.moon/cache`, moon shares a remote cache (the `remote:` block in `.moon/workspace.yml`).
+Every request needs a token in `MOON_REMOTE_TOKEN`, reads included. Only `main`'s CI writes to it;
+a pull request's CI reads it, and a local run only reads (`localReadOnly`). With no token set, moon
+logs one 401 warning, turns the remote cache off and runs as before, so a local run needs nothing.
+A task's declared `outputs` are all a remote hit restores, so anything a later task reads from a
+build must be listed there. `e2e` is never cached. Nx is still installed, for one job
 only: `nx release` versions and publishes the packages (`docs/releasing.md`).
 
 The shared compiler options live in `tsconfig.shared.json`, not a root `tsconfig.base.json` or

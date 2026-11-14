@@ -4,7 +4,8 @@
 #
 # No toolchain is declared (no .moon/toolchains.yml): every task runs on the `system` toolchain, so
 # moon runs our bun commands as they are and never downloads Bun or runs `bun install`.
-# The cache lives in .moon/cache (gitignored); moon has no setting to move it.
+# The local cache lives in .moon/cache (gitignored); moon has no setting to move it. The remote
+# cache below sits on top of it.
 $schema: "./cache/schemas/workspace.json"
 
 projects:
@@ -23,3 +24,19 @@ pipeline:
   installDependencies: false
 
 telemetry: false
+
+# A shared remote cache (bazel-remote, over HTTP), so a task main's CI already ran is "cached from
+# remote" in a pull request's CI or a fresh checkout. Every request needs a bearer token from
+# MOON_REMOTE_TOKEN, reads included: a read token may download, and only main's CI holds the write
+# token (ci.yml's `moon-cache-write` environment). Any other upload is refused, and moon logs a WARN
+# per task and carries on. With no token a read is a 401 and the task runs locally as before.
+# Outside CI moon only downloads (localReadOnly), so a local run never uploads.
+# If the host does not answer, moon retries its first call for about 12 seconds, once per run,
+# then turns the remote cache off and runs as before.
+remote:
+  api: "http"
+  host: "https://moon-cache.madangryscientist.com"
+  auth:
+    token: "MOON_REMOTE_TOKEN"
+  cache:
+    localReadOnly: true
