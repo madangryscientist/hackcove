@@ -13,7 +13,7 @@ import { TEXT_TONE, type TextTone } from "./typography.js";
 export type VizTone = TextTone | "neutral" | "violet";
 
 /** Tone → text utility, painted as a fill. The five `TextTone` colours are shared; the two extra ones are remapped by every theme. */
-const VIZ_TONE: Record<VizTone, string> = {
+export const VIZ_TONE: Record<VizTone, string> = {
   ...TEXT_TONE,
   neutral: "text-neutral-500",
   violet: "text-purple-700",
