@@ -58,9 +58,12 @@ tasks:
     deps: ["~:build"]
     options:
       cache: false
-  # Playwright against the built site, in every theme.
+  # Playwright against the built site, in every theme. Cached on what the run reads: the specs and
+  # playwright.config.ts (in **/*), everything build hashes, since the specs run against its dist, and
+  # Storybook's e2e/serve.ts, which serves it. The server is a loopback static one started per run,
+  # and the Playwright version is in bun.lock. OS fonts are not an input: the specs measure boxes and
+  # overflow, not pixels, so a spec that differs between machines is a bug to fix. `--force` re-runs it.
   e2e:
     command: "bun run test:e2e"
+    inputs: ["**/*", "@group(deps)", "/apps/storybook/e2e/serve.ts"]
     deps: ["~:build"]
-    options:
-      cache: false

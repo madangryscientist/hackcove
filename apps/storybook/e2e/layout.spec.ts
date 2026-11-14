@@ -41,8 +41,8 @@ const isPageStory = (entry: IndexEntry) =>
 /** The docs' compact `Do …` / `Dont …` fragments are not pages: they have no title or header to align. */
 const isDocsFragment = (entry: IndexEntry) => /^Do(nt)? /.test(entry.name);
 
-/** The build the e2e serves: `STATIC_DIR`, as `serve.ts` takes it, or `storybook-static`. */
-const staticDir = process.env["STATIC_DIR"] ?? join(import.meta.dirname, "..", "storybook-static");
+/** The build the e2e serves (`playwright.config.ts` points `serve.ts` at it). */
+const staticDir = join(import.meta.dirname, "..", "storybook-static");
 
 /**
  * The page stories, read from the build's index as this spec is collected. A missing index fails

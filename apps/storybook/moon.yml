@@ -35,12 +35,16 @@ tasks:
   test:
     command: "bun run test"
     inputs: ["**/*", "@group(deps)", "@group(sections)", "/themes/*.css"]
-  # Playwright against the built Storybook, in every theme.
+  # Playwright against the built Storybook, in every theme. Cached on what the run reads: the specs,
+  # e2e/serve.ts and playwright.config.ts (in **/*), and everything build hashes, since the specs run
+  # against its storybook-static (playwright.config.ts fixes that path, so no env var changes what it
+  # tests). The server is a loopback static one started per run, and the Playwright version is in
+  # bun.lock. OS fonts are not an input: the specs measure boxes and overflow, not pixels, so a spec
+  # that differs between machines is a bug to fix. `--force` re-runs it.
   e2e:
     command: "bun run test:e2e"
+    inputs: ["**/*", "@group(deps)", "@group(sections)", "/themes/*.css"]
     deps: ["~:build"]
-    options:
-      cache: false
   # The visual check: plans against the merge-base, captures each picked group, totals them
   # (scripts/visual.ts). What it compares lives outside any project, so it is never cached.
   visual:

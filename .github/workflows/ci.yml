@@ -26,8 +26,9 @@ jobs:
     # own uploads are refused (moon logs a WARN per task and carries on), so a branch can never poison
     # main's cache. A fork's pull request gets no secrets: moon's first read is a 401, it logs one WARN,
     # turns the remote cache off and runs every task. Never make the write token a plain repository
-    # secret, which a same-repo pull request could read. e2e is never cached (cache: false), so it runs
-    # for real on every commit.
+    # secret, which a same-repo pull request could read. storybook:e2e is cached on its inputs (the
+    # specs and everything its build reads), so a pull request that changes none of them takes main's
+    # result, and any change to one runs it for real. No --force here: that would throw the cache away.
     environment: ${{ github.event_name == 'push' && 'moon-cache-write' || '' }}
     env:
       # In a pull request moon diffs the head against the base branch before any task runs, even for
