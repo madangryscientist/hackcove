@@ -87,6 +87,32 @@ export const data: ComponentSection = {
       api: ["ListRow"],
     },
     {
+      slug: "sortable-list",
+      name: "SortableList",
+      summary:
+        "A list in sections that the user puts in order, by dragging a row or from the keyboard.",
+      whenToUse:
+        "A list the user puts in order, such as a priority queue: tasks under priority bands, the next one on top.",
+      pairs: ["SortableList/Reorder"],
+      usage: [
+        "Map your data straight to the parts: a `SortableList` with a `label`, a `SortableSection` per group (`id`, `title`) and a `SortableItem` per row (`id`, `title`). Each item is a direct child of its section, and each section a direct child of the list; an item wrapped in your own component is not counted or placed.",
+        "`onReorder` reports each drop as `{ id, section, target }`: the item that moved, the section it lands in, and `{ id, position }`, the item it was dropped before or after. Apply it to your own data and render again. The list never reorders itself.",
+        "Moving an item into another section is how the user changes its group, such as a ticket's priority: read `section`, not the old one.",
+        'An empty section shows a quiet "Drop here" row and still takes a drop. A drop there reports `{ id, section }` with no `target`.',
+        "Put a meta line in a `SortableItem`'s children: `Pill`s, an `Avatar`. The row is the drag target, so do not put buttons or links in it.",
+        "A list with no groups takes `SortableItem`s directly, and its moves have no `section`. Two lists on one page never take each other's items.",
+        "Do not add up and down buttons to rows: the drag and the keyboard already move an item, and buttons cannot move it into another section.",
+      ],
+      accessibility: [
+        "The list is a grid with one row per item. Tab moves into it, and the arrow keys move between rows.",
+        'To move an item from the keyboard: on its row, press the Right arrow to reach its grip handle, named "Reorder <title>", and press Enter. Each Up or Down arrow moves the drop line one gap, across section headings and into an empty section\'s "Drop here" row, and Enter drops. Escape cancels, leaves the order as it was and puts focus back on the handle. Tab does not leave the list during a move: it steps between the page\'s drop areas, and only Enter or Escape ends it.',
+        "While an item is moved, a screen reader announces it by its `title` and announces each drop position.",
+        "A pointer drags the row itself, and on a touch screen a long press starts the drag; the handle is for the keyboard and screen readers.",
+        'Section headings are row headers with the section\'s title, and the "Drop here" row cannot be focused or dragged.',
+      ],
+      api: ["SortableList", "SortableSection", "SortableItem"],
+    },
+    {
       slug: "stat-tile",
       name: "StatTile",
       summary: "One headline figure with a caption over it.",

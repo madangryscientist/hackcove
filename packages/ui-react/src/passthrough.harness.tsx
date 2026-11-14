@@ -142,6 +142,23 @@ export const CASES: Record<string, () => ReactElement> = {
     </ui.ListLayout>
   ),
   ListRow: () => <ui.ListRow {...A}>x</ui.ListRow>,
+  SortableList: () => (
+    <ui.SortableList label="Queue" onReorder={noop} {...A}>
+      <ui.SortableItem id="a" title="A" />
+    </ui.SortableList>
+  ),
+  SortableSection: () => (
+    <ui.SortableList label="Queue" onReorder={noop}>
+      <ui.SortableSection id="s" title="S" {...A}>
+        <ui.SortableItem id="a" title="A" />
+      </ui.SortableSection>
+    </ui.SortableList>
+  ),
+  SortableItem: () => (
+    <ui.SortableList label="Queue" onReorder={noop}>
+      <ui.SortableItem id="a" title="A" {...A} />
+    </ui.SortableList>
+  ),
   Maintenance: () => <ui.Maintenance {...A} />,
   Markdown: () => <ui.Markdown md="x" {...A} />,
   MediaTile: () => <ui.MediaTile src="/x.jpg" alt="X" onClick={noop} {...A} />,
