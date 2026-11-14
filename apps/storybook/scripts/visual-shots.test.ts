@@ -154,13 +154,22 @@ function exportedComponents(): string[] {
     .filter((name) => /^[A-Z]/.test(name));
 }
 
-/** `Gallery.tsx` and every file it imports from `src/` or `src/layout/`, transitively, with their text. */
+const GALLERY = "apps/storybook/src/Gallery.tsx";
+/** Where `Gallery.tsx` stops building sections: the two wrappers that render them are not shot. */
+const WRAPPERS = "export function Gallery(";
+
+/**
+ * `Gallery.tsx` up to its wrappers, and every file it imports from `src/` or `src/layout/`,
+ * transitively, with their text.
+ */
 async function galleryText(): Promise<string> {
   const { read: readFile } = await readRepo(root);
   const folders = new Set(["apps/storybook/src", "apps/storybook/src/layout"]);
-  return [...closureOf("apps/storybook/src/Gallery.tsx", readFile, barrelOf(readFile))]
+  const gallery = readFile(GALLERY) ?? "";
+  expect(gallery).toContain(WRAPPERS);
+  return [...closureOf(GALLERY, readFile, barrelOf(readFile))]
     .filter((file) => folders.has(posix.dirname(file)))
-    .map((file) => readFile(file) ?? "")
+    .map((file) => (file === GALLERY ? gallery.split(WRAPPERS)[0] : readFile(file)) ?? "")
     .join("\n");
 }
 
