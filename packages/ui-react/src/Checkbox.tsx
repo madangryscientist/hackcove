@@ -60,13 +60,16 @@ export function Checkbox({
     >
       {/* The checked box: a filled violet square at the input's own place (an absolutely
           positioned flex child sits where the first flex item would, so it needs no insets), shown
-          by the label's `:has(:checked)` so an uncontrolled Checkbox changes with no re-render. */}
+          by the label's `:has(:checked)` so an uncontrolled Checkbox changes with no re-render.
+          Inside a Card or table row the input is lifted to `z-10` by `liftInteractive` (cx.ts), and
+          it comes later in the DOM, so the tick ranks `z-20` there to paint over it. Scoped to the
+          `isolate` ancestor like the Input icon (InputShell.tsx), so it never outranks a sticky bar. */}
       <span
         aria-hidden="true"
         className={cx(
           SIZE[size].box,
           start && SIZE[size].start,
-          "pointer-events-none invisible absolute z-10 block rounded border border-violet-600 bg-violet-600 text-violet-50 group-has-checked/checkbox:visible",
+          "pointer-events-none invisible absolute z-10 in-[.isolate]:z-20 block rounded border border-violet-600 bg-violet-600 text-violet-50 group-has-checked/checkbox:visible",
         )}
       >
         <svg viewBox="0 0 16 16" fill="none" className="h-full w-full">
