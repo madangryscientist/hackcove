@@ -69,7 +69,7 @@ export function Checkbox({
         className={cx(
           SIZE[size].box,
           start && SIZE[size].start,
-          "pointer-events-none invisible absolute z-10 in-[.isolate]:z-20 block rounded border border-violet-600 bg-violet-600 text-violet-50 group-has-checked/checkbox:visible",
+          "pointer-events-none invisible absolute in-[.isolate]:z-20 block rounded border border-violet-600 bg-violet-600 text-violet-50 group-has-checked/checkbox:visible",
         )}
       >
         <svg viewBox="0 0 16 16" fill="none" className="h-full w-full">
