@@ -161,9 +161,9 @@ function reportPlan(plan: Plan, grouping: Grouping, saved: SavedPlan, whole: Pla
   for (const note of plan.notes) log(`  ${note}`);
   for (const g of plan.picked) {
     const why = g.why.length > 0 ? ` (${g.why.join("; ")})` : "";
-    const captures = g.captures.map(
-      (c) => `${c.files.length} of ${g.files.length} story files in ${c.themes.join(", ")}`,
-    );
+    const captures = g.captures
+      .filter((c) => c.themes.length > 0)
+      .map((c) => `${c.files.length} of ${g.files.length} story files in ${c.themes.join(", ")}`);
     log(`  ${g.slug}: ${captures.join("; ")}${why}`);
   }
   const skipped = plan.skipped.map((g) => `${g.slug} (${g.files.length} story files)`);

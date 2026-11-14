@@ -20,6 +20,11 @@ describe("capturesOnBase", () => {
   it("shoots a removed theme in the Gallery sections only, so they show as removed", () => {
     expect(themesOf(["a", "b", "c", "old"], ["a", "b", "c"])).toEqual([["a"], ["b", "c", "old"]]);
     expect(themesOf(["a", "old"], ["a"], [ref])).toEqual([["a"]]);
+    // A branch left with one theme keeps the Gallery sections' capture in no theme (`--all`).
+    expect(themesOf(["a", "old"], ["a"], [ref, { ...gallery, themes: [] }])).toEqual([
+      ["a"],
+      ["old"],
+    ]);
   });
 
   it("shoots every story in the base's reference when a new theme sorts first", () => {

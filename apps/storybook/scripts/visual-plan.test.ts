@@ -109,6 +109,19 @@ describe("planCapture", () => {
     });
   });
 
+  it("--all on a branch with one theme keeps the Gallery sections' capture, in no theme", () => {
+    const one = planCapture({
+      repo: { ...repo, themes: [reference] },
+      grouping,
+      changed: [],
+      everything: true,
+    });
+    expect(capturesOf(one).overview).toEqual([
+      [allOverview, [reference]],
+      [["GallerySections"], []],
+    ]);
+  });
+
   it("a component change captures its stories in the reference theme, and the Gallery sections in every theme", () => {
     expect(picked(["packages/ui-react/src/focus.ts"])).toEqual({
       actions: [[["Button"], [reference]]],

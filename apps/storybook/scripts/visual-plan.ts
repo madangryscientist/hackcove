@@ -155,7 +155,7 @@ function sharedWhy(path: string, configClosure: Set<string>): string | undefined
 }
 
 /** One capture of a group: these story files, each in each of these themes. */
-export type Capture = { files: StoryFile[]; themes: string[] };
+type Capture = { files: StoryFile[]; themes: string[] };
 
 export type GroupPick = Group & {
   /** The story files any capture takes: a subset of `files`, in its order. */
@@ -232,17 +232,21 @@ function reachOf(repo: Repo, changed: string[], barrel: Map<string, string>): Re
   return { themed: [...themed].toSorted(), reached, unreached };
 }
 
-/** A group's captures: `files` in the reference theme, and its Gallery sections in `galleryThemes`. */
+/**
+ * A group's captures: `files` in the reference theme, and its Gallery sections in `galleryThemes`,
+ * none when it is `undefined`. An empty list keeps the Gallery sections' capture in no theme (a run
+ * of everything on a branch with one theme), so the base still shoots it in the themes it removed.
+ */
 function capturesOf(
   group: Group,
   files: StoryFile[],
   reference: string | undefined,
-  galleryThemes: string[],
+  galleryThemes: string[] | undefined,
 ): GroupPick {
   const gallery = group.files.filter(isGallery);
   const captures: Capture[] = [];
   if (reference !== undefined && files.length > 0) captures.push({ files, themes: [reference] });
-  if (gallery.length > 0 && galleryThemes.length > 0)
+  if (gallery.length > 0 && galleryThemes !== undefined)
     captures.push({ files: gallery, themes: galleryThemes });
   const taken = new Set(captures.flatMap((c) => c.files));
   return { ...group, picked: group.files.filter((file) => taken.has(file)), captures, why: [] };
@@ -272,7 +276,12 @@ function pickOf(group: Group, reach: Reach, themes: string[]): GroupPick | undef
     reached.some(isGallery) || referenceChanged
       ? others
       : others.filter((id) => reach.themed.includes(id));
-  const pick = capturesOf(group, whole ? group.files : reached, reference, galleryThemes);
+  const pick = capturesOf(
+    group,
+    whole ? group.files : reached,
+    reference,
+    galleryThemes.length > 0 ? galleryThemes : undefined,
+  );
   if (pick.captures.length === 0) return undefined;
   const why = reachedWhy(reached, reach);
   const themed = new Set(pick.captures.flatMap((c) => c.themes));
