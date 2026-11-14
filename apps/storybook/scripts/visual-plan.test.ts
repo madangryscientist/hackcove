@@ -208,11 +208,15 @@ describe("planCapture", () => {
   });
 });
 
+/** A theme id as code would name it: a string, alone or as its file name, not a word in a comment. */
+const quoted = (id: string) => new RegExp(`["'\`/]${RegExp.escape(id)}(\\.css)?["'\`]`);
+
 describe("this repo", () => {
   it("takes the first theme file in sorted order as the reference, and names no theme in code", async () => {
     const root = join(import.meta.dirname, "..", "..", "..");
     const real = await readRepo(root);
     const ids = themeFiles(join(root, "themes")).map((theme) => theme.id);
+    expect(ids).toEqual(ids.toSorted());
     expect(real.themes).toEqual(ids);
     expect(referenceOf(real.themes)).toBe(ids[0]);
     const code = globSync("apps/storybook/{scripts/*.ts,pixelslash.config.ts}", { cwd: root })
@@ -220,7 +224,7 @@ describe("this repo", () => {
       .map((path) => [path, readFileSync(join(root, path), "utf8")] as const);
     expect(code.map(([path]) => path)).toContain("apps/storybook/scripts/visual-plan.ts");
     const named = code.flatMap(([path, text]) =>
-      ids.filter((id) => text.includes(id)).map((id) => `${path}: ${id}`),
+      ids.filter((id) => quoted(id).test(text)).map((id) => `${path}: ${id}`),
     );
     expect(named).toEqual([]);
   });

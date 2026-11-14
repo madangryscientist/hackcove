@@ -8,8 +8,8 @@
  * group of its own and is always captured. A story file no page names is unsectioned: a test fails
  * on it, and so does the run.
  *
- * Every story is shot in one theme, the reference theme: the first theme file in sorted order
- * (`themeFiles`), so no theme is named here. Every other theme is shot in the Gallery sections
+ * Every story is shot in the reference theme, the first theme file in sorted order (`themeFiles`),
+ * so no theme is named here. Every other theme is shot in the Gallery sections
  * (`Overview/Gallery sections`, one story per `gallerySections` entry, which render every component
  * the library exports) and nothing else. So a group is a list of captures, each some story files in
  * some themes: the reference theme's, and in the Overview group a second one, the Gallery sections
@@ -34,7 +34,7 @@ import { barrelOf, closureOf, type Reader } from "./import-graph.js";
 import type { Page, Placement, Section } from "./site-types.js";
 import { referenceOf, themesOf } from "./theme-reach.js";
 
-export type { Placement, Reader, Section };
+export type { Placement, Section };
 
 export type StoryFile = {
   /** Repo-relative, e.g. `apps/storybook/src/Button.stories.tsx`. */

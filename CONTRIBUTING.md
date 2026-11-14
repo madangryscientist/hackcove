@@ -136,7 +136,7 @@ exports (a storybook test fails on one that is missing). So a regression in any 
 reference theme, every component is still seen in every theme, and a theme added costs a Gallery's
 worth of shots, not every story. A new theme whose file sorts first becomes the reference and takes
 the full set over, so its first upload shows every story as new in it and removed from the old
-reference. Stories shot once (**Overview / All themes sections**, which show every theme in one
+reference, but for the old reference's Gallery sections, which it keeps. Stories shot once (**Overview / All themes sections**, which show every theme in one
 shot) stay shot once.
 
 The check runs in one of two modes:
