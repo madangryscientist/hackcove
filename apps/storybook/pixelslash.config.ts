@@ -1,5 +1,5 @@
 /**
- * PixelSlash capture config for `nx run storybook:visual`: one desktop variant of the stories and
+ * PixelSlash capture config for `bunx moon run storybook:visual`: one desktop variant of the stories and
  * themes the script picked, or every story under every theme on a bare run. Read by a pixelslash
  * checkout (see scripts/visual.ts), which runs from its own directory, so every path here is
  * absolute.
@@ -34,9 +34,9 @@ const staticDir = process.env["VISUAL_STATIC_DIR"] ?? join(import.meta.dirname, 
 const port = process.env["VISUAL_PORT"] ?? "6008";
 const url = `http://127.0.0.1:${port}`;
 
-// How many shots one capture takes at once. The script sets it from VISUAL_PARALLEL so that groups
-// run side by side (nx --parallel) times workers fit the CPUs; unset (a bare run, `pixelslash dev`)
-// it is PixelSlash's own default.
+// How many shots one capture takes at once. The script sets it from VISUAL_PARALLEL so that the
+// groups an upload runs side by side times workers fit the CPUs; unset (a bare run,
+// `pixelslash dev`) it is PixelSlash's own default.
 const concurrency = process.env["VISUAL_CONCURRENCY"];
 
 export default {

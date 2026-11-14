@@ -1,0 +1,24 @@
+# Inherited by every project. Root files every task's result depends on, so a change to one is
+# never a cache hit. Every lint runs scripts/check-slop.ts, which imports scripts/slopRules.ts.
+$schema: "../cache/schemas/tasks.json"
+
+implicitInputs:
+  - "/package.json"
+  - "/bun.lock"
+  - "/bunfig.toml"
+  - "/tsconfig.shared.json"
+  - "/.oxlintrc.json"
+  - "/scripts/check-slop.ts"
+  - "/scripts/slopRules.ts"
+  - "/.moon/workspace.yml"
+  - "/.moon/tasks/**/*"
+  # What a build, a test run or a dev server leaves behind, and node_modules, whose workspace
+  # symlinks a glob would otherwise walk. None of it is source.
+  - "!/**/node_modules/**"
+  - "!/**/dist/**"
+  - "!/**/storybook-static/**"
+  - "!/**/test-results/**"
+  - "!/**/playwright-report/**"
+  - "!/**/.pixelslash/**"
+  - "!/**/.astro/**"
+  - "!/**/.wrangler/**"

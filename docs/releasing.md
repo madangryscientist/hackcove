@@ -10,6 +10,10 @@ commits and tags the release, pushes, creates a GitHub release, and publishes. T
 it reads are in [CONTRIBUTING.md](../CONTRIBUTING.md#commit-messages). Nothing publishes on a push: a release starts from Actions.
 Publishing goes through Nx, never a bare `npm publish`.
 
+Nx is in this repo for releasing alone: moon runs every task, the release workflow's gate included,
+and Nx keeps only `nx release` (`nx.json` holds its `release` block and the publish executor, and
+each package's `nx.name` keeps the project names its tags use).
+
 ## From CI (GitHub Actions)
 
 `.github/workflows/publish.yml` is the only thing that publishes: no one publishes from a laptop,

@@ -3,6 +3,7 @@ dist
 storybook-static
 *.tgz
 .nx
+.moon/cache
 test-results
 playwright-report
 .pixelslash

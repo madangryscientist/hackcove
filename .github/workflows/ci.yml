@@ -19,17 +19,17 @@ concurrency:
 jobs:
   gate:
     runs-on: ubuntu-latest
-    # Nx runs with its local cache only: NX_NO_CLOUD keeps any run from opening an Nx Cloud pipeline
-    # execution (HC-227). The cache is kept between runs with actions/cache. GitHub scopes a cache
-    # to the ref that wrote it: a pull request reads its own and its base branch's (main) caches and
-    # writes only its own, and main cannot read a pull request's, so a branch can never poison main's.
-    # e2e is never cached (cache: false), so it runs for real on every commit.
+    # moon runs with its local cache only; there is no remote cache. The cache (.moon/cache) is kept
+    # between runs with actions/cache. GitHub scopes a cache to the ref that wrote it: a pull request
+    # reads its own and its base branch's (main) caches and writes only its own, and main cannot read
+    # a pull request's, so a branch can never poison main's. e2e is never cached (cache: false), so it
+    # runs for real on every commit.
     env:
-      NX_NO_CLOUD: "true"
-      # Nx 23.3 keeps its cache and the database that indexes it under ~/.nx/<workspace id> unless a
-      # cache directory is configured. This documented setting puts them back in the checkout:
-      # .nx/cache and .nx/workspace-data.
-      NX_CACHE_DIRECTORY: .nx/cache
+      # In a pull request moon diffs the head against the base branch before any task runs, even for
+      # a plain `moon run`, and this shallow checkout has no `main`, so the gate would fail with
+      # "ambiguous argument 'main'". `moon run` picks no task by that diff, so the base is HEAD
+      # itself: an empty diff and no history to fetch.
+      MOON_BASE: HEAD
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
@@ -41,22 +41,21 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
-      # Cache and index travel together. Key: OS, ref, commit. A new commit never finds its own key,
-      # so it restores the newest cache of the same ref, then the newest of main, and saves its own.
+      # Key: OS, ref, commit. A new commit never finds its own key, so it restores the newest cache of
+      # the same ref, then the newest of main, and saves its own.
       - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
         with:
-          path: |
-            .nx/cache
-            .nx/workspace-data
-          key: nx-${{ runner.os }}-${{ github.ref }}-${{ github.sha }}
+          path: .moon/cache
+          key: moon-${{ runner.os }}-${{ github.ref }}-${{ github.sha }}
           restore-keys: |
-            nx-${{ runner.os }}-${{ github.ref }}-
-            nx-${{ runner.os }}-refs/heads/main-
+            moon-${{ runner.os }}-${{ github.ref }}-
+            moon-${{ runner.os }}-refs/heads/main-
 
-      - run: bunx nx run-many -t typecheck lint test build pack-check
+      # Three tasks at once: moon's default of one per core is too much for a shared runner.
+      - run: bunx moon run --concurrency 3 :typecheck :lint :test :build :pack-check
 
       - run: bun run format:check
 
       - run: bunx playwright install --with-deps chromium firefox webkit
 
-      - run: bunx nx e2e storybook
+      - run: bunx moon run storybook:e2e

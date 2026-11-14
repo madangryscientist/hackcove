@@ -443,7 +443,7 @@ A theme remaps every utility in `palette.json`; a component uses no colour utili
 
 ## Develop
 
-From the workspace root: `bunx nx run-many -t typecheck lint test build -p ui-react` and
-`bunx nx pack-check ui-react` (the tarball is `dist/` plus `package.json`, `README.md`, `LICENSE`; it also typechecks the tarball in a
+From the workspace root: `bunx moon run ui-react:typecheck ui-react:lint ui-react:test ui-react:build` and
+`bunx moon run ui-react:pack-check` (the tarball is `dist/` plus `package.json`, `README.md`, `LICENSE`; it also typechecks the tarball in a
 consumer app: `scripts/consumer-types.ts`).
 The stories live in `apps/storybook`.

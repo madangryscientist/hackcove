@@ -160,12 +160,15 @@ jobs:
         id: rubric
         if: ${{ env.KEY_SET == 'true' }}
         env:
-          NX_NO_CLOUD: "true" # the build below runs nx; an older pinned hackcove-ref may still be wired to Nx Cloud
+          NX_NO_CLOUD: "true" # a hackcove-ref from before the move to moon builds with nx; keep it off Nx Cloud
+          MOON_BASE: HEAD # the hackcove checkout is shallow; see ci.yml's gate job
           BUILD_RUBRIC: ${{ inputs.build-rubric }}
           LLMS_URL: ${{ inputs.llms-url }}
         run: |
           if [ "$BUILD_RUBRIC" = "true" ]; then
-            (cd "$HACKCOVE_DIR" && bun install --frozen-lockfile && bunx nx run hack-cove-site:build) \
+            # moon builds it where the pinned hackcove-ref has moved to moon, Nx where it has not.
+            if [ -f "$HACKCOVE_DIR/.moon/workspace.yml" ]; then build="bunx moon run hack-cove-site:build"; else build="bunx nx run hack-cove-site:build"; fi
+            (cd "$HACKCOVE_DIR" && bun install --frozen-lockfile && $build) \
               && echo "path=$HACKCOVE_DIR/apps/hack-cove-site/dist/ui/llms.txt" >> "$GITHUB_OUTPUT" \
               || {
                 echo "::error title=Hack Cove UI review::could not build the component reference; the model review did not run."

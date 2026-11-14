@@ -1,0 +1,21 @@
+$schema: "../../.moon/cache/schemas/project.json"
+
+# The engine behind .github/workflows/ui-review.yml. Each task runs the package.json script of its name.
+tasks:
+  typecheck:
+    command: "bun run typecheck"
+    inputs: ["**/*"]
+  lint:
+    command: "bun run lint"
+    inputs: ["**/*"]
+  test:
+    command: "bun run test"
+    inputs: ["**/*"]
+  check:
+    command: "bun run check"
+    options:
+      cache: false
+  review:
+    command: "bun run review"
+    options:
+      cache: false

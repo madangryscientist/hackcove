@@ -1,5 +1,5 @@
 /**
- * What `nx run storybook:visual` captures: the story files, grouped by the site docs' sections, and
+ * What `bunx moon run storybook:visual` captures: the story files, grouped by the site docs' sections, and
  * the groups and themes a change reaches.
  *
  * A group is a section of the component docs (`componentSections` on the site), holding every story
@@ -46,7 +46,7 @@ export type StoryFile = {
 };
 
 export type Group = {
-  /** `actions`, `page-layouts`: the Nx project is `visual-<slug>`. */
+  /** `actions`, `page-layouts`: the group's `.pixelslash/<slug>/` folder. */
   slug: string;
   title: string;
   /** The PixelSlash project the group uploads to. */
@@ -334,8 +334,8 @@ function isSection(value: unknown): value is Section {
 
 /**
  * The checkout at `root`: its story files, its themes and the site's sections. The sections module
- * is imported by a computed path, so Nx sees no import from Storybook into the site (the site's
- * build would become a dependency of Storybook's).
+ * is imported by a computed path, so no tool reads it as an import from Storybook into the site
+ * (which would make the site's build a dependency of Storybook's).
  */
 export async function readRepo(root: string): Promise<Repo> {
   const sectionsPath = join(root, "apps/hack-cove-site/src/content/components/index.ts");

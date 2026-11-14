@@ -11,7 +11,7 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
  * One test per story per width, never one test looping over the stories: each page load then has
  * its own test budget, so a slow engine under load cannot spend the next story's time, and a new
  * story adds a test instead of lengthening an existing one. The list comes from the built
- * `storybook-static/index.json` as the spec is collected (the `e2e` Nx target builds Storybook
+ * `storybook-static/index.json` as the spec is collected (the `e2e` moon task builds Storybook
  * first); per width, one `beforeAll` measures the first story's logo x and every story's test
  * asserts its title x against both its own logo and that reference.
  *
@@ -52,7 +52,7 @@ function layoutStoryIds(): string[] {
   const path = join(staticDir, "index.json");
   if (!existsSync(path))
     throw new Error(
-      `${path} is missing: run \`bunx nx e2e storybook\`, which builds Storybook first`,
+      `${path} is missing: run \`bunx moon run storybook:e2e\`, which builds Storybook first`,
     );
   const { entries }: { entries: Record<string, IndexEntry> } = JSON.parse(
     readFileSync(path, "utf8"),

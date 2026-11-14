@@ -1,10 +1,13 @@
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   PortTaken,
   VisualError,
+  baseBuildCommand,
   bindFailed,
-  captureWorkers,
-  parallelFrom,
+  outsideMoon,
   stepFailure,
   withFreePort,
 } from "./visual-tools.js";
@@ -18,11 +21,11 @@ describe("stepFailure", () => {
   });
 
   it("keeps the plain message for an ordinary non-zero exit", () => {
-    expect(stepFailure("bunx nx build storybook", "/work/base", null)).toBe(
-      "`bunx nx build storybook` failed in /work/base",
+    expect(stepFailure("bunx moon run storybook:build", "/work/base", null)).toBe(
+      "`bunx moon run storybook:build` failed in /work/base",
     );
-    expect(stepFailure("bunx nx build storybook", "/work/base", undefined)).toBe(
-      "`bunx nx build storybook` failed in /work/base",
+    expect(stepFailure("bunx moon run storybook:build", "/work/base", undefined)).toBe(
+      "`bunx moon run storybook:build` failed in /work/base",
     );
   });
 });
@@ -104,41 +107,46 @@ describe("bindFailed", () => {
   });
 });
 
-describe("parallelFrom", () => {
-  it("defaults to one group", () => {
-    expect(parallelFrom(undefined)).toBe(1);
-    expect(parallelFrom("")).toBe(1);
+/** A scratch checkout, with or without a moon workspace. */
+function checkout(withMoon: boolean): string {
+  const dir = mkdtempSync(join(tmpdir(), "visual-base-"));
+  if (withMoon) {
+    mkdirSync(join(dir, ".moon"));
+    writeFileSync(join(dir, ".moon", "workspace.yml"), "projects: {}\n");
+  }
+  return dir;
+}
+
+describe("baseBuildCommand", () => {
+  it("builds with moon when the base commit has a moon workspace", () => {
+    const dir = checkout(true);
+    try {
+      expect(baseBuildCommand(dir)).toEqual(["bunx", "moon", "run", "storybook:build"]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 
-  it("reads a whole number", () => {
-    expect(parallelFrom("3")).toBe(3);
-  });
-
-  it("refuses anything else", () => {
-    for (const bad of ["0", "-1", "2.5", "three", "3x"])
-      expect(() => parallelFrom(bad)).toThrow("VISUAL_PARALLEL");
+  it("builds with Nx when the base commit predates the move to moon", () => {
+    const dir = checkout(false);
+    try {
+      expect(baseBuildCommand(dir)).toEqual(["bunx", "nx", "build", "storybook"]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
 
-describe("captureWorkers", () => {
-  it("gives PixelSlash's own count to a lone group", () => {
-    expect(captureWorkers(1, 12)).toBe(10);
-    expect(captureWorkers(1, 4)).toBe(4);
-  });
-
-  it("splits the CPUs between the groups", () => {
-    expect(captureWorkers(3, 12)).toBe(4);
-    expect(captureWorkers(3, 10)).toBe(3);
-    expect(captureWorkers(2, 10)).toBe(5);
-  });
-
-  it("keeps groups times workers within the CPUs", () => {
-    for (const cpus of [1, 2, 4, 10, 12, 32])
-      for (let parallel = 1; parallel <= cpus; parallel++)
-        expect(parallel * captureWorkers(parallel, cpus)).toBeLessThanOrEqual(cpus);
-  });
-
-  it("refuses more groups than CPUs", () => {
-    expect(() => captureWorkers(4, 3)).toThrow("more than the 3 CPUs");
+describe("outsideMoon", () => {
+  it("drops what moon and proto hand a task, so a moon run in the base finds the base's workspace", () => {
+    const env = {
+      PATH: "/usr/bin",
+      HOME: "/home/me",
+      MOON_WORKSPACE_ROOT: "/work/branch",
+      MOON_CACHE_DIR: "/work/branch/.moon/cache",
+      PROTO_VERSION: "0.62.2",
+      UNSET: undefined,
+    };
+    expect(outsideMoon(env)).toEqual({ PATH: "/usr/bin", HOME: "/home/me" });
   });
 });

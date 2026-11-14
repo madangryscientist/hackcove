@@ -7,7 +7,7 @@ export default defineConfig({
   testMatch: "*.spec.ts",
   reporter: "list",
   use: { baseURL: `http://127.0.0.1:${port}` },
-  // The `e2e` Nx target builds the site first; this only serves `dist/`. Storybook's static server
+  // The `e2e` moon task builds the site first; this only serves `dist/`. Storybook's static server
   // is used because `astro preview` leaves its server running when Playwright stops it.
   webServer: {
     command: "bun ../storybook/e2e/serve.ts",

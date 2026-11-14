@@ -24,16 +24,6 @@
     "vitest": "5.0.5"
   },
   "nx": {
-    "name": "themes-shared",
-    "tags": [
-      "kind:internal"
-    ],
-    "targets": {
-      "typecheck": {
-        "inputs": [
-          "default"
-        ]
-      }
-    }
+    "name": "themes-shared"
   }
 }

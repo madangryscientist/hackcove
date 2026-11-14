@@ -16,9 +16,6 @@
     "vitest": "5.0.5"
   },
   "nx": {
-    "name": "ui-review",
-    "tags": [
-      "kind:internal"
-    ]
+    "name": "ui-review"
   }
 }

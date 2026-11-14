@@ -23,7 +23,7 @@ for arg in "$@"; do
 done
 
 if [[ ! -f dist/index.html ]]; then
-  echo "dist/index.html is missing — run 'bunx nx build hack-cove-site' first" >&2
+  echo "dist/index.html is missing; run 'bunx moon run hack-cove-site:build' first" >&2
   exit 1
 fi
 

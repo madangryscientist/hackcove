@@ -8,7 +8,7 @@
  * is built and captured under a lock.
  */
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { availableParallelism, homedir } from "node:os";
+import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 import { indexOf } from "./visual-index.js";
 import { MAX_SHOT_PIXELS, mergeCapture, shotSizes, sizeReport } from "./visual-shots.js";
@@ -42,8 +42,13 @@ export function stepFailure(cmd: string, cwd: string, signal?: string | number |
   return signal ? `\`${cmd}\` killed by ${signal} in ${cwd}` : `\`${cmd}\` failed in ${cwd}`;
 }
 
-export async function run(cmd: string[], cwd: string, env: Record<string, string> = {}) {
-  const proc = Bun.spawn(cmd, { cwd, env: { ...process.env, ...env }, stdio: ["ignore", 2, 2] });
+export async function run(
+  cmd: string[],
+  cwd: string,
+  env: Record<string, string> = {},
+  inherit: Record<string, string | undefined> = process.env,
+) {
+  const proc = Bun.spawn(cmd, { cwd, env: { ...inherit, ...env }, stdio: ["ignore", 2, 2] });
   if ((await proc.exited) !== 0)
     throw new VisualError(stepFailure(cmd.join(" "), cwd, proc.signalCode));
 }
@@ -140,47 +145,6 @@ export async function withFreePort<T>(
       log(`port ${error.port} was taken, trying another (${n} of ${tries})`);
     }
   }
-}
-
-/* ---------------------------------------------------------------------------
-   Parallel groups
-   --------------------------------------------------------------------------- */
-
-/** PixelSlash's own ceiling for its capture workers (its default is `min(10, CPUs)`). */
-const MAX_WORKERS = 10;
-
-/**
- * How many groups run at once, from `VISUAL_PARALLEL` (a whole number, default 1). Nx does not
- * hand `--parallel` to a task, so the run is told the count here; the documented command sets both.
- */
-export function parallelFrom(raw: string | undefined): number {
-  if (raw === undefined || raw === "") return 1;
-  if (!/^[1-9]\d*$/.test(raw))
-    throw new VisualError(`VISUAL_PARALLEL is not a whole number of 1 or more: ${raw}`);
-  return Number(raw);
-}
-
-/**
- * The workers an upload's group takes: the CPUs this process may use, shared between the
- * `VISUAL_PARALLEL` groups that run beside it. Logged, so each run states its count.
- */
-export function uploadWorkers(): number {
-  const parallel = parallelFrom(process.env["VISUAL_PARALLEL"]);
-  const workers = captureWorkers(parallel, availableParallelism());
-  log(`capturing with ${workers} workers (${parallel} groups at once)`);
-  return workers;
-}
-
-/**
- * The capture workers one group takes when `parallel` groups share `cpus`: groups times workers
- * stays within the CPUs, and a group never takes more than PixelSlash's ten.
- */
-export function captureWorkers(parallel: number, cpus: number): number {
-  if (parallel > cpus)
-    throw new VisualError(
-      `VISUAL_PARALLEL=${parallel} is more than the ${cpus} CPUs available; groups times workers must fit`,
-    );
-  return Math.max(1, Math.min(MAX_WORKERS, Math.floor(cpus / parallel)));
 }
 
 /**
@@ -402,6 +366,29 @@ async function checkoutBaseline(sha: string) {
     await run(["bun", "install"], baselineDir);
 }
 
+/**
+ * The command that builds Storybook in a checkout of the base: moon where that commit has it, Nx
+ * where it still ran its tasks with Nx (a branch forked before the move).
+ */
+export function baseBuildCommand(dir: string): string[] {
+  return existsSync(join(dir, ".moon", "workspace.yml"))
+    ? ["bunx", "moon", "run", "storybook:build"]
+    : ["bunx", "nx", "build", "storybook"];
+}
+
+/**
+ * `env` without what moon hands the task it runs (`MOON_WORKSPACE_ROOT`, `MOON_CACHE_DIR` and the
+ * rest, and proto's): with them, a moon run inside another checkout builds this one instead.
+ */
+export function outsideMoon(env: Record<string, string | undefined>): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(env).filter(
+      (entry): entry is [string, string] =>
+        entry[1] !== undefined && !entry[0].startsWith("MOON_") && !entry[0].startsWith("PROTO_"),
+    ),
+  );
+}
+
 /** The baseline worktree's Storybook, built at `sha` unless it already is. Call under the lock. */
 export async function buildBase(sha: string) {
   if (existsSync(baseStamp) && readFileSync(baseStamp, "utf8").trim() === sha) {
@@ -412,6 +399,6 @@ export async function buildBase(sha: string) {
   }
   log(`building base ${sha.slice(0, 7)}`);
   await checkoutBaseline(sha);
-  await run(["bunx", "nx", "build", "storybook"], baselineDir);
+  await run(baseBuildCommand(baselineDir), baselineDir, {}, outsideMoon(process.env));
   writeFileSync(baseStamp, `${sha}\n`);
 }

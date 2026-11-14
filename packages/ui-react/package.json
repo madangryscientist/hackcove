@@ -78,16 +78,6 @@
     }
   },
   "nx": {
-    "name": "ui-react",
-    "tags": [
-      "kind:package"
-    ],
-    "targets": {
-      "build": {
-        "outputs": [
-          "{projectRoot}/dist"
-        ]
-      }
-    }
+    "name": "ui-react"
   }
 }
