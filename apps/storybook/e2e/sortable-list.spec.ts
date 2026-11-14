@@ -40,8 +40,8 @@ async function press(page: Page, keys: string[]) {
 /**
  * The keyboard move, as the docs write it: Tab into the list (the first row), ArrowDown to the row,
  * ArrowRight to its "Reorder" handle, Enter to pick it up. Each ArrowUp or ArrowDown then moves the
- * drop line one gap, across section headings too, and Enter drops. The drag starts just after the
- * Enter (in Chromium the next key can arrive first), so this waits for the row to be dragging.
+ * drop line one gap, across section headings too, and Enter drops. The drag takes the keyboard just
+ * after the Enter, so this waits for it (startDrag) before the next key.
  */
 async function pickUp(page: Page, rowIndex: number) {
   await press(page, ["Tab", ...Array.from({ length: rowIndex }, () => "ArrowDown"), "ArrowRight"]);
@@ -52,6 +52,9 @@ async function pickUp(page: Page, rowIndex: number) {
 async function startDrag(page: Page) {
   await page.keyboard.press("Enter");
   await expect(page.locator('[role="row"][data-dragging]')).toHaveCount(1);
+  // The row is marked before react-aria's drag manager takes the keyboard; it moves focus to the
+  // list it drops into when it does, and a key pressed before that is lost.
+  await expect(list(page)).toBeFocused();
 }
 
 async function open(page: Page, id = "data-sortablelist--default") {
