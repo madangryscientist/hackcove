@@ -52,6 +52,7 @@ export type DateRangePickerProps = Pick<
   DataAttributes & {
     /** The range, or `null` for none. Reported only when both days are complete, real and in order. */
     value?: DateRange | null | undefined;
+    /** The range shown first when the picker holds its own value. */
     defaultValue?: DateRange | null | undefined;
     /** Called with the range once both sides make one, and with `null` when they stop making one. */
     onChange?: ((range: DateRange | null) => void) | undefined;

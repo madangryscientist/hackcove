@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   Button,
   Caption,
+  Cluster,
   DateField,
   DateRangePicker,
   type DateRange,
@@ -61,7 +62,7 @@ function lastDays(today: DateRange["end"]): DateRangePreset[] {
   }));
 }
 
-const presets = lastDays(october.end);
+const octoberPresets = lastDays(october.end);
 
 /**
  * Type into the `index`th segment the way a browser does: one `beforeinput` per character, a
@@ -99,7 +100,12 @@ export const Open: S = {
 export const WithPresets: S = {
   render: () => (
     <div className="min-h-128">
-      <DateRangePicker label="Report period" defaultValue={october} presets={presets} defaultOpen />
+      <DateRangePicker
+        label="Report period"
+        defaultValue={october}
+        presets={octoberPresets}
+        defaultOpen
+      />
     </div>
   ),
 };
@@ -145,7 +151,17 @@ export const InDialog: S = {
 /** A from and to date is one `DateRangePicker`, with the app's presets built from its own today. */
 export const DoPresets: S = {
   render: () => {
-    const [period, setPeriod] = useState<DateRange | null>(october);
+    // An app takes today from `today(getLocalTimeZone())`; a fixed day keeps the story still.
+    const today = fromISODate("2026-10-31");
+    const presets = today
+      ? [7, 30, 90].map((days) => ({
+          label: `Last ${days} days`,
+          value: { start: today.subtract({ days: days - 1 }), end: today },
+        }))
+      : [];
+    const [period, setPeriod] = useState<DateRange | null>(
+      today ? { start: today.set({ day: 1 }), end: today } : null,
+    );
     return (
       <Stack gap="xs">
         <DateRangePicker
@@ -169,9 +185,9 @@ export const DoPresets: S = {
 /** Two `DateField`s do not know about each other: nothing stops an end before the start, and there is no one press for "Last 30 days". */
 export const DontPresets: S = {
   render: () => (
-    <div className="flex gap-2">
-      <DateField calendar label="From" defaultValue={october.start} />
-      <DateField calendar label="To" defaultValue={october.end} />
-    </div>
+    <Cluster gap="sm">
+      <DateField calendar label="From" defaultValue={fromISODate("2026-10-02")} />
+      <DateField calendar label="To" defaultValue={fromISODate("2026-10-31")} />
+    </Cluster>
   ),
 };

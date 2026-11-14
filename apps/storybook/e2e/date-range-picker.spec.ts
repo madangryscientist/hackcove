@@ -97,12 +97,14 @@ test.describe("DateRangePicker", () => {
   });
 
   test("a preset reports its range and closes the calendar", async ({ page }) => {
-    await story(page, "with-presets");
+    await story(page, "do-presets");
+    await page.getByRole("button", { name: /^Calendar/ }).click();
     const grid = page.getByRole("grid");
     await expect(grid).toBeVisible();
     await page.getByRole("button", { name: "Last 7 days" }).click();
 
     await expect(grid).toBeHidden();
+    await expect(caption(page)).toHaveText("From 2026-10-25 to 2026-10-31.");
     await expect(sideText(page, "Start")).toHaveText("25/10/2026");
     await expect(sideText(page, "End")).toHaveText("31/10/2026");
   });
