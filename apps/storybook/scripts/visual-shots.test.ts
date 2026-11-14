@@ -1,7 +1,7 @@
 import { deflateSync } from "node:zlib";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join, posix } from "node:path";
+import { join } from "node:path";
 import { parseAst } from "vite";
 import { afterEach, describe, expect, it } from "vitest";
 import {
@@ -159,6 +159,7 @@ function exportedComponents(): string[] {
 const GALLERY = "apps/storybook/src/Gallery.tsx";
 /** Where `Gallery.tsx` stops building sections: the two wrappers that render them are not shot. */
 const WRAPPERS = "export function Gallery(";
+const STORYBOOK_SRC = "apps/storybook/src/";
 
 /** Every JSX tag name in an ESTree node: strings, templates, regexes and comments hold none. */
 function tagsOf(node: unknown, into: Set<string>): Set<string> {
@@ -173,17 +174,17 @@ function tagsOf(node: unknown, into: Set<string>): Set<string> {
 }
 
 /**
- * The JSX tags `Gallery.tsx` renders up to its wrappers, and every file it imports from `src/` or
- * `src/layout/` renders, transitively, read from each file's parsed syntax tree.
+ * The JSX tags `Gallery.tsx` renders up to its wrappers, and every file under `src/` it imports
+ * renders, transitively, read from each file's parsed syntax tree. The library's own files are left
+ * out: a component one of them renders inside another is not one the Gallery shows.
  */
 async function galleryTags(): Promise<Set<string>> {
   const { read: readFile } = await readRepo(root);
-  const folders = new Set(["apps/storybook/src", "apps/storybook/src/layout"]);
   const gallery = readFile(GALLERY) ?? "";
   expect(gallery).toContain(WRAPPERS);
   const tags = new Set<string>();
   for (const file of closureOf(GALLERY, readFile, barrelOf(readFile))) {
-    if (!folders.has(posix.dirname(file))) continue;
+    if (!file.startsWith(STORYBOOK_SRC)) continue;
     const text = (file === GALLERY ? gallery.split(WRAPPERS)[0] : readFile(file)) ?? "";
     tagsOf(parseAst(text, { lang: file.endsWith(".tsx") ? "tsx" : "ts" }), tags);
   }
