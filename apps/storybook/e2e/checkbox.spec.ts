@@ -61,6 +61,23 @@ for (const { id: theme } of themes) {
     }
   });
 
+  test(`theme ${theme}: the tick ranks z-20 inside an isolate and stays unraised outside one`, async ({
+    page,
+  }) => {
+    // The rank that keeps the tick above a lifted Card field must not leak outside a Card, where a
+    // base z-10 would tie with a sticky header. Read off the computed style, so it holds in every engine.
+    await open(page, "forms-checkbox--checked", theme);
+    const outside = await mark(page.getByRole("checkbox", { name: "Open now" })).evaluate(
+      (el) => getComputedStyle(el).zIndex,
+    );
+    expect(outside).toBe("auto");
+    await open(page, "forms-checkbox--in-card", theme);
+    const inside = await mark(
+      page.getByRole("checkbox", { name: "Email me when a shop I follow posts" }),
+    ).evaluate((el) => getComputedStyle(el).zIndex);
+    expect(inside).toBe("20");
+  });
+
   test(`theme ${theme}: an unticked Checkbox in a Card hides its tick, and a click toggles it`, async ({
     page,
   }) => {
