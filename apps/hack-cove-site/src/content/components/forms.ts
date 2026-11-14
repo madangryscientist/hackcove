@@ -237,6 +237,26 @@ export const forms: ComponentSection = {
       ],
     },
     {
+      slug: "date-range-picker",
+      name: "DateRangePicker",
+      summary: "A from and to date in one field, typed or picked from a month or a preset.",
+      whenToUse: "A from and to date: a report period, a timeline filter.",
+      pairs: ["DateRangePicker/Presets"],
+      usage: [
+        "A from and to date is one `DateRangePicker`, never two `DateField`s. A single date is a `DateField`.",
+        "The value is `{ start, end }` of `CalendarDate`s, or `null`. It is reported only when both sides are complete, real dates within `minValue` and `maxValue` and the start is on or before the end; anything else reports `null` and the field says why. `startName` and `endName` post each side as `YYYY-MM-DD` in a form, or an empty string while there is no range.",
+        'Presets come from the app: build "Last 7 days", "Last 30 days" and "Last 90 days" from the app\'s own today (`today(getLocalTimeZone())` from `@internationalized/date`) and pass them as `presets`. The picker has none of its own and never reads the clock. A preset sets the range and closes the calendar.',
+        "It draws its own label: give it `label` and `description`, and do not wrap it in a `Field`. `error`, `isInvalid`, `errorMessage` and `size` work as on `DateField`.",
+      ],
+      accessibility: [
+        'Each side is a `role="group"` named "Start date" and "End date", of DD, MM and YYYY segments (`role="spinbutton"`) that take digits or the arrow keys.',
+        'The calendar button is labelled "Calendar" and opens a popover dialog: the arrow keys move across days, Enter on a day starts the range and Enter on a second ends it, and Escape closes it without a change.',
+        'An impossible day, such as 31/02/2026, keeps what was typed and says which side and why: "End date: February 2026 has 28 days."',
+        "Inside a `Dialog` or `Drawer` the calendar opens inside it, so it still takes focus. The focus ring comes from the component.",
+      ],
+      api: ["DateRangePicker"],
+    },
+    {
       slug: "segmented-control",
       name: "SegmentedControl",
       summary: "A joined group of options where one is filled.",

@@ -25,7 +25,7 @@ import { ShownInput, useShownDate } from "./shownDate.js";
 import type { Size } from "./size.js";
 
 /** The picker's padding, text and calendar button, by `size`. The button sets the height, so the padding is less than a `DateField`'s. */
-const PICKER_SIZE: Record<Size, { frame: string; button: string }> = {
+export const PICKER_SIZE: Record<Size, { frame: string; button: string }> = {
   sm: { frame: "py-0.5 pl-2 pr-0.5 text-xs", button: "h-5 w-5" },
   md: { frame: "py-1 pl-2.5 pr-1 text-sm", button: "h-7 w-7" },
   lg: { frame: "py-1.5 pl-3 pr-1.5 text-base", button: "h-8 w-8" },
@@ -52,6 +52,22 @@ function PickerInput({
   );
 }
 
+/**
+ * The modal `<dialog>` a picker sits in, if any, for its popover's `container`: pass `findDialog` as the
+ * picker's `ref`.
+ */
+export function useDialogContainer(): {
+  container: Element | undefined;
+  findDialog: (el: HTMLDivElement | null) => void;
+} {
+  const [container, setContainer] = useState<Element | undefined>(undefined);
+  const findDialog = useCallback(
+    (el: HTMLDivElement | null) => setContainer(el?.closest("dialog") ?? undefined),
+    [],
+  );
+  return { container, findDialog };
+}
+
 /** The body of `<DateField calendar>`: the field with a calendar button that opens a month view in a popover. */
 export function CalendarDateField({
   label,
@@ -75,11 +91,7 @@ export function CalendarDateField({
       maxValue: rest.maxValue,
       isRequired: rest.isRequired,
     });
-  const [dialog, setDialog] = useState<Element | undefined>(undefined);
-  const findDialog = useCallback(
-    (el: HTMLDivElement | null) => setDialog(el?.closest("dialog") ?? undefined),
-    [],
-  );
+  const { container, findDialog } = useDialogContainer();
   return (
     <I18nProvider locale={LOCALE}>
       <AriaDatePicker<CalendarDate>
@@ -121,7 +133,7 @@ export function CalendarDateField({
               impossible={impossible}
               isInvalid={isInvalid}
             />
-            <CalendarPopover container={dialog} />
+            <CalendarPopover container={container} />
           </>
         )}
       </AriaDatePicker>

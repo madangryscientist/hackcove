@@ -2,12 +2,17 @@ import {
   Button,
   Checkbox,
   DateField,
+  DateRangePicker,
   FileDrop,
+  fromISODate,
   Input,
   Select,
   Textarea,
   type ControlWidth,
 } from "@hackcove/ui-react";
+
+const [octoberStart, octoberEnd] = [fromISODate("2026-10-01"), fromISODate("2026-10-31")];
+const october = octoberStart && octoberEnd ? { start: octoberStart, end: octoberEnd } : null;
 
 const widths: ControlWidth[] = ["xs", "sm", "md", "lg"];
 
@@ -21,7 +26,7 @@ const searchIcon = (
   </svg>
 );
 
-/** The compact and fixed-width Input, Select, Textarea and Checkbox rows, the FileDrop and the date error of the Gallery. */
+/** The compact and fixed-width Input, Select, Textarea and Checkbox rows, the FileDrop, the date errors and the date range of the Gallery. */
 export function GalleryControls() {
   return (
     <div className="flex max-w-lg flex-col gap-3">
@@ -73,6 +78,7 @@ export function GalleryControls() {
       </FileDrop>
       <DateField calendar label="Paid on" error="That date is before the invoice." />
       <DateField label="Due on" isInvalid errorMessage="Pick a date." />
+      <DateRangePicker label="Report period" defaultValue={october} />
     </div>
   );
 }

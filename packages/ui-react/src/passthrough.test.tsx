@@ -20,7 +20,7 @@ function probes(): Element[] {
  * (merging the id with its own description), so the description is asserted inside the probe. A
  * `Radio` does the same: `data-*` on its label, the description on the input inside it.
  */
-const SPLIT = new Set(["DateField", "Radio"]);
+const SPLIT = new Set(["DateField", "DateRangePicker", "Radio"]);
 
 describe("every exported component passes data-* and aria-* through", () => {
   beforeEach(stubDialog);

@@ -50,6 +50,7 @@ export const CASES: Record<string, () => ReactElement> = {
   CopyButton: () => <ui.CopyButton text="x" {...A} />,
   CopyLine: () => <ui.CopyLine text="x" {...A} />,
   DateField: () => <ui.DateField label="Day" defaultValue={new CalendarDate(2026, 1, 2)} {...A} />,
+  DateRangePicker: () => <ui.DateRangePicker label="Period" {...A} />,
   DetailLayout: () => (
     <ui.DetailLayout title="T" aside="a" {...A}>
       x
