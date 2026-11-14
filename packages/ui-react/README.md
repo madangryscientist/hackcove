@@ -207,7 +207,7 @@ import { AppShell, PageHeader, Section, Stack, Tabs, appShellRootClassFor } from
 - **`Container`** is the only place the content width (`max-w-6xl`) and side padding
   (`px-4 sm:px-6`) are defined. **Pages never set their own width or outer padding**: no `max-w-*`,
   no `mx-auto`, no `px-*` on a page. AppShell already gives them the edge.
-- **`PageHeader`** is the top of every page: optional `breadcrumbs`, the `title` (a `PageHeading`),
+- **`PageHeader`** is the top of every page but a landing page (that one opens with a `Hero`): optional `breadcrumbs`, the `title` (a `PageHeading`),
   `subtitle`, `actions` (right of the title from `sm`, under it on a phone) and `tabs` under it. Its
   fixed bottom margin puts every page's first block at the same y.
 - **`Hero`** is a landing page's top block, once per page and only there; every other page opens

@@ -88,7 +88,7 @@ export const layout: ComponentSection = {
       name: "PageHeader",
       summary: "The top of a page: breadcrumbs, title, subtitle, actions and tabs.",
       whenToUse:
-        "The first block of every page; it puts the page's first content at the same y on every page.",
+        "The first block of every page but a landing page, which opens with a `Hero`; it puts the page's first content at the same y on every page.",
       pairs: ["PageHeaderDocs/Slots", "PageHeaderDocs/InStack"],
       stories: ["PageHeader"],
       usage: [
@@ -96,7 +96,7 @@ export const layout: ComponentSection = {
         "`actions` sit beside the title from `sm` up and under it on a phone: a `Button` or two, one primary.",
         "`breadcrumbs` take a `Breadcrumbs`; `tabs` take pill `Tabs` of links to pages.",
         "Its fixed bottom margin gives every page the same first-block position. As a direct child of a `Stack` it has none and the Stack's `gap` is the only space, so do not wrap it in another element.",
-        "One `PageHeader` per page: it holds the page's `<h1>`.",
+        "One `PageHeader` per page: it holds the page's `<h1>`. A landing page has a `Hero` in its place.",
       ],
       accessibility: [
         "The title is the page's `<h1>`; the subtitle is a paragraph.",

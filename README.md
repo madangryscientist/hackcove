@@ -92,7 +92,7 @@ the font stacks), so an app ships no page-background or font CSS. It gives every
 `Container` (`max-w-6xl`, `px-4 sm:px-6`, defined there and nowhere else). Put `appShellRootClassFor(scheme)`
 on your `<html>` so the scrollbar is always reserved and centred content does not shift between a
 short and a long page; no component touches `<html>`. Pages never set their own width or outer
-padding: they start with `PageHeader` and space their blocks with `Stack` (`xs` between lines of text,
+padding: they start with `PageHeader` (a landing page with `Hero`) and space their blocks with `Stack` (`xs` between lines of text,
 `sm` inside a group, `md` between blocks, `lg` between groups, `xl` between a page's top-level
 blocks). A text page uses `ProseLayout`, or
 `Stack width="narrow"`, for its reading measure. See

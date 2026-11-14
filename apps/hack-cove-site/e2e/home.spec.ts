@@ -4,8 +4,8 @@ import { scopes, setScheme, themeList, useScope } from "./scheme";
 
 // The home page is the products page: a block per product ready to use, how the slash tools fit,
 // a card for each of the rest, the actions linking out, and the cards' labels on one line.
-// "Every theme" is both schemes here: the toggle flips the site between the light and the dark
-// theme, and the same flip runs on every page.
+// The toggle flips the site between its light and dark scheme; the hero's 390px check runs in every
+// theme file, put on `<html>` with `useScope`.
 const productsRegion = (page: Page) => page.getByRole("main");
 
 test("/: one h1, a block for each product ready to use, how they fit, cards for the rest, four links out and two pictures", async ({
@@ -79,7 +79,10 @@ for (const [i, theme] of themeList.entries()) {
       let widest = 0;
       for (let ms = 0; ms <= 140_000; ms += 2_500) {
         for (const animation of drift) animation.currentTime = ms;
-        widest = Math.max(widest, document.documentElement.scrollWidth - window.innerWidth);
+        widest = Math.max(
+          widest,
+          document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        );
       }
       return { widest, animations: drift.length };
     });
