@@ -6,6 +6,10 @@ import { themeFiles } from "@hackcove/themes-shared/files";
  * every link in them is reachable, the page never scrolls sideways, and the header is the same
  * height on every page, open or closed. Themes are found the way theme.spec.ts finds them, so a new
  * theme is checked with no edit here.
+ *
+ * One test per story per theme, never one test looping over the stories: each story then has its
+ * own test budget (one slow story cannot spend the next one's), a failure names the story and the
+ * theme, and a new theme adds tests instead of lengthening an existing one.
  */
 const themes = themeFiles(`${import.meta.dirname}/../../../themes`);
 
@@ -62,35 +66,35 @@ test("the themes folder lists at least one theme", () => {
 });
 
 for (const { id: theme } of themes) {
-  test(`theme ${theme}: at ${WIDTH}px every link is behind the Menu button, none scrolls sideways, one header height`, async ({
-    page,
-  }) => {
-    const heights: Record<string, number> = {};
+  test.describe(`theme ${theme}`, () => {
     for (const { id, links } of stories) {
-      const menu = await open(page, id, theme);
-      const button = menu.getByText("Menu", { exact: true });
+      test(`at ${WIDTH}px ${id}: every link is behind the Menu button, none scrolls sideways, one header height`, async ({
+        page,
+      }) => {
+        const menu = await open(page, id, theme);
+        const button = menu.getByText("Menu", { exact: true });
 
-      // Closed: the header is one row, the links are not on screen, and nothing scrolls sideways.
-      await expect(menu.getByRole("link").first()).toBeHidden();
-      expect(await noSidewaysScroll(page), `${id}: sideways scroll, closed`).toBeLessThanOrEqual(0);
-      heights[`${id} closed`] = await headerHeight(page);
-
-      // Open: every nav and subnav link is there and can be reached.
-      await button.click();
-      await expect(menu).toHaveJSProperty("open", true);
-      const all = menu.getByRole("link");
-      await expect(all).toHaveCount(links);
-      for (const link of await all.all()) {
-        expect(await reachable(link), `${id}: ${await link.textContent()} is not reachable`).toBe(
-          true,
+        // Closed: the header is one row, the links are not on screen, and nothing scrolls sideways.
+        await expect(menu.getByRole("link").first()).toBeHidden();
+        expect(await noSidewaysScroll(page), `${id}: sideways scroll, closed`).toBeLessThanOrEqual(
+          0,
         );
-      }
-      expect(await noSidewaysScroll(page), `${id}: sideways scroll, open`).toBeLessThanOrEqual(0);
-      heights[`${id} open`] = await headerHeight(page);
+        expect(await headerHeight(page), `${id}: header height, closed`).toBe(HEADER_HEIGHT);
+
+        // Open: every nav and subnav link is there and can be reached.
+        await button.click();
+        await expect(menu).toHaveJSProperty("open", true);
+        const all = menu.getByRole("link");
+        await expect(all).toHaveCount(links);
+        for (const link of await all.all()) {
+          expect(await reachable(link), `${id}: ${await link.textContent()} is not reachable`).toBe(
+            true,
+          );
+        }
+        expect(await noSidewaysScroll(page), `${id}: sideways scroll, open`).toBeLessThanOrEqual(0);
+        expect(await headerHeight(page), `${id}: header height, open`).toBe(HEADER_HEIGHT);
+      });
     }
-    expect(new Set(Object.values(heights)), JSON.stringify(heights)).toEqual(
-      new Set([HEADER_HEIGHT]),
-    );
   });
 }
 
