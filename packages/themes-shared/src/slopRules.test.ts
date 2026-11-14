@@ -58,6 +58,14 @@ describe("slopRules: nothing time dependent", () => {
     ).toEqual([]);
   });
 
+  it("fails a timer in a helper under test/, and keeps the other rules on an exempt line", () => {
+    expect(slopRules("test/helper.ts", `${timeout}f, 1);`, "x")).toHaveLength(1);
+    const why = w("// time-", "dependent: polls");
+    expect(slopRules("src/a.test.ts", `${why}\n// ${todo} tidy`, "x")).toEqual([
+      expect.stringMatching(/^src\/a\.test\.ts:2: .* needs a ticket ref/),
+    ]);
+  });
+
   it("passes Playwright's test.setTimeout, the test's own time limit", () => {
     expect(slopRules("e2e/site-header.spec.ts", w("test.set", "Timeout(120_000);"), "x")).toEqual(
       [],

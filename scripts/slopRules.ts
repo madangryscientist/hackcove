@@ -24,7 +24,10 @@ const TIME_RULE =
   "time dependent; render from the value given and assert without a clock (CSS for a delay), or say why with `// time-dependent: <why>`";
 
 const isTest = (path: string): boolean =>
-  /\.test\.tsx?$/.test(path) || /\.stories\.tsx$/.test(path) || path.startsWith("e2e/");
+  /\.test\.tsx?$/.test(path) ||
+  /\.stories\.tsx$/.test(path) ||
+  path.startsWith("e2e/") ||
+  path.startsWith("test/");
 
 /** Each hit as `path:line: message`. `path` is relative to the package; `pkg` is its `name`. */
 export function slopRules(path: string, text: string, pkg: string): string[] {
