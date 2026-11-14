@@ -217,6 +217,7 @@ describe("this repo", () => {
     const code = globSync("apps/storybook/{scripts/*.ts,pixelslash.config.ts}", { cwd: root })
       .filter((path) => !path.endsWith(".test.ts"))
       .map((path) => [path, readFileSync(join(root, path), "utf8")] as const);
+    expect(code.map(([path]) => path)).toContain("apps/storybook/scripts/visual-plan.ts");
     const named = code.flatMap(([path, text]) =>
       ids.filter((id) => text.includes(id)).map((id) => `${path}: ${id}`),
     );

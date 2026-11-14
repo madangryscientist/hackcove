@@ -149,7 +149,10 @@ const titlesOf = (captures: { files: { title: string }[]; themes: string[] }[]) 
 function reportPlan(plan: Plan, grouping: Grouping, saved: SavedPlan, whole: Plan) {
   const index = indexOf(branchStatic);
   const shots = (captures: Selection[]) =>
-    captures.reduce((n, c) => n + shotsOf(index, c.titles, c.themes.length), 0);
+    captures.reduce(
+      (n, c) => n + (c.themes.length > 0 ? shotsOf(index, c.titles, c.themes.length) : 0),
+      0,
+    );
   const planned = saved.groups.flatMap((g) => g.captures);
   const wholeCaptures = whole.picked.flatMap((g) => titlesOf(g.captures));
   const files = plan.picked.reduce((n, g) => n + g.picked.length, 0);
