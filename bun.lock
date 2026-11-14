@@ -75,7 +75,7 @@
     },
     "packages/ui-react": {
       "name": "@hackcove/ui-react",
-      "version": "0.10.3",
+      "version": "0.10.4",
       "dependencies": {
         "@internationalized/date": "^3.12.4",
         "react-aria-components": "^1.22.1",
@@ -104,7 +104,7 @@
     },
     "themes": {
       "name": "@hackcove/themes",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "devDependencies": {
         "@types/bun": "1.4.3",
         "tailwindcss": "^4.3.3",
