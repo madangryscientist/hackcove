@@ -155,5 +155,11 @@ export {
   type TypographyProps,
 } from "./typography.js";
 export { DateField, type DateFieldProps } from "./DateField.js";
+export {
+  DateRangePicker,
+  type DateRange,
+  type DateRangePickerProps,
+  type DateRangePreset,
+} from "./DateRangePicker.js";
 export { fromISODate, toISODate } from "./isoDate.js";
 export type { CalendarDate } from "@internationalized/date";
