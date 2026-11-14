@@ -32,7 +32,7 @@ import { join, posix } from "node:path";
 import { themeFiles } from "@hackcove/themes-shared/files";
 import { barrelOf, closureOf, type Reader } from "./import-graph.js";
 import type { Page, Placement, Section } from "./site-types.js";
-import { themesOf } from "./theme-reach.js";
+import { referenceOf, themesOf } from "./theme-reach.js";
 
 export type { Placement, Reader, Section };
 
@@ -81,12 +81,6 @@ export const OVERVIEW = "overview";
 export const GALLERY_TITLE = "Overview/Gallery sections";
 
 const isGallery = (file: StoryFile) => file.title === GALLERY_TITLE;
-
-/**
- * The reference theme, shot in every story: the first of `themes` (`themeFiles` order, sorted by id).
- * A new theme that sorts first becomes the reference and takes the full set over.
- */
-export const referenceOf = (themes: string[]): string | undefined => themes[0];
 
 export const slugOf = (title: string) =>
   title
@@ -263,7 +257,8 @@ function reachedWhy(files: StoryFile[], reach: Reach): string[] {
 
 /** One group's captures under `reach`, or `undefined` when the change does not reach it. */
 function pickOf(group: Group, reach: Reach, themes: string[]): GroupPick | undefined {
-  const [reference, ...others] = themes;
+  const reference = referenceOf(themes);
+  const others = themes.slice(1);
   const reached = group.files.filter((file) => reach.reached.has(file.path));
   const overview = group.slug === OVERVIEW;
   // The reference theme's own change shows in every story; Overview is always captured.

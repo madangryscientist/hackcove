@@ -15,6 +15,12 @@ export function themesOf(repo: { themes: string[] }, path: string): string[] | u
 }
 
 /**
+ * The reference theme, shot in every story: the first of `themes` (`themeFiles` order, sorted by id).
+ * A new theme that sorts first becomes the reference and takes the full set over.
+ */
+export const referenceOf = (themes: string[]): string | undefined => themes[0];
+
+/**
  * The branch's captures as the base takes them, by the base's own reference rule. Each keeps the
  * themes the base has, so a theme new on the branch shows as new (the base's Storybook would render
  * an id it does not know with no theme at all). The reference capture (the one in the branch's
@@ -28,11 +34,12 @@ export function capturesOnBase<T extends { themes: string[] }>(
   base: string[],
   branch: string[],
 ): T[] {
-  const [baseRef, ...baseOthers] = base;
-  const gone = baseOthers.filter((id) => !branch.includes(id));
+  const baseRef = referenceOf(base);
+  const branchRef = referenceOf(branch);
+  const gone = base.slice(1).filter((id) => !branch.includes(id));
   return captures.map((pick) => {
     const kept = pick.themes.filter((id) => base.includes(id));
-    const isReference = branch[0] !== undefined && pick.themes.includes(branch[0]);
+    const isReference = branchRef !== undefined && pick.themes.includes(branchRef);
     const themes = isReference
       ? [...kept, ...(baseRef === undefined ? [] : [baseRef])]
       : [...kept, ...gone].filter((id) => id !== baseRef);

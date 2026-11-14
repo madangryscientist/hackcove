@@ -77,7 +77,7 @@ names, so a new theme needs no test edit.
 **The visual check** (PixelSlash, `CONTRIBUTING.md`, "The visual check") is split into one group
 per section of the site's component docs, read from `componentSections`: one Nx project
 `visual-<section>` and one PixelSlash project `hackcove-ui-<section>` each, plus Overview, which is
-always captured. Every story is shot in one theme only, the reference theme: the first theme file
+always captured. Every story is shot in the reference theme, the first theme file
 in sorted order (`themeFiles`), read from `themes/`, never named in code. Every other theme is shot
 in **Overview / Gallery sections** only, which must render every component `index.ts` exports
 (`visual-shots.test.ts`), so a theme added costs one Gallery, not every story. A theme whose file

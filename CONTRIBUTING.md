@@ -128,8 +128,8 @@ A story file goes in the section of the docs page that names it in `pairs`, `ful
 `stories`; one that no page names fails the storybook tests, so a new story file comes with its
 docs page.
 
-**One theme in full, the Gallery sections in the rest.** Every story is shot in one theme, the
-reference theme: the first file in `themes/` in sorted order (`catppuccin-latte.css` today), worked
+**One theme in full, the Gallery sections in the rest.** Every story is shot in the reference
+theme, the first file in `themes/` in sorted order (`catppuccin-latte.css` today), worked
 out from the folder, never named in code. Every other theme is shot in **Overview / Gallery
 sections** only, one story per `gallerySections` entry, which render every component the library
 exports (a storybook test fails on one that is missing). So a regression in any story shows in the
