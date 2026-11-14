@@ -1,11 +1,11 @@
 import { expect, type Page, test } from "@playwright/test";
 import { site } from "../src/content/site";
-import { setScheme } from "./scheme";
+import { scopes, setScheme, themeList, useScope } from "./scheme";
 
 // The home page is the products page: a block per product ready to use, how the slash tools fit,
 // a card for each of the rest, the actions linking out, and the cards' labels on one line.
-// "Every theme" is both schemes here: the toggle flips the site between the light and the dark
-// theme, and the same flip runs on every page.
+// The toggle flips the site between its light and dark scheme; the hero's 390px check runs in every
+// theme file, put on `<html>` with `useScope`.
 const productsRegion = (page: Page) => page.getByRole("main");
 
 test("/: one h1, a block for each product ready to use, how they fit, cards for the rest, four links out and two pictures", async ({
@@ -64,3 +64,45 @@ for (const scheme of ["light", "dark"] as const) {
     expect(overflow).toBeLessThanOrEqual(0);
   });
 }
+
+// The hero's glow is anchored to the text column and clipped to it, so on a phone it never widens
+// the page, in any theme and at any point of its drift: the test holds every animation still and
+// steps it through more than its longest full cycle (67s each way), measuring the page at each step.
+for (const [i, theme] of themeList.entries()) {
+  test(`/: at 390px the hero's glow scrolls nothing sideways, in ${theme.id}`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.goto("/");
+    await useScope(page, scopes[i] ?? "");
+    const sweep = await page.evaluate(() => {
+      const drift = document.getAnimations();
+      for (const animation of drift) animation.pause();
+      let widest = 0;
+      for (let ms = 0; ms <= 140_000; ms += 2_500) {
+        for (const animation of drift) animation.currentTime = ms;
+        widest = Math.max(
+          widest,
+          document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        );
+      }
+      return { widest, animations: drift.length };
+    });
+    expect(sweep.animations).toBeGreaterThanOrEqual(3);
+    expect(sweep.widest).toBeLessThanOrEqual(0);
+  });
+}
+
+/** Every ribbon of the hero's glow, by the animation it runs now. */
+const ribbonAnimations = (page: Page) =>
+  page
+    .locator("[data-hero-glow] > span")
+    .evaluateAll((spans) => spans.map((span) => getComputedStyle(span).animationName));
+
+test("/: the hero's glow drifts only when the visitor has not asked for less motion", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  expect(await ribbonAnimations(page)).toEqual(["none", "none", "none"]);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  expect(await ribbonAnimations(page)).toEqual(["hc-hero-tide", "hc-hero-tide", "hc-hero-tide"]);
+});

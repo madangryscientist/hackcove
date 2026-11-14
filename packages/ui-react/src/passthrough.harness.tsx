@@ -107,6 +107,7 @@ export const CASES: Record<string, () => ReactElement> = {
     </ui.FormRowField>
   ),
   FullBleedLayout: () => <ui.FullBleedLayout {...A}>x</ui.FullBleedLayout>,
+  Hero: () => <ui.Hero title="T" {...A} />,
   Icon: () => (
     <ui.Icon {...A}>
       <svg />

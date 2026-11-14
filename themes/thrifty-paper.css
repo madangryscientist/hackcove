@@ -345,3 +345,16 @@
 .thrifty-paper .link:hover {
   color: #7c2d12; /* accent-ink-hover */
 }
+
+/* The hero glow (Hero): three ribbons behind a landing page's title. On paper they are light, warm
+   tints, so the cream reads as lit rather than smudged: clay, sage and blush, all paler than the ink
+   could muddy. Decoration: the contrast contract holds the hero's text over all three at once. */
+.thrifty-paper .bg-indigo-400\/25 {
+  background-color: rgba(249, 198, 168, 0.3); /* soft clay */
+}
+.thrifty-paper .bg-teal-400\/25 {
+  background-color: rgba(185, 220, 207, 0.26); /* sage */
+}
+.thrifty-paper .bg-rose-400\/25 {
+  background-color: rgba(244, 194, 207, 0.26); /* blush */
+}

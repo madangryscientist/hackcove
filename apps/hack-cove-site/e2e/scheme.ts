@@ -36,6 +36,16 @@ export const scopeClasses = (page: Page) =>
 export const hydrated = (page: Page) =>
   page.locator('astro-island[component-export="ColourSchemeToggle"]:not([ssr])').waitFor();
 
+/** Puts `<html>` in one theme's scope and in no other's. */
+export const useScope = (page: Page, scope: string) =>
+  page.locator("html").evaluate(
+    (el, { all, one }) => {
+      el.classList.remove(...all);
+      el.classList.add(one);
+    },
+    { all: scopes, one: scope },
+  );
+
 /** The scheme `<html>` is in now, read from its classes. */
 export const classScheme = async (page: Page): Promise<Scheme> =>
   (await scopeClasses(page)).includes(schemeScope.dark) ? "dark" : "light";

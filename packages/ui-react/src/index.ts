@@ -22,6 +22,7 @@ export {
 } from "./AppShell.js";
 export { Container } from "./Container.js";
 export { PageHeader, type PageHeaderProps } from "./PageHeader.js";
+export { Hero, type HeroProps } from "./Hero.js";
 export {
   CardGrid,
   CenteredLayout,

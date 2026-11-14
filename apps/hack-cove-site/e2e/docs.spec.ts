@@ -11,6 +11,7 @@ import {
   themeList,
   toggle,
   hydrated,
+  useScope,
 } from "./scheme";
 
 test("the themes folder lists at least one theme", () => {
@@ -126,13 +127,7 @@ test("each theme reskins the page: its page paint differs from the stock compone
   await page.locator("html").evaluate((el, all) => el.classList.remove(...all), scopes);
   const plain = await paint();
   for (const scope of scopes) {
-    await page.locator("html").evaluate(
-      (el, { all, one }) => {
-        el.classList.remove(...all);
-        el.classList.add(one);
-      },
-      { all: scopes, one: scope },
-    );
+    await useScope(page, scope);
     expect(await paint()).not.toBe(plain);
   }
 });

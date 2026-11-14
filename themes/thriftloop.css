@@ -356,3 +356,16 @@
 .thriftloop .link:hover {
   color: #8f2f0a;
 }
+
+/* The hero glow (Hero): three ribbons behind a landing page's title, peach, aqua and blush. Each is
+   as light as the cream it sits on, so it shows as colour without darkening the cream under the
+   orange accent text. Decoration: the contrast contract holds the hero's text over all three at once. */
+.thriftloop .bg-indigo-400\/25 {
+  background-color: rgba(255, 220, 199, 0.4);
+}
+.thriftloop .bg-teal-400\/25 {
+  background-color: rgba(195, 255, 245, 0.5);
+}
+.thriftloop .bg-rose-400\/25 {
+  background-color: rgba(255, 223, 244, 0.45);
+}

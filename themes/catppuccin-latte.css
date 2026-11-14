@@ -382,3 +382,15 @@
 .latte .link:hover {
   color: #525cad; /* lavender, as hover:text-violet-700 above */
 }
+
+/* The hero glow (Hero): three ribbons behind a landing page's title, mauve, teal and pink kept faint
+   on the light base. Decoration: the contrast contract holds the hero's text over all three at once. */
+.latte .bg-indigo-400\/25 {
+  background-color: rgba(136, 57, 239, 0.05); /* mauve */
+}
+.latte .bg-teal-400\/25 {
+  background-color: rgba(23, 146, 153, 0.045); /* teal */
+}
+.latte .bg-rose-400\/25 {
+  background-color: rgba(234, 118, 203, 0.05); /* pink */
+}

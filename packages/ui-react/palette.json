@@ -80,5 +80,6 @@
   ],
   "info": ["bg-blue-50", "text-blue-700", "text-blue-800", "border-blue-200"],
   "sky": ["bg-sky-50", "text-sky-700"],
-  "viz": ["text-neutral-500", "text-purple-700"]
+  "viz": ["text-neutral-500", "text-purple-700"],
+  "glow": ["bg-indigo-400/25", "bg-teal-400/25", "bg-rose-400/25"]
 }

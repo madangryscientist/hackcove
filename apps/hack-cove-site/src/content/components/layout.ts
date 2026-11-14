@@ -88,7 +88,7 @@ export const layout: ComponentSection = {
       name: "PageHeader",
       summary: "The top of a page: breadcrumbs, title, subtitle, actions and tabs.",
       whenToUse:
-        "The first block of every page; it puts the page's first content at the same y on every page.",
+        "The first block of every page but a landing page, which opens with a `Hero`; it puts the page's first content at the same y on every page.",
       pairs: ["PageHeaderDocs/Slots", "PageHeaderDocs/InStack"],
       stories: ["PageHeader"],
       usage: [
@@ -96,7 +96,7 @@ export const layout: ComponentSection = {
         "`actions` sit beside the title from `sm` up and under it on a phone: a `Button` or two, one primary.",
         "`breadcrumbs` take a `Breadcrumbs`; `tabs` take pill `Tabs` of links to pages.",
         "Its fixed bottom margin gives every page the same first-block position. As a direct child of a `Stack` it has none and the Stack's `gap` is the only space, so do not wrap it in another element.",
-        "One `PageHeader` per page: it holds the page's `<h1>`.",
+        "One `PageHeader` per page: it holds the page's `<h1>`. A landing page has a `Hero` in its place.",
       ],
       accessibility: [
         "The title is the page's `<h1>`; the subtitle is a paragraph.",
@@ -104,6 +104,29 @@ export const layout: ComponentSection = {
         "On a narrow screen the actions move below the title.",
       ],
       api: ["PageHeader"],
+    },
+    {
+      slug: "hero",
+      name: "Hero",
+      summary:
+        "A landing page's top block: an overline, the display title and the lede, over a slow glow.",
+      whenToUse:
+        "The first block of a site's landing page, and nowhere else: every other page opens with a `PageHeader`.",
+      pairs: ["HeroDocs/Landing", "HeroDocs/InnerPage"],
+      stories: ["Hero"],
+      usage: [
+        "One `Hero` per page, and only on the landing page: it is the page's top block. Inner pages use `PageHeader`.",
+        "Pass `title` and, if it has one, `overline`; put a `Lead` in `children`, then the page's first actions in a `Cluster` if there are any: a primary `Button` and an `outline` or `ghost` one in the default tone, or a `TextLink`. That is the text the theme's contrast check holds over the glow.",
+        "Never build the block from an `Overline`, a `Display` and a `Lead` by hand: the hand-built one has no glow and drifts from the one top block.",
+        "The glow is always on and takes no prop. Its colours and its strength are the theme's, so a paper theme keeps it faint.",
+        "It caps itself at a reading measure at the parent's left edge, and the glow is clipped to it, so a phone never scrolls sideways. Put it as the first child of the page's `Stack`.",
+      ],
+      accessibility: [
+        "The title is the page's `<h1>`, in a `<header>` with the overline.",
+        'The glow is `aria-hidden="true"` and takes no pointer; the text sits above it and holds AA contrast over it in every theme.',
+        "The glow drifts only under `prefers-reduced-motion: no-preference`; with reduced motion it stands still. It is plain markup and CSS, so it renders on the server and needs no script.",
+      ],
+      api: ["Hero"],
     },
     {
       slug: "stack",
