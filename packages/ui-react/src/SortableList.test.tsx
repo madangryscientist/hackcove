@@ -46,6 +46,19 @@ describe("SortableList", () => {
     expect(rows[1]?.getAttribute("aria-disabled")).toBe("true");
   });
 
+  it("keeps a section and an item with the same id apart", () => {
+    const container = mount(
+      <SortableList label="Queue" onReorder={noop}>
+        <SortableSection id="1" title="One">
+          <SortableItem id="1" title="Ticket one" />
+        </SortableSection>
+      </SortableList>,
+    );
+    expect(section(container, "One").querySelector('[data-key="1"]')?.textContent).toBe(
+      "Ticket one",
+    );
+  });
+
   it("names each handle Reorder <title>", () => {
     const container = queue();
     const names = [...container.querySelectorAll('[slot="drag"]:not([disabled])')].map((b) =>

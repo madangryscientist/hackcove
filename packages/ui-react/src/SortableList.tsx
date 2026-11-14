@@ -288,7 +288,13 @@ export function SortableSection({
 }: SortableSectionProps & Through): ReactElement {
   const count = itemsOf(children).length;
   return (
-    <GridListSection {...describedBy(rest)} id={id} aria-label={title} className={AFTER_SECTION}>
+    <GridListSection
+      {...describedBy(rest)}
+      // Sections and items share react-aria's key space; this keeps a section id from colliding with an item's.
+      id={`hackcove-sortable-section:${id}`}
+      aria-label={title}
+      className={AFTER_SECTION}
+    >
       <GridListHeader className={HEADING}>
         <span>{title}</span>
         <span className="tabular-nums text-slate-500">{count}</span>
