@@ -31,9 +31,10 @@ tasks:
   lint:
     command: "bun run lint"
     inputs: ["**/*", "@group(deps)"]
+  # scripts/visual-plan.test.ts and visual-shots.test.ts read the theme files (themeFiles, readRepo).
   test:
     command: "bun run test"
-    inputs: ["**/*", "@group(deps)", "@group(sections)"]
+    inputs: ["**/*", "@group(deps)", "@group(sections)", "/themes/*.css"]
   # Playwright against the built Storybook, in every theme.
   e2e:
     command: "bun run test:e2e"

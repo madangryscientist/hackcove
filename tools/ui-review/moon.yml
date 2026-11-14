@@ -8,9 +8,15 @@ tasks:
   lint:
     command: "bun run lint"
     inputs: ["**/*"]
+  # test/review.test.ts reads the root AGENTS.md; test/fixtures.ts runs loadContext on the repo,
+  # which reads ui-react's src/index.ts and palette.json.
   test:
     command: "bun run test"
-    inputs: ["**/*"]
+    inputs:
+      - "**/*"
+      - "/AGENTS.md"
+      - "/packages/ui-react/src/index.ts"
+      - "/packages/ui-react/palette.json"
   check:
     command: "bun run check"
     options:
