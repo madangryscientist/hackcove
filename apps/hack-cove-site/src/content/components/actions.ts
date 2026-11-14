@@ -86,7 +86,7 @@ export const actions: ComponentSection = {
       whenToUse: "A value the page already shows that a reader will paste elsewhere.",
       pairs: ["CopyButton/Clipboard"],
       usage: [
-        "`text` is what is copied; the label swaps to `copiedLabel` once it is on the clipboard.",
+        "`text` is what is copied; `copiedLabel` shows in place of the label for two seconds once it is on the clipboard.",
         'Name what is copied in `label` and `copiedLabel` (`"Copy token"`, `"Token copied"`) when the page has more than one.',
         "A command or token in its own box is a `CopyLine`, which carries this button.",
         "Do not write the clipboard call by hand in a `Button`.",
@@ -94,7 +94,7 @@ export const actions: ComponentSection = {
       ],
       accessibility: [
         'A native `<button>` with `type="button"` and a focus ring from the component.',
-        "The label text is the accessible name and changes to `copiedLabel` after the copy.",
+        "The accessible name is always `label`. A copy shows `copiedLabel` for two seconds and a polite status region beside the button announces it, again on every copy.",
         "A refused or missing clipboard leaves the label unchanged; nothing is announced.",
       ],
       api: ["CopyButton"],
@@ -119,7 +119,7 @@ export const actions: ComponentSection = {
       ],
       accessibility: [
         "The text is a `<code>` element, so a reader can select it by hand as well.",
-        "The button is a `CopyButton`: a native button labelled `copy`, then `copied`.",
+        "The button is a `CopyButton`: a native button named `copy`, whose status region announces `copied` after each copy.",
       ],
       api: ["CopyLine"],
     },

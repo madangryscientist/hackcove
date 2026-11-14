@@ -61,6 +61,8 @@ bunx nx e2e hack-cove-site                      # Playwright: builds the site, f
 `bunx nx affected -t <target>` runs just what changed. Lint rules are all errors: fix the code, do
 not disable a rule.
 
+**Nothing is time dependent.** Jacobus, 2026-11-14: "The architecture of the test is wrong if it relies on timings for displaying it. We should be able to pass it in a value and then render that. It should not be time dependent. The component itself should not be time dependent." A component renders from the value it is given, and a test passes that value and asserts what renders. No fake timers, no waiting on a delay, no story driven by a timer, no `waitForTimeout` in an e2e spec. A visual delay, a fade or a label that reverts is CSS (an animation and its delay), as `CopyButton` and `NavigationProgress` do; a pending state is a value the story holds (a promise that never settles, or a button that lands it). The lint (`scripts/slopRules.ts`) fails a test, story or e2e file that uses a fake or real timer, and a `@hackcove/ui-react` component that calls `setTimeout` or `setInterval`; a line with `// time-dependent: <why>` on it or above it is exempt, and needs a reason a reviewer accepts.
+
 Stop a process by the pid you started or by its port. Never `pkill -f` or `killall` a word such as storybook, nx, bun or vite: a shared machine can be running someone else's capture or upload.
 
 Nx caches locally only; there is no Nx Cloud. CI keeps `.nx/cache` and `.nx/workspace-data` (the cache and its index) between runs with `actions/cache` (`.github/workflows/ci.yml`): a pull request restores its own cache or `main`'s and

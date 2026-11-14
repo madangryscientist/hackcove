@@ -6,7 +6,8 @@ const meta: Meta = { title: "Feedback/FieldDialog" };
 export default meta;
 type S = StoryObj;
 
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+/** A submit that never settles: the dialog stays on its busy state until Cancel or Esc. */
+const never = () => new Promise<never>(() => {});
 
 /** Open when the story loads; the button opens it again after it closes. */
 function Opened({ onSubmit }: { onSubmit: (value: string) => Promise<unknown> }) {
@@ -35,21 +36,30 @@ function Opened({ onSubmit }: { onSubmit: (value: string) => Promise<unknown> })
   );
 }
 
-/** Empty: the Create button is blocked and the hint says why. */
+/** Empty: the Create button is blocked and the hint says why. A submit stays busy until Cancel. */
 export const Default: S = {
-  render: () => <Opened onSubmit={() => wait(600)} />,
+  render: () => <Opened onSubmit={never} />,
 };
-/** Type a name and submit: the button shows its busy label, then the dialog closes. */
+/** A name typed and submitted, the submit still pending: the button shows its busy label. */
+export const Pending: S = {
+  render: () => <Opened onSubmit={never} />,
+  play: async ({ canvasElement }) => {
+    const field = canvasElement.ownerDocument.querySelector<HTMLInputElement>("dialog[open] input");
+    if (!field) throw new Error("no open FieldDialog");
+    Reflect.set(HTMLInputElement.prototype, "value", "my-project", field);
+    field.dispatchEvent(new Event("input", { bubbles: true }));
+    // React flushes that input's update in a microtask queued before this one: the submit is enabled.
+    await new Promise<void>((resolve) => queueMicrotask(resolve));
+    field.form?.requestSubmit();
+  },
+};
+/** Type a name and submit: the dialog closes. */
 export const Resolves: S = {
-  render: () => <Opened onSubmit={() => wait(1500)} />,
+  render: () => <Opened onSubmit={() => Promise.resolve()} />,
 };
 /** Submit rejects: the message replaces the hint as the field's error and the dialog stays open. */
 export const Rejects: S = {
-  render: () => (
-    <Opened
-      onSubmit={() => wait(300).then(() => Promise.reject(new Error("That name is taken.")))}
-    />
-  ),
+  render: () => <Opened onSubmit={() => Promise.reject(new Error("That name is taken."))} />,
 };
 
 /** One value to ask for is a `FieldDialog`: it blocks an empty submit, shows the busy state and puts a rejection under the field. */
@@ -72,7 +82,7 @@ export const DoOneField: S = {
             emptyReason="Type a name first."
             submit="Create"
             busyLabel="Creating…"
-            onSubmit={() => new Promise((resolve) => setTimeout(resolve, 600))}
+            onSubmit={() => Promise.resolve()}
             onClose={() => setOpen(false)}
           />
         )}

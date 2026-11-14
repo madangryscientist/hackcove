@@ -61,7 +61,7 @@ describe("CodeExample", () => {
       </CodeExample>,
     );
     expect(withCopy.indexOf("</pre>")).toBeLessThan(withCopy.indexOf("<button"));
-    expect(withCopy).toContain(">copy</button>");
+    expect(withCopy).toContain('aria-label="copy"');
   });
 
   it("draws one divider between the preview and the code", () => {

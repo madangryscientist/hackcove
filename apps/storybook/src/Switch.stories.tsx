@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import {
+  Button,
   Cluster,
   type Size,
   Switch,
@@ -87,24 +88,31 @@ export const Busy: S = {
   ),
 };
 
-/** The caller's state drives the cycle: a flip goes busy for a moment, then lands. There is no server. */
+/** The caller's state drives the cycle: a flip goes busy and holds the new value; Save lands applies it, as a server's reply would. There is no server. */
 export const Saving: S = {
   render: () => {
     const [checked, setChecked] = useState(false);
-    const [busy, setBusy] = useState(false);
+    const [pending, setPending] = useState<boolean | null>(null);
     return (
-      <Switch
-        label="Live in staging"
-        checked={checked}
-        busy={busy}
-        onChange={(next) => {
-          setBusy(true);
-          setTimeout(() => {
-            setChecked(next);
-            setBusy(false);
-          }, 1000);
-        }}
-      />
+      <div className="flex items-center gap-4">
+        <Switch
+          label="Live in staging"
+          checked={checked}
+          busy={pending !== null}
+          onChange={setPending}
+        />
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={pending === null}
+          onClick={() => {
+            if (pending !== null) setChecked(pending);
+            setPending(null);
+          }}
+        >
+          Save lands
+        </Button>
+      </div>
     );
   },
 };

@@ -7,20 +7,44 @@ test.use({ permissions: ["clipboard-read", "clipboard-write"] });
 const clipboard = (page: import("@playwright/test").Page) =>
   page.evaluate(() => navigator.clipboard.readText());
 
-test("on /ui/button/ the first example's copy button copies its source and reads copied", async ({
+/** After a copy: the copied label shows, the idle one hides, the name stays, the region says it. */
+async function expectCopied(button: import("@playwright/test").Locator): Promise<void> {
+  await expect(button.getByText("copied", { exact: true })).toBeVisible();
+  await expect(button.getByText("copy", { exact: true })).toBeHidden();
+  await expect(button).toHaveAccessibleName("copy");
+  await expect(button.locator("+ [data-copy-status]")).toHaveText("copied");
+}
+
+test("on /ui/button/ the first example's copy button copies its source and shows copied, twice", async ({
   page,
 }) => {
   await page.goto("/ui/button/");
   const figure = page.locator("figure", { has: page.locator("pre") }).first();
-  // Found by its data, not its name: the name stops matching "copy" once the label reads "copied".
   const button = figure.locator("button[data-copy-text]");
   await expect(button).toHaveAccessibleName("copy");
+  await expect(button.getByText("copied", { exact: true })).toBeHidden();
   const source = await figure.locator("pre").evaluate((el) => el.textContent ?? "");
   expect(source.length).toBeGreaterThan(0);
   await button.click();
-  await expect(button).toHaveText("copied");
+  await expectCopied(button);
   expect(await clipboard(page)).toBe(source);
-  await expect(button).toHaveText("copy");
+  // The second copy copies again and puts a new node in the region, so it is announced again.
+  await button.evaluate((el) => {
+    const text = el.nextElementSibling?.firstChild;
+    if (text) Object.assign(text, { old: true });
+  });
+  await page.evaluate(() => navigator.clipboard.writeText(""));
+  await button.click();
+  await expect.poll(() => clipboard(page)).toBe(source);
+  await expect
+    .poll(() =>
+      button.evaluate((el) => {
+        const text = el.nextElementSibling?.firstChild;
+        return text !== null && text !== undefined && !("old" in text);
+      }),
+    )
+    .toBe(true);
+  await expectCopied(button);
 });
 
 test("on /ui/ the install snippet's copy button copies its command", async ({ page }) => {
@@ -31,7 +55,7 @@ test("on /ui/ the install snippet's copy button copies its command", async ({ pa
     .locator("figure", { hasText: [step.code].flat().join("\n") })
     .locator("button[data-copy-text]");
   await button.click();
-  await expect(button).toHaveText("copied");
+  await expectCopied(button);
   expect(await clipboard(page)).toBe([step.code].flat().join("\n"));
 });
 

@@ -45,14 +45,20 @@ test("Switch: focus stays on it through a busy cycle, and a busy click does noth
   await page.keyboard.press("Enter");
   await flag.click({ force: true });
   await expect(flag).toHaveAttribute("aria-busy", "true");
+  await expect(flag).toHaveAttribute("aria-checked", "false");
+  // The save lands only when the caller says so: no clock. A dispatched click leaves focus where it is.
+  const land = page.getByRole("button", { name: "Save lands" });
+  await land.dispatchEvent("click");
   await expect(flag).not.toHaveAttribute("aria-busy", "true");
   await expect(flag).toHaveAttribute("aria-checked", "true");
   await expect(flag).toBeFocused();
   // Idle again: the next flip goes through.
   await page.keyboard.press("Space");
   await expect(flag).toHaveAttribute("aria-busy", "true");
+  await land.dispatchEvent("click");
   await expect(flag).not.toHaveAttribute("aria-busy", "true");
   await expect(flag).toHaveAttribute("aria-checked", "false");
+  await expect(flag).toBeFocused();
 });
 
 test("Switch: a bare switch in a table cell is named by its aria-label", async ({ page }) => {

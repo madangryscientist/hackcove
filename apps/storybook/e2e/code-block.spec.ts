@@ -179,7 +179,9 @@ test("a copy button copies the code exactly, by keyboard, and shows copied", asy
   await button.focus();
   await expect(button).toBeFocused();
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("button", { name: "copied", exact: true })).toBeVisible();
+  await expect(button.getByText("copied", { exact: true })).toBeVisible();
+  await expect(page.getByRole("status")).toHaveText("copied");
+  await expect(button).toBeFocused();
   // Wrapped onto several lines on screen, yet one unbroken line on the clipboard.
   await expect(page.locator("body")).toHaveAttribute("data-written", COMMAND);
 });
