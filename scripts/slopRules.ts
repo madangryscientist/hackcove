@@ -14,8 +14,9 @@ const CODE_IN_COMMENT =
 // through `window`, `globalThis` or `self`), so a method of the same name, Playwright's
 // `test.setTimeout` (the test's own time limit), does not hit.
 const BARE_TIMER = /(?:^|[^\w$.])(?:(?:window|globalThis|self)\.)?set(?:Timeout|Interval)\(/;
+/** A fake or waited-on clock, in any file, a test harness included: Vitest's and Playwright's. */
 const FAKE_CLOCK =
-  /\b(?:useFakeTimers|advanceTimersByTime|runAllTimers|runOnlyPendingTimers|waitForTimeout)\b/;
+  /\b(?:useFakeTimers|advanceTimers\w*|runAllTimers\w*|runOnlyPendingTimers\w*|setSystemTime|waitForTimeout)\b|\.clock\.(?:install|runFor|fastForward|pauseAt|resume|setFixedTime|setSystemTime)\(/;
 /** A line with this comment, or the line under it, is exempt; the reason is required. */
 const EXEMPT = /\/\/.*\btime-dependent:\s*\S/;
 
@@ -37,9 +38,9 @@ export function slopRules(path: string, text: string, pkg: string): string[] {
       hits.push(`${at}: TODO/FIXME needs a ticket ref, e.g. TODO(#123)`);
     if (CODE_IN_COMMENT.test(line))
       hits.push(`${at}: commented-out code; delete it (git keeps it)`);
-    if (!test && !component) return;
     if (EXEMPT.test(line) || EXEMPT.test(lines[i - 1] ?? "")) return;
-    if (BARE_TIMER.test(line) || (test && FAKE_CLOCK.test(line))) hits.push(`${at}: ${TIME_RULE}`);
+    if (FAKE_CLOCK.test(line) || ((test || component) && BARE_TIMER.test(line)))
+      hits.push(`${at}: ${TIME_RULE}`);
   });
   return hits;
 }

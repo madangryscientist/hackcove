@@ -28,7 +28,22 @@ test("on /ui/button/ the first example's copy button copies its source and shows
   await button.click();
   await expectCopied(button);
   expect(await clipboard(page)).toBe(source);
+  // The second copy copies again and puts a new node in the region, so it is announced again.
+  await button.evaluate((el) => {
+    const text = el.nextElementSibling?.firstChild;
+    if (text) Object.assign(text, { old: true });
+  });
+  await page.evaluate(() => navigator.clipboard.writeText(""));
   await button.click();
+  await expect.poll(() => clipboard(page)).toBe(source);
+  await expect
+    .poll(() =>
+      button.evaluate((el) => {
+        const text = el.nextElementSibling?.firstChild;
+        return text !== null && text !== undefined && !("old" in text);
+      }),
+    )
+    .toBe(true);
   await expectCopied(button);
 });
 

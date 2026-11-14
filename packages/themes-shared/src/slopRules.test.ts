@@ -16,9 +16,21 @@ describe("slopRules: nothing time dependent", () => {
     ]);
   });
 
+  it("fails the async and Playwright clocks, and a fake clock in a harness that is not a test", () => {
+    expect(
+      slopRules("src/a.test.ts", w("await vi.advance", "TimersByTimeAsync(2000);"), "x"),
+    ).toHaveLength(1);
+    expect(slopRules("src/a.test.ts", w("vi.setSystem", "Time(0);"), "x")).toHaveLength(1);
+    expect(slopRules("e2e/a.spec.ts", w("await page.clock.", "install();"), "x")).toHaveLength(1);
+    expect(slopRules("e2e/a.spec.ts", w("await page.clock.", "runFor(2000);"), "x")).toHaveLength(
+      1,
+    );
+    expect(slopRules("src/dom.harness.ts", fake, ui)).toHaveLength(1);
+  });
+
   it("fails advancing, running or waiting on a clock in a test or an e2e spec", () => {
     for (const call of [
-      w("advanceTimers", "ByTime(2000)"),
+      w("advance", "TimersByTime(2000)"),
       w("runAll", "Timers()"),
       w("runOnlyPending", "Timers()"),
     ])

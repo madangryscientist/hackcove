@@ -76,6 +76,20 @@ describe("the copy button on a code block", () => {
     expect(status?.textContent).toBe("copied");
   });
 
+  it("clears data-copied when the copied label's animation ends, so a later show does not replay it", async () => {
+    const container = mount(<CodeBlock copy>x</CodeBlock>);
+    const button = buttonOf(container);
+    await press(button);
+    expect(button.hasAttribute("data-copied")).toBe(true);
+    // jsdom has no AnimationEvent, so React listens for the prefixed name there; a browser sends `animationend`.
+    await act(async () => {
+      button
+        .querySelector("[data-copy-done]")
+        ?.dispatchEvent(new Event("webkitAnimationEnd", { bubbles: true }));
+    });
+    expect(button.hasAttribute("data-copied")).toBe(false);
+  });
+
   it("restarts the labels and puts a new node in the status region on a second copy", async () => {
     const container = mount(<CodeBlock copy>x</CodeBlock>);
     const button = buttonOf(container);

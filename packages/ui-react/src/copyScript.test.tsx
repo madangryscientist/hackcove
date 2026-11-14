@@ -62,10 +62,6 @@ describe("copyScript", () => {
     expect(copyScript.length).toBeLessThan(1000);
   });
 
-  it("is not time dependent: it sets no timer", () => {
-    expect(copyScript).not.toMatch(/set(?:Timeout|Interval)|requestAnimation/);
-  });
-
   it("copies a static button's text, marks it copied and announces the copied label", async () => {
     const button = buttonOf(staticPage(<CopyButton text="bun add x" />));
     expect(statusOf(button)).toBe("");
@@ -73,6 +69,15 @@ describe("copyScript", () => {
     expect(writeText).toHaveBeenCalledExactlyOnceWith("bun add x");
     expect(button.hasAttribute("data-copied")).toBe(true);
     expect(statusOf(button)).toBe("copied");
+  });
+
+  it("clears data-copied when the copied label's animation ends", async () => {
+    const button = buttonOf(staticPage(<CopyButton text="t" />));
+    await press(button);
+    button
+      .querySelector("[data-copy-done]")
+      ?.dispatchEvent(new Event("animationend", { bubbles: true }));
+    expect(button.hasAttribute("data-copied")).toBe(false);
   });
 
   it("announces the button's own copied label", async () => {

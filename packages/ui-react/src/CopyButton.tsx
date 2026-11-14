@@ -10,13 +10,14 @@ import type { Unstyled } from "./props.js";
 
 const BASE = `shrink-0 rounded px-1.5 py-0.5 font-sans text-xs text-slate-400 hover:bg-slate-100 disabled:pointer-events-none disabled:opacity-50 ${focusRing}`;
 
-/** Both labels share one grid cell, so the button is as wide as the longer and never resizes. */
+/** Both labels share one grid cell, centred, so the button is as wide as the longer and never resizes. */
 const CELL = "col-start-1 row-start-1";
 
 // The copied state is CSS, not a timer: a copy sets `data-copied` on the button, and for two seconds
 // an animation hides `label` and shows `copiedLabel`; when it ends, the resting styles are back.
 // `visibility` is discrete, so each keyframe holds one value for the whole run. A second copy starts
-// the run again: React remounts both labels, `copyScript` re-sets the attribute after a reflow.
+// the run again: React remounts both labels, `copyScript` re-sets the attribute after a reflow. The
+// run's own end clears `data-copied`, so a button hidden and shown again later does not replay it.
 const css = `[data-copied] [data-copy-idle]{animation:hc-copy-idle 2s}[data-copied] [data-copy-done]{animation:hc-copy-done 2s}@keyframes hc-copy-idle{from,to{visibility:hidden}}@keyframes hc-copy-done{from,to{visibility:visible}}`;
 
 /** Writes `text` to the clipboard and shows `copiedLabel` for two seconds, then `label` again. Defaults to `type="button"`. Its accessible name stays `label`; a polite status region beside it announces `copiedLabel` on each copy. A refused or missing clipboard leaves it on `label`. Every other button prop, `disabled` included, goes on the `<button>`. On a page rendered to static HTML without hydration, inline `copyScript` and the button works there too. */
@@ -40,8 +41,10 @@ export function CopyButton({
    */
   copiedLabel?: string;
 } & Unstyled<Omit<ComponentPropsWithoutRef<"button">, "children">>): ReactElement {
-  /** How many copies went through: the key that restarts the labels and the announcement. */
+  /** How many copies went through: the key that restarts the labels. */
   const [copies, setCopies] = useState(0);
+  /** Set by a copy, cleared when the copied label's animation ends. */
+  const [copied, setCopied] = useState(false);
   const status = useRef<HTMLSpanElement>(null);
   return (
     <>
@@ -53,7 +56,7 @@ export function CopyButton({
         // What `copyScript` reads on a page that is never hydrated.
         data-copy-text={text}
         data-copy-copied={copiedLabel}
-        data-copied={copies > 0 ? "" : undefined}
+        data-copied={copied ? "" : undefined}
         // `copyScript` may have set `data-copied` before this button hydrated; React leaves it be.
         suppressHydrationWarning
         className={BASE}
@@ -68,6 +71,7 @@ export function CopyButton({
           navigator.clipboard?.writeText(text).then(
             () => {
               setCopies((n) => n + 1);
+              setCopied(true);
               // A new text node each time, so a second copy is announced too. Set here, not
               // rendered, as `copyScript` does, so a region it filled before hydration still matches.
               status.current?.replaceChildren(copiedLabel);
@@ -76,7 +80,11 @@ export function CopyButton({
           );
         }}
       >
-        <span key={copies} className="grid">
+        <span
+          key={copies}
+          className="grid justify-items-center"
+          onAnimationEnd={() => setCopied(false)}
+        >
           <span data-copy-idle="" className={CELL}>
             {label}
           </span>
