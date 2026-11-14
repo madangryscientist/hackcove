@@ -45,6 +45,7 @@ import {
   GalleryCopy,
   GalleryDialogs,
   GalleryHeader,
+  GalleryNavigationProgress,
   GalleryPageFade,
 } from "./GalleryBlocks";
 
@@ -205,6 +206,8 @@ export const gallerySections: GallerySection[] = [
         <GalleryChat />
 
         <GalleryPageFade />
+
+        <GalleryNavigationProgress />
 
         <GalleryDialogs />
       </>

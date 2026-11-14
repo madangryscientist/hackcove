@@ -145,6 +145,7 @@ export const CASES: Record<string, () => ReactElement> = {
   Markdown: () => <ui.Markdown md="x" {...A} />,
   MediaTile: () => <ui.MediaTile src="/x.jpg" alt="X" onClick={noop} {...A} />,
   MetaList: () => <ui.MetaList {...A}>{ITEMS}</ui.MetaList>,
+  NavigationProgress: () => <ui.NavigationProgress active {...A} />,
   NotFound: () => <ui.NotFound {...A} />,
   Offline: () => <ui.Offline {...A} />,
   OutlineRegion: () => (

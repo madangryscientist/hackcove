@@ -163,5 +163,25 @@ export const feedback: ComponentSection = {
         },
       ],
     },
+    {
+      slug: "navigation-progress",
+      name: "NavigationProgress",
+      summary: "A thin bar across the top of the page while a route change is loading.",
+      whenToUse:
+        "A page load of unknown length: show at once that the click did something, until the next page renders.",
+      pairs: ["NavigationProgress/Pending"],
+      usage: [
+        'Render it once per app, beside the page frame, and pass `active` from the router\'s pending state: with TanStack Router, `active={useRouterState({ select: (s) => s.status === "pending" })}`. It has no router dependency.',
+        "There is nothing to configure: it draws the bar while `active` is true and nothing while it is false. The bar is invisible for its first 150ms, so a fast navigation shows nothing.",
+        "It is fixed to the top edge of the viewport and overlays the header, so nothing on the page moves. Pair it with `PageFade`: the bar says the page is loading, and the fade swaps the content when it arrives.",
+        "A task with a known length and a value is a `ProgressBar`, not this.",
+      ],
+      accessibility: [
+        'While shown it is `role="progressbar"` named by `label` ("Loading page" by default) and has no `aria-valuenow`, so it reads as an indeterminate progress bar. When hidden it is not in the page.',
+        "Under `prefers-reduced-motion: reduce` it is a still, full-width bar with no slide.",
+        "It takes no pointer events, so it never covers a control in the header.",
+      ],
+      api: ["NavigationProgress"],
+    },
   ],
 };

@@ -19,6 +19,7 @@ import {
   MediaTile,
   ScrollStrip,
   Tabs,
+  NavigationProgress,
   PageFade,
   PageHeader,
   SegmentedControl,
@@ -100,6 +101,11 @@ export function GalleryPageFade() {
       </PageFade>
     </div>
   );
+}
+
+/** The NavigationProgress block of the Gallery: the bar in its shown state, fixed over the top edge of the page that shows it. */
+export function GalleryNavigationProgress() {
+  return <NavigationProgress active />;
 }
 
 /** The two dialogs, the Drawer and the Lightbox, shut: each button opens one over the page (open, they make the page inert). */
