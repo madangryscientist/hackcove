@@ -31,6 +31,8 @@ telemetry: false
 # token (ci.yml's `moon-cache-write` environment). Any other upload is refused, and moon logs a WARN
 # per task and carries on. With no token a read is a 401 and the task runs locally as before.
 # Outside CI moon only downloads (localReadOnly), so a local run never uploads.
+# If the host does not answer, moon retries its first call for about 12 seconds, once per run,
+# then turns the remote cache off and runs as before.
 remote:
   api: "http"
   host: "https://moon-cache.madangryscientist.com"

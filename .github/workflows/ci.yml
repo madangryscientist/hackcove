@@ -35,8 +35,18 @@ jobs:
       # "ambiguous argument 'main'". `moon run` picks no task by that diff, so the base is HEAD
       # itself: an empty diff and no history to fetch.
       MOON_BASE: HEAD
-      MOON_REMOTE_TOKEN: ${{ github.event_name == 'push' && secrets.MOON_CACHE_WRITE_TOKEN || secrets.MOON_CACHE_READ_TOKEN }}
+      # A push takes the write token and nothing else, so a missing one fails the guard below rather
+      # than falling back to the read token and leaving main's cache unfilled with the job green.
+      MOON_REMOTE_TOKEN: ${{ github.event_name == 'push' && secrets.MOON_CACHE_WRITE_TOKEN || github.event_name != 'push' && secrets.MOON_CACHE_READ_TOKEN || '' }}
     steps:
+      - name: Check main can write the remote cache
+        if: github.event_name == 'push'
+        run: |
+          if [ -z "$MOON_REMOTE_TOKEN" ]; then
+            echo "::error::The moon-cache-write environment has no MOON_CACHE_WRITE_TOKEN, so main cannot write the remote cache."
+            exit 1
+          fi
+
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           persist-credentials: false
