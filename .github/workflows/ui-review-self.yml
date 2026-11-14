@@ -30,3 +30,4 @@ jobs:
         apps/hack-cove-site/src/**
     secrets:
       OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+      MOON_REMOTE_TOKEN: ${{ secrets.MOON_CACHE_READ_TOKEN }}

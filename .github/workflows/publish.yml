@@ -35,8 +35,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: npm-publish
-    # A release builds from scratch and restores no cache and never talks to Nx Cloud: what is
-    # published is what this job built.
+    # A release never talks to Nx Cloud. Its gate may restore a task's outputs from the shared moon
+    # remote cache (read only, see the Gate step), the same bytes main's CI built from the same inputs.
     env:
       NX_NO_CLOUD: "true"
     permissions:
@@ -113,7 +113,12 @@ jobs:
             exit 1
           fi
 
+      # The gate reads the shared remote cache (.moon/workspace.yml `remote:`) with the read token
+      # and never writes it: main's CI seeds the cache, a release does not. A hit restores the
+      # task's outputs exactly as main's CI built them from the same inputs.
       - name: Gate
+        env:
+          MOON_REMOTE_TOKEN: ${{ secrets.MOON_CACHE_READ_TOKEN }}
         run: |
           bun run format:check
           bunx moon run --concurrency 3 :typecheck :lint :test :build :pack-check

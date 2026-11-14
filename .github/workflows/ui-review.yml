@@ -79,6 +79,11 @@ on:
       HACKCOVE_READ_TOKEN:
         description: A token that can read `hackcove-repo`, while that repository is private.
         required: false
+      MOON_REMOTE_TOKEN:
+        description: >-
+          A read token for hackcove's shared moon remote cache, used only by `build-rubric`. Without
+          it moon logs one 401 warning and builds everything itself.
+        required: false
 
 permissions:
   contents: read
@@ -162,6 +167,7 @@ jobs:
         env:
           NX_NO_CLOUD: "true" # a hackcove-ref from before the move to moon builds with nx; keep it off Nx Cloud
           MOON_BASE: HEAD # the hackcove checkout is shallow; see ci.yml's gate job
+          MOON_REMOTE_TOKEN: ${{ secrets.MOON_REMOTE_TOKEN }}
           BUILD_RUBRIC: ${{ inputs.build-rubric }}
           LLMS_URL: ${{ inputs.llms-url }}
         run: |
