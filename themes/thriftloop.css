@@ -356,3 +356,13 @@
 .thriftloop .link:hover {
   color: #8f2f0a;
 }
+
+.thriftloop .bg-indigo-400\/25 {
+  background-color: rgba(246, 179, 138, 0.23);
+}
+.thriftloop .bg-teal-400\/25 {
+  background-color: rgba(168, 216, 208, 0.2);
+}
+.thriftloop .bg-rose-400\/25 {
+  background-color: rgba(233, 183, 217, 0.2);
+}

@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 import { site } from "../src/content/site";
-import { setScheme } from "./scheme";
+import { scopes, setScheme, themeList } from "./scheme";
 
 // The home page is the products page: a block per product ready to use, how the slash tools fit,
 // a card for each of the rest, the actions linking out, and the cards' labels on one line.
@@ -64,3 +64,44 @@ for (const scheme of ["light", "dark"] as const) {
     expect(overflow).toBeLessThanOrEqual(0);
   });
 }
+
+/** Puts `<html>` in one theme's scope and in no other's, as docs.spec does. */
+const useScope = (page: Page, scope: string) =>
+  page.locator("html").evaluate(
+    (el, { all, one }) => {
+      el.classList.remove(...all);
+      el.classList.add(one);
+    },
+    { all: scopes, one: scope },
+  );
+
+// The hero's glow is anchored to the text column and clipped to it, so on a phone it never widens
+// the page, in any theme: each theme paints the ribbons its own colours and strengths.
+for (const [i, theme] of themeList.entries()) {
+  test(`/: at 390px the hero's glow scrolls nothing sideways, in ${theme.id}`, async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.goto("/");
+    await useScope(page, scopes[i] ?? "");
+    const { scrollWidth, innerWidth } = await page.evaluate(() => ({
+      scrollWidth: document.documentElement.scrollWidth,
+      innerWidth: window.innerWidth,
+    }));
+    expect(scrollWidth).toBeLessThanOrEqual(innerWidth);
+  });
+}
+
+/** Every ribbon of the hero's glow, by the animation it runs now. */
+const ribbonAnimations = (page: Page) =>
+  page
+    .locator("[data-hero-glow] > span")
+    .evaluateAll((spans) => spans.map((span) => getComputedStyle(span).animationName));
+
+test("/: the hero's glow drifts only when the visitor has not asked for less motion", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  expect(await ribbonAnimations(page)).toEqual(["none", "none", "none"]);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  expect(await ribbonAnimations(page)).toEqual(["hc-hero-tide", "hc-hero-tide", "hc-hero-tide"]);
+});

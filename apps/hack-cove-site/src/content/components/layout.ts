@@ -106,6 +106,29 @@ export const layout: ComponentSection = {
       api: ["PageHeader"],
     },
     {
+      slug: "hero",
+      name: "Hero",
+      summary:
+        "A landing page's top block: an overline, the display title and the lede, over a slow glow.",
+      whenToUse:
+        "The first block of a site's landing page, and nowhere else: every other page opens with a `PageHeader`.",
+      pairs: ["HeroDocs/Landing", "HeroDocs/InnerPage"],
+      stories: ["Hero"],
+      usage: [
+        "One `Hero` per page, and only on the landing page: it is the page's top block. Inner pages use `PageHeader`.",
+        "Pass `title` and, if it has one, `overline`; put a `Lead` in `children`, then the page's first actions in a `Cluster` if there are any.",
+        "Never build the block from an `Overline`, a `Display` and a `Lead` by hand: the hand-built one has no glow and drifts from the one top block.",
+        "The glow is always on and takes no prop. Its colours and its strength are the theme's, so a paper theme keeps it faint.",
+        "It caps itself at a reading measure at the parent's left edge, and the glow is clipped to it, so a phone never scrolls sideways. Put it as the first child of the page's `Stack`.",
+      ],
+      accessibility: [
+        "The title is the page's `<h1>`, in a `<header>` with the overline.",
+        'The glow is `aria-hidden="true"` and takes no pointer; the text sits above it and holds AA contrast over it in every theme.',
+        "The glow drifts only under `prefers-reduced-motion: no-preference`; with reduced motion it stands still. It is plain markup and CSS, so it renders on the server and needs no script.",
+      ],
+      api: ["Hero"],
+    },
+    {
       slug: "stack",
       name: "Stack",
       summary: "A vertical column of blocks a fixed gap apart, and Section for a titled group.",

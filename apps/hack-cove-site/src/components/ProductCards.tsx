@@ -5,6 +5,7 @@ import {
   CardGrid,
   CodeBlock,
   Display,
+  Hero,
   Image,
   Lead,
   Overline,
@@ -131,13 +132,9 @@ export function ProductCards() {
   const coming = products.filter((p) => p.status !== "available");
   return (
     <Stack gap="xl">
-      <Stack gap="sm" width="narrow">
-        <header>
-          <Overline mono>{home.overline}</Overline>
-          <Display>{home.title}</Display>
-        </header>
+      <Hero overline={home.overline} title={home.title}>
         <Lead>{home.lead}</Lead>
-      </Stack>
+      </Hero>
       {ready.map((product, i) => (
         <Feature key={product.slug} number={i + 1} product={product} />
       ))}

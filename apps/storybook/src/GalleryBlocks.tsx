@@ -11,6 +11,7 @@ import {
   Lightbox,
   FieldDialog,
   FilterGroup,
+  Hero,
   Image,
   KeyValue,
   KeyValueList,
@@ -28,7 +29,7 @@ import { samplePhoto } from "./samplePhoto";
 import { sampleCode } from "./sampleCode";
 import { samplePortrait, sampleScenes } from "./sampleScene";
 
-/** The page header block of the Gallery: a Display title, a PageHeader and a pill Tabs row of links. */
+/** The page header block of the Gallery: a Display title, a Hero, a PageHeader and a pill Tabs row of links. */
 export function GalleryHeader() {
   return (
     <>
@@ -36,6 +37,10 @@ export function GalleryHeader() {
         <Display>Hack Cove</Display>
         <Lead>The supporting sentence that sits under a Display heading.</Lead>
       </div>
+
+      <Hero overline="Products" title="Software we make.">
+        <Lead>A landing page's top block, over the theme's glow.</Lead>
+      </Hero>
 
       <PageHeader title="Status" subtitle="what's happening now" />
 

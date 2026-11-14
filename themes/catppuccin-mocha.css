@@ -380,3 +380,15 @@
 .dark .link:hover {
   color: #b4befe; /* lavender */
 }
+
+/* The hero glow (Hero): three ribbons behind a landing page's title, a soft wash of mauve, teal and
+   pink on the mantle. Decoration: the contrast contract holds the hero's text over all three at once. */
+.dark .bg-indigo-400\/25 {
+  background-color: rgba(203, 166, 247, 0.09); /* mauve */
+}
+.dark .bg-teal-400\/25 {
+  background-color: rgba(148, 226, 213, 0.065); /* teal */
+}
+.dark .bg-rose-400\/25 {
+  background-color: rgba(245, 194, 231, 0.06); /* pink */
+}

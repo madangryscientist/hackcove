@@ -153,6 +153,28 @@ function scrimRules(palette: Palette, narrow: string[]): Rule[] {
   ];
 }
 
+/**
+ * The hero's text over its glow (`Hero`). The glow is decoration, a translucent wash with no text or
+ * edge of its own, so it is never held to a bar itself: it is measured only as what the hero's text
+ * sits on. Its title (`text-slate-900`), lede (`text-slate-600`) and overline (`text-slate-500`) are
+ * held to AA over the page canvas and a card's surface (what a page's top block sits on) with each
+ * ribbon on it, and with all of them stacked, where they overlap. Each is taken at the full strength
+ * the theme gives it; the blur only softens it.
+ */
+function glowRules(palette: Palette): Rule[] {
+  const glow = roleOf(palette, "glow").filter(isBackground);
+  if (glow.length === 0) return [];
+  return [
+    {
+      name: "hero text over the glow",
+      bar: TEXT_BAR,
+      fg: roleOf(palette, "ink").filter((utility) => /^text-slate-(?:900|600|500)$/.test(utility)),
+      on: glow.length > 1 ? [...stacks(glow), glow] : stacks(glow),
+      base: roleOf(palette, "canvas", "surface").filter(isBackground),
+    },
+  ];
+}
+
 /** Every rule of the contract for this palette. */
 export function rulesFor(palette: Palette): Rule[] {
   const { wide, narrow } = surfaces(palette);
@@ -194,5 +216,6 @@ export function rulesFor(palette: Palette): Rule[] {
     ...TONES.flatMap((role) => toneRules(palette, role, narrow)),
     invalidEdge(palette, narrow),
     ...scrimRules(palette, narrow),
+    ...glowRules(palette),
   ];
 }
