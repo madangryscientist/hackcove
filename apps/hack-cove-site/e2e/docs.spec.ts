@@ -168,26 +168,31 @@ test("/pixelslash/ shows the Playwright card under both schemes, and its code fi
 
 const middle = (box?: { top: number; height: number }) => (box?.top ?? 0) + (box?.height ?? 0) / 2;
 
-test("at 375px the header is one row on every page: no sideways scroll, the toggle inside the viewport, beside the brand", async ({
-  page,
-}) => {
-  test.setTimeout(180_000);
-  await page.setViewportSize({ width: 375, height: 900 });
-  for (const path of new Set(everyPage)) {
-    await page.goto(path);
-    await toggle(page).waitFor();
-    const { overflow, button, brand } = await page.evaluate(() => ({
-      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
-      button: document
-        .querySelector("header button:has([data-scheme-name])")
-        ?.getBoundingClientRect(),
-      brand: document.querySelector("header a[href='/']")?.getBoundingClientRect(),
-    }));
-    expect(overflow, `${path}: horizontal overflow`).toBe(0);
-    expect(button?.right ?? 0, `${path}: toggle right edge`).toBeLessThanOrEqual(375);
-    expect(Math.abs(middle(button) - middle(brand)), `${path}: toggle beside brand`).toBeLessThan(
-      16,
-    );
+// One test per page, never one test looping over them: a slow page cannot spend the next page's
+// budget, and a failure names the page.
+const phonePaths = [...new Set(everyPage)];
+
+test.describe("at 375px the header is one row", () => {
+  for (const path of phonePaths) {
+    test(`${path}: no sideways scroll, the toggle inside the viewport, beside the brand`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 375, height: 900 });
+      await page.goto(path);
+      await toggle(page).waitFor();
+      const { overflow, button, brand } = await page.evaluate(() => ({
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        button: document
+          .querySelector("header button:has([data-scheme-name])")
+          ?.getBoundingClientRect(),
+        brand: document.querySelector("header a[href='/']")?.getBoundingClientRect(),
+      }));
+      expect(overflow, `${path}: horizontal overflow`).toBe(0);
+      expect(button?.right ?? 0, `${path}: toggle right edge`).toBeLessThanOrEqual(375);
+      expect(Math.abs(middle(button) - middle(brand)), `${path}: toggle beside brand`).toBeLessThan(
+        16,
+      );
+    });
   }
 });
 
@@ -235,15 +240,16 @@ for (const width of [1440, 1280]) {
     expect(dontSide?.top).toBeGreaterThan(doSide?.bottom ?? Infinity);
   });
 
-  test(`at ${width}px no example's code is clipped on any component page`, async ({ page }) => {
-    test.setTimeout(180_000);
-    await page.setViewportSize({ width, height: 900 });
+  test.describe(`at ${width}px no example's code is clipped`, () => {
     for (const { path } of pages) {
-      await page.goto(path);
-      const clipped = await page
-        .locator("main pre")
-        .evaluateAll((els) => els.filter((el) => el.scrollWidth > el.clientWidth + 1).length);
-      expect(clipped, `${path}: code that scrolls sideways`).toBe(0);
+      test(`${path}: no example's code is clipped`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(path);
+        const clipped = await page
+          .locator("main pre")
+          .evaluateAll((els) => els.filter((el) => el.scrollWidth > el.clientWidth + 1).length);
+        expect(clipped, `${path}: code that scrolls sideways`).toBe(0);
+      });
     }
   });
 }
