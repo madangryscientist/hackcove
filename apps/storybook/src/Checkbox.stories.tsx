@@ -1,5 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Checkbox, Cluster, Text } from "@hackcove/ui-react";
+import {
+  Card,
+  Checkbox,
+  Cluster,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+  Text,
+} from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Forms/Checkbox" };
 export default meta;
@@ -71,6 +82,40 @@ export const DontLabel: S = {
 /** In a table cell there is no room for words: leave the `label` out, use `size="sm"` and name the box with `aria-label`. */
 export const DoRow: S = {
   render: () => <Checkbox size="sm" aria-label="Select row" />,
+};
+
+/** A ticked box inside a Card or a table row draws its tick above the lifted field, not under it. */
+export const InCard: S = {
+  render: () => (
+    <div className="flex w-96 flex-col gap-4">
+      <Card title="Notifications">
+        <div className="flex flex-col gap-3">
+          <Checkbox label="Email me when a shop I follow posts" defaultChecked />
+          <Checkbox label="Weekly summary" />
+        </div>
+      </Card>
+      <Card title="Shops">
+        <Table variant="plain" caption="Shops">
+          <TableHead>
+            <TableRow>
+              <TableHeaderCell>
+                <Checkbox aria-label="Select all" size="sm" />
+              </TableHeaderCell>
+              <TableHeaderCell>Shop</TableHeaderCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell>
+                <Checkbox aria-label="Select Hack Cove Finds" size="sm" defaultChecked />
+              </TableCell>
+              <TableCell tone="strong">Hack Cove Finds</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </Card>
+    </div>
+  ),
 };
 
 /** `sm`, `md` (the default) and `lg`: the box grows with the label. */
