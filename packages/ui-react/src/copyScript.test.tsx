@@ -19,6 +19,12 @@ function staticPage(node: React.ReactNode): HTMLElement {
   return container;
 }
 
+/** What the region beside a button says: the copied label after a copy, nothing before. */
+const statusOf = (button: HTMLButtonElement): string | null | undefined =>
+  button.nextElementSibling?.matches("[data-copy-status]")
+    ? button.nextElementSibling.textContent
+    : undefined;
+
 const buttonOf = (container: HTMLElement): HTMLButtonElement => {
   const button = container.querySelector("button");
   if (!button) throw new Error("no copy button");
@@ -33,7 +39,6 @@ const press = async (button: HTMLButtonElement): Promise<void> => {
 let abort = new AbortController();
 
 beforeEach(() => {
-  vi.useFakeTimers();
   abort = new AbortController();
   writeText.mockReset().mockResolvedValue(undefined);
   Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
@@ -42,18 +47,11 @@ beforeEach(() => {
   vi.spyOn(document, "addEventListener").mockImplementation((type, listener, options) =>
     add(type, listener, { ...(typeof options === "object" ? options : {}), signal: abort.signal }),
   );
-  // The page's globals, looked up at call time so the fake timers apply.
-  runInNewContext(copyScript, {
-    document,
-    navigator,
-    setTimeout: (fn: () => void, ms: number) => setTimeout(fn, ms),
-    clearTimeout: (id: Parameters<typeof clearTimeout>[0]) => clearTimeout(id),
-  });
+  runInNewContext(copyScript, { document, navigator });
 });
 
 afterEach(() => {
   abort.abort();
-  vi.useRealTimers();
   vi.restoreAllMocks();
   document.body.replaceChildren();
 });
@@ -64,36 +62,43 @@ describe("copyScript", () => {
     expect(copyScript.length).toBeLessThan(1000);
   });
 
-  it("copies a static button's text, shows copied, and puts the label back after 2000 ms", async () => {
-    const button = buttonOf(staticPage(<CopyButton text="bun add x" />));
-    await press(button);
-    expect(writeText).toHaveBeenCalledExactlyOnceWith("bun add x");
-    expect(button.textContent).toBe("copied");
-    vi.advanceTimersByTime(1999);
-    expect(button.textContent).toBe("copied");
-    vi.advanceTimersByTime(1);
-    expect(button.textContent).toBe("copy");
+  it("is not time dependent: it sets no timer", () => {
+    expect(copyScript).not.toMatch(/set(?:Timeout|Interval)|requestAnimation/);
   });
 
-  it("uses the button's own labels", async () => {
+  it("copies a static button's text, marks it copied and announces the copied label", async () => {
+    const button = buttonOf(staticPage(<CopyButton text="bun add x" />));
+    expect(statusOf(button)).toBe("");
+    await press(button);
+    expect(writeText).toHaveBeenCalledExactlyOnceWith("bun add x");
+    expect(button.hasAttribute("data-copied")).toBe(true);
+    expect(statusOf(button)).toBe("copied");
+  });
+
+  it("announces the button's own copied label", async () => {
     const button = buttonOf(
       staticPage(<CopyButton text="t" label="Copy token" copiedLabel="Token copied" />),
     );
     await press(button);
-    expect(button.textContent).toBe("Token copied");
-    vi.advanceTimersByTime(2000);
-    expect(button.textContent).toBe("Copy token");
+    expect(statusOf(button)).toBe("Token copied");
   });
 
-  it("starts the two seconds again on a second copy", async () => {
+  it("re-sets data-copied and puts a new node in the region on a second copy", async () => {
     const button = buttonOf(staticPage(<CopyButton text="t" />));
     await press(button);
-    vi.advanceTimersByTime(1500);
+    const first = button.nextElementSibling?.firstChild;
+    const was: (string | null)[] = [];
+    new MutationObserver((records) => was.push(...records.map((r) => r.oldValue))).observe(button, {
+      attributeFilter: ["data-copied"],
+      attributeOldValue: true,
+    });
     await press(button);
-    vi.advanceTimersByTime(1500);
-    expect(button.textContent).toBe("copied");
-    vi.advanceTimersByTime(500);
-    expect(button.textContent).toBe("copy");
+    // Removed (it was ""), then set again (it was absent): the restart the CSS animation needs.
+    expect(was).toEqual(["", null]);
+    expect(button.hasAttribute("data-copied")).toBe(true);
+    const second = button.nextElementSibling?.firstChild;
+    expect(second).not.toBe(first);
+    expect(statusOf(button)).toBe("copied");
   });
 
   it("copies a code block's code exactly", async () => {
@@ -131,14 +136,16 @@ describe("copyScript", () => {
     writeText.mockRejectedValue(new Error("denied"));
     const button = buttonOf(staticPage(<CopyButton text="t" />));
     await press(button);
-    expect(button.textContent).toBe("copy");
+    expect(button.hasAttribute("data-copied")).toBe(false);
+    expect(statusOf(button)).toBe("");
   });
 
   it("leaves the label alone when there is no clipboard", async () => {
     Object.defineProperty(navigator, "clipboard", { configurable: true, value: undefined });
     const button = buttonOf(staticPage(<CopyButton text="t" />));
     await press(button);
-    expect(button.textContent).toBe("copy");
+    expect(button.hasAttribute("data-copied")).toBe(false);
+    expect(statusOf(button)).toBe("");
   });
 
   it("ignores a click that is not on a copy button", async () => {
@@ -156,9 +163,8 @@ describe("copyScript", () => {
     const button = buttonOf(container);
     await press(button);
     expect(writeText).toHaveBeenCalledExactlyOnceWith("once");
-    expect(button.textContent).toBe("copied");
-    await act(async () => vi.advanceTimersByTime(2000));
-    expect(button.textContent).toBe("copy");
+    expect(button.hasAttribute("data-copied")).toBe(true);
+    expect(statusOf(button)).toBe("copied");
   });
 
   it("copies once when the script hears the click before React does", async () => {
@@ -169,8 +175,6 @@ describe("copyScript", () => {
           document.addEventListener(type, listener, { capture: true, signal: abort.signal }),
       },
       navigator,
-      setTimeout: (fn: () => void, ms: number) => setTimeout(fn, ms),
-      clearTimeout: (id: Parameters<typeof clearTimeout>[0]) => clearTimeout(id),
     });
     const node = <CopyButton text="first" />;
     const container = staticPage(node);
@@ -197,19 +201,18 @@ describe("copyScript", () => {
     expect(submitted).toHaveBeenCalledOnce();
   });
 
-  it("hydrates without a warning after the script swapped the label", async () => {
+  it("hydrates without a warning after the script marked a copy", async () => {
     const error = vi.spyOn(console, "error").mockImplementation(() => {});
     const errors: unknown[] = [];
     const node = <CopyButton text="early" />;
     const container = staticPage(node);
     await press(buttonOf(container));
-    expect(buttonOf(container).textContent).toBe("copied");
+    expect(statusOf(buttonOf(container))).toBe("copied");
     await act(async () => {
       hydrateRoot(container, node, { onRecoverableError: (e) => errors.push(e) });
     });
     expect(errors).toEqual([]);
     expect(error).not.toHaveBeenCalled();
-    await act(async () => vi.advanceTimersByTime(2000));
-    expect(buttonOf(container).textContent).toBe("copy");
+    expect(buttonOf(container).hasAttribute("data-copied")).toBe(true);
   });
 });

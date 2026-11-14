@@ -7,7 +7,7 @@ describe("CopyLine", () => {
     const out = renderToStaticMarkup(<CopyLine text="bun add @hackcove/ui-react" />);
     expect(out).toContain("<code");
     expect(out).toContain("bun add @hackcove/ui-react</code>");
-    expect(out).toContain(">copy</button>");
+    expect(out).toContain('aria-label="copy"');
   });
 
   it("passes data-testid and other div props to the root, not the <code>", () => {

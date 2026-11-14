@@ -45,12 +45,18 @@ test("Switch: focus stays on it through a busy cycle, and a busy click does noth
   await page.keyboard.press("Enter");
   await flag.click({ force: true });
   await expect(flag).toHaveAttribute("aria-busy", "true");
+  await expect(flag).toHaveAttribute("aria-checked", "false");
+  // The save lands only when the caller says so: no clock.
+  const land = page.getByRole("button", { name: "Save lands" });
+  await land.click();
   await expect(flag).not.toHaveAttribute("aria-busy", "true");
   await expect(flag).toHaveAttribute("aria-checked", "true");
-  await expect(flag).toBeFocused();
   // Idle again: the next flip goes through.
+  await flag.focus();
   await page.keyboard.press("Space");
   await expect(flag).toHaveAttribute("aria-busy", "true");
+  await expect(flag).toBeFocused();
+  await land.click();
   await expect(flag).not.toHaveAttribute("aria-busy", "true");
   await expect(flag).toHaveAttribute("aria-checked", "false");
 });

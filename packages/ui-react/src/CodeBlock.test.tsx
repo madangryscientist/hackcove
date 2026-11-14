@@ -75,9 +75,9 @@ describe("CodeBlock", () => {
     expect(renderToStaticMarkup(<CodeBlock>x</CodeBlock>)).not.toContain("<button");
   });
 
-  it("with `copy` has a button beside the code, named by its visible text", () => {
+  it("with `copy` has a button beside the code, named by its label", () => {
     const out = renderToStaticMarkup(<CodeBlock copy>x</CodeBlock>);
-    expect(out).toMatch(/<button [^>]*type="button"[^>]*>copy<\/button>/);
+    expect(out).toMatch(/<button [^>]*type="button" aria-label="copy"[^>]*>/);
     expect(out.indexOf("</pre>")).toBeLessThan(out.indexOf("<button"));
   });
 

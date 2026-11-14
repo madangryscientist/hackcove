@@ -8,14 +8,12 @@ import { mount, unmount } from "./dom.harness.js";
 const writeText = vi.fn<(text: string) => Promise<void>>();
 
 beforeEach(() => {
-  vi.useFakeTimers();
   writeText.mockReset().mockResolvedValue(undefined);
   Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
 });
 
 afterEach(() => {
   unmount();
-  vi.useRealTimers();
 });
 
 const buttonOf = (container: HTMLElement): HTMLButtonElement => {
@@ -61,21 +59,35 @@ describe("the copy button on a code block", () => {
     }
   });
 
-  it("copies the markup-free source, not the coloured spans, and shows copied then copy again", async () => {
+  it("copies the markup-free source, not the coloured spans, and marks the copy", async () => {
     const container = mount(
       <CodeBlock copy language="bash">
         {"# note\nbun install"}
       </CodeBlock>,
     );
     const button = buttonOf(container);
-    expect(button.textContent).toBe("copy");
+    const status = container.querySelector("[data-copy-status]");
+    expect(button.hasAttribute("data-copied")).toBe(false);
+    expect(status?.textContent).toBe("");
     await press(button);
     expect(writeText).toHaveBeenCalledExactlyOnceWith("# note\nbun install");
-    expect(button.textContent).toBe("copied");
-    await act(async () => {
-      vi.advanceTimersByTime(2000);
-    });
-    expect(button.textContent).toBe("copy");
+    expect(button.hasAttribute("data-copied")).toBe(true);
+    expect(button.getAttribute("aria-label")).toBe("copy");
+    expect(status?.textContent).toBe("copied");
+  });
+
+  it("restarts the labels and puts a new node in the status region on a second copy", async () => {
+    const container = mount(<CodeBlock copy>x</CodeBlock>);
+    const button = buttonOf(container);
+    await press(button);
+    const idle = button.querySelector("[data-copy-idle]");
+    const said = container.querySelector("[data-copy-status]")?.firstChild;
+    await press(button);
+    expect(writeText).toHaveBeenCalledTimes(2);
+    expect(button.querySelector("[data-copy-idle]")).not.toBe(idle);
+    const again = container.querySelector("[data-copy-status]")?.firstChild;
+    expect(again).not.toBe(said);
+    expect(again?.textContent).toBe("copied");
   });
 
   it("copies only the commands of a console block, without the prompt or the output", async () => {

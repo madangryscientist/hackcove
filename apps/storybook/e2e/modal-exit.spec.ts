@@ -22,34 +22,62 @@ for (const [id, name, closer] of [
     await expect(modal).toHaveCSS("opacity", "1");
     await expect(modal).toHaveAccessibleName(name);
 
-    if (closer === "Esc") await page.keyboard.press("Escape");
-    else await modal.getByRole("button", { name: closer }).click();
-
-    // Closed, so the page is no longer inert, but the element is still there, still drawn, partway through its exit.
     // Chromium only (HC-174): Firefox and WebKit do not run the `display` discrete transition on a
     // `<dialog>` (checked: no transition starts and `display` is `none` the moment it closes), so
     // there they close with no exit animation and `onClose` unmounts it at once. That is the
     // designed fallback (`exitTransitions` waits only for transitions that are running), so the
     // mid-exit assertion is skipped there and the unmount below still runs in every engine.
-    if (browserName === "chromium") {
-      const mid = await page.evaluate(
-        () =>
-          new Promise<{ present: boolean; open: boolean; display: string }>((resolve) => {
-            setTimeout(() => {
-              const el = document.querySelector("dialog");
-              resolve({
-                present: el !== null,
-                open: el?.open ?? false,
-                display: el ? getComputedStyle(el).display : "none",
-              });
-            }, 60);
-          }),
+    const chromium = browserName === "chromium";
+    // No clock: each exit transition is paused halfway as it starts, read there, then finished.
+    if (chromium)
+      await page.evaluate(() =>
+        document.addEventListener("transitionrun", (event) => {
+          if (!(event.target instanceof HTMLDialogElement)) return;
+          for (const animation of event.target.getAnimations({ subtree: true })) {
+            if (animation.playState !== "running") continue;
+            animation.pause();
+            const { delay = 0, duration } = animation.effect?.getComputedTiming() ?? {};
+            animation.currentTime = delay + (typeof duration === "number" ? duration : 0) / 2;
+          }
+        }),
       );
+
+    if (closer === "Esc") await page.keyboard.press("Escape");
+    else await modal.getByRole("button", { name: closer }).click();
+
+    // Closed, so the page is no longer inert, but the element is still there, still drawn, partway through its exit.
+    if (chromium) {
+      await expect
+        .poll(() =>
+          page.evaluate(
+            () =>
+              document
+                .querySelector("dialog")
+                ?.getAnimations({ subtree: true })
+                .filter((a) => a.playState === "paused").length ?? 0,
+          ),
+        )
+        .toBeGreaterThan(0);
+      const mid = await page.evaluate(() => {
+        const el = document.querySelector("dialog");
+        return {
+          present: el !== null,
+          open: el?.open ?? false,
+          display: el ? getComputedStyle(el).display : "none",
+        };
+      });
       expect(mid).toEqual({
         present: true,
         open: false,
         display: expect.not.stringMatching(/^none$/),
       });
+      // Let the exit end, so `exitTransitions` resolves and `onClose` runs.
+      await page.evaluate(() =>
+        document
+          .querySelector("dialog")
+          ?.getAnimations({ subtree: true })
+          .forEach((a) => a.finish()),
+      );
     }
 
     // Then onClose ran and the story unmounted it.

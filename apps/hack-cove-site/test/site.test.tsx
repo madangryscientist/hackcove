@@ -258,7 +258,7 @@ describe("the PixelSlash page", () => {
     expect(html).toContain('href="https://pixelslash.dev/docs"');
     expect(html).toContain('href="https://github.com/madangryscientist/pixelslash"');
     expect(html).toContain(">npm i -D @hackcove/pixelslash</code>");
-    expect(html).toContain(">copy</button>");
+    expect(html).toContain('aria-label="copy"');
   });
 
   test("the proof is the real report image, with alt text and a caption", () => {
