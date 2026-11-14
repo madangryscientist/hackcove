@@ -25,7 +25,7 @@ export const storyFiles = [
   story("GallerySections", GALLERY_TITLE),
 ];
 
-export const files: Record<string, string> = {
+const files: Record<string, string> = {
   "packages/ui-react/src/index.ts": [
     'export { Button, type ButtonProps } from "./Button.js";',
     'export {\n  Card,\n  type CardProps,\n} from "./Card.js";',
@@ -50,7 +50,7 @@ export const files: Record<string, string> = {
   "apps/storybook/src/useTheme.ts": "",
 };
 
-export const sections: Section[] = [
+const sections: Section[] = [
   {
     title: "Layout",
     pages: [{ slug: "stack", name: "Stack", pairs: [], stories: ["Stack"] }],

@@ -199,8 +199,8 @@ describe("this repo", () => {
     const root = join(import.meta.dirname, "..", "..", "..");
     const real = await readRepo(root);
     const ids = themeFiles(join(root, "themes")).map((theme) => theme.id);
-    expect(real.themes).toEqual(ids.toSorted());
-    expect(referenceOf(real.themes)).toBe(ids.toSorted()[0]);
+    expect(real.themes).toEqual(ids);
+    expect(referenceOf(real.themes)).toBe(ids[0]);
     const code = globSync("apps/storybook/{scripts/*.ts,pixelslash.config.ts}", { cwd: root })
       .filter((path) => !path.endsWith(".test.ts"))
       .map((path) => [path, readFileSync(join(root, path), "utf8")] as const);

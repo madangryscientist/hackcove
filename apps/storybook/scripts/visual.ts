@@ -37,7 +37,7 @@ import { randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { themeFiles } from "@hackcove/themes-shared/files";
-import { baseThemeIds, themesOnBase } from "./theme-reach.js";
+import { baseThemeIds, capturesOnBase } from "./theme-reach.js";
 import { indexOf, isRecord, shotsByTheme, shotsOf } from "./visual-index.js";
 import { groupStories, planCapture, readRepo, type Grouping, type Plan } from "./visual-plan.js";
 import {
@@ -138,6 +138,7 @@ function checked(result: Grouping): Grouping {
   return result;
 }
 
+/** Two story files may share a title (a page's extra stories), and PixelSlash includes by title. */
 const titlesOf = (captures: { files: { title: string }[]; themes: string[] }[]) =>
   captures.map((c) => ({ titles: [...new Set(c.files.map((f) => f.title))], themes: c.themes }));
 
@@ -189,11 +190,7 @@ async function planMode() {
   const picked = new Map(plan.picked.map((g) => [g.slug, g]));
   const groups = grouping.groups.map((group) => {
     const pick = picked.get(group.slug);
-    // Two story files may share a title (a page's extra stories), and PixelSlash includes by title.
-    const captures = (pick?.captures ?? []).map((c) => ({
-      titles: [...new Set(c.files.map((file) => file.title))],
-      themes: c.themes,
-    }));
+    const captures = titlesOf(pick?.captures ?? []);
     return { slug: group.slug, project: group.project, skipped: !pick, captures };
   });
   const saved: SavedPlan = { id: randomUUID(), upload, mode, sha: base.sha, groups };
@@ -209,9 +206,9 @@ async function planMode() {
 
 /**
  * The base's capture of `captures`, reused while the base commit, the selection and the branch's
- * themes stay the same. The base is asked for its own theme ids, so a theme added on the branch
- * reads as new, not as changed. A theme the branch no longer has is shot on the base in the first
- * capture (the reference theme's, which every captured group has), so it reads as removed.
+ * themes stay the same. The base is asked for its own theme ids, and `capturesOnBase` maps the
+ * branch's captures onto them: a theme added on the branch reads as new, a theme it removed, or a
+ * reference it moved, as removed.
  */
 async function captureBase(dir: string, sha: string, captures: Selection[]) {
   const keyPath = join(dir, "main.key");
@@ -231,14 +228,7 @@ async function captureBase(dir: string, sha: string, captures: Selection[]) {
     } catch (error) {
       throw new VisualError(error instanceof Error ? error.message : String(error));
     }
-    const onBase = captures.map((pick, i) => ({
-      ...pick,
-      themes:
-        i === 0
-          ? themesOnBase(ids, pick.themes, branch)
-          : pick.themes.filter((id) => ids.includes(id)),
-    }));
-    await capture(baseStatic, join(dir, "main"), onBase);
+    await capture(baseStatic, join(dir, "main"), capturesOnBase(captures, ids, branch));
   });
   writeFileSync(keyPath, `${key}\n`);
 }

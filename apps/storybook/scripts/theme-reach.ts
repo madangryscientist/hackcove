@@ -15,12 +15,29 @@ export function themesOf(repo: { themes: string[] }, path: string): string[] | u
 }
 
 /**
- * The themes to capture on the base: the picked ones it has, and the ones the branch no longer has,
- * so the report shows those as removed. A theme new on the branch is left out, so it shows as new:
- * the base's Storybook would render an id it does not know with no theme at all.
+ * The branch's captures as the base takes them, by the base's own reference rule. Each keeps the
+ * themes the base has, so a theme new on the branch shows as new (the base's Storybook would render
+ * an id it does not know with no theme at all). The reference capture (the one in the branch's
+ * reference theme) also takes the base's reference theme, so a reference the branch moved or removed
+ * shows its stories as removed. Every other capture (the Gallery sections) takes the base's other
+ * themes the branch no longer has, so those show as removed, and never the base's reference, which
+ * the reference capture already shoots.
  */
-export function themesOnBase(base: string[], picked: string[], branch: string[]): string[] {
-  return base.filter((id) => picked.includes(id) || !branch.includes(id));
+export function capturesOnBase<T extends { themes: string[] }>(
+  captures: T[],
+  base: string[],
+  branch: string[],
+): T[] {
+  const [baseRef, ...baseOthers] = base;
+  const gone = baseOthers.filter((id) => !branch.includes(id));
+  return captures.map((pick) => {
+    const kept = pick.themes.filter((id) => base.includes(id));
+    const isReference = branch[0] !== undefined && pick.themes.includes(branch[0]);
+    const themes = isReference
+      ? [...kept, ...(baseRef === undefined ? [] : [baseRef])]
+      : [...kept, ...gone].filter((id) => id !== baseRef);
+    return { ...pick, themes: [...new Set(themes)] };
+  });
 }
 
 /**

@@ -41,7 +41,7 @@ function fromEdges(source: string): Edge[] {
   });
 }
 
-export function importsOf(source: string): Edge[] {
+function importsOf(source: string): Edge[] {
   const whole = (regex: RegExp) =>
     [...source.matchAll(regex)].map(([, spec = ""]): Edge => ({ spec, names: "all" }));
   return [...fromEdges(source), ...whole(BARE), ...whole(DYNAMIC)];

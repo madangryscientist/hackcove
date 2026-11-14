@@ -1,7 +1,7 @@
 import { deflateSync } from "node:zlib";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { join, posix } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   MAX_SHOT_PIXELS,
@@ -11,19 +11,13 @@ import {
   sizeReport,
   visualSkipped,
 } from "./visual-shots.js";
+import { barrelOf, closureOf } from "./import-graph.js";
+import { readRepo } from "./visual-plan.js";
 
 const src = join(import.meta.dirname, "..", "src");
 const read = (file: string) => readFileSync(join(src, file), "utf8");
-const barrel = join(
-  import.meta.dirname,
-  "..",
-  "..",
-  "..",
-  "packages",
-  "ui-react",
-  "src",
-  "index.ts",
-);
+const root = join(import.meta.dirname, "..", "..", "..");
+const barrel = join(root, "packages", "ui-react", "src", "index.ts");
 
 /** A PNG with only a header (signature, IHDR) and no pixel data: all `pngSize` reads. */
 function headerPng(width: number, height: number) {
@@ -83,6 +77,18 @@ describe("mergeCapture", () => {
       ["c@theme=two", 700],
     ]);
     expect(existsSync(from)).toBe(false);
+  });
+
+  it("moves a shot's folder once when it holds a PNG per variant", () => {
+    const into = capture({});
+    const from = capture({ "a@theme=two": [1280, 800] });
+    writeFileSync(join(from, "a@theme=two", "mobile.png"), headerPng(390, 900));
+    const entry = { name: "a@theme=two", file: "a@theme=two/mobile.png" };
+    const manifest = JSON.parse(readFileSync(join(from, "manifest.json"), "utf8"));
+    manifest.snapshots.push(entry);
+    writeFileSync(join(from, "manifest.json"), JSON.stringify(manifest));
+    mergeCapture(from, into);
+    expect(shotSizes(into).map((shot) => shot.height)).toEqual([800, 900]);
   });
 
   it("refuses a shot the capture already has", () => {
@@ -148,37 +154,23 @@ function exportedComponents(): string[] {
     .filter((name) => /^[A-Z]/.test(name));
 }
 
-/** `Gallery.tsx` and every file it imports from `src/` or `src/layout/`, transitively. */
-function galleryFiles(): string[] {
-  const folders = new Set([src, join(src, "layout")]);
-  const seen = new Set<string>();
-  const queue = [join(src, "Gallery.tsx")];
-  while (queue.length > 0) {
-    const file = queue.pop();
-    if (file === undefined || seen.has(file)) continue;
-    seen.add(file);
-    for (const [, spec = ""] of readFileSync(file, "utf8").matchAll(
-      /\bfrom\s*["'](\.[^"']+)["']/g,
-    )) {
-      const base = resolve(dirname(file), spec).replace(/\.js$/, "");
-      const found = [`${base}.tsx`, `${base}.ts`, base].find(
-        (path) => /\.tsx?$/.test(path) && existsSync(path),
-      );
-      if (found !== undefined && folders.has(dirname(found))) queue.push(found);
-    }
-  }
-  return [...seen];
+/** `Gallery.tsx` and every file it imports from `src/` or `src/layout/`, transitively, with their text. */
+async function galleryText(): Promise<string> {
+  const { read: readFile } = await readRepo(root);
+  const folders = new Set(["apps/storybook/src", "apps/storybook/src/layout"]);
+  return [...closureOf("apps/storybook/src/Gallery.tsx", readFile, barrelOf(readFile))]
+    .filter((file) => folders.has(posix.dirname(file)))
+    .map((file) => readFile(file) ?? "")
+    .join("\n");
 }
 
 describe("the Gallery sections", () => {
   // Every theme but the reference one is shot in these sections only, so a component missing here
   // would never be seen in those themes. The Gallery is made of `gallerySections` alone.
-  it("render every component @hackcove/ui-react exports", () => {
+  it("render every component @hackcove/ui-react exports", async () => {
     const components = exportedComponents();
     expect(components.length).toBeGreaterThan(50);
-    const text = galleryFiles()
-      .map((file) => readFileSync(file, "utf8"))
-      .join("\n");
+    const text = await galleryText();
     const missing = components.filter((name) => !new RegExp(`<${name}[\\s>/]`).test(text));
     expect(missing).toEqual([]);
   });

@@ -69,12 +69,17 @@ function snapshotsOf(dir: string): unknown[] {
  */
 export function mergeCapture(from: string, into: string) {
   const snapshots = snapshotsOf(into);
+  // One shot's folder holds a PNG per variant, each its own manifest entry: move it once.
+  const moved = new Set<string>();
   for (const snapshot of snapshotsOf(from)) {
     const shot = shotFile(snapshot);
     if (shot === undefined) throw new Error(`${from}/manifest.json has an entry with no file`);
     const folder = shot.file.split(posix.sep)[0] ?? shot.file;
-    if (existsSync(join(into, folder))) throw new Error(`${into} already has ${folder}`);
-    renameSync(join(from, folder), join(into, folder));
+    if (!moved.has(folder)) {
+      if (existsSync(join(into, folder))) throw new Error(`${into} already has ${folder}`);
+      renameSync(join(from, folder), join(into, folder));
+      moved.add(folder);
+    }
     snapshots.push(snapshot);
   }
   writeFileSync(

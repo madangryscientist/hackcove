@@ -166,7 +166,7 @@ export type GroupPick = Group & {
 };
 
 export type Plan = {
-  /** Every group in every theme. */
+  /** Every group whole, nothing skipped. */
   all: boolean;
   /** Why it is `all`, or a note on the change as a whole. */
   notes: string[];
