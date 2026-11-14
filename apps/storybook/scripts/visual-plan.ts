@@ -8,22 +8,33 @@
  * group of its own and is always captured. A story file no page names is unsectioned: a test fails
  * on it, and so does the run.
  *
+ * Every story is shot in one theme, the reference theme: the first theme file in sorted order
+ * (`themeFiles`), so no theme is named here. Every other theme is shot in the Gallery sections
+ * (`Overview/Gallery sections`, one story per `gallerySections` entry, which render every component
+ * the library exports) and nothing else. So a group is a list of captures, each some story files in
+ * some themes: the reference theme's, and in the Overview group a second one, the Gallery sections
+ * in the other themes. A theme added costs the Gallery sections, not every story.
+ *
  * A change reaches a story file when the file's static imports (followed through the
- * `@hackcove/ui-react` barrel to the module that exports each name) lead to a changed file. A change
- * to a theme's CSS file, `themes/<id>.css`, reaches every group in that theme only; to any other
- * file in the themes package, every theme. A change to shared ground (the
- * palette, Storybook's config and what it imports, a manifest or the lockfile, the visual tooling)
- * or a diff that cannot be read reaches everything.
+ * `@hackcove/ui-react` barrel to the module that exports each name) lead to a changed file. It is
+ * captured in the reference theme, and when the Gallery sections are among the files reached, they
+ * are captured in every other theme too. A change to the reference theme's CSS file reaches every
+ * group in that theme; to another theme's CSS file, `themes/<id>.css`, only the Gallery sections in
+ * that theme (Overview is always captured, and its All themes sections show every theme); to any
+ * other file in the themes package, every theme. A change to shared ground (the palette,
+ * Storybook's config and what it imports, a manifest or the lockfile, the visual tooling) or a diff
+ * that cannot be read reaches everything.
  *
  * Everything here is pure but `readRepo`, so the tests hand it a repo of their own.
  */
 import { globSync, readFileSync } from "node:fs";
 import { join, posix } from "node:path";
 import { themeFiles } from "@hackcove/themes-shared/files";
+import { barrelOf, closureOf, type Reader } from "./import-graph.js";
 import type { Page, Placement, Section } from "./site-types.js";
 import { themesOf } from "./theme-reach.js";
 
-export type { Placement, Section };
+export type { Placement, Reader, Section };
 
 export type StoryFile = {
   /** Repo-relative, e.g. `apps/storybook/src/Button.stories.tsx`. */
@@ -53,18 +64,29 @@ export type Grouping = {
   unknown: string[];
 };
 
-/** A file's text, or `undefined` for no such file: everything the graph reads goes through this. */
-export type Reader = (path: string) => string | undefined;
-
 export type Repo = {
   read: Reader;
   storyFiles: StoryFile[];
   sections: Section[];
-  /** The ids of the themes: each `*.css` file at the top of `themes/` (`themes-shared`). */
+  /**
+   * The ids of the themes: each `*.css` file at the top of `themes/`, in `themeFiles` order (sorted
+   * by id), so the first is the reference theme.
+   */
   themes: string[];
 };
 
 export const OVERVIEW = "overview";
+
+/** The story file every theme is shot in: the Gallery in slices, one story per section. */
+export const GALLERY_TITLE = "Overview/Gallery sections";
+
+const isGallery = (file: StoryFile) => file.title === GALLERY_TITLE;
+
+/**
+ * The reference theme, shot in every story: the first of `themes` (`themeFiles` order, sorted by id).
+ * A new theme that sorts first becomes the reference and takes the full set over.
+ */
+export const referenceOf = (themes: string[]): string | undefined => themes[0];
 
 export const slugOf = (title: string) =>
   title
@@ -111,100 +133,6 @@ export function groupStories(sections: Section[], storyFiles: StoryFile[]): Grou
 }
 
 /* ---------------------------------------------------------------------------
-   The import graph
-   --------------------------------------------------------------------------- */
-
-const UI_BARREL = "packages/ui-react/src/index.ts";
-
-// `import x, { a, type b } from "s"` and `export { a } from "s"`: the clause is names, braces,
-// commas and `* as`, so a match never runs across code.
-const FROM = /\b(import|export)\s+(type\s+)?([\w$\s,{}*]*?)\s*from\s*["']([^"']+)["']/g;
-const BARE = /\bimport\s*["']([^"']+)["']/g;
-const DYNAMIC = /\bimport\(\s*["']([^"']+)["']\s*\)/g;
-
-type Edge = { spec: string; names: string[] | "all" };
-
-/** The value names a clause brings in (`type` ones dropped), or "all" for a namespace or default. */
-function namesOf(clause: string): string[] | "all" {
-  if (clause.includes("*")) return "all";
-  const braced = /\{([^}]*)\}/.exec(clause)?.[1];
-  const outside = clause
-    .replace(/\{[^}]*\}/, "")
-    .replaceAll(",", " ")
-    .trim();
-  if (outside !== "") return "all";
-  return (braced ?? "")
-    .split(",")
-    .map((part) => part.trim())
-    .filter((part) => part !== "" && !part.startsWith("type "))
-    .map((part) => part.split(/\s+as\s+/)[0]?.trim() ?? part);
-}
-
-/** `import`/`export … from` edges that bring in a value: a `type`-only one brings in none. */
-function fromEdges(source: string): Edge[] {
-  return [...source.matchAll(FROM)].flatMap(([, , type, clause = "", spec = ""]) => {
-    const names = type === undefined ? namesOf(clause) : [];
-    return names === "all" || names.length > 0 ? [{ spec, names }] : [];
-  });
-}
-
-export function importsOf(source: string): Edge[] {
-  const whole = (regex: RegExp) =>
-    [...source.matchAll(regex)].map(([, spec = ""]): Edge => ({ spec, names: "all" }));
-  return [...fromEdges(source), ...whole(BARE), ...whole(DYNAMIC)];
-}
-
-/** A relative specifier as a repo file: `./ui.js` is `ui.tsx` or `ui.ts`, `./x` may be `x/index.ts`. */
-function resolveRelative(from: string, spec: string, read: Reader): string | undefined {
-  const base = posix.join(posix.dirname(from), spec);
-  const stem = base.replace(/\.js$/, "");
-  const tries = [base, `${stem}.ts`, `${stem}.tsx`, `${base}/index.ts`, `${base}/index.tsx`];
-  return tries.find((path) => read(path) !== undefined);
-}
-
-/** `export { A, type B } from "./X.js"` in the ui barrel: each value name's module. */
-export function barrelOf(read: Reader): Map<string, string> {
-  const modules = new Map<string, string>();
-  const source = read(UI_BARREL) ?? "";
-  for (const [, kind, type, clause = "", spec = ""] of source.matchAll(FROM)) {
-    if (kind !== "export" || type !== undefined) continue;
-    const path = resolveRelative(UI_BARREL, spec, read);
-    const names = namesOf(clause);
-    if (path === undefined || names === "all") continue;
-    for (const name of names) modules.set(name, path);
-  }
-  return modules;
-}
-
-/** The repo files one import of `from` reaches directly. */
-function targetsOf(from: string, edge: Edge, read: Reader, barrel: Map<string, string>) {
-  if (edge.spec.startsWith(".")) return [resolveRelative(from, edge.spec, read)];
-  // Any other package is the lockfile's, which is shared ground.
-  if (edge.spec !== "@hackcove/ui-react") return [];
-  const modules =
-    edge.names === "all" ? [...barrel.values()] : edge.names.map((n) => barrel.get(n));
-  return [UI_BARREL, ...modules];
-}
-
-/** Every repo file `entry` reaches through its imports, itself included. */
-export function closureOf(entry: string, read: Reader, barrel: Map<string, string>): Set<string> {
-  const seen = new Set<string>();
-  const queue = [entry];
-  while (queue.length > 0) {
-    const path = queue.pop();
-    if (path === undefined || seen.has(path)) continue;
-    seen.add(path);
-    const source = read(path);
-    // The barrel is in the closure (a change to it reaches every importer) but its own exports are
-    // not followed: an import reaches only the modules of the names it takes.
-    if (source === undefined || path === UI_BARREL || !/\.(ts|tsx)$/.test(path)) continue;
-    const next = importsOf(source).flatMap((edge) => targetsOf(path, edge, read, barrel));
-    for (const target of next) if (target !== undefined && !seen.has(target)) queue.push(target);
-  }
-  return seen;
-}
-
-/* ---------------------------------------------------------------------------
    The plan
    --------------------------------------------------------------------------- */
 
@@ -226,10 +154,14 @@ function sharedWhy(path: string, configClosure: Set<string>): string | undefined
   return SHARED.some((pattern) => pattern.test(path)) ? `${path} is shared ground` : undefined;
 }
 
+/** One capture of a group: these story files, each in each of these themes. */
+export type Capture = { files: StoryFile[]; themes: string[] };
+
 export type GroupPick = Group & {
-  /** The story files to capture: a subset of `files`. */
+  /** The story files any capture takes: a subset of `files`, in its order. */
   picked: StoryFile[];
-  themes: string[];
+  /** The reference theme's capture first, then the Gallery sections' in other themes, if any. */
+  captures: Capture[];
   why: string[];
 };
 
@@ -300,32 +232,59 @@ function reachOf(repo: Repo, changed: string[], barrel: Map<string, string>): Re
   return { themed: [...themed].toSorted(), reached, unreached };
 }
 
-/** One group's capture under `reach`, or `undefined` when the change does not reach it. */
-function pickOf(group: Group, reach: Reach, themes: string[]): GroupPick | undefined {
-  const files = group.files.filter((file) => reach.reached.has(file.path));
+/** A group's captures: `files` in the reference theme, and its Gallery sections in `galleryThemes`. */
+function capturesOf(
+  group: Group,
+  files: StoryFile[],
+  reference: string | undefined,
+  galleryThemes: string[],
+): GroupPick {
+  const gallery = group.files.filter(isGallery);
+  const captures: Capture[] = [];
+  if (reference !== undefined && files.length > 0) captures.push({ files, themes: [reference] });
+  if (gallery.length > 0 && galleryThemes.length > 0)
+    captures.push({ files: gallery, themes: galleryThemes });
+  const taken = new Set(captures.flatMap((c) => c.files));
+  return { ...group, picked: group.files.filter((file) => taken.has(file)), captures, why: [] };
+}
+
+/** Per changed file, the stems of `files` it reaches: `path → Stem, Stem`. */
+function reachedWhy(files: StoryFile[], reach: Reach): string[] {
   const stems = new Map<string, string[]>();
   for (const file of files)
     for (const path of reach.reached.get(file.path) ?? [])
       stems.set(path, [...(stems.get(path) ?? []), file.stem]);
-  const why = [...stems].map(([path, reached]) => `${path} → ${list(reached)}`);
-  if (reach.themed.length > 0) {
-    // One capture per group is one include × one theme list, so a group with both a component
-    // and a theme change takes all its files in every theme.
-    why.push(`theme ${reach.themed.join(", ")} changed`);
-    return { ...group, picked: group.files, themes: files.length > 0 ? themes : reach.themed, why };
-  }
-  if (group.slug === OVERVIEW) {
-    why.push("always captured");
-    return { ...group, picked: group.files, themes, why };
-  }
-  return files.length > 0 ? { ...group, picked: files, themes, why } : undefined;
+  return [...stems].map(([path, reached]) => `${path} → ${list(reached)}`);
+}
+
+/** One group's captures under `reach`, or `undefined` when the change does not reach it. */
+function pickOf(group: Group, reach: Reach, themes: string[]): GroupPick | undefined {
+  const [reference, ...others] = themes;
+  const reached = group.files.filter((file) => reach.reached.has(file.path));
+  const overview = group.slug === OVERVIEW;
+  // The reference theme's own change shows in every story; Overview is always captured.
+  const whole = overview || (reference !== undefined && reach.themed.includes(reference));
+  // A story change in the Gallery sections shows in every theme; a theme's own change, in it.
+  const galleryThemes = reached.some(isGallery)
+    ? others
+    : others.filter((id) => reach.themed.includes(id));
+  const pick = capturesOf(group, whole ? group.files : reached, reference, galleryThemes);
+  if (pick.captures.length === 0) return undefined;
+  const why = reachedWhy(reached, reach);
+  const themed = new Set(pick.captures.flatMap((c) => c.themes));
+  const changed = reach.themed.filter((id) => themed.has(id));
+  if (changed.length > 0) why.push(`theme ${changed.join(", ")} changed`);
+  if (overview) why.push("always captured");
+  return { ...pick, why };
 }
 
 export function planCapture({ repo, grouping, changed, everything }: PlanInput): Plan {
   const full = (notes: string[]): Plan => ({
     all: true,
     notes,
-    picked: grouping.groups.map((g) => ({ ...g, picked: g.files, themes: repo.themes, why: [] })),
+    picked: grouping.groups.map((group) =>
+      capturesOf(group, group.files, referenceOf(repo.themes), repo.themes.slice(1)),
+    ),
     skipped: [],
   });
   if (everything) return full(["--all (or VISUAL_ALL=1) asks for every group"]);

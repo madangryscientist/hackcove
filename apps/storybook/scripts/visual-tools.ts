@@ -11,7 +11,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node
 import { availableParallelism, homedir } from "node:os";
 import { join, resolve } from "node:path";
 import { indexOf } from "./visual-index.js";
-import { MAX_SHOT_PIXELS, shotSizes, sizeReport } from "./visual-shots.js";
+import { MAX_SHOT_PIXELS, mergeCapture, shotSizes, sizeReport } from "./visual-shots.js";
 import type { Counts } from "./visual-upload.js";
 
 export type { Counts };
@@ -218,27 +218,33 @@ export async function withBaselineLock<T>(task: () => Promise<T>): Promise<T> {
 export type Selection = { titles: string[]; themes: string[] };
 
 /**
- * One capture of a built storybook-static into a fresh snapshot dir, served on a free port. PixelSlash
- * refuses an include that matches no story, so a selection whose stories or themes are all absent
- * on this side (new on the branch, say) is an empty capture. The port is picked here, and picked
- * again when something takes it first (`withFreePort`). `workers` is how many shots PixelSlash
- * takes at once; unset, PixelSlash's own default.
+ * A group's captures of a built storybook-static into one fresh snapshot dir: each is taken beside
+ * it and merged in (`mergeCapture`). PixelSlash refuses an include that matches no story, so a
+ * selection whose stories or themes are all absent here (new on the branch, say) is left out, and
+ * none at all leaves an empty capture. Each is served on a free port, picked again when something
+ * takes it first (`withFreePort`). `workers` is how many shots PixelSlash takes at once; unset,
+ * PixelSlash's own default.
  */
-export async function capture(staticDir: string, into: string, pick: Selection, workers?: number) {
+export async function capture(
+  staticDir: string,
+  into: string,
+  picks: Selection[],
+  workers?: number,
+) {
   rmSync(into, { recursive: true, force: true });
+  mkdirSync(into, { recursive: true });
+  writeFileSync(join(into, "manifest.json"), `${JSON.stringify({ version: 1, snapshots: [] })}\n`);
   const present = indexOf(staticDir);
-  const include = pick.titles.filter((title) => present.has(title));
-  if (include.length === 0 || pick.themes.length === 0) {
-    mkdirSync(into, { recursive: true });
-    writeFileSync(
-      join(into, "manifest.json"),
-      `${JSON.stringify({ version: 1, snapshots: [] })}\n`,
+  const part = `${into}.part`;
+  for (const { titles, themes } of picks) {
+    const include = titles.filter((title) => present.has(title));
+    if (include.length === 0 || themes.length === 0) continue;
+    rmSync(part, { recursive: true, force: true });
+    await withFreePort((port) =>
+      captureOn(port, { staticDir, into: part, include, themes, workers }),
     );
-    return;
+    mergeCapture(part, into);
   }
-  await withFreePort((port) =>
-    captureOn(port, { staticDir, into, include, themes: pick.themes, workers }),
-  );
 }
 
 type CaptureJob = {

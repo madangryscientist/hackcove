@@ -1,12 +1,29 @@
 import { deflateSync } from "node:zlib";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { MAX_SHOT_PIXELS, pngSize, shotSizes, sizeReport, visualSkipped } from "./visual-shots.js";
+import {
+  MAX_SHOT_PIXELS,
+  mergeCapture,
+  pngSize,
+  shotSizes,
+  sizeReport,
+  visualSkipped,
+} from "./visual-shots.js";
 
 const src = join(import.meta.dirname, "..", "src");
 const read = (file: string) => readFileSync(join(src, file), "utf8");
+const barrel = join(
+  import.meta.dirname,
+  "..",
+  "..",
+  "..",
+  "packages",
+  "ui-react",
+  "src",
+  "index.ts",
+);
 
 /** A PNG with only a header (signature, IHDR) and no pixel data: all `pngSize` reads. */
 function headerPng(width: number, height: number) {
@@ -55,6 +72,27 @@ describe("pngSize and shotSizes", () => {
   });
 });
 
+describe("mergeCapture", () => {
+  it("moves every shot of one capture into another and lists it in its manifest", () => {
+    const into = capture({ "a@theme=one": [1280, 800] });
+    const from = capture({ "b@theme=two": [1280, 900], "c@theme=two": [1280, 700] });
+    mergeCapture(from, into);
+    expect(shotSizes(into).map((shot) => [shot.name, shot.height])).toEqual([
+      ["a@theme=one", 800],
+      ["b@theme=two", 900],
+      ["c@theme=two", 700],
+    ]);
+    expect(existsSync(from)).toBe(false);
+  });
+
+  it("refuses a shot the capture already has", () => {
+    const into = capture({ "a@theme=one": [1280, 800] });
+    const from = capture({ "a@theme=one": [1280, 900] });
+    expect(() => mergeCapture(from, into)).toThrow("already has a@theme=one");
+    expect(pngSize(join(into, "a@theme=one", "desktop.png")).height).toBe(800);
+  });
+});
+
 describe("sizeReport", () => {
   it("fails a shot over the limit, naming it, and warns on one near it", () => {
     const report = sizeReport([
@@ -94,5 +132,54 @@ describe("the sliced Overview captures", () => {
     expect(visualSkipped).toEqual(["overview--gallery", "overview--all-themes"]);
     expect(read("overview.stories.tsx")).toMatch(/export const Gallery\b/);
     expect(read("overview.stories.tsx")).toMatch(/export const AllThemes\b/);
+  });
+});
+
+/**
+ * The component names `@hackcove/ui-react` exports: the value names of its barrel's `export { … }`
+ * lines that start with a capital, so types, hooks and helper functions are left out.
+ */
+function exportedComponents(): string[] {
+  return [...readFileSync(barrel, "utf8").matchAll(/\bexport\s*\{([^}]*)\}/g)]
+    .flatMap(([, names = ""]) => names.split(","))
+    .map((name) => name.trim())
+    .filter((name) => name !== "" && !name.startsWith("type "))
+    .map((name) => name.split(/\s+as\s+/).at(-1) ?? name)
+    .filter((name) => /^[A-Z]/.test(name));
+}
+
+/** `Gallery.tsx` and every file it imports from `src/` or `src/layout/`, transitively. */
+function galleryFiles(): string[] {
+  const folders = new Set([src, join(src, "layout")]);
+  const seen = new Set<string>();
+  const queue = [join(src, "Gallery.tsx")];
+  while (queue.length > 0) {
+    const file = queue.pop();
+    if (file === undefined || seen.has(file)) continue;
+    seen.add(file);
+    for (const [, spec = ""] of readFileSync(file, "utf8").matchAll(
+      /\bfrom\s*["'](\.[^"']+)["']/g,
+    )) {
+      const base = resolve(dirname(file), spec).replace(/\.js$/, "");
+      const found = [`${base}.tsx`, `${base}.ts`, base].find(
+        (path) => /\.tsx?$/.test(path) && existsSync(path),
+      );
+      if (found !== undefined && folders.has(dirname(found))) queue.push(found);
+    }
+  }
+  return [...seen];
+}
+
+describe("the Gallery sections", () => {
+  // Every theme but the reference one is shot in these sections only, so a component missing here
+  // would never be seen in those themes. The Gallery is made of `gallerySections` alone.
+  it("render every component @hackcove/ui-react exports", () => {
+    const components = exportedComponents();
+    expect(components.length).toBeGreaterThan(50);
+    const text = galleryFiles()
+      .map((file) => readFileSync(file, "utf8"))
+      .join("\n");
+    const missing = components.filter((name) => !new RegExp(`<${name}[\\s>/]`).test(text));
+    expect(missing).toEqual([]);
   });
 });

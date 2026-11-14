@@ -6,8 +6,17 @@
  * grow with every component, so the run shoots them in slices (Overview / Gallery sections and
  * Overview / All themes sections, one story per `gallerySections` entry) and skips the two pages.
  */
-import { existsSync, openSync, readFileSync, readSync, closeSync } from "node:fs";
-import { join } from "node:path";
+import {
+  closeSync,
+  existsSync,
+  openSync,
+  readFileSync,
+  readSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { join, posix } from "node:path";
 import { isRecord } from "./visual-index.js";
 
 /** PixelSlash's limit for one shot, in pixels (PS-323). */
@@ -44,12 +53,40 @@ function shotFile(snapshot: unknown): { name: string; file: string } | undefined
   return typeof name === "string" && typeof file === "string" ? { name, file } : undefined;
 }
 
-/** Every shot in a PixelSlash capture dir (`manifest.json` and the PNGs it names), with its size. */
-export function shotSizes(dir: string): ShotSize[] {
+/** The entries of a PixelSlash capture dir's `manifest.json`. */
+function snapshotsOf(dir: string): unknown[] {
   const manifest: unknown = JSON.parse(readFileSync(join(dir, "manifest.json"), "utf8"));
   const snapshots = isRecord(manifest) ? manifest["snapshots"] : undefined;
   if (!Array.isArray(snapshots)) throw new Error(`${dir}/manifest.json lists no snapshots`);
-  return snapshots.flatMap((snapshot: unknown): ShotSize[] => {
+  return snapshots;
+}
+
+/**
+ * Moves every shot of the capture dir `from` into the capture dir `into` and adds it to `into`'s
+ * manifest, then removes `from`: two captures of one group (the reference theme's, the Gallery
+ * sections' in the other themes) become the one dir that is compared or uploaded. Each shot's
+ * folder moves whole. A shot `into` already has is an error, never an overwrite.
+ */
+export function mergeCapture(from: string, into: string) {
+  const snapshots = snapshotsOf(into);
+  for (const snapshot of snapshotsOf(from)) {
+    const shot = shotFile(snapshot);
+    if (shot === undefined) throw new Error(`${from}/manifest.json has an entry with no file`);
+    const folder = shot.file.split(posix.sep)[0] ?? shot.file;
+    if (existsSync(join(into, folder))) throw new Error(`${into} already has ${folder}`);
+    renameSync(join(from, folder), join(into, folder));
+    snapshots.push(snapshot);
+  }
+  writeFileSync(
+    join(into, "manifest.json"),
+    `${JSON.stringify({ version: 1, snapshots }, null, 2)}\n`,
+  );
+  rmSync(from, { recursive: true, force: true });
+}
+
+/** Every shot in a PixelSlash capture dir (`manifest.json` and the PNGs it names), with its size. */
+export function shotSizes(dir: string): ShotSize[] {
+  return snapshotsOf(dir).flatMap((snapshot: unknown): ShotSize[] => {
     const shot = shotFile(snapshot);
     if (shot === undefined) return [];
     const path = join(dir, shot.file);

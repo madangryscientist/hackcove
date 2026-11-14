@@ -126,16 +126,31 @@ The stories are split into groups, one per section of the [component docs](https
 and its own PixelSlash project (`hackcove-ui-<section>`), with its own baseline and review queue.
 A story file goes in the section of the docs page that names it in `pairs`, `fullPage` or
 `stories`; one that no page names fails the storybook tests, so a new story file comes with its
-docs page. The check runs in one of two modes:
+docs page.
+
+**One theme in full, the Gallery sections in the rest.** Every story is shot in one theme, the
+reference theme: the first file in `themes/` in sorted order (`catppuccin-latte.css` today), worked
+out from the folder, never named in code. Every other theme is shot in **Overview / Gallery
+sections** only, one story per `gallerySections` entry, which render every component the library
+exports (a storybook test fails on one that is missing). So a regression in any story shows in the
+reference theme, every component is still seen in every theme, and a theme added costs a Gallery's
+worth of shots, not every story. A new theme whose file sorts first becomes the reference and takes
+the full set over, so its first upload shows every story as new in it and removed from the old
+reference. Stories shot once (**Overview / All themes sections**, which show every theme in one
+shot) stay shot once.
+
+The check runs in one of two modes:
 
 - **Affected** (`bunx nx run storybook:visual`, or `bunx nx affected -t visual`): only the stories
-  the change reaches, found by following imports from each story file, in every theme; a change
-  only to `themes/<id>.css` captures every story in that theme alone. Overview is always
-  captured. Anything shared (the palette, Storybook's config, the lockfile, a `package.json`, the
-  visual scripts) or a diff that cannot be read captures everything. The run says at the top what
-  it picked and why, and how much it skipped.
+  the change reaches, found by following imports from each story file. They are shot in the
+  reference theme, and when the Gallery sections are among them (a component change usually
+  reaches them), those are shot in every theme. A change to the reference theme's CSS file captures
+  every story in it; a change to another theme's CSS file, only the Gallery sections in that theme.
+  Overview is always captured. Anything shared (the palette, Storybook's config, the lockfile, a
+  `package.json`, the visual scripts) or a diff that cannot be read captures everything. The run
+  says at the top what it picked and why, how much it skipped, and the shots per theme.
 - **Everything** (`bunx nx run storybook:visual --all`, or `VISUAL_ALL=1 bunx nx run-many -t
-  visual`): every story in every theme. An upload (`visual-upload`) is always this mode.
+  visual`): every group whole. An upload (`visual-upload`) is always this mode.
 
 The local run (`visual`) builds the merge-base's Storybook in a shared worktree, captures it and
 writes one report per group to `apps/storybook/.pixelslash/<slug>/report/index.html`. An upload
