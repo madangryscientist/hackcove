@@ -6,6 +6,9 @@ import {
   readBuild,
   settle,
   shasOf,
+  uploadSummaryLine,
+  uploadTotalLine,
+  type GroupResult,
   type BuildState,
   type UploadState,
 } from "./visual-upload.js";
@@ -132,6 +135,7 @@ const reply = (over: Record<string, unknown> = {}, counts: Record<string, unknow
       accepted: 0,
       rejected: 0,
       to_review: 3,
+      against_main: { changed: 0, new: 6 },
       skipped_flaky: 0,
       ...counts,
     },
@@ -146,7 +150,24 @@ describe("readBuild", () => {
       status: "changes",
       error: "",
       url: "http://pixelslash.test/projects/p/builds/22daf058",
-      counts: { changed: 2, unchanged: 40, new: 1, removed: 3 },
+      counts: {
+        changed: 2,
+        unchanged: 40,
+        new: 1,
+        removed: 3,
+        againstMain: { changed: 0, new: 6 },
+        toReview: 3,
+      },
+    });
+  });
+
+  it("reads a build whose counts have no against_main as before", () => {
+    const counts = { against_main: undefined, to_review: undefined };
+    expect(readBuild(reply({}, counts))?.counts).toEqual({
+      changed: 2,
+      unchanged: 40,
+      new: 1,
+      removed: 3,
     });
   });
 
@@ -191,6 +212,8 @@ describe("buildIn", () => {
       unchanged: 40,
       new: 1,
       removed: 3,
+      againstMain: { changed: 0, new: 6 },
+      toReview: 3,
     });
     expect(buildIn(listing, "missing")).toBeUndefined();
     expect(buildIn({}, "22daf058")).toBeUndefined();
@@ -205,7 +228,14 @@ describe("settle", () => {
       build("changes", 0),
     ]);
     expect(reads).toBe(3);
-    expect(result.counts).toEqual({ changed: 2, unchanged: 40, new: 1, removed: 3 });
+    expect(result.counts).toEqual({
+      changed: 2,
+      unchanged: 40,
+      new: 1,
+      removed: 3,
+      againstMain: { changed: 0, new: 6 },
+      toReview: 3,
+    });
   });
 
   it("does not wait for a human: shots pending review do not hold a finished build", async () => {
@@ -227,5 +257,59 @@ describe("settle", () => {
     await expect(run([build("errored", 0, "shot too large")])).rejects.toThrow(
       /build 22daf058 errored.*shot too large/,
     );
+  });
+});
+
+const group = (over: Partial<GroupResult["counts"]> = {}): GroupResult => ({
+  counts: {
+    changed: 0,
+    unchanged: 75,
+    new: 0,
+    removed: 0,
+    againstMain: { changed: 0, new: 6 },
+    toReview: 6,
+    ...over,
+  },
+  status: "changes",
+  where: "http://ps.test/b/1",
+});
+
+describe("the upload summary lines", () => {
+  it("reports a branch upload against main, not against its earlier upload", () => {
+    const line = uploadSummaryLine("layout", group(), "branch");
+    expect(line).toBe(
+      "layout: against main: 0 changed, 6 new; 6 to review; changes; http://ps.test/b/1",
+    );
+    expect(uploadSummaryLine("layout", group({ unchanged: 3, changed: 2, new: 1 }), "branch")).toBe(
+      line,
+    );
+  });
+
+  it("prints a group without against_main, a main upload and a local compare as before", () => {
+    const plain = group({ changed: 2, new: 1 });
+    const bare = { ...plain, counts: { changed: 2, unchanged: 75, new: 1, removed: 0 } };
+    const old = "layout: 2 changed, 75 unchanged, 1 new, 0 removed; http://ps.test/b/1";
+    expect(uploadSummaryLine("layout", bare, "branch")).toBe(old);
+    expect(uploadSummaryLine("layout", plain, "main")).toBe(old);
+    expect(uploadSummaryLine("layout", plain, null)).toBe(old);
+  });
+
+  it("sums the against-main counts over the groups of a branch upload", () => {
+    const second = group({ againstMain: { changed: 7, new: 1 }, toReview: 8 });
+    expect(uploadTotalLine([group(), second], "branch")).toBe(
+      "total: against main: 7 changed, 7 new; 14 to review",
+    );
+    const bare = { counts: { changed: 2, unchanged: 5, new: 0, removed: 0 }, where: "x" };
+    expect(uploadTotalLine([group(), bare], "branch")).toBe(
+      "total: against main: 0 changed, 6 new; 6 to review",
+    );
+  });
+
+  it("sums the four counts for a main upload and a local compare", () => {
+    const bare = { counts: { changed: 2, unchanged: 5, new: 1, removed: 4 }, where: "x" };
+    expect(uploadTotalLine([bare, bare], "main")).toBe(
+      "total: 4 changed, 10 unchanged, 2 new, 8 removed",
+    );
+    expect(uploadTotalLine([bare], null)).toBe("total: 2 changed, 5 unchanged, 1 new, 4 removed");
   });
 });

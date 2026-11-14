@@ -124,7 +124,19 @@ export function shasOf(listing: unknown): string[] {
   );
 }
 
-export type Counts = { changed: number; unchanged: number; new: number; removed: number };
+/**
+ * A build's counts. `changed` and the rest diff against the branch's previous upload (or main, on a
+ * first upload or a main upload); `againstMain` and `toReview` are the server's counts against main,
+ * left out when the server sends none (a main upload, an older server, the local compare).
+ */
+export type Counts = {
+  changed: number;
+  unchanged: number;
+  new: number;
+  removed: number;
+  againstMain?: { changed: number; new: number };
+  toReview?: number;
+};
 
 /** A build as `builds --json` lists it, reduced to what the run needs. */
 export type BuildState = {
@@ -137,6 +149,15 @@ export type BuildState = {
 
 const COUNT_KEYS = ["changed", "unchanged", "new", "removed"] as const;
 
+/** The server's `against_main` counts, or `undefined` when it sends none. */
+function readAgainstMain(value: unknown): Counts["againstMain"] {
+  if (!isRecord(value)) return undefined;
+  const { changed, new: added } = value;
+  return typeof changed === "number" && typeof added === "number"
+    ? { changed, new: added }
+    : undefined;
+}
+
 /** The four counts of a build's `counts` object, or `undefined` when one is missing. */
 function readCounts(counts: unknown): Counts | undefined {
   if (!isRecord(counts)) return undefined;
@@ -148,7 +169,16 @@ function readCounts(counts: unknown): Counts | undefined {
     typeof removed !== "number"
   )
     return undefined;
-  return { changed, unchanged, new: added, removed };
+  const againstMain = readAgainstMain(counts["against_main"]);
+  const toReview = counts["to_review"];
+  return {
+    changed,
+    unchanged,
+    new: added,
+    removed,
+    ...(againstMain === undefined ? {} : { againstMain }),
+    ...(typeof toReview === "number" ? { toReview } : {}),
+  };
 }
 
 const text = (value: unknown): string => (typeof value === "string" ? value : "");
@@ -213,4 +243,55 @@ export async function settle(id: string, deps: PollDeps): Promise<BuildState> {
       );
     await deps.sleep(deps.intervalMs);
   }
+}
+
+/** One group's finished run: its counts, the build's status and where to read it. */
+export type GroupResult = { counts: Counts; status?: string; where: string };
+
+const countsLine = (c: Counts): string =>
+  `${c.changed} changed, ${c.unchanged} unchanged, ${c.new} new, ${c.removed} removed`;
+
+/**
+ * A branch upload's counts are against main, which is what a reviewer reads: the top-level counts
+ * diff against the branch's previous upload, so a second upload would show 0 changed.
+ */
+const againstMainLine = (against: { changed: number; new: number }, toReview: number): string =>
+  `against main: ${against.changed} changed, ${against.new} new; ${toReview} to review`;
+
+/** One group's summary line. */
+export function uploadSummaryLine(
+  slug: string,
+  result: GroupResult,
+  mode: UploadMode | null,
+): string {
+  const { counts, status, where } = result;
+  if (mode === "branch" && counts.againstMain !== undefined) {
+    const parts = [againstMainLine(counts.againstMain, counts.toReview ?? 0)];
+    if (status !== undefined && status !== "") parts.push(status);
+    return `${slug}: ${[...parts, where].join("; ")}`;
+  }
+  return `${slug}: ${countsLine(counts)}; ${where}`;
+}
+
+/** The total over every group that ran. */
+export function uploadTotalLine(results: GroupResult[], mode: UploadMode | null): string {
+  if (mode === "branch") {
+    let changed = 0;
+    let added = 0;
+    let toReview = 0;
+    for (const { counts } of results) {
+      changed += counts.againstMain?.changed ?? 0;
+      added += counts.againstMain?.new ?? 0;
+      toReview += counts.toReview ?? 0;
+    }
+    return `total: ${againstMainLine({ changed, new: added }, toReview)}`;
+  }
+  const total: Counts = { changed: 0, unchanged: 0, new: 0, removed: 0 };
+  for (const { counts } of results) {
+    total.changed += counts.changed;
+    total.unchanged += counts.unchanged;
+    total.new += counts.new;
+    total.removed += counts.removed;
+  }
+  return `total: ${countsLine(total)}`;
 }

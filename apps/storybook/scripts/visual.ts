@@ -57,16 +57,20 @@ import {
   resolveBase,
   uploadWorkers,
   withBaselineLock,
-  type Counts,
   type Selection,
 } from "./visual-tools.js";
 import { checkUpload, uploadGroup } from "./visual-remote.js";
-import type { UploadMode } from "./visual-upload.js";
+import {
+  uploadSummaryLine,
+  uploadTotalLine,
+  type Counts,
+  type GroupResult,
+  type UploadMode,
+} from "./visual-upload.js";
 
 const upload = process.argv.includes("--upload");
 const everything = process.argv.includes("--all") || process.env["VISUAL_ALL"] === "1";
 const planPath = join(out, "plan.json");
-const countKeys: (keyof Counts)[] = ["changed", "unchanged", "new", "removed"];
 
 /** A group's captures, in order: the reference theme's, then the Gallery sections' in the others. */
 type PlannedGroup = { slug: string; project: string; skipped: boolean; captures: Selection[] };
@@ -262,7 +266,7 @@ async function groupMode(slug: string) {
     log(`${slug}: done in ${Math.round((Date.now() - started) / 1000)}s`);
     writeFileSync(
       result,
-      `${JSON.stringify({ id: plan.id, slug, skipped: false, counts: build.counts, url: build.url })}\n`,
+      `${JSON.stringify({ id: plan.id, slug, skipped: false, counts: build.counts, status: build.status, url: build.url })}\n`,
     );
     return;
   }
@@ -274,11 +278,25 @@ async function groupMode(slug: string) {
   writeFileSync(result, `${JSON.stringify({ id: plan.id, slug, skipped: false, counts })}\n`);
 }
 
+/** The against-main counts result.json holds, when the server sent them. */
+function againstMainOf(counts: Record<string, unknown>): Pick<Counts, "againstMain" | "toReview"> {
+  const against = counts["againstMain"];
+  const toReview = counts["toReview"];
+  return {
+    ...(isRecord(against) &&
+    typeof against["changed"] === "number" &&
+    typeof against["new"] === "number"
+      ? { againstMain: { changed: against["changed"], new: against["new"] } }
+      : {}),
+    ...(typeof toReview === "number" ? { toReview } : {}),
+  };
+}
+
 /**
- * A group's counts from its last run for this plan, and where to read them: the server's build
+ * A group's result from its last run for this plan, and where to read it: the server's build
  * page for an upload, the local report otherwise; `undefined` when the plan skipped it.
  */
-function readResult(id: string, slug: string): { counts: Counts; where: string } | undefined {
+function readResult(id: string, slug: string): GroupResult | undefined {
   const path = join(out, slug, "result.json");
   const result = readJson(path);
   if (!isRecord(result) || result["id"] !== id)
@@ -286,11 +304,12 @@ function readResult(id: string, slug: string): { counts: Counts; where: string }
   if (result["skipped"] === true) return undefined;
   const counts = result["counts"];
   if (!isRecord(counts)) throw new VisualError(`${path} has no counts`);
-  const read = (key: keyof Counts) => {
+  const read = (key: "changed" | "unchanged" | "new" | "removed") => {
     const value = counts[key];
     if (typeof value !== "number") throw new VisualError(`${path} has no ${key} count`);
     return value;
   };
+  const status = result["status"];
   const url = result["url"];
   return {
     counts: {
@@ -298,27 +317,26 @@ function readResult(id: string, slug: string): { counts: Counts; where: string }
       unchanged: read("unchanged"),
       new: read("new"),
       removed: read("removed"),
+      ...againstMainOf(counts),
     },
+    ...(typeof status === "string" ? { status } : {}),
     where: typeof url === "string" && url !== "" ? url : join(out, slug, "report", "index.html"),
   };
 }
 
-const countsLine = (c: Counts) =>
-  `${c.changed} changed, ${c.unchanged} unchanged, ${c.new} new, ${c.removed} removed`;
-
 function summaryMode() {
   const plan = readPlan();
-  const total: Counts = { changed: 0, unchanged: 0, new: 0, removed: 0 };
+  const results: GroupResult[] = [];
   for (const group of plan.groups) {
     const result = readResult(plan.id, group.slug);
     if (result === undefined) {
       log(`${group.slug}: skipped, unaffected`);
       continue;
     }
-    for (const key of countKeys) total[key] += result.counts[key];
-    log(`${group.slug}: ${countsLine(result.counts)}; ${result.where}`);
+    results.push(result);
+    log(uploadSummaryLine(group.slug, result, plan.mode));
   }
-  log(`total: ${countsLine(total)}`);
+  log(uploadTotalLine(results, plan.mode));
 }
 
 async function main() {

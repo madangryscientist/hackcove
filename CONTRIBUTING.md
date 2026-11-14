@@ -161,7 +161,8 @@ see "Uploads can run side by side" below) builds and
 captures no base at all. It has two modes, picked from the checkout:
 
 - **A branch rebased on origin/main** captures the branch only and uploads it. The server diffs it
-  against the `main` build it already holds, so `--summary` prints the server's counts and the
+  against the `main` build it already holds, so `--summary` prints the server's counts against main
+  (changed and new, and how many shots are to review, with the build's status) and the
   build's page. Before any capture it checks that each project holds a `main` build at the
   merge-base or an ancestor, and fails naming the project when none does.
 - **A checkout at origin/main's tip** (clean; a detached HEAD in a throwaway worktree counts)
