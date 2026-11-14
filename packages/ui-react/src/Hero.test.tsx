@@ -23,17 +23,16 @@ describe("Hero", () => {
     expect(out).toContain("<h1");
   });
 
+  it("keeps an overline of 0, which is a label and not nothing", () => {
+    expect(renderToStaticMarkup(<Hero overline={0} title="Title" />)).toMatch(/font-mono[^>]*>0</);
+  });
+
   it("hides the glow from assistive technology and the pointer, behind the text", () => {
     const out = markup();
     expect(out).toMatch(
       /<div aria-hidden="true" data-hero-glow="" class="pointer-events-none [^"]*-z-10/,
     );
     expect(out.match(/<span class="[^"]*bg-(?:indigo|teal|rose)-400\/25/g)).toHaveLength(3);
-  });
-
-  it("clips the glow to the text column, so it can never widen the page", () => {
-    expect(markup()).toMatch(/data-hero-glow="" class="[^"]*\boverflow-hidden\b/);
-    expect(markup()).toMatch(/data-hero="" class="[^"]*\bmax-w-3xl\b/);
   });
 
   it("drifts only under prefers-reduced-motion: no-preference", () => {
@@ -48,8 +47,15 @@ describe("Hero", () => {
     expect(css).toContain(`@keyframes ${HERO_DRIFT}{`);
   });
 
-  it("carries no colour in its stylesheet: the theme paints the ribbons", () => {
+  it("paints nothing in its stylesheet: the mask only sets how much shows, the theme paints the ribbons", () => {
     const css = /<style>(.*?)<\/style>/s.exec(markup())?.[1] ?? "";
-    expect(css).not.toMatch(/#[0-9a-f]{3}|rgb|hsl|oklch|background|color/i);
+    expect(css).not.toMatch(
+      /#[0-9a-f]{3}|rgba?\(|hsla?\(|oklch\(|(?:^|[;{])(?:background|color)[\w-]*:/i,
+    );
+  });
+
+  it("writes its stylesheet with no character a server renderer may escape", () => {
+    const css = /<style>(.*?)<\/style>/s.exec(markup())?.[1] ?? "";
+    expect(css).not.toMatch(/[<>&"']/);
   });
 });

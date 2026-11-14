@@ -156,8 +156,9 @@ function scrimRules(palette: Palette, narrow: string[]): Rule[] {
 /**
  * The hero's text over its glow (`Hero`). The glow is decoration, a translucent wash with no text or
  * edge of its own, so it is never held to a bar itself: it is measured only as what the hero's text
- * sits on. Its title (`text-slate-900`), lede (`text-slate-600`) and overline (`text-slate-500`) are
- * held to AA over the page canvas and a card's surface (what a page's top block sits on) with each
+ * sits on. Its title (`text-slate-900`), lede (`text-slate-600`) and overline (`text-slate-500`),
+ * and the accent text of the outline and ghost buttons and links in its actions, are held to AA
+ * over the page canvas and a card's surface (what a page's top block sits on) with each
  * ribbon on it, and with all of them stacked, where they overlap. Each is taken at the full strength
  * the theme gives it; the blur only softens it.
  */
@@ -168,7 +169,12 @@ function glowRules(palette: Palette): Rule[] {
     {
       name: "hero text over the glow",
       bar: TEXT_BAR,
-      fg: roleOf(palette, "ink").filter((utility) => /^text-slate-(?:900|600|500)$/.test(utility)),
+      fg: [
+        ...roleOf(palette, "ink").filter((utility) => /^text-slate-(?:900|600|500)$/.test(utility)),
+        ...roleOf(palette, "accent").filter((utility) =>
+          /^(?:hover:)?text-[a-z]+-(?:600|700)$/.test(utility),
+        ),
+      ],
       on: glow.length > 1 ? [...stacks(glow), glow] : stacks(glow),
       base: roleOf(palette, "canvas", "surface").filter(isBackground),
     },

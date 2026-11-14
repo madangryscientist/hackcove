@@ -116,7 +116,7 @@ export const layout: ComponentSection = {
       stories: ["Hero"],
       usage: [
         "One `Hero` per page, and only on the landing page: it is the page's top block. Inner pages use `PageHeader`.",
-        "Pass `title` and, if it has one, `overline`; put a `Lead` in `children`, then the page's first actions in a `Cluster` if there are any.",
+        "Pass `title` and, if it has one, `overline`; put a `Lead` in `children`, then the page's first actions in a `Cluster` if there are any: a primary `Button` and an `outline` or `ghost` one in the default tone, or a `TextLink`. That is the text the theme's contrast check holds over the glow.",
         "Never build the block from an `Overline`, a `Display` and a `Lead` by hand: the hand-built one has no glow and drifts from the one top block.",
         "The glow is always on and takes no prop. Its colours and its strength are the theme's, so a paper theme keeps it faint.",
         "It caps itself at a reading measure at the parent's left edge, and the glow is clipped to it, so a phone never scrolls sideways. Put it as the first child of the page's `Stack`.",

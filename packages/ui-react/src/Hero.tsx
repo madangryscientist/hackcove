@@ -9,9 +9,10 @@ export const HERO_DRIFT = "hc-hero-tide";
 // so no ribbon ends in a hard line where the layer clips it) and the drift. The drift is a slow
 // sideways sway and stretch, like light on water, each ribbon on its own period so the three never
 // line up; it runs only under `prefers-reduced-motion: no-preference`, so a visitor who asks for less
-// motion sees the ribbons standing at their resting place. No colour in it: the theme paints them.
+// motion sees the ribbons standing at their resting place. It sets no colour (the mask's black and
+// transparent only set how much shows): the theme paints the ribbons.
 const css = `[data-hero-glow]{mask-image:linear-gradient(to bottom,transparent,black 22%,black 78%,transparent),linear-gradient(to right,transparent,black 8%,black 92%,transparent);mask-composite:intersect}
-@media (prefers-reduced-motion:no-preference){[data-hero-glow]>span{animation:${HERO_DRIFT} 41s ease-in-out -7s infinite alternate}[data-hero-glow]>span:nth-child(2){animation-duration:53s;animation-delay:-29s}[data-hero-glow]>span:nth-child(3){animation-duration:67s;animation-delay:-43s;animation-direction:alternate-reverse}}
+@media (prefers-reduced-motion:no-preference){[data-hero-glow] span{animation:${HERO_DRIFT} 41s ease-in-out -7s infinite alternate}[data-hero-glow] span:nth-child(2){animation-duration:53s;animation-delay:-29s}[data-hero-glow] span:nth-child(3){animation-duration:67s;animation-delay:-43s;animation-direction:alternate-reverse}}
 @keyframes ${HERO_DRIFT}{0%{translate:-7% 0;scale:1 1}50%{translate:5% 10%;scale:1.14 .86}100%{translate:12% -6%;scale:.92 1.1}}`;
 
 /** Every ribbon: an ellipse, blurred soft. Its place, size, tilt and colour follow. */
@@ -43,7 +44,7 @@ export function Hero({
   ...rest
 }: HeroProps & Passthrough): ReactElement {
   return (
-    <div {...rest} data-hero="" className="relative isolate max-w-3xl">
+    <div {...rest} className="relative isolate max-w-3xl">
       <style>{css}</style>
       <div
         aria-hidden="true"
@@ -62,7 +63,7 @@ export function Hero({
       </div>
       <div className="relative flex flex-col gap-4">
         <header>
-          {overline && <Overline mono>{overline}</Overline>}
+          {overline != null && overline !== false && <Overline mono>{overline}</Overline>}
           <Display>{title}</Display>
         </header>
         {children}

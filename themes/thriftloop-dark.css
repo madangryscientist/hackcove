@@ -377,12 +377,14 @@
   color: #f4966a;
 }
 
+/* The hero glow (Hero): three ribbons behind a landing page's title, ember, teal and periwinkle, kept
+   faint on the deep teal. Decoration: the contrast contract holds the hero's text over all three at once. */
 .thriftloop-dark .bg-indigo-400\/25 {
-  background-color: rgba(242, 112, 59, 0.12);
+  background-color: rgba(242, 112, 59, 0.048);
 }
 .thriftloop-dark .bg-teal-400\/25 {
-  background-color: rgba(94, 234, 212, 0.1);
+  background-color: rgba(94, 234, 212, 0.04);
 }
 .thriftloop-dark .bg-rose-400\/25 {
-  background-color: rgba(180, 190, 254, 0.1);
+  background-color: rgba(180, 190, 254, 0.04);
 }
