@@ -73,7 +73,8 @@ Every request needs a token in `MOON_REMOTE_TOKEN`, reads included. Only `main`'
 a pull request's CI reads it, and a local run only reads (`localReadOnly`). With no token set, moon
 logs one 401 warning, turns the remote cache off and runs as before, so a local run needs nothing.
 A task's declared `outputs` are all a remote hit restores, so anything a later task reads from a
-build must be listed there. `e2e` is never cached. Nx is still installed, for one job
+build must be listed there. Each `e2e` task is cached on everything its run reads, its build's
+inputs included, so a repeat run on unchanged code is a hit; `--force` re-runs it. Nx is still installed, for one job
 only: `nx release` versions and publishes the packages (`docs/releasing.md`).
 
 The shared compiler options live in `tsconfig.shared.json`, not a root `tsconfig.base.json` or
