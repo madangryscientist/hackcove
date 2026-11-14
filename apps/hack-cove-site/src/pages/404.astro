@@ -1,0 +1,12 @@
+---
+import { NotFound } from "@hackcove/ui-react";
+import { site } from "../content/site";
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+  title={`Page not found | ${site.name}`}
+  description="The page you are looking for does not exist or has moved."
+>
+  <NotFound numeral homeHref="/" />
+</Base>
