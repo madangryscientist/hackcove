@@ -75,7 +75,6 @@ describe("StatTile trend", () => {
   it("draws nothing extra without trend", () => {
     const props = { label: "A", value: "1", hint: "h", tone: "warn" } as const;
     const markup = renderToStaticMarkup(<StatTile {...props} />);
-    expect(markup).not.toContain("<svg");
     expect(markup).toBe(
       '<div class="relative overflow-hidden rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm"><p class="text-xs font-semibold uppercase tracking-wide text-slate-500">A</p><p class="mt-2 text-3xl font-bold tabular-nums text-amber-700">1</p><p class="mt-1 text-xs text-slate-500">h</p></div>',
     );

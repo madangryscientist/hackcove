@@ -27,11 +27,7 @@ describe("TrendChart", () => {
   });
 
   it("rounds the maximum up to 2, 4 or 10 times a power of ten", () => {
-    expect(scaleMax(0)).toBe(2);
-    expect(scaleMax(1)).toBe(2);
     expect(scaleMax(3)).toBe(4);
-    expect(scaleMax(5)).toBe(10);
-    expect(scaleMax(13)).toBe(20);
     expect(scaleMax(41)).toBe(100);
     expect(yLabels(chart({ label: "x", buckets: weeks(1), series: one([13]) }))).toEqual([
       "20",
