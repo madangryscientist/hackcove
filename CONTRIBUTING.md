@@ -145,7 +145,9 @@ The check runs in one of two modes:
   the change reaches, found by following imports from each story file. They are shot in the
   reference theme, and when the Gallery sections are among them (a component change usually
   reaches them), those are shot in every theme. A change to the reference theme's CSS file captures
-  every story in it; a change to another theme's CSS file, only the Gallery sections in that theme.
+  every story in it and the Gallery sections in every other theme (the file may be a new theme that
+  took the reference over); a change to another theme's CSS file, only the Gallery sections in that
+  theme.
   Overview is always captured. Anything shared (the palette, Storybook's config, the lockfile, a
   `package.json`, the visual scripts) or a diff that cannot be read captures everything. The run
   says at the top what it picked and why, how much it skipped, and the shots per theme.

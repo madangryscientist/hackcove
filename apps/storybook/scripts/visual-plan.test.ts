@@ -131,12 +131,12 @@ describe("planCapture", () => {
     expect(result.picked[0]?.why).toEqual(["theme theme-c changed", "always captured"]);
   });
 
-  it("a change to the reference theme's CSS captures every group whole in that theme", () => {
+  it("a change to the reference theme's CSS captures every group whole in that theme, and the Gallery sections in the rest", () => {
     expect(picked(["themes/theme-a.css"])).toEqual({
       layout: [[["Stack"], [reference]]],
       content: [[["Card", "CardBadge"], [reference]]],
       actions: [[["Button"], [reference]]],
-      overview: [[allOverview, [reference]]],
+      overview: overviewEverywhere,
     });
   });
 

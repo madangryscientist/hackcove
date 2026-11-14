@@ -263,11 +263,15 @@ function pickOf(group: Group, reach: Reach, themes: string[]): GroupPick | undef
   const reached = group.files.filter((file) => reach.reached.has(file.path));
   const overview = group.slug === OVERVIEW;
   // The reference theme's own change shows in every story; Overview is always captured.
-  const whole = overview || (reference !== undefined && reach.themed.includes(reference));
-  // A story change in the Gallery sections shows in every theme; a theme's own change, in it.
-  const galleryThemes = reached.some(isGallery)
-    ? others
-    : others.filter((id) => reach.themed.includes(id));
+  const referenceChanged = reference !== undefined && reach.themed.includes(reference);
+  const whole = overview || referenceChanged;
+  // A story change in the Gallery sections shows in every theme; another theme's own change, in it.
+  // The reference theme's change also takes the Gallery sections in every other theme: the file may
+  // be a new theme that sorts first, and the old reference keeps its Gallery sections.
+  const galleryThemes =
+    reached.some(isGallery) || referenceChanged
+      ? others
+      : others.filter((id) => reach.themed.includes(id));
   const pick = capturesOf(group, whole ? group.files : reached, reference, galleryThemes);
   if (pick.captures.length === 0) return undefined;
   const why = reachedWhy(reached, reach);
