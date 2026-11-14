@@ -1,3 +1,13 @@
+## 0.10.6 (2026-11-14)
+
+### 🚀 Features
+
+- **ui-react:** add DateRangePicker, a from and to date with presets ([#129](https://github.com/madangryscientist/hackcove/pull/129))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.10.5 (2026-11-14)
 
 ### 🚀 Features
