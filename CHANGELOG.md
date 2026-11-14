@@ -1,3 +1,13 @@
+## 0.10.5 (2026-11-14)
+
+### 🚀 Features
+
+- **ui-react:** chart a figure over weeks with TrendChart, and a trend line in StatTile ([#127](https://github.com/madangryscientist/hackcove/pull/127))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.10.3 (2026-11-12)
 
 ### 🩹 Fixes
