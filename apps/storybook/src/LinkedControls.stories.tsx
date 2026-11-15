@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useState } from "react";
 import {
   Button,
   Card,
@@ -41,6 +42,45 @@ export const ListRowWithControls: S = {
           Ada Lovelace
         </ListRow>
       </Card>
+    </div>
+  ),
+};
+
+const shops = ["Grace", "Ada"];
+
+function SelectingRows() {
+  const [selected, setSelected] = useState<string | undefined>(undefined);
+  return (
+    <Stack>
+      <Card flush>
+        {shops.map((shop, index) => (
+          <ListRow
+            key={shop}
+            divided={index > 0}
+            selected={selected === shop}
+            onClick={() => setSelected(shop)}
+            trailing={
+              <Button size="sm" variant="outline" href={`#shop-${shop.toLowerCase()}`}>
+                View
+              </Button>
+            }
+          >
+            {shop}
+          </ListRow>
+        ))}
+      </Card>
+      <Text as="p" color="muted">
+        Selected: {selected ?? "none"}
+      </Text>
+    </Stack>
+  );
+}
+
+/** A button row can hold a link too: a tap on the row runs its `onClick` (here, selecting the shop), and the "View" link in `trailing` sits above the row's button and opens the shop's page on its own. */
+export const ButtonRowWithLink: S = {
+  render: () => (
+    <div className="max-w-md">
+      <SelectingRows />
     </div>
   ),
 };
