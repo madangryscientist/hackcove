@@ -1,6 +1,6 @@
-import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
+import { type ComponentPropsWithoutRef, type ReactElement, type ReactNode, useState } from "react";
 import { cx, focusRing } from "./cx.js";
-import { useDescription, Words } from "./labelWords.js";
+import { useNote, Words } from "./labelWords.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 
@@ -33,12 +33,16 @@ type Naming =
     };
 
 type SwitchProps = Naming & {
-  /** Whether it is on. The caller owns it: there is no uncontrolled mode. */
-  checked: boolean;
+  /** Whether it is on, when the caller owns it (with `onChange`). */
+  checked?: boolean | undefined;
+  /** Whether it starts on, when the switch keeps its own state. */
+  defaultChecked?: boolean | undefined;
   /** Called with the next value when the person flips it. Not called while `busy`. */
-  onChange: (checked: boolean) => void;
+  onChange?: ((checked: boolean) => void) | undefined;
   /** A muted line under the label that says more. It is the switch's `aria-describedby`. */
-  description?: ReactNode;
+  hint?: ReactNode;
+  /** Replaces the hint with a red line (`role="alert"`) and makes the switch `aria-invalid`. */
+  error?: ReactNode;
   /**
    * The label's text size and the switch with it.
    * @default md
@@ -84,7 +88,9 @@ function Track({
   onClick,
   className,
   ...rest
-}: Pick<SwitchProps, "checked" | "onChange" | "disabled" | "onClick"> & {
+}: Pick<SwitchProps, "disabled" | "onClick"> & {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
   size: Size;
   busy: boolean;
   className: string;
@@ -124,37 +130,63 @@ function Track({
   );
 }
 
+/** The switch's state: the caller's `checked` when given, else its own from `defaultChecked`. */
+function useChecked(
+  checked: boolean | undefined,
+  defaultChecked: boolean,
+  onChange: ((checked: boolean) => void) | undefined,
+): [boolean, (next: boolean) => void] {
+  const [own, setOwn] = useState(defaultChecked);
+  return [
+    checked ?? own,
+    (next) => {
+      if (checked === undefined) setOwn(next);
+      onChange?.(next);
+    },
+  ];
+}
+
 /**
  * An on/off switch for a setting that takes effect at once, usually by saving it to a server: a
- * native `<button role="switch" aria-checked>`. It is controlled: the caller owns `checked` and
- * flips it in `onChange`. A value sent with a form is a `Checkbox`, not a Switch. Give it a `label`
+ * native `<button role="switch" aria-checked>`. The caller owns `checked` and flips it in
+ * `onChange`, or gives `defaultChecked` and the switch keeps its own state. A value sent with a
+ * form is a `Checkbox`, not a Switch. Give it a `label`
  * (the whole label is the click target), or in a table cell leave the label out and name it with
- * `aria-label`. `description` is a muted line under the label, and the switch's
+ * `aria-label`. `hint` is a muted line under the label; `error` replaces it with a red line
+ * (`role="alert"`) and makes the switch `aria-invalid`. The note is the switch's
  * `aria-describedby`. `size` is `sm`, `md` (the default) or `lg`. `busy` is for the save in
  * flight: clicks and keys do nothing, and the switch keeps its colour and its focus. `disabled` is
  * the native one, washed out.
  */
 export function Switch({
   label,
-  description,
+  hint,
+  error,
+  checked,
+  defaultChecked = false,
+  onChange,
   size = "md",
   busy = false,
   "aria-describedby": describedBy,
   ...rest
 }: SwitchProps): ReactElement {
-  const { descriptionId, describedIds } = useDescription(description, describedBy);
+  const { noteId, describedIds, invalid } = useNote(hint, error, describedBy);
+  const [on, flip] = useChecked(checked, defaultChecked, onChange);
   const wash = washOf(rest.disabled, busy);
   const track = (
     <Track
       {...rest}
+      checked={on}
+      onChange={flip}
       size={size}
       busy={busy}
       className={label === undefined ? wash : cursorOf(rest.disabled, busy)}
       {...(describedIds ? { "aria-describedby": describedIds } : {})}
+      {...(invalid ? { "aria-invalid": true } : {})}
     />
   );
   if (label === undefined) return track;
-  const start = descriptionId !== undefined;
+  const start = noteId !== undefined;
   return (
     <label
       className={cx(
@@ -166,7 +198,7 @@ export function Switch({
     >
       {track}
       <span className={cx(start && "mt-0.5")}>
-        <Words label={label} description={description} id={descriptionId} />
+        <Words label={label} hint={hint} error={error} id={noteId} />
       </span>
     </label>
   );

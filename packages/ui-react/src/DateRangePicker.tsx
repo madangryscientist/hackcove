@@ -16,6 +16,7 @@ import {
   type FieldProps,
   LOCALE,
   type Read,
+  fieldFlags,
   forcedInvalid,
   frameClass,
   iconButtonLook,
@@ -23,7 +24,7 @@ import {
   Notes,
 } from "./DateField.js";
 import { PICKER_SIZE, useDialogContainer, usePickerFrame } from "./DateFieldCalendar.js";
-import type { DataAttributes } from "./link.js";
+import { definedProps, type Passthrough } from "./props.js";
 import { ShownInput, type ShownRange, useShownRange } from "./shownDate.js";
 
 /** A from and to date: `start` on or before `end`. */
@@ -34,22 +35,9 @@ export type DateRangePreset = { label: string; value: DateRange };
 
 export type DateRangePickerProps = Pick<
   FieldProps,
-  | "label"
-  | "description"
-  | "errorMessage"
-  | "error"
-  | "isInvalid"
-  | "size"
-  | "minValue"
-  | "maxValue"
-  | "isRequired"
-  | "isDisabled"
-  | "aria-label"
-  | "aria-labelledby"
-  | "aria-describedby"
-  | "aria-details"
+  "label" | "hint" | "error" | "size" | "minValue" | "maxValue" | "required" | "disabled"
 > &
-  DataAttributes & {
+  Passthrough & {
     /** The range, or `null` for none. Reported only when both days are complete, real and in order. */
     value?: DateRange | null | undefined;
     /** The range shown first when the picker holds its own value. */
@@ -67,6 +55,16 @@ export type DateRangePickerProps = Pick<
     presets?: readonly DateRangePreset[] | undefined;
     /** Open the calendar on mount. */
     defaultOpen?: boolean | undefined;
+    /**
+     * The month dropdown's name, for an app in another language.
+     * @default Month
+     */
+    monthLabel?: string | undefined;
+    /**
+     * The year dropdown's name, for an app in another language.
+     * @default Year
+     */
+    yearLabel?: string | undefined;
   };
 
 type Side = ReturnType<typeof useShownRange>["start"];
@@ -123,10 +121,12 @@ function SideInput({
  */
 export function DateRangePicker({
   label,
-  description,
-  errorMessage,
+  hint,
   error,
-  isInvalid: invalidProp,
+  disabled,
+  required,
+  monthLabel = "Month",
+  yearLabel = "Year",
   value,
   defaultValue,
   onChange,
@@ -144,19 +144,20 @@ export function DateRangePicker({
     onChange,
     minValue: rest.minValue,
     maxValue: rest.maxValue,
-    isRequired: rest.isRequired,
+    isRequired: required,
   });
   const { container, findDialog } = useDialogContainer();
   return (
     <I18nProvider locale={LOCALE}>
       <AriaDateRangePicker<CalendarDate>
-        {...rest}
+        {...definedProps(rest)}
+        {...fieldFlags(disabled, required)}
         {...(defaultOpen === undefined ? {} : { defaultOpen })}
         ref={findDialog}
         value={shown.inner}
         onChange={shown.setInner}
         validate={shown.validate}
-        {...forcedInvalid({ impossible: shown.problem, isInvalid: invalidProp, error })}
+        {...forcedInvalid({ impossible: shown.problem, error })}
         granularity="day"
         shouldForceLeadingZeros
         className="flex flex-col gap-1.5"
@@ -179,16 +180,14 @@ export function DateRangePicker({
                 {calendarIcon}
               </Button>
             </Group>
-            <ShownInput name={startName} shown={shown.startShown} isDisabled={rest.isDisabled} />
-            <ShownInput name={endName} shown={shown.endShown} isDisabled={rest.isDisabled} />
-            <Notes
-              description={description}
-              errorMessage={errorMessage}
-              error={error}
-              impossible={shown.problem}
-              isInvalid={isInvalid}
+            <ShownInput name={startName} shown={shown.startShown} isDisabled={disabled} />
+            <ShownInput name={endName} shown={shown.endShown} isDisabled={disabled} />
+            <Notes hint={hint} error={error} impossible={shown.problem} isInvalid={isInvalid} />
+            <RangeCalendarPopover
+              container={container}
+              presets={presets}
+              labels={{ monthLabel, yearLabel }}
             />
-            <RangeCalendarPopover container={container} presets={presets} />
           </>
         )}
       </AriaDateRangePicker>

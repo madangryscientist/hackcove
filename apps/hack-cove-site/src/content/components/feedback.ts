@@ -168,14 +168,14 @@ export const feedback: ComponentSection = {
       pairs: ["FieldDialog/OneField"],
       usage: {
         do: [
-          "Render it only while it is open, and give every string it shows: `title`, `label`, `inputLabel`, `placeholder`, `hint`, `emptyReason`, `submit` and `busyLabel`, and a `description` under the title when the question needs a sentence.",
+          "Render it only while it is open, and give every string it shows: `title`, `label`, `placeholder`, `hint`, `emptyReason`, `submit` and `busyLabel`, and a `description` under the title when the question needs a sentence.",
           "`onSubmit` gets the trimmed value and returns a promise. Resolving closes the dialog; rejecting shows the error message under the field and keeps the dialog open.",
           "More than one field is a `Dialog` with a `FormRow` or `Field`s, or a `Drawer`.",
         ],
       },
       accessibility: [
         "It is a `Dialog`: native `<dialog>`, page behind inert, focus kept inside, Esc closes, named by its `title`.",
-        "The input has focus when it opens and is named by `inputLabel`.",
+        "The input has focus when it opens and is named by `label`.",
         "While the field is empty the submit button is disabled and its `emptyReason` is the button's title and the field's hint.",
         'While `onSubmit` is pending the button is busy (`aria-busy`); a rejection shows in the field\'s error line, which is `role="alert"`.',
       ],

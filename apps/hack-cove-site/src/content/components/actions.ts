@@ -145,7 +145,7 @@ export const actions: ComponentSection = {
           "`size` is `sm`, `md` (default) or `lg`, the same squares as `IconButton`.",
           "Put `colourSchemeScript` inline in `<head>`, so the stored or system scheme is on `<html>` before first paint and neither scheme flashes the other. It knows only the `dark` class.",
           'A light theme with a class of its own passes `schemes`, as in `schemes={{ light: "my-light", dark: "dark" }}`; render the same class on `<html>` on the server with `schemeClass`, and leave the head script out.',
-          "An app that knows the scheme on the server (from a cookie) passes `initial`, sets `store={false}` and persists from `onChange`. It then leaves the head script out.",
+          "An app that knows the scheme on the server (from a cookie) passes it as `defaultValue`, sets `store={false}` and persists from `onChange`. It then leaves the head script out.",
         ],
         dont: [
           "Do not build a switch from your own buttons; the functions below are what the toggle itself calls.",

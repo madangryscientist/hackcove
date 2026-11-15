@@ -59,11 +59,7 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
   ],
   [
     "Select",
-    (size) => (
-      <Select aria-label="x" {...at(size)}>
-        <option>a</option>
-      </Select>
-    ),
+    (size) => <Select aria-label="x" items={[]} {...at(size)} />,
     { sm: "py-1 text-sm", md: "py-2 text-base", lg: "py-2.5 text-lg" },
   ],
   [
@@ -73,7 +69,7 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
   ],
   [
     "SearchInput",
-    (size) => <SearchInput aria-label="x" {...at(size)} />,
+    (size) => <SearchInput aria-label="x" clearLabel="Clear" {...at(size)} />,
     { sm: "pl-2 pr-7", md: "pl-3 pr-9", lg: "pl-4 pr-11" },
   ],
   [

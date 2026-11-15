@@ -125,20 +125,22 @@ describe("ColourSchemeToggle", () => {
     });
 
     /**
-     * Put what the server rendered for `initial` in the page, with `<html>` as the server left it,
+     * Put what the server rendered for `defaultValue` in the page, with `<html>` as the server left it,
      * then hydrate it. Returns the console errors the hydration raised.
      */
     async function serveAndHydrate(initial: ColourScheme | undefined, htmlClass: string) {
       root.setAttribute("class", htmlClass);
       const host = document.createElement("div");
       // server render feeds the hydration check
-      host.innerHTML = renderToString(<ColourSchemeToggle schemes={paper} initial={initial} />);
+      host.innerHTML = renderToString(
+        <ColourSchemeToggle schemes={paper} defaultValue={initial} />,
+      );
       document.body.append(host);
       // No tooltip in the server markup, so a wrong one is never shown before hydration.
       const titledBeforeHydration = screen.getByRole("button").hasAttribute("title");
       const errors = vi.spyOn(console, "error").mockImplementation(() => {});
       const hydrated = await act(async () =>
-        hydrateRoot(host, <ColourSchemeToggle schemes={paper} initial={initial} />),
+        hydrateRoot(host, <ColourSchemeToggle schemes={paper} defaultValue={initial} />),
       );
       teardown = () => {
         act(() => hydrated.unmount());
@@ -147,21 +149,21 @@ describe("ColourSchemeToggle", () => {
       return { titledBeforeHydration, errors: errors.mock.calls };
     }
 
-    it("with `initial` set, matches the server on a dark cookie with no mismatch", async () => {
+    it("with `defaultValue` set, matches the server on a dark cookie with no mismatch", async () => {
       const { titledBeforeHydration, errors } = await serveAndHydrate("dark", "dark");
       expect(titledBeforeHydration).toBe(false);
       expect(errors).toEqual([]);
       expect(title()).toBe("Switch to light theme");
     });
 
-    it("with `initial` set, matches the server on a light cookie with no mismatch", async () => {
+    it("with `defaultValue` set, matches the server on a light cookie with no mismatch", async () => {
       const { titledBeforeHydration, errors } = await serveAndHydrate("light", "my-light");
       expect(titledBeforeHydration).toBe(false);
       expect(errors).toEqual([]);
       expect(title()).toBe("Switch to dark theme");
     });
 
-    it("without `initial`, a dark page still ends up showing dark once hydrated", async () => {
+    it("without `defaultValue`, a dark page still ends up showing dark once hydrated", async () => {
       const { titledBeforeHydration } = await serveAndHydrate(undefined, "dark");
       expect(titledBeforeHydration).toBe(false);
       expect(title()).toBe("Switch to light theme");

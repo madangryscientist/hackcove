@@ -150,21 +150,23 @@ export const MenuLabel: S = {
   ),
 };
 
+const advisers = [
+  { value: "a", label: "Ada Lovelace" },
+  { value: "b", label: "Grace Hopper" },
+];
+
 /**
  * The three header slots, none with a wrapper or `className` from the app: `brand` is the logo and
  * name at the brand type with the logo gap, `nav` is a `Tabs` of links, and `controls` sits at the end of
- * the row, gap-2 and vertically centred. No child of `controls` shrinks, and the `Select` at its
- * default `width="full"` sizes to its content, so the toggle keeps its square.
+ * the row, gap-2 and vertically centred. No child of `controls` shrinks, and the `Select` sizes to
+ * its content, so the toggle keeps its square.
  */
 export const HeaderSlots: S = {
   render: () => (
     <DemoShell
       controls={
         <>
-          <Select aria-label="Adviser" defaultValue="a">
-            <option value="a">Ada Lovelace</option>
-            <option value="b">Grace Hopper</option>
-          </Select>
+          <Select aria-label="Adviser" defaultValue="a" items={advisers} />
           <ColourSchemeToggle />
         </>
       }
@@ -174,19 +176,17 @@ export const HeaderSlots: S = {
   ),
 };
 
-const projectPicker = (
-  <Select aria-label="Project" defaultValue="web">
-    <option value="web">Web app</option>
-    <option value="api">API</option>
-  </Select>
+const pick = (label: string, items: { value: string; label: string }[]) => (
+  <Select aria-label={label} defaultValue={items[0]?.value} items={items} />
 );
-
-const environmentPicker = (
-  <Select aria-label="Environment" defaultValue="production">
-    <option value="production">Production</option>
-    <option value="staging">Staging</option>
-  </Select>
-);
+const projectPicker = pick("Project", [
+  { value: "web", label: "Web app" },
+  { value: "api", label: "API" },
+]);
+const environmentPicker = pick("Environment", [
+  { value: "production", label: "Production" },
+  { value: "staging", label: "Staging" },
+]);
 
 /**
  * `menuControls`: pickers and actions that do not fit a phone row. From `md` the two Selects and

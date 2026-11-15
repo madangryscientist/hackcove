@@ -171,7 +171,7 @@ describe.each([
   it("blocks a form submit when a required date is only partly filled", async () => {
     render(
       <form aria-label="Profile">
-        <Field aria-label="Date" name="dob" isRequired defaultValue={birthday} />
+        <Field aria-label="Date" name="dob" required defaultValue={birthday} />
       </form>,
     );
     expect(form().checkValidity()).toBe(true);

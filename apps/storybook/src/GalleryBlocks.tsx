@@ -172,7 +172,6 @@ export function GalleryDialogs() {
         <FieldDialog
           title="New project"
           label="Name"
-          inputLabel="Project name"
           placeholder="my-project"
           hint="Letters, numbers and dashes."
           emptyReason="Type a name first."

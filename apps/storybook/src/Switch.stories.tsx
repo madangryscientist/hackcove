@@ -32,13 +32,7 @@ function Kept({
 }) {
   const [checked, setChecked] = useState(initial);
   return (
-    <Switch
-      label={label}
-      description={description}
-      size={size}
-      checked={checked}
-      onChange={setChecked}
-    />
+    <Switch label={label} hint={description} size={size} checked={checked} onChange={setChecked} />
   );
 }
 

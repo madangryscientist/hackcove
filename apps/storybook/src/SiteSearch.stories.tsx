@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   Cluster,
   ColourSchemeToggle,
-  Icon,
   Input,
   ListRow,
   SiteSearch,
@@ -116,7 +115,7 @@ export const DoHeader: S = {
 export const DontHeader: S = {
   render: () => (
     <Stack gap="sm">
-      <Input type="search" aria-label="Filter" icon={<Icon name="search" />} defaultValue="dia" />
+      <Input type="search" aria-label="Filter" icon="search" defaultValue="dia" />
       <div>
         <ListRow href="#dialog" size="sm">
           Dialog

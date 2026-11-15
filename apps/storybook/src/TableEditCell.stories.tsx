@@ -34,11 +34,8 @@ function CategoryCell() {
             setCategory(event.target.value);
             close();
           }}
-        >
-          {CATEGORIES.map((name) => (
-            <option key={name}>{name}</option>
-          ))}
-        </Select>
+          items={CATEGORIES.map((name) => ({ value: name, label: name }))}
+        />
       )}
     >
       {category}

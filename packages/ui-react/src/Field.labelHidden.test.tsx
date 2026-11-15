@@ -4,12 +4,12 @@ import { Field } from "./Field.js";
 import { render, screen } from "./render.harness.js";
 
 const search = (layout?: "row") => (
-  <Field label="Search shops" htmlFor="q" hideLabel layout={layout} hint="Try a name.">
+  <Field label="Search shops" htmlFor="q" labelHidden layout={layout} hint="Try a name.">
     <input id="q" />
   </Field>
 );
 
-describe("Field hideLabel", () => {
+describe("Field labelHidden", () => {
   it("keeps the label in the page, naming the control", () => {
     render(search());
     expect(screen.getByLabelText("Search shops").id).toBe("q");

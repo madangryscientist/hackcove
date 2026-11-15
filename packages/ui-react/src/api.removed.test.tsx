@@ -7,6 +7,18 @@ import * as ui from "./index.js";
 
 const segment = { label: "a", value: 1, tone: "info" } as const;
 
+const fieldDialog = {
+  title: "t",
+  label: "l",
+  placeholder: "p",
+  hint: "h",
+  emptyReason: "e",
+  submit: "s",
+  busyLabel: "b",
+  onSubmit: () => Promise.resolve(),
+  onClose: () => undefined,
+};
+
 export const removed = {
   // Tone, text and passthrough
   // @ts-expect-error CalloutTone is gone: Callout, Card and TimelineItem take Tone
@@ -153,6 +165,66 @@ export const removed = {
   // ToolCallCard
   // @ts-expect-error ToolCallCard is gone: a bordered Disclosure with a Pill
   r61: (t: typeof import("./index.js").ToolCallCard) => t,
+  // Controls
+  // @ts-expect-error a Checkbox's description is hint
+  r63: () => <ui.Checkbox label="x" description="y" />,
+  // @ts-expect-error a Switch's description is hint
+  r64: () => <ui.Switch label="x" description="y" />,
+  // @ts-expect-error a Radio's description is hint
+  r65: () => <ui.Radio value="x" label="x" description="y" />,
+  // @ts-expect-error a DateField's description is hint
+  r66: () => <ui.DateField aria-label="x" description="y" />,
+  // @ts-expect-error a DateRangePicker's description is hint
+  r67: () => <ui.DateRangePicker aria-label="x" description="y" />,
+  // @ts-expect-error isInvalid is gone: error marks the field invalid
+  r68: () => <ui.DateField aria-label="x" isInvalid />,
+  // @ts-expect-error errorMessage is error
+  r69: () => <ui.DateRangePicker aria-label="x" errorMessage="y" />,
+  r70: () => (
+    <ui.RadioGroup
+      label="x"
+      // @ts-expect-error isDisabled is disabled
+      isDisabled
+    >
+      y
+    </ui.RadioGroup>
+  ),
+  // @ts-expect-error a Radio's isDisabled is disabled
+  r71: () => <ui.Radio value="x" label="x" isDisabled />,
+  // @ts-expect-error isDisabled is disabled
+  r72: () => <ui.DateField aria-label="x" isDisabled />,
+  r73: () => (
+    <ui.RadioGroup
+      label="x"
+      // @ts-expect-error isRequired is required
+      isRequired
+    >
+      y
+    </ui.RadioGroup>
+  ),
+  // @ts-expect-error isRequired is required
+  r74: () => <ui.DateRangePicker aria-label="x" isRequired />,
+  // @ts-expect-error initial is defaultValue
+  r75: () => <ui.ColourSchemeToggle initial="dark" />,
+  // @ts-expect-error align is gone: the box sits on the label's first line
+  r76: () => <ui.Checkbox label="x" align="center" />,
+  // @ts-expect-error icon names an icon: icon="search", not an element
+  r77: () => <ui.Input icon={<svg />} />,
+  // @ts-expect-error a Select takes items, not option children
+  r78: () => <ui.Select aria-label="x">{null}</ui.Select>,
+  r79: () => (
+    <ui.Field
+      label="x"
+      // @ts-expect-error hideLabel is labelHidden
+      hideLabel
+    >
+      {null}
+    </ui.Field>
+  ),
+  // @ts-expect-error inputLabel is gone: label names the input
+  r80: () => <ui.FieldDialog {...fieldDialog} inputLabel="y" />,
+  // @ts-expect-error action is actions
+  r81: () => <ui.FormRow action="x">{null}</ui.FormRow>,
 };
 
 describe("removed API", () => {

@@ -88,7 +88,6 @@ export const CASES: Record<string, () => ReactElement> = {
     <ui.FieldDialog
       title="T"
       label="L"
-      inputLabel="I"
       placeholder="p"
       hint="h"
       emptyReason="e"
@@ -220,7 +219,7 @@ export const CASES: Record<string, () => ReactElement> = {
       {...A}
     />
   ),
-  Select: () => <ui.Select {...A} />,
+  Select: () => <ui.Select items={[]} {...A} />,
   SideColumn: () => (
     <ui.SideColumn aside="a" {...A}>
       x

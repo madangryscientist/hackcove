@@ -32,9 +32,11 @@ export function TypeSpecimen() {
       {(["sm", "md", "lg"] as const).map((size) => (
         <div key={size} className="flex items-center gap-2">
           <Input size={size} aria-label={`Input ${size}`} defaultValue={`Input ${size}`} />
-          <Select size={size} aria-label={`Select ${size}`}>
-            <option>Select {size}</option>
-          </Select>
+          <Select
+            size={size}
+            aria-label={`Select ${size}`}
+            items={[{ value: size, label: `Select ${size}` }]}
+          />
           <Button size={size}>Button {size}</Button>
         </div>
       ))}

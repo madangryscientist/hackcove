@@ -128,11 +128,15 @@ export function FormPage() {
             htmlFor={`${id}-cover`}
             hint="Monthly premium is worked out on save."
           >
-            <Select id={`${id}-cover`} defaultValue="1500000">
-              <option value="500000">R 500 000</option>
-              <option value="1500000">R 1 500 000</option>
-              <option value="3000000">R 3 000 000</option>
-            </Select>
+            <Select
+              id={`${id}-cover`}
+              defaultValue="1500000"
+              items={[
+                { value: "500000", label: "R 500 000" },
+                { value: "1500000", label: "R 1 500 000" },
+                { value: "3000000", label: "R 3 000 000" },
+              ]}
+            />
           </Field>
         </div>
       </Card>

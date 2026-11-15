@@ -19,3 +19,17 @@ export type Passthrough = AriaAttributes &
     /** The root element's `id`: an anchor, or the target of a `for` or an `aria-describedby`. */
     id?: string | undefined;
   };
+
+/**
+ * `props` without its `undefined` entries, for handing passthrough props to a react-aria-components
+ * part, whose types take a value or nothing (`exactOptionalPropertyTypes`). A wrapper of a native
+ * element spreads its props as they are.
+ */
+export function definedProps<T extends object>(props: T): { [K in keyof T]?: T[K] & ({} | null) } {
+  const out: { [K in keyof T]?: T[K] & ({} | null) } = {};
+  for (const key in props) {
+    const value = props[key];
+    if (value !== undefined) out[key] = value;
+  }
+  return out;
+}

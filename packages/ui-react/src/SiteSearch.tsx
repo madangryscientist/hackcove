@@ -128,7 +128,7 @@ function SearchBody({ items, label }: { items: readonly SiteSearchItem[]; label:
     <div ref={box} className="flex flex-col gap-3">
       <Input
         type="search"
-        icon={<Icon name="search" />}
+        icon="search"
         aria-label={label}
         placeholder="Search"
         autoComplete="off"

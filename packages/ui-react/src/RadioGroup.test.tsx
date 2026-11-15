@@ -5,18 +5,18 @@ import { render, screen, user } from "./render.harness.js";
 
 const scope = (
   props: Partial<Parameters<typeof RadioGroup>[0]> = {},
-  last: { description?: string; isDisabled?: boolean } = {},
+  last: { hint?: string; disabled?: boolean } = {},
 ) =>
   render(
     <RadioGroup label="Scope" {...props}>
-      <Radio value="file" label="This file" description="Only the file you opened." />
+      <Radio value="file" label="This file" hint="Only the file you opened." />
       <Radio value="folder" label="This folder" />
       <Radio value="all" label="Everything" {...last} />
     </RadioGroup>,
   );
 
 /**
- * A radio by its label, as the input it is. The label wraps the description too, so the first
+ * A radio by its label, as the input it is. The label wraps the hint too, so the first
  * radio's name runs on into it; it is matched by how it starts.
  */
 function radio(label: string): HTMLInputElement {
@@ -66,14 +66,14 @@ describe("RadioGroup selection", () => {
   });
 
   it("does not choose a disabled radio", async () => {
-    scope({}, { isDisabled: true });
+    scope({}, { disabled: true });
     expect(radio("Everything").disabled).toBe(true);
     await user().click(screen.getByText("Everything"));
     expect(chosen()).toEqual([false, false, false]);
   });
 
-  it("disables every radio with isDisabled on the group", () => {
-    scope({ isDisabled: true });
+  it("disables every radio with disabled on the group", () => {
+    scope({ disabled: true });
     expect(radios().map((r) => r.disabled)).toEqual([true, true, true]);
   });
 });
@@ -103,7 +103,7 @@ describe("RadioGroup keyboard", () => {
   });
 
   it("skips a disabled radio", async () => {
-    scope({ defaultValue: "folder" }, { isDisabled: true });
+    scope({ defaultValue: "folder" }, { disabled: true });
     const person = user();
     await person.tab();
     await person.keyboard("{ArrowDown}");
@@ -111,8 +111,8 @@ describe("RadioGroup keyboard", () => {
   });
 });
 
-describe("RadioGroup description and error", () => {
-  it("describes an option by its description, and only that option", () => {
+describe("RadioGroup hint and error", () => {
+  it("describes an option by its hint, and only that option", () => {
     scope();
     expect(
       screen.getByRole("radio", { name: /^This file/, description: "Only the file you opened." }),

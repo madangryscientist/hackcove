@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { mount, unmount } from "./dom.harness.js";
 import { Input } from "./Input.js";
 
-const icon = <svg viewBox="0 0 20 20" />;
+const icon = "search";
 
 describe("Input", () => {
   it("renders a lone input with px-3 when there is no icon", () => {

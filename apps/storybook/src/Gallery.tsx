@@ -150,16 +150,19 @@ export const gallerySections: GallerySection[] = [
         <div className="flex max-w-sm flex-col gap-3">
           <GalleryNameField />
           <GalleryNotes />
-          <Select defaultValue={5}>
-            <option value={5}>★★★★★ (5)</option>
-            <option value={4}>★★★★ (4)</option>
-            <option value={3}>★★★ (3)</option>
-            <option value={2}>★★ (2)</option>
-            <option value={1}>★ (1)</option>
-          </Select>
+          <Select
+            defaultValue={5}
+            items={[
+              { value: String(5), label: "★★★★★ (5)" },
+              { value: String(4), label: "★★★★ (4)" },
+              { value: String(3), label: "★★★ (3)" },
+              { value: String(2), label: "★★ (2)" },
+              { value: String(1), label: "★ (1)" },
+            ]}
+          />
           <Checkbox label="Open now" defaultChecked />
           <DateField calendar label="Date of birth" defaultValue={fromISODate("1990-05-17")} />
-          <DateField label="Visited on" description="DD/MM/YYYY" />
+          <DateField label="Visited on" hint="DD/MM/YYYY" />
         </div>
 
         <GalleryForm />

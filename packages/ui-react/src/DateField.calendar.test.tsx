@@ -93,8 +93,8 @@ describe("DateField", () => {
     expect(screen.getByRole("group", { name: "Date", description: /\S/ })).not.toBeNull();
   });
 
-  it("shows an error from outside in place of the description, as an alert, and marks the field invalid", () => {
-    render(<DateField aria-label="Date" description="A hint." error="Date is in the past." />);
+  it("shows an error from outside in place of the hint, as an alert, and marks the field invalid", () => {
+    render(<DateField aria-label="Date" hint="A hint." error="Date is in the past." />);
     expect(screen.getByRole("alert").textContent).toBe("Date is in the past.");
     expect(
       screen.getByRole("group", { name: "Date", description: "Date is in the past." }),
@@ -103,23 +103,16 @@ describe("DateField", () => {
     expect(screen.queryByText("A hint.")).toBeNull();
   });
 
-  it("marks a calendar DateField invalid from outside with isInvalid and errorMessage", () => {
-    render(<DateField calendar aria-label="Date" isInvalid errorMessage="Pick another day." />);
+  it("marks a calendar DateField invalid from outside with error", () => {
+    render(<DateField calendar aria-label="Date" error="Pick another day." />);
     expect(screen.getByText("Pick another day.")).not.toBeNull();
     expect(segments()[0]?.getAttribute("aria-invalid")).toBe("true");
   });
 
   it("shows a calendar DateField's error from outside too", () => {
-    render(<DateField calendar aria-label="Date" description="Hint" error="Taken." />);
+    render(<DateField calendar aria-label="Date" hint="Hint" error="Taken." />);
     expect(screen.getByRole("alert").textContent).toBe("Taken.");
     expect(screen.queryByText("Hint")).toBeNull();
-  });
-
-  it("uses errorMessage in place of the built-in message", async () => {
-    render(<DateField aria-label="Date" errorMessage="Not a real birthday" />);
-    await typeDate("31021990");
-    expect(screen.getByText("Not a real birthday")).not.toBeNull();
-    expect(screen.queryByText("February 1990 has 28 days.")).toBeNull();
   });
 
   it("posts the value as YYYY-MM-DD under name", () => {

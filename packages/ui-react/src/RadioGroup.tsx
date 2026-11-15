@@ -1,20 +1,13 @@
-import {
-  type AriaAttributes,
-  createContext,
-  type ReactElement,
-  type ReactNode,
-  useContext,
-  useId,
-} from "react";
+import { createContext, type ReactElement, type ReactNode, useContext, useId } from "react";
 import {
   FieldError,
   Label,
   Radio as AriaRadio,
   RadioGroup as AriaRadioGroup,
-  type RadioGroupProps as AriaRadioGroupProps,
+  Text,
 } from "react-aria-components";
 import { cx } from "./cx.js";
-import type { DataAttributes } from "./link.js";
+import { definedProps, type Passthrough } from "./props.js";
 import type { Size } from "./size.js";
 
 /** A radio's circle, its dot, its drop onto the label's first line and the label's text, by the group's `size`. */
@@ -28,21 +21,27 @@ const SIZE: Record<Size, { circle: string; dot: string; label: string; gap: stri
 const RadioSize = createContext<Size>("md");
 
 /**
- * A named group of radios, one chosen. The `label` names the group; an `error` is a red line under
- * it with `role="alert"` and marks the group invalid. Give it `value` and `onChange`, or
+ * A named group of radios, one chosen. The `label` names the group; `hint` is a muted line under
+ * the options that says more (the group's description); an `error` replaces it with a red line
+ * (`role="alert"`) and marks the group invalid. Give it `value` and `onChange`, or
  * `defaultValue` and let it keep the choice. `name` posts the choice in a form.
  * The arrow keys move between the radios and choose, and the group is one tab stop. `size` sizes
  * every radio in the group, the same scale as a `Checkbox`.
  */
 export function RadioGroup({
   label,
+  hint,
   error,
   size = "md",
+  disabled,
+  required,
   children,
   ...rest
 }: {
   /** The group's visible name, above the options. */
   label: ReactNode;
+  /** A muted line under the options that says more; it describes the group. Replaced by `error`. */
+  hint?: ReactNode;
   /** Shown under the options in red with `role="alert"`; marks the group invalid. Like `Field`'s `error`. */
   error?: ReactNode;
   /** The `value` of the chosen radio. */
@@ -54,9 +53,9 @@ export function RadioGroup({
   /** The form field the choice posts under. */
   name?: string;
   /** Disables every radio. */
-  isDisabled?: boolean;
+  disabled?: boolean | undefined;
   /** Marks the choice required: the group is `aria-required`, and a form will not submit with no option chosen. */
-  isRequired?: boolean;
+  required?: boolean | undefined;
   /**
    * The size of every radio in the group: `sm` is `text-xs` and a smaller circle, `lg` `text-base`
    * and a larger one.
@@ -65,21 +64,24 @@ export function RadioGroup({
   size?: Size;
   /** The `Radio`s. */
   children: ReactNode;
-} & DataAttributes &
-  Pick<
-    AriaRadioGroupProps,
-    "aria-label" | "aria-labelledby" | "aria-describedby" | "aria-details"
-  >): ReactElement {
+} & Passthrough): ReactElement {
   return (
     <AriaRadioGroup
-      {...rest}
+      {...definedProps(rest)}
       {...(error ? { isInvalid: true } : {})}
+      {...(disabled ? { isDisabled: true } : {})}
+      {...(required ? { isRequired: true } : {})}
       className="flex flex-col gap-2"
     >
       <Label className="text-sm font-medium text-slate-700">{label}</Label>
       <div className="flex flex-col gap-2.5">
         <RadioSize.Provider value={size}>{children}</RadioSize.Provider>
       </div>
+      {hint && !error ? (
+        <Text slot="description" className="text-xs text-slate-500">
+          {hint}
+        </Text>
+      ) : null}
       <FieldError className="text-xs text-red-700">
         <span role="alert">{error}</span>
       </FieldError>
@@ -92,39 +94,38 @@ function ringTone(invalid: boolean, selected: boolean): string {
   return selected ? "border-violet-600" : "border-slate-300";
 }
 
-/** One option of a `RadioGroup`: a `label` and, under it, an optional `description`. Click the label or the circle. */
+/** One option of a `RadioGroup`: a `label` and, under it, an optional `hint`. Click the label or the circle. */
 export function Radio({
   label,
-  description,
+  hint,
   value,
-  isDisabled,
+  disabled,
   "aria-describedby": describedBy,
   ...rest
 }: {
   /** The text beside the circle. */
   label: ReactNode;
   /** A muted line under the label that says more. It is the radio's `aria-describedby`. */
-  description?: ReactNode;
+  hint?: ReactNode;
   /** What the group's `value` becomes when this one is chosen. */
   value: string;
   /** Disables this radio alone. */
-  isDisabled?: boolean;
-} & DataAttributes &
-  Pick<AriaAttributes, "aria-describedby">): ReactElement {
+  disabled?: boolean | undefined;
+} & Passthrough): ReactElement {
   const descriptionId = useId();
   const size = SIZE[useContext(RadioSize)];
   return (
     <AriaRadio
-      {...rest}
+      {...definedProps(rest)}
       value={value}
-      {...(describedBy || description
+      {...(describedBy || hint
         ? {
-            "aria-describedby": [describedBy, description ? descriptionId : undefined]
+            "aria-describedby": [describedBy, hint ? descriptionId : undefined]
               .filter(Boolean)
               .join(" "),
           }
         : {})}
-      {...(isDisabled ? { isDisabled } : {})}
+      {...(disabled ? { isDisabled: true } : {})}
       className={({ isDisabled: off }) =>
         cx(
           "flex cursor-pointer items-start rounded-md has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-violet-600",
@@ -147,9 +148,9 @@ export function Radio({
           </span>
           <span className="flex flex-col gap-0.5">
             <span className={cx("text-slate-700", size.label)}>{label}</span>
-            {description ? (
+            {hint ? (
               <span id={descriptionId} className="text-xs text-slate-500">
-                {description}
+                {hint}
               </span>
             ) : null}
           </span>

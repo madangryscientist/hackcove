@@ -18,7 +18,7 @@ import {
 import { cx, focusRing } from "./cx.js";
 import { CalendarDateField } from "./DateFieldCalendar.js";
 import { toISODate } from "./isoDate.js";
-import type { DataAttributes } from "./link.js";
+import { definedProps, type Passthrough } from "./props.js";
 import { ShownInput, useShownDate } from "./shownDate.js";
 import type { Size } from "./size.js";
 import { controlText, useTypeStep } from "./density.js";
@@ -37,36 +37,42 @@ type Segment = NonNullable<ContextType<typeof DateFieldStateContext>>["segments"
 export type FieldProps = {
   /** The field's visible label, above it. Without one, name the field with `aria-label`. */
   label?: ReactNode;
-  /** A hint under the field; an error replaces it. */
-  description?: ReactNode;
-  /** Replaces the built-in error message (an impossible date, or one outside min/max). */
-  errorMessage?: ReactNode;
-  /** An error from outside the field (a server's, say). Shown in place of the description, in red with `role="alert"`, and marks the field invalid. Like `Field`'s `error`. */
+  /** A muted line under the field that says more; an error replaces it. */
+  hint?: ReactNode;
+  /**
+   * Marks the field invalid and shows this in red with `role="alert"`, in place of the hint and of
+   * the built-in message (an impossible date, or one outside min/max). Like `Field`'s `error`.
+   */
   error?: ReactNode;
-  /** Marks the field invalid with no message of its own; pair it with `errorMessage`. */
-  isInvalid?: boolean;
   /**
    * The field's height and text, on the same scale as an `Input`: `sm` is `text-sm`, `md` `text-base`,
    * `lg` `text-lg`, one step down under an `AppShell density="compact"`, and never under 16px on touch.
    * @default md
    */
   size?: Size;
-} & DataAttributes &
+  /** Disables the field: no typing, no calendar. */
+  disabled?: boolean | undefined;
+  /** Marks a date required: the field is `aria-required`, and an empty one is invalid. */
+  required?: boolean | undefined;
+} & Passthrough &
   Pick<
     AriaDateFieldProps<CalendarDate>,
-    | "value"
-    | "defaultValue"
-    | "onChange"
-    | "minValue"
-    | "maxValue"
-    | "isDisabled"
-    | "isRequired"
-    | "name"
-    | "aria-label"
-    | "aria-labelledby"
-    | "aria-describedby"
-    | "aria-details"
+    "value" | "defaultValue" | "onChange" | "minValue" | "maxValue" | "name"
   >;
+
+/** The calendar's dropdown names, with their English defaults. */
+type CalendarNames = {
+  /**
+   * The month dropdown's name, for an app in another language.
+   * @default Month
+   */
+  monthLabel?: string | undefined;
+  /**
+   * The year dropdown's name, for an app in another language.
+   * @default Year
+   */
+  yearLabel?: string | undefined;
+};
 
 export type DateFieldProps = FieldProps &
   (
@@ -75,13 +81,25 @@ export type DateFieldProps = FieldProps &
         calendar?: false | undefined;
         /** Only a `calendar` field takes `defaultOpen`. */
         defaultOpen?: undefined;
+        /** Only a `calendar` field takes `monthLabel`. */
+        monthLabel?: undefined;
+        /** Only a `calendar` field takes `yearLabel`. */
+        yearLabel?: undefined;
       }
-    | {
+    | ({
         calendar: true;
         /** Open the calendar on mount. */
         defaultOpen?: boolean | undefined;
-      }
+      } & CalendarNames)
   );
+
+/** The react-aria flags for `disabled` and `required`, set only when true. */
+export function fieldFlags(
+  disabled: boolean | undefined,
+  required: boolean | undefined,
+): { isDisabled?: true; isRequired?: true } {
+  return { ...(disabled ? { isDisabled: true } : {}), ...(required ? { isRequired: true } : {}) };
+}
 
 /** What the segments show, as the day segment reports it to the field. */
 export type Read = {
@@ -156,47 +174,39 @@ export function frameClass({
   );
 }
 
-/** The props that force a field invalid: an impossible date, `isInvalid`, or an `error` from outside. Spread onto the React Aria field after the rest. */
+/** The props that force a field invalid: an impossible date, or an `error` from outside. Spread onto the React Aria field after the rest. */
 export function forcedInvalid({
   impossible,
-  isInvalid,
   error,
 }: {
   impossible: string | null;
-  isInvalid: boolean | undefined;
   error: ReactNode;
 }): { isInvalid?: true } {
-  return impossible || isInvalid || error ? { isInvalid: true } : {};
+  return impossible || error ? { isInvalid: true } : {};
 }
 
-/** The label, the description or the error line: the shared outside of both components. */
+/** The hint or the error line: the shared outside of every date field. */
 export function Notes({
-  description,
-  errorMessage,
+  hint,
   error,
   impossible,
   isInvalid,
 }: {
-  description: ReactNode;
-  errorMessage: ReactNode;
+  hint: ReactNode;
   error: ReactNode;
   impossible: string | null;
   isInvalid: boolean;
 }): ReactElement {
   return (
     <>
-      {!isInvalid && description ? (
+      {!isInvalid && hint ? (
         <Text slot="description" className="text-xs text-slate-500">
-          {description}
+          {hint}
         </Text>
       ) : null}
       <FieldError className="text-xs text-red-700">
         {({ validationErrors }) =>
-          error ? (
-            <span role="alert">{error}</span>
-          ) : (
-            (errorMessage ?? impossible ?? validationErrors.join(" "))
-          )
+          error ? <span role="alert">{error}</span> : (impossible ?? validationErrors.join(" "))
         }
       </FieldError>
     </>
@@ -220,19 +230,31 @@ export const iconButtonClass = `${iconButtonLook} h-7 w-7`;
  * `YYYY-MM-DD`. `calendar` adds a calendar button that opens a month view in a popover, at the
  * same height as the plain field; `defaultOpen` opens it on mount.
  */
-export function DateField({ calendar, defaultOpen, ...field }: DateFieldProps): ReactElement {
+export function DateField({
+  calendar,
+  defaultOpen,
+  monthLabel = "Month",
+  yearLabel = "Year",
+  ...field
+}: DateFieldProps): ReactElement {
   if (calendar) {
-    return <CalendarDateField {...field} {...(defaultOpen === undefined ? {} : { defaultOpen })} />;
+    return (
+      <CalendarDateField
+        {...field}
+        labels={{ monthLabel, yearLabel }}
+        {...(defaultOpen === undefined ? {} : { defaultOpen })}
+      />
+    );
   }
   return <PlainDateField {...field} />;
 }
 
 function PlainDateField({
   label,
-  description,
-  errorMessage,
+  hint,
   error,
-  isInvalid: invalidProp,
+  disabled,
+  required,
   value,
   defaultValue,
   onChange,
@@ -248,16 +270,17 @@ function PlainDateField({
       onChange,
       minValue: rest.minValue,
       maxValue: rest.maxValue,
-      isRequired: rest.isRequired,
+      isRequired: required,
     });
   return (
     <I18nProvider locale={LOCALE}>
       <AriaDateField<CalendarDate>
-        {...rest}
+        {...definedProps(rest)}
+        {...fieldFlags(disabled, required)}
         value={inner}
         onChange={setInner}
         validate={validate}
-        {...forcedInvalid({ impossible, isInvalid: invalidProp, error })}
+        {...forcedInvalid({ impossible, error })}
         isReadOnly={leaving}
         onBlur={onLeft}
         granularity="day"
@@ -278,14 +301,8 @@ function PlainDateField({
                 )}
               </DateInput>
             </div>
-            <ShownInput name={name} shown={shown} isDisabled={rest.isDisabled} />
-            <Notes
-              description={description}
-              errorMessage={errorMessage}
-              error={error}
-              impossible={impossible}
-              isInvalid={isInvalid}
-            />
+            <ShownInput name={name} shown={shown} isDisabled={disabled} />
+            <Notes hint={hint} error={error} impossible={impossible} isInvalid={isInvalid} />
           </>
         )}
       </AriaDateField>

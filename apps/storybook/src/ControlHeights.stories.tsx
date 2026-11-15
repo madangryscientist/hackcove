@@ -18,9 +18,13 @@ function Row({ size }: { size: Size }) {
   return (
     <div data-size={size} className="flex flex-wrap items-start gap-3">
       <Input data-control="Input" aria-label="Input" size={size} width="sm" />
-      <Select data-control="Select" aria-label="Select" size={size} width="sm">
-        <option>One</option>
-      </Select>
+      <Select
+        data-control="Select"
+        aria-label="Select"
+        size={size}
+        width="sm"
+        items={[{ value: "One", label: "One" }]}
+      />
       <Input type="search" data-control="Search" aria-label="Search" size={size} width="sm" />
       <DateField data-control="DateField" aria-label="Date field" size={size} />
       <DateField

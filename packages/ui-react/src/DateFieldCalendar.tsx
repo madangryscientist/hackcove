@@ -10,17 +10,19 @@ import {
   Label,
 } from "react-aria-components";
 import { cx } from "./cx.js";
-import { CalendarPopover, calendarIcon } from "./DateCalendar.js";
+import { CalendarPopover, type CalendarLabels, calendarIcon } from "./DateCalendar.js";
 import {
   FieldSegment,
   type FieldProps,
   LOCALE,
+  fieldFlags,
   forcedInvalid,
   Notes,
   frameClass,
   iconButtonLook,
   labelClass,
 } from "./DateField.js";
+import { definedProps } from "./props.js";
 import { ShownInput, useShownDate } from "./shownDate.js";
 import type { Size } from "./size.js";
 import { controlText, useTypeStep } from "./density.js";
@@ -77,17 +79,18 @@ export function useDialogContainer(): {
 /** The body of `<DateField calendar>`: the field with a calendar button that opens a month view in a popover. */
 export function CalendarDateField({
   label,
-  description,
-  errorMessage,
+  hint,
   error,
-  isInvalid: invalidProp,
+  disabled,
+  required,
+  labels,
   value,
   defaultValue,
   onChange,
   name,
   size = "md",
   ...rest
-}: FieldProps & { defaultOpen?: boolean }): ReactElement {
+}: FieldProps & { defaultOpen?: boolean; labels: CalendarLabels }): ReactElement {
   const frame = usePickerFrame(size);
   const { inner, setInner, shown, impossible, onRead, validate, leaving, onBlurCapture, onLeft } =
     useShownDate({
@@ -96,18 +99,19 @@ export function CalendarDateField({
       onChange,
       minValue: rest.minValue,
       maxValue: rest.maxValue,
-      isRequired: rest.isRequired,
+      isRequired: required,
     });
   const { container, findDialog } = useDialogContainer();
   return (
     <I18nProvider locale={LOCALE}>
       <AriaDatePicker<CalendarDate>
-        {...rest}
+        {...definedProps(rest)}
+        {...fieldFlags(disabled, required)}
         ref={findDialog}
         value={inner}
         onChange={setInner}
         validate={validate}
-        {...forcedInvalid({ impossible, isInvalid: invalidProp, error })}
+        {...forcedInvalid({ impossible, error })}
         granularity="day"
         shouldForceLeadingZeros
         className="flex flex-col gap-1.5"
@@ -132,15 +136,9 @@ export function CalendarDateField({
                 {calendarIcon}
               </Button>
             </Group>
-            <ShownInput name={name} shown={shown} isDisabled={rest.isDisabled} />
-            <Notes
-              description={description}
-              errorMessage={errorMessage}
-              error={error}
-              impossible={impossible}
-              isInvalid={isInvalid}
-            />
-            <CalendarPopover container={container} />
+            <ShownInput name={name} shown={shown} isDisabled={disabled} />
+            <Notes hint={hint} error={error} impossible={impossible} isInvalid={isInvalid} />
+            <CalendarPopover container={container} labels={labels} />
           </>
         )}
       </AriaDatePicker>

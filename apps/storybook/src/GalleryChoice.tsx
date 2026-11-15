@@ -12,7 +12,7 @@ export function GalleryChoice() {
         <Switch label="Live in staging" checked={staging} onChange={setStaging} />
         <Switch
           label="Live in preview"
-          description="Branch previews only."
+          hint="Branch previews only."
           checked={live}
           onChange={setLive}
         />
@@ -26,9 +26,9 @@ export function GalleryChoice() {
         />
       </div>
       <RadioGroup label="Who can see your reviews" defaultValue="followers">
-        <Radio value="public" label="Everyone" description="Anyone with the link." />
+        <Radio value="public" label="Everyone" hint="Anyone with the link." />
         <Radio value="followers" label="Followers" />
-        <Radio value="me" label="Only me" isDisabled />
+        <Radio value="me" label="Only me" disabled />
       </RadioGroup>
       <RadioGroup label="Shop type" error="Choose a shop type to continue.">
         <Radio value="vintage" label="Vintage" />

@@ -10,10 +10,8 @@ export type FieldDialogProps = {
   title: string;
   /** A muted line under the title. */
   description?: string;
-  /** The visible label above the field. */
+  /** The visible label above the field, which names it. */
   label: string;
-  /** The field's accessible name, when it says more than the visible label. */
-  inputLabel: string;
   /** The field's placeholder. */
   placeholder: string;
   /** A muted line under the field; `emptyReason` takes its place while the field is empty. */
@@ -59,7 +57,6 @@ export function FieldDialog({
   title,
   description,
   label,
-  inputLabel,
   placeholder,
   hint,
   emptyReason,
@@ -108,7 +105,6 @@ export function FieldDialog({
           <Input
             autoFocus
             id={id}
-            aria-label={inputLabel}
             placeholder={placeholder}
             value={value}
             onChange={(e) => setValue(e.target.value)}

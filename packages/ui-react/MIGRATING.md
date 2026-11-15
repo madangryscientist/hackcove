@@ -181,6 +181,43 @@ TypeScript does not flag these, since no name changes:
   zoom the page when it takes the focus.
 - `Prose` now sets only its line height: `Text` inside it is 16px, as it is outside.
 
+### Controls
+
+Every labelled control takes the same words: `hint` for the muted line, `error` for the red one
+(it marks the control invalid and replaces the hint), `disabled` and `required`, and `checked` or
+`defaultChecked` with `onChange(checked)` on the two toggles.
+
+| Old | New | |
+| --- | --- | --- |
+| `description` on `Checkbox`, `Switch`, `Radio`, `DateField`, `DateRangePicker` | `hint` | codemod |
+| `isInvalid errorMessage="…"` on `DateField`, `DateRangePicker` | `error="…"` | codemod |
+| `isInvalid` alone | `error` with the reason: the field says why | by hand |
+| `errorMessage` alone, rewording the built-in message | nothing: the built-in message stands | by hand, and reported |
+| `isDisabled`, `isRequired` on `RadioGroup`, `Radio`, `DateField`, `DateRangePicker` | `disabled`, `required` | codemod |
+| `Checkbox onChange={(e) => f(e.target.checked)}` | `onChange={f}`: it gets the new state | codemod for that shape, else by hand |
+| `Checkbox align="start"` or `align="center"` | leave it out: the box sits on the label's first line | codemod drops it |
+| `ColourSchemeToggle initial` | `defaultValue` | codemod |
+| `Input icon={<Icon name="search" />}` | `icon="search"` | codemod for an `<Icon name>`, else by hand |
+| `<Select><option value="a">A</option></Select>` | `<Select items={[{ value: "a", label: "A" }]} />` | codemod for literal options, else by hand |
+| `Select width="auto"` | leave it out outside a `Field`: `auto` is the default there | codemod drops it |
+| `Field hideLabel` | `labelHidden` | codemod |
+| `FieldDialog label="…" inputLabel="…"` | `label` alone, which names the input | codemod drops `inputLabel` |
+| `FormRow action` | `actions` | codemod |
+
+New, nothing to change: `RadioGroup hint`; `error` on `Checkbox` and `Switch`; `Switch
+defaultChecked`; `Disclosure open` and `onOpenChange`; `Input clearLabel` (default `Clear search`);
+`monthLabel` and `yearLabel` on a calendar `DateField` and on `DateRangePicker` (default `Month`
+and `Year`); `ref` on `Input`, `Select` and `Checkbox`. `Textarea` takes `ref` as a plain prop, as
+before. `RadioGroup`, `DateField` and `DateRangePicker` pass every `aria-*` and `data-*`.
+
+TypeScript does not flag these:
+
+- The peers are `react` and `react-dom` `>=19`.
+- A `Select` with no `width` outside a `Field` is now as wide as its longest choice, not the full
+  row: pass `width="full"` to keep it.
+- A `Checkbox` with a one-line label sits on the line's top, where `align="center"` centred it: the
+  same place for a label that fits on one line.
+
 ## 0.9 → 0.10: Avatar `2xl` is 64px, the old 96px is `3xl`
 
 `Avatar` gained a 64px size. The sizes keep their order (`xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`),
