@@ -24,6 +24,10 @@ const stories = [
   { id: "layout-appshell--overflowing-subnav", links: 7 + 12 },
   { id: "layout-appshell--phone-menu", links: 7 + 6 },
   { id: "layout-appshell--header-slots", links: 7 },
+  // Its menuControls sit above the nav in the menu; the links are the nav's.
+  { id: "layout-appshell--menu-controls", links: 7 },
+  // Its controls overflow the row; the Menu stays on screen beside them.
+  { id: "layout-appshell--crowded-controls", links: 7 },
 ];
 
 const open = async (page: Page, id: string, theme: string) => {
@@ -145,4 +149,97 @@ test("from md there is no Menu button and the nav and subnav are rows", async ({
   await expect(header.getByRole("link", { name: "Branches" })).toBeVisible();
   await expect(header.locator("summary")).toBeHidden();
   expect(await headerHeight(page)).toBe(105);
+});
+
+/** The Menu button sits wholly inside the viewport's width. */
+async function inViewport(page: Page, button: Locator): Promise<boolean> {
+  const box = await button.boundingBox();
+  const width = page.viewportSize()?.width ?? 0;
+  return !!box && box.width > 0 && box.x >= 0 && box.x + box.width <= width;
+}
+
+test(`at ${WIDTH}px menuControls are at the top of the Menu, each operable, with the nav after them`, async ({
+  page,
+}) => {
+  const menu = await open(page, "layout-appshell--menu-controls", "default");
+  const button = menu.locator("summary");
+  expect(await inViewport(page, button), "the Menu button is off screen").toBe(true);
+
+  const project = page.getByLabel("Project");
+  const environment = page.getByLabel("Environment");
+  const signOut = page.getByRole("button", { name: "Sign out" });
+  await expect(project).toBeHidden();
+
+  await button.click();
+  await expect(menu).toHaveJSProperty("open", true);
+  for (const control of [project, environment, signOut]) {
+    await expect(control).toBeVisible();
+    expect(await reachable(control)).toBe(true);
+  }
+  await project.selectOption("api");
+  await expect(project).toHaveValue("api");
+  await environment.selectOption("staging");
+  await expect(environment).toHaveValue("staging");
+  await expect(signOut).toBeEnabled();
+  await signOut.click();
+
+  // The nav's links come after the controls, in the same panel.
+  const first = menu.getByRole("link").first();
+  await expect(first).toBeVisible();
+  expect(
+    await signOut.evaluate(
+      (el, link) => !!(el.compareDocumentPosition(link) & Node.DOCUMENT_POSITION_FOLLOWING),
+      await first.elementHandle(),
+    ),
+  ).toBe(true);
+  expect(await noSidewaysScroll(page)).toBeLessThanOrEqual(0);
+  expect(await headerHeight(page)).toBe(HEADER_HEIGHT);
+});
+
+test("at 1280px menuControls sit in the header row after controls, once each, with no Menu button", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 700 });
+  await page.goto(
+    "/iframe.html?id=layout-appshell--menu-controls&viewMode=story&globals=theme:default",
+  );
+  const header = page.getByRole("banner");
+  await expect(header.locator("summary")).toBeHidden();
+  const toggle = header.getByRole("button").first();
+  const toggleBox = await toggle.boundingBox();
+  if (!toggleBox) throw new Error("the controls have no box");
+
+  const project = page.getByLabel("Project");
+  const environment = page.getByLabel("Environment");
+  const signOut = page.getByRole("button", { name: "Sign out" });
+  await expect(project).toHaveCount(1);
+  await expect(environment).toHaveCount(1);
+  await expect(signOut).toHaveCount(1);
+  const row = toggleBox.y + toggleBox.height / 2;
+  for (const control of [project, environment, signOut]) {
+    await expect(control).toBeVisible();
+    const box = await control.boundingBox();
+    if (!box) throw new Error("a menu control has no box");
+    expect(box.x, "after controls").toBeGreaterThanOrEqual(toggleBox.x + toggleBox.width);
+    expect(Math.abs(box.y + box.height / 2 - row), "centred in the row").toBeLessThanOrEqual(1);
+  }
+  // Exposed with its role and name (Playwright's role engine), as well as painted.
+  await expect(header.getByRole("combobox", { name: "Project" })).toBeVisible();
+  await project.selectOption("api");
+  await expect(project).toHaveValue("api");
+  expect(await headerHeight(page)).toBe(HEADER_HEIGHT);
+});
+
+test(`at ${WIDTH}px controls that overflow the row clip, and the Menu button stays on screen and opens the nav`, async ({
+  page,
+}) => {
+  const menu = await open(page, "layout-appshell--crowded-controls", "default");
+  const button = menu.locator("summary");
+  expect(await inViewport(page, button), "the Menu button is off screen").toBe(true);
+  await button.click();
+  await expect(menu).toHaveJSProperty("open", true);
+  for (const link of await menu.getByRole("link").all()) {
+    expect(await reachable(link), `${await link.textContent()} is not reachable`).toBe(true);
+  }
+  expect(await noSidewaysScroll(page)).toBeLessThanOrEqual(0);
 });

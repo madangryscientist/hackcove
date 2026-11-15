@@ -149,20 +149,25 @@ function ScrollRow({ className, children }: { className: string; children: React
 }
 
 /**
- * The header row's slots in order: brand, nav (from `md`), the free `children`, then controls and,
- * below `md`, the menu at the end.
+ * The header row's slots in order: brand, nav (from `md`), the free `children`, then `controls` and
+ * the menu at the end. `controls` have a wrapper of their own that shrinks and clips, and the menu
+ * sits beside it, so a crowded `controls` never pushes the Menu off a phone screen. From `md` the
+ * menu is the inline row of `menuControls` after `controls`.
  */
 function HeaderSlots({
   brand,
   nav,
   controls,
   menu,
+  menuInline,
   children,
 }: {
   brand: ReactNode;
   nav: ReactNode;
   controls: ReactNode;
   menu: ReactNode;
+  /** The menu shows `menuControls` in the row from `md`, so its wrapper stays from `md`. */
+  menuInline: boolean;
   children: ReactNode;
 }): ReactElement {
   return (
@@ -176,13 +181,19 @@ function HeaderSlots({
       {children}
       {(controls || menu) && (
         <div
-          className={
-            controls
-              ? "ml-auto flex items-center gap-2 *:shrink-0 [&>.w-full]:w-auto"
-              : "ml-auto flex items-center gap-2 *:shrink-0 md:hidden"
-          }
+          className={cx(
+            // Below `md` this wrapper may shrink (the row's `*:shrink-0` is overridden), so a crowded
+            // `controls` clips inside its own box; from `md` it keeps its width and the row scrolls.
+            "ml-auto flex min-w-0 items-center gap-2 max-md:shrink!",
+            !controls && !menuInline && "md:hidden",
+          )}
         >
-          {controls}
+          {controls && (
+            // Clips below `md` only, with 4px of room each side so a focus outline is not cut.
+            <div className="flex min-w-0 items-center gap-2 *:shrink-0 max-md:-mx-1 max-md:overflow-x-clip max-md:px-1 [&>.w-full]:w-auto">
+              {controls}
+            </div>
+          )}
           {menu}
         </div>
       )}
@@ -195,6 +206,7 @@ function AppShellHeader({
   brand,
   nav,
   controls,
+  menuControls,
   subnav,
   menuLabel,
   hideChromeInPrint,
@@ -203,6 +215,7 @@ function AppShellHeader({
   brand: ReactNode;
   nav: ReactNode;
   controls: ReactNode;
+  menuControls: ReactNode;
   subnav: ReactNode;
   menuLabel: string;
   hideChromeInPrint: boolean;
@@ -220,9 +233,10 @@ function AppShellHeader({
           brand={brand}
           nav={nav}
           controls={controls}
+          menuInline={!!menuControls}
           menu={
-            (nav || subnav) && (
-              <AppShellMenu label={menuLabel}>
+            (nav || subnav || menuControls) && (
+              <AppShellMenu label={menuLabel} controls={menuControls}>
                 {nav}
                 {subnav}
               </AppShellMenu>
@@ -256,11 +270,17 @@ function AppShellHeader({
  * reachable and nothing scrolls sideways. The menu is a native `<details>`, so it works with the
  * keyboard, with a screen reader and on a page that never hydrates. From `md` the header is the
  * row, and the `subnav` row, as they are.
+ *
+ * `controls` stay in the row at every width, so keep them few (a theme toggle, the viewer's avatar);
+ * on a phone a crowded `controls` clips, and the Menu button is never the part cut off. Pickers and
+ * actions that do not fit a phone row go in `menuControls`: rendered once, they sit in the row after
+ * `controls` from `md`, and below `md` at the top of the Menu, above `nav` and `subnav`.
  */
 export function AppShell({
   brand,
   nav,
   controls,
+  menuControls,
   header,
   subnav,
   menuLabel = "Menu",
@@ -276,13 +296,20 @@ export function AppShell({
   nav?: ReactNode;
   /** The end of the row: a picker, a theme toggle. Gap-2, vertically centred; no child shrinks, and a full-width control (a `Select` at its default) sizes to its content. */
   controls?: ReactNode;
+  /**
+   * Pickers and actions that do not fit a phone row, such as a project `Select` and a Sign out
+   * `Button`. From `md` they sit in the row after `controls`; below `md` they are at the top of the
+   * Menu, above `nav` and `subnav`. Rendered once, so a field keeps its state and ids stay unique.
+   * `controls` stay in the row at every width, so keep those few.
+   */
+  menuControls?: ReactNode;
   /** The escape hatch: a free node in the header row, after `brand` and `nav`. */
   header?: ReactNode;
   /** A second fixed-height row under the header from `md`, e.g. a `Tabs variant="pill"` of links. Below `md` it is in the menu with `nav`. */
   subnav?: ReactNode;
   /**
    * The phone menu button's name, for an app in another language. Only drawn below `md`, and only
-   * when `nav` or `subnav` is given.
+   * when `nav`, `subnav` or `menuControls` is given.
    * @default Menu
    */
   menuLabel?: string;
@@ -312,6 +339,7 @@ export function AppShell({
         brand={brand}
         nav={nav}
         controls={controls}
+        menuControls={menuControls}
         subnav={subnav}
         menuLabel={menuLabel}
         hideChromeInPrint={hideChromeInPrint}

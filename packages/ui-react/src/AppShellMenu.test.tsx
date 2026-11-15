@@ -32,7 +32,7 @@ describe("AppShell phone menu", () => {
     const out = renderToStaticMarkup(
       <AppShell nav={<nav aria-label="Main">tabs</nav>}>x</AppShell>,
     );
-    expect(out).toMatch(/<details class="group md:hidden">/);
+    expect(out).toMatch(/<details class="group shrink-0 md:hidden">/);
     expect(out).toMatch(/<summary [^>]*>.*Menu<\/summary>/);
   });
 
@@ -107,6 +107,59 @@ describe("AppShell phone menu", () => {
     const details = open(container);
     act(() => {
       details.querySelector("span")?.click();
+    });
+    expect(details.open).toBe(true);
+  });
+});
+
+const buttonsNamed = (container: HTMLElement, name: string) =>
+  [...container.querySelectorAll("button")].filter((b) => b.textContent === name);
+
+describe("AppShell menuControls", () => {
+  const signOut = <button type="button">Sign out</button>;
+  const nav = <a href="/builds">Builds</a>;
+
+  it("renders them exactly once, inside the menu, above the nav", () => {
+    const container = mount(
+      <AppShell nav={nav} menuControls={signOut}>
+        x
+      </AppShell>,
+    );
+    const found = buttonsNamed(container, "Sign out");
+    expect(found).toHaveLength(1);
+    const details = open(container);
+    expect(details.contains(found[0] ?? null)).toBe(true);
+    const link = details.querySelector('a[href="/builds"]');
+    if (!link) throw new Error("no nav link in the menu");
+    expect(
+      (found[0]?.compareDocumentPosition(link) ?? 0) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it("gives the Menu with menuControls and no nav or subnav", () => {
+    const out = renderToStaticMarkup(<AppShell menuControls={signOut}>x</AppShell>);
+    expect(menuOf(out)).toContain("<summary");
+    expect(menuOf(out)).toContain("Sign out");
+  });
+
+  it("stays open on an Escape inside a dialog opened from its controls, which the dialog takes", () => {
+    const container = mount(
+      <AppShell
+        nav={nav}
+        menuControls={
+          <dialog open>
+            <button type="button">Cancel</button>
+          </dialog>
+        }
+      >
+        x
+      </AppShell>,
+    );
+    const details = open(container);
+    act(() => {
+      buttonsNamed(container, "Cancel")[0]?.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+      );
     });
     expect(details.open).toBe(true);
   });

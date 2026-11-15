@@ -22,12 +22,20 @@ const ICON = {
  * is out of flow (it hangs under the header, `top-full`), so the header keeps its one height open
  * or closed. With script it also closes on Escape (focus returns to the button) and when a link in
  * it is followed, for a router that changes the page without a reload.
+ *
+ * `controls` (AppShell's `menuControls`) sit at the top of the panel, above the links. From `md`
+ * the `<details>` drops its own box and shows only them, inline at the row's end, whether it is
+ * open or not: the summary and the link copies are hidden (the links render in their own rows from
+ * `md`) and the panel is a plain row. They are rendered once, so a field keeps its state.
  */
 export function AppShellMenu({
   label,
+  controls,
   children,
 }: {
   label: string;
+  /** Rendered once: at the top of the panel below `md`, inline in the row from `md`. */
+  controls?: ReactNode;
   children: ReactNode;
 }): ReactElement {
   const details = useRef<HTMLDetailsElement>(null);
@@ -40,14 +48,24 @@ export function AppShellMenu({
   return (
     <details
       ref={details}
-      className="group md:hidden"
+      className={cx(
+        "group shrink-0",
+        controls
+          ? "md:contents md:[&::details-content]:contents md:[&::details-content]:[content-visibility:visible]"
+          : "md:hidden",
+      )}
       onKeyDown={(event) => {
-        if (event.key === "Escape") close(true);
+        // A dialog opened from a control in the menu takes its own Escape; the menu stays open.
+        if (
+          event.key === "Escape" &&
+          !(event.target instanceof Element && event.target.closest("dialog"))
+        )
+          close(true);
       }}
     >
       <summary
         className={cx(
-          "flex cursor-pointer list-none items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-900 select-none hover:bg-slate-50 [&::-webkit-details-marker]:hidden",
+          "flex cursor-pointer list-none md:hidden items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-900 select-none hover:bg-slate-50 [&::-webkit-details-marker]:hidden",
           focusRing,
         )}
       >
@@ -62,12 +80,21 @@ export function AppShellMenu({
       {/* A click on any link inside closes the menu; the panel's own padding does not. */}
       {/* oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- the link itself is the keyboard target; this only reacts to its click */}
       <div
-        className="absolute inset-x-0 top-full max-h-[calc(100dvh-var(--app-header))] overflow-y-auto overscroll-contain border-y border-slate-200 bg-white shadow-lg"
+        // From `md` the panel draws no box (`contents`), so its dropdown look applies below `md` only.
+        className="absolute inset-x-0 top-full max-h-[calc(100dvh-var(--app-header))] overflow-y-auto overscroll-contain border-y border-slate-200 bg-white shadow-lg md:contents"
         onClick={(event) => {
           if (event.target instanceof Element && event.target.closest("a[href]")) close(false);
         }}
       >
-        <ContainerFrame className="flex flex-col gap-3 py-3">{children}</ContainerFrame>
+        <ContainerFrame className="flex flex-col gap-3 py-3 md:contents">
+          {controls && (
+            <div className="flex flex-wrap items-center gap-2 md:flex-nowrap md:*:shrink-0 md:[&>.w-full]:w-auto">
+              {controls}
+            </div>
+          )}
+          {/* From `md` the links render in their own rows, so these copies are hidden there. */}
+          <div className="flex flex-col gap-3 md:hidden">{children}</div>
+        </ContainerFrame>
       </div>
     </details>
   );
