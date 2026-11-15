@@ -1,3 +1,13 @@
+## 0.10.9 (2026-11-15)
+
+### 🚀 Features
+
+- **ui-react:** AppShell menuControls, and the Menu stays on screen when controls overflow ([#133](https://github.com/madangryscientist/hackcove/pull/133))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.10.8 (2026-11-15)
 
 ### 🚀 Features
