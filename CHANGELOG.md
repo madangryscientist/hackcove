@@ -1,3 +1,13 @@
+## 0.10.14 (2026-11-15)
+
+### 🚀 Features
+
+- **ui-react:** Field wires its hint and error to the control, with a red invalid edge ([#146](https://github.com/madangryscientist/hackcove/pull/146))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.10.13 (2026-11-15)
 
 ### 🩹 Fixes
