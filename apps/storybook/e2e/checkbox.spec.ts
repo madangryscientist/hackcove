@@ -24,9 +24,90 @@ const paint = (page: Page, utility: string) =>
 /** The drawn check mark that belongs to a checkbox: the label's first element, before the input. */
 const mark = (box: Locator) => box.locator("xpath=preceding-sibling::span[1]");
 
+/**
+ * Whether the element at the centre of `target` is `target` or inside it. The tick is
+ * `pointer-events-none`, which hit testing skips, so it is made hittable for the probe only: what
+ * is left is its paint order against the lifted field (a Card or table row is `isolate`, and its
+ * fields sit at `z-10`).
+ */
+const isHit = (target: Locator): Promise<boolean> =>
+  target.evaluate((el) => {
+    const style = el instanceof HTMLElement ? el.style : undefined;
+    const before = style?.pointerEvents ?? "";
+    if (style) style.pointerEvents = "auto";
+    const { left, top, width, height } = el.getBoundingClientRect();
+    const hit = document.elementFromPoint(left + width / 2, top + height / 2);
+    if (style) style.pointerEvents = before;
+    return hit !== null && el.contains(hit);
+  });
+
 test("the themes folder lists at least one theme", () => {
   expect(themes.length).toBeGreaterThan(0);
 });
+
+for (const { id: theme } of themes) {
+  test(`theme ${theme}: a ticked Checkbox in a Card and a table row draws its tick above the field`, async ({
+    page,
+  }) => {
+    await open(page, "forms-checkbox--in-card", theme);
+    for (const name of ["Email me when a shop I follow posts", "Select Hack Cove Finds"]) {
+      const box = page.getByRole("checkbox", { name });
+      await expect(box).toBeChecked();
+      const drawn = mark(box);
+      await expect(drawn).toBeVisible();
+      expect(await isHit(drawn), `${name}: the tick is the topmost element at its centre`).toBe(
+        true,
+      );
+    }
+  });
+
+  test(`theme ${theme}: the tick ranks z-20 inside an isolate and stays unraised outside one`, async ({
+    page,
+  }) => {
+    // The rank that keeps the tick above a lifted Card field must not leak outside a Card, where a
+    // base z-10 would tie with a sticky header. Read off the computed style, so it holds in every engine.
+    await open(page, "forms-checkbox--checked", theme);
+    const outside = await mark(page.getByRole("checkbox", { name: "Open now" })).evaluate(
+      (el) => getComputedStyle(el).zIndex,
+    );
+    expect(outside).toBe("auto");
+    await open(page, "forms-checkbox--in-card", theme);
+    const inside = await mark(
+      page.getByRole("checkbox", { name: "Email me when a shop I follow posts" }),
+    ).evaluate((el) => getComputedStyle(el).zIndex);
+    expect(inside).toBe("20");
+  });
+
+  test(`theme ${theme}: an unticked Checkbox in a Card hides its tick, and a click toggles it`, async ({
+    page,
+  }) => {
+    await open(page, "forms-checkbox--in-card", theme);
+    const box = page.getByRole("checkbox", { name: "Weekly summary" });
+    await expect(box).not.toBeChecked();
+    const drawn = mark(box);
+    await expect(drawn).toBeHidden();
+    await box.click();
+    await expect(box).toBeChecked();
+    await expect(drawn).toBeVisible();
+    await box.click();
+    await expect(box).not.toBeChecked();
+    await expect(drawn).toBeHidden();
+  });
+
+  test(`theme ${theme}: a click on a ticked box in a Card or table row toggles it`, async ({
+    page,
+  }) => {
+    await open(page, "forms-checkbox--in-card", theme);
+    for (const name of ["Email me when a shop I follow posts", "Select Hack Cove Finds"]) {
+      const box = page.getByRole("checkbox", { name });
+      await expect(box).toBeChecked();
+      await box.click();
+      await expect(box).not.toBeChecked();
+      await box.click();
+      await expect(box).toBeChecked();
+    }
+  });
+}
 
 for (const { id: theme, css } of themes) {
   const scope = themeScope(css);
