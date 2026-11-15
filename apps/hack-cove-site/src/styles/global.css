@@ -6,7 +6,7 @@
 @import "@hackcove/themes/catppuccin-mocha.css";
 
 /* Tailwind skips node_modules, so tell it to scan the components' build for the
-   utilities they use — otherwise their classes are absent from the bundle. */
+   utilities they use. Otherwise their classes are absent from the bundle. */
 @source "../../node_modules/@hackcove/ui-react/dist";
 
 /* The docs pages render the Storybook stories (apps/storybook/src), whose layout classes (a

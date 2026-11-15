@@ -1,6 +1,6 @@
 /*! Catppuccin Latte palette © 2021 Catppuccin, MIT license: https://github.com/catppuccin/catppuccin (full notice in NOTICE) */
 /* ---------------------------------------------------------------------------
-   Catppuccin Latte — the light theme for the Hack Cove design system.
+   Catppuccin Latte: the light theme for the Hack Cove design system.
    ---------------------------------------------------------------------------
    The @hackcove/ui-react components are written against Tailwind's slate/colour
    utilities directly (bg-white, text-slate-900, …). This file remaps those
@@ -28,7 +28,7 @@
 /* The scope: the page is the base canvas with text ink. */
 .latte {
   color-scheme: light;
-  background-color: #eff1f5; /* base — the canvas the white cards lift off */
+  background-color: #eff1f5; /* base: the canvas the white cards lift off */
   color: #4c4f69; /* text */
   /* The type faces: Inter where installed, the system stack otherwise. Custom properties on the
      scope, so every `font-sans` / `font-mono` below it (AppShell's page font included) follows. */
@@ -49,12 +49,12 @@
   --hc-accent: #8035e1; /* text-violet-600 */
 }
 
-/* The page canvas — AppShell paints it; white cards lift off the base. */
+/* The page canvas: AppShell paints it; white cards lift off the base. */
 .latte .bg-gray-50 {
   background-color: #eff1f5; /* base */
 }
 
-/* Surfaces — white cards on the base canvas, mantle insets. */
+/* Surfaces: white cards on the base canvas, mantle insets. */
 .latte .bg-white {
   background-color: #ffffff;
 }
@@ -68,16 +68,16 @@
   background-color: #e6e9ef; /* mantle */
 }
 .latte .bg-slate-100 {
-  background-color: #dce0e8; /* crust — one step deeper than mantle */
+  background-color: #dce0e8; /* crust: one step deeper than mantle */
 }
 .latte .bg-slate-900 {
-  background-color: #4c4f69; /* text — e.g. the brand badge */
+  background-color: #4c4f69; /* text: e.g. the brand badge */
 }
 .latte .backdrop\:bg-slate-900\/35::backdrop {
-  background-color: rgba(76, 79, 105, 0.35); /* text — the modal scrim */
+  background-color: rgba(76, 79, 105, 0.35); /* text: the modal scrim */
 }
 
-/* The media scrim — Lightbox's full-screen viewer. It stays near-black with light text in this light
+/* The media scrim: Lightbox's full-screen viewer. It stays near-black with light text in this light
    theme too, so a photo or a video reads against it as it would in any viewer. Latte has no dark
    token, so the scrim is Mocha crust, the darkest Catppuccin token and the one this package's other
    file uses for the same scrim. */
@@ -97,7 +97,7 @@
   outline-color: #eff1f5; /* base */
 }
 
-/* The media matte — Image framed: the white mat a QR code is scanned off. It stays white in every
+/* The media matte (Image framed): the white mat a QR code is scanned off. It stays white in every
    theme, dark ones included, as the scrim above stays black. */
 .latte .bg-white\/100 {
   background-color: #ffffff;
@@ -106,7 +106,7 @@
 /* Text */
 .latte .text-slate-900,
 .latte .text-slate-800 {
-  color: #4c4f69; /* text — incl. bold totals/footers */
+  color: #4c4f69; /* text: incl. bold totals/footers */
 }
 .latte .text-slate-700,
 .latte .text-slate-600 {
@@ -119,7 +119,7 @@
   color: #64677d; /* subtext0 #6c6f85, darkened: under 4.5:1 on mantle and crust */
 }
 .latte .text-slate-300 {
-  color: #8c8fa1; /* overlay1 — dimmed (days outside the month); inactive, so under no contrast bar */
+  color: #8c8fa1; /* overlay1: dimmed (days outside the month); inactive, so under no contrast bar */
 }
 .latte .placeholder\:text-slate-400::placeholder {
   color: #64677d; /* as the muted text above */
@@ -258,7 +258,7 @@
   color: #6c6f85; /* subtext0 */
 }
 
-/* Avatar identity colours — violet-600 is the accent above; the rest sit on the theme, each darkened
+/* Avatar identity colours: violet-600 is the accent above; the rest sit on the theme, each darkened
    from its Latte token until the white initials clear 4.5:1. */
 .latte .bg-orange-600 {
   background-color: #c5530b; /* peach #fe640b */
@@ -287,7 +287,7 @@
   background-color: #dce0e8; /* crust */
 }
 
-/* Coloured callouts / chips — tint backgrounds, full-strength text & borders. The tints are light
+/* Coloured callouts / chips: tint backgrounds, full-strength text & borders. The tints are light
    (0.06) so the accent text on them clears 4.5:1; the text tones are darkened from their Latte token
    for the same bar on white, mantle and the tint. */
 .latte .bg-emerald-50,
@@ -370,7 +370,7 @@
   border-color: rgba(30, 102, 245, 0.4);
 }
 
-/* Inline links — mauve (green is reserved for positive values). Alias of @hackcove/ui-react's
+/* Inline links: mauve (green is reserved for positive values). Alias of @hackcove/ui-react's
    TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
    write class="link" on a bare <a>. */
 .latte .link {

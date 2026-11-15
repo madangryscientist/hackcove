@@ -31,7 +31,7 @@ function Job({ job }: { job: CvJob }) {
     <article className="cv-job">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <SubsectionHeading>
-          {job.title} — {job.company}
+          {job.title}, {job.company}
         </SubsectionHeading>
         <Caption color="brand">{job.dates}</Caption>
       </div>
@@ -80,7 +80,7 @@ function Experience() {
               <li key={role.company}>
                 <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                   <Text strong>
-                    {role.title} — {role.company}
+                    {role.title}, {role.company}
                   </Text>
                   <Caption color="brand">{role.dates}</Caption>
                 </div>
@@ -136,7 +136,7 @@ export function Cv() {
           <section className="mt-12">
             <SectionHeading rule>Education</SectionHeading>
             <SubsectionHeading>
-              {cv.education.qualification} — {cv.education.school}
+              {cv.education.qualification} ({cv.education.school})
             </SubsectionHeading>
             <Caption as="p" color="brand">
               {cv.education.detail}

@@ -13,7 +13,7 @@ export function getStaticPaths() {
 const page = componentPageOf(Astro.params.slug ?? "");
 ---
 
-<Base title={`${page.name} — Hack Cove UI — ${site.name}`} description={page.summary}>
+<Base title={`${page.name} · Hack Cove UI · ${site.name}`} description={page.summary}>
   <DocsFrame client:load pathname={Astro.url.pathname}>
     <ComponentPage page={page} />
   </DocsFrame>

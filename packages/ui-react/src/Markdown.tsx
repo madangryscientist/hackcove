@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { Passthrough } from "./props.js";
 
 // A minimal, SAFE markdown renderer (headings / bullets / bold). No
-// dangerouslySetInnerHTML — text is rendered as React nodes, so it can't inject HTML.
+// dangerouslySetInnerHTML: text is rendered as React nodes, so it can't inject HTML.
 function inline(text: string): ReactNode[] {
   return text.split(/(\*\*[^*]+\*\*)/g).map((p, i) =>
     p.startsWith("**") && p.endsWith("**") ? (

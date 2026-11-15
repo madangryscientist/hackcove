@@ -30,7 +30,7 @@ fi
 secret() {
   local value
   if ! value="$(ob secret get "$1" 2>/dev/null)" || [[ -z "$value" ]]; then
-    echo "missing secret '$1' — add it with: ob secret set $1" >&2
+    echo "missing secret '$1'. Add it with: ob secret set $1" >&2
     exit 1
   fi
   printf '%s' "$value"

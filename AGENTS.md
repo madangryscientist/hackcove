@@ -1,4 +1,4 @@
-# hackcove — repo conventions
+# hackcove: repo conventions
 
 The Hack Cove design system: React components (`@hackcove/ui-react`) and the themes
 (`@hackcove/themes`, one CSS file per theme), each its own npm package, in a moon + Bun-workspaces monorepo. moon runs every task; Nx is

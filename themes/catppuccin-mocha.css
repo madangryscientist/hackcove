@@ -1,6 +1,6 @@
 /*! Catppuccin Mocha palette © 2021 Catppuccin, MIT license: https://github.com/catppuccin/catppuccin (full notice in NOTICE) */
 /* ---------------------------------------------------------------------------
-   Catppuccin Mocha — the dark theme for the Hack Cove design system.
+   Catppuccin Mocha: the dark theme for the Hack Cove design system.
    ---------------------------------------------------------------------------
    The @hackcove/ui-react components are written against Tailwind's slate/colour
    utilities directly (bg-white, text-slate-900, …) rather than carrying `dark:`
@@ -23,7 +23,7 @@
 
 .dark {
   color-scheme: dark;
-  background-color: #181825; /* mantle — the canvas the base-coloured cards lift off */
+  background-color: #181825; /* mantle: the canvas the base-coloured cards lift off */
   /* The type faces: Inter where installed, the system stack otherwise. Custom properties on the
      scope, so every `font-sans` / `font-mono` below it (AppShell's page font included) follows. */
   --font-sans:
@@ -43,12 +43,12 @@
   --hc-accent: #cba6f7; /* text-violet-600 */
 }
 
-/* The page canvas — AppShell paints it, so cards (base) lift off it. */
+/* The page canvas: AppShell paints it, so cards (base) lift off it. */
 .dark .bg-gray-50 {
   background-color: #181825; /* mantle */
 }
 
-/* Surfaces — cards (base) lift off the mantle canvas. */
+/* Surfaces: cards (base) lift off the mantle canvas. */
 .dark .bg-white {
   background-color: #1e1e2e; /* base */
 }
@@ -68,13 +68,13 @@
   background-color: #3b3d50;
 }
 .dark .bg-slate-900 {
-  background-color: #313244; /* surface0 — e.g. the brand badge */
+  background-color: #313244; /* surface0: e.g. the brand badge */
 }
 .dark .backdrop\:bg-slate-900\/35::backdrop {
-  background-color: rgba(17, 17, 27, 0.6); /* crust — the modal scrim */
+  background-color: rgba(17, 17, 27, 0.6); /* crust: the modal scrim */
 }
 
-/* The media scrim — Lightbox's full-screen viewer: near-black crust with light text. */
+/* The media scrim (Lightbox's full-screen viewer): near-black crust with light text. */
 .dark .bg-black\/90 {
   background-color: rgba(17, 17, 27, 0.94); /* crust */
 }
@@ -91,7 +91,7 @@
   outline-color: #cdd6f4; /* text */
 }
 
-/* The media matte — Image framed: the white mat a QR code is scanned off. It stays white in every
+/* The media matte (Image framed): the white mat a QR code is scanned off. It stays white in every
    theme, dark ones included, as the scrim above stays black. */
 .dark .bg-white\/100 {
   background-color: #ffffff;
@@ -100,7 +100,7 @@
 /* Text */
 .dark .text-slate-900,
 .dark .text-slate-800 {
-  color: #cdd6f4; /* text — incl. bold totals/footers */
+  color: #cdd6f4; /* text: incl. bold totals/footers */
 }
 .dark .text-slate-700,
 .dark .text-slate-600 {
@@ -112,10 +112,10 @@
 .dark .text-slate-400 {
   /* overlay2 (#9399b2) lifted a few steps: it is 4.45:1 on surface0, where a table header or a
      toned panel puts it, and 4.5:1 is the AA bar for text. This is 4.62:1. */
-  color: #969cb5; /* overlay2, lifted — legible muted/headers */
+  color: #969cb5; /* overlay2, lifted: legible muted/headers */
 }
 .dark .text-slate-300 {
-  color: #6c7086; /* overlay0 — dimmed (days outside the month); inactive, so under no contrast bar */
+  color: #6c7086; /* overlay0: dimmed (days outside the month); inactive, so under no contrast bar */
 }
 .dark .placeholder\:text-slate-400::placeholder {
   color: #969cb5; /* as muted text: overlay1 (#7f849c) was 4.44:1 on base, 3.40:1 on surface0 */
@@ -174,7 +174,7 @@
   background-color: #b4befe; /* lavender */
 }
 .dark .text-violet-50 {
-  color: #11111b; /* crust — text on the mauve button */
+  color: #11111b; /* crust: text on the mauve button */
 }
 .dark .hover\:text-violet-700:hover {
   color: #b4befe; /* lavender */
@@ -212,7 +212,7 @@
   background-color: #eba0ac; /* maroon */
 }
 .dark .text-red-50 {
-  color: #11111b; /* crust — text on the red button */
+  color: #11111b; /* crust: text on the red button */
 }
 .dark .border-red-600 {
   border-color: #f38ba8; /* red */
@@ -232,7 +232,7 @@
   background-color: #94e2d5; /* teal */
 }
 .dark .text-emerald-50 {
-  color: #11111b; /* crust — text on the green button */
+  color: #11111b; /* crust: text on the green button */
 }
 .dark .border-emerald-600 {
   border-color: #a6e3a1; /* green */
@@ -252,7 +252,7 @@
   color: #9399b2; /* overlay2 */
 }
 
-/* Avatar identity colours — violet-600 is the accent above; the rest sit on the theme. */
+/* Avatar identity colours: violet-600 is the accent above; the rest sit on the theme. */
 .dark .bg-orange-600 {
   background-color: #fab387; /* peach */
 }
@@ -280,7 +280,7 @@
   background-color: #313244;
 }
 
-/* Coloured callouts / chips — tint backgrounds, lighten text & borders */
+/* Coloured callouts / chips: tint backgrounds, lighten text & borders */
 .dark .bg-emerald-50,
 .dark .bg-emerald-50\/60,
 .dark .bg-emerald-100 {
@@ -352,7 +352,7 @@
   border-color: rgba(249, 226, 175, 0.4);
 }
 .dark .border-amber-600 {
-  border-color: #f9e2af; /* yellow — the strong warn edge (Card attention) */
+  border-color: #f9e2af; /* yellow: the strong warn edge (Card attention) */
 }
 .dark .border-red-200 {
   /* The invalid field's edge, the only sign of the error besides the message: red/65, 3:1 or more
@@ -368,7 +368,7 @@
   border-color: rgba(137, 180, 250, 0.4);
 }
 
-/* Inline links — Mocha mauve (green is reserved for positive values). Alias of @hackcove/ui-react's
+/* Inline links: Mocha mauve (green is reserved for positive values). Alias of @hackcove/ui-react's
    TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
    write class="link" on a bare <a>. */
 .dark .link {

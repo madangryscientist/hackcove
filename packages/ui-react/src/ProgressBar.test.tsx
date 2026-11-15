@@ -19,7 +19,7 @@ describe("ProgressBar", () => {
     expect(markup).toContain("width:25%");
   });
 
-  it("holds the fill to 0–100", () => {
+  it("holds the fill between 0 and 100", () => {
     expect(renderToStaticMarkup(<ProgressBar value={250} label="x" />)).toContain("width:100%");
     expect(renderToStaticMarkup(<ProgressBar value={-5} label="x" />)).toContain("width:0%");
     expect(renderToStaticMarkup(<ProgressBar value={5} max={0} label="x" />)).toContain("width:0%");

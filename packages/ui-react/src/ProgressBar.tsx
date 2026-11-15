@@ -22,7 +22,7 @@ export const BAR_TRACK: Record<BarSize, string> = {
   lg: "h-3",
 };
 
-/** `part` as a percent of `whole`, held to 0–100; 0 when either is not positive. */
+/** `part` as a percent of `whole`, held between 0 and 100; 0 when either is not positive. */
 export function sharePercent(part: number, whole: number): number {
   if (!(whole > 0) || !(part > 0)) return 0;
   return Math.min(100, (part / whole) * 100);
@@ -35,8 +35,8 @@ export function announcedPercent(part: number, whole: number): number {
 }
 
 /**
- * A thin horizontal bar with a filled share, for progress toward a total. `value` is held to
- * 0–`max`. `label` names what it measures, for a screen reader, which also hears the percentage.
+ * A thin horizontal bar with a filled share, for progress toward a total. `value` is held
+ * between 0 and `max`. `label` names what it measures, for a screen reader, which also hears the percentage.
  */
 export function ProgressBar({
   value,
@@ -46,7 +46,7 @@ export function ProgressBar({
   size = "md",
   ...rest
 }: {
-  /** How far along, held to 0–`max`. */
+  /** How far along, held between 0 and `max`. */
   value: number;
   /** Defaults to 100. */
   max?: number;

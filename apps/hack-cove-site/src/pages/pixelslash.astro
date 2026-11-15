@@ -8,7 +8,7 @@ import Base from "../layouts/Base.astro";
 const section = sectionOf("pixelslash");
 ---
 
-<Base title={`${section.name} — ${site.name}`} description={section.description}>
+<Base title={`${section.name} · ${site.name}`} description={section.description}>
   <Stack gap="xl">
     {/* The hero is the page's one island: the install line's copy button needs a click handler. */}
     <PixelSlashHero client:load />

@@ -18,7 +18,7 @@ import type { Size } from "./size.js";
    text can never accidentally inherit the wrong weight/scale. Written against
    Tailwind v4 utilities.
 
-   Colour axis — the `color` prop maps to Tailwind's slate and violet utilities,
+   Colour axis: the `color` prop maps to Tailwind's slate and violet utilities,
    which a theme remaps to its own ink and accent (so these stay consistent with
    the rest of the system rather than inventing a parallel palette):
      default   → text-slate-900  (primary ink)
@@ -27,15 +27,15 @@ import type { Size } from "./size.js";
      muted     → text-slate-400
      brand     → text-violet-600 (the accent)
 
-   Meaning axis — the inline roles (Text, Caption, Overline) also take `tone`
+   Meaning axis: the inline roles (Text, Caption, Overline) also take `tone`
    (muted | positive | warn | danger | info), which wins over `color`, and the closed switches
    `numeric`, `mono`, `truncate` and `align`. Text and Caption add the face switches `italic` and
    `breakWords`; Text alone takes `strong`, `preserveNewlines` and `minWidth`.
 
-   Element axis — every component has a semantic default element; the `as` prop
+   Element axis: every component has a semantic default element; the `as` prop
    overrides it (type-safe: the extra props follow the element you pass).
 
-   Inline vs block — the inline-role components (Text, Overline, Caption)
+   Inline vs block: the inline-role components (Text, Overline, Caption)
    default to `<span>` so they compose inside a sentence/flex row (inline by
    default for inline roles). The structural roles (Display, Lead, PageHeading,
    SectionHeading, SubsectionHeading) default to block elements (h1/h2/h3/p).
@@ -130,7 +130,7 @@ export type InlineTypographyProps<E extends ElementType> = Own & {
 /**
  * Build a semantic component that pins `variantClass` (size + weight + tracking)
  * and a default colour. The scale/weight for each role therefore lives in exactly
- * one place (the call below), and callers can only vary the colour and the element —
+ * one place (the call below), and callers can only vary the colour and the element,
  * never the pinned size/weight, and never with a class.
  */
 function typography<D extends ElementType>(
@@ -220,7 +220,7 @@ function plainText(children: ReactNode): string | undefined {
 // --- Structural roles (block by default) -----------------------------------
 
 /**
- * Marketing-scale headline — the one line at the top of a public page. `h1`,
+ * Marketing-scale headline: the one line at the top of a public page. `h1`,
  * text-4xl/tight semibold, primary text, growing to text-6xl on wider screens.
  * `PageHeading` is the title of an ordinary page, a step below; a brochure hero needs a display
  * scale, so it gets its own pinned role rather than callers overriding PageHeading's size.
