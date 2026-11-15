@@ -151,6 +151,14 @@ reports an import of either and changes nothing.
 | `<EpicHeader color={c} label="HC-42 Voice Inbox" />` over a group | The group's title as `<SubsectionHeading as="h3" size="sm">` (or an `Overline` for a small label) over the group. A status beside it is a `Pill tone=… dot`. In a table, the group is a `<TableGroupRow label=… colSpan=… />`. There is no raw-colour dot. |
 | `groupByEpic(items, (i) => i.epic)` | App logic, not UI: `Object.groupBy(items, (i) => i.epic ?? "")` or a `Map`, then sort the keys your way (the old order was real refs ascending, `null` last). |
 
+### ToolCallCard is gone
+
+No app used it. `ChatThread`, `ChatMessage` and `ChatComposer` stay.
+
+| Removed | Write instead |
+| --- | --- |
+| `<ToolCallCard name="search" status="done" summary="…">…</ToolCallCard>` | A `Disclosure bordered` whose `summary` names the tool (a `Code`) and carries a `Pill` for how it went (`tone="positive"` Done, `tone="danger"` Failed, a neutral Running), with the detail as its children. |
+
 ## 0.9 → 0.10: Avatar `2xl` is 64px, the old 96px is `3xl`
 
 `Avatar` gained a 64px size. The sizes keep their order (`xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`),

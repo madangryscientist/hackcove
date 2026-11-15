@@ -286,10 +286,5 @@ export const CASES: Record<string, () => ReactElement> = {
     </ui.Timeline>
   ),
   TimelineItem: () => <ui.TimelineItem title="T" {...A} />,
-  ToolCallCard: () => (
-    <ui.ToolCallCard name="search" status="done" {...A}>
-      x
-    </ui.ToolCallCard>
-  ),
   Video: () => <ui.Video src="/x.mp4" {...A} />,
 };

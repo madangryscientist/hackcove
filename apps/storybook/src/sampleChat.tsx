@@ -5,16 +5,18 @@ import {
   ChatComposer,
   ChatMessage,
   ChatThread,
+  Code,
   CodeBlock,
+  Disclosure,
   Markdown,
+  Pill,
   Stack,
-  ToolCallCard,
 } from "@hackcove/ui-react";
 
 const noop = () => undefined;
 
 /**
- * A whole chat, for the composed story and the Gallery: a question, a reply, two tool calls, an
+ * A whole chat, for the composed story and the Gallery: a question, a reply, two tool calls (a bordered `Disclosure` with a `Pill` each), an
  * approval built from a Callout and Buttons, a reply still streaming, and the composer under it.
  */
 export function SampleChat({ label }: { label: string }) {
@@ -27,12 +29,26 @@ export function SampleChat({ label }: { label: string }) {
         <ChatMessage role="assistant" author="Helper" meta="Helper, 18:02">
           <Markdown md={"## Two ideas\n- **Leek and potato soup**\n- A gratin"} />
         </ChatMessage>
-        <ToolCallCard name="search_recipes" status="done" summary="Found 3 soups under an hour">
+        <Disclosure
+          bordered
+          summary={
+            <>
+              <Code>search_recipes</Code> <Pill tone="positive">Done</Pill>
+            </>
+          }
+        >
           <CodeBlock language="json">{'{ "query": "leek potato soup" }'}</CodeBlock>
-        </ToolCallCard>
-        <ToolCallCard name="read_pantry" status="running" summary="Checking the cupboard">
+        </Disclosure>
+        <Disclosure
+          bordered
+          summary={
+            <>
+              <Code>read_pantry</Code> <Pill>Running</Pill>
+            </>
+          }
+        >
           <CodeBlock language="json">{'{ "shelf": "all" }'}</CodeBlock>
-        </ToolCallCard>
+        </Disclosure>
         <Callout
           tone="warn"
           title="Add cream to the shopping list?"

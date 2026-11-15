@@ -147,6 +147,10 @@ export const removed = {
   r59: (t: typeof import("./index.js").EpicHeader) => t,
   // @ts-expect-error groupByEpic is gone: Object.groupBy or a Map in the app
   r60: (t: typeof import("./index.js").groupByEpic) => t,
+
+  // ToolCallCard
+  // @ts-expect-error ToolCallCard is gone: a bordered Disclosure with a Pill
+  r61: (t: typeof import("./index.js").ToolCallCard) => t,
 };
 
 describe("removed API", () => {

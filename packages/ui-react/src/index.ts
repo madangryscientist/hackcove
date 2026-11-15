@@ -136,7 +136,6 @@ export { Image, type ImageAspect, type ImageWidth } from "./Image.js";
 export { MediaTile } from "./MediaTile.js";
 export { ScrollStrip } from "./ScrollStrip.js";
 export { TextLink, type TextLinkSize } from "./TextLink.js";
-export { ToolCallCard } from "./ToolCallCard.js";
 export {
   Caption,
   Display,
