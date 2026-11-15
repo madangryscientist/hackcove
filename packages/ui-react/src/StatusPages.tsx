@@ -1,6 +1,7 @@
 import type { ReactElement, ReactNode } from "react";
 import { Button } from "./Button.js";
 import { CodeBlock } from "./CodeBlock.js";
+import { useHome } from "./link.js";
 import { CenteredLayout } from "./PageLayouts.js";
 import type { Passthrough } from "./props.js";
 
@@ -14,26 +15,26 @@ type StatusPageProps = {
   /** Replaces the default body copy. */
   children?: ReactNode;
   /**
-   * The primary action; the home link turns outline beside it. This is the one way to a button
-   * worded differently: pass `action` and leave out `homeHref`, so there is no "Back to home" link.
-   * There is no label prop.
+   * The page's own action, before "Back to home", which turns outline beside it. This is the one
+   * way to a button worded differently; there is no label prop.
    */
   action?: ReactNode;
-  /**
-   * Adds a "Back to home" button linking here, drawn by the app's router link through
-   * `LinkProvider`. Without it there is no home link.
-   */
-  homeHref?: string;
 } & Passthrough;
 
 type Copy = { title: string; body: string };
 
-type StatusPageInner = StatusPageProps & { copy: Copy; extra?: ReactNode; mark?: ReactNode };
+type StatusPageInner = StatusPageProps & {
+  copy: Copy;
+  extra?: ReactNode;
+  mark?: ReactNode;
+  /** Whether the page links home. Fixed per page: only `Maintenance` does not. */
+  homeward?: boolean;
+};
 
-function homeLink(variant: "primary" | "outline", href: string | undefined): ReactNode {
-  if (href === undefined) return null;
+/** "Back to home", to the `LinkProvider`'s `home`: the primary button alone, outline after an action. */
+function HomeLink({ outline }: { outline: boolean }): ReactElement {
   return (
-    <Button href={href} variant={variant}>
+    <Button href={useHome()} variant={outline ? "outline" : "primary"}>
       Back to home
     </Button>
   );
@@ -44,12 +45,12 @@ function StatusPage({
   title,
   children,
   action,
-  homeHref,
   extra,
   mark,
+  homeward = true,
   ...rest
 }: StatusPageInner): ReactElement {
-  const home = homeLink(action === undefined ? "primary" : "outline", homeHref);
+  const home = homeward && <HomeLink outline={Boolean(action)} />;
   return (
     <CenteredLayout
       {...rest}
@@ -148,10 +149,14 @@ export function Offline({
   );
 }
 
-/** The site is down on purpose and will be back. */
+/**
+ * The site is down on purpose and will be back. It has no "Back to home": home is the site that
+ * is down.
+ */
 export function Maintenance(props: StatusPageProps): ReactElement {
   return (
     <StatusPage
+      homeward={false}
       copy={{
         title: "Down for maintenance",
         body: "We are making improvements and will be back shortly.",

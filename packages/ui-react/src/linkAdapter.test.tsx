@@ -96,7 +96,17 @@ const PARTS: Array<[string, Part]> = [
   ],
   ["MediaTile href", { ui: <MediaTile href="/to" alt="A red chair" />, name: /A red chair/ }],
   ["Avatar href", { ui: <Avatar href="/to" name="Ada Lovelace" />, name: "Ada Lovelace" }],
-  ["a status page's home link", { ui: <NotFound homeHref="/to" />, name: "Back to home" }],
+  [
+    "a status page's home link",
+    {
+      ui: (
+        <LinkProvider home="/to">
+          <NotFound />
+        </LinkProvider>
+      ),
+      name: "Back to home",
+    },
+  ],
 ];
 
 /** A router stand-in: it draws an <a> that navigates by calling `navigate` and stops the load. */

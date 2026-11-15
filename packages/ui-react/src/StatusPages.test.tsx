@@ -1,27 +1,99 @@
 // @vitest-environment jsdom
+import type { ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { Button } from "./Button.js";
+import { type LinkAdapterProps, LinkProvider } from "./link.js";
 import { ErrorPage, Forbidden, Maintenance, NotFound, Offline } from "./StatusPages.js";
 import { render, screen, user, within } from "./render.harness.js";
 
 const follows = (a: Node, b: Node) =>
   a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
-const pages = [
+const homeward = [
   ["NotFound", NotFound, "Page not found"],
   ["ErrorPage", ErrorPage, "Something went wrong"],
   ["Offline", Offline, "You are offline"],
-  ["Maintenance", Maintenance, "Down for maintenance"],
   ["Forbidden", Forbidden, "Access denied"],
 ] as const;
 
-describe.each(pages)("%s", (_name, Page, heading) => {
-  it("has its fixed heading as the page's only h1, and no actions by default", () => {
+const home = () => screen.getByRole("link", { name: "Back to home" });
+
+/** A router stand-in: an <a> that navigates by calling `navigate` and stops the load. */
+function routed(navigate: (href: string) => void) {
+  return function RouterLink({ href, ...rest }: LinkAdapterProps): ReactNode {
+    return (
+      <a
+        {...rest}
+        href={href}
+        onClick={(event) => {
+          event.preventDefault();
+          navigate(href);
+        }}
+      />
+    );
+  };
+}
+
+describe.each(homeward)("%s", (_name, Page, heading) => {
+  it("has its fixed heading and a Back to home link to / with no provider", () => {
     render(<Page />);
-    expect(screen.getAllByRole("heading").map((h) => h.textContent)).toEqual([heading]);
-    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(heading);
+    expect(screen.getByRole("heading", { level: 1, name: heading })).not.toBeNull();
+    expect(home().getAttribute("href")).toBe("/");
+  });
+});
+
+describe("Maintenance", () => {
+  it("has its heading and no Back to home link: home is the site that is down", () => {
+    render(<Maintenance />);
+    expect(screen.getByRole("heading", { level: 1, name: "Down for maintenance" })).not.toBeNull();
     expect(screen.queryByRole("link")).toBeNull();
-    expect(screen.queryByRole("button")).toBeNull();
+  });
+});
+
+describe("the home link", () => {
+  it("goes to the provider's home, a plain link in the same tab, with no adapter", () => {
+    render(
+      <LinkProvider home="https://slashslash.example">
+        <NotFound />
+      </LinkProvider>,
+    );
+    expect(home().getAttribute("href")).toBe("https://slashslash.example");
+    expect(home().hasAttribute("target")).toBe(false);
+  });
+
+  it.each([
+    [undefined, "/"],
+    ["/app", "/app"],
+  ])("navigates through the adapter (home %s)", async (where, to) => {
+    const navigate = vi.fn<(href: string) => void>();
+    render(
+      <LinkProvider link={routed(navigate)} home={where}>
+        <NotFound />
+      </LinkProvider>,
+    );
+    await user().click(home());
+    expect(navigate).toHaveBeenCalledWith(to);
+  });
+
+  it("a nested provider that sets only home keeps the outer adapter", async () => {
+    const navigate = vi.fn<(href: string) => void>();
+    render(
+      <LinkProvider link={routed(navigate)}>
+        <LinkProvider home="/area">
+          <NotFound />
+        </LinkProvider>
+      </LinkProvider>,
+    );
+    await user().click(home());
+    expect(navigate).toHaveBeenCalledWith("/area");
+  });
+
+  it("stays beside the page's own action, which Tab reaches first", async () => {
+    render(<NotFound action={<Button href="/map">Open the map</Button>} />);
+    await user().tab();
+    expect(document.activeElement).toBe(screen.getByRole("link", { name: "Open the map" }));
+    await user().tab();
+    expect(document.activeElement).toBe(home());
   });
 });
 
@@ -31,21 +103,6 @@ describe("the shared props", () => {
     expect(screen.getByRole("heading", { level: 1, name: "Custom title" })).not.toBeNull();
     expect(screen.getByText("Custom body")).not.toBeNull();
     expect(screen.queryByText("Page not found")).toBeNull();
-  });
-
-  it("links home with homeHref", () => {
-    render(<NotFound homeHref="/" />);
-    expect(screen.getByRole("link", { name: "Back to home" }).getAttribute("href")).toBe("/");
-  });
-
-  it("reads a custom action before the home link", () => {
-    render(<NotFound action={<button type="button">Go</button>} homeHref="/" />);
-    expect(
-      follows(
-        screen.getByRole("button", { name: "Go" }),
-        screen.getByRole("link", { name: "Back to home" }),
-      ),
-    ).toBeTruthy();
   });
 });
 
@@ -71,19 +128,19 @@ describe("ErrorPage", () => {
 
 describe("NotFound numeral", () => {
   it("draws 404 before the heading when numeral is on, and the heading stays the only one", () => {
-    render(<NotFound numeral homeHref="/" />);
+    render(<NotFound numeral />);
     const h1 = screen.getByRole("heading", { level: 1, name: "Page not found" });
     expect(follows(screen.getByText("404"), h1)).toBeTruthy();
     expect(screen.getAllByRole("heading")).toHaveLength(1);
   });
 
   it("draws no 404 by default", () => {
-    render(<NotFound homeHref="/" />);
+    render(<NotFound />);
     expect(screen.queryByText("404")).toBeNull();
   });
 
   it.each([
-    ["Forbidden", <Forbidden key="f" homeHref="/" />],
+    ["Forbidden", <Forbidden key="f" />],
     ["ErrorPage", <ErrorPage key="e" />],
   ] as const)("draws no 404 on %s", (_name, page) => {
     render(page);
@@ -92,10 +149,10 @@ describe("NotFound numeral", () => {
 });
 
 describe("NotFound with its own action", () => {
-  it("renders the action's wording and no Back to home link", () => {
+  it("renders the action's wording before Back to home", () => {
     render(<NotFound action={<Button href="/map">Open the map</Button>} />);
     expect(screen.getByRole("link", { name: "Open the map" }).getAttribute("href")).toBe("/map");
-    expect(screen.queryByText("Back to home")).toBeNull();
+    expect(follows(screen.getByRole("link", { name: "Open the map" }), home())).toBeTruthy();
   });
 });
 
@@ -103,10 +160,11 @@ describe.each([
   ["ErrorPage", ErrorPage],
   ["Offline", Offline],
 ] as const)("%s onRetry", (_name, Page) => {
-  it("Try again calls onRetry once", async () => {
+  it("Try again calls onRetry once, and the home link is still there", async () => {
     const onRetry = vi.fn<() => void>();
     render(<Page onRetry={onRetry} />);
     await user().click(screen.getByRole("button", { name: "Try again" }));
     expect(onRetry).toHaveBeenCalledOnce();
+    expect(home()).not.toBeNull();
   });
 });

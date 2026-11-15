@@ -34,9 +34,9 @@ export type LinkAdapterProps = {
 /** Draws one in-app link: the app's router `<Link>`, handed `LinkAdapterProps`. */
 export type LinkAdapter = (props: LinkAdapterProps) => ReactNode;
 
-type LinkSettings = { link: LinkAdapter | undefined };
+type LinkSettings = { link: LinkAdapter | undefined; home: string };
 
-const LinkContext = createContext<LinkSettings>({ link: undefined });
+const LinkContext = createContext<LinkSettings>({ link: undefined, home: "/" });
 
 /**
  * Names the app's router link once, so every part that links (`Button`, `IconButton`, `TextLink`,
@@ -52,17 +52,37 @@ const LinkContext = createContext<LinkSettings>({ link: undefined });
  *
  * An `external` link, a full URL (`https:`, `mailto:`, `tel:`), a `//` URL, a `#hash` or a relative
  * path never reaches the adapter: the library draws those as a plain `<a>`.
+ *
+ * `home` is where every status page's "Back to home" goes, `/` by default: the one place an app
+ * says it, never a page. A full URL (a home on another site) is a plain `<a>` in the same tab. A
+ * provider inside another keeps what it does not set, so `<LinkProvider home="/app">` within the
+ * router's provider still draws through the router's link.
  */
 export function LinkProvider({
   link,
+  home,
   children,
 }: {
-  /** The app's router link, handed `LinkAdapterProps`. */
-  link: LinkAdapter;
+  /** The app's router link, handed `LinkAdapterProps`. Left out, links are plain `<a>` (or the outer provider's). */
+  link?: LinkAdapter | undefined;
+  /**
+   * Where the status pages' "Back to home" goes: an in-app path or a full URL.
+   * @default "/"
+   */
+  home?: string | undefined;
   children: ReactNode;
 }): ReactElement {
-  const value = useMemo(() => ({ link }), [link]);
+  const outer = useContext(LinkContext);
+  const value = useMemo(
+    () => ({ link: link ?? outer.link, home: home ?? outer.home }),
+    [link, home, outer],
+  );
   return <LinkContext.Provider value={value}>{children}</LinkContext.Provider>;
+}
+
+/** Where "Back to home" goes: the nearest `LinkProvider`'s `home`, or `/` with none. Internal. */
+export function useHome(): string {
+  return useContext(LinkContext).home;
 }
 
 /** Whether `href` is an in-app path the router draws: one that starts with a single `/`. */

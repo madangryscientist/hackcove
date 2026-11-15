@@ -56,7 +56,6 @@ the status pages.
 | `to="/stores/$storeId" params={{ storeId: id }}` | ``href={`/stores/${encodeURIComponent(id)}`}`` | by hand |
 | `search={{ project, env }}`, `hash="for-shops"` | `href={"/?" + new URLSearchParams({ project, env })}`, `href="/about#for-shops"` | by hand |
 | `{ label, render }` crumbs and items | `{ label, href }` | codemod for a literal `to`, else by hand |
-| `renderHome={(p) => <Link to="/" {...p} />}` | `homeHref="/"` | codemod |
 | `LinkRenderProps`, `LinkRender` | `LinkAdapterProps`, `LinkAdapter` | codemod |
 | `viewTransition` on one `Link` | `defaultViewTransition` on `createRouter` | by hand |
 
@@ -64,6 +63,24 @@ New, nothing to change: `MediaTile` and `Avatar` take `href` and `external` besi
 their `onClick` is handed the click event. A `SiteSearch` result is a client-side navigation under
 a `LinkProvider`. Only an in-app path (one that starts with a single `/`) reaches the adapter; an
 `external` link, a full URL, a `#hash` and a relative path stay a plain `<a>`.
+
+### The status pages' home link
+
+Every status page but `Maintenance` links "Back to home" by itself, to the `home` on
+`LinkProvider` (`/` by default). A page takes no home prop.
+
+| Old | New | |
+| --- | --- | --- |
+| `<NotFound homeHref="/" />`, and the same on each page | `<NotFound />` | codemod |
+| `renderHome={(p) => <a href="/" {...p} />}`, `renderHome={(p) => <Link to="/" {...p} />}` | nothing: the default, through the adapter | codemod |
+| a home that is not `/` (`homeHref={SITE}`) | `<LinkProvider home={SITE}>` once, around the app or in TanStack's `InnerWrap` | by hand |
+
+TypeScript does not flag these:
+
+- `action` with no `homeHref` had no home link. The page now shows both, the action first, and
+  there is no way to hide it.
+- A `NotFound`, `ErrorPage`, `Offline` or `Forbidden` that had no `homeHref` gains "Back to home".
+- `Maintenance` draws no home link, even where it had a `homeHref`.
 
 ## 0.9 → 0.10: Avatar `2xl` is 64px, the old 96px is `3xl`
 

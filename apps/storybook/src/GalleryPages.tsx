@@ -212,10 +212,10 @@ export function GalleryStatusPages() {
   return (
     <div className="flex flex-col gap-6">
       <PageBox label="NotFound">
-        <NotFound homeHref="#" />
+        <NotFound />
       </PageBox>
       <PageBox label="ErrorPage">
-        <ErrorPage detail="Request 4f2a91 failed" onRetry={() => {}} homeHref="#" />
+        <ErrorPage detail="Request 4f2a91 failed" onRetry={() => {}} />
       </PageBox>
       <PageBox label="Offline">
         <Offline onRetry={() => {}} />
@@ -224,7 +224,7 @@ export function GalleryStatusPages() {
         <Maintenance />
       </PageBox>
       <PageBox label="Forbidden">
-        <Forbidden homeHref="#" />
+        <Forbidden />
       </PageBox>
     </div>
   );

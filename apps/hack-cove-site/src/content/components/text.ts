@@ -198,6 +198,7 @@ export const text: ComponentSection = {
           '`external` is for another site: it opens a new tab with `rel="noreferrer"`.',
           "In an app with a router, set the router's `<Link>` once on a `LinkProvider` and give each `TextLink` its `href`. The library has no router.",
           'Set the adapter once, at the router. TanStack Router: `InnerWrap: ({ children }) => <LinkProvider link={(p) => <Link to="." {...p} />}>{children}</LinkProvider>` on `createRouter` (`to="."` satisfies the typed `to`; the `href` wins). React Router: `<LinkProvider link={({ href, ...p }) => <Link to={href} {...p} />}>`. Astro: no provider.',
+          '`home` on the same `LinkProvider` is where every status page\'s "Back to home" goes, `/` by default (`home="https://example.com"` with no `link` for a home on another site). A provider inside another keeps what it does not set.',
           "Only an in-app path (`/quotes?page=2#top`) reaches the adapter; `external`, `https:`, `mailto:`, `#hash` and a relative path are a plain `<a>`.",
           "`size` pins the type size to `sm`, `md` or `lg`; left out, the link takes the size of its text. `mono` sets the monospace face for a path or an id.",
           '`tone` gives the link a meaning\'s colour (`warn`, `danger`, `positive`, `info`, `muted`), underlined on hover. Use it for a link that is the message, like "3 failed".',

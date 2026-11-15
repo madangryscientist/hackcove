@@ -61,6 +61,12 @@ export const removed = {
   r24: () => <ui.NotFound renderHome={() => null} />,
   // @ts-expect-error a Tabs link item has no render
   r25: () => <ui.Tabs label="x" items={[{ label: "x", render: () => null }]} />,
+
+  // The status pages' home link
+  // @ts-expect-error homeHref is gone: LinkProvider home, "/" by default
+  r26: () => <ui.NotFound homeHref="/" />,
+  // @ts-expect-error a page takes no home prop
+  r27: () => <ui.Maintenance homeHref="/" />,
 };
 
 describe("removed API", () => {

@@ -14,7 +14,7 @@ type S = StoryObj;
 export const NotFoundPage: S = {
   render: () => (
     <DemoShell>
-      <NotFound homeHref="#" />
+      <NotFound />
     </DemoShell>
   ),
 };
@@ -23,12 +23,12 @@ export const NotFoundPage: S = {
 export const NotFoundWithNumeral: S = {
   render: () => (
     <DemoShell>
-      <NotFound numeral homeHref="#" />
+      <NotFound numeral />
     </DemoShell>
   ),
 };
 
-/** A 404 whose button says what it does: `action` with no `homeHref`, so no "Back to home". */
+/** A 404 with its own action, worded for what it does, before the "Back to home" link. */
 export const NotFoundOwnAction: S = {
   render: () => (
     <DemoShell>
@@ -40,11 +40,7 @@ export const NotFoundOwnAction: S = {
 export const ErrorWithRetry: S = {
   render: () => (
     <DemoShell>
-      <ErrorPage
-        detail="Request 4f2a91 failed: upstream timed out"
-        onRetry={() => {}}
-        homeHref="#"
-      />
+      <ErrorPage detail="Request 4f2a91 failed: upstream timed out" onRetry={() => {}} />
     </DemoShell>
   ),
 };
@@ -76,7 +72,7 @@ export const MaintenancePage: S = {
 export const ForbiddenPage: S = {
   render: () => (
     <DemoShell>
-      <Forbidden homeHref="#" />
+      <Forbidden />
     </DemoShell>
   ),
 };
@@ -84,7 +80,7 @@ export const ForbiddenPage: S = {
 export const CustomAction: S = {
   render: () => (
     <DemoShell>
-      <Forbidden title="Members only" action={<Button>Request access</Button>} homeHref="#">
+      <Forbidden title="Members only" action={<Button>Request access</Button>}>
         Ask an owner of this organisation to invite you.
       </Forbidden>
     </DemoShell>
@@ -94,21 +90,19 @@ export const CustomAction: S = {
 /** A missing page is `NotFound`: the reader needs a way home, and a retry would load the same nothing. */
 export const DoPickPage: S = {
   parameters: { bare: false },
-  render: () => <NotFound homeHref="#" />,
+  render: () => <NotFound />,
 };
 
 /** `ErrorPage` with a retry for a missing page promises that trying again helps, and it does not. */
 export const DontPickPage: S = {
   parameters: { bare: false },
-  render: () => <ErrorPage onRetry={() => {}} homeHref="#" />,
+  render: () => <ErrorPage onRetry={() => {}} />,
 };
 
 /** `detail` is a request id or a short message the reader can quote, and `onRetry` offers another go. */
 export const DoErrorDetail: S = {
   parameters: { bare: false },
-  render: () => (
-    <ErrorPage detail="Request 4f2a91 failed: upstream timed out" onRetry={() => {}} homeHref="#" />
-  ),
+  render: () => <ErrorPage detail="Request 4f2a91 failed: upstream timed out" onRetry={() => {}} />,
 };
 
 /** A stack trace shows the reader your internals and buries the one line they can act on. */
@@ -121,7 +115,6 @@ export const DontErrorDetail: S = {
         "  at async handler (route.ts:17:3)"
       }
       onRetry={() => {}}
-      homeHref="#"
     />
   ),
 };
@@ -129,5 +122,5 @@ export const DontErrorDetail: S = {
 /** Without an AppShell: in a Container, as the whole page. */
 export const Standalone: S = {
   parameters: { bare: false },
-  render: () => <NotFound homeHref="#" />,
+  render: () => <NotFound />,
 };
