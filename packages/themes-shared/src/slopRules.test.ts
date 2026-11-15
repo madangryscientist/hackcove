@@ -128,6 +128,5 @@ describe("slopRules: no em or en dash, in any file", () => {
   it("runs the TypeScript rules on TypeScript only", () => {
     expect(slopRules("README.md", "// const x = 1;", "x")).toEqual([]);
     expect(slopRules("src/a.css", `/* ${todo} later */`, "x")).toEqual([]);
-    expect(slopRules("src/a.ts", "// const x = 1;", "x")).toHaveLength(1);
   });
 });

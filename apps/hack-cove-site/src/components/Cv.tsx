@@ -136,7 +136,7 @@ export function Cv() {
           <section className="mt-12">
             <SectionHeading rule>Education</SectionHeading>
             <SubsectionHeading>
-              {cv.education.qualification}, {cv.education.school}
+              {cv.education.qualification} ({cv.education.school})
             </SubsectionHeading>
             <Caption as="p" color="brand">
               {cv.education.detail}
