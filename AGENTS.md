@@ -68,7 +68,7 @@ bun install                                        # a fresh checkout has no nod
 bunx moon run --concurrency 3 :typecheck :lint :test :build   # tsc strict · oxlint --type-aware --deny-warnings + check-slop · Vitest · dist + Storybook build
 bun run format:check                               # oxfmt --check  (`bun run format` fixes)
 bunx moon run --concurrency 3 :pack-check        # npm pack --dry-run for every package; ui-react also typechecks its tarball in a consumer app
-bunx moon run storybook:e2e                      # Playwright (Chromium, Firefox, WebKit): builds Storybook, serves it on 127.0.0.1:6007, flips every theme
+bunx moon run storybook:e2e                      # Playwright (Chromium): builds Storybook, serves it on 127.0.0.1:6007, flips every theme
 bunx moon run hack-cove-site:e2e                 # Playwright: builds the site, serves it on 127.0.0.1:4322, flips every theme on the /ui/ pages
 ```
 
@@ -78,7 +78,7 @@ a look: `bunx moon run storybook:storybook`, flip the theme switcher, and read t
 
 **Nothing is time dependent.** Jacobus, 2026-11-14: "The architecture of the test is wrong if it relies on timings for displaying it. We should be able to pass it in a value and then render that. It should not be time dependent. The component itself should not be time dependent." A component renders from the value it is given, and a test passes that value and asserts what renders. No fake timers, no waiting on a delay, no story driven by a timer, no `waitForTimeout` in an e2e spec. A visual delay, a fade or a label that reverts is CSS (an animation and its delay), as `CopyButton` and `NavigationProgress` do; a pending state is a value the story holds (a promise that never settles, or a button that lands it). The lint (`scripts/slopRules.ts`) fails a test, story or e2e file that uses a fake or real timer, and a `@hackcove/ui-react` component that calls `setTimeout` or `setInterval`; a line with `// time-dependent: <why>` on it or above it is exempt, and needs a reason a reviewer accepts.
 
-The e2e runs every spec in Chromium, Firefox and WebKit (`apps/storybook/playwright.config.ts`) and needs all three once per machine: `bunx playwright install chromium firefox webkit` (on Linux, `--with-deps` in CI). The PixelSlash visual check stays Chromium-only. A spec that cannot pass in one engine gets a scoped, commented skip (or a conditional assertion) naming the engine and the reason, never a blanket skip; a real cross-engine failure is fixed in the component. It discovers themes
+The e2e runs every spec in Chromium and nothing else (`apps/storybook/playwright.config.ts`; Jacobus, 2026-11-15: "We only test on Chrome. Nothing else."). It needs Chromium once per machine: `bunx playwright install chromium` (on Linux, `--with-deps` in CI). Each app's `playwright.config.test.ts` fails on a project in any other engine; a phone project keeps its phone device and sets `browserName: "chromium"` beside it. A spec that cannot pass in Chromium is fixed, not skipped. It discovers themes
 from `themes/*.css` like the switcher does and asserts each one under the scope class its CSS file
 names, so a new theme needs no test edit.
 
@@ -127,8 +127,8 @@ Hack Cove supports the web platform as of the Baseline digest of August 2026
 available by August 2026 may be used. Anything newer goes in only as feature-detected progressive
 enhancement, with a working fallback. The `browserslist` in the root `package.json` is the
 declared floor (Chrome and Edge 131, Firefox 143, Safari and iOS 18.4); it is declarative, since
-nothing in the toolchain reads it (Tailwind v4 and Vite hard-code their own targets), so the e2e in
-three engines is what enforces it. Use of a feature that raises the floor (check
+nothing in the toolchain reads it (Tailwind v4 and Vite hard-code their own targets). The e2e runs in
+Chromium only, so the rest of the floor is declared, not tested. Use of a feature that raises the floor (check
 [web.dev/baseline](https://web.dev/baseline) or MDN) raises the `browserslist` in the same
 change, and says so in the README's "Browser support". The visual check is Chromium-only.
 

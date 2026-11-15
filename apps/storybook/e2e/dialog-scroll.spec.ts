@@ -2,7 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 
 /**
  * A windowed Dialog is capped to the viewport and scrolls its body, so a tall one keeps its title
- * and its footer on screen. Run in Chromium, Firefox and WebKit, at a desktop height (720px) and at
+ * and its footer on screen. Run at a desktop height (720px) and at
  * the phone size appshell-phone.spec.ts uses (390 x 700).
  */
 const desktop = { name: "720px high", width: 1280, height: 720 };

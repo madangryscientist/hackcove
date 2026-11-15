@@ -1,7 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
 /**
- * SiteSearch's keys, in Chromium, Firefox and WebKit: the shortcut opens it with focus in the
+ * SiteSearch's keys: the shortcut opens it with focus in the
  * field, typing ranks the pages, Enter follows the first, the arrows move between the links and
  * Esc closes it and hands focus back to the trigger.
  */

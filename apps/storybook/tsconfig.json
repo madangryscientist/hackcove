@@ -6,6 +6,7 @@
     "e2e",
     "scripts",
     "playwright.config.ts",
+    "playwright.config.test.ts",
     "pixelslash.config.ts"
   ],
   "compilerOptions": {

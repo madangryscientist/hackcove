@@ -11,7 +11,6 @@ const boxOf = async (locator: Locator) => {
 
 test("/ui/button/ at 1440x900 has its current link in view in the rail, and the page has not moved", async ({
   page,
-  browserName,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/ui/button/");
@@ -27,10 +26,7 @@ test("/ui/button/ at 1440x900 has its current link in view in the rail, and the 
   expect(await page.evaluate(() => window.scrollY), "the page did not move").toBe(0);
   // The fade (HC-251) is live on the site, and the scrollbar is the thin themed one.
   await expect(scroller).toHaveAttribute("data-more", "");
-  // Headless Firefox reports `scrollbar-width: none` for every element (overlay scrollbars).
-  if (browserName !== "firefox") {
-    expect(await scroller.evaluate((el) => getComputedStyle(el).scrollbarWidth)).toBe("thin");
-  }
+  expect(await scroller.evaluate((el) => getComputedStyle(el).scrollbarWidth)).toBe("thin");
 });
 
 test("/ui/ at 1440x900 leaves the rail at the top: Getting started is current", async ({

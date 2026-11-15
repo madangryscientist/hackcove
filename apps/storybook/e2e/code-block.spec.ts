@@ -121,7 +121,6 @@ for (const theme of themes) {
   for (const id of scrolling) {
     test(`390px, ${theme.id}: ${id} scrolls inside its box, reaches the end of the line, and the page does not scroll sideways`, async ({
       page,
-      browserName,
     }) => {
       await open(page, id, theme);
       const { scroll, client } = await pageDoesNotScrollSideways(page);
@@ -138,10 +137,8 @@ for (const theme of themes) {
       // The line is longer than the box (it scrolls rather than widening the figure) …
       expect(before.overflow).toBeGreaterThan(0);
       expect(before.figureRight).toBeLessThanOrEqual(client);
-      // Thin, in the theme's muted ink (not the browser's `auto` grey). Headless Firefox reports
-      // `scrollbar-width: none` for every element, a plain `thin` probe included (overlay
-      // scrollbars), so the width is asserted in the other two engines only.
-      if (browserName !== "firefox") expect(before.width).toBe("thin");
+      // Thin, in the theme's muted ink (not the browser's `auto` grey).
+      expect(before.width).toBe("thin");
       expect(before.color).not.toBe("auto");
       // … and scrolling to the end shows the last character inside the box.
       const reached = await scroller.evaluate((el) => {
@@ -214,12 +211,8 @@ for (const [id, source] of Object.entries(sources)) {
 
 test("a real copy of the selected code puts the source text on the clipboard", async ({
   page,
-  browserName,
   context,
 }) => {
-  // Only Chromium lets a test read the system clipboard back (`clipboard-read`); the selection
-  // test above covers the other two engines.
-  test.skip(browserName !== "chromium", "clipboard-read permission is Chromium-only in Playwright");
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/iframe.html?id=text-code--long-line&viewMode=story");

@@ -30,9 +30,6 @@ const open = async (page: Page) => {
 const transitionName = (page: Page, testId: string) =>
   page.getByTestId(testId).evaluate((el) => getComputedStyle(el).viewTransitionName);
 
-const supportsNames = (page: Page) =>
-  page.evaluate(() => CSS.supports("view-transition-name", "a"));
-
 const transitions = (page: Page) =>
   page.evaluate((): number | undefined => {
     const count: unknown = Reflect.get(window, "__transitions");
@@ -43,40 +40,26 @@ test("the themes folder lists at least one theme", () => {
   expect(theme).toBeDefined();
 });
 
-test("each card has its own name, and the detail takes the pressed card's", async ({
-  page,
-  browserName,
-}) => {
+test("each card has its own name, and the detail takes the pressed card's", async ({ page }) => {
   await page.addInitScript(COUNT_TRANSITIONS);
   await open(page);
-  const names = await supportsNames(page);
-  // Chromium has had View Transitions since 111, so the name checks never skip there.
-  if (browserName === "chromium") expect(names).toBe(true);
-  let shopB = "";
-  if (names) {
-    const all = await Promise.all(
-      ["morph-a", "morph-b", "morph-c"].map((id) => transitionName(page, id)),
-    );
-    expect(new Set(all).size).toBe(3);
-    expect(all).not.toContain("none");
-    shopB = all[1] ?? "";
-  }
-  // else: an engine without View Transitions (Firefox before 144) computes no name; the swap below still holds.
+  const all = await Promise.all(
+    ["morph-a", "morph-b", "morph-c"].map((id) => transitionName(page, id)),
+  );
+  expect(new Set(all).size).toBe(3);
+  expect(all).not.toContain("none");
+  const shopB = all[1] ?? "";
 
   await page.getByRole("button", { name: "Open Shop B" }).click();
   await expect(page.getByRole("heading", { name: "Shop B" })).toBeVisible();
   await expect(page.getByTestId("morph-a")).toHaveCount(0);
-  if (names) {
-    expect(await transitionName(page, "morph-detail")).toBe(shopB);
-    expect(await transitions(page)).toBe(1);
-  }
+  expect(await transitionName(page, "morph-detail")).toBe(shopB);
+  expect(await transitions(page)).toBe(1);
 
   await page.getByRole("button", { name: "Back" }).click();
   await expect(page.getByRole("button", { name: "Open Shop B" })).toBeVisible();
-  if (names) {
-    expect(await transitionName(page, "morph-b")).toBe(shopB);
-    expect(await transitions(page)).toBe(2);
-  }
+  expect(await transitionName(page, "morph-b")).toBe(shopB);
+  expect(await transitions(page)).toBe(2);
 });
 
 test("under reduced motion the page swaps with no transition", async ({ page }) => {
@@ -85,9 +68,7 @@ test("under reduced motion the page swaps with no transition", async ({ page }) 
   await open(page);
   await page.getByRole("button", { name: "Open Shop B" }).click();
   await expect(page.getByRole("heading", { name: "Shop B" })).toBeVisible();
-  const count = await transitions(page);
-  // An engine with no startViewTransition has nothing to count.
-  if (count !== undefined) expect(count).toBe(0);
+  expect(await transitions(page)).toBe(0);
 });
 
 test("where the browser has no View Transitions the page still swaps", async ({ page }) => {
@@ -112,38 +93,31 @@ test.describe("a long list", () => {
     );
     const first = page.getByRole("button", { name: "Open Market 1", exact: true });
     await expect(first).toBeVisible();
-    // An engine without View Transitions (Firefox before 144) computes no name; the swap still holds.
-    const names = await supportsNames(page);
+    const all = await page
+      .locator('[data-testid^="long-"][data-morph]')
+      .evaluateAll((els) => els.map((el) => getComputedStyle(el).viewTransitionName));
+    expect(all).toHaveLength(30);
+    expect(all[0]).toBe("hc-morph-long-1");
+    expect(all[29]).toBe("none");
+    expect(all.filter((n) => n !== "none").length).toBeLessThan(30);
 
-    if (names) {
-      const all = await page
-        .locator('[data-testid^="long-"][data-morph]')
-        .evaluateAll((els) => els.map((el) => getComputedStyle(el).viewTransitionName));
-      expect(all).toHaveLength(30);
-      expect(all[0]).toBe("hc-morph-long-1");
-      expect(all[29]).toBe("none");
-      expect(all.filter((n) => n !== "none").length).toBeLessThan(30);
+    // The page's fade is the root transition, captured at the viewport's size, not a named box.
+    expect(await transitionName(page, "long-page")).toBe("none");
+    expect(
+      await page.evaluate(() => getComputedStyle(document.documentElement).viewTransitionName),
+    ).toBe("root");
 
-      // The page's fade is the root transition, captured at the viewport's size, not a named box.
-      expect(await transitionName(page, "long-page")).toBe("none");
-      expect(
-        await page.evaluate(() => getComputedStyle(document.documentElement).viewTransitionName),
-      ).toBe("root");
-
-      const last = page.getByTestId("long-30");
-      await last.scrollIntoViewIfNeeded();
-      await expect.poll(() => transitionName(page, "long-30")).toBe("hc-morph-long-30");
-      await page.evaluate(() => window.scrollTo(0, 0));
-    }
+    const last = page.getByTestId("long-30");
+    await last.scrollIntoViewIfNeeded();
+    await expect.poll(() => transitionName(page, "long-30")).toBe("hc-morph-long-30");
+    await page.evaluate(() => window.scrollTo(0, 0));
 
     await first.click();
     await expect(page.getByRole("heading", { name: "Market 1", exact: true })).toBeVisible();
-    if (names) expect(await transitions(page)).toBe(1);
+    expect(await transitions(page)).toBe(1);
     await page.getByRole("button", { name: "Back" }).click();
     await expect(first).toBeVisible();
-    if (names) {
-      expect(await transitions(page)).toBe(2);
-      expect(await transitionName(page, "long-1")).toBe("hc-morph-long-1");
-    }
+    expect(await transitions(page)).toBe(2);
+    expect(await transitionName(page, "long-1")).toBe("hc-morph-long-1");
   });
 });
