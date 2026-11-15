@@ -31,6 +31,7 @@ import { GallerySwitchers } from "./GallerySwitchers";
 import { GalleryText } from "./GalleryText";
 import { GalleryLinkedRows } from "./GalleryLinkedRows";
 import { GalleryLinks } from "./GalleryLinks";
+import { GalleryMorph } from "./GalleryMorph";
 import {
   GalleryBleedPages,
   GalleryGridPages,
@@ -206,6 +207,8 @@ export const gallerySections: GallerySection[] = [
         <GalleryChat />
 
         <GalleryPageFade />
+
+        <GalleryMorph />
 
         <GalleryNavigationProgress />
 
