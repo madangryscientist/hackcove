@@ -10,6 +10,7 @@ import { cx } from "./cx.js";
 import { InputShell, PrefixShell } from "./InputShell.js";
 import type { Unstyled } from "./props.js";
 import { SearchInput } from "./SearchInput.js";
+import { useFieldControl } from "./fieldControl.js";
 
 /**
  * A text input. `icon` puts a leading icon inside the field (e.g. a search glass). `prefix` puts
@@ -22,7 +23,7 @@ export function Input({
   size = "md",
   width = "full",
   align = "start",
-  ...rest
+  ...own
 }: (
   | {
       /** A leading icon inside the field (a search glass). Not with `prefix`. */
@@ -43,6 +44,7 @@ export function Input({
   } & Unstyled<
     Omit<ComponentPropsWithoutRef<"input">, "size" | "width" | "prefix">
   >): ReactElement {
+  const rest = { ...own, ...useFieldControl(own) };
   if (rest.type === "search") {
     return <SearchInput {...rest} icon={icon} size={size} width={width} align={align} />;
   }

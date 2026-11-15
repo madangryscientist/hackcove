@@ -92,3 +92,14 @@ export const Sizes: S = {
     </div>
   ),
 };
+
+/** In an errored `Field`, the textarea takes a red edge and is described by the error. */
+export const Invalid: S = {
+  render: () => (
+    <div className="max-w-md">
+      <Field label="Review" error="Say a little more about the shop.">
+        <Textarea defaultValue="Fine." />
+      </Field>
+    </div>
+  ),
+};

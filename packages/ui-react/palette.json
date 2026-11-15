@@ -76,6 +76,8 @@
     "text-red-800",
     "text-red-900",
     "border-red-200",
+    "aria-invalid:border-red-200",
+    "has-aria-invalid:border-red-200",
     "border-red-600"
   ],
   "info": ["bg-blue-50", "text-blue-700", "text-blue-800", "border-blue-200"],

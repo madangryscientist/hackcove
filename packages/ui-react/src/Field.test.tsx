@@ -97,8 +97,8 @@ describe("Field layout", () => {
   });
 
   it("keeps the hint or error under the control, in the second column", () => {
-    expect(row({ hint: "Lower first." })).toContain(
-      '<div class="col-start-2"><p class="text-xs text-slate-500">Lower first.</p></div>',
+    expect(row({ hint: "Lower first." })).toMatch(
+      /<div class="col-start-2"><p id="[^"]+" class="text-xs text-slate-500">Lower first\.<\/p><\/div>/,
     );
     const err = row({ hint: "Lower first.", error: "Required." });
     expect(err).toContain('role="alert"');

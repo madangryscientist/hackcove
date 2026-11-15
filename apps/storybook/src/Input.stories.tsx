@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Card, Icon, Input } from "@hackcove/ui-react";
+import { Button, Card, Field, Icon, Input } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Forms/Input" };
 export default meta;
@@ -200,6 +200,26 @@ export const Sizes: S = {
           <Button size={size}>Save</Button>
         </div>
       ))}
+    </div>
+  ),
+};
+
+/** In an errored `Field`, every form of the input takes a red edge and is described by the error. */
+export const Invalid: S = {
+  render: () => (
+    <div className="flex max-w-md flex-col gap-4">
+      <Field label="Display name" error="Pick a shorter name.">
+        <Input defaultValue="A very long display name indeed" />
+      </Field>
+      <Field label="Shop name" error="Name the shop.">
+        <Input icon={search} />
+      </Field>
+      <Field label="Price" error="Enter a price above zero.">
+        <Input prefix="R" align="end" inputMode="decimal" defaultValue="0.00" />
+      </Field>
+      <Field label="Search shops" error="Type at least two letters.">
+        <Input type="search" icon={search} defaultValue="a" />
+      </Field>
     </div>
   ),
 };

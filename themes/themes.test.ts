@@ -157,7 +157,7 @@ describe.each(files)("%s", (file) => {
       .flat()
       .filter((utility) => {
         const escaped = escapeRe("." + utility.replace(/[:/]/g, "\\$&"));
-        return !new RegExp(`${escaped}(?=[\\s,:{])`).test(css);
+        return !new RegExp(`${escaped}(?=[\\s,:{\\[])`).test(css);
       });
     expect(missing).toEqual([]);
   });

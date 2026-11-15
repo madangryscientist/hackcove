@@ -320,13 +320,15 @@
 .thrifty-paper .border-amber-600 {
   border-color: #b45309; /* warn: the strong edge (Card attention) */
 }
-.thrifty-paper .border-red-200 {
+.thrifty-paper .border-red-200,
+.thrifty-paper .aria-invalid\:border-red-200[aria-invalid="true"],
+.thrifty-paper .has-aria-invalid\:border-red-200:has([aria-invalid="true"]) {
   border-color: rgba(
     122,
     18,
     32,
     0.7
-  ); /* danger/70: an invalid field's edge, 5.06:1 on white and 4.77:1 on subtle (danger/30 was 1.67:1) */
+  ); /* danger/70: an invalid field's edge, and an `aria-invalid` control's edge, 5.06:1 on white and 4.77:1 on subtle (danger/30 was 1.67:1) */
 }
 .thrifty-paper .border-blue-200,
 .thrifty-paper .border-blue-300 {

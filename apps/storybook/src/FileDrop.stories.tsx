@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { FileDrop } from "@hackcove/ui-react";
+import { Field, FileDrop } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Forms/FileDrop" };
 export default meta;
@@ -53,6 +53,17 @@ export const Sizes: S = {
           Drop a bank statement here, {size}
         </FileDrop>
       ))}
+    </div>
+  ),
+};
+
+/** In an errored `Field`, the zone's dashed edge turns red and the input is described by the error. */
+export const Invalid: S = {
+  render: () => (
+    <div className="max-w-md">
+      <Field label="Bank statement" error="Choose a CSV file.">
+        <FileDrop accept=".csv">Drop a bank statement here or click to choose</FileDrop>
+      </Field>
     </div>
   ),
 };

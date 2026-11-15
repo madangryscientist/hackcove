@@ -354,8 +354,10 @@
 .dark .border-amber-600 {
   border-color: #f9e2af; /* yellow: the strong warn edge (Card attention) */
 }
-.dark .border-red-200 {
-  /* The invalid field's edge, the only sign of the error besides the message: red/65, 3:1 or more
+.dark .border-red-200,
+.dark .aria-invalid\:border-red-200[aria-invalid="true"],
+.dark .has-aria-invalid\:border-red-200:has([aria-invalid="true"]) {
+  /* The invalid field's edge (and an `aria-invalid` control's edge), the only sign of the error besides the message: red/65, 3:1 or more
      on every surface (red/45 was 2.25:1 on surface0). */
   border-color: rgba(243, 139, 168, 0.65);
 }
