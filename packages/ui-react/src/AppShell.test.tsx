@@ -86,7 +86,7 @@ describe("AppShell", () => {
       '<div class="flex items-center gap-2 text-base font-bold tracking-tight text-slate-900"><a href="/">Logo</a></div>',
     );
     expect(out).toContain(
-      '<div class="ml-auto flex min-w-0 items-center gap-2 max-md:shrink!"><div class="flex min-w-0 items-center gap-2 overflow-x-clip *:shrink-0 [&amp;&gt;.w-full]:w-auto"><button type="button">Theme</button></div><details',
+      '<div class="ml-auto flex min-w-0 items-center gap-2 max-md:shrink!"><div class="flex min-w-0 items-center gap-2 *:shrink-0 max-md:-mx-1 max-md:overflow-x-clip max-md:px-1 [&amp;&gt;.w-full]:w-auto"><button type="button">Theme</button></div><details',
     );
     const order = ["Logo", 'aria-label="Main"', "extra", "Theme"].map((part) => out.indexOf(part));
     expect(order).toEqual(order.toSorted((a, b) => a - b));

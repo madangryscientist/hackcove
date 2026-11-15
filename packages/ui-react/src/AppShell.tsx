@@ -189,7 +189,8 @@ function HeaderSlots({
           )}
         >
           {controls && (
-            <div className="flex min-w-0 items-center gap-2 overflow-x-clip *:shrink-0 [&>.w-full]:w-auto">
+            // Clips below `md` only, with 4px of room each side so a focus outline is not cut.
+            <div className="flex min-w-0 items-center gap-2 *:shrink-0 max-md:-mx-1 max-md:overflow-x-clip max-md:px-1 [&>.w-full]:w-auto">
               {controls}
             </div>
           )}

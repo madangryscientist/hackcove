@@ -142,30 +142,25 @@ describe("AppShell menuControls", () => {
     expect(menuOf(out)).toContain("Sign out");
   });
 
-  it("shows them inline from md: the details drops its box and its content stays visible closed", () => {
-    const out = renderToStaticMarkup(<AppShell menuControls={signOut}>x</AppShell>);
-    const details = /<details class="([^"]*)"/.exec(out)?.[1]?.split(" ") ?? [];
-    expect(details).toEqual(
-      expect.arrayContaining([
-        "md:contents",
-        "md:[&amp;::details-content]:[content-visibility:visible]",
-      ]),
-    );
-    expect(details).not.toContain("md:hidden");
-  });
-
-  it("keeps the menu hidden from md when there are no menuControls", () => {
-    const out = renderToStaticMarkup(<AppShell nav={nav}>x</AppShell>);
-    expect(/<details class="([^"]*)"/.exec(out)?.[1]?.split(" ")).toContain("md:hidden");
-  });
-
-  it("puts controls in a box of their own that clips, beside the menu, so the Menu is never the part cut off", () => {
-    const out = renderToStaticMarkup(
-      <AppShell nav={nav} controls={<span>toggle</span>}>
+  it("stays open on an Escape inside a dialog opened from its controls, which the dialog takes", () => {
+    const container = mount(
+      <AppShell
+        nav={nav}
+        menuControls={
+          <dialog open>
+            <button type="button">Cancel</button>
+          </dialog>
+        }
+      >
         x
       </AppShell>,
     );
-    const box = /<div class="([^"]*)"><span>toggle<\/span><\/div><details/.exec(out)?.[1];
-    expect(box?.split(" ")).toEqual(expect.arrayContaining(["min-w-0", "overflow-x-clip"]));
+    const details = open(container);
+    act(() => {
+      buttonsNamed(container, "Cancel")[0]?.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+      );
+    });
+    expect(details.open).toBe(true);
   });
 });

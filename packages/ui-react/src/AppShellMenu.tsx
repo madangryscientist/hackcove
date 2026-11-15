@@ -55,7 +55,12 @@ export function AppShellMenu({
           : "md:hidden",
       )}
       onKeyDown={(event) => {
-        if (event.key === "Escape") close(true);
+        // A dialog opened from a control in the menu takes its own Escape; the menu stays open.
+        if (
+          event.key === "Escape" &&
+          !(event.target instanceof Element && event.target.closest("dialog"))
+        )
+          close(true);
       }}
     >
       <summary
