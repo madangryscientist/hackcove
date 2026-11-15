@@ -166,7 +166,11 @@ global rule; what is particular to hackcove:
 - **Screenshots after the merge.** The `Visual` run on the push to `main` uploads the merge
   commit as `main`, which the server takes as the baseline for the next branch. Nobody uploads it
   by hand. A release commit that `publish.yml` pushes needs no upload of its own: the server picks
-  its parent's build.
+  its parent's build. That release push starts no `Visual` run, so a release dispatched while the
+  merge's `Visual` run is still going moves `main` past it, and the run fails with "rebase" and
+  uploads nothing. Dispatch a release only once the merge commit's `Visual` run is green. If it went
+  red that way, re-seed `main` by hand: `visual-upload` (with `PIXELSLASH_TOKEN`) on a checkout at
+  origin/main's tip.
 - **The squash subject stays conventional** (`gh pr merge <pr> --squash --subject "…"`),
   because `nx release` reads it.
 - **No branch protection.** `publish.yml` pushes its release commit straight to `main`, so

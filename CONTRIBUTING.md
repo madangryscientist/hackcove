@@ -187,8 +187,8 @@ captures no base at all. It has two modes, picked from the checkout:
   build's page. Before any capture it checks that each project holds a `main` build at the
   merge-base or an ancestor, and fails naming the project when none does.
 - **A checkout at origin/main's tip** (clean; a detached HEAD in a throwaway worktree counts)
-  uploads that commit as branch `main` and compares nothing. This is the step after a merge that
-  keeps those `main` builds on the server. Any other commit on `main` is refused.
+  uploads that commit as branch `main` and compares nothing. The `Visual` run on a push to `main`
+  does this, which keeps those `main` builds on the server. Any other commit on `main` is refused.
 
 **Uploads can run side by side.** The groups of an upload each write their own
 `.pixelslash/<section>/` and send to their own PixelSlash project, so the run can take several at
