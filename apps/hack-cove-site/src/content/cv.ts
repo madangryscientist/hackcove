@@ -61,7 +61,7 @@ export const cv = {
     {
       company: "Hack Cove",
       title: "Founder / Contract Engineer",
-      dates: "Apr 2026 – Present",
+      dates: "Apr 2026 to Present",
       location: "Remote",
       groups: [
         {
@@ -109,7 +109,7 @@ export const cv = {
     {
       company: "Zappi",
       title: "Senior Engineer",
-      dates: "Apr 2021 – Apr 2026",
+      dates: "Apr 2021 to Apr 2026",
       location: "Remote",
       summary: "Developer platform and Node services · front-end guild lead (final year)",
       groups: [
@@ -128,7 +128,7 @@ export const cv = {
     {
       company: "FMI",
       title: "API Architect",
-      dates: "Jun 2018 – Mar 2021",
+      dates: "Jun 2018 to Mar 2021",
       location: "Remote",
       summary: "API and platform architecture for a life insurer moving off paper",
       groups: [
@@ -146,7 +146,7 @@ export const cv = {
     {
       company: "Wonga",
       title: "Software Development Team Lead",
-      dates: "Aug 2015 – May 2018",
+      dates: "Aug 2015 to May 2018",
       location: "Office-based",
       summary: "Migration architecture and tooling · team lead",
       groups: [
@@ -166,27 +166,27 @@ export const cv = {
     {
       company: "Sygnia",
       title: "Software Developer",
-      dates: "Sep 2014 – Aug 2015",
+      dates: "Sep 2014 to Aug 2015",
       summary: "Linked the web and server-side teams in asset management; tuned slow queries.",
     },
     {
       company: "Property24",
       title: "Software Developer",
-      dates: "Aug 2011 – Aug 2014",
+      dates: "Aug 2011 to Aug 2014",
       summary:
         "Built and ran one of South Africa's most visited websites across multiple servers with heavy caching; upgraded it from ASP Classic to ASP.NET to ASP.NET MVC.",
     },
     {
       company: "ACI Worldwide",
       title: "Software Developer",
-      dates: "Jan 2010 – Aug 2011",
+      dates: "Jan 2010 to Aug 2011",
       summary:
         "Java on Windows and AIX with SQL Server and DB2; third-level support and patches for the PostCard payments product.",
     },
     {
       company: "Axxess DSL and Business Intelligence",
       title: "Software Developer",
-      dates: "Sep 2008 – Dec 2009",
+      dates: "Sep 2008 to Dec 2009",
       summary:
         "C# Windows services, web services and ASP.NET sites on SQL Server; upgrades from ASP.NET 1.1 to 3.5.",
     },
@@ -196,7 +196,7 @@ export const cv = {
     qualification: "Bachelor of Science (BSc), Computer Science",
     school: "NMMU, Port Elizabeth",
     detail:
-      "2005–2008 • Automata Theory 83% • Linear Optimization 88% • Advanced Programming 71%/76%",
+      "2005 to 2008 • Automata Theory 83% • Linear Optimization 88% • Advanced Programming 71%/76%",
   },
 
   skills: [

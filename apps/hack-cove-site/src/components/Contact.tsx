@@ -2,7 +2,7 @@ import { Caption, MetaList, SectionHeading, Stack, Text, TextLink } from "@hackc
 import { site } from "../content/site";
 
 /**
- * Email only — there is deliberately no contact form (ticket 164), which is also
+ * Email only: there is deliberately no contact form (ticket 164), which is also
  * why the site needs no server: a form would arrive later as its own section
  * plus a Worker, without changing anything here.
  */

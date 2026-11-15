@@ -16,7 +16,7 @@ import { ui } from "./ui";
 export type { Product, Status } from "./products";
 
 export type Person = {
-  /** First name only — how the team is introduced on this site. */
+  /** First name only: how the team is introduced on this site. */
   name: string;
   role: string;
   /** A line or two, in their own words. Omitted until they've written it. */

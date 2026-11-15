@@ -33,7 +33,7 @@ export const LeadStory: S = {
 
 export const PageHeadingStory: S = {
   name: "PageHeading",
-  render: () => <PageHeading>Status — what's happening now</PageHeading>,
+  render: () => <PageHeading>Status: what's happening now</PageHeading>,
 };
 
 export const SectionHeadingStory: S = {
@@ -172,7 +172,7 @@ export const Specimen: S = {
         This is a paragraph of <Text strong>body text</Text> rendered with <code>as="p"</code> so it
         takes block layout, while the default <Text>Text</Text> stays inline.
       </Text>
-      <Caption as="p">Caption — fine print and metadata.</Caption>
+      <Caption as="p">Caption: fine print and metadata.</Caption>
     </div>
   ),
 };
@@ -295,8 +295,8 @@ export const AsOverride: S = {
       <PageHeading as="h2">as="h2"</PageHeading>
       <PageHeading as="div">as="div"</PageHeading>
       <Caption color="muted">Inline roles turned into block elements:</Caption>
-      <Text as="p">Text as="p" — now a block paragraph.</Text>
-      <Caption as="p">Caption as="p" — now a block.</Caption>
+      <Text as="p">Text as="p": now a block paragraph.</Text>
+      <Caption as="p">Caption as="p": now a block.</Caption>
       <Overline as="label" htmlFor="x">
         Overline as="label" (accepts label props like htmlFor)
       </Overline>

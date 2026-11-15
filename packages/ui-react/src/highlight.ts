@@ -3,7 +3,7 @@
  * else: no HTML, no client JS. `CodeText` maps a run to a palette utility, so a theme recolours
  * highlighted code exactly as it recolours everything else.
  *
- * The grammars are deliberately shallow — enough for examples, not a compiler front end. `text`
+ * The grammars are deliberately shallow: enough for examples, not a compiler front end. `text`
  * returns the code as one plain run, so nothing is coloured where no language is named. The
  * languages: `text`, `tsx`, `ts`, `js`, `json`, `bash`, `console` (a shell session: `$ ` commands
  * scanned as bash, everything else output), `css`, `html` (with `<script>` scanned as JS and
@@ -245,7 +245,7 @@ function childrenStep(scan: JsScan): void {
 }
 
 /**
- * JS, TS and TSX. Three modes — code, inside a tag, and children text — keep an apostrophe in
+ * JS, TS and TSX. Three modes (code, inside a tag, and children text) keep an apostrophe in
  * `<p>Don't</p>` as text rather than the start of a runaway string, and every open element records
  * the mode to return to, so a `{…}` expression that holds JSX closes back into code.
  */

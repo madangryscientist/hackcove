@@ -10,7 +10,7 @@ import Base from "../layouts/Base.astro";
 const section = sectionOf("contracting");
 ---
 
-<Base title={`${section.name} — ${site.name}`} description={section.description}>
+<Base title={`${section.name} · ${site.name}`} description={section.description}>
   <Stack gap="xl">
     <PageIntro title={section.name} subtitle={site.intro} />
     <Team />

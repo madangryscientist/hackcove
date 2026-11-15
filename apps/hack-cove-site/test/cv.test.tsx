@@ -55,10 +55,10 @@ describe("cv content", () => {
 
   test("experience dates and titles match the v2 CV", () => {
     expect(cv.experience.map((job) => `${job.company} · ${job.title} · ${job.dates}`)).toEqual([
-      "Hack Cove · Founder / Contract Engineer · Apr 2026 – Present",
-      "Zappi · Senior Engineer · Apr 2021 – Apr 2026",
-      "FMI · API Architect · Jun 2018 – Mar 2021",
-      "Wonga · Software Development Team Lead · Aug 2015 – May 2018",
+      "Hack Cove · Founder / Contract Engineer · Apr 2026 to Present",
+      "Zappi · Senior Engineer · Apr 2021 to Apr 2026",
+      "FMI · API Architect · Jun 2018 to Mar 2021",
+      "Wonga · Software Development Team Lead · Aug 2015 to May 2018",
     ]);
   });
 

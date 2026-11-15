@@ -8,6 +8,11 @@ const timeout = w("set", "Timeout(");
 const interval = w("set", "Interval(");
 const todo = w("TO", "DO");
 const ui = "@hackcove/ui-react";
+// Built from code points, so this file carries neither dash.
+const em = String.fromCodePoint(0x2014);
+const en = String.fromCodePoint(0x2013);
+const dash = (path: string): string =>
+  `${path}:1: em or en dash; rewrite with a full stop, comma, colon or brackets (a range is "to")`;
 
 describe("slopRules: nothing time dependent", () => {
   it("fails a test file that uses fake timers", () => {
@@ -98,5 +103,31 @@ describe("slopRules: the rules from before", () => {
       "src/a.ts:1: commented-out code; delete it (git keeps it)",
     ]);
     expect(slopRules("src/a.ts", "// return early when empty", "x")).toEqual([]);
+  });
+});
+
+describe("slopRules: no em or en dash, in any file", () => {
+  it("fails a line with an em dash", () => {
+    expect(slopRules("src/pages/terms.astro", `<title>Terms ${em} Hack Cove</title>`, "x")).toEqual(
+      [dash("src/pages/terms.astro")],
+    );
+  });
+
+  it("fails a line with an en dash, in CSS and in a TypeScript comment", () => {
+    expect(slopRules("mocha.css", `/* 0${en}100 */`, "x")).toEqual([dash("mocha.css")]);
+    expect(slopRules("src/a.ts", `/** held to 0${en}100 */`, "x")).toEqual([dash("src/a.ts")]);
+  });
+
+  it("passes a clean line", () => {
+    expect(slopRules("src/pages/terms.astro", "<title>Terms · Hack Cove</title>", "x")).toEqual([]);
+    expect(slopRules("README.md", "Held to 0 to 100: a range is written with to.", "x")).toEqual(
+      [],
+    );
+  });
+
+  it("runs the TypeScript rules on TypeScript only", () => {
+    expect(slopRules("README.md", "// const x = 1;", "x")).toEqual([]);
+    expect(slopRules("src/a.css", `/* ${todo} later */`, "x")).toEqual([]);
+    expect(slopRules("src/a.ts", "// const x = 1;", "x")).toHaveLength(1);
   });
 });

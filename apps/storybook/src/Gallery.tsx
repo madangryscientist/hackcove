@@ -77,7 +77,7 @@ export const gallerySections: GallerySection[] = [
           <Text as="p">
             Text with a <Text strong>strong run</Text> inside it.
           </Text>
-          <Caption as="p">Caption — fine print and metadata.</Caption>
+          <Caption as="p">Caption: fine print and metadata.</Caption>
         </div>
       </>
     ),

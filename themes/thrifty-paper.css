@@ -1,6 +1,6 @@
 /*! Thrifty Paper palette from Thrifty's light theme (cream paper, ink text, clay accent) */
 /* ---------------------------------------------------------------------------
-   Thrifty Paper — a light theme for the Hack Cove design system.
+   Thrifty Paper: a light theme for the Hack Cove design system.
    ---------------------------------------------------------------------------
    The @hackcove/ui-react components are written against Tailwind's slate/colour
    utilities directly (bg-white, text-slate-900, …). This file remaps those
@@ -49,12 +49,12 @@
   --hc-accent: #9a3412; /* text-violet-600 */
 }
 
-/* The page canvas — AppShell paints it; white cards lift off the cream. */
+/* The page canvas: AppShell paints it; white cards lift off the cream. */
 .thrifty-paper .bg-gray-50 {
   background-color: #fdfbf7; /* canvas */
 }
 
-/* Surfaces — white cards on the cream canvas, cream insets. */
+/* Surfaces: white cards on the cream canvas, cream insets. */
 .thrifty-paper .bg-white {
   background-color: #ffffff; /* surface */
 }
@@ -68,16 +68,16 @@
   background-color: #f7f2e9; /* subtle */
 }
 .thrifty-paper .bg-slate-100 {
-  background-color: #ece3d4; /* line — one step deeper than subtle */
+  background-color: #ece3d4; /* line: one step deeper than subtle */
 }
 .thrifty-paper .bg-slate-900 {
-  background-color: #1c1917; /* ink — e.g. the brand badge */
+  background-color: #1c1917; /* ink: e.g. the brand badge */
 }
 .thrifty-paper .backdrop\:bg-slate-900\/35::backdrop {
-  background-color: rgba(28, 25, 23, 0.35); /* ink — the modal scrim */
+  background-color: rgba(28, 25, 23, 0.35); /* ink: the modal scrim */
 }
 
-/* The media scrim — Lightbox's full-screen viewer. It stays near-black with light text in this light
+/* The media scrim: Lightbox's full-screen viewer. It stays near-black with light text in this light
    theme too, so a photo or a video reads against it as it would in any viewer. */
 .thrifty-paper .bg-black\/90 {
   background-color: rgba(28, 25, 23, 0.94); /* ink */
@@ -92,10 +92,10 @@
   background-color: rgba(253, 251, 247, 0.12); /* canvas/12 */
 }
 .thrifty-paper .focus-visible\:outline-white:focus-visible {
-  outline-color: #fdfbf7; /* canvas — the accent is 2.4:1 on the scrim */
+  outline-color: #fdfbf7; /* canvas: the accent is 2.4:1 on the scrim */
 }
 
-/* The media matte — Image framed: the white mat a QR code is scanned off. It stays white in every
+/* The media matte (Image framed): the white mat a QR code is scanned off. It stays white in every
    theme, dark ones included, as the scrim above stays black. */
 .thrifty-paper .bg-white\/100 {
   background-color: #ffffff;
@@ -112,10 +112,10 @@
 }
 .thrifty-paper .text-slate-500,
 .thrifty-paper .text-slate-400 {
-  color: #6b6259; /* ink-mute — Thrifty's lightest text */
+  color: #6b6259; /* ink-mute: Thrifty's lightest text */
 }
 .thrifty-paper .text-slate-300 {
-  color: #6b6259; /* ink-mute — days outside the month: 5.97:1 on white (ink-mute/50 was 2.15:1) */
+  color: #6b6259; /* ink-mute, days outside the month: 5.97:1 on white (ink-mute/50 was 2.15:1) */
 }
 .thrifty-paper .placeholder\:text-slate-400::placeholder {
   color: #736a60; /* ink-mute, a step lighter than the text it sits beside: ink-mute/70 was 2.9:1 to 3.1:1, and AA text needs 4.5:1 */
@@ -221,7 +221,7 @@
   background-color: #ecfdf5; /* positive-soft */
 }
 
-/* Avatar identity colours — violet-600 is the accent above; the rest sit on the theme. */
+/* Avatar identity colours: violet-600 is the accent above; the rest sit on the theme. */
 .thrifty-paper .bg-orange-600 {
   background-color: #8c5a2b; /* brown */
 }
@@ -249,7 +249,7 @@
   background-color: #ece3d4; /* line */
 }
 
-/* Coloured callouts / chips — the soft fills, the full-strength text. */
+/* Coloured callouts / chips: the soft fills, the full-strength text. */
 .thrifty-paper .bg-emerald-50,
 .thrifty-paper .bg-emerald-50\/60,
 .thrifty-paper .bg-emerald-100 {
@@ -318,7 +318,7 @@
   border-color: rgba(180, 83, 9, 0.3); /* warn */
 }
 .thrifty-paper .border-amber-600 {
-  border-color: #b45309; /* warn — the strong edge (Card attention) */
+  border-color: #b45309; /* warn: the strong edge (Card attention) */
 }
 .thrifty-paper .border-red-200 {
   border-color: rgba(

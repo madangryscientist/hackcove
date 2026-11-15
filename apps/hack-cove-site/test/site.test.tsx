@@ -14,7 +14,7 @@ import { themeFiles } from "@hackcove/themes-shared/files";
 import { themes } from "../src/content/themes";
 
 /* The point of these tests is that the words and the people survive rendering as
-   REAL HTML — the reason the site is Astro-with-islands rather than an SPA. They
+   REAL HTML: the reason the site is Astro-with-islands rather than an SPA. They
    render the same components the pages render, server-side, with no browser. */
 
 describe("content", () => {
@@ -25,10 +25,10 @@ describe("content", () => {
   });
 
   test("the team is the three people, first names only", () => {
-    expect(site.team.map((p) => `${p.name} — ${p.role}`)).toEqual([
-      "Jacobus — Engineer",
-      "Erin — Design Engineer",
-      "Silindile — Client Service agent",
+    expect(site.team.map((p) => `${p.name}, ${p.role}`)).toEqual([
+      "Jacobus, Engineer",
+      "Erin, Design Engineer",
+      "Silindile, Client Service agent",
     ]);
   });
 });
