@@ -20,7 +20,7 @@ export const layout: ComponentSection = {
           "`AppShellHideBelow` wraps a header control that only matters on a wide screen, such as the viewer's name: hidden below `breakpoint` (`sm`, the default, `md` or `lg`), a centred row from there up.",
           "A bar that sticks under the header at the top of a `bleed` page is a `StickyBar`.",
           "With a router, `AppShellBrand`'s `href` goes through the app's `LinkProvider`, like every link.",
-          "Header, main and footer each sit in a `Container`, so a page never sets its own width or padding. Do not add a `Container` inside the shell.",
+          "Header, main and footer each sit in a `Container`, so a page never sets its own width or padding.",
           "`bleed` drops main's `Container` for a layout that needs the whole width (`FullBleedLayout`); `SidebarLayout` needs no `bleed`.",
           "`controls` stay in the row at every width, so keep them few (a theme toggle, the viewer's avatar). Pickers and actions that do not fit a phone row go in `menuControls`: from `md` they sit in the row after `controls`, and below `md` they are at the top of the Menu.",
           "On a phone `nav` and `subnav` fold into one Menu button, so a nav of any length stays reachable with no sideways scroll; `menuLabel` renames the button (`Menu` by default), for a translated app.",

@@ -194,7 +194,7 @@ export const text: ComponentSection = {
       pairs: ["TextLink/InSentence", "TextLink/External", "TextLink/Router", "TextLink/Stretch"],
       usage: {
         do: [
-          "Use `TextLink` for every link in running text. Never a bare `<a>`.",
+          "Use `TextLink` for every link in running text.",
           '`external` is for another site: it opens a new tab with `rel="noreferrer"`.',
           "In an app with a router, set the router's `<Link>` once on a `LinkProvider` and give each `TextLink` its `href`. The library has no router.",
           'Set the adapter once, at the router. TanStack Router: `InnerWrap: ({ children }) => <LinkProvider link={(p) => <Link to="." {...p} />}>{children}</LinkProvider>` on `createRouter` (`to="."` satisfies the typed `to`; the `href` wins). React Router: `<LinkProvider link={({ href, ...p }) => <Link to={href} {...p} />}>`. Astro: no provider.',
