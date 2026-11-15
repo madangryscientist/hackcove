@@ -18,6 +18,7 @@ export function DemoShell({
   subnav,
   menuLabel,
   controls,
+  menuControls,
   footer,
   bleed = false,
   hideChromeInPrint = false,
@@ -28,6 +29,7 @@ export function DemoShell({
   subnav?: ReactNode;
   menuLabel?: string;
   controls?: ReactNode;
+  menuControls?: ReactNode;
   footer?: ReactNode;
   bleed?: boolean;
   hideChromeInPrint?: boolean;
@@ -50,6 +52,7 @@ export function DemoShell({
         />
       }
       controls={controls}
+      menuControls={menuControls}
       subnav={subnav}
       {...(menuLabel === undefined ? {} : { menuLabel })}
       footer={footer}

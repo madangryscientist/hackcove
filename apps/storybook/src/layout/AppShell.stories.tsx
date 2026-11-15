@@ -3,6 +3,7 @@ import {
   AppShellBrand,
   AppShellHideBelow,
   Avatar,
+  Button,
   Card,
   Code,
   ColourSchemeToggle,
@@ -164,6 +165,64 @@ export const HeaderSlots: S = {
       }
     >
       <PageHeader title="Header slots" subtitle="Brand, nav and controls." />
+    </DemoShell>
+  ),
+};
+
+const projectPicker = (
+  <Select aria-label="Project" defaultValue="web">
+    <option value="web">Web app</option>
+    <option value="api">API</option>
+  </Select>
+);
+
+const environmentPicker = (
+  <Select aria-label="Environment" defaultValue="production">
+    <option value="production">Production</option>
+    <option value="staging">Staging</option>
+  </Select>
+);
+
+/**
+ * `menuControls`: pickers and actions that do not fit a phone row. From `md` the two Selects and
+ * Sign out sit in the row after `controls` (the theme toggle); below `md` they are at the top of the
+ * Menu, above the nav. They are rendered once, so a picker keeps its value at every width. Pick
+ * Phone (375) in the viewport toolbar and open the Menu.
+ */
+export const MenuControls: S = {
+  render: () => (
+    <DemoShell
+      controls={<ColourSchemeToggle />}
+      menuControls={
+        <>
+          {projectPicker}
+          {environmentPicker}
+          <Button variant="outline">Sign out</Button>
+        </>
+      }
+    >
+      <PageHeader title="Menu controls" subtitle="In the row from md, in the Menu on a phone." />
+    </DemoShell>
+  ),
+};
+
+/**
+ * More `controls` than a phone row holds: below `md` they clip at the end of the row, and the Menu
+ * button stays on screen beside them, so the nav is always reachable. Pickers like these belong in
+ * `menuControls` (see `MenuControls`).
+ */
+export const CrowdedControls: S = {
+  render: () => (
+    <DemoShell
+      controls={
+        <>
+          {projectPicker}
+          {environmentPicker}
+          <Button variant="outline">Sign out</Button>
+        </>
+      }
+    >
+      <PageHeader title="Crowded controls" subtitle="The Menu button is never the one clipped." />
     </DemoShell>
   ),
 };
