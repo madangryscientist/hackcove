@@ -2,33 +2,41 @@ import type { HTMLAttributes, ReactElement, ReactNode } from "react";
 import { flushSync } from "react-dom";
 import type { Unstyled } from "./props.js";
 
-const DEFAULT_NAME = "hc-page";
-
 // The one place the View Transitions pseudo-elements can be styled: a stylesheet, as Tailwind
-// classes cannot reach `::view-transition-*`. The browser's own cross-fade does the fading; this
-// names the element and, under reduced motion, switches the animations off so the content swaps.
-// No colour in it. Where the API is missing the rules are never matched.
-const css = (name: string): string =>
-  `[data-page-fade="${name}"]{view-transition-name:${name}}
-@media (prefers-reduced-motion:reduce){::view-transition-group(${name}),::view-transition-old(${name}),::view-transition-new(${name}){animation:none}}`;
+// classes cannot reach `::view-transition-*`. The browser's own cross-fade does the fading; under
+// reduced motion this switches the animations off so the content swaps. With no name the fade is
+// the browser's root transition, captured at the viewport's size; a named box is captured at its
+// full height, which on a long page costs seconds in WebKit. No colour in it. Where the API is
+// missing the rules are never matched.
+const quiet = (name: string): string =>
+  `@media (prefers-reduced-motion:reduce){::view-transition-group(${name}),::view-transition-old(${name}),::view-transition-new(${name}){animation:none}}`;
+
+const css = (name: string | undefined): string =>
+  name === undefined
+    ? quiet("root")
+    : `[data-page-fade="${name}"]{view-transition-name:${name}}\n${quiet(name)}`;
 
 /**
- * The page's content area, named for the View Transitions API so a route change cross-fades it
- * while the frame around it (header, footer) stays put. Wrap what changes between pages, once per
- * page: two on one page need a different `name` each, or the browser skips the transition.
+ * The page's content area, cross-faded by the View Transitions API when the route changes. Wrap
+ * what changes between pages, once per page. With no `name` the fade is the browser's own
+ * cross-fade of the whole viewport; the frame around the content (header, footer) stays still
+ * because it is the same on both pages. A `name` names this box so it fades apart from the page,
+ * for a second region; a named region is captured at its full height, so name only a region no
+ * taller than the screen, and give each named one on a page its own `name`.
  * The fade runs only when the navigation is wrapped in a view transition: `startPageTransition`,
  * or a router's own option (TanStack Router `viewTransition`, React Router's `viewTransition` prop,
  * Astro's `ClientRouter`). Otherwise, or where the browser has no View Transitions, it renders
- * and behaves as a plain `<div>`. A `view-transition-name` makes the div a stacking context, so a
- * dropdown inside it cannot rise above a sticky header outside it: portal overlays to the body. Under `prefers-reduced-motion: reduce` this content swaps with no fade; a router's own
- * transition of the rest of the page is the router's to quiet.
+ * and behaves as a plain `<div>`. A named PageFade is a stacking context, so a dropdown inside it
+ * cannot rise above a sticky header outside it: portal overlays to the body. The default one is
+ * not. Under `prefers-reduced-motion: reduce` the content swaps with no fade; a named one quiets
+ * only its own box, and a router's own transition of the rest of the page is the router's to quiet.
  */
 export function PageFade({
-  name = DEFAULT_NAME,
+  name,
   children,
   ...rest
 }: {
-  /** The view-transition name, a CSS identifier (letters, digits, `-`, `_`). */
+  /** A view-transition name for this box, a CSS identifier (letters, digits, `-`, `_`), for a region no taller than the screen that fades apart from the page. */
   name?: string;
   children: ReactNode;
 } & Unstyled<HTMLAttributes<HTMLDivElement>>): ReactElement {

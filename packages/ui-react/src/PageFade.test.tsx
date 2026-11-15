@@ -16,23 +16,25 @@ function stubMotion(reduce: boolean): void {
 }
 
 describe("PageFade", () => {
-  it("renders an element named for the transition, holding the children", () => {
+  it("with no name leaves its box unnamed, so the fade is the page's root transition", () => {
     render(<PageFade>page</PageFade>);
-    expect(screen.getByText("page").getAttribute("data-page-fade")).toBe("hc-page");
-  });
-
-  it("names the element in a stylesheet that carries no colour", () => {
+    expect(screen.getByText("page").hasAttribute("data-page-fade")).toBe(false);
     // The <style> beside the element has no role to find it by, so it is read as data.
     const out = renderToStaticMarkup(<PageFade>x</PageFade>); // markup read as data
-    expect(out).toContain('[data-page-fade="hc-page"]{view-transition-name:hc-page}');
+    expect(out).not.toContain("view-transition-name");
+    expect(out).toContain(
+      "@media (prefers-reduced-motion:reduce){::view-transition-group(root),::view-transition-old(root),::view-transition-new(root){animation:none}}",
+    );
     expect(out).not.toMatch(/#[0-9a-f]{3}|rgb|hsl/i);
   });
 
-  it("takes its own name, so two on a page do not collide", () => {
+  it("with a name names its box, so a second region fades apart from the page", () => {
     render(<PageFade name="side">x</PageFade>);
     expect(screen.getByText("x").getAttribute("data-page-fade")).toBe("side");
     const css = renderToStaticMarkup(<PageFade name="side">x</PageFade>); // markup read as data
     expect(css).toContain('[data-page-fade="side"]{view-transition-name:side}');
+    expect(css).toContain("::view-transition-group(side)");
+    expect(css).not.toContain("(root)");
   });
 
   it("forwards props to the element", () => {

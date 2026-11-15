@@ -85,6 +85,64 @@ function Shops() {
  */
 export const Default: S = { render: () => <Shops /> };
 
+const longShops = Array.from({ length: 30 }, (_, i) => ({
+  id: String(i + 1),
+  name: `Market ${i + 1}`,
+  text: "Stalls of second-hand goods, open on Saturdays.",
+}));
+
+type LongShop = (typeof longShops)[number];
+
+/**
+ * Thirty shops in one long grid. Only the cards near the screen carry a transition name, so the
+ * browser captures what is visible, not the whole page, before the morph.
+ */
+function LongShops() {
+  const [open, setOpen] = useState<LongShop | undefined>(undefined);
+  const go = (next: LongShop | undefined) => startPageTransition(() => setOpen(next));
+  return (
+    <PageFade data-testid="long-page">
+      {open ? (
+        <Morph name="long" item={open.id} data-testid="long-detail">
+          <Card
+            title={open.name}
+            size="lg"
+            footer={
+              <Button variant="outline" onClick={() => go(undefined)}>
+                Back
+              </Button>
+            }
+          >
+            <Text as="p">{open.text}</Text>
+          </Card>
+        </Morph>
+      ) : (
+        <CardGrid>
+          {longShops.map((shop) => (
+            <Morph key={shop.id} name="long" item={shop.id} data-testid={`long-${shop.id}`}>
+              <Card
+                title={shop.name}
+                footer={
+                  <Button variant="outline" onClick={() => go(shop)}>
+                    Open {shop.name}
+                  </Button>
+                }
+              >
+                <Text as="p" color="muted">
+                  {shop.text}
+                </Text>
+              </Card>
+            </Morph>
+          ))}
+        </CardGrid>
+      )}
+    </PageFade>
+  );
+}
+
+/** A long list of cards: only those near the screen are named, so the transition stays quick. */
+export const LongList: S = { render: () => <LongShops /> };
+
 /** Each card's `item` is its shop's id, so only the pressed card has a partner on the next page and it morphs. */
 export const DoUniqueName: S = {
   render: () => {

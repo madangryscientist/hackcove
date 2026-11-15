@@ -101,3 +101,49 @@ test("where the browser has no View Transitions the page still swaps", async ({ 
   await page.getByRole("button", { name: "Back" }).click();
   await expect(page.getByRole("button", { name: "Open Shop B" })).toBeVisible();
 });
+
+test.describe("a long list", () => {
+  test.use({ viewport: { width: 375, height: 667 } });
+
+  test("names only the cards near the screen, and the page fade names no box", async ({ page }) => {
+    await page.addInitScript(COUNT_TRANSITIONS);
+    await page.goto(
+      `/iframe.html?id=feedback-morph--long-list&viewMode=story&globals=theme:${theme?.id}`,
+    );
+    const first = page.getByRole("button", { name: "Open Market 1", exact: true });
+    await expect(first).toBeVisible();
+    // An engine without View Transitions (Firefox before 144) computes no name; the swap still holds.
+    const names = await supportsNames(page);
+
+    if (names) {
+      const all = await page
+        .locator('[data-testid^="long-"][data-morph]')
+        .evaluateAll((els) => els.map((el) => getComputedStyle(el).viewTransitionName));
+      expect(all).toHaveLength(30);
+      expect(all[0]).toBe("hc-morph-long-1");
+      expect(all[29]).toBe("none");
+      expect(all.filter((n) => n !== "none").length).toBeLessThan(30);
+
+      // The page's fade is the root transition, captured at the viewport's size, not a named box.
+      expect(await transitionName(page, "long-page")).toBe("none");
+      expect(
+        await page.evaluate(() => getComputedStyle(document.documentElement).viewTransitionName),
+      ).toBe("root");
+
+      const last = page.getByTestId("long-30");
+      await last.scrollIntoViewIfNeeded();
+      await expect.poll(() => transitionName(page, "long-30")).toBe("hc-morph-long-30");
+      await page.evaluate(() => window.scrollTo(0, 0));
+    }
+
+    await first.click();
+    await expect(page.getByRole("heading", { name: "Market 1", exact: true })).toBeVisible();
+    if (names) expect(await transitions(page)).toBe(1);
+    await page.getByRole("button", { name: "Back" }).click();
+    await expect(first).toBeVisible();
+    if (names) {
+      expect(await transitions(page)).toBe(2);
+      expect(await transitionName(page, "long-1")).toBe("hc-morph-long-1");
+    }
+  });
+});
