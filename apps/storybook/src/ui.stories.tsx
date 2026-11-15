@@ -1,15 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import {
-  Button,
-  Card,
-  EmptyState,
-  EpicHeader,
-  groupByEpic,
-  Markdown,
-  Pill,
-  Stack,
-  Text,
-} from "@hackcove/ui-react";
+import { Button, Card, EmptyState, Markdown, Pill, Stack, Text } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Text/Body text" };
 export default meta;
@@ -104,9 +94,6 @@ export const CardAsArticle: S = {
     </Card>
   ),
 };
-export const Header: S = {
-  render: () => <EpicHeader color="#cba6f7" label="HC-42 · Voice Inbox" />,
-};
 export const MarkdownStory: S = {
   render: () => <Markdown md={"## What I did\n- **HC-42** shipped\n- plain item"} />,
 };
@@ -147,39 +134,6 @@ export const DontEmptyView: S = {
     <Stack>
       <Text tone="muted">No projects yet.</Text>
       <Button>Create a project</Button>
-    </Stack>
-  ),
-};
-
-/** `groupByEpic` orders the groups, real epics first by ref and "No epic" last; an `EpicHeader` heads each one. */
-export const DoEpicGroups: S = {
-  render: () => (
-    <Card title="Open work" count={3}>
-      {groupByEpic(
-        [
-          { task: "Record a voice note", epic: "HC-42", colour: "#cba6f7" },
-          { task: "Tidy the settings page", epic: null, colour: "#9399b2" },
-          { task: "Transcribe the note", epic: "HC-42", colour: "#cba6f7" },
-        ],
-        (item) => item.epic,
-      ).map(([epic, items]) => (
-        <div key={epic ?? "none"}>
-          <EpicHeader color={items[0]?.colour ?? "#9399b2"} label={epic ?? "No epic"} />
-          {items.map((item) => (
-            <Text key={item.task}>{item.task}</Text>
-          ))}
-        </div>
-      ))}
-    </Card>
-  ),
-};
-
-/** `EpicHeader` is a row of epic data with a dot in the epic's own colour, not a heading: a section is titled with `SectionHeading` or a Card `title`. */
-export const DontEpicGroups: S = {
-  render: () => (
-    <Stack>
-      <EpicHeader color="#cba6f7" label="Settings" />
-      <Text>Choose how the site looks and what it tells you about.</Text>
     </Stack>
   ),
 };

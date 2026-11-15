@@ -44,32 +44,6 @@ export const content: ComponentSection = {
       api: ["Card"],
     },
     {
-      slug: "epic-header",
-      name: "EpicHeader",
-      summary: "A row that heads a group of work with a dot in its epic's colour and its label.",
-      whenToUse: "Heading a group of tasks that share an epic, in a list grouped by `groupByEpic`.",
-      pairs: ["ui/EpicGroups"],
-      usage: {
-        do: [
-          "Group the items with `groupByEpic(items, (item) => item.epic)` and put one `EpicHeader` over each group.",
-          "`color` is the epic's own colour, a CSS colour from your data; `label` is the epic's name. The no-epic group has a `null` key: give it a label such as \"No epic\".",
-          "`EpicHeader` is a row of data, not a heading. Title a section with `SectionHeading` or a `Card` `title`.",
-        ],
-      },
-      accessibility: [
-        "The dot is decoration with no text alternative; the `label` carries the meaning, so the colour is never the only signal.",
-        "The row is a `<div>`, not a heading element, so it does not appear in a screen reader's heading outline.",
-        "`aria-*` and `data-*` props go on the root element.",
-      ],
-      api: ["EpicHeader"],
-      functions: [
-        {
-          name: "groupByEpic",
-          text: "Groups items by their epic ref, real epics first in ref order and the items with no epic (`null`) last; returns `[epic, items][]` to map over.",
-        },
-      ],
-    },
-    {
       slug: "avatar",
       name: "Avatar",
       summary:

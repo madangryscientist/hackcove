@@ -78,7 +78,6 @@ export const CASES: Record<string, () => ReactElement> = {
       x
     </ui.Lightbox>
   ),
-  EpicHeader: () => <ui.EpicHeader color="#000" label="Epic" {...A} />,
   ErrorPage: () => <ui.ErrorPage {...A} />,
   Field: () => (
     <ui.Field label="L" htmlFor="f" {...A}>

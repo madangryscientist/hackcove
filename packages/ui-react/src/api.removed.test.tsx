@@ -141,6 +141,12 @@ export const removed = {
   r57: () => <ui.Container elementRef={() => undefined} />,
   // @ts-expect-error Avatar passes only id, data-* and aria-*: no handler but onClick
   r58: () => <ui.Avatar name="x" onError={() => undefined} />,
+
+  // EpicHeader and groupByEpic
+  // @ts-expect-error EpicHeader is gone: a SubsectionHeading or an Overline over the group
+  r59: (t: typeof import("./index.js").EpicHeader) => t,
+  // @ts-expect-error groupByEpic is gone: Object.groupBy or a Map in the app
+  r60: (t: typeof import("./index.js").groupByEpic) => t,
 };
 
 describe("removed API", () => {

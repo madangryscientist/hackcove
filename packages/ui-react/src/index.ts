@@ -1,5 +1,4 @@
 export { Card } from "./Card.js";
-export { EpicHeader, groupByEpic } from "./ui.js";
 export { Pill, type PillTone } from "./Pill.js";
 export { Badge } from "./Badge.js";
 export { StatTile, type StatTileTone } from "./StatTile.js";

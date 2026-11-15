@@ -6,7 +6,6 @@ import {
   Card,
   Checkbox,
   DateField,
-  EpicHeader,
   fromISODate,
   Markdown,
   Overline,
@@ -107,7 +106,6 @@ export const gallerySections: GallerySection[] = [
       <>
         <Card title="Section" count={3}>
           <div className="flex flex-col gap-4">
-            <EpicHeader color="#cba6f7" label="HC-42 · Voice Inbox" />
             <Markdown md={"## What I did\n- **HC-42** shipped\n- plain item"} />
           </div>
         </Card>

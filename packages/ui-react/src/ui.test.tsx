@@ -4,21 +4,6 @@ import { ButtonGroup } from "./ButtonGroup.js";
 import { Pill } from "./Pill.js";
 import { Card } from "./Card.js";
 import { lifted } from "./lift.harness.js";
-import { groupByEpic } from "./ui.js";
-
-describe("groupByEpic", () => {
-  it("orders real epics by ref and puts 'no epic' last", () => {
-    const items = [
-      { id: 1, epic: null },
-      { id: 2, epic: "b" },
-      { id: 3, epic: "a" },
-      { id: 4, epic: "b" },
-    ];
-    const groups = groupByEpic(items, (i) => i.epic);
-    expect(groups.map(([epic]) => epic)).toEqual(["a", "b", null]);
-    expect(groups[1]?.[1].map((i) => i.id)).toEqual([2, 4]);
-  });
-});
 
 describe("Pill", () => {
   it("defaults to the neutral tone and takes a named tone", () => {

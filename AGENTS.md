@@ -199,7 +199,7 @@ global rule; what is particular to hackcove:
    `CalendarDate` is the picker's value type and which RAC already brings in); its peers are react,
    react-dom and tailwindcss v4. `@hackcove/themes` has only the tailwindcss peer. Any other dependency is a
    human decision.
-4. **`packages/ui-react` source imports use `.js` specifiers** (`./ui.js`, resolved to the `.tsx`). A
+4. **`packages/ui-react` source imports use `.js` specifiers** (`./Card.js`, resolved to `Card.tsx`). A
    `.tsx` specifier is emitted into the `.d.ts` unchanged and points at a file `dist` does not
    have, which silently breaks consumers' types.
 5. **No styling escape hatch.** No component exported from `packages/ui-react/src/index.ts` accepts
