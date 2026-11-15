@@ -1,3 +1,14 @@
+## 0.10.15 (2026-11-15)
+
+### 🩹 Fixes
+
+- **ui-react:** name only what is on screen for a view transition, so WebKit stops capturing whole long pages ([#150](https://github.com/madangryscientist/hackcove/pull/150))
+- **oxlint-testing:** catch DOM walks in tests that import Testing Library through a local helper ([#149](https://github.com/madangryscientist/hackcove/pull/149))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.10.14 (2026-11-15)
 
 ### 🚀 Features
