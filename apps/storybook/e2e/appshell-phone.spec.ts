@@ -223,7 +223,7 @@ test("at 1280px menuControls sit in the header row after controls, once each, wi
     expect(box.x, "after controls").toBeGreaterThanOrEqual(toggleBox.x + toggleBox.width);
     expect(Math.abs(box.y + box.height / 2 - row), "centred in the row").toBeLessThanOrEqual(1);
   }
-  // Reachable for assistive tech too, not only painted.
+  // Exposed with its role and name (Playwright's role engine), as well as painted.
   await expect(header.getByRole("combobox", { name: "Project" })).toBeVisible();
   await project.selectOption("api");
   await expect(project).toHaveValue("api");
