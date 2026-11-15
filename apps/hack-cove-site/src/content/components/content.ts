@@ -13,7 +13,7 @@ export const content: ComponentSection = {
       summary: "A bordered panel that groups one thing on a page.",
       whenToUse: "A titled block of related content: a record, a status, a list, an empty state.",
       pairs: ["Card/Status", "Card/Spacing"],
-      stories: ["CardBadge", "CardIcon", "CardInset", "CardTitle"],
+      stories: ["CardBadge", "CardFill", "CardIcon", "CardInset", "CardTitle"],
       usage: [
         "Name the Card with `title`; add a `count` or a `status` and they sit beside the title.",
         '`titleStyle="name"` sets the title in sentence case and the primary ink, for a card that is a thing with a name (a shop, a listing, an event). The default `overline` is the small uppercase label of a panel (Status, Activity). Count, status, actions and `bar` work with both.',
@@ -30,6 +30,7 @@ export const content: ComponentSection = {
         "`icon` puts one of the library's icons above the title at feature size, in the accent colour: the mark of a feature card. Pick it by the idea it stands for; it is ignored on a `bar`, `flush` or `dashed` card.",
         "`size` sets the padding: `sm` for a dense dashboard, `md` (default), `lg` for a card that stands alone.",
         "A Card with an `id` is an anchor target: a link to `#id` scrolls it clear of the sticky header and outlines it in violet while it is the target.",
+        "`fill` makes a card take its parent's full height, for a panel in a fixed-height layout such as a sheet over a map; the title or bar stays put and the body scrolls. Give the parent a height. Put links or controls in the body, so a keyboard can reach and scroll it.",
       ],
       accessibility: [
         "A Card is a `<section>` by default and its `title` names it (`aria-labelledby` points at the heading); `as` picks another element, e.g. `article`. Your own `aria-label` or `aria-labelledby` wins.",

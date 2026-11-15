@@ -1,7 +1,8 @@
 import { type ComponentPropsWithoutRef, type ReactElement, type ReactNode, useId } from "react";
 import { type CalloutTone, TONE_SURFACE } from "./Callout.js";
 import { CardBadge } from "./CardBadge.js";
-import { CardBar, CardFooter, CardHeader, CardHeading, CardIcon, CardInset } from "./CardParts.js";
+import { BODY_PAD, cardBody } from "./CardBody.js";
+import { CardFooter } from "./CardParts.js";
 import { cx, focusRing, liftInteractive } from "./cx.js";
 import type { IconName } from "./icons.js";
 import { type LinkRender, renderLink } from "./link.js";
@@ -34,6 +35,7 @@ function cardForm(
     tone?: CalloutTone | undefined;
     attention?: boolean | undefined;
     icon?: IconName | undefined;
+    fill?: boolean | undefined;
     size: Size;
   },
   hasHeader: boolean,
@@ -48,13 +50,11 @@ function cardForm(
     tone: dashed || bar ? undefined : asked.tone,
     attention: on(asked.attention, dashed),
     icon: paddedIcon(asked, dashed || bar),
+    fill: on(asked.fill, dashed),
     size: asked.size,
     footer: false,
   };
 }
-
-/** The padding of a card's body by `size`. */
-const BODY_PAD: Record<Size, string> = { sm: "p-3", md: "p-5", lg: "p-6" };
 
 function cardBorder(form: ReturnType<typeof cardForm>): string {
   if (form.dashed) return "border-dashed border-slate-300";
@@ -69,7 +69,7 @@ function cardPadding(form: ReturnType<typeof cardForm>): string | false {
   if (form.dashed) {
     return cx(form.filled ? "p-10" : "p-8", "text-center text-sm text-slate-500");
   }
-  return !form.flush && !form.bar && !form.footer && BODY_PAD[form.size];
+  return !form.flush && !form.bar && !form.footer && !form.fill && BODY_PAD[form.size];
 }
 
 function cardClass(form: ReturnType<typeof cardForm>): string {
@@ -80,8 +80,8 @@ function cardClass(form: ReturnType<typeof cardForm>): string {
     form.filled && "bg-white",
     cardPadding(form),
     !form.dashed && !form.tone && "shadow-sm",
-    (form.flush || form.bar || form.footer) && "overflow-hidden",
-    form.footer && "flex flex-col",
+    (form.flush || form.bar || form.footer || form.fill) && "overflow-hidden",
+    form.fill ? "flex h-full min-h-0 flex-col" : form.footer && "flex flex-col",
   );
 }
 
@@ -129,6 +129,8 @@ type CardPanelProps = CardBase & {
   actions?: ReactNode;
   /** A tinted strip across the bottom of the card, under a hairline, for the card's own actions or a total. It stays at the foot when the card is stretched in a `CardGrid`. Ignored with `dashed`. */
   footer?: ReactNode;
+  /** Take the parent's full height: the title or bar stays put and the body scrolls. The parent sets the height. Ignored with `dashed`. */
+  fill?: boolean;
   /**
    * The root element. A `div` takes no name from the title. Not on a card that is a link.
    * @default section
@@ -142,6 +144,7 @@ type CardPanelProps = CardBase & {
 type CardLinkProps = CardBase & {
   actions?: undefined;
   footer?: undefined;
+  fill?: undefined;
   as?: undefined;
   /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
   external?: boolean | undefined;
@@ -189,6 +192,9 @@ function isCardLink(props: CardPanelProps | CardLinkProps): props is CardLinkPro
  * total; in a `CardGrid` it stays at the foot of a card that is stretched to the row's height. It
  * suits a panel, not a card that is a link, and `dashed` has none.
  *
+ * `fill` makes a panel take its parent's full height (the parent sets it): the title or bar stays
+ * put and the body scrolls. Not on a link card.
+ *
  * `href` makes the whole card one link: a hover border and the focus ring, with the link stretched
  * over the card, so it takes no `actions`, `footer` or `as`. A `TextLink`, `Button` or `Checkbox` in
  * the body sits above the link and is clickable on its own. With `render` it draws the app's own router `<Link>`
@@ -219,6 +225,7 @@ function PanelCard(props: CardPanelProps): ReactElement {
     inset,
     attention,
     icon,
+    fill,
     size = "md",
     children,
     ...panel
@@ -226,7 +233,7 @@ function PanelCard(props: CardPanelProps): ReactElement {
   const { as: Tag = "section", ...rest } = panel;
   const headingId = useId();
   const form = withFooter(
-    cardForm({ flush, bar, dashed, tone, attention, icon, size }, Boolean(title || actions)),
+    cardForm({ flush, bar, dashed, tone, attention, icon, fill, size }, Boolean(title || actions)),
     footer,
   );
   // The title names the section or article; a caller's own name wins, and a bare `div` takes none.
@@ -314,77 +321,5 @@ function LinkCard(props: CardLinkProps): ReactElement {
       })}
       {badge && <CardBadge size={form.size}>{badge}</CardBadge>}
     </div>
-  );
-}
-
-function insetBand(form: ReturnType<typeof cardForm>, inset: ReactNode): ReactNode {
-  if (!inset || form.dashed) return null;
-  return (
-    <CardInset size={form.size} bleed={!form.flush}>
-      {inset}
-    </CardInset>
-  );
-}
-
-function cardBody(
-  form: ReturnType<typeof cardForm>,
-  {
-    title,
-    titleStyle,
-    count,
-    status,
-    actions,
-    inset,
-    children,
-    headingId,
-  }: {
-    title: string | undefined;
-    titleStyle: "overline" | "name" | undefined;
-    count: number | undefined;
-    status: ReactNode;
-    actions: ReactNode;
-    inset: ReactNode;
-    children: ReactNode;
-    headingId: string | undefined;
-  },
-): ReactNode {
-  const heading = title && (
-    <CardHeading
-      id={headingId}
-      title={title}
-      titleStyle={titleStyle}
-      count={count}
-      status={status}
-      bar={form.bar}
-      spaced={!form.bar && !actions}
-      size={form.size}
-    />
-  );
-  const grow = form.footer && "flex-1";
-  const band = insetBand(form, inset);
-  if (form.bar) {
-    return (
-      <>
-        <CardBar heading={heading} actions={actions} size={form.size} />
-        <div className={cx(grow, !form.flush && BODY_PAD[form.size]) || undefined}>
-          {band}
-          {children}
-        </div>
-      </>
-    );
-  }
-  const content = (
-    <>
-      {form.icon && <CardIcon name={form.icon} size={form.size} />}
-      <CardHeader heading={heading} actions={actions} size={form.size} />
-      {band}
-      {children}
-    </>
-  );
-  // With a footer the root has no padding, so the body pads itself and takes the room left over.
-  return form.footer ? (
-    <div className={cx(grow, !form.flush && BODY_PAD[form.size])}>{content}</div>
-  ) : (
-    content
   );
 }
