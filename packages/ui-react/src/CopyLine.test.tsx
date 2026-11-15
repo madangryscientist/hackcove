@@ -10,9 +10,11 @@ describe("CopyLine", () => {
     expect(screen.getByRole("button", { name: "copy" })).not.toBeNull();
   });
 
-  it("disables its copy button with disabled", () => {
-    render(<CopyLine text="x" disabled />);
+  it("disables its copy button with disabled, and not the line around it", () => {
+    // The line itself has no role or name to find it by; its test id is the pass-through one.
+    render(<CopyLine text="x" disabled data-testid="line" />);
     expect(screen.getByRole<HTMLButtonElement>("button", { name: "copy" }).disabled).toBe(true);
+    expect(screen.getByTestId("line").hasAttribute("disabled")).toBe(false);
   });
 
   it("keeps its copy button enabled by default", () => {
