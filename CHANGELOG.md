@@ -1,3 +1,13 @@
+## 0.10.8 (2026-11-15)
+
+### 🚀 Features
+
+- **ui-react:** SortableList, a list reordered by drag or keyboard, in sections ([#130](https://github.com/madangryscientist/hackcove/pull/130))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.10.7 (2026-11-15)
 
 ### 🩹 Fixes
