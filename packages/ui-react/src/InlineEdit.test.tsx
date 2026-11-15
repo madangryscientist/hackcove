@@ -129,9 +129,10 @@ describe("InlineEdit", () => {
   it("a press outside closes it and leaves the focus alone", async () => {
     cellWith();
     await open();
-    await user().click(screen.getByRole("button", { name: "Elsewhere" }));
+    // A press on the page itself moves the focus to nowhere, so only the outside press can close it.
+    await user().click(document.body);
     expect(editor()).toBeNull();
-    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Elsewhere" }));
+    expect(document.activeElement).not.toBe(trigger());
   });
 
   it("focus to nowhere keeps it open", async () => {

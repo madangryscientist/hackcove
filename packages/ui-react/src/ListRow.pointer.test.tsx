@@ -16,13 +16,14 @@ const counts = (h: ReturnType<typeof handlers>) => [
 ];
 
 describe("ListRow pointer and focus handlers", () => {
-  it("reach a button row: the pointer moving over and off it, and Tab onto its button", async () => {
+  it("reach a button row: the pointer over and off the row, and Tab onto its button", async () => {
     const h = handlers();
     render(<ListRow {...h}>Rent</ListRow>);
     const button = screen.getByRole("button", { name: "Rent" });
     const u = user();
-    await u.hover(button);
-    await u.unhover(button);
+    // The row's label, not its button: the handlers are the row's, so they fire off the button too.
+    await u.hover(screen.getByText("Rent"));
+    await u.unhover(screen.getByText("Rent"));
     await u.tab();
     expect(document.activeElement).toBe(button);
     expect(counts(h)).toEqual([1, 1, 1]);
@@ -52,8 +53,9 @@ describe("ListRow pointer and focus handlers", () => {
     );
     const link = screen.getByRole("link", { name: "Rent" });
     const u = user();
-    await u.hover(link);
-    await u.unhover(link);
+    // The row's label, not its link: the handlers are the row's, so they fire off the link too.
+    await u.hover(screen.getByText("Rent"));
+    await u.unhover(screen.getByText("Rent"));
     await u.tab();
     expect(document.activeElement).toBe(link);
     expect(counts(h)).toEqual([1, 1, 1]);

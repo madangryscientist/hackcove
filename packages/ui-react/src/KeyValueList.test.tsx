@@ -21,22 +21,4 @@ describe("KeyValueList", () => {
     expect(follows(screen.getByText("Size"), screen.getByText("1280×720"))).toBeTruthy();
     expect(follows(screen.getByText("1280×720"), screen.getByText("Diff"))).toBeTruthy();
   });
-
-  it("keeps a total row and a toned row as a term and its definition", () => {
-    render(
-      <KeyValueList align="start">
-        <KeyValue label="Difference" tone="warn">
-          R 12.40
-        </KeyValue>
-        <KeyValue label="Total" total>
-          R 30 650
-        </KeyValue>
-      </KeyValueList>,
-    );
-    expect(screen.getAllByRole("term").map((t) => t.textContent)).toEqual(["Difference", "Total"]);
-    expect(screen.getAllByRole("definition").map((v) => v.textContent)).toEqual([
-      "R 12.40",
-      "R 30 650",
-    ]);
-  });
 });

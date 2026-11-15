@@ -17,7 +17,7 @@ afterEach(() => {
 
 const segments = () => screen.getAllByRole("spinbutton");
 const shown = () => segments().map((s) => s.textContent);
-const posted = () => new FormData(screen.getByRole("form")).get("dob");
+const posted = () => new FormData(screen.getByRole<HTMLFormElement>("form")).get("dob");
 
 /** Click into the day segment and type, as a person does: the field moves on segment by segment. */
 async function typeDate(digits: string) {

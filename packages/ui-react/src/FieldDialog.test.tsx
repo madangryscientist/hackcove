@@ -31,8 +31,9 @@ const button = (name: string): HTMLButtonElement =>
   screen.getByRole<HTMLButtonElement>("button", { name });
 
 /**
- * Submit the field's form with no button press: what a script, or a browser's implicit submission,
- * sends while the submit button is blocked or busy. The guard in the handler is what is under test.
+ * Submit the field's form with no button press, as a script's `requestSubmit` does: a browser's own
+ * implicit submission does nothing while the submit button is disabled, so only a script reaches the
+ * guard in the handler, which is what is under test.
  */
 const submitDirectly = () =>
   act(async () => {

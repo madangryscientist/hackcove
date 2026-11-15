@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { renderToStaticMarkup } from "react-dom/server";
+import { renderToStaticMarkup } from "react-dom/server"; // markup read as data, below
 import { describe, expect, it } from "vitest";
 import { Icon } from "./Icon.js";
 import { ICON_NAMES, iconGlyph } from "./icons.js";

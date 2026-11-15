@@ -61,7 +61,7 @@ describe("DateRangePicker", () => {
       within(side("End date")).getAllByRole("spinbutton")[0]?.getAttribute("aria-invalid"),
     ).toBe("true");
     expect(onChange).not.toHaveBeenCalled();
-    expect(new FormData(screen.getByRole("form")).get("to")).toBe("");
+    expect(new FormData(screen.getByRole<HTMLFormElement>("form")).get("to")).toBe("");
   });
 
   it("keeps an impossible start day when focus moves to the end side, which stays editable", async () => {
