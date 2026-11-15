@@ -1,0 +1,167 @@
+{
+  "overrides": [
+    {
+      "files": ["**/*.test.{ts,tsx,js,jsx,mjs}"],
+      "plugins": ["vitest"],
+      "jsPlugins": ["./plugin.js", "eslint-plugin-testing-library"],
+      "rules": {
+        "vitest/no-disabled-tests": "error",
+        "vitest/no-focused-tests": "error",
+        "vitest/no-conditional-in-test": "error",
+        "vitest/no-restricted-matchers": [
+          "error",
+          {
+            "toHaveClass": "toHaveClass checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)",
+            "toHaveStyle": "toHaveStyle checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)",
+            "toHaveCSS": "toHaveCSS checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)",
+            "toHaveScreenshot": "toHaveScreenshot checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)",
+            "toMatchScreenshot": "toMatchScreenshot checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)"
+          }
+        ],
+        "vitest/require-mock-type-parameters": "off",
+        "testing-library/no-node-access": "error",
+        "testing-library/no-container": "error",
+        "testing-library/prefer-screen-queries": "error",
+        "testing-library/no-wait-for-side-effects": "error",
+        "ui-testing/no-style-assertions": "error",
+        "no-restricted-globals": [
+          "error",
+          {
+            "name": "setTimeout",
+            "message": "setTimeout is a fixed sleep, not a wait: wait on what the user sees, the ready marker or a response (ob-ui-testing rule 2: Wait on a state, never on a clock)"
+          },
+          {
+            "name": "setInterval",
+            "message": "setInterval is a fixed sleep, not a wait: wait on what the user sees, the ready marker or a response (ob-ui-testing rule 2: Wait on a state, never on a clock)"
+          },
+          {
+            "name": "getComputedStyle",
+            "message": "getComputedStyle checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)"
+          }
+        ],
+        "no-restricted-properties": [
+          "error",
+          {
+            "property": "sleep",
+            "message": "Bun.sleep is a fixed sleep, not a wait: wait on what the user sees, the ready marker or a response (ob-ui-testing rule 2: Wait on a state, never on a clock)",
+            "object": "Bun"
+          },
+          {
+            "property": "getComputedStyle",
+            "message": "getComputedStyle checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)",
+            "object": "window"
+          },
+          {
+            "property": "className",
+            "message": "className checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)"
+          },
+          {
+            "property": "classList",
+            "message": "classList checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)"
+          }
+        ]
+      }
+    },
+    {
+      "files": ["**/*.built.test.{ts,tsx,js,jsx,mjs}"],
+      "plugins": ["vitest"],
+      "jsPlugins": ["eslint-plugin-testing-library"],
+      "rules": {
+        "vitest/no-conditional-in-test": "off",
+        "testing-library/no-node-access": "off",
+        "testing-library/no-container": "off",
+        "testing-library/prefer-screen-queries": "off",
+        "vitest/require-mock-type-parameters": "off"
+      }
+    },
+    {
+      "files": [
+        "**/e2e/**/*.{ts,tsx,js,mjs}",
+        "**/smoke/**/*.{ts,tsx,js,mjs}",
+        "**/*.spec.{ts,tsx,js,mjs}"
+      ],
+      "jsPlugins": ["./plugin.js", "eslint-plugin-playwright"],
+      "rules": {
+        "playwright/no-raw-locators": [
+          "error",
+          {
+            "allowed": ["html[data-hydrated]"]
+          }
+        ],
+        "playwright/no-wait-for-selector": "error",
+        "playwright/no-wait-for-timeout": "error",
+        "playwright/no-networkidle": "error",
+        "playwright/no-conditional-in-test": "error",
+        "playwright/no-conditional-expect": "error",
+        "playwright/no-focused-test": "error",
+        "playwright/no-skipped-test": [
+          "error",
+          {
+            "allowConditional": true,
+            "disallowFixme": true
+          }
+        ],
+        "playwright/no-restricted-matchers": [
+          "error",
+          {
+            "toHaveClass": "toHaveClass checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)",
+            "toHaveStyle": "toHaveStyle checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)",
+            "toHaveCSS": "toHaveCSS checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)",
+            "toHaveScreenshot": "toHaveScreenshot checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)",
+            "toMatchScreenshot": "toMatchScreenshot checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)"
+          }
+        ],
+        "ui-testing/no-selector-actions": "error",
+        "ui-testing/no-style-assertions": "error",
+        "ui-testing/skip-names-ticket": "error",
+        "no-restricted-globals": [
+          "error",
+          {
+            "name": "setTimeout",
+            "message": "setTimeout is a fixed sleep, not a wait: wait on what the user sees, the ready marker or a response (ob-ui-testing rule 2: Wait on a state, never on a clock)"
+          },
+          {
+            "name": "setInterval",
+            "message": "setInterval is a fixed sleep, not a wait: wait on what the user sees, the ready marker or a response (ob-ui-testing rule 2: Wait on a state, never on a clock)"
+          },
+          {
+            "name": "getComputedStyle",
+            "message": "getComputedStyle checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)"
+          }
+        ],
+        "no-restricted-properties": [
+          "error",
+          {
+            "property": "sleep",
+            "message": "Bun.sleep is a fixed sleep, not a wait: wait on what the user sees, the ready marker or a response (ob-ui-testing rule 2: Wait on a state, never on a clock)",
+            "object": "Bun"
+          },
+          {
+            "property": "getComputedStyle",
+            "message": "getComputedStyle checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)",
+            "object": "window"
+          },
+          {
+            "property": "className",
+            "message": "className checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)"
+          },
+          {
+            "property": "classList",
+            "message": "classList checks look: assert the state the user sees, the look is the visual check's (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)"
+          },
+          {
+            "property": "boundingBox",
+            "message": "boundingBox measures layout, which is look: assert the state the user sees (ob-ui-testing rule 7: Behaviour in tests, look in PixelSlash)"
+          }
+        ]
+      }
+    },
+    {
+      "files": ["**/playwright.config.{ts,js,mjs,cjs}", "**/playwright.*.config.{ts,js,mjs,cjs}"],
+      "jsPlugins": ["./plugin.js"],
+      "rules": {
+        "ui-testing/config-shape": "error"
+      }
+    }
+  ]
+}

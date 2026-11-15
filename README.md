@@ -13,6 +13,7 @@ under the `@hackcove` scope (MIT, all `0.x`).
 | --- | --- | --- |
 | `packages/ui-react` | `@hackcove/ui-react` | The React components: primitives, typography roles, a safe Markdown renderer. Written against Tailwind v4 utilities. No theme CSS. |
 | `themes` | `@hackcove/themes` | Every theme, one CSS file each, remapping those utilities: `catppuccin-mocha.css` (dark, scope `.dark`), `catppuccin-latte.css` (light, scope `.latte`), `thrifty-paper.css` (light, scope `.thrifty-paper`), `thriftloop.css` (light, scope `.thriftloop`) and `thriftloop-dark.css` (dark, scope `.thriftloop-dark`). |
+| `packages/oxlint-testing` | `@hackcove/oxlint-testing` | A shared oxlint config and plugin for UI tests (Playwright, Testing Library, Vitest): elements found the way a user does, waits on a state, behaviour asserted rather than look, one Playwright config shape. |
 | `apps/storybook` | (private) | Storybook for the components, with a toolbar theme switcher that lists every CSS file in `themes/`. |
 | `apps/hack-cove-site` | (private) | The hack-cove.com website (Astro), built on the workspace components and the Mocha theme. |
 
