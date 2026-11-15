@@ -39,6 +39,92 @@ const CASES: Record<string, Case[]> = {
     },
   ],
   ClusterGrow: [{ prop: "minWidth", node: () => <ui.ClusterGrow minWidth="sm">x</ui.ClusterGrow> }],
+  EmptyState: [
+    { prop: "level", node: () => <ui.EmptyState title="T" level={3} /> },
+    { prop: "padding", node: () => <ui.EmptyState title="T" padding="inset" /> },
+  ],
+  ListRow: [
+    {
+      prop: "size",
+      node: () => (
+        <ui.ListRow size="sm" href="#x">
+          a
+        </ui.ListRow>
+      ),
+    },
+    {
+      prop: "divided",
+      node: () => (
+        <ui.ListRow divided href="#x">
+          a
+        </ui.ListRow>
+      ),
+    },
+    { prop: "selected", node: () => <ui.ListRow selected>a</ui.ListRow> },
+    {
+      prop: "selected",
+      node: () => (
+        <ui.ListRow selected href="#a">
+          a
+        </ui.ListRow>
+      ),
+    },
+    {
+      prop: "selected",
+      node: () => (
+        <ui.ListRow selected static>
+          a
+        </ui.ListRow>
+      ),
+    },
+    {
+      prop: "static",
+      node: () => (
+        <ui.ListRow
+          static
+          leading="L"
+          trailing="admin"
+          actions={<button type="button">Remove</button>}
+        >
+          Ada
+        </ui.ListRow>
+      ),
+    },
+    {
+      prop: "revealOnHover",
+      node: () => (
+        <ui.ListRow static revealOnHover actions="X">
+          a
+        </ui.ListRow>
+      ),
+    },
+    { prop: "focused", node: () => <ui.ListRow focused>a</ui.ListRow> },
+    {
+      prop: "focused",
+      node: () => (
+        <ui.ListRow focused href="#a">
+          a
+        </ui.ListRow>
+      ),
+    },
+    {
+      prop: "focused",
+      node: () => (
+        <ui.ListRow focused static>
+          a
+        </ui.ListRow>
+      ),
+    },
+    {
+      prop: "leadingWidth",
+      node: () => (
+        <ui.ListRow leading={<img alt="" src="/s.png" />} leadingWidth="thumbnail">
+          Shot
+        </ui.ListRow>
+      ),
+    },
+    { prop: "secondary", node: () => <ui.ListRow secondary="Due 1 Dec">Rent</ui.ListRow> },
+  ],
 };
 
 /** Every attribute name on every element of `html`, lower-cased as the DOM reads them. */

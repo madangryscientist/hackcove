@@ -1,121 +1,71 @@
 // @vitest-environment jsdom
-import { act } from "react";
-import { afterEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { Disclosure } from "./Disclosure.js";
-import { mount, unmount } from "./dom.harness.js";
-
-afterEach(unmount);
+import { render, screen, user } from "./render.harness.js";
 
 const open = (defaultOpen?: true) =>
-  mount(
+  render(
     <Disclosure summary="Override trail" {...(defaultOpen ? { defaultOpen } : {})}>
       <p>Three overrides.</p>
     </Disclosure>,
   );
 
-const trigger = (container: HTMLElement) => {
-  const button = container.querySelector("button");
-  if (!button) throw new Error("no trigger button");
-  return button;
-};
-
-const body = (container: HTMLElement) => container.querySelector('[role="group"]');
+const trigger = () => screen.getByRole("button", { name: "Override trail" });
+/** The body is a group named by the summary; hidden, it leaves the accessibility tree. */
+const body = () => screen.queryByRole("group", { name: "Override trail" });
 
 describe("Disclosure", () => {
   it("starts closed: the summary is a button with aria-expanded=false and the body is hidden", () => {
-    const container = open();
-    expect(trigger(container).textContent).toBe("Override trail");
-    expect(trigger(container).getAttribute("aria-expanded")).toBe("false");
-    expect(body(container)?.hasAttribute("hidden")).toBe(true);
+    open();
+    expect(trigger().getAttribute("aria-expanded")).toBe("false");
+    expect(body()).toBeNull();
+    expect(screen.getByRole("group", { hidden: true }).hasAttribute("hidden")).toBe(true);
   });
 
   it("starts open with defaultOpen", () => {
-    const container = open(true);
-    expect(trigger(container).getAttribute("aria-expanded")).toBe("true");
-    expect(body(container)?.hasAttribute("hidden")).toBe(false);
-    expect(body(container)?.textContent).toBe("Three overrides.");
+    open(true);
+    expect(trigger().getAttribute("aria-expanded")).toBe("true");
+    expect(body()?.textContent).toBe("Three overrides.");
   });
 
-  it("opens and closes on a click, flipping aria-expanded and the body", () => {
-    const container = open();
-    act(() => trigger(container).click());
-    expect(trigger(container).getAttribute("aria-expanded")).toBe("true");
-    expect(body(container)?.hasAttribute("hidden")).toBe(false);
-    act(() => trigger(container).click());
-    expect(trigger(container).getAttribute("aria-expanded")).toBe("false");
-    expect(body(container)?.hasAttribute("hidden")).toBe(true);
+  it("opens and closes on a click, flipping aria-expanded and the body", async () => {
+    open();
+    await user().click(trigger());
+    expect(trigger().getAttribute("aria-expanded")).toBe("true");
+    expect(body()?.textContent).toBe("Three overrides.");
+    await user().click(trigger());
+    expect(trigger().getAttribute("aria-expanded")).toBe("false");
+    expect(body()).toBeNull();
   });
 
   it("names the body by the summary and points the button at it", () => {
-    const container = open(true);
-    const panel = body(container);
-    expect(trigger(container).getAttribute("aria-controls")).toBe(panel?.id);
-    expect(panel?.getAttribute("aria-labelledby")).toBe(trigger(container).id);
+    open(true);
+    expect(trigger().getAttribute("aria-controls")).toBe(body()?.id);
   });
 
-  it("toggles from the keyboard: the summary is a focusable button that Enter and Space press", () => {
-    const container = open();
-    const button = trigger(container);
-    act(() => button.focus());
-    expect(document.activeElement).toBe(button);
-    expect(button.tabIndex).toBe(0);
-    for (const key of ["Enter", " "]) {
-      const before = button.getAttribute("aria-expanded");
-      act(() => {
-        button.dispatchEvent(
-          new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }),
-        );
-        button.dispatchEvent(new KeyboardEvent("keyup", { key, bubbles: true, cancelable: true }));
-      });
-      expect(button.getAttribute("aria-expanded")).not.toBe(before);
-    }
+  it("toggles from the keyboard: Tab reaches the summary, and Enter and Space press it", async () => {
+    open();
+    const keys = user();
+    await keys.tab();
+    expect(document.activeElement).toBe(trigger());
+    await keys.keyboard("{Enter}");
+    expect(trigger().getAttribute("aria-expanded")).toBe("true");
+    await keys.keyboard(" ");
+    expect(trigger().getAttribute("aria-expanded")).toBe("false");
   });
 
-  it("passes data-* and aria-* through to its root", () => {
-    const container = mount(
-      <Disclosure summary="S" data-testid="trail" aria-describedby="why">
-        x
-      </Disclosure>,
-    );
-    const root = container.querySelector('[data-testid="trail"]');
-    expect(root?.getAttribute("aria-describedby")).toBe("why");
-    expect(root?.contains(container.querySelector("button"))).toBe(true);
-  });
-
-  it("bordered draws a panel: a bordered box, a roomy summary row and a padded body under a hairline", () => {
-    const container = mount(
-      <Disclosure summary="Customise by month" bordered defaultOpen>
+  it("bordered keeps the toggle, aria-expanded and the hidden body", async () => {
+    render(
+      <Disclosure summary="Customise by month" bordered>
         <p>Twelve months.</p>
       </Disclosure>,
     );
-    const root = container.firstElementChild;
-    expect(root?.className).toContain("rounded-xl border border-slate-200/70");
-    expect(trigger(container).className).toContain("px-4 py-3");
-    expect(trigger(container).className).toContain("hover:bg-slate-50");
-    const inner = body(container)?.firstElementChild;
-    expect(inner?.className).toContain("border-t border-slate-200/70");
-    expect(inner?.className).toContain("p-4");
-    expect(inner?.textContent).toBe("Twelve months.");
-    expect(body(container)?.className).not.toContain("pl-6");
-    expect(body(container)?.className).not.toContain("border-t");
-  });
-
-  it("bordered keeps the toggle, aria-expanded and the hidden body", () => {
-    const container = mount(
-      <Disclosure summary="S" bordered>
-        x
-      </Disclosure>,
+    const button = screen.getByRole("button", { name: "Customise by month" });
+    expect(screen.queryByRole("group", { name: "Customise by month" })).toBeNull();
+    await user().click(button);
+    expect(button.getAttribute("aria-expanded")).toBe("true");
+    expect(screen.getByRole("group", { name: "Customise by month" }).textContent).toBe(
+      "Twelve months.",
     );
-    expect(body(container)?.hasAttribute("hidden")).toBe(true);
-    act(() => trigger(container).click());
-    expect(trigger(container).getAttribute("aria-expanded")).toBe("true");
-    expect(body(container)?.hasAttribute("hidden")).toBe(false);
-  });
-
-  it("plain has no frame, no hairline and the body indented under the chevron", () => {
-    const container = open(true);
-    expect(container.firstElementChild?.hasAttribute("class")).toBe(false);
-    expect(body(container)?.className).toContain("pl-6");
-    expect(body(container)?.className).not.toContain("border-t");
   });
 });

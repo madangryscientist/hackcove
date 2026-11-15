@@ -1,10 +1,8 @@
 // @vitest-environment jsdom
 import { CalendarDate } from "@internationalized/date";
-import { act } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { errorOf, leave, segmentsOf, type } from "./date.harness.js";
 import { type DateRange, DateRangePicker } from "./DateRangePicker.js";
-import { mount, unmount } from "./dom.harness.js";
+import { render, screen, user, within } from "./render.harness.js";
 
 beforeEach(() => {
   // A US browser: the field must still read DD/MM/YYYY.
@@ -13,7 +11,6 @@ beforeEach(() => {
   document.documentElement.lang = "en-US";
 });
 afterEach(() => {
-  unmount();
   vi.restoreAllMocks();
   document.documentElement.lang = "";
 });
@@ -23,75 +20,81 @@ const october: DateRange = {
   end: new CalendarDate(2026, 10, 31),
 };
 
-const texts = (container: HTMLElement) => segmentsOf(container).map((s) => s.textContent);
-const groupNamed = (container: HTMLElement, name: string) =>
-  Array.from(container.querySelectorAll<HTMLElement>('[role="group"]')).find((group) =>
-    group.getAttribute("aria-label")?.includes(name),
-  );
+const shown = () => screen.getAllByRole("spinbutton").map((s) => s.textContent);
+const side = (name: "Start date" | "End date") => screen.getByRole("group", { name });
+
+/** Click into one side's day segment and type, as a person does. */
+async function typeInto(name: "Start date" | "End date", digits: string) {
+  const u = user();
+  await u.click(within(side(name)).getAllByRole("spinbutton")[0] ?? document.body);
+  await u.keyboard(digits);
+}
 
 describe("DateRangePicker", () => {
   it("names the start and end groups and shows DD/MM/YYYY on each side", () => {
-    const container = mount(<DateRangePicker label="Period" />);
-    expect(groupNamed(container, "Start date")).toBeDefined();
-    expect(groupNamed(container, "End date")).toBeDefined();
-    expect(texts(container)).toEqual(["DD", "MM", "YYYY", "DD", "MM", "YYYY"]);
-    expect(container.textContent).toContain("to");
+    render(<DateRangePicker label="Period" />);
+    expect(within(side("Start date")).getAllByRole("spinbutton")).toHaveLength(3);
+    expect(within(side("End date")).getAllByRole("spinbutton")).toHaveLength(3);
+    expect(shown()).toEqual(["DD", "MM", "YYYY", "DD", "MM", "YYYY"]);
+    expect(screen.getByText("to")).not.toBeNull();
   });
 
-  it("flags an impossible end day, keeps it as typed on blur and reports null", () => {
+  it("flags an impossible end day, keeps it as typed on blur and reports null", async () => {
     const onChange = vi.fn<(range: DateRange | null) => void>();
-    const container = mount(<DateRangePicker label="Period" endName="to" onChange={onChange} />);
-    const [startDay, , , endDay] = segmentsOf(container);
-    if (!startDay || !endDay) throw new Error("no day segments");
-    type(startDay, "01022026");
-    type(endDay, "31022026");
-    expect(errorOf(container)).toBe("End date: February 2026 has 28 days.");
-    leave();
-    expect(texts(container)).toEqual(["01", "02", "2026", "31", "02", "2026"]);
-    expect(errorOf(container)).toBe("End date: February 2026 has 28 days.");
-    expect(container.querySelector('[data-invalid="true"]')).not.toBeNull();
+    render(
+      <form aria-label="Report">
+        <DateRangePicker label="Period" endName="to" onChange={onChange} />
+      </form>,
+    );
+    await typeInto("Start date", "01022026");
+    await typeInto("End date", "31022026");
+    expect(screen.getByText("End date: February 2026 has 28 days.")).not.toBeNull();
+    await user().click(document.body);
+    expect(shown()).toEqual(["01", "02", "2026", "31", "02", "2026"]);
+    expect(
+      screen.getByRole("group", {
+        name: "Period",
+        description: "End date: February 2026 has 28 days.",
+      }),
+    ).not.toBeNull();
+    expect(
+      within(side("End date")).getAllByRole("spinbutton")[0]?.getAttribute("aria-invalid"),
+    ).toBe("true");
     expect(onChange).not.toHaveBeenCalled();
-    expect(container.querySelector<HTMLInputElement>('input[name="to"]')?.value).toBe("");
+    expect(new FormData(screen.getByRole<HTMLFormElement>("form")).get("to")).toBe("");
   });
 
-  it("keeps an impossible start day when focus moves to the end side, which stays editable", () => {
+  it("keeps an impossible start day when focus moves to the end side, which stays editable", async () => {
     const onChange = vi.fn<(range: DateRange | null) => void>();
-    const container = mount(<DateRangePicker label="Period" onChange={onChange} />);
-    const [startDay, , , endDay] = segmentsOf(container);
-    if (!startDay || !endDay) throw new Error("no day segments");
-    type(startDay, "30022026");
-    type(endDay, "10032026");
-    expect(texts(container)).toEqual(["30", "02", "2026", "10", "03", "2026"]);
-    expect(errorOf(container)).toBe("Start date: February 2026 has 28 days.");
+    render(<DateRangePicker label="Period" onChange={onChange} />);
+    await typeInto("Start date", "30022026");
+    await typeInto("End date", "10032026");
+    expect(shown()).toEqual(["30", "02", "2026", "10", "03", "2026"]);
+    expect(screen.getByText("Start date: February 2026 has 28 days.")).not.toBeNull();
     expect(onChange).not.toHaveBeenCalled();
   });
 
   it("opens one Monday-first month", () => {
-    mount(<DateRangePicker label="Period" defaultOpen defaultValue={october} />);
-    const grids = document.querySelectorAll('[role="grid"]');
-    expect(grids).toHaveLength(1);
-    expect(grids[0]?.querySelector("th")?.textContent).toBe("Mon");
+    render(<DateRangePicker label="Period" defaultOpen defaultValue={october} />);
+    expect(screen.getAllByRole("grid")).toHaveLength(1);
+    const grid = screen.getByRole("grid");
+    // The weekday row is hidden from assistive tech; each day is named with its weekday.
+    expect(within(grid).getAllByRole("button")[0]?.getAttribute("aria-label")).toMatch(/^Monday,/);
   });
 
-  it("clears the range from the calendar footer", () => {
+  it("clears the range from the calendar footer", async () => {
     const onChange = vi.fn<(range: DateRange | null) => void>();
-    mount(
+    render(
       <DateRangePicker label="Period" defaultOpen defaultValue={october} onChange={onChange} />,
     );
-    const clear = Array.from(document.querySelectorAll("button")).find(
-      (b) => b.textContent === "Clear",
-    );
-    if (!clear) throw new Error("no Clear button");
-    act(() => clear.click());
+    await user().click(screen.getByRole("button", { name: "Clear" }));
     expect(onChange).toHaveBeenLastCalledWith(null);
   });
 
   it("shows an error from outside as an alert and marks the field invalid", () => {
-    const container = mount(
-      <DateRangePicker label="Period" description="A hint." error="Too long a period." />,
-    );
-    expect(errorOf(container)).toBe("Too long a period.");
-    expect(container.querySelector('[role="alert"]')).not.toBeNull();
-    expect(container.textContent).not.toContain("A hint.");
+    render(<DateRangePicker label="Period" description="A hint." error="Too long a period." />);
+    expect(screen.getByRole("alert").textContent).toBe("Too long a period.");
+    expect(screen.getAllByRole("spinbutton")[0]?.getAttribute("aria-invalid")).toBe("true");
+    expect(screen.queryByText("A hint.")).toBeNull();
   });
 });

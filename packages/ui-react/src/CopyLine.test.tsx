@@ -1,25 +1,24 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { CopyLine } from "./CopyLine.js";
+import { render, screen } from "./render.harness.js";
 
 describe("CopyLine", () => {
-  it("shows the text in a <code> with a copy button beside it", () => {
-    const out = renderToStaticMarkup(<CopyLine text="bun add @hackcove/ui-react" />);
-    expect(out).toContain("<code");
-    expect(out).toContain("bun add @hackcove/ui-react</code>");
-    expect(out).toContain('aria-label="copy"');
+  it("shows the text as code with a copy button beside it", () => {
+    render(<CopyLine text="bun add @hackcove/ui-react" />);
+    expect(screen.getByText("bun add @hackcove/ui-react").tagName).toBe("CODE");
+    expect(screen.getByRole("button", { name: "copy" })).not.toBeNull();
   });
 
-  it("passes data-testid and other div props to the root, not the <code>", () => {
-    const out = renderToStaticMarkup(<CopyLine text="x" data-testid="install-line" />);
-    expect(out).toMatch(/<div[^>]*data-testid="install-line"/);
-    expect(out).toContain('<code class="min-w-0 break-words">x</code>');
+  it("disables its copy button with disabled, and not the line around it", () => {
+    // The line itself has no role or name to find it by; its test id is the pass-through one.
+    render(<CopyLine text="x" disabled data-testid="line" />);
+    expect(screen.getByRole<HTMLButtonElement>("button", { name: "copy" }).disabled).toBe(true);
+    expect(screen.getByTestId("line").hasAttribute("disabled")).toBe(false);
   });
 
-  it("disables its copy button with disabled, and only the button", () => {
-    const off = renderToStaticMarkup(<CopyLine text="x" disabled />);
-    expect(off).toMatch(/<button[^>]*disabled=""/);
-    expect(off).not.toMatch(/<div[^>]*disabled/);
-    expect(renderToStaticMarkup(<CopyLine text="x" />)).not.toContain('disabled=""');
+  it("keeps its copy button enabled by default", () => {
+    render(<CopyLine text="x" />);
+    expect(screen.getByRole<HTMLButtonElement>("button", { name: "copy" }).disabled).toBe(false);
   });
 });

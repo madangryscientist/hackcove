@@ -1,11 +1,11 @@
 // @vitest-environment jsdom
-import { act } from "react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { mount as render, stubDialog, unmount } from "./dom.harness.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { stubDialog } from "./dom.harness.js";
 import { FieldDialog } from "./FieldDialog.js";
+import { act, fireEvent, render, screen, user } from "./render.harness.js";
 
+// stubDialog supplies the modal <dialog> methods jsdom lacks; it does not act through the DOM.
 beforeEach(stubDialog);
-afterEach(unmount);
 
 const PROPS = {
   title: "New project",
@@ -18,97 +18,87 @@ const PROPS = {
   busyLabel: "Creating…",
 };
 
-function mount(
+function open(
   onSubmit: (value: string) => Promise<unknown>,
   onClose: () => void = vi.fn<() => void>(),
-): HTMLElement {
-  return render(<FieldDialog {...PROPS} onSubmit={onSubmit} onClose={onClose} />);
+): void {
+  render(<FieldDialog {...PROPS} onSubmit={onSubmit} onClose={onClose} />);
 }
 
-/** A promise the test settles by hand, to hold onSubmit in flight. */
-function deferred() {
-  const settle: { resolve?: () => void } = {};
-  const promise = new Promise<void>((done) => {
-    settle.resolve = done;
-  });
-  return { promise, resolve: () => settle.resolve?.() };
-}
+const field = (): HTMLInputElement =>
+  screen.getByRole<HTMLInputElement>("textbox", { name: "Project name" });
+const button = (name: string): HTMLButtonElement =>
+  screen.getByRole<HTMLButtonElement>("button", { name });
 
-const input = (host: HTMLElement): HTMLInputElement => {
-  const el = host.querySelector("input");
-  if (!el) throw new Error("no input");
-  return el;
-};
-const button = (host: HTMLElement, text: string): HTMLButtonElement => {
-  const el = [...host.querySelectorAll("button")].find((b) => b.textContent === text);
-  if (!el) throw new Error(`no ${text} button`);
-  return el;
-};
-
-/** Type into the controlled input the way a user does, so React sees an input event. */
-function type(host: HTMLElement, value: string): void {
-  const el = input(host);
-  act(() => {
-    // The prototype's setter, not the element's own: React watches the latter to skip no-op events.
-    Reflect.set(HTMLInputElement.prototype, "value", value, el);
-    el.dispatchEvent(new Event("input", { bubbles: true }));
-  });
-}
-
-const submitForm = (host: HTMLElement) =>
+/**
+ * Submit the field's form with no button press, as a script's `requestSubmit` does: a browser's own
+ * implicit submission does nothing while the submit button is disabled, so only a script reaches the
+ * guard in the handler, which is what is under test.
+ */
+const submitDirectly = () =>
   act(async () => {
-    host.querySelector("form")?.requestSubmit();
+    const form = field().form;
+    if (form === null) throw new Error("the field is in no form");
+    fireEvent.submit(form);
   });
 
 describe("FieldDialog", () => {
-  it("names the field and blocks submit with the empty reason while it is empty", () => {
+  it("names the field and blocks submit with the empty reason while it is empty", async () => {
     const onSubmit = vi.fn<(value: string) => Promise<unknown>>(() => Promise.resolve());
-    const out = mount(onSubmit);
-    expect(input(out).getAttribute("aria-label")).toBe("Project name");
-    expect(out.textContent).toContain("Type a name first.");
-    const create = button(out, "Create");
+    open(onSubmit);
+    expect(screen.getByRole("dialog", { name: "New project" })).not.toBeNull();
+    expect(field().placeholder).toBe("my-project");
+    expect(screen.getByText("Type a name first.")).not.toBeNull();
+    const create = button("Create");
     expect(create.disabled).toBe(true);
     expect(create.title).toBe("Type a name first.");
-    type(out, "   ");
-    expect(button(out, "Create").disabled).toBe(true);
+    await user().type(field(), "   ");
+    expect(button("Create").disabled).toBe(true);
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
   it("does not submit an empty field even when the form is submitted directly", async () => {
     const onSubmit = vi.fn<(value: string) => Promise<unknown>>(() => Promise.resolve());
-    const out = mount(onSubmit);
-    await submitForm(out);
+    open(onSubmit);
+    await submitDirectly();
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
-  it("enables submit once there is text and shows the hint", () => {
-    const out = mount(() => Promise.resolve());
-    type(out, "alpha");
-    expect(button(out, "Create").disabled).toBe(false);
-    expect(out.textContent).toContain("Letters and dashes.");
-    expect(out.textContent).not.toContain("Type a name first.");
+  it("enables submit once there is text and shows the hint", async () => {
+    open(() => Promise.resolve());
+    await user().type(field(), "alpha");
+    expect(button("Create").disabled).toBe(false);
+    expect(screen.getByText("Letters and dashes.")).not.toBeNull();
+    expect(screen.queryByText("Type a name first.")).toBeNull();
   });
 
   it("submits the trimmed value and closes when onSubmit resolves", async () => {
     const onSubmit = vi.fn<(value: string) => Promise<unknown>>(() => Promise.resolve("ok"));
     const onClose = vi.fn<() => void>();
-    const out = mount(onSubmit, onClose);
-    type(out, "  alpha  ");
-    await submitForm(out);
+    open(onSubmit, onClose);
+    await user().type(field(), "  alpha  ");
+    await user().click(button("Create"));
     expect(onSubmit).toHaveBeenCalledExactlyOnceWith("alpha");
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it("submits on Enter in the field", async () => {
+    const onSubmit = vi.fn<(value: string) => Promise<unknown>>(() => Promise.resolve());
+    open(onSubmit);
+    await user().type(field(), "alpha{Enter}");
+    expect(onSubmit).toHaveBeenCalledExactlyOnceWith("alpha");
+  });
+
   it("is busy while onSubmit is in flight, and ignores a second submit", async () => {
-    const pending = deferred();
+    const pending = Promise.withResolvers<void>();
     const onSubmit = vi.fn<(value: string) => Promise<unknown>>(() => pending.promise);
-    const out = mount(onSubmit);
-    type(out, "alpha");
-    await submitForm(out);
-    const busy = button(out, "Creating…");
+    open(onSubmit);
+    await user().type(field(), "alpha");
+    await user().click(button("Create"));
+    const busy = button("Creating…");
     expect(busy.disabled).toBe(true);
     expect(busy.getAttribute("aria-busy")).toBe("true");
-    await submitForm(out);
+    await submitDirectly();
     expect(onSubmit).toHaveBeenCalledTimes(1);
     await act(async () => pending.resolve());
   });
@@ -119,28 +109,28 @@ describe("FieldDialog", () => {
       .mockRejectedValueOnce(new Error("Name taken"))
       .mockResolvedValue(null);
     const onClose = vi.fn<() => void>();
-    const out = mount(onSubmit, onClose);
-    type(out, "alpha");
-    await submitForm(out);
-    expect(out.querySelector('[role="alert"]')?.textContent).toBe("Name taken");
+    open(onSubmit, onClose);
+    await user().type(field(), "alpha");
+    await user().click(button("Create"));
+    expect(screen.getByRole("alert").textContent).toBe("Name taken");
     expect(onClose).not.toHaveBeenCalled();
-    expect(button(out, "Create").disabled).toBe(false);
-    await submitForm(out);
+    expect(button("Create").disabled).toBe(false);
+    await user().click(button("Create"));
     expect(onSubmit).toHaveBeenCalledTimes(2);
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it("shows a non-Error rejection as text", async () => {
-    const out = mount(() => Promise.reject("nope"));
-    type(out, "alpha");
-    await submitForm(out);
-    expect(out.querySelector('[role="alert"]')?.textContent).toBe("nope");
+    open(() => Promise.reject("nope"));
+    await user().type(field(), "alpha");
+    await user().click(button("Create"));
+    expect(screen.getByRole("alert").textContent).toBe("nope");
   });
 
   it("closes through the dialog on Cancel", async () => {
     const onClose = vi.fn<() => void>();
-    const out = mount(() => Promise.resolve(), onClose);
-    await act(async () => button(out, "Cancel").click());
+    open(() => Promise.resolve(), onClose);
+    await user().click(button("Cancel"));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 });

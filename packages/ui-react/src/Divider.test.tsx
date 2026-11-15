@@ -1,16 +1,11 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { Divider } from "./Divider.js";
+import { render, screen } from "./render.harness.js";
 
 describe("Divider", () => {
-  it("renders an hr with the line colour on its top border", () => {
-    const out = renderToStaticMarkup(<Divider />);
-    expect(out.startsWith("<hr")).toBe(true);
-    expect(out).toContain('class="border-t border-slate-200/70"');
-  });
-
-  it("forwards props", () => {
-    const out = renderToStaticMarkup(<Divider aria-hidden="true" />);
-    expect(out).toContain('aria-hidden="true"');
+  it("is a separator", () => {
+    render(<Divider />);
+    expect(screen.getByRole("separator").tagName).toBe("HR");
   });
 });

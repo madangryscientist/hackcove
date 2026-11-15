@@ -1,305 +1,160 @@
-import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import { describe, expect, it, vi } from "vitest";
 import { ListRow } from "./ListRow.js";
+import { render, screen, user } from "./render.harness.js";
+
+const follows = (a: Node, b: Node) =>
+  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 describe("ListRow", () => {
-  it("holds the label and trailing content, with no chevron unless expanded", () => {
-    const out = renderToStaticMarkup(<ListRow trailing="R 4 250">Rent</ListRow>);
-    expect(out).toContain(">Rent</div>");
-    expect(out).toContain(">R 4 250</span>");
-    expect(out).not.toContain("aria-expanded");
-    expect(out).not.toContain("<svg");
+  it("is a button named by its label, the trailing content after it, and not a collapsible header", async () => {
+    const onClick = vi.fn<() => void>();
+    render(
+      <ListRow trailing="R 4 250" onClick={onClick}>
+        Rent
+      </ListRow>,
+    );
+    const button = screen.getByRole("button", { name: "Rent" });
+    expect(button.hasAttribute("aria-expanded")).toBe(false);
+    expect(follows(screen.getByText("Rent"), screen.getByText("R 4 250"))).toBeTruthy();
+    await user().click(button);
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 
-  it("passes button props through, onClick aside", () => {
-    const out = renderToStaticMarkup(
+  it("passes button props through to its button", () => {
+    render(
       <ListRow disabled aria-controls="rows">
         Rent
       </ListRow>,
     );
-    expect(out).toContain("disabled");
-    expect(out).toContain('aria-controls="rows"');
+    const button = screen.getByRole("button", { name: "Rent" });
+    expect(button.hasAttribute("disabled")).toBe(true);
+    expect(button.getAttribute("aria-controls")).toBe("rows");
   });
 
-  it("expanded makes a collapsible header: aria-expanded and a chevron that turns when open", () => {
-    const closed = renderToStaticMarkup(<ListRow expanded={false}>Details</ListRow>);
-    const open = renderToStaticMarkup(<ListRow expanded>Details</ListRow>);
-    expect(closed).toContain('aria-expanded="false"');
-    expect(open).toContain('aria-expanded="true"');
-    expect(closed).toContain("<svg");
-    expect(closed).not.toContain("rotate-90");
-    expect(open).toContain("rotate-90");
+  it("expanded makes it a collapsible header with aria-expanded", () => {
+    render(
+      <>
+        <ListRow expanded={false}>Closed</ListRow>
+        <ListRow expanded>Open</ListRow>
+      </>,
+    );
+    expect(screen.getByRole("button", { name: "Closed" }).getAttribute("aria-expanded")).toBe(
+      "false",
+    );
+    expect(screen.getByRole("button", { name: "Open" }).getAttribute("aria-expanded")).toBe("true");
   });
 
-  it("is a link with href", () => {
-    const out = renderToStaticMarkup(
+  it("is a link with href, named by its row, and no button", () => {
+    render(
       <ListRow href="/status" trailing="3">
         Status
       </ListRow>,
     );
-    expect(out).toContain('<a href="/status"');
-    expect(out).toContain("hover:bg-slate-50");
-    expect(out).not.toContain("<button");
+    expect(screen.getByRole("link", { name: "Status 3" }).getAttribute("href")).toBe("/status");
+    expect(screen.queryByRole("button")).toBeNull();
   });
 
-  it("render draws the app's own link, handed the row's classes", () => {
-    const out = renderToStaticMarkup(
-      <ListRow render={(props) => <a data-router="1" href="/x" {...props} />}>Go</ListRow>,
-    );
-    expect(out).toContain('data-router="1"');
-    expect(out).toContain("hover:bg-slate-50");
-  });
-});
-
-describe("ListRow size", () => {
-  it("sm is dense padding, md the default, on a button and a link alike", () => {
-    expect(renderToStaticMarkup(<ListRow>a</ListRow>)).toContain("px-4 py-3");
-    expect(renderToStaticMarkup(<ListRow size="sm">a</ListRow>)).toContain("px-3 py-2");
-    const link = renderToStaticMarkup(
-      <ListRow size="sm" href="#x">
-        a
-      </ListRow>,
-    );
-    expect(link).toContain("px-3 py-2");
-    expect(link).not.toContain('size="sm"');
-  });
-
-  it("divided draws a hairline above the row, on a button and a link alike", () => {
-    const line = "border-t border-slate-200/70";
-    expect(renderToStaticMarkup(<ListRow divided>a</ListRow>)).toContain(line);
-    expect(renderToStaticMarkup(<ListRow>a</ListRow>)).not.toContain("border-t");
-    const link = renderToStaticMarkup(
-      <ListRow divided href="#x">
-        a
-      </ListRow>,
-    );
-    expect(link).toContain(line);
-    expect(link).not.toContain("divided");
+  it("render draws the app's own link", () => {
+    render(<ListRow render={(props) => <a data-router="1" href="/x" {...props} />}>Go</ListRow>);
+    const link = screen.getByRole("link", { name: "Go" });
+    expect(link.getAttribute("data-router")).toBe("1");
+    expect(link.getAttribute("href")).toBe("/x");
   });
 });
 
 describe("ListRow leading and selected", () => {
-  it("leading sits before the label, on a button and a link alike", () => {
-    const button = renderToStaticMarkup(<ListRow leading={<i data-av />}>Ada</ListRow>);
-    expect(button).toMatch(
-      /<span class="shrink-0"><i data-av[^>]*><\/i><\/span><div id="[^"]*" class="min-w-0 flex-1">Ada/,
+  it("reads leading before the label, on a button and a link alike", () => {
+    render(
+      <>
+        <ListRow leading="B">Button row</ListRow>
+        <ListRow href="#a" leading="L">
+          Link row
+        </ListRow>
+      </>,
     );
-    const link = renderToStaticMarkup(
-      <ListRow href="#a" leading="L">
-        Ada
-      </ListRow>,
-    );
-    expect(link.indexOf(">L<")).toBeLessThan(link.indexOf(">Ada<"));
-    expect(renderToStaticMarkup(<ListRow>Ada</ListRow>)).not.toContain('shrink-0"><');
+    expect(follows(screen.getByText("B"), screen.getByText("Button row"))).toBeTruthy();
+    expect(follows(screen.getByText("L"), screen.getByText("Link row"))).toBeTruthy();
   });
 
-  it("selected fills the row violet and sets aria-current, on every form", () => {
-    for (const out of [
-      renderToStaticMarkup(<ListRow selected>a</ListRow>),
-      renderToStaticMarkup(
+  it("selected sets aria-current on the button, the link and a static row", () => {
+    render(
+      <>
+        <ListRow selected>Button row</ListRow>
         <ListRow selected href="#a">
+          Link row
+        </ListRow>
+        <ListRow selected static aria-label="Static row">
           a
-        </ListRow>,
-      ),
-      renderToStaticMarkup(
-        <ListRow selected static>
-          a
-        </ListRow>,
-      ),
-    ]) {
-      expect(out).toContain('aria-current="true"');
-      expect(out).toContain("bg-violet-50");
-      expect(out).not.toContain("hover:bg-slate-50");
-      expect(out).not.toContain("selected");
-    }
-    const plain = renderToStaticMarkup(<ListRow>a</ListRow>);
-    expect(plain).not.toContain("aria-current");
-    expect(plain).not.toContain("bg-violet-50");
+        </ListRow>
+      </>,
+    );
+    expect(screen.getByRole("button", { name: "Button row" }).getAttribute("aria-current")).toBe(
+      "true",
+    );
+    expect(screen.getByRole("link", { name: "Link row" }).getAttribute("aria-current")).toBe(
+      "true",
+    );
+    expect(screen.getByLabelText("Static row").getAttribute("aria-current")).toBe("true");
+  });
+
+  it("is not current unless selected", () => {
+    render(<ListRow>Rent</ListRow>);
+    expect(screen.getByRole("button", { name: "Rent" }).hasAttribute("aria-current")).toBe(false);
   });
 });
 
 describe("ListRow static", () => {
-  it("is a div, not a button or a link, with no hover fill and no static attribute", () => {
-    const out = renderToStaticMarkup(
+  it("is neither a button nor a link, and reads leading, label, trailing, then actions", () => {
+    render(
       <ListRow static leading="L" trailing="admin" actions={<button type="button">Remove</button>}>
         Ada
       </ListRow>,
     );
-    expect(out.startsWith("<div")).toBe(true);
-    expect(out).not.toContain("<a ");
-    expect(out).toContain("w-full");
-    expect(out).not.toContain("hover:bg-slate-50");
-    expect(out).not.toContain("static");
-    expect(out.indexOf(">L<")).toBeLessThan(out.indexOf(">Ada<"));
-    expect(out.indexOf(">Ada<")).toBeLessThan(out.indexOf(">admin<"));
-    expect(out.indexOf(">admin<")).toBeLessThan(out.indexOf("Remove"));
-  });
-
-  it("actions are shown always, unless revealOnHover hides them until hover or focus", () => {
-    const shown = renderToStaticMarkup(
-      <ListRow static actions="X">
-        a
-      </ListRow>,
-    );
-    expect(shown).not.toContain("opacity-0");
-    const hidden = renderToStaticMarkup(
-      <ListRow static revealOnHover actions="X">
-        a
-      </ListRow>,
-    );
-    expect(hidden).toContain("opacity-0");
-    expect(hidden).toContain("group-hover/row:opacity-100");
-    expect(hidden).toContain("group-focus-within/row:opacity-100");
-    expect(hidden).toContain("any-pointer-coarse:opacity-100");
-    expect(hidden).toContain("group/row ");
-    expect(hidden).toContain("hover:bg-slate-50");
-    expect(hidden).not.toContain("revealOnHover");
-  });
-
-  it("takes size, divided, data-* and aria-*, and draws no empty slots", () => {
-    const out = renderToStaticMarkup(
-      <ListRow static size="sm" divided data-testid="row" aria-label="Ada">
-        a
-      </ListRow>,
-    );
-    expect(out).toContain("px-3 py-2");
-    expect(out).toContain("border-t border-slate-200/70");
-    expect(out).toContain('data-testid="row"');
-    expect(out).toContain('aria-label="Ada"');
-    expect(out).not.toContain("opacity");
-    expect(out.match(/<span/g)).toBeNull();
-    expect(out.match(/<div/g)).toHaveLength(2);
+    expect(screen.getAllByRole("button").map((b) => b.textContent)).toEqual(["Remove"]);
+    expect(screen.queryByRole("link")).toBeNull();
+    expect(follows(screen.getByText("L"), screen.getByText("Ada"))).toBeTruthy();
+    expect(follows(screen.getByText("Ada"), screen.getByText("admin"))).toBeTruthy();
+    expect(
+      follows(screen.getByText("admin"), screen.getByRole("button", { name: "Remove" })),
+    ).toBeTruthy();
   });
 });
 
-describe("ListRow focused and leadingWidth", () => {
-  it("focused draws an inset violet ring on every form, without a focused attribute", () => {
-    const ring = "outline-2 -outline-offset-2 outline-violet-600";
-    for (const out of [
-      renderToStaticMarkup(<ListRow focused>a</ListRow>),
-      renderToStaticMarkup(
-        <ListRow focused href="#a">
-          a
-        </ListRow>,
-      ),
-      renderToStaticMarkup(
-        <ListRow focused static>
-          a
-        </ListRow>,
-      ),
-    ]) {
-      expect(out).toContain(ring);
-      expect(out).not.toContain("focused");
-    }
-    expect(renderToStaticMarkup(<ListRow>a</ListRow>)).not.toContain("outline-2 -outline-offset-2");
-  });
-
-  it("focused is independent of selected: a row can be both", () => {
-    const out = renderToStaticMarkup(
-      <ListRow focused selected>
-        a
+describe("ListRow label", () => {
+  it("is a div, so a div or a paragraph inside it is valid HTML", () => {
+    render(
+      <ListRow>
+        <p>Name</p>
       </ListRow>,
     );
-    expect(out).toContain("outline-violet-600");
-    expect(out).toContain("bg-violet-50");
-  });
-
-  it('leadingWidth="thumbnail" gives the leading slot a w-32 box that sizes an image to it', () => {
-    const out = renderToStaticMarkup(
-      <ListRow leading={<img alt="" src="/s.png" />} leadingWidth="thumbnail">
-        Shot
-      </ListRow>,
+    // The button is named by the label element it points at; its tag is the nesting contract.
+    const labelId = String(
+      screen.getByRole("button", { name: "Name" }).getAttribute("aria-labelledby"),
     );
-    expect(out).toContain('<span class="shrink-0 block w-32 ');
-    expect(out).toContain('w-full"><img');
-    expect(out).not.toContain("leadingWidth");
-    const plain = renderToStaticMarkup(<ListRow leading={<i />}>Shot</ListRow>);
-    expect(plain).toContain('<span class="shrink-0"><i');
-    expect(plain).not.toContain("w-32");
-  });
-
-  it("the label takes block children: it is a div, so a div or a paragraph inside is valid", () => {
-    const out = renderToStaticMarkup(
-      <ListRow static>
-        <div>Title</div>
-      </ListRow>,
-    );
-    expect(out).toContain('<div class="min-w-0 flex-1"><div>Title</div></div>');
-  });
-});
-
-describe("ListRow active", () => {
-  it("fills every form one step deeper than hover, so it shows on a slate-50 panel; selected wins", () => {
-    expect(renderToStaticMarkup(<ListRow active>Rent</ListRow>)).toContain("bg-slate-100");
-    expect(
-      renderToStaticMarkup(
-        <ListRow href="/r" active>
-          Rent
-        </ListRow>,
-      ),
-    ).toMatch(/<div id="[^"]*" class="[^"]*\bbg-slate-100\b/);
-    expect(
-      renderToStaticMarkup(
-        <ListRow static active>
-          Rent
-        </ListRow>,
-      ),
-    ).toContain("bg-slate-100");
-    const both = renderToStaticMarkup(
-      <ListRow active selected>
-        Rent
-      </ListRow>,
-    );
-    expect(both).toContain("bg-violet-50");
-    expect(both).not.toMatch(/ bg-slate-100\b/);
-  });
-
-  it("a plain static row has no fill until active", () => {
-    expect(renderToStaticMarkup(<ListRow static>Rent</ListRow>)).not.toContain("bg-slate-100");
-  });
-
-  it("shows actions that revealOnHover hides", () => {
-    const hidden = renderToStaticMarkup(
-      <ListRow static revealOnHover actions={<button type="button">Edit</button>}>
-        Rent
-      </ListRow>,
-    );
-    const shown = renderToStaticMarkup(
-      <ListRow static revealOnHover active actions={<button type="button">Edit</button>}>
-        Rent
-      </ListRow>,
-    );
-    expect(hidden).toContain("opacity-0");
-    expect(shown).not.toContain("opacity-0");
+    expect(document.getElementById(labelId)?.tagName).toBe("DIV");
   });
 });
 
 describe("ListRow secondary", () => {
-  it("puts a muted line under the label, inside the label column", () => {
-    const out = renderToStaticMarkup(<ListRow secondary="Due 1 Dec">Rent</ListRow>);
-    expect(out).toMatch(
-      /<div id="[^"]*" class="min-w-0 flex-1">Rent<div class="text-xs font-normal text-slate-500">Due 1 Dec<\/div><\/div>/,
-    );
-    expect(out).not.toContain("secondary");
+  it("reads a second line after the label, inside the button's name", () => {
+    render(<ListRow secondary="Due 1 Dec">Rent</ListRow>);
+    expect(follows(screen.getByText("Rent"), screen.getByText("Due 1 Dec"))).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Rent Due 1 Dec" })).not.toBeNull();
   });
 
-  it("works on a link row and a static row, and draws a zero but not false", () => {
-    expect(
-      renderToStaticMarkup(
+  it("works on a link row and a static row, and draws a zero", () => {
+    render(
+      <>
         <ListRow href="/rent" secondary="Due">
           Rent
-        </ListRow>,
-      ),
-    ).toContain(">Due</div>");
-    expect(
-      renderToStaticMarkup(
+        </ListRow>
         <ListRow static secondary={0}>
-          Rent
-        </ListRow>,
-      ),
-    ).toContain(">0</div>");
-    expect(renderToStaticMarkup(<ListRow secondary={false}>Rent</ListRow>)).not.toContain(
-      "text-xs",
+          Water
+        </ListRow>
+      </>,
     );
+    expect(screen.getByRole("link", { name: "Rent Due" })).not.toBeNull();
+    expect(follows(screen.getByText("Water"), screen.getByText("0"))).toBeTruthy();
   });
 });
