@@ -132,9 +132,9 @@ describe("Dialog", () => {
     expect(onClose).not.toHaveBeenCalled();
   });
 
-  it("still opens as a modal and calls onClose at size full", async () => {
+  it("still opens as a modal and calls onClose at width full", async () => {
     const onClose = vi.fn<() => void>();
-    render(<Dialog title="t" size="full" onClose={onClose} />);
+    render(<Dialog title="t" width="full" onClose={onClose} />);
     const dialog = screen.getByRole<HTMLDialogElement>("dialog", { name: "t" });
     expect(showModal).toHaveBeenCalledExactlyOnceWith(dialog);
     // Esc closes a modal <dialog> in the browser; jsdom has none, so the test calls the close it makes.
@@ -233,7 +233,7 @@ describe("Dialog", () => {
     it("never gives the full-screen body one", () => {
       overflowing(900, 400);
       render(
-        <Dialog title="t" size="full" onClose={() => {}}>
+        <Dialog title="t" width="full" onClose={() => {}}>
           <p>Text</p>
         </Dialog>,
       );

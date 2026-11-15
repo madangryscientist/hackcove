@@ -9,7 +9,7 @@ const follows = (a: Node, b: Node) =>
 describe("ListRow detail", () => {
   it("reads the detail after the row's line, inside the row", () => {
     render(
-      <ListRow static aria-label="Chat row" leading="L" trailing="3" detail={<p>Thread</p>}>
+      <ListRow aria-label="Chat row" leading="L" trailing="3" panel={<p>Thread</p>}>
         Chat
       </ListRow>,
     );
@@ -22,13 +22,7 @@ describe("ListRow detail", () => {
 
   it("reads the row's actions before the detail", () => {
     render(
-      <ListRow
-        static
-        divided
-        revealOnHover
-        actions={<button type="button">Hide</button>}
-        detail="Thread"
-      >
+      <ListRow divided revealOnHover actions={<button type="button">Hide</button>} panel="Thread">
         Chat
       </ListRow>,
     );

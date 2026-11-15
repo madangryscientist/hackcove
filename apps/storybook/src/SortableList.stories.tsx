@@ -167,7 +167,6 @@ export const DontReorder: S = {
         (task, index) => (
           <ListRow
             key={task}
-            static
             divided={index > 0}
             actions={
               <>

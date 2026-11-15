@@ -10,19 +10,18 @@ export function DenseRows() {
         </ListRow>
       </Card>
       <Card flush>
-        <ListRow static size="sm" trailing="R 1 200">
+        <ListRow size="sm" trailing="R 1 200">
           Compact list
         </ListRow>
-        <ListRow static size="sm" divided trailing="R 640">
+        <ListRow size="sm" divided trailing="R 640">
           Static rows, divided
         </ListRow>
       </Card>
       <Card flush>
         <ListRow
-          static
           leading={<Avatar name="Linus T" />}
           trailing="10:42"
-          detail={<Text>A thread opens under the label.</Text>}
+          panel={<Text>A thread opens under the label.</Text>}
         >
           Static row with detail
         </ListRow>

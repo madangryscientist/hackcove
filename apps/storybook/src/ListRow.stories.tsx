@@ -80,10 +80,10 @@ export const Small: S = {
 export const CompactList: S = {
   render: () => (
     <Card flush>
-      <ListRow static size="sm" trailing="R 1 200">
+      <ListRow size="sm" trailing="R 1 200">
         Groceries
       </ListRow>
-      <ListRow static size="sm" divided trailing="R 640">
+      <ListRow size="sm" divided trailing="R 640">
         Household
       </ListRow>
     </Card>
@@ -160,14 +160,12 @@ export const StaticWithActions: S = {
     <div className="max-w-md">
       <Card flush>
         <ListRow
-          static
           leading={<Avatar name="Ada Lovelace" size="sm" />}
           trailing={<Pill tone="neutral">admin</Pill>}
         >
           Ada Lovelace
         </ListRow>
         <ListRow
-          static
           divided
           leading={<Avatar name="Grace Hopper" size="sm" />}
           actions={
@@ -182,7 +180,6 @@ export const StaticWithActions: S = {
           Grace Hopper
         </ListRow>
         <ListRow
-          static
           divided
           selected
           leading={<Avatar name="Linus T" size="sm" />}
@@ -204,7 +201,6 @@ export const RevealOnHover: S = {
         {["Rent", "Insurance", "Transport"].map((name, index) => (
           <ListRow
             key={name}
-            static
             revealOnHover
             divided={index > 0}
             trailing="R 1 850"
@@ -250,7 +246,6 @@ export const DoRowActions: S = {
   render: () => (
     <Card flush>
       <ListRow
-        static
         actions={
           <>
             <Button size="sm" variant="outline">
@@ -294,7 +289,7 @@ export const ActiveFollowsPointerAndKeyboard: S = {
               key={name}
               href={`#${name}`}
               divided={index > 0}
-              active={active === name}
+              highlighted={active === name}
               onPointerEnter={() => setActive(name)}
               onPointerLeave={() => setActive(undefined)}
               onFocus={() => setActive(name)}

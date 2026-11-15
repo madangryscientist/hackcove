@@ -248,7 +248,7 @@ export const text: ComponentSection = {
         do: [
           "Each child is one item: text, a `Code` or a `TextLink`.",
           "`separator` is `·` (default), `•` or `none`.",
-          "`nowrap` keeps each item on one line, for a row of links; the row still wraps between items.",
+          "An item never breaks inside itself; the row wraps between items.",
           "`mono` sets the whole row in the monospace face, for ids and paths.",
           "A labelled fact is a `KeyValueList`.",
         ],

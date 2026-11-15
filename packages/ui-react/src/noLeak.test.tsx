@@ -84,21 +84,12 @@ const CASES: Record<string, Case[]> = {
     },
     {
       prop: "selected",
-      node: () => (
-        <ui.ListRow selected static>
-          a
-        </ui.ListRow>
-      ),
+      node: () => <ui.ListRow selected>a</ui.ListRow>,
     },
     {
       prop: "static",
       node: () => (
-        <ui.ListRow
-          static
-          leading="L"
-          trailing="admin"
-          actions={<button type="button">Remove</button>}
-        >
+        <ui.ListRow leading="L" trailing="admin" actions={<button type="button">Remove</button>}>
           Ada
         </ui.ListRow>
       ),
@@ -106,7 +97,7 @@ const CASES: Record<string, Case[]> = {
     {
       prop: "revealOnHover",
       node: () => (
-        <ui.ListRow static revealOnHover actions="X">
+        <ui.ListRow revealOnHover actions="X">
           a
         </ui.ListRow>
       ),
@@ -122,11 +113,7 @@ const CASES: Record<string, Case[]> = {
     },
     {
       prop: "focused",
-      node: () => (
-        <ui.ListRow focused static>
-          a
-        </ui.ListRow>
-      ),
+      node: () => <ui.ListRow focused>a</ui.ListRow>,
     },
     {
       prop: "leadingWidth",

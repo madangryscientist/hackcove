@@ -4,6 +4,7 @@ import {
   Callout,
   Caption,
   Card,
+  EmptyState,
   ListRow,
   Pill,
   TextLink,
@@ -47,7 +48,7 @@ function GalleryCalloutActions() {
   );
 }
 
-/** The Card variants (flush, header bar, dashed, dashed filled, dense, toned), the Callout actions (info and danger), banner and link, the ListRow set (a dense row and a compact bordered list of `static` `size="sm"` rows, a static row with leading, selected and hover actions), a SortableList with an empty section, a link Card, a Table with a stretched row link and toned rows, a Table with a group row, cell tones, a truncated cell and a totals foot, a plain Table with a second-line cell and an `srLabel` actions column and a Timeline. */
+/** The Card variants (flush, header bar, dense, toned), a standalone EmptyState, the Callout actions (info and danger), banner and link, the ListRow set (a dense row and a compact bordered list of `size="sm"` rows with no action, a row with leading, selected and hover actions), a SortableList with an empty section, a link Card, a Table with a stretched row link and toned rows, a Table with a group row, cell tones, a truncated cell and a totals foot, a plain Table with a second-line cell and an `srLabel` actions column and a Timeline. */
 export function GalleryData() {
   return (
     <div className="flex flex-col gap-4">
@@ -102,8 +103,9 @@ export function GalleryData() {
       <DenseRows />
       <GalleryStaticRows />
       <GallerySortableList />
-      <Card dashed>No statements yet.</Card>
-      <Card dashed="filled">No quotes yet.</Card>
+      <EmptyState title="No statements yet" icon="page">
+        <Text>Import a statement to get started.</Text>
+      </EmptyState>
       <Callout tone="positive" title="Callout align" align="center">
         Centred, as a success state.
       </Callout>
@@ -127,11 +129,10 @@ export function GalleryData() {
 function GalleryStaticRows() {
   return (
     <Card flush>
-      <ListRow static selected leading={<Avatar name="Ada Lovelace" size="sm" />} trailing="admin">
+      <ListRow selected leading={<Avatar name="Ada Lovelace" size="sm" />} trailing="admin">
         Selected static row
       </ListRow>
       <ListRow
-        static
         divided
         revealOnHover
         leading={<Avatar name="Grace Hopper" size="sm" />}

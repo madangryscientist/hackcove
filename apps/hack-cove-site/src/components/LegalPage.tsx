@@ -36,7 +36,7 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
         <Divider />
         <Stack gap="xs">
           <Caption>{site.legalName}</Caption>
-          <MetaList nowrap>
+          <MetaList>
             <TextLink href={`mailto:${site.contactEmail}`}>{site.contactEmail}</TextLink>
             <TextLink href={other.href}>{other.label}</TextLink>
           </MetaList>

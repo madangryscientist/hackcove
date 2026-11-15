@@ -89,7 +89,15 @@ function linksIn(list: HTMLElement | null): HTMLAnchorElement[] {
   return list ? [...list.querySelectorAll<HTMLAnchorElement>("a[href]")] : [];
 }
 
-function SearchBody({ items, label }: { items: readonly SiteSearchItem[]; label: string }) {
+function SearchBody({
+  items,
+  label,
+  resultsLabel,
+}: {
+  items: readonly SiteSearchItem[];
+  label: string;
+  resultsLabel: string;
+}) {
   const [query, setQuery] = useState("");
   const box = useRef<HTMLDivElement>(null);
   const list = useRef<HTMLUListElement>(null);
@@ -144,7 +152,7 @@ function SearchBody({ items, label }: { items: readonly SiteSearchItem[]; label:
       {typed && results.length === 0 && <Text tone="muted">No results for {query.trim()}</Text>}
       {results.length > 0 && (
         // The keys only move focus between the links inside it; the list itself takes none.
-        <ul ref={list} aria-label="Results" onKeyDown={onListKey} onClick={onListClick}>
+        <ul ref={list} aria-label={resultsLabel} onKeyDown={onListKey} onClick={onListClick}>
           {results.map((item, index) => (
             <li key={item.href}>
               <ListRow href={item.href} size="sm" divided={index > 0} secondary={item.description}>
@@ -168,12 +176,18 @@ function SearchBody({ items, label }: { items: readonly SiteSearchItem[]; label:
 export function SiteSearch({
   items,
   label,
+  resultsLabel = "Results",
   ...rest
 }: {
   /** Every page to search, in the order ties are listed (the rail's order). */
   items: readonly SiteSearchItem[];
   /** The dialog's title and the button's accessible name: "Search components". */
   label: string;
+  /**
+   * The name of the list of matches, for an app in another language.
+   * @default Results
+   */
+  resultsLabel?: string | undefined;
 } & Passthrough): ReactElement {
   const [open, setOpen] = useState(false);
   const opener = useRef<HTMLElement | null>(null);
@@ -235,8 +249,8 @@ export function SiteSearch({
         />
       </span>
       {open && (
-        <Dialog title={label} size="md" onClose={close}>
-          <SearchBody items={items} label={label} />
+        <Dialog title={label} width="md" onClose={close}>
+          <SearchBody items={items} label={label} resultsLabel={resultsLabel} />
         </Dialog>
       )}
     </span>

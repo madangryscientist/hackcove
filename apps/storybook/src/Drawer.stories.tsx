@@ -85,7 +85,7 @@ export const Small: S = {
   render: () => (
     <Opened>
       {(close) => (
-        <Drawer title="Rename" size="sm" onClose={close}>
+        <Drawer title="Rename" width="sm" onClose={close}>
           <Field label="Name" htmlFor="drawer-name">
             <Input id="drawer-name" defaultValue="Hack Cove" />
           </Field>
@@ -99,7 +99,7 @@ export const Large: S = {
   render: () => (
     <Opened>
       {(close) => (
-        <Drawer title="Compare" size="lg" onClose={close}>
+        <Drawer title="Compare" width="lg" onClose={close}>
           <Text>A wider panel for a table or a form with two columns.</Text>
         </Drawer>
       )}
@@ -152,7 +152,7 @@ export const DontRecord: S = {
         {open && (
           <Drawer
             title="Delete build?"
-            size="sm"
+            width="sm"
             onClose={() => setOpen(false)}
             footer={<Button onClick={() => setOpen(false)}>Delete</Button>}
           >
@@ -176,7 +176,7 @@ export const DoFooter: S = {
         {open && (
           <Drawer
             title="Rename"
-            size="sm"
+            width="sm"
             onClose={() => setOpen(false)}
             footer={<Button onClick={() => setOpen(false)}>Save</Button>}
           >
@@ -200,7 +200,7 @@ export const DontFooter: S = {
           Rename
         </Button>
         {open && (
-          <Drawer title="Rename" size="sm" onClose={() => setOpen(false)}>
+          <Drawer title="Rename" width="sm" onClose={() => setOpen(false)}>
             <Stack>
               <Field label="Name" htmlFor="drawer-rename-body">
                 <Input id="drawer-rename-body" defaultValue="Hack Cove" />

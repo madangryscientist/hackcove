@@ -82,7 +82,7 @@ function Components() {
           >
             <Stack gap="sm">
               <Text>{section.description}</Text>
-              <MetaList nowrap>
+              <MetaList>
                 {section.pages.map((page) => (
                   <TextLink key={page.slug} href={`/ui/${page.slug}/`}>
                     {page.name}
@@ -117,7 +117,7 @@ export function UiPage() {
           links={ui.docs.links}
         />
         <Section title={ui.links.title}>
-          <MetaList nowrap>
+          <MetaList>
             {ui.links.items.map((link) => (
               <TextLink key={link.href} href={link.href}>
                 {link.label}

@@ -18,13 +18,11 @@ export function GalleryBottomSheet() {
           </>
         }
       >
-        <ListRow static trailing="0.2 km">
-          Shop 1
-        </ListRow>
-        <ListRow static divided trailing="0.5 km">
+        <ListRow trailing="0.2 km">Shop 1</ListRow>
+        <ListRow divided trailing="0.5 km">
           Shop 2
         </ListRow>
-        <ListRow static divided trailing="0.8 km">
+        <ListRow divided trailing="0.8 km">
           Shop 3
         </ListRow>
       </BottomSheet>

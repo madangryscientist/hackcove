@@ -38,7 +38,8 @@ export const feedback: ComponentSection = {
         do: [
           "Give it a `title`, one `Text` that says what belongs here, and the first step as `actions`, with the primary `Button` first.",
           "For a get-started list, put `Steps` after the `Text` in the children.",
-          "`level` is the title's heading level, 2 to 6 and `2` by default; the look does not change. Set it so the outline does not skip or repeat: `3` under a page's `h2`.",
+          "The title's heading level comes from where it sits: an `h2` on the page, an `h3` in a `Section`, so the outline does not skip or repeat; `level` sets it by hand and the look does not change.",
+          "On its own it draws a dashed frame round itself; inside a `Card` the card is the frame. `icon` sets one of the library's icons above the title.",
           'One muted line inside a card, for an empty table or list, is `Text tone="muted"`, not an EmptyState.',
         ],
         dont: [
@@ -62,9 +63,9 @@ export const feedback: ComponentSection = {
         do: [
           "Render it only while it is open: `{open && <Dialog … onClose={() => setOpen(false)} />}`. It opens itself on mount.",
           'A `title` that names the action, a `description` with the consequence, and the actions in `footer`: Cancel as `variant="ghost"` first, then the one action, `tone="danger"` when it destroys something.',
-          '`size="sm"` is a short list; `md`, the default, holds a form; `lg` (640px) is a wider form or a table. A submit button in the footer reaches a form in the body with its `form` attribute.',
+          '`width="sm"` is a short list; `md`, the default, holds a form; `lg` (640px) is a wider form or a table. A submit button in the footer reaches a form in the body with its `form` attribute.',
           "A tall body scrolls inside the dialog, which is never taller than the screen: the title, the description and the footer stay on screen, so the actions are always in reach. There is nothing to set.",
-          '`size="full"` fills the whole screen, for a player or media that needs the room. The body takes the height between the title and the footer and scrolls if it is taller. A full-screen Dialog has no backdrop to click, so put a close button on a `<form method="dialog">` in the `footer`. A single photo or video is a `Lightbox`.',
+          '`width="full"` fills the whole screen, for a player or media that needs the room. The body takes the height between the title and the footer and scrolls if it is taller. A full-screen Dialog has no backdrop to click, so put a close button on a `<form method="dialog">` in the `footer`. A single photo or video is a `Lightbox`.',
           "One text field is a `FieldDialog`. A record or a long form is a `Drawer`. A message that needs no answer is a `Callout`.",
           'It fades and slides in, and out again on close, but a `<dialog>` only animates out while it is still in the DOM. So `onClose` is called once the exit has finished: put `setOpen(false)` there and nowhere else. Esc, the backdrop and a `<form method="dialog">` close it that way already. Your own Cancel or action button closes it by calling `.close()` on its `<dialog>`, which a click handler finds with `event.currentTarget.closest("dialog")`. A button that calls `setOpen(false)` itself unmounts the dialog at once, and it vanishes with no exit animation.',
           'After async work (a save), keep the `<dialog>` from the event before the `await` (`const dialog = event.currentTarget.closest("dialog")`) and call `dialog?.close()` when it resolves.',
@@ -92,7 +93,7 @@ export const feedback: ComponentSection = {
           "Render it only while it is open: `{open && <Drawer … onClose={() => setOpen(false)} />}`. It opens itself on mount.",
           "Use it for a record to read or edit, or a form with several fields; a yes-or-no question is a `Dialog`.",
           "The actions go in `footer`, pinned under the body, which scrolls between the header and the footer.",
-          "`size` is `sm`, `md` (the default) or `lg`; choose by the content, `sm` for one field and `lg` for a table.",
+          "`width` is `sm`, `md` (the default) or `lg`; choose by the content, `sm` for one field and `lg` for a table. `description` is a muted line under the title, as on a `Dialog`.",
           "Set `closeLabel` to the reader's language when the page is not in English.",
           'It slides out again on close, but only while it is still in the DOM, so `onClose` is called once the exit has finished: put `setOpen(false)` there and nowhere else. Esc, the scrim and the close button close it that way already. A Cancel or Save button in the `footer` closes it by calling `.close()` on its `<dialog>`, which a click handler finds with `event.currentTarget.closest("dialog")`. A button that calls `setOpen(false)` itself unmounts the drawer at once, with no exit animation. After async work, keep the `<dialog>` from the event before the `await` and call `.close()` when it resolves.',
         ],

@@ -1,37 +1,27 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import {
-  Button,
-  Card,
-  Code,
-  EmptyState,
-  SectionHeading,
-  Stack,
-  Step,
-  Steps,
-  Text,
-} from "@hackcove/ui-react";
+import { Button, Card, Code, EmptyState, Section, Step, Steps, Text } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Feedback/EmptyState" };
 export default meta;
 type S = StoryObj;
 
+/** On its own an empty state draws its dashed frame; `icon` sets a mark above the title. */
 export const TitleAndBody: S = {
   render: () => (
-    <EmptyState title="No builds yet">
+    <EmptyState title="No builds yet" icon="capture">
       <Text>Builds appear here once a project has uploaded its first capture.</Text>
     </EmptyState>
   ),
 };
 
-/** `level` is the heading level of the title and the look stays the same: under a page's `h2` section it is `3`, so the outline does not skip or repeat. Default `2`. */
+/** The title's heading level comes from where it sits and the look stays the same: in a `Section` (an `h2`) it is an `h3`, so the outline does not skip or repeat. `level` sets it by hand. */
 export const Level: S = {
   render: () => (
-    <Stack gap="xl">
-      <SectionHeading as="h2">Builds</SectionHeading>
-      <EmptyState title="No builds yet" level={3}>
+    <Section title="Builds">
+      <EmptyState title="No builds yet">
         <Text>Builds appear here once a project has uploaded its first capture.</Text>
       </EmptyState>
-    </Stack>
+    </Section>
   ),
 };
 

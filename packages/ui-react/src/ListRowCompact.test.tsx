@@ -8,10 +8,10 @@ describe("ListRow compact bordered list", () => {
   it("is a Card flush around static size=sm rows: no click target, the text and values shown", () => {
     render(
       <Card flush>
-        <ListRow static size="sm" trailing="R 1 200">
+        <ListRow size="sm" trailing="R 1 200">
           Groceries
         </ListRow>
-        <ListRow static size="sm" divided trailing="R 640">
+        <ListRow size="sm" divided trailing="R 640">
           Household
         </ListRow>
       </Card>,

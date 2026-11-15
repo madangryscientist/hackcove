@@ -50,9 +50,10 @@ describe("Card href", () => {
     expect(out).toContain("p-3");
   });
 
-  it("a card without href stays a relative section", () => {
-    const out = renderToStaticMarkup(<Card>body</Card>);
-    expect(out.startsWith('<section class="relative ')).toBe(true);
+  it("a titled card without href stays a relative section", () => {
+    const out = renderToStaticMarkup(<Card title="T">body</Card>);
+    expect(out.startsWith('<section aria-labelledby="')).toBe(true);
+    expect(out).toContain('class="relative ');
     expect(out).not.toContain("hover:border-violet-400");
   });
 

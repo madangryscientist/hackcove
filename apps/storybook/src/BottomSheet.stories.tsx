@@ -27,13 +27,7 @@ const SHOPS = Array.from({ length: 20 }, (_, i) => ({
 
 const rows = (count: number) =>
   SHOPS.slice(0, count).map((shop, i) => (
-    <ListRow
-      key={shop.name}
-      static
-      divided={i > 0}
-      secondary={shop.street}
-      trailing={`${shop.km} km`}
-    >
+    <ListRow key={shop.name} divided={i > 0} secondary={shop.street} trailing={`${shop.km} km`}>
       {shop.name}
     </ListRow>
   ));
@@ -132,7 +126,7 @@ export const DoHeader: S = {
         }
       >
         {Array.from({ length: 12 }, (_, i) => (
-          <ListRow key={i} static divided={i > 0} trailing={`${i + 2}00 m`}>
+          <ListRow key={i} divided={i > 0} trailing={`${i + 2}00 m`}>
             Shop {i + 1}
           </ListRow>
         ))}
@@ -150,7 +144,7 @@ export const DontHeader: S = {
       <BottomSheet label="Shops" snaps={[0.3, 0.75]} snap={snap} onSnapChange={setSnap}>
         <SectionHeading>Shops nearby</SectionHeading>
         {Array.from({ length: 12 }, (_, i) => (
-          <ListRow key={i} static divided={i > 0} trailing={`${i + 2}00 m`}>
+          <ListRow key={i} divided={i > 0} trailing={`${i + 2}00 m`}>
             Shop {i + 1}
           </ListRow>
         ))}

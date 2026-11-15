@@ -95,7 +95,7 @@ export function Cv() {
       <ProseLayout
         breadcrumbs={
           <div className="cv-screen-nav">
-            <MetaList nowrap>
+            <MetaList>
               <TextLink href="/">{site.name}</TextLink>
               <TextLink href={cv.pdf} download="jacobus.pdf">
                 Download PDF
@@ -111,7 +111,7 @@ export function Cv() {
         }
         actions={<Avatar name={cv.name} src={cv.photo} size="3xl" />}
         tabs={
-          <MetaList nowrap separator="•">
+          <MetaList separator="•">
             {cv.links.map((link) => (
               <TextLink key={link.href} href={link.href}>
                 {link.label}

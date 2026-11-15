@@ -400,13 +400,15 @@ export const Overline = inlineRole("Overline", "span", OVERLINE, "tertiary");
  */
 export function CardOverline({
   faint,
+  level,
   ...props
 }: {
   faint: boolean;
+  level: 2 | 3 | 4 | 5 | 6;
   id?: string | undefined;
   children?: ReactNode;
 }): ReactElement {
-  return pinned("h2", OVERLINE, faint ? "faint" : "tertiary", props);
+  return pinned(`h${level}`, OVERLINE, faint ? "faint" : "tertiary", props);
 }
 
 /** A fixed width for a run of text: `amount` is a money figure, right-aligned, at a width that lines a column up. */

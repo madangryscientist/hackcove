@@ -64,7 +64,7 @@ export const Small: S = {
       {(close) => (
         <Dialog
           title="Keyboard shortcuts"
-          size="sm"
+          width="sm"
           onClose={close}
           footer={
             <form method="dialog">
@@ -191,7 +191,7 @@ export const Large: S = {
         <Dialog
           title="Import statement"
           description="Check the rows before they are added."
-          size="lg"
+          width="lg"
           onClose={close}
           footer={
             <>
@@ -224,7 +224,7 @@ export const Full: S = {
         <Dialog
           title="Harbour at dusk"
           description="Anna · Today, 09:12"
-          size="full"
+          width="full"
           onClose={close}
           footer={
             <form method="dialog">

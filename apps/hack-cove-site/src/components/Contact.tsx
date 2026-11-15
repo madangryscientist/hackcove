@@ -17,7 +17,7 @@ export function Contact() {
       </Stack>
       <Stack gap="xs">
         <Caption>{site.legalName}</Caption>
-        <MetaList nowrap>
+        <MetaList>
           <TextLink href="/privacy">Privacy</TextLink>
           <TextLink href="/terms">Terms</TextLink>
         </MetaList>

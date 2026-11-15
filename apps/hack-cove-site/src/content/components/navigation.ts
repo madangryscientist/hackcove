@@ -63,7 +63,7 @@ export const navigation: ComponentSection = {
       usage: {
         do: [
           "Put one `SiteSearch` in `AppShell`'s `controls`, on every page, and pass every page as `items`: `{ label, description, href, keywords }`.",
-          '`label` names the button and titles the dialog: say what is searched ("Search components").',
+          '`label` names the button and titles the dialog: say what is searched ("Search components"). `resultsLabel` names the list of matches, "Results" by default, for an app in another language.',
           "Give `items` in the nav's order: results of the same rank keep it.",
           "`keywords` are other names a page answers to (the exports it documents); they match but are not shown.",
           "A result ranks by the name starting with the text, then the name containing it, then a keyword, then the description.",

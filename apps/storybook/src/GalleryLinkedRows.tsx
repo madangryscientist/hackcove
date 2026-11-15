@@ -32,7 +32,7 @@ export function GalleryLinkedRows() {
         >
           Linked row with a link and a button
         </ListRow>
-        <ListRow href="#ada" divided active>
+        <ListRow href="#ada" divided highlighted>
           Active row
         </ListRow>
       </Card>

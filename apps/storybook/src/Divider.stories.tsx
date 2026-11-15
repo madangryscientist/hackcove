@@ -34,7 +34,7 @@ export const AboveAFooter: S = {
       <footer className="pt-8">
         <Caption>Hack Cove (Pty) Ltd</Caption>
         <div className="mt-2">
-          <MetaList nowrap>
+          <MetaList>
             <TextLink href="/privacy">Privacy</TextLink>
             <TextLink href="/terms">Terms</TextLink>
           </MetaList>

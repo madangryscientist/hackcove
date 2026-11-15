@@ -92,11 +92,7 @@ describe("every exported component passes id, data-* and aria-* through", () => 
   });
 
   it("a static ListRow puts both on its row", () => {
-    mount(
-      <ui.ListRow static {...A}>
-        x
-      </ui.ListRow>,
-    );
+    mount(<ui.ListRow {...A}>x</ui.ListRow>);
     const found = probes();
     expect(found).toHaveLength(1);
     expect(found[0]?.getAttribute("aria-describedby")).toBe("described");

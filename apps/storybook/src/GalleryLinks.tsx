@@ -29,7 +29,7 @@ export function GalleryLinks() {
             TextLink danger
           </TextLink>
         </p>
-        <MetaList nowrap>
+        <MetaList>
           <TextLink href="#privacy">Privacy</TextLink>
           <TextLink href="#terms">Terms</TextLink>
           <TextLink href="/contact">Contact</TextLink>

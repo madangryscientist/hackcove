@@ -156,7 +156,7 @@ const SIZES = ["sm", "md", "lg"] as const;
 // The Dialog panel's own classes.
 const panel = (size?: Size) => {
   const out = renderToStaticMarkup(
-    <Dialog title="x" {...at(size)} onClose={() => {}}>
+    <Dialog title="x" {...(size ? { width: size } : {})} onClose={() => {}}>
       body
     </Dialog>,
   );
@@ -178,9 +178,9 @@ describe("one size scale: sm, md and lg, md the default", () => {
     expect(renderToStaticMarkup(<Stack gap="xl">x</Stack>)).toContain("gap-12 sm:gap-16");
   });
 
-  it("Cluster's gap defaults to xs, its documented exception", () => {
+  it("Cluster's gap defaults to sm, its documented exception", () => {
     expect(renderToStaticMarkup(<Cluster>x</Cluster>)).toBe(
-      renderToStaticMarkup(<Cluster gap="xs">x</Cluster>),
+      renderToStaticMarkup(<Cluster gap="sm">x</Cluster>),
     );
   });
 

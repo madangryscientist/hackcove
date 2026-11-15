@@ -84,15 +84,13 @@ describe("Card title names its section", () => {
     expect(screen.queryByRole("region")).toBeNull();
   });
 
-  it("leaves a bare div unnamed", () => {
+  it("is an article named by its title with as=article", () => {
     render(
-      <Card as="div" title="Billing" data-testid="card">
+      <Card as="article" title="Billing">
         body
       </Card>,
     );
-    expect(screen.queryByRole("region")).toBeNull();
-    // A card root that is no region has no role or name, so its test id is the only handle on it.
-    expect(screen.getByTestId("card").hasAttribute("aria-labelledby")).toBe(false);
+    expect(screen.getByRole("article", { name: "Billing" })).not.toBeNull();
   });
 });
 

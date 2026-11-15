@@ -358,8 +358,8 @@ export function CenteredLayout({
 } & Passthrough): ReactElement {
   return (
     <div {...rest} className="mx-auto w-full max-w-md pt-16">
-      <Card as="div">
-        <Stack>
+      <Card>
+        <Stack gap="md">
           {mark}
           <PageHeaderContent title={title} description={description} />
           {children}

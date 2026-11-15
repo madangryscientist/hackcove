@@ -3,6 +3,7 @@ import {
   Button,
   ButtonGroup,
   Card,
+  Cluster,
   CardGrid,
   ListRow,
   Pill,
@@ -128,24 +129,7 @@ export const HeaderBarPadded: S = {
   ),
 };
 
-export const Dashed: S = {
-  render: () => (
-    <div className="max-w-md">
-      <Card dashed>No statements yet. Import one to get started.</Card>
-    </div>
-  ),
-};
-
-/** `dashed="filled"`: the dashed outline on a surface fill with more padding, for an empty state that reads as a panel. */
-export const DashedFilled: S = {
-  render: () => (
-    <div className="max-w-md">
-      <Card dashed="filled">No statements yet. Import one to get started.</Card>
-    </div>
-  ),
-};
-
-/** `size="sm"`: dense padding, the same word on `ListRow` and `FileDrop`. */
+/** `size="sm"`: dense padding, the same word on `ListRow` and `FileDrop`; a `Button` in it with no `size` of its own is `sm` too. */
 export const Small: S = {
   render: () => (
     <div className="flex max-w-md flex-col gap-4">
@@ -155,8 +139,11 @@ export const Small: S = {
       <Card size="sm" bar title="Notes" actions={<Button size="sm">Save</Button>}>
         <p className="text-sm text-slate-700">A dense body under the strip.</p>
       </Card>
-      <Card size="sm" dashed>
-        Nothing here yet.
+      <Card size="sm" title="Draft">
+        <Cluster>
+          <Button>Publish</Button>
+          <Button variant="outline">Discard</Button>
+        </Cluster>
       </Card>
     </div>
   ),

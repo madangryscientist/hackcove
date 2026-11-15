@@ -77,30 +77,22 @@ const links = [
 ];
 
 /** A row of links: `nowrap` keeps each link whole, so a line breaks only between them. */
-export const Links: S = { render: () => <MetaList nowrap>{links}</MetaList> };
+export const Links: S = { render: () => <MetaList>{links}</MetaList> };
 
 /** `separator="•"` swaps the dot for a bullet. */
 export const LinksBullet: S = {
-  render: () => (
-    <MetaList nowrap separator="•">
-      {links}
-    </MetaList>
-  ),
+  render: () => <MetaList separator="•">{links}</MetaList>,
 };
 
 /** `separator="none"` leaves only the gap. */
 export const LinksNoSeparator: S = {
-  render: () => (
-    <MetaList nowrap separator="none">
-      {links}
-    </MetaList>
-  ),
+  render: () => <MetaList separator="none">{links}</MetaList>,
 };
 
 export const LinksWrap: S = {
   render: () => (
     <div className="w-48">
-      <MetaList nowrap>{links}</MetaList>
+      <MetaList>{links}</MetaList>
     </div>
   ),
 };
@@ -108,7 +100,7 @@ export const LinksWrap: S = {
 /** A row of links is a `MetaList nowrap`: it spaces them, wraps them and hides the separator from a screen reader. */
 export const DoFooter: S = {
   render: () => (
-    <MetaList nowrap>
+    <MetaList>
       <TextLink href="#privacy">Privacy</TextLink>
       <TextLink href="#terms">Terms</TextLink>
       <TextLink href="#contact">Contact</TextLink>

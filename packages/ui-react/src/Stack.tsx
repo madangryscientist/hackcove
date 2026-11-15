@@ -6,7 +6,9 @@ import {
   type ReactNode,
 } from "react";
 import { cx } from "./cx.js";
+import { type HeadingLevel, HeadingLevelProvider, useHeadingLevel } from "./headingLevel.js";
 import type { Passthrough, Unstyled } from "./props.js";
+import { useStackGap } from "./stackGap.js";
 import { SectionHeading } from "./typography.js";
 
 export type StackGap = "xs" | "sm" | "md" | "lg" | "xl";
@@ -40,8 +42,10 @@ export const STACK_WIDTH: Record<StackWidth, string | undefined> = {
 
 /**
  * A vertical column of blocks a fixed `gap` apart: `xs` between lines of text (a heading and the
- * line under it), `sm` inside a group, `md` (default) between blocks, `lg` between groups, `xl` between a page's top-level blocks
- * (`gap-12`, `sm:gap-16`: the one responsive page rhythm).
+ * line under it), `sm` inside a group, `md` between blocks, `lg` between groups, `xl` between a page's top-level blocks
+ * (`gap-12`, `sm:gap-16`: the one responsive page rhythm). Left out, the gap comes from where the
+ * Stack sits: `xs` inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow`, and
+ * `md` on the page.
  *
  * `width` caps the column: `narrow` is a reading measure (`max-w-3xl`), `wide` is `max-w-5xl`, `full`
  * is the parent's whole width and `default` sets nothing. A capped Stack starts at its parent's left
@@ -57,7 +61,7 @@ export const STACK_WIDTH: Record<StackWidth, string | undefined> = {
  * them, so a child is one list item and `Text as="li"` or a bare `<li>` both work.
  */
 export function Stack({
-  gap = "md",
+  gap,
   width = "default",
   rowFrom,
   as = "div",
@@ -71,7 +75,7 @@ export function Stack({
         "flex flex-col",
         (as === "ul" || as === "ol") && "list-none",
         rowFrom && STACK_ROW_FROM[rowFrom],
-        STACK_GAP[gap],
+        STACK_GAP[useStackGap(gap)],
         STACK_WIDTH[width],
         "*:data-page-header:mb-0",
       )}
@@ -93,7 +97,7 @@ function Box({
 type StackBase = {
   /**
    * The space between blocks: `xs` gap-2, `sm` gap-4, `md` gap-6, `lg` gap-8, `xl` gap-12 (gap-16 from `sm`).
-   * @default md
+   * @default xs inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow`, else md
    */
   gap?: StackGap | undefined;
   /**
@@ -139,16 +143,19 @@ function useHeadingId(id: string | undefined): string {
 
 /**
  * A `<section>` Stack with an optional `SectionHeading` title (which names it) and `actions` beside
- * it. Its blocks are `gap` apart, `md` by default as in a `Stack`. `rule` draws a hairline under the
+ * it. Its blocks are `gap` apart, from where it sits as in a `Stack`. `rule` draws a hairline under the
  * title row, `actions` included, as `SectionHeading`'s `rule` does for a bare heading. A line
- * between two sections is a `Divider` in the `Stack` that holds them.
+ * between two sections is a `Divider` in the `Stack` that holds them. `level` is the title's
+ * heading level, one below the heading that holds the section (an `h2` on the page), and a heading
+ * inside it (a `Card`'s title) is one below that.
  */
 export function Section({
   id,
   title,
   actions,
   rule = false,
-  gap = "md",
+  level,
+  gap,
   width = "default",
   children,
   ...rest
@@ -169,8 +176,13 @@ export function Section({
    */
   rule?: boolean | undefined;
   /**
+   * The title's heading level, 2 to 6. It does not change how the title looks.
+   * @default one below the heading that holds the section: 2 on the page
+   */
+  level?: HeadingLevel | undefined;
+  /**
    * The space between blocks: `xs` gap-2, `sm` gap-4, `md` gap-6, `lg` gap-8, `xl` gap-12 (gap-16 from `sm`).
-   * @default md
+   * @default xs inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow`, else md
    */
   gap?: StackGap | undefined;
   /**
@@ -181,6 +193,7 @@ export function Section({
   children?: ReactNode;
 } & Passthrough): ReactElement {
   const titleId = useHeadingId(id);
+  const own = useHeadingLevel(level);
   return (
     <Stack
       as="section"
@@ -196,11 +209,15 @@ export function Section({
             rule && "border-b border-slate-200/70 pb-2",
           )}
         >
-          {title && <SectionHeading id={titleId}>{title}</SectionHeading>}
+          {title && (
+            <SectionHeading as={`h${own}`} id={titleId}>
+              {title}
+            </SectionHeading>
+          )}
           {actions && <div className="ml-auto flex items-center gap-2">{actions}</div>}
         </div>
       )}
-      {children}
+      {title ? <HeadingLevelProvider level={own}>{children}</HeadingLevelProvider> : children}
     </Stack>
   );
 }

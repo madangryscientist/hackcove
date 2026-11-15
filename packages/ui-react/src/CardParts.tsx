@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cx } from "./cx.js";
+import type { HeadingLevel } from "./headingLevel.js";
 import { Icon } from "./Icon.js";
 import type { IconName } from "./icons.js";
 import { CardOverline } from "./typography.js";
@@ -14,12 +15,21 @@ const INSET_BLEED: Record<Size, string> = { sm: "-mx-3", md: "-mx-5", lg: "-mx-6
 /** The padding of a card's bar and footer strips, by `size`. */
 const STRIP_PAD: Record<Size, string> = { sm: "px-3 py-2", md: "px-5 py-3", lg: "px-6 py-4" };
 
-/** The `h2` of a card whose title is a name: sentence case, in the primary ink. */
-function NameTitle({ id, children }: { id: string | undefined; children: ReactNode }) {
+/** The heading of a card whose title is a name: sentence case, in the primary ink. */
+function NameTitle({
+  id,
+  level,
+  children,
+}: {
+  id: string | undefined;
+  level: HeadingLevel;
+  children: ReactNode;
+}) {
+  const Tag = `h${level}` as const;
   return (
-    <h2 id={id} className="text-base font-semibold text-slate-900">
+    <Tag id={id} className="text-base font-semibold text-slate-900">
       {children}
-    </h2>
+    </Tag>
   );
 }
 
@@ -27,6 +37,7 @@ export function CardHeading({
   id,
   title,
   titleStyle,
+  level,
   count,
   status,
   bar,
@@ -36,6 +47,7 @@ export function CardHeading({
   id: string | undefined;
   title: string;
   titleStyle: "overline" | "name" | undefined;
+  level: HeadingLevel;
   count: number | undefined;
   status: ReactNode;
   bar: boolean;
@@ -52,9 +64,11 @@ export function CardHeading({
       )}
     >
       {titleStyle === "name" ? (
-        <NameTitle id={id}>{title}</NameTitle>
+        <NameTitle id={id} level={level}>
+          {title}
+        </NameTitle>
       ) : (
-        <CardOverline id={id} faint={!bar}>
+        <CardOverline id={id} level={level} faint={!bar}>
           {title}
         </CardOverline>
       )}

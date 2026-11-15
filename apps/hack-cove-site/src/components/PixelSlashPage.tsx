@@ -187,7 +187,7 @@ function Points({
             <BulletItem key={item}>{item}</BulletItem>
           ))}
         </BulletList>
-        <MetaList nowrap separator="none">
+        <MetaList separator="none">
           {more.map((link) => (
             <TextLink key={link.href} href={link.href}>
               {link.label}

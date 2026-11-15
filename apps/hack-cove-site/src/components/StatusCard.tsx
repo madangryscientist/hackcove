@@ -44,7 +44,7 @@ export function StatusCard({
           </BulletList>
         )}
         {links && links.length > 0 && (
-          <MetaList nowrap separator="none">
+          <MetaList separator="none">
             {links.map((link) => (
               <TextLink key={link.href} href={link.href}>
                 {link.label}

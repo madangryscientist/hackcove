@@ -62,14 +62,15 @@ describe("Card", () => {
     expect(titled).toContain(">0</span>");
   });
 
-  it("renders a section by default and the chosen element with as", () => {
-    expect(renderToStaticMarkup(<Card>body</Card>)).toContain("<section");
+  it("is a section with a title, a div without, and an article with as", () => {
+    expect(renderToStaticMarkup(<Card title="T">body</Card>)).toContain("<section");
+    expect(renderToStaticMarkup(<Card>body</Card>)).toMatch(/^<div/);
     expect(renderToStaticMarkup(<Card as="article">body</Card>)).toContain("<article");
   });
 
   it("renders the same markup as before when as is off", () => {
     expect(renderToStaticMarkup(<Card>body</Card>)).toBe(
-      `<section class="relative scroll-mt-28 rounded-xl border target:outline-2 target:outline-violet-600 ${lifted} border-slate-200/70 bg-white p-5 shadow-sm">body</section>`,
+      `<div class="relative scroll-mt-28 rounded-xl border target:outline-2 target:outline-violet-600 ${lifted} border-slate-200/70 bg-white p-5 shadow-sm">body</div>`,
     );
   });
 
@@ -135,37 +136,6 @@ describe("Card", () => {
     expect(out).toBe(renderToStaticMarkup(<Card>body</Card>));
   });
 
-  it("dashed ignores flush and bar", () => {
-    const out = renderToStaticMarkup(
-      <Card dashed flush bar title="T">
-        Nothing yet
-      </Card>,
-    );
-    expect(out).toContain("p-8");
-    expect(out).not.toContain("overflow-hidden");
-    expect(out).not.toContain("bg-slate-50");
-  });
-
-  it("dashed is an unfilled, shadowless shell with centred muted text", () => {
-    const out = renderToStaticMarkup(<Card dashed>Nothing yet</Card>);
-    expect(out).toContain("border-dashed");
-    expect(out).toContain("text-center");
-    expect(out).not.toContain("shadow-sm");
-    expect(out).not.toContain("bg-white");
-  });
-
-  it('dashed="filled" is the dashed shell on a surface fill with p-10; dashed stays p-8', () => {
-    const filled = renderToStaticMarkup(<Card dashed="filled">Nothing yet</Card>);
-    expect(filled).toContain("border-dashed");
-    expect(filled).toContain("bg-white");
-    expect(filled).toContain("p-10");
-    expect(filled).not.toContain("p-8");
-    expect(filled).not.toContain("shadow-sm");
-    const plain = renderToStaticMarkup(<Card dashed>Nothing yet</Card>);
-    expect(plain).toContain("p-8");
-    expect(plain).not.toContain("p-10");
-  });
-
   it("is an anchor target: it scrolls clear of the sticky header and outlines itself when targeted", () => {
     const panel = renderToStaticMarkup(<Card id="billing">x</Card>);
     expect(panel).toContain("scroll-mt-28");
@@ -177,12 +147,11 @@ describe("Card", () => {
     );
     expect(link).toContain("scroll-mt-28");
     expect(link).toContain("target:outline-violet-600");
-    expect(renderToStaticMarkup(<Card dashed>x</Card>)).toContain("target:outline-violet-600");
   });
 
   it("passes id, data-* and aria-* to the root", () => {
     const out = renderToStaticMarkup(
-      <Card id="empty" data-testid="c" aria-label="Empty" dashed>
+      <Card id="empty" data-testid="c" aria-label="Empty" title="T">
         x
       </Card>,
     );
@@ -232,8 +201,7 @@ describe("Card footer", () => {
     expect(out).toContain('data-button-group=""');
   });
 
-  it("is ignored on a dashed card and absent when empty", () => {
-    expect(footer({ dashed: true })).not.toContain("Total");
+  it("is absent when empty", () => {
     expect(
       renderToStaticMarkup(
         <Card title="T" footer={null}>
@@ -273,14 +241,7 @@ describe("Card size and tone", () => {
     expect(out).not.toContain("shadow-sm");
   });
 
-  it("ignores tone on a dashed card and on a bar", () => {
-    expect(
-      renderToStaticMarkup(
-        <Card dashed tone="warn">
-          x
-        </Card>,
-      ),
-    ).not.toContain("bg-amber-50");
+  it("ignores tone on a bar", () => {
     expect(
       renderToStaticMarkup(
         <Card bar title="T" tone="warn">

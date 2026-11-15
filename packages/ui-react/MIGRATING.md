@@ -218,6 +218,43 @@ TypeScript does not flag these:
 - A `Checkbox` with a one-line label sits on the line's top, where `align="center"` centred it: the
   same place for a label that fits on one line.
 
+### Containers and rows
+
+A container now sets what sits in it: a `Stack`'s gap, a heading's level and, in a `sm` card or
+row, the size of the buttons in it. An explicit prop on the child always wins.
+
+| Old | New | |
+| --- | --- | --- |
+| `Stack`, `Section` with no `gap` | the same at page level; inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow` the gap is `xs` | codemod writes `gap="md"` where there is none, so nothing moves |
+| `Cluster` with no `wrap` | now wraps: `wrap={false}` keeps one line | codemod writes `wrap={false}`; drops `wrap` |
+| `Cluster` with no `gap` | now `sm` (was `xs`) | codemod writes `gap="xs"` |
+| `MetaList nowrap` | leave it out: an item never breaks inside itself | codemod drops it |
+| `ListRow active` | `highlighted` | codemod |
+| `ListRow detail` | `panel` | codemod |
+| `ListRow static` | leave it out: a row with no `href` and no `onClick` is static by itself, and a button row needs `onClick` | codemod drops it |
+| `Card as="section"`, `Card as="div"` | leave `as` out: a titled card is a `section`, an untitled one a `div` | codemod drops it |
+| `Card dashed` whose only child is an `EmptyState` | the `EmptyState` alone: it draws its own dashed frame | codemod for that shape, else by hand |
+| `Card dashed` or `dashed="filled"` round anything else | an `EmptyState` with a `title` | by hand, and reported |
+| `Dialog size` | `width` | codemod |
+| `Drawer size` | `width` | codemod |
+
+New, nothing to change: `level` on `Card` and `Section`, and `EmptyState`'s now comes from where
+it sits; `EmptyState icon`; `Drawer description`; `SiteSearch resultsLabel` (default `Results`).
+
+TypeScript does not flag these:
+
+- A `Card` title is an `h3` inside a `Section`, and an `EmptyState` title one below the heading
+  that holds it, where both were always an `h2`. A test that finds one by `level: 2` needs the new
+  level, or a `level` prop to pin it.
+- An untitled `Card` is a `div`, so it is no landmark even with an `aria-label`; give it a `title`
+  to keep the `section`.
+- A `Button`, `IconButton` or `Pill` with no `size` in a `Card size="sm"` or a `ListRow size="sm"`
+  is now `sm`. The codemod reports every `Card size="sm"` and `ListRow size="sm"` so a person
+  checks what is inside.
+- A `ListRow` with neither `href` nor `onClick` is now a plain row with no hover fill and no button.
+- A `Stack` with no `gap` inside a card, dialog, drawer, sheet, callout or row is now `xs` apart.
+- A standalone `EmptyState` now draws a dashed frame round itself.
+
 ## 0.9 → 0.10: Avatar `2xl` is 64px, the old 96px is `3xl`
 
 `Avatar` gained a 64px size. The sizes keep their order (`xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`),

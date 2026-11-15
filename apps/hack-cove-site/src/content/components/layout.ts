@@ -154,10 +154,10 @@ export const layout: ComponentSection = {
       stories: ["Stack"],
       usage: {
         do: [
-          "`gap` is a scale: `xs` between lines of text, `sm` inside a group, `md` (default) between blocks, `lg` between groups, `xl` between a page's top-level blocks (the one responsive page rhythm).",
+          "`gap` is a scale: `xs` between lines of text, `sm` inside a group, `md` between blocks, `lg` between groups, `xl` between a page's top-level blocks (the one responsive page rhythm). Left out, it comes from where the Stack sits: `xs` inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow`, `md` on the page.",
           "`width` caps the column at the left edge: `narrow` (a reading measure), `wide`, `full`, or `default` for the parent's width. It is never re-centred.",
           '`as` is `div` (default), `section`, `form`, `ul` or `ol`. `as="form"` takes the form props and spaces its fields; `as="ul"` and `as="ol"` draw no markers and their children are `<li>`s.',
-          "A titled group is a `Section`: `title`, `actions` beside it, then the blocks, at gap `md` (default). It takes `gap` and `width` as `Stack` does. `rule` draws a hairline under the title row, `actions` included.",
+          "A titled group is a `Section`: `title`, `actions` beside it, then the blocks, spaced as a `Stack`. It takes `gap` and `width` as `Stack` does. `rule` draws a hairline under the title row, `actions` included. Its title is an `h2` on the page, one level below the section that holds it, and a `Card` or `EmptyState` inside it is one below that; `level` sets it by hand.",
           "`rowFrom` (`sm`, `md` or `lg`) turns the column into a row from that breakpoint and leaves it a column below: a main block beside a side column on a wide screen, stacked on a phone. Put the block that takes the width left in a `ClusterGrow`.",
           "A row that is a row at every width is a `Cluster`, not a Stack.",
         ],
@@ -180,12 +180,12 @@ export const layout: ComponentSection = {
       pairs: ["Cluster/FillRow", "Cluster/Buttons", "Cluster/Spacer"],
       usage: {
         do: [
-          "`gap` is `xs` (default), `sm` or `md`, the first steps of the `Stack` scale. Cluster is the one row whose default is not `md`: most rows are a label and its chips, which sit tight.",
+          "`gap` is `xs`, `sm` (default) or `md`, the first steps of the `Stack` scale. Cluster is the one row whose default is not `md`: the items of a row sit closer than the blocks of a column.",
           "`align` is the cross axis: `center` (default), `baseline` for mixed text sizes, `start` or `end`. `justify` is the main axis: `start` (default), `between` for the two ends, `end`.",
-          "`wrap` lets the items flow onto more lines on a phone; without it the row stays on one line.",
+          "The items flow onto more lines when the row runs out of room; `wrap={false}` keeps them on one line.",
           "Wrap the one item that should fill the row in `ClusterGrow`; it can shrink to nothing, so a long value truncates and the others stay.",
           "An empty `ClusterGrow` is a spacer: what follows it goes to the end.",
-          "`ClusterGrow` takes `minWidth` (`sm` 12rem or `md` 17rem) when it must keep a width: in a `Cluster` with `wrap` it then drops under the other items instead of being squashed beside them. A `ClusterGrow` also works inside a `Stack` with `rowFrom`.",
+          "`ClusterGrow` takes `minWidth` (`sm` 12rem or `md` 17rem) when it must keep a width: in a `Cluster` that wraps it then drops under the other items instead of being squashed beside them. A `ClusterGrow` also works inside a `Stack` with `rowFrom`.",
           "A row of buttons is a `ButtonGroup`, which wraps on a phone and can pin an item to the end. Use `Cluster` for every other row.",
           '`justify="between"` is for two items; with more, the middle one floats, so use a spacer.',
           '`as="span"` makes the row a `span`, for inside a paragraph where a `div` is not allowed; its items must then be phrasing content, so no `ClusterGrow`.',

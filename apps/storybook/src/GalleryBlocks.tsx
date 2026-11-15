@@ -143,7 +143,7 @@ export function GalleryDialogs() {
       {open === "full" && (
         <Dialog
           title="Harbour at dusk"
-          size="full"
+          width="full"
           onClose={close}
           footer={<Button onClick={close}>Close</Button>}
         >

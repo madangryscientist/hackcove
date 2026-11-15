@@ -16,7 +16,7 @@ export const ActiveOnPanel: S = {
           <ListRow size="sm" trailing="2">
             Missing part
           </ListRow>
-          <ListRow size="sm" divided active trailing="1">
+          <ListRow size="sm" divided highlighted trailing="1">
             Raw colour
           </ListRow>
           <ListRow size="sm" divided selected trailing="4">
@@ -52,7 +52,6 @@ export const StaticDetail: S = {
           {chats.map((chat, index) => (
             <ListRow
               key={chat.name}
-              static
               divided={index > 0}
               leading={<Avatar name={chat.name} />}
               trailing="10:42"
@@ -66,7 +65,7 @@ export const StaticDetail: S = {
                   {open === chat.name ? "Close" : "Open"}
                 </Button>
               }
-              detail={open === chat.name && <Text>Thread with {chat.name} opens here.</Text>}
+              panel={open === chat.name && <Text>Thread with {chat.name} opens here.</Text>}
             >
               <Text as="span" strong>
                 {chat.name}

@@ -18,7 +18,11 @@ const counts = (h: ReturnType<typeof handlers>) => [
 describe("ListRow pointer and focus handlers", () => {
   it("reach a button row: the pointer over and off the row, and Tab onto its button", async () => {
     const h = handlers();
-    render(<ListRow {...h}>Rent</ListRow>);
+    render(
+      <ListRow onClick={() => undefined} {...h}>
+        Rent
+      </ListRow>,
+    );
     const button = screen.getByRole("button", { name: "Rent" });
     const u = user();
     // The row's label, not its button: the handlers are the row's, so they fire off the button too.
@@ -32,7 +36,7 @@ describe("ListRow pointer and focus handlers", () => {
   it("reach a static row: the pointer over and off its text, and Tab onto the row", async () => {
     const h = handlers();
     render(
-      <ListRow static tabIndex={0} aria-label="Rent row" {...h}>
+      <ListRow tabIndex={0} aria-label="Rent row" {...h}>
         Rent
       </ListRow>,
     );
