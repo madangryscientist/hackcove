@@ -83,14 +83,7 @@ test.describe("drag", () => {
     await expect(snapLine(page, 2)).toBeVisible();
   });
 
-  test("a touch drag of the handle to the top lands on the last snap", async ({
-    page,
-    browserName,
-  }) => {
-    test.skip(
-      browserName !== "chromium",
-      "touch input is dispatched through CDP, which only Chromium has",
-    );
+  test("a touch drag of the handle to the top lands on the last snap", async ({ page }) => {
     const { handle } = await open(page, "default");
     const box = await handle.boundingBox();
     if (!box) throw new Error("the handle has no box");
@@ -145,11 +138,7 @@ test.describe("scroll containment", () => {
     expect(await pageScroll(page)).toBe(0);
   });
 
-  test("a touch fling over the body never scrolls the page", async ({ page, browserName }) => {
-    test.skip(
-      browserName !== "chromium",
-      "touch input is dispatched through CDP, which only Chromium has",
-    );
+  test("a touch fling over the body never scrolls the page", async ({ page }) => {
     const { body, x, y } = await bodyAtSnap2(page);
     const cdp = await page.context().newCDPSession(page);
     // Ten swipes up (1500px, past the body's end), each a finger dragged 150px over the body in 10 moves, then lifted.

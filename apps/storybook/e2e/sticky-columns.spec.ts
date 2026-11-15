@@ -16,7 +16,7 @@ const desktop = { width: 1280, height: 800 };
 
 async function scrollToEnd(page: Page) {
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-  // A scroll is async in WebKit and Firefox: wait for it to land.
+  // Wait for the scroll to land before reading positions.
   await expect
     .poll(() =>
       page.evaluate(
@@ -312,13 +312,10 @@ const scrollbarOf = (el: Element) => ({
 
 test("a SidebarLayout rail scrolls with the thin scrollbar and keeps the rail's ink", async ({
   page,
-  browserName,
 }) => {
   const scroller = await scrollerAt(page, "page-layouts-sidebarlayout--current-low");
   const got = await scroller.evaluate(scrollbarOf);
-  // Headless Firefox reports `scrollbar-width: none` for every element (overlay scrollbars), as in
-  // code-block.spec.ts, so the width is asserted in the other two engines only.
-  if (browserName !== "firefox") expect(got.width).toBe("thin");
+  expect(got.width).toBe("thin");
   expect(got.bar).toContain(got.scroller);
   expect(got.ink).not.toBe(got.scroller);
   expect(got.current).toBe(got.ink);

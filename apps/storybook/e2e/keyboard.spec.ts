@@ -17,8 +17,7 @@ test("Tabs: one tab stop, then the arrows, Home and End move the current tab", a
   await page.keyboard.press("ArrowRight");
   await expect(tabs.nth(0)).toBeFocused();
   await page.keyboard.press("Tab");
-  // Tab leaves the group: it never lands on another tab. (Not "tab 0 is blurred": the story's tabs
-  // are the page's only tab stop, so Firefox wraps Tab straight back to the first one.)
+  // Tab leaves the group: it never lands on another tab.
   await expect(tabs.nth(1)).not.toBeFocused();
   await expect(tabs.nth(2)).not.toBeFocused();
   // Roving tabindex is what makes the group one tab stop: only the current tab is reachable by Tab.
@@ -132,9 +131,7 @@ test("TableEditCell: Space opens the editor too, and a save returns the focus to
   await expect(page.getByRole("button", { name: "Transport Edit category" })).toBeFocused();
 });
 
-test("TableEditCell: a click on the editor's own button saves, in every engine", async ({
-  page,
-}) => {
+test("TableEditCell: a click on the editor's own button saves", async ({ page }) => {
   await page.goto(story("data-table--inline-edit"));
   await page.getByRole("button", { name: "Weekly shop Edit note" }).click();
   const input = page.getByRole("textbox", { name: "Note" });

@@ -76,8 +76,8 @@ feature-detected progressive enhancement (the page fade's `startViewTransition` 
 practice that means the current evergreen browsers: Chrome and Edge 131+, Firefox 143+, and Safari
 (macOS and iOS) 18.4+ (`browserslist` in the root `package.json`; the floor is set by
 `::details-content`, and Tailwind v4's own floor is lower). There is no support for older
-browsers and no polyfills. The e2e runs every spec in Chromium, Firefox and WebKit; the PixelSlash
-visual check is Chromium-only.
+browsers and no polyfills. The e2e runs every spec in Chromium only, as does the PixelSlash visual
+check; the rest of the floor is declared, not tested.
 
 ## No styling props
 
@@ -243,7 +243,7 @@ bun install
 bunx moon run :typecheck :lint :test :build      # the gate
 bun run format:check                             # oxfmt, workspace-wide
 bunx moon run :pack-check                        # npm pack --dry-run per package; ui-react also typechecks its tarball in a consumer app
-bunx moon run storybook:e2e                      # Playwright over the built Storybook, in Chromium, Firefox and WebKit (first time: bunx playwright install chromium firefox webkit)
+bunx moon run storybook:e2e                      # Playwright over the built Storybook, in Chromium (first time: bunx playwright install chromium)
 bunx moon run hack-cove-site:e2e                 # Playwright over the built site: the /ui/ pages under every theme
 bunx moon run storybook:storybook                # http://localhost:6006
 bunx moon run hack-cove-site:dev                 # the website, http://localhost:4321

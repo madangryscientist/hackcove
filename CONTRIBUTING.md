@@ -27,7 +27,7 @@ You need [Bun](https://bun.sh) and Node. Then:
 
 ```sh
 bun install
-bunx playwright install chromium firefox webkit   # once per machine, for the e2e (all three engines)
+bunx playwright install chromium   # once per machine, for the e2e (Chromium only)
 bunx moon run storybook:storybook   # http://localhost:6006
 ```
 
@@ -55,7 +55,7 @@ bun install
 bunx moon run :typecheck :lint :test :build      # tsc strict · oxlint + check-slop · Vitest · dist + Storybook build
 bun run format:check                             # oxfmt --check (`bun run format` fixes)
 bunx moon run :pack-check                        # npm pack --dry-run for every package; ui-react also typechecks its tarball in a consumer app
-bunx moon run storybook:e2e                      # Playwright, in Chromium, Firefox and WebKit: builds Storybook, flips every theme
+bunx moon run storybook:e2e                      # Playwright, in Chromium: builds Storybook, flips every theme
 bunx moon run hack-cove-site:e2e                 # Playwright: builds the site, flips every theme on the /ui/ pages
 ```
 

@@ -55,8 +55,7 @@ const ROWS = [
  */
 async function pickUp(page: Page, rowIndex: number) {
   const grid = list(page);
-  // Focus the first row as the other keyboard specs do: under load a WebKit page can still be
-  // inactive when the test starts, and a first Tab then lands nowhere.
+  // Focus the first row as the other keyboard specs do, rather than counting on a first Tab.
   await row(grid, ROWS[0]).focus();
   await expect(row(grid, ROWS[0])).toBeFocused();
   for (let index = 1; index <= rowIndex; index++) {
@@ -82,16 +81,9 @@ async function open(page: Page, id = "data-sortablelist--default") {
   await list(page, id.endsWith("two-lists") ? "Home queue" : "Task queue").waitFor();
 }
 
-// Playwright's WebKit does not deliver HTML5 drag and drop events, so a pointer drag never starts
-// there; the keyboard specs below run in every engine. Touch is a device check, not a spec.
-const pointerSkip = (browserName: string) =>
-  test.skip(browserName === "webkit", "Playwright's WebKit does not run HTML5 drag and drop");
-
 test("SortableList: dragging the third row above the first reports one move and the story reorders", async ({
   page,
-  browserName,
 }) => {
-  pointerSkip(browserName);
   await open(page);
   const grid = list(page);
   await row(grid, URGENT[2]).dragTo(row(grid, URGENT[0]), { targetPosition: { x: 200, y: 4 } });
@@ -103,9 +95,7 @@ test("SortableList: dragging the third row above the first reports one move and 
 
 test("SortableList: a drag into another section reports that section and raises its count", async ({
   page,
-  browserName,
 }) => {
-  pointerSkip(browserName);
   await open(page);
   const grid = list(page);
   await expect(count(grid, "High")).toHaveText("High5");
@@ -122,9 +112,7 @@ test("SortableList: a drag into another section reports that section and raises 
 
 test("SortableList: a drop on the empty section's Drop here row reports the section and no target", async ({
   page,
-  browserName,
 }) => {
-  pointerSkip(browserName);
   await open(page);
   const grid = list(page);
   await row(grid, URGENT[1]).dragTo(row(grid, "Drop here"));
@@ -133,11 +121,7 @@ test("SortableList: a drop on the empty section's Drop here row reports the sect
   await expect(row(grid, "Drop here")).toHaveCount(0);
 });
 
-test("SortableList: two lists on one page never take each other's items", async ({
-  page,
-  browserName,
-}) => {
-  pointerSkip(browserName);
+test("SortableList: two lists on one page never take each other's items", async ({ page }) => {
   await open(page, "data-sortablelist--two-lists");
   const home = list(page, "Home queue");
   const work = list(page, "Work queue");
