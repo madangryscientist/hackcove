@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 import { renderToStaticMarkup } from "react-dom/server"; // markup read as data, below
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Morph } from "./Morph.js";
-import { render, screen } from "./render.harness.js";
+import { act, render, screen } from "./render.harness.js";
 
 /** The transition name a Morph gives its element, read from the rendered element. */
 function nameOf(name: string, item: string | number): string | null {
@@ -27,6 +27,28 @@ function stylesheet(name: string, item: string | number): string {
   return renderToStaticMarkup(node); // markup read as data
 }
 
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+/** A stand-in IntersectionObserver that keeps its callback, so a test can say what is in view. */
+function stubObserver() {
+  const seen: { report?: (isIntersecting: boolean) => void; disconnected: boolean } = {
+    disconnected: false,
+  };
+  class FakeObserver {
+    constructor(callback: (entries: { isIntersecting: boolean }[]) => void) {
+      seen.report = (isIntersecting) => callback([{ isIntersecting }]);
+    }
+    observe(): void {}
+    disconnect(): void {
+      seen.disconnected = true;
+    }
+  }
+  vi.stubGlobal("IntersectionObserver", FakeObserver);
+  return seen;
+}
+
 describe("Morph", () => {
   it("renders its child inside an element named for the transition", () => {
     render(
@@ -40,7 +62,7 @@ describe("Morph", () => {
   it("names the element in a stylesheet that carries no colour", () => {
     const out = stylesheet("shop", "abc");
     expect(out).toContain(
-      '[data-morph="hc-morph-shop-abc"]{view-transition-name:hc-morph-shop-abc}',
+      '[data-morph="hc-morph-shop-abc"][data-morph-near]{view-transition-name:hc-morph-shop-abc}',
     );
     expect(out).not.toMatch(/#[0-9a-f]{3}|rgb|hsl/i);
   });
@@ -55,8 +77,36 @@ describe("Morph", () => {
     const name = nameOf("shop", '1 "a"}b');
     expect(name).toMatch(/^hc-morph-[A-Za-z0-9_-]+$/);
     expect(stylesheet("shop", '1 "a"}b')).toContain(
-      `[data-morph="${name}"]{view-transition-name:${name}}`,
+      `[data-morph="${name}"][data-morph-near]{view-transition-name:${name}}`,
     );
+  });
+
+  it("is named only while it is near the viewport", () => {
+    const seen = stubObserver();
+    const { unmount } = render(
+      <Morph name="shop" item="abc">
+        x
+      </Morph>,
+    );
+    const el = screen.getByText("x");
+    expect(el.hasAttribute("data-morph-near")).toBe(true);
+    act(() => seen.report?.(false));
+    expect(el.hasAttribute("data-morph-near")).toBe(false);
+    expect(el.getAttribute("data-morph")).toBe("hc-morph-shop-abc");
+    act(() => seen.report?.(true));
+    expect(el.hasAttribute("data-morph-near")).toBe(true);
+    unmount();
+    expect(seen.disconnected).toBe(true);
+  });
+
+  it("stays named where there is no IntersectionObserver", () => {
+    vi.stubGlobal("IntersectionObserver", undefined);
+    render(
+      <Morph name="shop" item="abc">
+        x
+      </Morph>,
+    );
+    expect(screen.getByText("x").hasAttribute("data-morph-near")).toBe(true);
   });
 
   it("forwards props to the element", () => {

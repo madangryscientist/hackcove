@@ -191,8 +191,8 @@ export const feedback: ComponentSection = {
         do: [
           "Wrap what changes between pages, once per page, and leave the header and footer outside it.",
           "Start the change inside a view transition: `startPageTransition(() => setPage(next))` for a state change, or the router's own option (TanStack Router `viewTransition`, React Router's `viewTransition`, Astro's `ClientRouter`). Without one nothing fades.",
-          "Two PageFades on one page each need their own `name`.",
-          "Portal an overlay such as a dropdown to the body: the fading area is a stacking context, so an overlay inside it cannot rise above a sticky header outside it.",
+          "Leave `name` off: the whole page cross-fades and the frame, the same on both pages, looks still.",
+          "Give a `name` only to a second region that must fade apart from the page, and only one no taller than the screen: a named region is captured at its full height. Each named one on a page needs its own `name`, and it is a stacking context, so portal an overlay inside it to the body.",
         ],
       },
       accessibility: [
@@ -224,6 +224,7 @@ export const feedback: ComponentSection = {
           "The destination's Morph must be in the page when the navigation lands: a route that shows a pending component first has nothing to morph into.",
           "Inside a `PageFade` the rest of the page cross-fades while the card morphs over it.",
           "Portal an overlay such as a dropdown to the body: the morphing element is a stacking context, so an overlay inside it cannot rise above a sticky header outside it.",
+          "A Morph far below the fold carries no transition name until it scrolls near, so a long list costs only what is on screen.",
         ],
       },
       accessibility: [

@@ -1,4 +1,11 @@
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
+import {
+  type HTMLAttributes,
+  type ReactElement,
+  type ReactNode,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import type { Unstyled } from "./props.js";
 
 // Keeps letters and digits and writes every other character, `-` and `_` included, as
@@ -18,8 +25,11 @@ const morphName = (name: string, item: string | number): string =>
 // an ease that starts quick and settles gently (the browser's default 250 ms is too quick to see),
 // so the cross-fade lasts as long as the move. Under reduced motion the later rule switches the
 // animations off so it swaps. No colour in it. Where the API is missing the rules are never matched.
+// The name applies only while the element carries `data-morph-near` (within a screen of the
+// viewport): a named element is captured whole before a transition, so naming every card of a long
+// list makes the browser (WebKit worst) capture pixels nobody sees.
 const css = (n: string): string =>
-  `[data-morph="${n}"]{view-transition-name:${n}}
+  `[data-morph="${n}"][data-morph-near]{view-transition-name:${n}}
 ::view-transition-group(${n}),::view-transition-old(${n}),::view-transition-new(${n}){animation-duration:450ms;animation-timing-function:cubic-bezier(0.2,0,0,1)}
 @media (prefers-reduced-motion:reduce){::view-transition-group(${n}),::view-transition-old(${n}),::view-transition-new(${n}){animation:none}}`;
 
@@ -33,10 +43,11 @@ const css = (n: string): string =>
  * `defaultViewTransition: true` on `createRouter`, or `viewTransition` on a `Link`; React Router's
  * `viewTransition`, Astro's `ClientRouter`). Otherwise, or where the browser has no View
  * Transitions, it renders and behaves as a plain `<div>`. Inside a `PageFade` the page fades while
- * this element morphs. A `view-transition-name` makes the div a stacking context, so a dropdown
- * inside it cannot rise above a sticky header outside it: portal overlays to the body. Under
+ * this element morphs. While it is named (near the screen) the div is a stacking context, so a
+ * dropdown inside it cannot rise above a sticky header outside it: portal overlays to the body. Under
  * `prefers-reduced-motion: reduce` it swaps with no animation; a router's own transition of the
- * rest of the page is the router's to quiet.
+ * rest of the page is the router's to quiet. A Morph more than a screen above or below the viewport
+ * carries no transition name until it scrolls near, so a long list costs only what is on screen.
  */
 export function Morph({
   name,
@@ -51,11 +62,38 @@ export function Morph({
   children: ReactNode;
 } & Unstyled<HTMLAttributes<HTMLDivElement>>): ReactElement {
   const n = morphName(name, item);
+  const ref = useRef<HTMLDivElement>(null);
+  // Named until measured, so the server render and an engine with no IntersectionObserver keep the
+  // name. The layout effect's update is flushed with the render, so inside a view transition's
+  // update the new page's far cards are already unnamed when the browser captures it.
+  const [near, setNear] = useState(true);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver !== "function") return undefined;
+    const rect = el.getBoundingClientRect();
+    const h = window.innerHeight;
+    setNear(rect.bottom >= -h && rect.top <= 2 * h);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const last = entries.at(-1);
+        if (last) setNear(last.isIntersecting);
+      },
+      { rootMargin: "100% 0px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
   return (
     <>
       <style>{css(n)}</style>
       {/* A grid, so the one child (a Card in a CardGrid) still fills the row's height. */}
-      <div {...rest} data-morph={n} className="grid">
+      <div
+        {...rest}
+        ref={ref}
+        data-morph={n}
+        data-morph-near={near ? "" : undefined}
+        className="grid"
+      >
         {children}
       </div>
     </>
