@@ -14,16 +14,19 @@ const morphName = (name: string, item: string | number): string =>
 
 // As in PageFade: the one place the View Transitions pseudo-elements can be styled is a stylesheet.
 // The browser's own group animation moves and resizes the box and cross-fades its content; this
-// names the element and, under reduced motion, switches the animations off so it swaps. No colour
-// in it. Where the API is missing the rules are never matched.
+// names the element and gives the group and both images the library's one morph timing, 450 ms on
+// an ease that starts quick and settles gently (the browser's default 250 ms is too quick to see),
+// so the cross-fade lasts as long as the move. Under reduced motion the later rule switches the
+// animations off so it swaps. No colour in it. Where the API is missing the rules are never matched.
 const css = (n: string): string =>
   `[data-morph="${n}"]{view-transition-name:${n}}
+::view-transition-group(${n}),::view-transition-old(${n}),::view-transition-new(${n}){animation-duration:450ms;animation-timing-function:cubic-bezier(0.2,0,0,1)}
 @media (prefers-reduced-motion:reduce){::view-transition-group(${n}),::view-transition-old(${n}),::view-transition-new(${n}){animation:none}}`;
 
 /**
  * An element that grows into its counterpart on the next page, and shrinks back on Back, through
  * the View Transitions API. Wrap the card in the list and the element on the detail page, each with
- * the same `name` and the record's id as `item`: the browser morphs one into the other. The same
+ * the same `name` and the record's id as `item`: the browser morphs one into the other over 450 ms. The same
  * `name` and `item` may appear only once on a page; two on one page and the browser skips the
  * morph, so a list passes each record's own id. The morph runs only when the change is wrapped in a
  * view transition: `startPageTransition`, or a router's own option (TanStack Router
