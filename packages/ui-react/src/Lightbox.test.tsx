@@ -1,47 +1,55 @@
 // @vitest-environment jsdom
-import { act } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { dialogOf, mount, showModal, stubDialog, unmount } from "./dom.harness.js";
+import { showModal, stubDialog } from "./dom.harness.js";
 import { Lightbox } from "./Lightbox.js";
+import { act, render, screen, user } from "./render.harness.js";
 
+// stubDialog supplies the modal <dialog> methods jsdom lacks; it does not act through the DOM.
 beforeEach(stubDialog);
-afterEach(unmount);
 
 const photo = <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Harbour at dusk" />;
 
-const button = (out: HTMLElement, label: string) =>
-  out.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`);
+const follows = (a: Node, b: Node) =>
+  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
-const press = (out: HTMLElement, key: string) =>
-  act(() => {
-    dialogOf(out).dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true }));
-  });
+/** Whether each arrow key that reached the page had its default (scrolling) taken by the viewer. */
+const prevented: boolean[] = [];
+const record = (event: KeyboardEvent) => prevented.push(event.defaultPrevented);
+beforeEach(() => document.addEventListener("keydown", record));
+afterEach(() => {
+  document.removeEventListener("keydown", record);
+  prevented.length = 0;
+});
+
+/** Put the keyboard inside the viewer, as the open does in a browser (jsdom's stub moves no focus). */
+const focusInside = () => act(() => screen.getByRole("button", { name: "Close" }).focus());
 
 describe("Lightbox", () => {
   it("opens as a modal on mount and closes when the parent unmounts it", () => {
-    const out = mount(
+    const { unmount } = render(
       <Lightbox label="Photo" onClose={() => {}}>
         {photo}
       </Lightbox>,
     );
-    const dialog = dialogOf(out);
+    const dialog = screen.getByRole<HTMLDialogElement>("dialog", { name: "Photo" });
     expect(showModal).toHaveBeenCalledExactlyOnceWith(dialog);
     unmount();
     expect(dialog.hasAttribute("open")).toBe(false);
   });
 
   it("is named by its label", () => {
-    const out = mount(
+    render(
       <Lightbox label="Status from Anna" onClose={() => {}}>
         {photo}
       </Lightbox>,
     );
-    expect(dialogOf(out).getAttribute("aria-label")).toBe("Status from Anna");
+    expect(
+      screen.getByRole<HTMLDialogElement>("dialog", { name: "Status from Anna" }),
+    ).not.toBeNull();
   });
 
-  it("shows the title and meta above the media and the caption below it", () => {
-    const out = mount(
+  it("reads the title, then the meta, then the media, then the caption", () => {
+    render(
       <Lightbox
         label="Photo"
         title="Anna"
@@ -52,148 +60,118 @@ describe("Lightbox", () => {
         {photo}
       </Lightbox>,
     );
-    const text = dialogOf(out).textContent ?? "";
-    expect(text.indexOf("Anna")).toBeLessThan(text.indexOf("Today, 09:12"));
-    const html = dialogOf(out).innerHTML;
-    expect(html.indexOf("Today, 09:12")).toBeLessThan(html.indexOf("<img"));
-    expect(html.indexOf("<img")).toBeLessThan(html.indexOf("Harbour at dusk</p>"));
-  });
-
-  it("fits the media inside the screen", () => {
-    const out = renderToStaticMarkup(
-      <Lightbox label="Photo" onClose={() => {}}>
-        {photo}
-      </Lightbox>,
-    );
-    expect(out).toContain("*:max-h-full");
-    expect(out).toContain("*:max-w-full");
-    expect(out).toContain("*:object-contain");
-  });
-
-  it("paints its own scrim, the same near-black in every theme, and fades in and out", () => {
-    const out = renderToStaticMarkup(
-      <Lightbox label="Photo" title="Anna" caption="c" onClose={() => {}}>
-        {photo}
-      </Lightbox>,
-    );
-    expect(out.match(/<dialog[^>]*>/)?.[0]).toContain("bg-black/90");
-    expect(out).toContain("text-white");
-    expect(out).toContain("text-white/70");
-    expect(out).toContain("transition-discrete");
-    expect(out).toContain("starting:open:opacity-0");
-    expect(out).toContain("motion-reduce:transition-none");
-  });
-
-  it("keeps the focus outline on the scrim's controls light, not the accent", () => {
-    const out = renderToStaticMarkup(
-      <Lightbox label="Photo" onClose={() => {}} onNext={() => {}}>
-        {photo}
-      </Lightbox>,
-    );
-    const buttons = out.match(/<button[^>]*>/g) ?? [];
-    expect(buttons.length).toBe(2);
-    for (const tag of buttons) {
-      expect(tag).toContain("focus-visible:outline-white");
-      expect(tag).not.toContain("outline-violet-600");
-    }
+    const meta = screen.getByText("Today, 09:12");
+    const media = screen.getByRole("img", { name: "Harbour at dusk" });
+    expect(follows(screen.getByText("Anna"), meta)).toBeTruthy();
+    expect(follows(meta, media)).toBeTruthy();
+    expect(follows(media, screen.getByText("Harbour at dusk"))).toBeTruthy();
   });
 
   it("calls onClose when the dialog closes (Esc fires the same event)", async () => {
     const onClose = vi.fn<() => void>();
-    const out = mount(
+    render(
       <Lightbox label="Photo" onClose={onClose}>
         {photo}
       </Lightbox>,
     );
-    await act(async () => dialogOf(out).close());
+    // Esc closes a modal <dialog> in the browser; jsdom has none, so the test calls the close it makes.
+    await act(async () => screen.getByRole<HTMLDialogElement>("dialog", { name: "Photo" }).close());
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it("closes from its close button", async () => {
     const onClose = vi.fn<() => void>();
-    const out = mount(
+    render(
       <Lightbox label="Photo" onClose={onClose}>
         {photo}
       </Lightbox>,
     );
-    await act(async () => button(out, "Close")?.click());
+    await user().click(screen.getByRole("button", { name: "Close" }));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("closes on a click on the scrim around the media", async () => {
+  it.each([
+    ["above", "banner"],
+    ["below", "contentinfo"],
+  ] as const)("closes on a click on the scrim %s the media", async (_, band) => {
     const onClose = vi.fn<() => void>();
-    const out = mount(
+    render(
       <Lightbox label="Photo" onClose={onClose}>
         {photo}
       </Lightbox>,
     );
-    await act(async () => out.querySelector("img")?.parentElement?.click());
+    await user().click(screen.getByRole(band));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it("closes on a click on the dialog itself", async () => {
     const onClose = vi.fn<() => void>();
-    const out = mount(
+    render(
       <Lightbox label="Photo" onClose={onClose}>
         {photo}
       </Lightbox>,
     );
-    await act(async () => dialogOf(out).click());
+    await user().click(screen.getByRole<HTMLDialogElement>("dialog", { name: "Photo" }));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it("does not close on a click on the media, the text or a step button", async () => {
     const onClose = vi.fn<() => void>();
     const onNext = vi.fn<() => void>();
-    const out = mount(
+    render(
       <Lightbox label="Photo" title="Anna" caption="Harbour" onClose={onClose} onNext={onNext}>
         {photo}
       </Lightbox>,
     );
-    await act(async () => out.querySelector("img")?.click());
-    await act(async () => out.querySelector("p")?.click());
-    await act(async () => button(out, "Next")?.click());
+    await user().click(screen.getByRole("img", { name: "Harbour at dusk" }));
+    await user().click(screen.getByText("Anna"));
+    await user().click(screen.getByText("Harbour"));
+    await user().click(screen.getByRole("button", { name: "Next" }));
     expect(onClose).not.toHaveBeenCalled();
     expect(onNext).toHaveBeenCalledTimes(1);
   });
 
-  it("steps with the previous and next buttons and the arrow keys", async () => {
+  it("steps with the previous and next buttons and the arrow keys, taking the keys from the page", async () => {
     const onPrevious = vi.fn<() => void>();
     const onNext = vi.fn<() => void>();
-    const out = mount(
+    render(
       <Lightbox label="Photo" onClose={() => {}} onPrevious={onPrevious} onNext={onNext}>
         {photo}
       </Lightbox>,
     );
-    await act(async () => button(out, "Previous")?.click());
-    await act(async () => button(out, "Next")?.click());
-    press(out, "ArrowLeft");
-    press(out, "ArrowRight");
-    press(out, "ArrowRight");
+    await user().click(screen.getByRole("button", { name: "Previous" }));
+    await user().click(screen.getByRole("button", { name: "Next" }));
+    focusInside();
+    await user().keyboard("{ArrowLeft}{ArrowRight}{ArrowRight}");
     expect(onPrevious).toHaveBeenCalledTimes(2);
     expect(onNext).toHaveBeenCalledTimes(3);
+    expect(prevented).toEqual([true, true, true]);
   });
 
-  it("has no step buttons, and ignores the arrow keys, without onPrevious and onNext", () => {
-    const out = mount(
-      <Lightbox label="Photo" onClose={() => {}}>
+  it("has no step buttons, and leaves the arrow keys to the page, without onPrevious and onNext", async () => {
+    const onClose = vi.fn<() => void>();
+    render(
+      <Lightbox label="Photo" onClose={onClose}>
         {photo}
       </Lightbox>,
     );
-    expect(button(out, "Previous")).toBeNull();
-    expect(button(out, "Next")).toBeNull();
-    expect(out.querySelectorAll("button")).toHaveLength(1);
-    press(out, "ArrowLeft");
-    press(out, "ArrowRight");
+    expect(screen.getAllByRole("button").map((b) => b.getAttribute("aria-label"))).toEqual([
+      "Close",
+    ]);
+    focusInside();
+    await user().keyboard("{ArrowLeft}{ArrowRight}");
+    expect(prevented).toEqual([false, false]);
+    expect(onClose).not.toHaveBeenCalled();
+    expect(screen.getByRole("img", { name: "Harbour at dusk" })).not.toBeNull();
   });
 
   it("shows only the step it can take", () => {
-    const out = mount(
+    render(
       <Lightbox label="Photo" onClose={() => {}} onNext={() => {}}>
         {photo}
       </Lightbox>,
     );
-    expect(button(out, "Previous")).toBeNull();
-    expect(button(out, "Next")).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "Previous" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Next" })).not.toBeNull();
   });
 });

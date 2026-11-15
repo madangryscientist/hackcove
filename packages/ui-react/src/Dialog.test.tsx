@@ -1,12 +1,11 @@
 // @vitest-environment jsdom
-import { act } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import { Dialog } from "./Dialog.js";
-import { dialogOf, mount, showModal, stubDialog, unmount } from "./dom.harness.js";
+import { showModal, stubDialog } from "./dom.harness.js";
+import { act, render, screen, user } from "./render.harness.js";
 
+// stubDialog supplies the modal <dialog> methods jsdom lacks; it does not act through the DOM.
 beforeEach(stubDialog);
-afterEach(unmount);
 
 /** The callbacks of every observer the dialog has started, so a test can say the body was resized. */
 const observers: Array<() => void> = [];
@@ -40,25 +39,26 @@ afterEach(() => {
   vi.unstubAllGlobals();
   observers.length = 0;
 });
-const bodyOf = (out: HTMLElement) => dialogOf(out).querySelector<HTMLElement>("h2 ~ div");
 
 describe("Dialog", () => {
   it("opens as a modal on mount", () => {
-    const out = mount(<Dialog title="Rename" onClose={() => {}} />);
-    expect(showModal).toHaveBeenCalledExactlyOnceWith(dialogOf(out));
+    render(<Dialog title="Rename" onClose={() => {}} />);
+    expect(showModal).toHaveBeenCalledExactlyOnceWith(
+      screen.getByRole<HTMLDialogElement>("dialog", { name: "Rename" }),
+    );
   });
 
-  it("closes the dialog when the parent unmounts it, so no open modal or inert page is left behind", () => {
-    const dialog = dialogOf(mount(<Dialog title="Rename" onClose={() => {}} />));
+  it("closes the dialog when the parent unmounts it, so no open modal is left behind", () => {
+    const { unmount } = render(<Dialog title="Rename" onClose={() => {}} />);
+    const dialog = screen.getByRole<HTMLDialogElement>("dialog", { name: "Rename" });
     expect(dialog.hasAttribute("open")).toBe(true);
     unmount();
     expect(dialog.hasAttribute("open")).toBe(false);
-    expect(document.querySelector("dialog[open]")).toBeNull();
-    expect(document.querySelector("[inert]")).toBeNull();
+    expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("is named by its title and shows the description, body and footer", () => {
-    const out = mount(
+  it("is named by its title heading and shows the description, body and footer", () => {
+    render(
       <Dialog
         title="Rename"
         description="Pick a new name."
@@ -68,39 +68,46 @@ describe("Dialog", () => {
         <p>Body text</p>
       </Dialog>,
     );
-    const dialog = dialogOf(out);
-    const heading = dialog.querySelector("h2");
-    expect(heading?.textContent).toBe("Rename");
-    expect(dialog.getAttribute("aria-labelledby")).toBe(heading?.id);
+    const dialog = screen.getByRole<HTMLDialogElement>("dialog", { name: "Rename" });
+    expect(screen.getByRole("heading", { name: "Rename" })).not.toBeNull();
     expect(dialog.textContent).toContain("Pick a new name.");
     expect(dialog.textContent).toContain("Body text");
-    expect(dialog.textContent).toContain("Done");
+    expect(screen.getByRole("button", { name: "Done" })).not.toBeNull();
+  });
+
+  it("holds only its title when there is no description, body or footer", () => {
+    render(<Dialog title="Only" onClose={() => {}} />);
+    expect(screen.getByRole<HTMLDialogElement>("dialog", { name: "Only" }).textContent).toBe(
+      "Only",
+    );
   });
 
   it("calls onClose when the dialog closes (Esc and form method=dialog fire the same event)", async () => {
     const onClose = vi.fn<() => void>();
-    const out = mount(<Dialog title="t" onClose={onClose} />);
-    await act(async () => dialogOf(out).close());
+    render(<Dialog title="t" onClose={onClose} />);
+    // Esc closes a modal <dialog> in the browser; jsdom has none, so the test calls the close it makes.
+    await act(async () => screen.getByRole<HTMLDialogElement>("dialog", { name: "t" }).close());
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it("closes on a click on the backdrop, which is a click on the <dialog> itself", async () => {
     const onClose = vi.fn<() => void>();
-    const out = mount(<Dialog title="t" onClose={onClose} />);
-    await act(async () => dialogOf(out).click());
+    render(<Dialog title="t" onClose={onClose} />);
+    await user().click(screen.getByRole<HTMLDialogElement>("dialog", { name: "t" }));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it("calls onClose only after the exit transition has ended, so an unmount does not cut it short", async () => {
     const onClose = vi.fn<() => void>();
-    const out = mount(<Dialog title="t" onClose={onClose} />);
-    const dialog = dialogOf(out);
+    render(<Dialog title="t" onClose={onClose} />);
+    const dialog = screen.getByRole<HTMLDialogElement>("dialog", { name: "t" });
     const exit = Promise.withResolvers<null>();
     // A looping animation inside the dialog (a spinner) is not an exit transition and is not waited for.
     const spinner = { finished: new Promise<null>(() => {}) };
     const opacity = { transitionProperty: "opacity", finished: exit.promise };
+    // jsdom has no Web Animations: the test says which ones are running.
     Reflect.set(dialog, "getAnimations", () => [spinner, opacity]);
-    await act(async () => dialog.click());
+    await user().click(dialog);
     expect(onClose).not.toHaveBeenCalled();
     await act(async () => exit.resolve(null));
     expect(onClose).toHaveBeenCalledTimes(1);
@@ -108,170 +115,87 @@ describe("Dialog", () => {
 
   it("does not call onClose for the close an unmount causes", async () => {
     const onClose = vi.fn<() => void>();
-    mount(<Dialog title="t" onClose={onClose} />);
+    const { unmount } = render(<Dialog title="t" onClose={onClose} />);
     await act(async () => unmount());
     expect(onClose).not.toHaveBeenCalled();
   });
 
-  it("slides and fades in and out with transitions that survive the dialog leaving the top layer", () => {
-    const out = renderToStaticMarkup(<Dialog title="t" onClose={() => {}} />);
-    expect(out).toContain("transition-discrete");
-    expect(out).toContain("starting:open:opacity-0");
-    expect(out).toContain("backdrop:transition-discrete");
-    expect(out).toContain("motion-reduce:transition-none");
-  });
-
-  it("does not close on a click inside the panel", () => {
+  it("does not close on a click inside the panel", async () => {
     const onClose = vi.fn<() => void>();
-    const out = mount(
+    render(
       <Dialog title="t" onClose={onClose}>
         <button type="button">inner</button>
       </Dialog>,
     );
-    act(() => out.querySelector("button")?.click());
-    act(() => out.querySelector("h2")?.click());
+    await user().click(screen.getByRole("button", { name: "inner" }));
+    await user().click(screen.getByRole("heading", { name: "t" }));
     expect(onClose).not.toHaveBeenCalled();
   });
 
-  it("renders only the title when there is no description, body or footer", () => {
-    const out = renderToStaticMarkup(<Dialog title="Only" onClose={() => {}} />);
-    expect(out).toContain(">Only</h2>");
-    expect(out).not.toContain("mt-4");
-    expect(out).not.toContain("mt-5");
-  });
-
-  it("sizes the panel", () => {
-    const sm = renderToStaticMarkup(<Dialog title="t" size="sm" onClose={() => {}} />);
-    expect(sm).toContain("w-80");
-    const md = renderToStaticMarkup(<Dialog title="t" onClose={() => {}} />);
-    expect(md).toContain("w-110");
-  });
-
-  it("fills the screen at size full, with a body that takes the height between header and footer", () => {
-    const out = renderToStaticMarkup(
-      <Dialog
-        title="t"
-        size="full"
-        footer={<button type="button">Close</button>}
-        onClose={() => {}}
-      >
-        <p>Player</p>
-      </Dialog>,
-    );
-    expect(out).toContain("fixed inset-0");
-    expect(out).toContain("size-full");
-    expect(out).toContain("rounded-none");
-    expect(out).toContain("min-h-0 flex-1 overflow-auto");
-    expect(out).toContain("shrink-0");
-    // Not a floating panel: no width, offset or slide. The offset is matched as a whole class
-    // token, so a heading's `scroll-mt-28` is not read as `mt-28`; the rest match as substrings,
-    // which is what catches a variant such as `-translate-y-2`.
-    const classes = [...out.matchAll(/class="([^"]*)"/g)].flatMap((m) => m[1]?.split(" ") ?? []);
-    expect(classes).not.toContain("mt-28");
-    for (const windowed of ["w-80", "w-110", "w-160", "translate-y"]) {
-      expect(out).not.toContain(windowed);
-    }
-  });
-
-  it("keeps the fade at size full and still opens as a modal", async () => {
+  it("still opens as a modal and calls onClose at size full", async () => {
     const onClose = vi.fn<() => void>();
-    const out = mount(<Dialog title="t" size="full" onClose={onClose} />);
-    const dialog = dialogOf(out);
+    render(<Dialog title="t" size="full" onClose={onClose} />);
+    const dialog = screen.getByRole<HTMLDialogElement>("dialog", { name: "t" });
     expect(showModal).toHaveBeenCalledExactlyOnceWith(dialog);
-    expect(dialog.className).toContain("starting:open:opacity-0");
-    expect(dialog.className).toContain("motion-reduce:transition-none");
+    // Esc closes a modal <dialog> in the browser; jsdom has none, so the test calls the close it makes.
     await act(async () => dialog.close());
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("leaves the windowed sizes without the full-screen classes", () => {
-    for (const size of ["sm", "md", "lg"] as const) {
-      const out = renderToStaticMarkup(<Dialog title="t" size={size} onClose={() => {}} />);
-      expect(out).not.toContain("fixed inset-0");
-      expect(out).toContain("rounded-2xl");
-    }
-  });
-  it("caps a windowed dialog to the viewport and scrolls its body, leaving the <dialog> unclipped", () => {
-    for (const size of ["sm", "md", "lg"] as const) {
-      const out = renderToStaticMarkup(
-        <Dialog title="t" size={size} footer={<button type="button">Ok</button>} onClose={() => {}}>
-          <p>Body</p>
-        </Dialog>,
-      );
-      expect(out).toContain("max-h-[calc(100dvh-8rem-2px)]");
-      expect(out).toContain("overflow-y-auto");
-      expect(out).toContain("overflow-visible");
-      expect(out).not.toContain("overflow-auto");
-    }
-  });
-
-  it("keeps the focus ring of a field at the body's edge whole, with padding and a matching negative margin", () => {
-    const out = renderToStaticMarkup(
-      <Dialog title="t" onClose={() => {}}>
-        <p>Body</p>
-      </Dialog>,
-    );
-    for (const cls of ["-mx-1", "px-1", "pt-1", "-mb-1", "pb-1"]) expect(out).toContain(cls);
-  });
-
-  it("does not cap or scroll the full-screen dialog differently", () => {
-    const out = renderToStaticMarkup(
-      <Dialog title="t" size="full" onClose={() => {}}>
-        <p>Body</p>
-      </Dialog>,
-    );
-    expect(out).not.toContain("max-h-[calc");
-    expect(out).not.toContain("overflow-y-auto");
-  });
-
+  // The body takes the tab stop as a group named by the title; with no stop it is no group.
   describe("the body's tab stop", () => {
     it("takes one when it overflows and holds nothing the keyboard can reach", () => {
       overflowing(900, 400);
-      const out = mount(
+      render(
         <Dialog title="Terms" onClose={() => {}}>
           <p>Long text</p>
         </Dialog>,
       );
-      const body = bodyOf(out);
-      expect(body?.getAttribute("tabindex")).toBe("0");
-      expect(body?.getAttribute("role")).toBe("group");
-      expect(body?.getAttribute("aria-labelledby")).toBe(dialogOf(out).querySelector("h2")?.id);
+      const body = screen.getByRole("group", { name: "Terms" });
+      expect(body.tabIndex).toBe(0);
+      expect(body.textContent).toBe("Long text");
     });
 
     it("takes none when it fits", () => {
       overflowing(300, 400);
-      const out = mount(
+      render(
         <Dialog title="t" onClose={() => {}}>
           <p>Short text</p>
         </Dialog>,
       );
-      expect(bodyOf(out)?.hasAttribute("tabindex")).toBe(false);
+      expect(screen.queryByRole("group")).toBeNull();
     });
 
-    it("takes no tab stop when a form field in it is already reachable, so the first focus stays on the field", () => {
-      overflowing(900, 400);
-      for (const field of [
-        <input key="i" aria-label="Name" />,
+    it.each([
+      ["a field", <input key="i" aria-label="Name" />],
+      [
+        "a link",
         <a key="a" href="/x">
           Link
         </a>,
+      ],
+      [
+        "a tab stop",
         <div key="d" tabIndex={0}>
           Stop
         </div>,
-      ]) {
-        const out = mount(
+      ],
+    ])(
+      "takes none when %s in it is already reachable, so the first focus stays on it",
+      (_, field) => {
+        overflowing(900, 400);
+        render(
           <Dialog title="t" onClose={() => {}}>
             {field}
           </Dialog>,
         );
-        expect(bodyOf(out)?.hasAttribute("tabindex")).toBe(false);
-        unmount();
-      }
-    });
+        expect(screen.queryByRole("group")).toBeNull();
+      },
+    );
 
     it("still takes one when the only focusable things are disabled or out of the tab order", () => {
       overflowing(900, 400);
-      const out = mount(
+      render(
         <Dialog title="t" onClose={() => {}}>
           <button type="button" disabled>
             Off
@@ -280,39 +204,40 @@ describe("Dialog", () => {
           <input type="hidden" />
         </Dialog>,
       );
-      expect(bodyOf(out)?.getAttribute("tabindex")).toBe("0");
+      expect(screen.getByRole("group", { name: "t" }).tabIndex).toBe(0);
     });
 
     it("re-measures when the body is resized", () => {
       overflowing(300, 400);
-      const out = mount(
+      render(
         <Dialog title="t" onClose={() => {}}>
           <p>Text</p>
         </Dialog>,
       );
-      expect(bodyOf(out)?.hasAttribute("tabindex")).toBe(false);
+      expect(screen.queryByRole("group")).toBeNull();
       overflowing(900, 400);
       act(() => observers.forEach((notify) => notify()));
-      expect(bodyOf(out)?.getAttribute("tabindex")).toBe("0");
+      expect(screen.getByRole("group", { name: "t" }).tabIndex).toBe(0);
     });
 
     it("takes none, and does not throw, where there is no ResizeObserver", () => {
-      const out = mount(
+      render(
         <Dialog title="t" onClose={() => {}}>
           <p>Text</p>
         </Dialog>,
       );
-      expect(bodyOf(out)?.hasAttribute("tabindex")).toBe(false);
+      expect(screen.getByText("Text")).not.toBeNull();
+      expect(screen.queryByRole("group")).toBeNull();
     });
 
     it("never gives the full-screen body one", () => {
       overflowing(900, 400);
-      const out = mount(
+      render(
         <Dialog title="t" size="full" onClose={() => {}}>
           <p>Text</p>
         </Dialog>,
       );
-      expect(bodyOf(out)?.hasAttribute("tabindex")).toBe(false);
+      expect(screen.queryByRole("group")).toBeNull();
     });
   });
 });

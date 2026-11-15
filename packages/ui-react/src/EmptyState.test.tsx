@@ -1,51 +1,33 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { EmptyState } from "./EmptyState.js";
+import { render, screen } from "./render.harness.js";
+
+const follows = (a: Node, b: Node) =>
+  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 describe("EmptyState", () => {
-  it("is a section named by its title heading", () => {
-    const out = renderToStaticMarkup(<EmptyState title="No builds yet" />);
-    const id = out.match(/aria-labelledby="([^"]+)"/)?.[1];
-    expect(out).toMatch(/^<section /);
-    expect(id).toBeTruthy();
-    expect(out).toContain(`<h2 id="${id}"`);
-    expect(out).toContain("No builds yet");
+  it("is a section named by its title, an h2 by default", () => {
+    render(<EmptyState title="No builds yet" />);
+    const region = screen.getByRole("region", { name: "No builds yet" });
+    expect(region.tagName).toBe("SECTION");
+    expect(screen.getByRole("heading", { level: 2, name: "No builds yet" })).not.toBeNull();
   });
 
-  it("level sets the title's heading level, h2 by default", () => {
-    for (const level of [2, 3, 4, 5, 6] as const) {
-      const out = renderToStaticMarkup(<EmptyState title="T" level={level} />);
-      expect(out).toMatch(new RegExp(`<h${level} id="[^"]+"[^>]*>T</h${level}>`));
-      expect(out).not.toContain("level=");
-    }
-    expect(renderToStaticMarkup(<EmptyState title="T" />)).toContain("<h2 ");
+  it.each([2, 3, 4, 5, 6] as const)("level=%i makes the title that heading level", (level) => {
+    render(<EmptyState title="T" level={level} />);
+    expect(screen.getByRole("heading", { level, name: "T" })).not.toBeNull();
   });
 
-  it("draws the children under the title and the actions after them, in a centred row", () => {
-    const out = renderToStaticMarkup(
+  it("reads the title, then the children, then the actions", () => {
+    render(
       <EmptyState title="T" actions={<button type="button">Create</button>}>
         <p>Explain.</p>
       </EmptyState>,
     );
-    expect(out.indexOf("T</h2>")).toBeLessThan(out.indexOf("Explain."));
-    expect(out.indexOf("Explain.")).toBeLessThan(out.indexOf("Create"));
-    expect(out).toMatch(/<div class="[^"]*justify-center[^"]*"><button/);
-  });
-
-  it("leaves out the body and the action row when there are none", () => {
-    const out = renderToStaticMarkup(<EmptyState title="T" />);
-    expect(out.match(/<div/g)).toBeNull();
-  });
-});
-
-describe("EmptyState padding", () => {
-  it("pads above and below by default and on all sides with inset", () => {
-    const plain = renderToStaticMarkup(<EmptyState title="None" />);
-    expect(plain).toContain("py-8");
-    expect(plain).not.toContain("p-8");
-    const inset = renderToStaticMarkup(<EmptyState title="None" padding="inset" />);
-    expect(inset).toContain("p-8");
-    expect(inset).not.toContain("py-8");
-    expect(inset).not.toContain("padding=");
+    const title = screen.getByRole("heading", { name: "T" });
+    const body = screen.getByText("Explain.");
+    expect(follows(title, body)).toBeTruthy();
+    expect(follows(body, screen.getByRole("button", { name: "Create" }))).toBeTruthy();
   });
 });

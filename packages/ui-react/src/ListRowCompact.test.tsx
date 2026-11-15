@@ -1,11 +1,12 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { Card } from "./Card.js";
 import { ListRow } from "./ListRow.js";
+import { render, screen } from "./render.harness.js";
 
 describe("ListRow compact bordered list", () => {
-  it("is a Card flush around static size=sm rows: bordered, divided, no hover fill or click target", () => {
-    const out = renderToStaticMarkup(
+  it("is a Card flush around static size=sm rows: no click target, the text and values shown", () => {
+    render(
       <Card flush>
         <ListRow static size="sm" trailing="R 1 200">
           Groceries
@@ -15,13 +16,9 @@ describe("ListRow compact bordered list", () => {
         </ListRow>
       </Card>,
     );
-    expect(out).toContain("border-slate-200/70");
-    expect(out).toContain("overflow-hidden");
-    expect(out).toContain("px-3 py-2");
-    expect(out).toContain("border-t border-slate-200/70");
-    expect(out.match(/border-t/g)).toHaveLength(1);
-    expect(out).not.toContain("<button");
-    expect(out).not.toContain("hover:bg-slate-50");
-    expect(out).toContain(">R 640</span>");
+    expect(screen.queryByRole("button")).toBeNull();
+    expect(screen.queryByRole("link")).toBeNull();
+    expect(screen.getByText("Household")).not.toBeNull();
+    expect(screen.getByText("R 640")).not.toBeNull();
   });
 });

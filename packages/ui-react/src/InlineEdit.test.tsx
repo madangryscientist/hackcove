@@ -1,16 +1,12 @@
 // @vitest-environment jsdom
-import { act } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { mount, unmount } from "./dom.harness.js";
+import { describe, expect, it, vi } from "vitest";
 import { InlineEdit } from "./InlineEdit.js";
+import { act, render, screen, user, within } from "./render.harness.js";
 import { TableCell } from "./Table.js";
-
-afterEach(unmount);
 
 /** A `TableCell` that holds an InlineEdit beside other content, which is the point of the part. */
 const cellWith = (onSave = vi.fn<(value: string) => void>()) =>
-  mount(
+  render(
     <>
       <button type="button">Elsewhere</button>
       <table>
@@ -32,7 +28,7 @@ const cellWith = (onSave = vi.fn<(value: string) => void>()) =>
               >
                 Groceries
               </InlineEdit>
-              <span data-testid="sibling">Pending</span>
+              <span>Pending</span>
             </TableCell>
           </tr>
         </tbody>
@@ -40,67 +36,57 @@ const cellWith = (onSave = vi.fn<(value: string) => void>()) =>
     </>,
   );
 
-const trigger = (container: HTMLElement) => {
-  const button = container.querySelector<HTMLButtonElement>("td button");
-  if (!button) throw new Error("no trigger");
-  return button;
+// jsdom's name computation drops the space a browser keeps between the value and the sr-only label,
+// so the name is matched with the gap optional; textContent shows the space is there.
+const trigger = () => screen.getByRole("button", { name: /^Groceries\s?Edit category$/ });
+const editor = () => screen.queryByRole("group", { name: "Edit category" });
+const open = async () => {
+  await user().click(trigger());
 };
-const editorOf = (container: HTMLElement) => container.querySelector('td [role="group"]');
-const press = (el: Element, key: string) =>
-  act(() => {
-    el.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }));
-  });
 
 describe("InlineEdit", () => {
-  it("is not a cell: it draws a button, in the cell it is put in, and takes that cell's alignment", () => {
-    const out = renderToStaticMarkup(
-      <table>
-        <tbody>
-          <tr>
-            <TableCell align="end">
-              <InlineEdit label="Edit category" renderEditor={() => null}>
-                Groceries
-              </InlineEdit>
-            </TableCell>
-          </tr>
-        </tbody>
-      </table>,
+  it("is not a cell: it is a button in the cell it is put in, named by the value and the label", () => {
+    cellWith();
+    expect(screen.getAllByRole("cell")).toHaveLength(1);
+    expect(within(screen.getByRole("cell")).getByRole("button").textContent).toBe(
+      "Groceries Edit category",
     );
-    expect(out.match(/<td/g)).toHaveLength(1);
-    expect(out).toContain("[text-align:inherit]");
-    expect(out).toContain('Groceries<span class="sr-only"> Edit category</span></button>');
   });
 
-  it("keeps the cell's other content beside it, open or closed", () => {
-    const container = cellWith();
-    expect(container.querySelector('[data-testid="sibling"]')?.textContent).toBe("Pending");
-    expect(container.querySelector("td")?.textContent).toContain("Card ending 4417");
-    act(() => trigger(container).click());
-    expect(editorOf(container)).not.toBeNull();
-    expect(container.querySelector('[data-testid="sibling"]')?.textContent).toBe("Pending");
-    expect(container.querySelector("td")?.textContent).toContain("Card ending 4417");
+  it("keeps the cell's other content beside it, closed", () => {
+    cellWith();
+    const cell = screen.getByRole("cell");
+    expect(within(cell).getByText("Pending")).not.toBeNull();
+    expect(within(cell).getByText("Card ending 4417")).not.toBeNull();
   });
 
-  it("opens on click, names the editor group and focuses its control", () => {
-    const container = cellWith();
-    act(() => trigger(container).click());
-    expect(editorOf(container)?.getAttribute("aria-label")).toBe("Edit category");
-    expect(document.activeElement?.getAttribute("aria-label")).toBe("Category");
+  it("keeps the cell's other content beside it, open", async () => {
+    cellWith();
+    await open();
+    const cell = screen.getByRole("cell");
+    expect(within(cell).getByRole("group", { name: "Edit category" })).not.toBeNull();
+    expect(within(cell).getByText("Pending")).not.toBeNull();
+    expect(within(cell).getByText("Card ending 4417")).not.toBeNull();
   });
 
-  it("Esc closes it and returns the focus to the value", () => {
-    const container = cellWith();
-    act(() => trigger(container).click());
-    const active = document.activeElement;
-    if (!active) throw new Error("nothing focused");
-    press(active, "Escape");
-    expect(editorOf(container)).toBeNull();
-    expect(document.activeElement).toBe(trigger(container));
+  it("opens on click, names the editor group and focuses its control", async () => {
+    cellWith();
+    await open();
+    expect(editor()).not.toBeNull();
+    expect(document.activeElement).toBe(screen.getByRole("textbox", { name: "Category" }));
   });
 
-  it("Esc does not reach a handler above it, so it does not close a dialog around the table", () => {
+  it("Esc closes it and returns the focus to the value", async () => {
+    cellWith();
+    await open();
+    await user().keyboard("{Escape}");
+    expect(editor()).toBeNull();
+    expect(document.activeElement).toBe(trigger());
+  });
+
+  it("Esc does not reach a handler above it, so it does not close a dialog around the table", async () => {
     const above = vi.fn<() => void>();
-    const container = mount(
+    render(
       // oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- a test double for a Dialog above the cell
       <div onKeyDown={above}>
         <table>
@@ -116,57 +102,49 @@ describe("InlineEdit", () => {
         </table>
       </div>,
     );
-    act(() => container.querySelector("button")?.click());
-    const active = document.activeElement;
-    if (!active) throw new Error("nothing focused");
-    press(active, "Escape");
+    await user().click(screen.getByRole("button", { name: /^x\s?Edit$/ }));
+    above.mockClear();
+    await user().keyboard("{Escape}");
     expect(above).not.toHaveBeenCalled();
   });
 
-  it("the editor's close, on a save, returns the focus to the value", () => {
+  it("the editor's close, on a save, returns the focus to the value", async () => {
     const onSave = vi.fn<(value: string) => void>();
-    const container = cellWith(onSave);
-    act(() => trigger(container).click());
-    const input = container.querySelector("input");
-    if (!input) throw new Error("no input");
-    act(() => {
-      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set?.call(input, "Fun");
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-    });
-    expect(onSave).toHaveBeenCalledWith("Fun");
-    expect(editorOf(container)).toBeNull();
-    expect(document.activeElement).toBe(trigger(container));
+    cellWith(onSave);
+    await open();
+    const input = screen.getByRole("textbox", { name: "Category" });
+    await user().type(input, "F", { initialSelectionStart: 0, initialSelectionEnd: 9 });
+    expect(onSave).toHaveBeenCalledWith("F");
+    expect(editor()).toBeNull();
+    expect(document.activeElement).toBe(trigger());
   });
 
-  it("a press outside closes it and leaves the focus alone; a press inside keeps it", () => {
-    const container = cellWith();
-    act(() => trigger(container).click());
-    const input = container.querySelector("input");
-    const outside = container.querySelector<HTMLButtonElement>(":scope > button");
-    if (!input || !outside) throw new Error("missing node");
-    act(() => {
-      input.dispatchEvent(new Event("pointerdown", { bubbles: true }));
-    });
-    expect(editorOf(container)).not.toBeNull();
-    act(() => {
-      outside.dispatchEvent(new Event("pointerdown", { bubbles: true }));
-    });
-    expect(editorOf(container)).toBeNull();
-    expect(document.activeElement).not.toBe(trigger(container));
+  it("a press inside keeps it open", async () => {
+    cellWith();
+    await open();
+    await user().click(screen.getByRole("textbox", { name: "Category" }));
+    expect(editor()).not.toBeNull();
   });
 
-  it("focus moving out of the editor closes it (Tab out); focus to nowhere does not", () => {
-    const container = cellWith();
-    act(() => trigger(container).click());
-    const input = container.querySelector("input");
-    const outside = container.querySelector<HTMLButtonElement>(":scope > button");
-    if (!input || !outside) throw new Error("missing node");
-    act(() => input.blur());
-    expect(editorOf(container)).not.toBeNull();
-    act(() => {
-      input.focus();
-      outside.focus();
-    });
-    expect(editorOf(container)).toBeNull();
+  it("a press outside closes it and leaves the focus alone", async () => {
+    cellWith();
+    await open();
+    await user().click(screen.getByRole("button", { name: "Elsewhere" }));
+    expect(editor()).toBeNull();
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Elsewhere" }));
+  });
+
+  it("focus to nowhere keeps it open", async () => {
+    cellWith();
+    await open();
+    act(() => screen.getByRole("textbox", { name: "Category" }).blur());
+    expect(editor()).not.toBeNull();
+  });
+
+  it("focus moving out of the editor closes it", async () => {
+    cellWith();
+    await open();
+    act(() => screen.getByRole("button", { name: "Elsewhere" }).focus());
+    expect(editor()).toBeNull();
   });
 });

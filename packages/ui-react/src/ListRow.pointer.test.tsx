@@ -1,77 +1,61 @@
 // @vitest-environment jsdom
-import { act } from "react";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { mount, unmount } from "./dom.harness.js";
+import { describe, expect, it, vi } from "vitest";
 import { ListRow } from "./ListRow.js";
+import { render, screen, user } from "./render.harness.js";
 
-afterEach(unmount);
+const handlers = () => ({
+  onPointerEnter: vi.fn<() => void>(),
+  onPointerLeave: vi.fn<() => void>(),
+  onFocus: vi.fn<() => void>(),
+});
 
-// React's onPointerEnter listens for pointerover/pointerout and works out the enter itself.
-function pointerInto(el: Element) {
-  act(() => {
-    el.dispatchEvent(new MouseEvent("pointerover", { bubbles: true }));
-  });
-}
-function pointerOutOf(el: Element) {
-  act(() => {
-    el.dispatchEvent(new MouseEvent("pointerout", { bubbles: true, relatedTarget: document.body }));
-  });
-}
+const counts = (h: ReturnType<typeof handlers>) => [
+  h.onPointerEnter.mock.calls.length,
+  h.onPointerLeave.mock.calls.length,
+  h.onFocus.mock.calls.length,
+];
 
 describe("ListRow pointer and focus handlers", () => {
-  it("reach a button row and a static row; a button row's pointer handlers sit on the row", () => {
-    for (const form of ["button", "static"] as const) {
-      const enter = vi.fn<() => void>();
-      const leave = vi.fn<() => void>();
-      const focus = vi.fn<() => void>();
-      const root = mount(
-        form === "static" ? (
-          <ListRow
-            static
-            tabIndex={0}
-            onPointerEnter={enter}
-            onPointerLeave={leave}
-            onFocus={focus}
-          >
-            Rent
-          </ListRow>
-        ) : (
-          <ListRow onPointerEnter={enter} onPointerLeave={leave} onFocus={focus}>
-            Rent
-          </ListRow>
-        ),
-      );
-      const row = root.firstElementChild;
-      if (!(row instanceof HTMLElement)) throw new Error("no row");
-      pointerInto(row);
-      pointerOutOf(row);
-      // A button row takes focus on its stretched button; a static row on itself.
-      const target = form === "static" ? row : row.querySelector("button");
-      if (!(target instanceof HTMLElement)) throw new Error("no focus target");
-      act(() => target.focus());
-      expect([enter.mock.calls.length, leave.mock.calls.length, focus.mock.calls.length]).toEqual([
-        1, 1, 1,
-      ]);
-      unmount();
-    }
+  it("reach a button row: the pointer moving over and off it, and Tab onto its button", async () => {
+    const h = handlers();
+    render(<ListRow {...h}>Rent</ListRow>);
+    const button = screen.getByRole("button", { name: "Rent" });
+    const u = user();
+    await u.hover(button);
+    await u.unhover(button);
+    await u.tab();
+    expect(document.activeElement).toBe(button);
+    expect(counts(h)).toEqual([1, 1, 1]);
   });
 
-  it("on a linked row, the pointer handlers sit on the row and focus on the link", () => {
-    const enter = vi.fn<() => void>();
-    const leave = vi.fn<() => void>();
-    const focus = vi.fn<() => void>();
-    const root = mount(
-      <ListRow href="/r" onPointerEnter={enter} onPointerLeave={leave} onFocus={focus}>
+  it("reach a static row: the pointer over and off its text, and Tab onto the row", async () => {
+    const h = handlers();
+    render(
+      <ListRow static tabIndex={0} aria-label="Rent row" {...h}>
         Rent
       </ListRow>,
     );
-    const row = root.firstElementChild;
-    if (!(row instanceof HTMLElement)) throw new Error("no row");
-    pointerInto(row);
-    pointerOutOf(row);
-    act(() => root.querySelector("a")?.focus());
-    expect(enter).toHaveBeenCalledTimes(1);
-    expect(leave).toHaveBeenCalledTimes(1);
-    expect(focus).toHaveBeenCalledTimes(1);
+    const u = user();
+    await u.hover(screen.getByText("Rent"));
+    await u.unhover(screen.getByText("Rent"));
+    await u.tab();
+    expect(document.activeElement).toBe(screen.getByLabelText("Rent row"));
+    expect(counts(h)).toEqual([1, 1, 1]);
+  });
+
+  it("on a linked row, the pointer handlers fire for the row and focus lands on the link", async () => {
+    const h = handlers();
+    render(
+      <ListRow href="/r" {...h}>
+        Rent
+      </ListRow>,
+    );
+    const link = screen.getByRole("link", { name: "Rent" });
+    const u = user();
+    await u.hover(link);
+    await u.unhover(link);
+    await u.tab();
+    expect(document.activeElement).toBe(link);
+    expect(counts(h)).toEqual([1, 1, 1]);
   });
 });

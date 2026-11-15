@@ -1,10 +1,9 @@
 // @vitest-environment jsdom
 import { CalendarDate } from "@internationalized/date";
-import { act, useState } from "react";
+import { useState } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { errorOf, leave, posted, segmentsOf, textOf, type } from "./date.harness.js";
 import { DateField } from "./DateField.js";
-import { mount, unmount } from "./dom.harness.js";
+import { render, screen, user } from "./render.harness.js";
 
 /** A parent that stores what the field reports and passes it back. */
 function Controlled({
@@ -21,16 +20,18 @@ function Controlled({
 }) {
   const [value, setValue] = useState<CalendarDate | null>(initial);
   return (
-    <Field
-      aria-label="Date"
-      name="dob"
-      {...range}
-      value={value}
-      onChange={(date) => {
-        onChange(date);
-        setValue(date);
-      }}
-    />
+    <form aria-label="Profile">
+      <Field
+        aria-label="Date"
+        name="dob"
+        {...range}
+        value={value}
+        onChange={(date) => {
+          onChange(date);
+          setValue(date);
+        }}
+      />
+    </form>
   );
 }
 
@@ -47,7 +48,7 @@ function Parent({
 }) {
   const [value, setValue] = useState<CalendarDate | null>(new CalendarDate(1990, 5, 17));
   return (
-    <>
+    <form aria-label="Profile">
       <Field
         aria-label="Date"
         name="dob"
@@ -63,7 +64,7 @@ function Parent({
       <button type="button" onClick={() => setValue(null)}>
         Reset
       </button>
-    </>
+    </form>
   );
 }
 
@@ -74,10 +75,26 @@ beforeEach(() => {
   document.documentElement.lang = "en-US";
 });
 afterEach(() => {
-  unmount();
   vi.restoreAllMocks();
   document.documentElement.lang = "";
 });
+
+const segments = () => screen.getAllByRole("spinbutton");
+const shown = () => segments().map((s) => s.textContent);
+const form = () => screen.getByRole<HTMLFormElement>("form");
+const posted = () => new FormData(form()).get("dob");
+const DAY = 0;
+const YEAR = 2;
+
+/** Click into one segment and type, as a person does: the field moves on segment by segment. */
+async function typeInto(index: number, keys: string) {
+  const u = user();
+  await u.click(segments()[index] ?? document.body);
+  await u.keyboard(keys);
+}
+
+/** Click somewhere else on the page, which is how a person leaves the field. */
+const leave = () => user().click(document.body);
 
 describe.each([
   ["DateField", DateField],
@@ -85,62 +102,52 @@ describe.each([
 ])("%s reports what it shows", (_component, Field) => {
   const birthday = new CalendarDate(1990, 5, 17);
 
-  it("reports null once when a valid date is edited into an impossible one", () => {
+  it("reports null once when a valid date is edited into an impossible one", async () => {
     const onChange = vi.fn<(date: CalendarDate | null) => void>();
-    const container = mount(<Controlled Field={Field} onChange={onChange} initial={birthday} />);
-    const [day] = segmentsOf(container);
-    if (!day) throw new Error("no day segment");
-    type(day, "3102");
-    leave();
+    render(<Controlled Field={Field} onChange={onChange} initial={birthday} />);
+    await typeInto(DAY, "3102");
+    await leave();
     // 03/05 and 31/05 on the way are real dates; the impossible one reports null, once.
-    expect(onChange.mock.calls.map(([date]) => date?.toString() ?? null)).toEqual([
+    expect(onChange.mock.calls.map(([date]) => String(date))).toEqual([
       "1990-05-03",
       "1990-05-31",
-      null,
+      "null",
     ]);
-    expect(posted(container)).toBe("");
-    expect(textOf(container)).toEqual(["31", "02", "1990"]);
-    expect(errorOf(container)).toBe("February 1990 has 28 days.");
+    expect(posted()).toBe("");
+    expect(shown()).toEqual(["31", "02", "1990"]);
+    expect(screen.getByText("February 1990 has 28 days.")).not.toBeNull();
   });
 
-  it("reports the date again once it is fixed", () => {
+  it("reports the date again once it is fixed", async () => {
     const onChange = vi.fn<(date: CalendarDate | null) => void>();
-    const container = mount(<Controlled Field={Field} onChange={onChange} initial={birthday} />);
-    const [day] = segmentsOf(container);
-    if (!day) throw new Error("no day segment");
-    type(day, "3102");
-    type(day, "28");
-    leave();
-    expect(onChange.mock.calls.at(-1)?.[0]?.toString()).toBe("1990-02-28");
-    expect(posted(container)).toBe("1990-02-28");
-    expect(errorOf(container)).toBe("");
+    render(<Controlled Field={Field} onChange={onChange} initial={birthday} />);
+    await typeInto(DAY, "3102");
+    await typeInto(DAY, "28");
+    await leave();
+    expect(onChange.mock.lastCall?.[0]?.toString()).toBe("1990-02-28");
+    expect(posted()).toBe("1990-02-28");
+    expect(screen.queryByText("February 1990 has 28 days.")).toBeNull();
+    expect(segments()[DAY]?.getAttribute("aria-invalid")).toBeNull();
   });
 
-  it("shows a value the parent sets, a reset to null included, and reports none of it", () => {
+  it("shows a value the parent sets, a reset to null included, and reports none of it", async () => {
     const onChange = vi.fn<(date: CalendarDate | null) => void>();
-    const container = mount(<Parent Field={Field} onChange={onChange} />);
-    const press = (text: string) => {
-      const button = Array.from(container.querySelectorAll("button")).find(
-        (b) => b.textContent === text,
-      );
-      if (!button) throw new Error(`no ${text} button`);
-      act(() => button.click());
-    };
-    press("Set");
-    expect(textOf(container)).toEqual(["02", "01", "2001"]);
-    expect(posted(container)).toBe("2001-01-02");
-    press("Reset");
-    expect(textOf(container)).toEqual(["DD", "MM", "YYYY"]);
-    expect(posted(container)).toBe("");
+    render(<Parent Field={Field} onChange={onChange} />);
+    await user().click(screen.getByRole("button", { name: "Set" }));
+    expect(shown()).toEqual(["02", "01", "2001"]);
+    expect(posted()).toBe("2001-01-02");
+    await user().click(screen.getByRole("button", { name: "Reset" }));
+    expect(shown()).toEqual(["DD", "MM", "YYYY"]);
+    expect(posted()).toBe("");
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("does not report null for an out-of-range value the parent loads after mount", () => {
+  it("does not report null for an out-of-range value the parent loads after mount", async () => {
     const onChange = vi.fn<(date: CalendarDate | null) => void>();
     function Loader() {
       const [value, setValue] = useState<CalendarDate | null>(null);
       return (
-        <>
+        <form aria-label="Profile">
           <Field
             aria-label="Date"
             name="dob"
@@ -151,55 +158,38 @@ describe.each([
           <button type="button" onClick={() => setValue(new CalendarDate(2050, 1, 2))}>
             Load
           </button>
-        </>
+        </form>
       );
     }
-    const container = mount(<Loader />);
-    const load = Array.from(container.querySelectorAll("button")).find(
-      (b) => b.textContent === "Load",
-    );
-    act(() => load?.click());
-    expect(textOf(container)).toEqual(["02", "01", "2050"]);
-    expect(posted(container)).toBe("");
+    render(<Loader />);
+    await user().click(screen.getByRole("button", { name: "Load" }));
+    expect(shown()).toEqual(["02", "01", "2050"]);
+    expect(posted()).toBe("");
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("blocks a form submit when a required date is only partly filled", () => {
-    const container = mount(
-      <form>
+  it("blocks a form submit when a required date is only partly filled", async () => {
+    render(
+      <form aria-label="Profile">
         <Field aria-label="Date" name="dob" isRequired defaultValue={birthday} />
       </form>,
     );
-    const form = container.querySelector("form");
-    const year = segmentsOf(container)[2];
-    if (!form || !year) throw new Error("no form or year segment");
-    expect(form.checkValidity()).toBe(true);
-    act(() => year.focus());
-    for (let i = 0; i < 4; i += 1) {
-      act(() => {
-        year.dispatchEvent(
-          new InputEvent("beforeinput", {
-            inputType: "deleteContentBackward",
-            bubbles: true,
-            cancelable: true,
-          }),
-        );
-      });
-    }
-    expect(errorOf(container)).toBe("");
-    leave();
-    expect(textOf(container)).toEqual(["17", "05", "YYYY"]);
-    expect(posted(container)).toBe("");
-    expect(form.checkValidity()).toBe(false);
-    expect(errorOf(container)).toBe("Enter the whole date.");
+    expect(form().checkValidity()).toBe(true);
+    await typeInto(YEAR, "{Backspace}{Backspace}{Backspace}{Backspace}");
+    expect(screen.queryByText("Enter the whole date.")).toBeNull();
+    await leave();
+    expect(shown()).toEqual(["17", "05", "YYYY"]);
+    expect(posted()).toBe("");
+    expect(form().checkValidity()).toBe(false);
+    expect(screen.getByText("Enter the whole date.")).not.toBeNull();
   });
 
   it.each([
     ["before minValue", "1999"],
     ["after maxValue", "2001"],
-  ])("reports null once when a valid date is edited %s", (_case, year) => {
+  ])("reports null once when a valid date is edited %s", async (_case, year) => {
     const onChange = vi.fn<(date: CalendarDate | null) => void>();
-    const container = mount(
+    render(
       <Controlled
         Field={Field}
         onChange={onChange}
@@ -208,15 +198,13 @@ describe.each([
         maxValue={new CalendarDate(2000, 12, 31)}
       />,
     );
-    const yearSegment = segmentsOf(container)[2];
-    if (!yearSegment) throw new Error("no year segment");
-    type(yearSegment, year);
-    leave();
+    await typeInto(YEAR, year);
+    await leave();
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenLastCalledWith(null);
-    expect(posted(container)).toBe("");
-    expect(textOf(container)).toEqual(["17", "05", year]);
-    expect(container.querySelector('[data-invalid="true"]')).not.toBeNull();
-    expect(errorOf(container)).not.toBe("");
+    expect(posted()).toBe("");
+    expect(shown()).toEqual(["17", "05", year]);
+    expect(segments()[YEAR]?.getAttribute("aria-invalid")).toBe("true");
+    expect(screen.getByRole("group", { name: "Date", description: /\S/ })).not.toBeNull();
   });
 });

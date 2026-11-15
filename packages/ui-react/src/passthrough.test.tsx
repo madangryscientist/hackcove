@@ -75,6 +75,17 @@ describe("every exported component passes data-* and aria-* through", () => {
     expect(found[0]?.querySelector("a")?.hasAttribute("aria-describedby")).toBe(false);
   });
 
+  it("a static ListRow puts both on its row", () => {
+    mount(
+      <ui.ListRow static {...A}>
+        x
+      </ui.ListRow>,
+    );
+    const found = probes();
+    expect(found).toHaveLength(1);
+    expect(found[0]?.getAttribute("aria-describedby")).toBe("described");
+  });
+
   for (const name of SPLIT) {
     it(`${name} puts data-* on its wrapper and the description on the field inside`, () => {
       mount(CASES[name]?.() ?? <div />);
