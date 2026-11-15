@@ -53,14 +53,14 @@ setTimeout(reply, 50);
 
 | Files | What they are | Rules |
 | --- | --- | --- |
-| `**/*.test.{ts,tsx,js,jsx,mjs}` | DOM and unit tests (Vitest, Testing Library) | Vitest, Testing Library, `ui-testing/no-style-assertions`, sleeps, style reads |
+| `**/*.test.{ts,tsx,js,jsx,mjs}` | DOM and unit tests (Vitest, Testing Library) | Vitest, Testing Library, `ui-testing/no-node-access`, `ui-testing/no-style-assertions`, sleeps, style reads |
 | `**/*.built.test.{ts,tsx,js,jsx,mjs}` | checks of built output (a loop over parsed `dist/` pages) | as a DOM test, less the two that flag reading HTML as data |
 | `**/e2e/**`, `**/smoke/**`, `**/*.spec.{ts,tsx,js,mjs}` | Playwright e2e and smoke specs | Playwright, `ui-testing/no-selector-actions`, `no-style-assertions`, `skip-names-ticket`, sleeps, style reads |
 | `**/playwright.config.*`, `**/playwright.*.config.*` | Playwright configs | `ui-testing/config-shape` |
 
 A check that parses built HTML (meta tags, `href`, `id`) reads it as data, not as a user would, so
 its file is named `*.built.test.ts`. That glob turns off `vitest/no-conditional-in-test` (a parse
-branches) and `testing-library/no-node-access` (it queries a parsed document). `vitest/require-mock-type-parameters` is off in every test: it flags every
+branches) and `ui-testing/no-node-access` (it queries a parsed document). `vitest/require-mock-type-parameters` is off in every test: it flags every
 `vi.fn()`.
 
 ## The rules
@@ -73,7 +73,7 @@ from `eslint-plugin-playwright` and `eslint-plugin-testing-library`.
 | `ui-testing/no-selector-actions` | e2e | `page.click('#x')`, `page.fill('.y', v)`, `page.$('a')`: an action or a read that takes a selector string | 1. Find elements the way a user does |
 | `playwright/no-raw-locators` | e2e | `page.locator('.card')`; `html[data-hydrated]` is allowed | 1. Find elements the way a user does |
 | `playwright/no-wait-for-selector` | e2e | `page.waitForSelector('#ready')` | 1 and 2 |
-| `testing-library/no-node-access` | DOM | `.parentElement`, `.querySelector` on what Testing Library rendered | 1. Find elements the way a user does |
+| `ui-testing/no-node-access` | DOM | `.parentElement`, `.closest(...)`, `document.querySelector(...)`, `getByRole(...).click()`, in a file that imports Testing Library directly or through a local module that re-exports it (`export { render, screen } from "@testing-library/react"`). Reading `document.activeElement` passes: where focus is, is what a keyboard test asserts | 1. Find elements the way a user does |
 | `testing-library/no-container` | DOM | `container.querySelector(...)` | 1. Find elements the way a user does |
 | `testing-library/prefer-screen-queries` | DOM | `view.getByText(...)` in place of `screen` | 1. Find elements the way a user does |
 | `playwright/no-wait-for-timeout` | e2e | `page.waitForTimeout(500)` | 2. Wait on a state, never on a clock |

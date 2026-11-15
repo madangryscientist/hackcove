@@ -19,7 +19,7 @@
           }
         ],
         "vitest/require-mock-type-parameters": "off",
-        "testing-library/no-node-access": "error",
+        "ui-testing/no-node-access": "error",
         "testing-library/no-container": "error",
         "testing-library/prefer-screen-queries": "error",
         "testing-library/no-wait-for-side-effects": "error",
@@ -65,10 +65,10 @@
     {
       "files": ["**/*.built.test.{ts,tsx,js,jsx,mjs}"],
       "plugins": ["vitest"],
-      "jsPlugins": ["eslint-plugin-testing-library"],
+      "jsPlugins": ["./plugin.js"],
       "rules": {
         "vitest/no-conditional-in-test": "off",
-        "testing-library/no-node-access": "off"
+        "ui-testing/no-node-access": "off"
       }
     },
     {

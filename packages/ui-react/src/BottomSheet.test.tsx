@@ -36,8 +36,10 @@ describe("BottomSheet", () => {
   it("marks the handle expanded past the first snap, and points it at the body", () => {
     const { rerender } = render(sheet());
     expect(handle().getAttribute("aria-expanded")).toBe("false");
-    const body = document.getElementById(String(handle().getAttribute("aria-controls")));
-    expect(body?.textContent).toBe("Body");
+    const controls = String(handle().getAttribute("aria-controls"));
+    // The body has no role of its own: find it by the id the handle points at, through screen.
+    const body = screen.getByText((_, element) => element?.id === controls);
+    expect(body.textContent).toBe("Body");
     rerender(sheet({ snap: 1 }));
     expect(handle().getAttribute("aria-expanded")).toBe("true");
   });

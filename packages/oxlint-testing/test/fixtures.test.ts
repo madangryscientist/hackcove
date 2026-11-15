@@ -71,7 +71,7 @@ describe("fixtures/good", () => {
 
   test("the built-output override is what clears a built check", () => {
     expect(asPlainTest).toEqual(
-      expect.arrayContaining(["vitest/no-conditional-in-test", "testing-library/no-node-access"]),
+      expect.arrayContaining(["vitest/no-conditional-in-test", "ui-testing/no-node-access"]),
     );
   });
 });
