@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button, Card, Field, Icon, Input } from "@hackcove/ui-react";
+import { CompactApp } from "./typeSteps";
 
 const meta: Meta = { title: "Forms/Input" };
 export default meta;
@@ -176,32 +177,34 @@ export const DontSearch: S = {
 };
 
 /** `sm`, `md` (the default) and `lg`, plain and with an icon: the heights match a `Button` of the size. */
+const sizes = () => (
+  <div className="flex flex-col gap-2">
+    {(["sm", "md", "lg"] as const).map((size) => (
+      <div key={size} className="flex flex-wrap items-center gap-2">
+        <Input size={size} width="md" placeholder={`Name, ${size}`} aria-label={`Name ${size}`} />
+        <Input
+          size={size}
+          width="md"
+          type="search"
+          placeholder="Find…"
+          icon={search}
+          aria-label={`Find ${size}`}
+        />
+        <Input size={size} width="sm" prefix="R" placeholder="0.00" aria-label={`Amount ${size}`} />
+        <Button size={size}>Save</Button>
+      </div>
+    ))}
+  </div>
+);
+
 export const Sizes: S = {
-  render: () => (
-    <div className="flex flex-col gap-2">
-      {(["sm", "md", "lg"] as const).map((size) => (
-        <div key={size} className="flex flex-wrap items-center gap-2">
-          <Input size={size} width="md" placeholder={`Name, ${size}`} aria-label={`Name ${size}`} />
-          <Input
-            size={size}
-            width="md"
-            type="search"
-            placeholder="Find…"
-            icon={search}
-            aria-label={`Find ${size}`}
-          />
-          <Input
-            size={size}
-            width="sm"
-            prefix="R"
-            placeholder="0.00"
-            aria-label={`Amount ${size}`}
-          />
-          <Button size={size}>Save</Button>
-        </div>
-      ))}
-    </div>
-  ),
+  render: sizes,
+};
+
+/** The same sizes in an app that set `AppShell density="compact"`: each is one type step down. */
+export const SizesCompact: S = {
+  parameters: { layout: "fullscreen" },
+  render: () => <CompactApp>{sizes()}</CompactApp>,
 };
 
 /** In an errored `Field`, every form of the input takes a red edge and is described by the error. */

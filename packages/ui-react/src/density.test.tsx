@@ -1,8 +1,10 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
+import { AppShell } from "./AppShell.js";
 import { DensityProvider, useDensity, useTypeStep } from "./density.js";
+import { Input } from "./Input.js";
 import type { Size } from "./size.js";
-import { render, screen } from "./render.harness.js";
+import { render, screen, user } from "./render.harness.js";
 
 /** Prints what a part inside reads, so the test asserts the value, not a class. */
 function Probe({ own }: { own?: Size }) {
@@ -37,5 +39,36 @@ describe("density", () => {
       </DensityProvider>,
     );
     expect(screen.getByText("sm compact")).not.toBeNull();
+  });
+
+  it("AppShell density sets the compact step for everything inside, and nothing else does", () => {
+    render(
+      <>
+        <AppShell density="compact">
+          <Probe />
+        </AppShell>
+        <AppShell>
+          <Probe own="sm" />
+        </AppShell>
+      </>,
+    );
+    expect(screen.getByText("md compact")).not.toBeNull();
+    expect(screen.getByText("sm default")).not.toBeNull();
+  });
+
+  it("an Input renders and takes typing under the compact step and without it", async () => {
+    render(
+      <>
+        <AppShell density="compact">
+          <Input aria-label="Compact" />
+        </AppShell>
+        <Input aria-label="Default" />
+      </>,
+    );
+    for (const name of ["Compact", "Default"]) {
+      const input = screen.getByRole<HTMLInputElement>("textbox", { name });
+      await user().type(input, "hi");
+      expect(input.value).toBe("hi");
+    }
   });
 });

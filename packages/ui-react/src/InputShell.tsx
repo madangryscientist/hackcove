@@ -1,6 +1,7 @@
 import type { ReactElement, ReactNode } from "react";
 import { CONTROL_WIDTH, type ControlProps, type ControlSize, controlClass } from "./control.js";
 import { cx } from "./cx.js";
+import { useTypeStep } from "./density.js";
 
 /**
  * Where a leading icon sits, and its size, by the control's size. The wrapper is a flex box centred
@@ -74,10 +75,11 @@ export function PrefixShell({
   disabled: boolean | undefined;
   children: ReactNode;
 } & ControlProps): ReactElement {
+  const step = useTypeStep();
   return (
     <div
       className={cx(
-        controlClass(size, width),
+        controlClass(size, width, step),
         "flex items-center has-aria-invalid:border-red-200 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-violet-600",
         width === "auto" && "inline-flex",
         disabled && "opacity-50",

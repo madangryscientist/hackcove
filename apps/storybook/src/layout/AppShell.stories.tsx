@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
+  AppShell,
   AppShellBrand,
+  Caption,
   LinkProvider,
   AppShellHideBelow,
   Avatar,
@@ -330,5 +332,33 @@ export const HiddenInPrint: S = {
       <PageHeader title="Printed page" description="Only this prints." />
       <Text>The header and footer above and below are hidden in print.</Text>
     </DemoShell>
+  ),
+};
+
+/**
+ * `density="compact"`, set once on the shell: text, headings and controls inside are one type step
+ * down, for an app's dense chrome. A site leaves it out and reads at 16px.
+ */
+export const Compact: S = {
+  render: () => (
+    <AppShell
+      density="compact"
+      brand={<span>Hack Cove</span>}
+      nav={
+        <Tabs
+          label="Main"
+          items={[
+            { label: "Builds", href: "#builds", selected: true },
+            { label: "Settings", href: "#settings" },
+          ]}
+        />
+      }
+    >
+      <PageHeader title="Builds" description="Every build of every branch, one step down." />
+      <Card title="Build 12">
+        <Text>Compared against main: 3 changed, 1 new.</Text>
+        <Caption>Started 2 minutes ago</Caption>
+      </Card>
+    </AppShell>
   ),
 };

@@ -21,6 +21,7 @@ import { toISODate } from "./isoDate.js";
 import type { DataAttributes } from "./link.js";
 import { ShownInput, useShownDate } from "./shownDate.js";
 import type { Size } from "./size.js";
+import { controlText, useTypeStep } from "./density.js";
 
 /** Fixed, whatever the browser's locale: DD/MM/YYYY and Monday-first weeks. */
 export const LOCALE = "en-GB";
@@ -45,8 +46,8 @@ export type FieldProps = {
   /** Marks the field invalid with no message of its own; pair it with `errorMessage`. */
   isInvalid?: boolean;
   /**
-   * The field's height and text, on the same scale as an `Input`: `sm` is `text-xs`, `lg` is
-   * `text-base`.
+   * The field's height and text, on the same scale as an `Input`: `sm` is `text-sm`, `md` `text-base`,
+   * `lg` `text-lg`, one step down under an `AppShell density="compact"`, and never under 16px on touch.
    * @default md
    */
   size?: Size;
@@ -202,11 +203,11 @@ export function Notes({
   );
 }
 
-/** A `DateField`'s padding and text, by `size`: the heights of an `Input`. */
+/** A `DateField`'s padding, by `size`: the heights of an `Input`. Its type is `controlText`'s, as an `Input`'s. */
 const FIELD_SIZE: Record<Size, string> = {
-  sm: "py-1 pl-2 pr-2 text-xs",
-  md: "py-2 pl-2.5 pr-2.5 text-sm",
-  lg: "py-2.5 pl-3 pr-3 text-base",
+  sm: "py-1 pl-2 pr-2",
+  md: "py-2 pl-2.5 pr-2.5",
+  lg: "py-2.5 pl-3 pr-3",
 };
 
 export const labelClass = "text-sm font-medium text-slate-700";
@@ -239,6 +240,7 @@ function PlainDateField({
   size = "md",
   ...rest
 }: FieldProps): ReactElement {
+  const step = useTypeStep();
   const { inner, setInner, shown, impossible, onRead, validate, leaving, onBlurCapture, onLeft } =
     useShownDate({
       value,
@@ -266,7 +268,11 @@ function PlainDateField({
           <>
             {label ? <Label className={labelClass}>{label}</Label> : null}
             <div className="contents" onBlurCapture={onBlurCapture}>
-              <DateInput className={(state) => cx(frameClass(state), FIELD_SIZE[size])}>
+              <DateInput
+                className={(state) =>
+                  cx(frameClass(state), FIELD_SIZE[size], controlText(size, step, true))
+                }
+              >
                 {(segment) => (
                   <FieldSegment segment={segment} {...(segment.type === "day" ? { onRead } : {})} />
                 )}

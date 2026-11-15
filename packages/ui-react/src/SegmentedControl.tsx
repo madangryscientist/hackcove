@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import { cx } from "./cx.js";
+import { controlText, useTypeStep } from "./density.js";
 import type { Size } from "./size.js";
 import { Switcher, type SwitchItem, type SwitchProps } from "./switcher.js";
 
@@ -9,11 +10,14 @@ export type Segment = SwitchItem;
 // The focus ring sits inside the option, since the group's rounded edge would clip an outer one.
 const BASE =
   "border-l border-slate-300 transition first:rounded-l-full first:border-l-0 last:rounded-r-full focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-violet-600";
-/** An option's padding and text, by `size`: with the group's border, the heights of a `Button`. */
+/**
+ * An option's padding, by `size`; its text is a control's (`controlText`). With the group's border,
+ * the heights of a `Button`.
+ */
 const SIZE: Record<Size, string> = {
-  sm: "px-2.5 py-1 text-xs",
-  md: "px-3 py-2 text-sm",
-  lg: "px-4 py-2.5 text-base",
+  sm: "px-2.5 py-1",
+  md: "px-3 py-2",
+  lg: "px-4 py-2.5",
 };
 const ON = "bg-violet-600 font-medium text-violet-50";
 const OFF = "bg-white text-slate-600";
@@ -37,6 +41,7 @@ export function SegmentedControl({
    */
   size?: Size;
 }): ReactElement {
+  const text = controlText(size, useTypeStep(), false);
   return (
     <Switcher
       {...props}
@@ -46,7 +51,7 @@ export function SegmentedControl({
         vertical: true,
         root: "inline-flex rounded-full border border-slate-300",
         option: (active, disabled) =>
-          cx(BASE, SIZE[size], active ? ON : OFF, !active && !disabled && OFF_LIVE),
+          cx(BASE, SIZE[size], text, active ? ON : OFF, !active && !disabled && OFF_LIVE),
       }}
     />
   );

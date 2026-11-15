@@ -25,6 +25,7 @@ export const layout: ComponentSection = {
           "`controls` stay in the row at every width, so keep them few (a theme toggle, the viewer's avatar). Pickers and actions that do not fit a phone row go in `menuControls`: from `md` they sit in the row after `controls`, and below `md` they are at the top of the Menu.",
           "On a phone `nav` and `subnav` fold into one Menu button, so a nav of any length stays reachable with no sideways scroll; `menuLabel` renames the button (`Menu` by default), for a translated app.",
           "`printChrome={false}` hides the header and footer and main's padding on paper; screen is unchanged.",
+          '`density="compact"` is the one type step an app may set, once, here: text, headings and controls one step down everywhere inside, for a dense app. A site leaves it out and reads at 16px.',
           "`header` is for a node no other slot covers. Prefer `brand`, `nav` and `controls`.",
           "Put `appShellRootClassFor(scheme)` on the app's own `<html>`. `AppShell` never touches `<html>`.",
           "A theme sets the canvas colour and the font, and the shell turns on font smoothing (`antialiased`); the app writes no page background, font or smoothing rule.",

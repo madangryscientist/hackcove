@@ -14,6 +14,7 @@ import {
   type ControlSize,
 } from "./control.js";
 import { cx, focusRing } from "./cx.js";
+import { useTypeStep } from "./density.js";
 import { InputShell } from "./InputShell.js";
 import type { Unstyled } from "./props.js";
 
@@ -81,6 +82,7 @@ export function SearchInput({
   ...rest
 }: { icon?: ReactNode; align?: ControlAlign | undefined } & ControlProps &
   Unstyled<Omit<ComponentPropsWithoutRef<"input">, "size" | "width">>): ReactElement {
+  const step = useTypeStep();
   const inputRef = useRef<HTMLInputElement>(null);
   const [typed, setTyped] = useState(() => String(rest.value ?? rest.defaultValue ?? "") !== "");
   const filled = rest.value !== undefined ? String(rest.value) !== "" : typed;
@@ -94,7 +96,7 @@ export function SearchInput({
           onChange?.(event);
         }}
         className={cx(
-          controlClass(size, width === "auto" ? "auto" : "full"),
+          controlClass(size, width === "auto" ? "auto" : "full", step),
           SEARCH_PAD[size][icon === undefined ? "plain" : "icon"],
           SEARCH_RESET,
           CONTROL_ALIGN[align],

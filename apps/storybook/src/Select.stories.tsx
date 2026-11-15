@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button, Field, Select } from "@hackcove/ui-react";
+import { CompactApp } from "./typeSteps";
 
 const meta: Meta = { title: "Forms/Select" };
 export default meta;
@@ -80,16 +81,24 @@ export const DontChoice: S = {
 };
 
 /** `sm`, `md` (the default) and `lg`. */
+const sizes = () => (
+  <div className="flex flex-wrap items-center gap-2">
+    {(["sm", "md", "lg"] as const).map((size) => (
+      <Select key={size} size={size} width="md" aria-label={`Rating ${size}`} defaultValue={5}>
+        {rating}
+      </Select>
+    ))}
+  </div>
+);
+
 export const Sizes: S = {
-  render: () => (
-    <div className="flex flex-wrap items-center gap-2">
-      {(["sm", "md", "lg"] as const).map((size) => (
-        <Select key={size} size={size} width="md" aria-label={`Rating ${size}`} defaultValue={5}>
-          {rating}
-        </Select>
-      ))}
-    </div>
-  ),
+  render: sizes,
+};
+
+/** The same sizes in an app that set `AppShell density="compact"`: each is one type step down. */
+export const SizesCompact: S = {
+  parameters: { layout: "fullscreen" },
+  render: () => <CompactApp>{sizes()}</CompactApp>,
 };
 
 /** In an errored `Field`, the select takes a red edge and is described by the error. */

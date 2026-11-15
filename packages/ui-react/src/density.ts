@@ -56,3 +56,28 @@ export function useDensity(size: Size | undefined): Size {
 export function useTypeStep(): TypeStep | undefined {
   return useContext(DensityContext).type;
 }
+
+/** A control's type size at each step: `md` is 16px at the default step, and `compact` is one step down. */
+const CONTROL_TEXT: Record<"default" | TypeStep, Record<Size, string>> = {
+  default: { sm: "text-sm", md: "text-base", lg: "text-lg" },
+  compact: { sm: "text-xs", md: "text-sm", lg: "text-base" },
+};
+
+/**
+ * Where a text-entry control would be under 16px, it is 16px on a touch screen, so iOS Safari does
+ * not zoom the page when it takes the focus.
+ */
+const TOUCH_TEXT = "pointer-coarse:text-base";
+
+/**
+ * A control's line height by `size`, whatever its type step: 16, 20 and 24px, so with its padding
+ * every control is 26, 38 and 46px tall at both steps, and a `Select`, an `IconButton` and a
+ * `DateRangePicker`, whose heights are fixed, line up with it.
+ */
+const CONTROL_LEADING: Record<Size, string> = { sm: "leading-4", md: "leading-5", lg: "leading-6" };
+
+/** The type class of a control of `size` at `step`; `entry` adds the 16px floor on touch for a field a person types in. */
+export function controlText(size: Size, step: TypeStep | undefined, entry: boolean): string {
+  const text = `${CONTROL_TEXT[step ?? "default"][size]} ${CONTROL_LEADING[size]}`;
+  return entry && !/text-(base|lg)/.test(text) ? `${text} ${TOUCH_TEXT}` : text;
+}

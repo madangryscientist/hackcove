@@ -22,7 +22,7 @@ import {
   labelClass,
   Notes,
 } from "./DateField.js";
-import { PICKER_SIZE, useDialogContainer } from "./DateFieldCalendar.js";
+import { PICKER_SIZE, useDialogContainer, usePickerFrame } from "./DateFieldCalendar.js";
 import type { DataAttributes } from "./link.js";
 import { ShownInput, type ShownRange, useShownRange } from "./shownDate.js";
 
@@ -137,6 +137,7 @@ export function DateRangePicker({
   size = "md",
   ...rest
 }: DateRangePickerProps): ReactElement {
+  const frame = usePickerFrame(size);
   const shown = useShownRange({
     value,
     defaultValue,
@@ -163,7 +164,7 @@ export function DateRangePicker({
         {({ isInvalid }) => (
           <>
             {label ? <Label className={labelClass}>{label}</Label> : null}
-            <Group className={(state) => cx(frameClass(state), "gap-1", PICKER_SIZE[size].frame)}>
+            <Group className={(state) => cx(frameClass(state), frame)}>
               <SideInput
                 slot="start"
                 name="Start date"

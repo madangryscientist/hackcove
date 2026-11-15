@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import { cx, focusRing } from "./cx.js";
+import { controlText, type TypeStep, useTypeStep } from "./density.js";
 import type { Size } from "./size.js";
 import { Switcher, type SwitchItem, type SwitchProps } from "./switcher.js";
 
@@ -14,18 +15,24 @@ const OFF_LIVE = "hover:text-violet-700";
 // A transparent border, so a pill is as tall as a `Button` of the same size.
 const PILL = `rounded-lg border border-transparent transition ${focusRing}`;
 
-/** A pill's padding and text, by `size`. */
+/** A pill's padding, by `size`; its text is a control's (`controlText`), so it lines up with a `Button`. */
 const PILL_SIZE: Record<Size, string> = {
-  sm: "px-2.5 py-1 text-xs",
-  md: "px-3 py-2 text-sm",
-  lg: "px-4 py-2.5 text-base",
+  sm: "px-2.5 py-1",
+  md: "px-3 py-2",
+  lg: "px-4 py-2.5",
 };
 
-/** The classes of one pill tab. A `disabled` one drops the hover fill. */
-export function pillTabClass(active: boolean, disabled = false, size: Size = "md"): string {
+/** The classes of one pill tab at the type `step` in force. A `disabled` one drops the hover fill. */
+export function pillTabClass(
+  active: boolean,
+  disabled = false,
+  size: Size = "md",
+  step?: TypeStep,
+): string {
   return cx(
     PILL,
     PILL_SIZE[size],
+    controlText(size, step, false),
     active ? "bg-slate-100 font-medium text-slate-900" : "text-slate-600",
     !active && !disabled && "hover:bg-slate-100",
   );
@@ -71,6 +78,7 @@ export function Tabs({
   ...props
 }: TabsProps): ReactElement {
   const stacked = orientation === "vertical";
+  const step = useTypeStep();
   return (
     <Switcher
       {...props}
@@ -82,7 +90,7 @@ export function Tabs({
         root: stacked ? "flex flex-col gap-1" : UNDERLINE_ROW,
         option: (active, disabled) =>
           stacked
-            ? pillTabClass(active, disabled, size)
+            ? pillTabClass(active, disabled, size, step)
             : cx(BASE, active ? ON : OFF, !active && !disabled && OFF_LIVE),
       }}
     />

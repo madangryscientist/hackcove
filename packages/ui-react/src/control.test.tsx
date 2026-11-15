@@ -22,15 +22,17 @@ describe.each(Object.entries(controls))("%s size and width", (_name, render) => 
     const classes = classOf(renderToStaticMarkup(render({})));
     expect(classes).toContain("w-full");
     expect(classes).toContain("py-2");
-    expect(classes).toContain("text-sm");
+    expect(classes).toContain("text-base");
     expect(classes).toContain("px-3");
   });
 
-  it("sm is compact", () => {
+  it("sm is compact, and never under 16px on touch", () => {
     const classes = classOf(renderToStaticMarkup(render({ size: "sm" })));
-    expect(classes).toEqual(expect.arrayContaining(["py-1", "text-xs", "px-2"]));
+    expect(classes).toEqual(
+      expect.arrayContaining(["py-1", "text-sm", "pointer-coarse:text-base", "px-2"]),
+    );
     expect(classes).not.toContain("py-2");
-    expect(classes).not.toContain("text-sm");
+    expect(classes).not.toContain("text-base");
   });
 
   it("a fixed width replaces w-full, never joins it", () => {

@@ -50,7 +50,7 @@ export const text: ComponentSection = {
           "The sizes are fixed: `Prose` has no size to choose.",
         ],
         dont: [
-          "Never use `Prose` on an app screen. A dashboard, a form or a list keeps the dense app sizes.",
+          "Never use `Prose` on an app screen. A dashboard, a form or a list keeps the app sizes.",
         ],
       },
       accessibility: [

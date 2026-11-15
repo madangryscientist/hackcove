@@ -49,6 +49,7 @@ import {
   GalleryNavigationProgress,
   GalleryPageFade,
 } from "./GalleryBlocks";
+import { CompactApp, TypeSpecimen } from "./typeSteps";
 
 /**
  * One slice of the Gallery: a few blocks that sit together on the page. Overview / Gallery and
@@ -88,6 +89,18 @@ export const gallerySections: GallerySection[] = [
     ),
   },
   { id: "text", title: "Text", render: () => <GalleryText /> },
+  {
+    id: "type-steps",
+    title: "Type steps",
+    render: () => (
+      <div className="flex flex-col gap-6">
+        <TypeSpecimen />
+        <CompactApp>
+          <TypeSpecimen />
+        </CompactApp>
+      </div>
+    ),
+  },
   {
     id: "pills-and-bars",
     title: "Pills and bars",

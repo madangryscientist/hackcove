@@ -1,6 +1,7 @@
 import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import { CONTROL_PAD, controlClass, type ControlProps, type ControlSize } from "./control.js";
 import { cx } from "./cx.js";
+import { useTypeStep } from "./density.js";
 import { useFieldControl } from "./fieldControl.js";
 import type { Unstyled } from "./props.js";
 
@@ -15,12 +16,13 @@ export function Select({
   ...own
 }: ControlProps &
   Unstyled<Omit<ComponentPropsWithoutRef<"select">, "size" | "width">>): ReactElement {
+  const step = useTypeStep();
   const field = useFieldControl(own);
   return (
     <select
       {...own}
       {...field}
-      className={cx(controlClass(size, width), SELECT_HEIGHT[size], CONTROL_PAD[size].x)}
+      className={cx(controlClass(size, width, step), SELECT_HEIGHT[size], CONTROL_PAD[size].x)}
     >
       {children}
     </select>

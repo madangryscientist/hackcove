@@ -53,7 +53,7 @@ const chevron = (d: string) => (
   </Icon>
 );
 
-const selectClass = `rounded-md border border-slate-300 bg-white py-1 pr-1 pl-2 text-sm text-slate-900 transition hover:border-violet-400 ${focusRing}`;
+const selectClass = `rounded-md border border-slate-300 bg-white py-1 pr-1 pl-2 text-sm text-slate-900 pointer-coarse:text-base transition hover:border-violet-400 ${focusRing}`;
 
 /**
  * ‹, a month dropdown, a year dropdown and ›: a birth date decades back is two picks away. It reads

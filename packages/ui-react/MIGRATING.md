@@ -160,6 +160,27 @@ No app used it. `ChatThread`, `ChatMessage` and `ChatComposer` stay.
 | --- | --- |
 | `<ToolCallCard name="search" status="done" summary="…">…</ToolCallCard>` | A `Disclosure bordered` whose `summary` names the tool (a `Code`) and carries a `Pill` for how it went (`tone="positive"` Done, `tone="danger"` Failed, a neutral Running), with the detail as its children. |
 
+### Running text is 1rem
+
+Text is 1rem: an app that wants the old density sets `AppShell density="compact"` once. Nothing
+else sets the step, and no component takes a type size of its own.
+
+| | 0.10 | 0.11 | 0.11 under `AppShell density="compact"` |
+| --- | --- | --- | --- |
+| `Text` | 14px (`text-sm/5`) | 16px (`text-base/6`) | 14px |
+| `Caption` | 12px | 14px | 12px |
+| `SectionHeading` | 16px | 20px | 16px |
+| `SubsectionHeading` `sm`, `md`, `lg` | 14, 16, 18px | 16, 18, 20px | 14, 16, 18px |
+| `Input`, `Select`, `Textarea`, `DateField`, `Button` `sm`, `md`, `lg` | 12, 14, 16px | 14, 16, 18px | 12, 14, 16px |
+
+TypeScript does not flag these, since no name changes:
+
+- Every page reads one step larger unless its `AppShell` sets `density="compact"`. The codemod
+  reports every `AppShell` so a person chooses; it writes nothing.
+- A text field is never under 16px on a touch screen, at any size or step, so iOS Safari does not
+  zoom the page when it takes the focus.
+- `Prose` now sets only its line height: `Text` inside it is 16px, as it is outside.
+
 ## 0.9 → 0.10: Avatar `2xl` is 64px, the old 96px is `3xl`
 
 `Avatar` gained a 64px size. The sizes keep their order (`xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`),

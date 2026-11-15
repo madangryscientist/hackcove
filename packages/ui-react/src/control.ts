@@ -1,4 +1,5 @@
 import { focusRing } from "./cx.js";
+import { controlText, type TypeStep } from "./density.js";
 import type { Size } from "./size.js";
 
 /** A control's size: the library's one `Size` scale. */
@@ -10,8 +11,9 @@ export type ControlWidth = "full" | "fill" | "auto" | "xs" | "sm" | "md" | "lg";
 /** The props `Input`, `Select` and `Textarea` share. They replace the native `size` and `width`. */
 export type ControlProps = {
   /**
-   * `sm` is compact, `text-xs` with less padding, for dense forms and table rows; `lg` is `text-base`
-   * with more padding, for a hero form or a touch screen.
+   * `sm` is compact, `text-sm` with less padding, for dense forms and table rows; `md` is `text-base`;
+   * `lg` is `text-lg` with more padding, for a hero form. Under an `AppShell density="compact"` each
+   * is one type step down, and on a touch screen a field is never under 16px.
    * @default md
    */
   size?: ControlSize | undefined;
@@ -19,11 +21,11 @@ export type ControlProps = {
   width?: ControlWidth | undefined;
 };
 
-/** The height and type of a control: 26px, 38px and 46px with the border. */
-export const CONTROL_SIZE: Record<ControlSize, string> = {
-  sm: "py-1 text-xs",
-  md: "py-2 text-sm",
-  lg: "py-2.5 text-base",
+/** The vertical padding of a control; its type size is `controlText`'s, from the size and the type step. */
+const CONTROL_PAD_Y: Record<ControlSize, string> = {
+  sm: "py-1",
+  md: "py-2",
+  lg: "py-2.5",
 };
 
 /** One width class per control, so a fixed width never fights `w-full`. `auto` has none. */
@@ -53,11 +55,16 @@ export const CONTROL_PAD: Record<ControlSize, { x: string; icon: string }> = {
   lg: { x: "px-4", icon: "pr-4 pl-11" },
 };
 
-/** Shared look of text controls; `size` sets the height and type, `width` the one width class. */
-export function controlClass(size: ControlSize = "md", width: ControlWidth = "full"): string {
+/** Shared look of text controls; `size` and the type `step` set the height and type, `width` the one width class. */
+export function controlClass(
+  size: ControlSize = "md",
+  width: ControlWidth = "full",
+  step?: TypeStep,
+): string {
   return [
     CONTROL_WIDTH[width],
-    CONTROL_SIZE[size],
+    CONTROL_PAD_Y[size],
+    controlText(size, step, true),
     `rounded-lg border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 text-ellipsis transition hover:border-violet-400 aria-invalid:border-red-200 disabled:opacity-50 ${focusRing}`,
   ]
     .filter(Boolean)

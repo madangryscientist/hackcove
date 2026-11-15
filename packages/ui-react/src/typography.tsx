@@ -8,6 +8,7 @@ import {
   useContext,
 } from "react";
 import { cx } from "./cx.js";
+import { useTypeStep } from "./density.js";
 import type { Passthrough } from "./props.js";
 import type { Size } from "./size.js";
 import type { Tone } from "./tone.js";
@@ -265,9 +266,9 @@ export function AppScale({ children }: { children?: ReactNode }): ReactElement {
 }
 
 /**
- * Long-form content, for a docs page or an article. A block (`div`) that sets text-base/7 on itself,
- * so a bare `<li>` or text node inside reads at 16px, and puts the text roles inside it on the
- * prose scale: `Text` text-base/7, `SectionHeading` text-2xl/8, `SubsectionHeading` `lg` text-2xl/8,
+ * Long-form content, for a docs page or an article. A block (`div`) that sets the long line height
+ * (leading-7) on itself and puts the text roles inside it on the prose scale: `Text` text-base/7
+ * (the size it is outside, on a longer line), `SectionHeading` text-2xl/8, `SubsectionHeading` `lg` text-2xl/8,
  * `md` text-xl/7 and `sm` text-base/7 (a semibold line at body size), and the box of a `Callout`
  * text-base/7. Every other role keeps its size. Nothing outside a `Prose` changes, and a `Dialog`,
  * `Drawer` or `EmptyState` inside one is back on the app scale. An app screen never uses it: wrap the
@@ -276,27 +277,39 @@ export function AppScale({ children }: { children?: ReactNode }): ReactElement {
 export function Prose({ children, ...rest }: { children?: ReactNode } & Passthrough): ReactElement {
   return (
     <ProseContext.Provider value={true}>
-      <div {...rest} className="text-base/7">
+      <div {...rest} className="leading-7">
         {children}
       </div>
     </ProseContext.Provider>
   );
 }
 
-/** A role's classes on each scale: the app's dense one, and the long-form one inside a `Prose`. */
-type Scale = { app: string; prose: string };
+/**
+ * A role's classes on each scale: the default one, the one under an `AppShell density="compact"`
+ * (one step down), and the long-form one inside a `Prose`.
+ */
+type Scale = { app: string; compact: string; prose: string };
 
 const SECTION: Scale = {
-  app: "text-base/6 font-semibold",
+  app: "text-xl/7 font-semibold",
+  compact: "text-base/6 font-semibold",
   prose: "text-2xl/8 font-semibold tracking-tight",
 };
+
+/** The class of a role on the scale in force: the Prose one inside a `Prose`, else the type step's. */
+function useScale(scale: Scale): string {
+  const prose = useProse();
+  const step = useTypeStep();
+  if (prose) return scale.prose;
+  return step === "compact" ? scale.compact : scale.app;
+}
 
 /** The offset an anchored heading keeps from the top, so the sticky header does not cover it. */
 const SCROLL_TARGET = "scroll-mt-28";
 
 /**
- * Top-level section header. `h2`, text-base/6 semibold, primary text (text-2xl/8 semibold tight
- * inside a `Prose`). `rule` sets
+ * Top-level section header. `h2`, text-xl/7 semibold, primary text (text-base/6 under an
+ * `AppShell density="compact"`, text-2xl/8 semibold tight inside a `Prose`). `rule` sets
  * a hairline under it (the `Divider` line colour) with the space either side of
  * the line built in. `description` is a muted line under the heading, outside the `<h2>`, so the
  * heading's name stays the title; the rule then sits under the description.
@@ -312,7 +325,7 @@ export function SectionHeading<E extends ElementType = "h2">({
   description?: ReactNode;
 }): ReactElement {
   const hairline = "mb-4 border-b border-slate-200/70 pb-2";
-  const size = useProse() ? SECTION.prose : SECTION.app;
+  const size = useScale(SECTION);
   const hasDescription = description != null && description !== false;
   // An `id` makes the heading a link target, so an anchor jump leaves it clear of the sticky header.
   const scroll = props.id === undefined ? undefined : SCROLL_TARGET;
@@ -330,14 +343,27 @@ export function SectionHeading<E extends ElementType = "h2">({
 export type SubsectionHeadingSize = Size;
 
 const SUBSECTION_SIZE: Record<SubsectionHeadingSize, Scale> = {
-  sm: { app: "text-sm/5 font-semibold", prose: "text-base/7 font-semibold" },
-  md: { app: "text-base/6 font-semibold", prose: "text-xl/7 font-semibold" },
-  lg: { app: "text-lg/7 font-semibold", prose: "text-2xl/8 font-semibold tracking-tight" },
+  sm: {
+    app: "text-base/6 font-semibold",
+    compact: "text-sm/5 font-semibold",
+    prose: "text-base/7 font-semibold",
+  },
+  md: {
+    app: "text-lg/7 font-semibold",
+    compact: "text-base/6 font-semibold",
+    prose: "text-xl/7 font-semibold",
+  },
+  lg: {
+    app: "text-xl/7 font-semibold",
+    compact: "text-lg/7 font-semibold",
+    prose: "text-2xl/8 font-semibold tracking-tight",
+  },
 };
 
 /**
- * Nested header. `h3`, text-base/6 semibold, primary text. `size` steps it down for a dense card
- * or up for a drawer or form-group title: `sm` (text-sm), `md` (default) or `lg`. Inside a `Prose`
+ * Nested header. `h3`, text-lg/7 semibold, primary text. `size` steps it down for a dense card
+ * or up for a drawer or form-group title: `sm` (text-base, body size set apart by its weight), `md`
+ * (default) or `lg` (text-xl). Under an `AppShell density="compact"` each is one step down. Inside a `Prose`
  * `md` is text-xl/7 (the h3 of a doc), `sm` text-base/7 (the h4: body size, set apart by its weight)
  * and `lg` text-2xl/8, the size of a `SectionHeading` there. `truncate` keeps it on
  * one line and cuts it with an ellipsis where its container ends, the full text as the `title`.
@@ -347,15 +373,15 @@ export function SubsectionHeading<E extends ElementType = "h3">({
   ...props
 }: TypographyProps<E> & {
   /**
-   * The heading's type size: `sm` is text-sm/5, `md` text-base/6 and `lg` text-lg/7.
+   * The heading's type size: `sm` is text-base/6, `md` text-lg/7 and `lg` text-xl/7 (one step down
+   * each under an `AppShell density="compact"`).
    * @default md
    */
   size?: SubsectionHeadingSize;
   /** One line, cut with an ellipsis where the container ends; the full text becomes the `title`. */
   truncate?: boolean | undefined;
 }): ReactElement {
-  const scale = SUBSECTION_SIZE[size];
-  return pinned("h3", useProse() ? scale.prose : scale.app, "default", props);
+  return pinned("h3", useScale(SUBSECTION_SIZE[size]), "default", props);
 }
 
 // --- Inline roles -------------------------------------------------------------
@@ -387,8 +413,9 @@ export function CardOverline({
 export type TextMinWidth = "amount";
 
 /**
- * Running text. A paragraph (`p`; `as="span"` for a run inside a row, a cell or a sentence), text-sm/5 normal, secondary (text-base/7
- * inside a `Prose`). A block of it
+ * Running text. A paragraph (`p`; `as="span"` for a run inside a row, a cell or a sentence),
+ * text-base/6 normal, secondary (text-sm/5 under an `AppShell density="compact"`, text-base/7 inside
+ * a `Prose`). A block of it
  * stops at a readable line length (`max-w-[72ch]`), wherever it sits. `strong` emphasises it:
  * font-medium in the primary ink, unless `tone` says otherwise.
  * `preserveNewlines` keeps the line breaks in the text (a user-typed note); runs of spaces still collapse.
@@ -414,11 +441,11 @@ export function Text<E extends ElementType = "p">({
     /** A fixed width: `amount` is a right-aligned money figure, min-w-24, in tabular figures. */
     minWidth?: TextMinWidth | undefined;
   }): ReactElement {
-  const prose = useProse();
+  const scale = useScale(TEXT);
   return pinned(
     "p",
     cx(
-      textVariant(strong, preserveNewlines, true, prose),
+      textVariant(strong, preserveNewlines, true, scale),
       italic && "italic",
       breakWords && "break-words",
       minWidth === "amount" && "inline-block min-w-24 text-end",
@@ -434,25 +461,28 @@ export function Text<E extends ElementType = "p">({
  * it runs the width of its dialog. Internal; not exported from the package.
  */
 export function HeaderText({ children }: { children: ReactNode }): ReactElement {
-  return pinned("p", textVariant(false, false, false, useProse()), "secondary", { children });
+  return pinned("p", textVariant(false, false, false, useScale(TEXT)), "secondary", { children });
 }
+
+const TEXT: Scale = { app: "text-base/6", compact: "text-sm/5", prose: "text-base/7" };
 
 function textVariant(
   strong: boolean | undefined,
   preserveNewlines: boolean | undefined,
   measure: boolean,
-  prose: boolean,
+  size: string,
 ): string {
   return cx(
     preserveNewlines && "whitespace-pre-line",
     measure && "max-w-[72ch]",
-    prose ? "text-base/7" : "text-sm/5",
+    size,
     strong ? "font-medium" : "font-normal",
   );
 }
 
 /**
- * Fine print / metadata. A paragraph (`p`; `as="span"` inline), text-xs/4 normal, tertiary. Takes `tone`,
+ * Fine print / metadata. A paragraph (`p`; `as="span"` inline), text-sm/5 normal, tertiary
+ * (text-xs/4 under an `AppShell density="compact"`). Takes `tone`,
  * `numeric`, `mono`, `truncate` and `align` like `Text`, and `italic` for a muted hint and `breakWords`
  * for a long unbroken string such as a URL.
  */
@@ -461,9 +491,10 @@ export function Caption<E extends ElementType = "p">({
   breakWords,
   ...props
 }: InlineTypographyProps<E> & RunOwnProps): ReactElement {
+  const size = useTypeStep() === "compact" ? "text-xs/4" : "text-sm/5";
   return pinned(
     "p",
-    cx("text-xs/4 font-normal", italic && "italic", breakWords && "break-words"),
+    cx(size, "font-normal", italic && "italic", breakWords && "break-words"),
     "tertiary",
     props,
   );

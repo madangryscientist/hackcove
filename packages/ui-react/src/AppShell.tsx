@@ -3,6 +3,7 @@ import { AppShellMenu } from "./AppShellMenu.js";
 import { ContainerFrame } from "./Container.js";
 import { schemeClass, type ColourScheme, type ColourSchemeClasses } from "./colourScheme.js";
 import { cx, focusRing } from "./cx.js";
+import { DensityProvider } from "./density.js";
 import { renderLink } from "./link.js";
 import type { Passthrough } from "./props.js";
 import { useScrollEdges } from "./scrollEdges.js";
@@ -237,6 +238,9 @@ function AppShellHeader({
   );
 }
 
+/** The type step an app sets once on its `AppShell`: `compact` is one step down for the whole app. */
+export type AppShellDensity = "compact";
+
 /**
  * The page frame: it paints the page canvas and sets the type face, ink and font smoothing
  * (`antialiased`), so an app writes no page-background or font rule of its own (a theme remaps
@@ -273,6 +277,7 @@ export function AppShell({
   footer,
   bleed = false,
   printChrome = true,
+  density,
   children,
   ...rest
 }: {
@@ -309,45 +314,52 @@ export function AppShell({
    * @default true
    */
   printChrome?: boolean;
+  /**
+   * The app's type step, set once here and nowhere else: `compact` sets text, headings and controls
+   * one step down everywhere inside, for an app's dense chrome. Left out, text is 16px, as a site's.
+   */
+  density?: AppShellDensity | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {
   const hideChromeInPrint = !printChrome;
   return (
-    <div
-      {...rest}
-      className={cx(
-        "flex min-h-dvh flex-col bg-gray-50 font-sans text-slate-900 antialiased",
-        // The sticky header's height (its rows and the bottom border), for a bar that sticks under it.
-        // Below `md` it is one row whatever the slots are: the subnav is in the menu.
-        "[--app-header:calc(3.5rem+1px)]",
-        subnav ? "md:[--app-header:calc(6.5rem+1px)]" : undefined,
-      )}
-    >
-      <AppShellHeader
-        brand={brand}
-        nav={nav}
-        controls={controls}
-        menuControls={menuControls}
-        subnav={subnav}
-        menuLabel={menuLabel}
-        hideChromeInPrint={hideChromeInPrint}
-      >
-        {header}
-      </AppShellHeader>
-      <main className="flex flex-1 flex-col">
-        {bleed ? (
-          children
-        ) : (
-          <ContainerFrame className={cx("py-8", hideChromeInPrint && "print:p-0")}>
-            {children}
-          </ContainerFrame>
+    <DensityProvider type={density}>
+      <div
+        {...rest}
+        className={cx(
+          "flex min-h-dvh flex-col bg-gray-50 font-sans text-slate-900 antialiased",
+          // The sticky header's height (its rows and the bottom border), for a bar that sticks under it.
+          // Below `md` it is one row whatever the slots are: the subnav is in the menu.
+          "[--app-header:calc(3.5rem+1px)]",
+          subnav ? "md:[--app-header:calc(6.5rem+1px)]" : undefined,
         )}
-      </main>
-      {footer && (
-        <footer className={cx("border-t border-slate-200", hideChromeInPrint && "print:hidden")}>
-          <ContainerFrame className="py-6 text-sm text-slate-500">{footer}</ContainerFrame>
-        </footer>
-      )}
-    </div>
+      >
+        <AppShellHeader
+          brand={brand}
+          nav={nav}
+          controls={controls}
+          menuControls={menuControls}
+          subnav={subnav}
+          menuLabel={menuLabel}
+          hideChromeInPrint={hideChromeInPrint}
+        >
+          {header}
+        </AppShellHeader>
+        <main className="flex flex-1 flex-col">
+          {bleed ? (
+            children
+          ) : (
+            <ContainerFrame className={cx("py-8", hideChromeInPrint && "print:p-0")}>
+              {children}
+            </ContainerFrame>
+          )}
+        </main>
+        {footer && (
+          <footer className={cx("border-t border-slate-200", hideChromeInPrint && "print:hidden")}>
+            <ContainerFrame className="py-6 text-sm text-slate-500">{footer}</ContainerFrame>
+          </footer>
+        )}
+      </div>
+    </DensityProvider>
   );
 }

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button, ButtonGroup } from "@hackcove/ui-react";
+import { CompactApp } from "./typeSteps";
 
 const meta: Meta = { title: "Actions/Button" };
 export default meta;
@@ -301,19 +302,27 @@ export const WithRouterLink: S = {
 };
 
 /** `sm`, `md` (the default) and `lg`: the one size scale every control shares. */
+const sizes = () => (
+  <div className="flex flex-wrap items-center gap-2">
+    {(["sm", "md", "lg"] as const).map((size) => (
+      <Button key={size} size={size}>
+        Save {size}
+      </Button>
+    ))}
+    {(["sm", "md", "lg"] as const).map((size) => (
+      <Button key={size} href="#quotes" size={size} variant="outline">
+        Quotes {size}
+      </Button>
+    ))}
+  </div>
+);
+
 export const Sizes: S = {
-  render: () => (
-    <div className="flex flex-wrap items-center gap-2">
-      {(["sm", "md", "lg"] as const).map((size) => (
-        <Button key={size} size={size}>
-          Save {size}
-        </Button>
-      ))}
-      {(["sm", "md", "lg"] as const).map((size) => (
-        <Button key={size} href="#quotes" size={size} variant="outline">
-          Quotes {size}
-        </Button>
-      ))}
-    </div>
-  ),
+  render: sizes,
+};
+
+/** The same sizes in an app that set `AppShell density="compact"`: each is one type step down. */
+export const SizesCompact: S = {
+  parameters: { layout: "fullscreen" },
+  render: () => <CompactApp>{sizes()}</CompactApp>,
 };

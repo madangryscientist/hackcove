@@ -55,7 +55,7 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
   [
     "Input",
     (size) => <Input aria-label="x" {...at(size)} />,
-    { sm: "py-1 text-xs", md: "py-2 text-sm", lg: "py-2.5 text-base" },
+    { sm: "py-1 text-sm", md: "py-2 text-base", lg: "py-2.5 text-lg" },
   ],
   [
     "Select",
@@ -64,12 +64,12 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
         <option>a</option>
       </Select>
     ),
-    { sm: "py-1 text-xs", md: "py-2 text-sm", lg: "py-2.5 text-base" },
+    { sm: "py-1 text-sm", md: "py-2 text-base", lg: "py-2.5 text-lg" },
   ],
   [
     "Textarea",
     (size) => <Textarea aria-label="x" {...at(size)} />,
-    { sm: "py-1 text-xs", md: "py-2 text-sm", lg: "py-2.5 text-base" },
+    { sm: "py-1 text-sm", md: "py-2 text-base", lg: "py-2.5 text-lg" },
   ],
   [
     "SearchInput",
@@ -96,7 +96,7 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
     (size) => (
       <SegmentedControl items={items} value="a" label="x" onChange={() => {}} {...at(size)} />
     ),
-    { sm: "px-2.5 py-1 text-xs", md: "px-3 py-2 text-sm", lg: "px-4 py-2.5 text-base" },
+    { sm: "px-2.5 py-1 text-sm", md: "px-3 py-2 text-base", lg: "px-4 py-2.5 text-lg" },
   ],
   [
     "Tabs rail",
@@ -110,14 +110,14 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
         {...at(size)}
       />
     ),
-    { sm: "px-2.5 py-1 text-xs", md: "px-3 py-2 text-sm", lg: "px-4 py-2.5 text-base" },
+    { sm: "px-2.5 py-1 text-sm", md: "px-3 py-2 text-base", lg: "px-4 py-2.5 text-lg" },
   ],
   [
     "Tabs rail links",
     (size) => (
       <Tabs items={[{ label: "A", href: "/a" }]} label="x" orientation="vertical" {...at(size)} />
     ),
-    { sm: "px-2.5 py-1 text-xs", md: "px-3 py-2 text-sm", lg: "px-4 py-2.5 text-base" },
+    { sm: "px-2.5 py-1 text-sm", md: "px-3 py-2 text-base", lg: "px-4 py-2.5 text-lg" },
   ],
   [
     "Card",
@@ -146,7 +146,7 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
   [
     "SubsectionHeading",
     (size) => <SubsectionHeading {...at(size)}>x</SubsectionHeading>,
-    { sm: "text-sm/5", md: "text-base/6", lg: "text-lg/7" },
+    { sm: "text-base/6", md: "text-lg/7", lg: "text-xl/7" },
   ],
   [
     "Section gap",
@@ -231,17 +231,17 @@ describe("sized react-aria controls", () => {
   });
 
   it.each([
-    [undefined, "py-2 pl-2.5 pr-2.5 text-sm"],
-    ["sm", "py-1 pl-2 pr-2 text-xs"],
-    ["lg", "py-2.5 pl-3 pr-3 text-base"],
+    [undefined, "py-2 pl-2.5 pr-2.5 text-base"],
+    ["sm", "py-1 pl-2 pr-2 text-sm"],
+    ["lg", "py-2.5 pl-3 pr-3 text-lg"],
   ] as const)("DateField size %s is %s", (size, cls) => {
     expect(mount(<DateField aria-label="x" {...at(size)} />).innerHTML).toContain(cls);
   });
 
   it.each([
-    [undefined, "py-1 pl-2.5 pr-1 text-sm", "h-7 w-7"],
-    ["sm", "py-0.5 pl-2 pr-0.5 text-xs", "h-5 w-5"],
-    ["lg", "py-1.5 pl-3 pr-1.5 text-base", "h-8 w-8"],
+    [undefined, "py-1 pl-2.5 pr-1 text-base", "h-7 w-7"],
+    ["sm", "py-0.5 pl-2 pr-0.5 text-sm", "h-5 w-5"],
+    ["lg", "py-1.5 pl-3 pr-1.5 text-lg", "h-8 w-8"],
   ] as const)("DateField calendar size %s is %s with a %s button", (size, frame, button) => {
     const html = mount(<DateField calendar aria-label="x" {...at(size)} />).innerHTML;
     expect(html).toContain(frame);

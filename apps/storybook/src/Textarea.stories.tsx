@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Button, Field, Input, Textarea } from "@hackcove/ui-react";
+import { CompactApp } from "./typeSteps";
 
 const meta: Meta = { title: "Forms/Textarea" };
 export default meta;
@@ -77,20 +78,28 @@ export const FocusRef: S = {
 };
 
 /** `sm`, `md` (the default) and `lg`. */
+const sizes = () => (
+  <div className="flex flex-col gap-2">
+    {(["sm", "md", "lg"] as const).map((size) => (
+      <Textarea
+        key={size}
+        size={size}
+        rows={2}
+        placeholder={`A note, ${size}`}
+        aria-label={`Note ${size}`}
+      />
+    ))}
+  </div>
+);
+
 export const Sizes: S = {
-  render: () => (
-    <div className="flex flex-col gap-2">
-      {(["sm", "md", "lg"] as const).map((size) => (
-        <Textarea
-          key={size}
-          size={size}
-          rows={2}
-          placeholder={`A note, ${size}`}
-          aria-label={`Note ${size}`}
-        />
-      ))}
-    </div>
-  ),
+  render: sizes,
+};
+
+/** The same sizes in an app that set `AppShell density="compact"`: each is one type step down. */
+export const SizesCompact: S = {
+  parameters: { layout: "fullscreen" },
+  render: () => <CompactApp>{sizes()}</CompactApp>,
 };
 
 /** In an errored `Field`, the textarea takes a red edge and is described by the error. */

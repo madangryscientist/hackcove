@@ -17,6 +17,7 @@ export {
   AppShell,
   AppShellBrand,
   type AppShellBreakpoint,
+  type AppShellDensity,
   AppShellHideBelow,
   appShellRootClassFor,
 } from "./AppShell.js";

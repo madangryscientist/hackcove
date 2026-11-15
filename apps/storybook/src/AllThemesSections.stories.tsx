@@ -29,6 +29,7 @@ const slice = (id: string): S => ({
 
 export const Headings = slice("headings");
 export const Text = slice("text");
+export const TypeSteps = slice("type-steps");
 export const PillsAndBars = slice("pills-and-bars");
 export const Data = slice("data");
 export const Buttons = slice("buttons");

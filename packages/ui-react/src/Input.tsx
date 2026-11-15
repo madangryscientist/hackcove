@@ -7,6 +7,7 @@ import {
   type ControlProps,
 } from "./control.js";
 import { cx } from "./cx.js";
+import { useTypeStep } from "./density.js";
 import { InputShell, PrefixShell } from "./InputShell.js";
 import type { Unstyled } from "./props.js";
 import { SearchInput } from "./SearchInput.js";
@@ -44,6 +45,7 @@ export function Input({
   } & Unstyled<
     Omit<ComponentPropsWithoutRef<"input">, "size" | "width" | "prefix">
   >): ReactElement {
+  const step = useTypeStep();
   const rest = { ...own, ...useFieldControl(own) };
   if (rest.type === "search") {
     return <SearchInput {...rest} icon={icon} size={size} width={width} align={align} />;
@@ -65,7 +67,7 @@ export function Input({
     return (
       <input
         {...rest}
-        className={cx(controlClass(size, width), CONTROL_PAD[size].x, CONTROL_ALIGN[align])}
+        className={cx(controlClass(size, width, step), CONTROL_PAD[size].x, CONTROL_ALIGN[align])}
       />
     );
   }
@@ -74,7 +76,7 @@ export function Input({
       <input
         {...rest}
         className={cx(
-          controlClass(size, width === "auto" ? "auto" : "full"),
+          controlClass(size, width === "auto" ? "auto" : "full", step),
           CONTROL_PAD[size].icon,
           CONTROL_ALIGN[align],
         )}

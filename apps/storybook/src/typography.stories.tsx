@@ -12,6 +12,8 @@ import {
   type TextTone,
 } from "@hackcove/ui-react";
 
+import { CompactApp, TypeSpecimen } from "./typeSteps";
+
 const meta: Meta = { title: "Text/Headings" };
 export default meta;
 type S = StoryObj;
@@ -246,5 +248,20 @@ export const AsOverride: S = {
         Overline as="label" (accepts label props like htmlFor)
       </Overline>
     </div>
+  ),
+};
+
+/** Every heading, `Text`, `Caption` and the controls at the default step: text is 16px. */
+export const TypeSteps: S = {
+  render: () => <TypeSpecimen />,
+};
+
+/** The same, in an app that set `AppShell density="compact"`: everything one step down. */
+export const TypeStepsCompact: S = {
+  parameters: { layout: "fullscreen" },
+  render: () => (
+    <CompactApp>
+      <TypeSpecimen />
+    </CompactApp>
   ),
 };
