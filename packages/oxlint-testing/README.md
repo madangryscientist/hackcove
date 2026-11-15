@@ -54,14 +54,13 @@ setTimeout(reply, 50);
 | Files | What they are | Rules |
 | --- | --- | --- |
 | `**/*.test.{ts,tsx,js,jsx,mjs}` | DOM and unit tests (Vitest, Testing Library) | Vitest, Testing Library, `ui-testing/no-style-assertions`, sleeps, style reads |
-| `**/*.built.test.{ts,tsx,js,jsx,mjs}` | checks of built output (a loop over parsed `dist/` pages) | as a DOM test, less the three that flag reading HTML as data |
+| `**/*.built.test.{ts,tsx,js,jsx,mjs}` | checks of built output (a loop over parsed `dist/` pages) | as a DOM test, less the two that flag reading HTML as data |
 | `**/e2e/**`, `**/smoke/**`, `**/*.spec.{ts,tsx,js,mjs}` | Playwright e2e and smoke specs | Playwright, `ui-testing/no-selector-actions`, `no-style-assertions`, `skip-names-ticket`, sleeps, style reads |
 | `**/playwright.config.*`, `**/playwright.*.config.*` | Playwright configs | `ui-testing/config-shape` |
 
 A check that parses built HTML (meta tags, `href`, `id`) reads it as data, not as a user would, so
 its file is named `*.built.test.ts`. That glob turns off `vitest/no-conditional-in-test` (a parse
-branches), `testing-library/no-node-access`, `no-container` and `prefer-screen-queries` (it queries
-a parsed document). `vitest/require-mock-type-parameters` is off in every test: it flags every
+branches) and `testing-library/no-node-access` (it queries a parsed document). `vitest/require-mock-type-parameters` is off in every test: it flags every
 `vi.fn()`.
 
 ## The rules

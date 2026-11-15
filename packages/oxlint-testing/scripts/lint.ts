@@ -8,7 +8,7 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-export const configPath = resolve(import.meta.dirname, "..", ".oxlintrc.json");
+const configPath = resolve(import.meta.dirname, "..", ".oxlintrc.json");
 const oxlint = resolve(import.meta.dirname, "../../../node_modules/.bin/oxlint");
 
 type Severity = "off" | "warn" | "error";
@@ -18,7 +18,7 @@ type Override = { files: string[]; rules: Record<string, Severity | [Severity, .
  * One report: the file (relative to `cwd`), its 1-based line, the rule as the config names it, and
  * its text (oxlint's message and help, where a restricted-property rule puts the configured text).
  */
-export type Hit = { file: string; line: number; rule: string; message: string };
+type Hit = { file: string; line: number; rule: string; message: string };
 
 /** Every rule an override of the config turns on, as the config names it (`playwright/no-raw-locators`). */
 export function ownedRules(): Set<string> {

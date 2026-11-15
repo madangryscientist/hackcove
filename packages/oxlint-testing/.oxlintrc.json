@@ -68,10 +68,7 @@
       "jsPlugins": ["eslint-plugin-testing-library"],
       "rules": {
         "vitest/no-conditional-in-test": "off",
-        "testing-library/no-node-access": "off",
-        "testing-library/no-container": "off",
-        "testing-library/prefer-screen-queries": "off",
-        "vitest/require-mock-type-parameters": "off"
+        "testing-library/no-node-access": "off"
       }
     },
     {

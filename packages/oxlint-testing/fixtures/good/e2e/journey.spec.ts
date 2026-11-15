@@ -6,6 +6,9 @@ test("saves a name", async ({ page }) => {
   const name = page.getByRole("textbox", { name: "Name" });
   await name.fill("ok");
   await name.fill("ok", { force: true });
+  const options = { force: true };
+  await name.fill("ok", options);
+  await name.dispatchEvent("click", options);
   await name.press("Enter");
   await name.type("more", { delay: 0 });
   await page.getByRole("button", { name: "Save" }).click();

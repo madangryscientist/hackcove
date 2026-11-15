@@ -5,7 +5,12 @@
  * (README.md, "The rules").
  */
 
-const TICKET = /\b[A-Z]{2,}-\d+\b/;
+const TICKET = /\b([A-Z]{2,})-\d+\b/g;
+// Standards that read like a ticket ref (`UTF-8`, `SHA-256`, `ISO-8601`) and are not one.
+const NOT_TICKETS = new Set(["AES", "CVE", "ES", "HTTP", "ISO", "MD", "RFC", "RSA", "SHA", "UTF"]);
+
+const namesTicket = (text) =>
+  [...text.matchAll(TICKET)].some(([, prefix]) => !NOT_TICKETS.has(prefix));
 
 /** A string literal or a template literal. */
 const isString = (node) =>
@@ -65,7 +70,9 @@ const SELECTOR_FIRST = new Set([
   "isEditable",
 ]);
 // Page methods that take a selector then a value: `page.fill('.y', v)`. The locator form takes the
-// value first and an options object second (`locator.fill('ok', { force: true })`).
+// value first and options second (`locator.fill('ok', { force: true })`, `locator.fill('ok', opts)`),
+// so a selector is read when the second argument is a value (a string or an array), or when the
+// call is on the page or a frame itself (`page.fill('#name', name)`).
 const SELECTOR_THEN_VALUE = new Set([
   "fill",
   "type",
@@ -77,20 +84,22 @@ const SELECTOR_THEN_VALUE = new Set([
 // Element handle queries: a selector string every time.
 const HANDLE_QUERIES = new Set(["$", "$$", "$eval", "$$eval"]);
 
-function takesSelector(method, args) {
+const PAGE = /^(page|frame|\w+Page|\w+Frame)$/;
+const isValue = (node) => isString(node) || node?.type === "ArrayExpression";
+
+function takesSelector(callee, args) {
+  const method = nameOf(callee);
   if (HANDLE_QUERIES.has(method)) return true;
   if (SELECTOR_FIRST.has(method)) return isString(args[0]);
-  if (SELECTOR_THEN_VALUE.has(method)) {
-    return args.length >= 2 && isString(args[0]) && args[1].type !== "ObjectExpression";
-  }
-  return false;
+  if (!SELECTOR_THEN_VALUE.has(method) || args.length < 2 || !isString(args[0])) return false;
+  return isValue(args[1]) || PAGE.test(nameOf(callee.object) ?? "");
 }
 
 const noSelectorActions = rule("act through a role locator, not a selector string", (context) => ({
   CallExpression(node) {
     if (node.callee.type !== "MemberExpression") return;
     const method = nameOf(node.callee);
-    if (!method || !takesSelector(method, node.arguments)) return;
+    if (!method || !takesSelector(node.callee, node.arguments)) return;
     context.report({
       node,
       message: `${method}() with a selector string: find it the way a user does, page.getByRole(...).${method === "$" || method === "$$" ? "locator" : method}() (ob-ui-testing rule 1: Find elements the way a user does)`,
@@ -156,7 +165,7 @@ const skipNamesTicket = rule("a skip names its ticket", (context) => ({
     const declares = args.length >= 2 && isFunction(args.at(-1)) && isString(args[0]);
     if (declares && kind !== "fail") return;
     const reason = declares ? textOf(args[0]) : reasonOf(args);
-    if (reason !== undefined && TICKET.test(reason)) return;
+    if (reason !== undefined && namesTicket(reason)) return;
     context.report({
       node,
       message: `${kind}() needs a reason that names its ticket, e.g. 'no hover on touch, FS-12' (ob-ui-testing rule 8: One config shape)`,
