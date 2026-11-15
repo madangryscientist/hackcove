@@ -128,8 +128,18 @@ the theme's CSS file, with a comment saying why when a published token moves.
 
 The maintainers also run a screenshot comparison (PixelSlash, an internal tool that is not published)
 against the branch's merge-base with `main`. It is not part of the gate above and **you do not need
-it to contribute**: it runs from a separate checkout and reports to a private server that outside
-contributors have no access to.
+it to contribute**: it runs from a separate checkout of PixelSlash.
+
+**CI uploads every pull request and every push to `main`.** The `Visual` workflow
+(`.github/workflows/visual.yml`) checks out the pull request's head commit (never GitHub's merge
+commit) and PixelSlash at a pinned commit, runs `storybook:visual-upload`, and sends every group to
+the hosted PixelSlash server. The server diffs a pull request against the `main` build it holds and
+posts one `PixelSlash` check run per group on the commit; a push to `main` becomes the next
+baseline. A fork's pull request gets no secrets, so the job skips with a notice and the maintainers
+check its visuals. A pull request not based on `main`'s tip fails the job with "rebase": rebase it.
+A local `bunx moon run storybook:visual` is your own check and needs no server. A manual
+`visual-upload` to the hosted server (with `PIXELSLASH_TOKEN`) is only for re-seeding `main`, and
+never mixes a local capture into a pull request's build.
 
 The stories are split into groups, one per section of the [component docs](https://hack-cove.com/ui/)
 (Layout, Page layouts, Text, … and Overview), read from
