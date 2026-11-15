@@ -1,53 +1,49 @@
 // @vitest-environment jsdom
-import { act } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { AppShell } from "./AppShell.js";
-import { mount, unmount } from "./dom.harness.js";
+import { render, screen, user, within } from "./render.harness.js";
 
-afterEach(unmount);
+// The menu is a native <details>: its <summary> is the button, found by its text because jsdom's
+// role table gives <summary> no role. The panel is the <details>, the page's one group.
+const menuButton = (name = "Menu") => screen.getByText(name);
+const menu = () => screen.getByRole("group");
 
-const menuOf = (out: string) => /<details[^>]*>.*<\/details>/.exec(out)?.[0] ?? "";
-
-const open = (container: HTMLElement) => {
-  const details = container.querySelector("details");
-  if (!details) throw new Error("no menu");
-  act(() => {
-    details.open = true;
-  });
-  return details;
+const openMenu = async () => {
+  await user().click(menuButton());
+  expect(menu().hasAttribute("open")).toBe(true);
 };
 
 describe("AppShell phone menu", () => {
   it("draws no menu without a nav or a subnav", () => {
-    const out = renderToStaticMarkup(
+    render(
       <AppShell brand="B" controls="C" header="H">
         x
       </AppShell>,
     );
-    expect(out).not.toContain("<details");
+    expect(screen.queryByText("Menu")).toBeNull();
+    expect(screen.queryByRole("group")).toBeNull();
   });
 
-  it("draws a native disclosure, shown below md only, named Menu by default", () => {
-    const out = renderToStaticMarkup(
-      <AppShell nav={<nav aria-label="Main">tabs</nav>}>x</AppShell>,
-    );
-    expect(out).toMatch(/<details class="group shrink-0 md:hidden">/);
-    expect(out).toMatch(/<summary [^>]*>.*Menu<\/summary>/);
+  it("is a closed disclosure named Menu by default that opens and closes on a click", async () => {
+    render(<AppShell nav={<nav aria-label="Main">tabs</nav>}>x</AppShell>);
+    expect(menu().hasAttribute("open")).toBe(false);
+    await openMenu();
+    await user().click(menuButton());
+    expect(menu().hasAttribute("open")).toBe(false);
   });
 
   it("takes the menu button's name from menuLabel", () => {
-    const out = renderToStaticMarkup(
+    render(
       <AppShell nav="n" menuLabel="Navigatie">
         x
       </AppShell>,
     );
-    expect(out).toMatch(/<\/svg>Navigatie<\/summary>/);
-    expect(out).not.toContain(">Menu<");
+    expect(within(menu()).getByText("Navigatie")).not.toBeNull();
+    expect(screen.queryByText("Menu")).toBeNull();
   });
 
   it("holds the nav and the subnav in the panel, in that order", () => {
-    const out = renderToStaticMarkup(
+    render(
       <AppShell
         nav={<nav aria-label="Main">main-links</nav>}
         subnav={<nav aria-label="Section">section-links</nav>}
@@ -55,36 +51,28 @@ describe("AppShell phone menu", () => {
         x
       </AppShell>,
     );
-    const menu = menuOf(out);
-    expect(menu).toContain("main-links");
-    expect(menu).toContain("section-links");
-    expect(menu.indexOf("main-links")).toBeLessThan(menu.indexOf("section-links"));
+    const main = within(menu()).getByRole("navigation", { name: "Main" });
+    const section = within(menu()).getByRole("navigation", { name: "Section" });
+    expect(main.compareDocumentPosition(section) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("draws the menu for a subnav alone", () => {
-    expect(renderToStaticMarkup(<AppShell subnav="S">x</AppShell>)).toContain("<details");
+    render(<AppShell subnav={<nav aria-label="Section">S</nav>}>x</AppShell>);
+    expect(within(menu()).getByRole("navigation", { name: "Section" })).not.toBeNull();
   });
 
-  it("hangs the panel under the header, out of flow, so the header keeps its height", () => {
-    const out = renderToStaticMarkup(<AppShell nav="n">x</AppShell>);
-    expect(out).toMatch(
-      /<div class="absolute inset-x-0 top-full [^"]*max-h-\[calc\(100dvh-var\(--app-header\)\)\][^"]*">/,
-    );
+  it("closes on Escape and returns focus to the button", async () => {
+    render(<AppShell nav={<a href="/a">A</a>}>x</AppShell>);
+    await openMenu();
+    await user().tab();
+    expect(document.activeElement).toBe(within(menu()).getByRole("link", { name: "A" }));
+    await user().keyboard("{Escape}");
+    expect(menu().hasAttribute("open")).toBe(false);
+    expect(document.activeElement).toBe(menuButton());
   });
 
-  it("closes on Escape and returns focus to the button", () => {
-    const container = mount(<AppShell nav={<a href="/a">A</a>}>x</AppShell>);
-    const details = open(container);
-    const link = details.querySelector("a");
-    act(() => {
-      link?.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
-    });
-    expect(details.open).toBe(false);
-    expect(document.activeElement).toBe(details.querySelector("summary"));
-  });
-
-  it("closes when a link in the panel is followed, for a router that does not reload", () => {
-    const container = mount(
+  it("closes when a link in the panel is followed, for a router that does not reload", async () => {
+    render(
       <AppShell
         nav={
           <a href="#a" onClick={(e) => e.preventDefault()}>
@@ -95,55 +83,43 @@ describe("AppShell phone menu", () => {
         x
       </AppShell>,
     );
-    const details = open(container);
-    act(() => {
-      details.querySelector("a")?.click();
-    });
-    expect(details.open).toBe(false);
+    await openMenu();
+    await user().click(within(menu()).getByRole("link", { name: "A" }));
+    expect(menu().hasAttribute("open")).toBe(false);
   });
 
-  it("stays open when something other than a link is clicked", () => {
-    const container = mount(<AppShell nav={<span>plain</span>}>x</AppShell>);
-    const details = open(container);
-    act(() => {
-      details.querySelector("span")?.click();
-    });
-    expect(details.open).toBe(true);
+  it("stays open when something other than a link is clicked", async () => {
+    render(<AppShell nav={<span>plain</span>}>x</AppShell>);
+    await openMenu();
+    await user().click(within(menu()).getByText("plain"));
+    expect(menu().hasAttribute("open")).toBe(true);
   });
 });
-
-const buttonsNamed = (container: HTMLElement, name: string) =>
-  [...container.querySelectorAll("button")].filter((b) => b.textContent === name);
 
 describe("AppShell menuControls", () => {
   const signOut = <button type="button">Sign out</button>;
   const nav = <a href="/builds">Builds</a>;
 
   it("renders them exactly once, inside the menu, above the nav", () => {
-    const container = mount(
+    render(
       <AppShell nav={nav} menuControls={signOut}>
         x
       </AppShell>,
     );
-    const found = buttonsNamed(container, "Sign out");
-    expect(found).toHaveLength(1);
-    const details = open(container);
-    expect(details.contains(found[0] ?? null)).toBe(true);
-    const link = details.querySelector('a[href="/builds"]');
-    if (!link) throw new Error("no nav link in the menu");
-    expect(
-      (found[0]?.compareDocumentPosition(link) ?? 0) & Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
+    expect(screen.getAllByRole("button", { name: "Sign out" })).toHaveLength(1);
+    const button = within(menu()).getByRole("button", { name: "Sign out" });
+    const link = within(menu()).getByRole("link", { name: "Builds" });
+    expect(button.compareDocumentPosition(link) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it("gives the Menu with menuControls and no nav or subnav", () => {
-    const out = renderToStaticMarkup(<AppShell menuControls={signOut}>x</AppShell>);
-    expect(menuOf(out)).toContain("<summary");
-    expect(menuOf(out)).toContain("Sign out");
+    render(<AppShell menuControls={signOut}>x</AppShell>);
+    expect(within(menu()).getByText("Menu")).not.toBeNull();
+    expect(within(menu()).getByRole("button", { name: "Sign out" })).not.toBeNull();
   });
 
-  it("stays open on an Escape inside a dialog opened from its controls, which the dialog takes", () => {
-    const container = mount(
+  it("stays open on an Escape inside a dialog opened from its controls, which the dialog takes", async () => {
+    render(
       <AppShell
         nav={nav}
         menuControls={
@@ -155,12 +131,11 @@ describe("AppShell menuControls", () => {
         x
       </AppShell>,
     );
-    const details = open(container);
-    act(() => {
-      buttonsNamed(container, "Cancel")[0]?.dispatchEvent(
-        new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
-      );
-    });
-    expect(details.open).toBe(true);
+    await openMenu();
+    const cancel = screen.getByRole("button", { name: "Cancel" });
+    await user().click(cancel);
+    expect(document.activeElement).toBe(cancel);
+    await user().keyboard("{Escape}");
+    expect(menu().hasAttribute("open")).toBe(true);
   });
 });

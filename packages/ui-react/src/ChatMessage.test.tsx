@@ -1,102 +1,64 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { ChatMessage } from "./ChatMessage.js";
-import { mount, unmount } from "./dom.harness.js";
+import { render, screen } from "./render.harness.js";
 
-afterEach(unmount);
-
-const articleOf = (root: HTMLElement) => root.querySelector("article")!;
-const caretOf = (root: HTMLElement) => root.querySelector('[aria-hidden="true"]');
+const follows = (a: Node, b: Node): boolean =>
+  (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
 
 describe("ChatMessage", () => {
-  it("is an article with the author first, for a screen reader only", () => {
-    const article = articleOf(
-      mount(
-        <ChatMessage role="user" author="Ada" meta="09:14">
-          Hello
-        </ChatMessage>,
-      ),
-    );
-    const first = article.firstElementChild;
-    expect(first?.textContent).toBe("Ada");
-    expect(first?.className).toBe("sr-only");
-  });
-
-  it("puts each role on its own side and fill", () => {
-    const user = articleOf(
-      mount(
-        <ChatMessage role="user" author="Ada">
-          Hello
-        </ChatMessage>,
-      ),
-    );
-    expect(user.className).toContain("items-end");
-    expect(user.innerHTML).toContain("bg-slate-100");
-    unmount();
-    const assistant = articleOf(
-      mount(
-        <ChatMessage role="assistant" author="Helper">
-          Hello
-        </ChatMessage>,
-      ),
-    );
-    expect(assistant.className).toContain("items-start");
-    expect(assistant.innerHTML).toContain("border-slate-200");
-  });
-
-  it("keeps a plain body's line breaks", () => {
-    const root = mount(
-      <ChatMessage role="user" author="Ada">
-        {"one\ntwo"}
+  it("is an article that reads the author, then meta, the body and the actions", () => {
+    render(
+      <ChatMessage role="assistant" author="Helper" meta="Helper, 09:14" actions="Copy">
+        Hello
       </ChatMessage>,
     );
-    const body = Array.from(root.querySelectorAll("div")).find(
-      (el) => el.textContent === "one\ntwo",
-    );
-    expect(body?.className).toContain("whitespace-pre-wrap");
+    expect(screen.getByRole("article").textContent).toBe("HelperHelper, 09:14HelloCopy");
+    const author = screen.getByText("Helper");
+    const meta = screen.getByText("Helper, 09:14");
+    const body = screen.getByText("Hello");
+    const actions = screen.getByText("Copy");
+    expect(follows(author, meta)).toBe(true);
+    expect(follows(meta, body)).toBe(true);
+    expect(follows(body, actions)).toBe(true);
   });
 
-  it("draws meta above the bubble and actions under it", () => {
-    const article = articleOf(
-      mount(
-        <ChatMessage role="assistant" author="Helper" meta="Helper, 09:14" actions="Copy">
+  it("reads the author before the body for either role", () => {
+    for (const role of ["user", "assistant"] as const) {
+      const { unmount } = render(
+        <ChatMessage role={role} author="Ada">
           Hello
         </ChatMessage>,
-      ),
-    );
-    expect(Array.from(article.children).map((part) => part.textContent)).toEqual([
-      "Helper",
-      "Helper, 09:14",
-      "Hello",
-      "Copy",
-    ]);
+      );
+      expect(screen.getByRole("article").textContent).toBe("AdaHello");
+      unmount();
+    }
   });
 
   it("is not busy and draws no caret when it is not streaming", () => {
-    const root = mount(
+    render(
       <ChatMessage role="assistant" author="Helper">
         Hello
       </ChatMessage>,
     );
-    expect(articleOf(root).hasAttribute("aria-busy")).toBe(false);
-    expect(caretOf(root)).toBeNull();
+    expect(screen.getByRole("article").hasAttribute("aria-busy")).toBe(false);
+    expect(screen.queryByText("▍")).toBeNull();
   });
 
-  it("streaming sets aria-busy and draws a hidden caret after the body, pulsing under motion-safe only", () => {
-    const root = mount(
+  it("streaming sets aria-busy and draws a caret, hidden from assistive tech, after the body", () => {
+    render(
       <ChatMessage role="assistant" author="Helper" streaming>
-        Hel
+        <p>Hel</p>
       </ChatMessage>,
     );
-    expect(articleOf(root).getAttribute("aria-busy")).toBe("true");
-    const caret = caretOf(root);
-    expect(caret?.previousSibling?.textContent).toBe("Hel");
-    expect(caret?.className.split(" ")).toContain("motion-safe:animate-pulse");
-    expect(caret?.className.split(" ")).not.toContain("animate-pulse");
+    expect(screen.getByRole("article").getAttribute("aria-busy")).toBe("true");
+    const caret = screen.getByText("▍");
+    expect(caret.getAttribute("aria-hidden")).toBe("true");
+    expect(follows(screen.getByText("Hel"), caret)).toBe(true);
   });
 
-  it("empty and streaming draws the bubble with the caret alone", () => {
-    const root = mount(<ChatMessage role="assistant" author="Helper" streaming />);
-    expect(caretOf(root)?.parentElement?.textContent).toBe("▍");
+  it("empty and streaming draws the caret alone", () => {
+    render(<ChatMessage role="assistant" author="Helper" streaming />);
+    expect(screen.getByRole("article").textContent).toBe("Helper▍");
   });
 });

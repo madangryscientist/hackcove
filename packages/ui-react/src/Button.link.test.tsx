@@ -1,8 +1,9 @@
+// @vitest-environment jsdom
 import type { ReactElement } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { Button, buttonClass } from "./Button.js";
+import { Button } from "./Button.js";
 import type { LinkRenderProps } from "./link.js";
+import { render, screen } from "./render.harness.js";
 
 // A stand-in for a router's <Link>: it takes `to` and spreads the props it is handed.
 const Link = ({ to, ...rest }: { to: string } & LinkRenderProps): ReactElement => (
@@ -10,51 +11,55 @@ const Link = ({ to, ...rest }: { to: string } & LinkRenderProps): ReactElement =
 );
 
 describe("Button href", () => {
-  it("renders an <a href> in the button classes", () => {
-    const out = renderToStaticMarkup(<Button href="/new">New</Button>);
-    expect(out).toBe(`<a href="/new" class="${buttonClass("primary")}">New</a>`);
+  it("is a link to its href, not a button", () => {
+    render(<Button href="/new">New</Button>);
+    expect(screen.getByRole("link", { name: "New" }).getAttribute("href")).toBe("/new");
+    expect(screen.queryByRole("button")).toBeNull();
   });
 
   it("passes anchor props through", () => {
-    const out = renderToStaticMarkup(
+    render(
       <Button href="/x" download="x.pdf">
         X
       </Button>,
     );
-    expect(out).toContain(buttonClass("primary"));
-    expect(out).toContain('download="x.pdf"');
+    expect(screen.getByRole("link", { name: "X" }).getAttribute("download")).toBe("x.pdf");
   });
 
   it("external opens in a new tab", () => {
-    const out = renderToStaticMarkup(
+    render(
       <Button href="https://example.com" external>
         X
       </Button>,
     );
-    expect(out).toContain('target="_blank"');
-    expect(out).toContain('rel="noreferrer"');
-    expect(renderToStaticMarkup(<Button href="/x">X</Button>)).not.toContain("target");
+    const link = screen.getByRole("link", { name: "X" });
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toBe("noreferrer");
   });
 
-  it("render draws the app's own Link with the button classes and no href", () => {
-    const out = renderToStaticMarkup(
+  it("an internal link opens in the same tab", () => {
+    render(<Button href="/x">X</Button>);
+    expect(screen.getByRole("link", { name: "X" }).hasAttribute("target")).toBe(false);
+  });
+
+  it("render draws the app's own Link, named by the label, with no href of its own", () => {
+    render(
       <Button variant="ghost" render={(p) => <Link to="/quotes" {...p} />}>
         Back
       </Button>,
     );
-    expect(out).toContain('data-router-link=""');
-    expect(out).toContain('data-to="/quotes"');
-    expect(out).toContain(buttonClass("ghost"));
-    expect(out).toContain(">Back</a>");
-    expect(out).not.toContain("href=");
+    // An <a> with no href has no link role; the router's Link supplies it in the app.
+    const link = screen.getByText("Back");
+    expect(link.getAttribute("data-to")).toBe("/quotes");
+    expect(link.hasAttribute("href")).toBe(false);
   });
 
   it("render with external hands target and rel to the Link", () => {
-    const out = renderToStaticMarkup(
+    render(
       <Button external render={(p) => <Link to="/x" {...p} />}>
         X
       </Button>,
     );
-    expect(out).toContain('target="_blank"');
+    expect(screen.getByText("X").getAttribute("target")).toBe("_blank");
   });
 });

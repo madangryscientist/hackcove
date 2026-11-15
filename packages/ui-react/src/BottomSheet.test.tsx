@@ -1,31 +1,14 @@
 // @vitest-environment jsdom
-import { act, type ReactElement } from "react";
-import { createRoot, type Root } from "react-dom/client";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import { BottomSheet, type BottomSheetProps } from "./BottomSheet.js";
+import { render, screen, user } from "./render.harness.js";
 
-Reflect.set(globalThis, "IS_REACT_ACT_ENVIRONMENT", true);
-
-let root: Root | undefined;
-let container: HTMLElement | undefined;
-
-afterEach(() => {
-  act(() => root?.unmount());
-  container?.remove();
-  root = undefined;
-  container = undefined;
+// jsdom has no pointer capture; the handle takes it on every press.
+beforeAll(() => {
+  HTMLElement.prototype.setPointerCapture = vi.fn<(pointerId: number) => void>();
+  HTMLElement.prototype.releasePointerCapture = vi.fn<(pointerId: number) => void>();
+  HTMLElement.prototype.hasPointerCapture = vi.fn<(pointerId: number) => boolean>(() => false);
 });
-
-function render(node: ReactElement): HTMLElement {
-  if (!container || !root) {
-    container = document.createElement("div");
-    document.body.append(container);
-    root = createRoot(container);
-  }
-  const r = root;
-  act(() => r.render(node));
-  return container;
-}
 
 const sheet = (props: Partial<BottomSheetProps> = {}) => (
   <BottomSheet
@@ -40,98 +23,105 @@ const sheet = (props: Partial<BottomSheetProps> = {}) => (
   </BottomSheet>
 );
 
-const regionOf = (out: HTMLElement) => {
-  const region = out.querySelector("section");
-  if (!region) throw new Error("no region");
-  return region;
-};
-
-const handleOf = (out: HTMLElement) => {
-  const buttons = out.querySelectorAll("button");
-  expect(buttons).toHaveLength(1);
-  const [button] = buttons;
-  if (!button) throw new Error("no handle");
-  return button;
-};
-
-const press = (el: Element, key: string) =>
-  act(() => {
-    el.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }));
-  });
+const handle = () => screen.getByRole("button", { name: "Shops" });
 
 describe("BottomSheet", () => {
   it("is a region named by its label, with one handle button named by it alone", () => {
-    const out = render(sheet());
-    expect(regionOf(out).getAttribute("aria-label")).toBe("Shops");
-    const handle = handleOf(out);
-    expect(handle.getAttribute("aria-label")).toBe("Shops");
-    expect(handle.textContent).toBe("");
+    render(sheet());
+    expect(screen.getByRole("region", { name: "Shops" })).not.toBeNull();
+    expect(screen.getAllByRole("button")).toHaveLength(1);
+    expect(handle().textContent).toBe("");
   });
 
   it("marks the handle expanded past the first snap, and points it at the body", () => {
-    const out = render(sheet());
-    const handle = handleOf(out);
-    expect(handle.getAttribute("aria-expanded")).toBe("false");
-    const body = document.getElementById(handle.getAttribute("aria-controls") ?? "");
+    const { rerender } = render(sheet());
+    expect(handle().getAttribute("aria-expanded")).toBe("false");
+    const body = document.getElementById(String(handle().getAttribute("aria-controls")));
     expect(body?.textContent).toBe("Body");
-    render(sheet({ snap: 1 }));
-    expect(handleOf(out).getAttribute("aria-expanded")).toBe("true");
+    rerender(sheet({ snap: 1 }));
+    expect(handle().getAttribute("aria-expanded")).toBe("true");
   });
 
-  it("steps to the next snap on a click, and wraps from the last to the first", () => {
+  it("steps to the next snap on a click, and wraps from the last to the first", async () => {
     const onSnapChange = vi.fn<(snap: number) => void>();
-    const out = render(sheet({ onSnapChange }));
-    act(() => handleOf(out).click());
+    const { rerender } = render(sheet({ onSnapChange }));
+    await user().click(handle());
     expect(onSnapChange).toHaveBeenLastCalledWith(1);
-    render(sheet({ onSnapChange, snap: 2 }));
-    act(() => handleOf(out).click());
+    rerender(sheet({ onSnapChange, snap: 2 }));
+    await user().click(handle());
     expect(onSnapChange).toHaveBeenLastCalledWith(0);
   });
 
-  it("returns to the first snap on Escape, and does nothing on it at the first", () => {
+  it("steps to the next snap on Enter from the keyboard", async () => {
     const onSnapChange = vi.fn<(snap: number) => void>();
-    const out = render(sheet({ onSnapChange, snap: 2 }));
-    press(handleOf(out), "Escape");
+    render(sheet({ onSnapChange }));
+    const u = user();
+    await u.tab();
+    expect(document.activeElement).toBe(handle());
+    await u.keyboard("{Enter}");
+    expect(onSnapChange).toHaveBeenCalledExactlyOnceWith(1);
+  });
+
+  it("returns to the first snap on Escape, and does nothing on it at the first", async () => {
+    const onSnapChange = vi.fn<(snap: number) => void>();
+    const { rerender } = render(sheet({ onSnapChange, snap: 2 }));
+    const u = user();
+    await u.tab();
+    await u.keyboard("{Escape}");
     expect(onSnapChange).toHaveBeenCalledExactlyOnceWith(0);
     onSnapChange.mockClear();
-    render(sheet({ onSnapChange, snap: 0 }));
-    press(handleOf(out), "Escape");
+    rerender(sheet({ onSnapChange, snap: 0 }));
+    await u.keyboard("{Escape}");
     expect(onSnapChange).not.toHaveBeenCalled();
   });
 
-  it("leaves an Escape inside a nested dialog to the dialog", () => {
+  it("leaves an Escape inside a nested dialog to the dialog", async () => {
     const onSnapChange = vi.fn<(snap: number) => void>();
-    const out = render(
+    render(
       <BottomSheet label="Shops" snaps={[0.25, 0.5]} snap={1} onSnapChange={onSnapChange}>
         <dialog open>
           <button type="button">In the dialog</button>
         </dialog>
       </BottomSheet>,
     );
-    const inner = out.querySelector("dialog button");
-    if (!inner) throw new Error("no dialog button");
-    press(inner, "Escape");
+    const u = user();
+    await u.tab();
+    await u.tab();
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "In the dialog" }));
+    await u.keyboard("{Escape}");
     expect(onSnapChange).not.toHaveBeenCalled();
   });
 
   it("keeps a header heading outside the handle, so it stays a heading", () => {
-    const out = render(sheet());
-    const heading = out.querySelector("h2");
-    expect(heading?.textContent).toBe("Shops nearby");
-    expect(handleOf(out).contains(heading)).toBe(false);
+    render(sheet());
+    const heading = screen.getByRole("heading", { name: "Shops nearby" });
+    expect(handle().contains(heading)).toBe(false);
   });
 
   it("reports the height it rests at, on mount and on a change of snap", () => {
     const onHeightChange = vi.fn<(px: number) => void>();
-    render(sheet({ snaps: ["120px", "320px"], onHeightChange }));
+    const { rerender } = render(sheet({ snaps: ["120px", "320px"], onHeightChange }));
     expect(onHeightChange).toHaveBeenLastCalledWith(120);
-    render(sheet({ snaps: ["120px", "320px"], onHeightChange, snap: 1 }));
+    rerender(sheet({ snaps: ["120px", "320px"], onHeightChange, snap: 1 }));
     expect(onHeightChange).toHaveBeenLastCalledWith(320);
     expect(onHeightChange).toHaveBeenCalledTimes(2);
   });
 
-  it("is not modal: nothing is inert, nothing is aria-modal, and it is not a dialog", () => {
-    const out = render(sheet({ snap: 2 }));
-    expect(out.querySelector("[inert], [aria-modal], [role='dialog'], dialog")).toBeNull();
+  it("is not modal: it is not a dialog, not aria-modal, and the page behind stays usable", async () => {
+    const onMap = vi.fn<() => void>();
+    render(
+      <>
+        <button type="button" onClick={onMap}>
+          Map
+        </button>
+        {sheet({ snap: 2 })}
+      </>,
+    );
+    expect(screen.queryByRole("dialog")).toBeNull();
+    const region = screen.getByRole("region", { name: "Shops" });
+    expect(region.hasAttribute("aria-modal")).toBe(false);
+    expect(region.hasAttribute("inert")).toBe(false);
+    await user().click(screen.getByRole("button", { name: "Map" }));
+    expect(onMap).toHaveBeenCalledOnce();
   });
 });

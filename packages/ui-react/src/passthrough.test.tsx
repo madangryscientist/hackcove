@@ -54,6 +54,14 @@ describe("every exported component passes data-* and aria-* through", () => {
     expect(found[0]?.getAttribute("aria-describedby")).toBe("described");
   });
 
+  it("an Avatar with onClick puts both on its <button>, not on the mark inside it", () => {
+    mount(<ui.Avatar name="Ada Lovelace" onClick={() => undefined} {...A} />);
+    const found = probes();
+    expect(found).toHaveLength(1);
+    expect(found[0]?.tagName).toBe("BUTTON");
+    expect(found[0]?.getAttribute("aria-describedby")).toBe("described");
+  });
+
   it("a Card that is a link puts both on the card root, not on the link inside it", () => {
     mount(
       <ui.Card href="/x" title="T" {...A}>

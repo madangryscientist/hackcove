@@ -1,8 +1,10 @@
 /**
  * The anti-slop rules Oxlint has no rule for, as one pure function so they can be tested:
  * a TODO/FIXME with no ticket ref, commented-out code, and anything time dependent, which read
- * only TypeScript, and an em or en dash, which reads every file (copy, CSS, docs, scripts).
- * `check-slop.ts` globs the files and prints what this returns.
+ * only TypeScript, and an em or en dash, which reads every file (copy, CSS, docs, scripts). In a
+ * `@hackcove/ui-react` component it also holds the palette: a stock colour utility the themes do not
+ * remap (one outside `palette.json`), or one behind an arbitrary `[&...]` variant, which no theme can
+ * reach; and the content width and side padding outside `Container`. `check-slop.ts` globs the files and prints what this returns.
  */
 
 const TODO_WITHOUT_REF = /\b(TODO|FIXME|XXX|HACK)\b(?!\s*\((?:ob\s*)?#?[\w-]*\d+\))/;
@@ -29,23 +31,55 @@ const DASH_RULE =
 const TIME_RULE =
   "time dependent; render from the value given and assert without a clock (CSS for a delay), or say why with `// time-dependent: <why>`";
 
+// The stock colour utilities a theme remaps, with their variants (`hover:bg-slate-50`, `bg-black/90`).
+const COLOUR =
+  /(?<![\w-])(?:[a-z-]+:)*(?:bg|text|border|outline|ring|accent|fill|stroke|decoration|divide)-(?:white|black|slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)(?:-\d{2,3})?(?:\/\d+)?(?![\w-])/g;
+const BEHIND_ARBITRARY = new RegExp(`\\[[^\\]\\s]+\\]:(?:[a-z-]+:)*${COLOUR.source}`, "g");
+
+/** The palette hits on one line of a component: each utility outside `palette`, and each behind `[&...]`. */
+function paletteHits(line: string, palette: ReadonlySet<string>): string[] {
+  const outside = (line.match(COLOUR) ?? [])
+    .filter((utility) => !palette.has(utility))
+    .map((utility) => `${utility} is not in palette.json; a new colour is a palette change`);
+  const arbitrary = (line.match(BEHIND_ARBITRARY) ?? []).map(
+    (utility) => `${utility} sits behind an arbitrary variant, which no theme remaps`,
+  );
+  return [...outside, ...arbitrary];
+}
+
+// The content width and side padding belong to `Container` alone; a component that wants them
+// renders one instead of copying its classes.
+const CONTENT_EDGE = /max-w-6xl|px-4 sm:px-6/;
+
 const isTest = (path: string): boolean =>
   /\.test\.tsx?$/.test(path) ||
   /\.stories\.tsx$/.test(path) ||
   path.startsWith("e2e/") ||
   path.startsWith("test/");
 
-/** Each hit as `path:line: message`. `path` is relative to the package; `pkg` is its `name`. */
-export function slopRules(path: string, text: string, pkg: string): string[] {
+/**
+ * Each hit as `path:line: message`. `path` is relative to the package; `pkg` is its `name`.
+ * `palette` is every utility `packages/ui-react/palette.json` lists, for `@hackcove/ui-react`.
+ */
+export function slopRules(
+  path: string,
+  text: string,
+  pkg: string,
+  palette?: ReadonlySet<string>,
+): string[] {
   const code = /\.tsx?$/.test(path);
   const test = isTest(path);
   const component = pkg === "@hackcove/ui-react" && path.startsWith("src/") && !test;
+  const paletted = component && palette !== undefined && path.endsWith(".tsx");
   const hits: string[] = [];
   const lines = text.split("\n");
   lines.forEach((line, i) => {
     const at = `${path}:${i + 1}`;
     if (DASH.test(line)) hits.push(`${at}: ${DASH_RULE}`);
     if (!code) return;
+    if (paletted) for (const hit of paletteHits(line, palette)) hits.push(`${at}: ${hit}`);
+    if (component && path !== "src/Container.tsx" && CONTENT_EDGE.test(line))
+      hits.push(`${at}: the content width and side padding are Container's; render a Container`);
     if (TODO_WITHOUT_REF.test(line))
       hits.push(`${at}: TODO/FIXME needs a ticket ref, e.g. TODO(#123)`);
     if (CODE_IN_COMMENT.test(line))

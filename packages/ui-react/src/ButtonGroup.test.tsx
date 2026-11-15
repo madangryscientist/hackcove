@@ -1,30 +1,36 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { ButtonGroup } from "./ButtonGroup.js";
-
-const html = renderToStaticMarkup;
+import { render, screen, within } from "./render.harness.js";
 
 describe("ButtonGroup", () => {
-  it("is a wrapping row with a gap, and no role without a label", () => {
-    const out = html(<ButtonGroup>x</ButtonGroup>);
-    expect(out).toContain("flex flex-wrap");
-    expect(out).toContain("gap-2");
-    expect(out).not.toContain("role=");
-    expect(out).not.toContain("ml-auto");
-  });
-
-  it("pushes the end item to the far side", () => {
-    const out = html(
-      <ButtonGroup end={<a href="/">Back</a>}>
-        <button>Save</button>
+  it("is no group without a label", () => {
+    render(
+      <ButtonGroup>
+        <button type="button">Save</button>
       </ButtonGroup>,
     );
-    expect(out).toMatch(/<button>Save<\/button><div class="ml-auto"><a href="\/">Back<\/a><\/div>/);
+    expect(screen.queryByRole("group")).toBeNull();
   });
 
-  it("label makes it a named group", () => {
-    const out = html(<ButtonGroup label="Quote actions">x</ButtonGroup>);
-    expect(out).toContain('role="group"');
-    expect(out).toContain('aria-label="Quote actions"');
+  it("reads the end item after the row's buttons", () => {
+    render(
+      <ButtonGroup end={<a href="/">Back</a>}>
+        <button type="button">Save</button>
+      </ButtonGroup>,
+    );
+    const save = screen.getByRole("button", { name: "Save" });
+    const back = screen.getByRole("link", { name: "Back" });
+    expect(save.compareDocumentPosition(back) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("label makes it a group named by the label, holding its buttons", () => {
+    render(
+      <ButtonGroup label="Quote actions">
+        <button type="button">Save</button>
+      </ButtonGroup>,
+    );
+    const group = screen.getByRole("group", { name: "Quote actions" });
+    expect(within(group).getByRole("button", { name: "Save" })).not.toBeNull();
   });
 });

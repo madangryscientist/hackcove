@@ -54,7 +54,7 @@ export function TimelineItem({
   title: ReactNode;
   /** When, already formatted by the app, small and muted beside the title. */
   time?: ReactNode;
-  /** The marker dot's colour. Defaults to `neutral`, a plain ring. */
+  /** The marker dot's colour. Defaults to `neutral`, a plain ring. Say it in the text too: colour alone says nothing to a screen reader. */
   tone?: CalloutTone;
   children?: ReactNode;
 } & Passthrough): ReactElement {

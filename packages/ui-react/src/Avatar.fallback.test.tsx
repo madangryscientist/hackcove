@@ -1,18 +1,9 @@
 // @vitest-environment jsdom
-import { act, type ReactElement, useState } from "react";
+import { type ReactElement, useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Avatar } from "./Avatar.js";
-import { hydrateWith, mount, unmount } from "./dom.harness.js";
-
-afterEach(unmount);
-
-/** Fire the `error` event a browser fires when an <img> fails to load. */
-function fail(img: HTMLImageElement | null): void {
-  if (!img) throw new Error("no <img> rendered");
-  act(() => {
-    img.dispatchEvent(new Event("error"));
-  });
-}
+import { hydrateWith } from "./dom.harness.js";
+import { fireEvent, render, screen, user, within } from "./render.harness.js";
 
 /** A `src` the test can change, through a button, after the first image has failed. */
 function Swap(): ReactElement {
@@ -28,107 +19,115 @@ function Swap(): ReactElement {
 }
 
 describe("Avatar when its photo fails to load", () => {
-  it("shows the initials in place of the broken image", () => {
-    const container = mount(<Avatar name="Ada Lovelace" src="/missing.jpg" />);
-    fail(container.querySelector("img"));
-    expect(container.querySelector("img")).toBeNull();
-    const initials = container.querySelector("span");
-    expect(initials?.textContent).toBe("AD");
-    expect(initials?.getAttribute("aria-hidden")).toBe("true");
-    expect(initials?.getAttribute("title")).toBe("Ada Lovelace");
+  it("shows the initials, titled by the name and hidden from assistive tech, in place of the broken image", () => {
+    render(<Avatar name="Ada Lovelace" src="/missing.jpg" />);
+    // A failed load is the browser's event; no person makes it.
+    fireEvent.error(screen.getByRole("img", { name: "Ada Lovelace" }));
+    expect(screen.queryByRole("img")).toBeNull();
+    const initials = screen.getByTitle("Ada Lovelace");
+    expect(initials.textContent).toBe("AD");
+    expect(initials.getAttribute("aria-hidden")).toBe("true");
   });
 
   it("still calls the consumer's onError, so the fallback does not hide the failure", () => {
     const onError = vi.fn<() => void>();
-    const container = mount(<Avatar name="Ada Lovelace" src="/missing.jpg" onError={onError} />);
-    fail(container.querySelector("img"));
+    render(<Avatar name="Ada Lovelace" src="/missing.jpg" onError={onError} />);
+    // A failed load is the browser's event; no person makes it.
+    fireEvent.error(screen.getByRole("img", { name: "Ada Lovelace" }));
     expect(onError).toHaveBeenCalledTimes(1);
-    expect(container.querySelector("span")?.textContent).toBe("AD");
+    expect(screen.getByText("AD")).not.toBeNull();
   });
 
-  it("gives a new src its own try, and shows the photo when it loads", () => {
-    const container = mount(<Swap />);
-    fail(container.querySelector("img"));
-    expect(container.querySelector("img")).toBeNull();
-
-    const swap = container.querySelector("button");
-    act(() => swap?.click());
-    const retry = container.querySelector("img");
-    expect(retry?.getAttribute("src")).toBe("/ada.jpg");
+  it("gives a new src its own try, and shows the photo when it loads", async () => {
+    render(<Swap />);
+    // A failed load is the browser's event; no person makes it.
+    fireEvent.error(screen.getByRole("img", { name: "Ada Lovelace" }));
+    expect(screen.queryByRole("img")).toBeNull();
+    await user().click(screen.getByRole("button", { name: "swap" }));
+    expect(screen.getByRole("img", { name: "Ada Lovelace" }).getAttribute("src")).toBe("/ada.jpg");
   });
 });
 
 describe("Avatar whose photo failed before it hydrated", () => {
   const avatar = <Avatar name="Sam Cole" src="/missing.jpg" size="xl" />;
+  const hydrated: HTMLElement[] = [];
+  // hydrateWith server-renders this to feed a hydration
+  const hydrate = async (...args: Parameters<typeof hydrateWith>) => {
+    hydrated.push(await hydrateWith(...args));
+  };
+
+  afterEach(() => {
+    for (const container of hydrated.splice(0)) container.remove();
+  });
 
   it("shows the initials, and no img", async () => {
-    const container = await hydrateWith(avatar, { complete: true, naturalWidth: 0 });
-    expect(container.querySelector("img")).toBeNull();
-    expect(container.querySelector("span")?.textContent).toBe("SA");
-    container.remove();
+    await hydrate(avatar, { complete: true, naturalWidth: 0 });
+    expect(screen.queryByRole("img")).toBeNull();
+    expect(screen.getByText("SA")).not.toBeNull();
   });
 
   it("does not call the consumer's onError, as there is no event to pass", async () => {
     const onError = vi.fn<() => void>();
-    const container = await hydrateWith(
-      <Avatar name="Sam Cole" src="/missing.jpg" onError={onError} />,
-      { complete: true, naturalWidth: 0 },
-    );
-    expect(container.querySelector("span")?.textContent).toBe("SA");
+    await hydrate(<Avatar name="Sam Cole" src="/missing.jpg" onError={onError} />, {
+      complete: true,
+      naturalWidth: 0,
+    });
+    expect(screen.getByText("SA")).not.toBeNull();
     expect(onError).not.toHaveBeenCalled();
-    container.remove();
   });
 
   it("keeps the photo when it loaded", async () => {
-    const container = await hydrateWith(avatar, { complete: true, naturalWidth: 56 });
-    expect(container.querySelector("img")?.getAttribute("src")).toBe("/missing.jpg");
-    container.remove();
+    await hydrate(avatar, { complete: true, naturalWidth: 56 });
+    expect(screen.getByRole("img", { name: "Sam Cole" }).getAttribute("src")).toBe("/missing.jpg");
   });
 
   it("keeps the photo while it is still loading", async () => {
-    const container = await hydrateWith(avatar, { complete: false, naturalWidth: 0 });
-    expect(container.querySelector("img")?.getAttribute("src")).toBe("/missing.jpg");
-    container.remove();
+    await hydrate(avatar, { complete: false, naturalWidth: 0 });
+    expect(screen.getByRole("img", { name: "Sam Cole" }).getAttribute("src")).toBe("/missing.jpg");
   });
 });
 
 describe("Avatar with onClick", () => {
-  it("is one button named by the person, around the initials", () => {
+  it("is one button of type button named by the person, around the initials", async () => {
     const onClick = vi.fn<() => void>();
-    const container = mount(<Avatar name="Ada Lovelace" onClick={onClick} data-testid="ada" />);
-    const button = container.querySelector("button");
-    expect(button?.getAttribute("type")).toBe("button");
-    expect(button?.getAttribute("aria-label")).toBe("Ada Lovelace");
-    expect(button?.getAttribute("data-testid")).toBe("ada");
-    expect(button?.querySelector("span")?.textContent).toBe("AD");
-    act(() => button?.click());
+    render(<Avatar name="Ada Lovelace" onClick={onClick} />);
+    const button = screen.getByRole("button", { name: "Ada Lovelace" });
+    expect(screen.getAllByRole("button")).toHaveLength(1);
+    expect(button.getAttribute("type")).toBe("button");
+    expect(within(button).getByText("AD")).not.toBeNull();
+    await user().click(button);
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
-  it("is one button named by the person, around the photo, with a focus ring", () => {
+  it("is one button named by the person, around the photo, that a click on the photo presses", async () => {
     const onClick = vi.fn<() => void>();
-    const container = mount(
-      <Avatar name="Grace Hopper" src="/grace.jpg" onClick={onClick} size="2xl" />,
-    );
-    const button = container.querySelector("button");
-    expect(button?.getAttribute("aria-label")).toBe("Grace Hopper");
-    expect(button?.className).toContain("rounded-full");
-    expect(button?.className).toContain("focus-visible:outline-violet-600");
-    const img = container.querySelector("img");
-    expect(img?.getAttribute("src")).toBe("/grace.jpg");
-    act(() => img?.click());
+    render(<Avatar name="Grace Hopper" src="/grace.jpg" onClick={onClick} size="2xl" />);
+    const button = screen.getByRole("button", { name: "Grace Hopper" });
+    const img = within(button).getByRole("img", { name: "Grace Hopper" });
+    expect(img.getAttribute("src")).toBe("/grace.jpg");
+    await user().click(img);
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("is reached by Tab and pressed by Enter", async () => {
+    const onClick = vi.fn<() => void>();
+    render(<Avatar name="Ada Lovelace" onClick={onClick} />);
+    await user().tab();
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Ada Lovelace" }));
+    await user().keyboard("{Enter}");
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
   it("still falls back to the initials, and reports the failure, inside the button", () => {
     const onError = vi.fn<() => void>();
-    const container = mount(
+    render(
       <Avatar name="Ada Lovelace" src="/missing.jpg" onClick={() => undefined} onError={onError} />,
     );
-    fail(container.querySelector("img"));
+    // A failed load is the browser's event; no person makes it.
+    fireEvent.error(screen.getByRole("img", { name: "Ada Lovelace" }));
     expect(onError).toHaveBeenCalledTimes(1);
-    const button = container.querySelector("button");
-    expect(button?.querySelector("img")).toBeNull();
-    expect(button?.querySelector("span")?.textContent).toBe("AD");
+    const button = screen.getByRole("button", { name: "Ada Lovelace" });
+    expect(within(button).queryByRole("img")).toBeNull();
+    expect(within(button).getByText("AD")).not.toBeNull();
   });
 });

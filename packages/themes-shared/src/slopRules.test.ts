@@ -130,3 +130,42 @@ describe("slopRules: no em or en dash, in any file", () => {
     expect(slopRules("src/a.css", `/* ${todo} later */`, "x")).toEqual([]);
   });
 });
+
+describe("slopRules: a component uses only the palette's colour utilities", () => {
+  const palette = new Set(["bg-white", "text-slate-900", "hover:bg-slate-50"]);
+
+  it("fails a colour utility outside palette.json in a component file", () => {
+    expect(slopRules("src/Pill.tsx", `const c = "bg-white text-pink-500";`, ui, palette)).toEqual([
+      "src/Pill.tsx:1: text-pink-500 is not in palette.json; a new colour is a palette change",
+    ]);
+  });
+
+  it("fails a palette utility behind an arbitrary variant, which no theme remaps", () => {
+    expect(slopRules("src/Pill.tsx", `"[&>svg]:text-slate-900"`, ui, palette)).toEqual([
+      "src/Pill.tsx:1: [&>svg]:text-slate-900 sits behind an arbitrary variant, which no theme remaps",
+    ]);
+  });
+
+  it("passes the palette's utilities, with the variants it lists", () => {
+    expect(
+      slopRules("src/Pill.tsx", `"bg-white hover:bg-slate-50 text-slate-900"`, ui, palette),
+    ).toEqual([]);
+  });
+
+  it("reads only a ui-react component: not a test, not another package", () => {
+    const line = `"text-pink-500"`;
+    expect(slopRules("src/Pill.test.tsx", line, ui, palette)).toEqual([]);
+    expect(slopRules("src/Pill.tsx", line, "@hackcove/other", palette)).toEqual([]);
+    expect(slopRules("src/Pill.tsx", line, ui)).toEqual([]);
+  });
+});
+
+describe("slopRules: a component's classes", () => {
+  it("fails the content width or side padding outside Container, and passes it in Container", () => {
+    expect(slopRules("src/Hero.tsx", `"mx-auto max-w-6xl"`, ui)).toEqual([
+      "src/Hero.tsx:1: the content width and side padding are Container's; render a Container",
+    ]);
+    expect(slopRules("src/Hero.tsx", `"px-4 sm:px-6"`, ui)).toHaveLength(1);
+    expect(slopRules("src/Container.tsx", `"max-w-6xl px-4 sm:px-6"`, ui)).toEqual([]);
+  });
+});

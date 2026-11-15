@@ -1,173 +1,115 @@
 // @vitest-environment jsdom
-import { act } from "react";
 import { hydrateRoot } from "react-dom/client";
-import { renderToStaticMarkup } from "react-dom/server";
+import { renderToString } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ColourScheme } from "./colourScheme.js";
 import { ColourSchemeToggle } from "./ColourSchemeToggle.js";
-import { mount, unmount } from "./dom.harness.js";
+import { act, render, screen, user } from "./render.harness.js";
 
 const KEY = "hackcove:colour-scheme";
 const root = document.documentElement;
 
 function reset(): void {
   localStorage.clear();
-  root.className = "";
+  root.removeAttribute("class");
   root.style.removeProperty("color-scheme");
 }
 
-const buttonOf = (container: HTMLElement): HTMLButtonElement => {
-  const button = container.querySelector("button");
-  if (!button) throw new Error("no <button> rendered");
-  return button;
-};
-
-/** The tooltip, which follows the scheme the client reads once it has hydrated; the name is CSS's. */
-const titleOf = (button: HTMLButtonElement): string | null => button.getAttribute("title");
-
-// The toggle follows <html> through a MutationObserver, which reports on a microtask.
-const click = (button: HTMLButtonElement) => act(async () => button.click());
+/** The tooltip, which follows the scheme the client reads once it has hydrated. */
+const title = (): string | null => screen.getByRole("button").getAttribute("title");
 
 beforeEach(reset);
 afterEach(() => {
-  unmount();
   vi.restoreAllMocks();
   reset();
 });
 
 describe("ColourSchemeToggle", () => {
-  it("renders the light state on the server, with no document to read", () => {
-    const out = renderToStaticMarkup(<ColourSchemeToggle />);
-    expect(out).toContain("<svg");
-    expect(out).not.toContain("aria-label");
-  });
-
-  it("names itself from two visually hidden spans in the server markup, and a rule hides the wrong one", () => {
-    const out = renderToStaticMarkup(<ColourSchemeToggle />);
-    expect(out).toContain(
-      '<span class="sr-only" data-scheme-name="dark">Switch to dark theme</span>',
-    );
-    expect(out).toContain(
-      '<span class="sr-only" data-scheme-name="light">Switch to light theme</span>',
-    );
-    // Light page: the "dark" name only. Dark page: the "light" name only; `display:none` drops the
-    // other from the accessible name as well.
-    expect(out).toContain('[data-scheme-name="light"]{display:none}');
-    expect(out).toContain(':root[class~="dark"] [data-scheme-name="light"]{display:inline}');
-    expect(out).toContain(':root[class~="dark"] [data-scheme-name="dark"]{display:none}');
-  });
-
-  it("renders no title on the server, so no wrong tooltip is ever in the markup", () => {
-    expect(renderToStaticMarkup(<ColourSchemeToggle />)).not.toContain("title=");
-    expect(renderToStaticMarkup(<ColourSchemeToggle initial="dark" />)).not.toContain("title=");
-  });
-
-  it("draws both icons and picks one from the class on <html>, so the first frame needs no hydration", () => {
-    const out = renderToStaticMarkup(<ColourSchemeToggle />);
-    expect(out).toContain('data-scheme-icon="sun"');
-    expect(out).toContain('data-scheme-icon="moon"');
-    // Light page: moon only. Dark page: sun only.
-    expect(out).toContain('<style>[data-scheme-icon="sun"]{display:none}');
-    expect(out.startsWith("<button")).toBe(true);
-    expect(out).toContain(':root[class~="dark"] [data-scheme-icon="sun"]{display:inline}');
-    expect(out).toContain(':root[class~="dark"] [data-scheme-icon="moon"]{display:none}');
-  });
-
-  it("keys the rule on the app's own dark class, or on the light class's absence when dark has none", () => {
-    const own = renderToStaticMarkup(
-      <ColourSchemeToggle schemes={{ light: "my-light", dark: "ink" }} />,
-    );
-    expect(own).toContain(':root[class~="ink"] [data-scheme-icon="sun"]');
-    expect(own).toContain(':root[class~="ink"] [data-scheme-name="light"]{display:inline}');
-    expect(own).not.toContain('[class~="dark"]');
-    const bare = renderToStaticMarkup(
-      <ColourSchemeToggle schemes={{ light: "my-light", dark: "" }} />,
-    );
-    expect(bare).toContain(
-      ':root:not([class~="my-light"]) [data-scheme-icon="sun"]{display:inline}',
-    );
-    expect(bare).toContain(
-      ':root:not([class~="my-light"]) [data-scheme-name="dark"]{display:none}',
-    );
-    const none = renderToStaticMarkup(<ColourSchemeToggle schemes={{ light: "", dark: "" }} />);
-    expect(none).not.toContain(":root");
-  });
-
   it("offers dark on a light page and flips the class, color-scheme and stored key on click", async () => {
     const onChange = vi.fn<(scheme: ColourScheme) => void>();
-    const button = buttonOf(mount(<ColourSchemeToggle onChange={onChange} />));
-    expect(titleOf(button)).toBe("Switch to dark theme");
+    render(<ColourSchemeToggle onChange={onChange} />);
+    expect(title()).toBe("Switch to dark theme");
 
-    await click(button);
+    await user().click(screen.getByRole("button"));
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     expect(root.classList.contains("dark")).toBe(true);
     expect(root.style.colorScheme).toBe("dark");
     expect(localStorage.getItem(KEY)).toBe("dark");
     expect(onChange).toHaveBeenLastCalledWith("dark");
-    expect(titleOf(button)).toBe("Switch to light theme");
+    expect(title()).toBe("Switch to light theme");
 
-    await click(button);
+    await user().click(screen.getByRole("button"));
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     expect(root.classList.contains("dark")).toBe(false);
     expect(root.style.colorScheme).toBe("light");
     expect(localStorage.getItem(KEY)).toBe("light");
     expect(onChange).toHaveBeenLastCalledWith("light");
-    expect(titleOf(button)).toBe("Switch to dark theme");
+    expect(title()).toBe("Switch to dark theme");
   });
 
   it("agrees with the dark class the head script left on <html> when it mounts", () => {
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     root.classList.add("dark");
-    const button = buttonOf(mount(<ColourSchemeToggle />));
-    expect(titleOf(button)).toBe("Switch to light theme");
+    render(<ColourSchemeToggle />);
+    expect(title()).toBe("Switch to light theme");
   });
 
   it("follows a change to <html> made elsewhere", async () => {
-    const button = buttonOf(mount(<ColourSchemeToggle />));
+    render(<ColourSchemeToggle />);
+    // The toggle follows <html> through a MutationObserver, which reports on a microtask.
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     await act(async () => root.classList.add("dark"));
-    expect(titleOf(button)).toBe("Switch to light theme");
+    expect(title()).toBe("Switch to light theme");
   });
 
   it("still switches when storage throws", async () => {
     vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
       throw new Error("denied");
     });
-    const button = buttonOf(mount(<ColourSchemeToggle />));
-    await click(button);
+    render(<ColourSchemeToggle />);
+    await user().click(screen.getByRole("button"));
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     expect(root.classList.contains("dark")).toBe(true);
-    expect(titleOf(button)).toBe("Switch to light theme");
+    expect(title()).toBe("Switch to light theme");
   });
 
   it("takes its scheme classes from `schemes` and swaps them on click", async () => {
     const schemes = { light: "my-light", dark: "dark" };
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     root.classList.add("my-light");
     const onChange = vi.fn<(scheme: ColourScheme) => void>();
-    const button = buttonOf(mount(<ColourSchemeToggle schemes={schemes} onChange={onChange} />));
-    expect(titleOf(button)).toBe("Switch to dark theme");
+    render(<ColourSchemeToggle schemes={schemes} onChange={onChange} />);
+    expect(title()).toBe("Switch to dark theme");
 
-    await click(button);
+    await user().click(screen.getByRole("button"));
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     expect([...root.classList]).toEqual(["dark"]);
     expect(root.style.colorScheme).toBe("dark");
     expect(onChange).toHaveBeenLastCalledWith("dark");
-    expect(titleOf(button)).toBe("Switch to light theme");
+    expect(title()).toBe("Switch to light theme");
 
-    await click(button);
+    await user().click(screen.getByRole("button"));
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     expect([...root.classList]).toEqual(["my-light"]);
     expect(root.style.colorScheme).toBe("light");
-    expect(titleOf(button)).toBe("Switch to dark theme");
+    expect(title()).toBe("Switch to dark theme");
   });
 
-  it("puts id and data-* on the button, and leaves its own props alone", () => {
-    const button = buttonOf(mount(<ColourSchemeToggle id="theme" data-testid="toggle" />));
+  it("puts id on the button, and is an action, not a toggle", () => {
+    render(<ColourSchemeToggle id="theme" />);
+    const button = screen.getByRole("button");
     expect(button.id).toBe("theme");
-    expect(button.dataset["testid"]).toBe("toggle");
-    expect(titleOf(button)).toBe("Switch to dark theme");
+    expect(title()).toBe("Switch to dark theme");
+    // It names the action ("Switch to dark theme"), so a pressed state would contradict its name.
     expect(button.hasAttribute("aria-pressed")).toBe(false);
-    expect(button.hasAttribute("aria-label")).toBe(false);
   });
 
   it("with store={false} switches and calls onChange but writes no localStorage", async () => {
     const setItem = vi.spyOn(Storage.prototype, "setItem");
     const onChange = vi.fn<(scheme: ColourScheme) => void>();
-    const button = buttonOf(mount(<ColourSchemeToggle store={false} onChange={onChange} />));
-    await click(button);
+    render(<ColourSchemeToggle store={false} onChange={onChange} />);
+    await user().click(screen.getByRole("button"));
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     expect(root.classList.contains("dark")).toBe(true);
     expect(onChange).toHaveBeenLastCalledWith("dark");
     expect(setItem).not.toHaveBeenCalled();
@@ -175,39 +117,54 @@ describe("ColourSchemeToggle", () => {
   });
 
   describe("hydrating the server markup", () => {
-    /** Hydrate what the server rendered for `initial`, with `<html>` as the server left it. */
-    async function hydrate(initial: ColourScheme | undefined, htmlClass: string) {
-      const errors = vi.spyOn(console, "error").mockImplementation(() => {});
-      const markup = renderToStaticMarkup(<ColourSchemeToggle schemes={paper} initial={initial} />);
-      root.className = htmlClass;
-      const container = document.createElement("div");
-      container.innerHTML = markup;
-      document.body.append(container);
-      const hydrated = await act(async () =>
-        hydrateRoot(container, <ColourSchemeToggle schemes={paper} initial={initial} />),
-      );
-      const label = titleOf(buttonOf(container));
-      act(() => hydrated.unmount());
-      container.remove();
-      return { label, errors: errors.mock.calls };
-    }
     const paper = { light: "my-light", dark: "dark" };
+    let teardown: (() => void) | undefined;
+    afterEach(() => {
+      teardown?.();
+      teardown = undefined;
+    });
+
+    /**
+     * Put what the server rendered for `initial` in the page, with `<html>` as the server left it,
+     * then hydrate it. Returns the console errors the hydration raised.
+     */
+    async function serveAndHydrate(initial: ColourScheme | undefined, htmlClass: string) {
+      root.setAttribute("class", htmlClass);
+      const host = document.createElement("div");
+      // server render feeds the hydration check
+      host.innerHTML = renderToString(<ColourSchemeToggle schemes={paper} initial={initial} />);
+      document.body.append(host);
+      // No tooltip in the server markup, so a wrong one is never shown before hydration.
+      const titledBeforeHydration = screen.getByRole("button").hasAttribute("title");
+      const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+      const hydrated = await act(async () =>
+        hydrateRoot(host, <ColourSchemeToggle schemes={paper} initial={initial} />),
+      );
+      teardown = () => {
+        act(() => hydrated.unmount());
+        host.remove();
+      };
+      return { titledBeforeHydration, errors: errors.mock.calls };
+    }
 
     it("with `initial` set, matches the server on a dark cookie with no mismatch", async () => {
-      const { label, errors } = await hydrate("dark", "dark");
+      const { titledBeforeHydration, errors } = await serveAndHydrate("dark", "dark");
+      expect(titledBeforeHydration).toBe(false);
       expect(errors).toEqual([]);
-      expect(label).toBe("Switch to light theme");
+      expect(title()).toBe("Switch to light theme");
     });
 
     it("with `initial` set, matches the server on a light cookie with no mismatch", async () => {
-      const { label, errors } = await hydrate("light", "my-light");
+      const { titledBeforeHydration, errors } = await serveAndHydrate("light", "my-light");
+      expect(titledBeforeHydration).toBe(false);
       expect(errors).toEqual([]);
-      expect(label).toBe("Switch to dark theme");
+      expect(title()).toBe("Switch to dark theme");
     });
 
     it("without `initial`, a dark page still ends up showing dark once hydrated", async () => {
-      const { label } = await hydrate(undefined, "dark");
-      expect(label).toBe("Switch to light theme");
+      const { titledBeforeHydration } = await serveAndHydrate(undefined, "dark");
+      expect(titledBeforeHydration).toBe(false);
+      expect(title()).toBe("Switch to light theme");
     });
   });
 });
