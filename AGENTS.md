@@ -94,6 +94,13 @@ and why. `bunx moon run storybook:visual -- --all` (or `VISUAL_ALL=1 bunx moon r
 captures everything. A gate run is `--all`. Every story file is
 named by a docs page (`pairs`, `fullPage` or `stories`); the storybook tests fail on one that is not.
 
+**CI uploads the screenshots.** `.github/workflows/visual.yml` runs `storybook:visual-upload` on every
+pull request's head commit and on every push to `main`, against the hosted PixelSlash server, and
+the server posts the `PixelSlash / hackcove-ui-<section>` checks, one per section, on that commit. A local `storybook:visual` is
+the contributor's own check and needs no server. A manual `visual-upload` to the hosted server
+(with `PIXELSLASH_TOKEN`) is only for re-seeding `main`, and never mixes a local capture into a
+pull request's build.
+
 **Uploads run their groups in parallel; the local compare does not.** `scripts/visual.ts --run`
 plans, runs each group and totals them in one process. `visual-upload` runs `VISUAL_PARALLEL`
 groups at once (default 1), as `VISUAL_PARALLEL=3 bunx moon run storybook:visual-upload`; a bare
@@ -150,20 +157,25 @@ that touches only `packages/ui-react` bumps `@hackcove/ui-react`, and nothing el
 hackcove lands through pull requests (Jacobus, 2026-10-27). Who opens and who merges is the
 global rule; what is particular to hackcove:
 
-- **Screenshots before the merge.** The planner gates the PR's head, reads the PixelSlash
-  reports, and uploads that commit's screenshots (`VISUAL_PARALLEL=3 bunx moon run storybook:visual-upload`, every group
-  whole, each to its own `hackcove-ui-<section>` project) before it merges. The upload captures
-  the branch only: the PixelSlash server diffs it against the `main` build it already holds, and
-  the run fails naming the project if it holds none at the merge-base or an ancestor.
-- **Screenshots after the merge.** The planner then runs `VISUAL_PARALLEL=3 bunx moon run storybook:visual-upload` on a
-  worktree at the merge commit (a detached HEAD at origin/main's tip is fine). Nothing else seeds
-  `main`'s builds, so a merge without this step leaves the next branch with no baseline. A release
-  commit that `publish.yml` pushes needs no upload of its own: the server picks its parent's build.
+- **Screenshots before the merge.** The `Visual` workflow uploads the PR's head commit, every
+  group whole, each to its own `hackcove-ui-<section>` project, and the server diffs it against the
+  `main` build it already holds and posts the `PixelSlash / hackcove-ui-<section>` checks, one per section, on the head. The
+  planner reads every one of them on the head and opens the report for any group that changed. A PR
+  that is not based on origin/main's tip fails the job with "rebase", and a project that holds no
+  `main` build at the merge-base or an ancestor fails it, named. Nobody uploads a PR by hand.
+- **Screenshots after the merge.** The `Visual` run on the push to `main` uploads the merge
+  commit as `main`, which the server takes as the baseline for the next branch. Nobody uploads it
+  by hand. A release commit that `publish.yml` pushes needs no upload of its own: the server picks
+  its parent's build. That release push starts no `Visual` run, so a release dispatched while the
+  merge's `Visual` run is still going moves `main` past it, and the run fails with "rebase" and
+  uploads nothing. Dispatch a release only once the merge commit's `Visual` run is green. If it went
+  red that way, re-seed `main` by hand: `visual-upload` (with `PIXELSLASH_TOKEN`) on a checkout at
+  origin/main's tip.
 - **The squash subject stays conventional** (`gh pr merge <pr> --squash --subject "…"`),
   because `nx release` reads it.
 - **No branch protection.** `publish.yml` pushes its release commit straight to `main`, so
   nothing on GitHub blocks a merge and the planner enforces the rule: no merge while CI or the
-  PixelSlash check is failing or pending, unless the PR changes nothing a screenshot can see and
+  `PixelSlash / hackcove-ui-<section>` checks are failing or pending, unless the PR changes nothing a screenshot can see and
   says so.
 - No commit, PR title or PR body carries a `Co-Authored-By` or any other AI attribution line.
 
