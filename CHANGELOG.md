@@ -1,3 +1,13 @@
+## 0.10.7 (2026-11-15)
+
+### 🩹 Fixes
+
+- **ui-react:** keep a ticked Checkbox's tick above a Card's lifted field ([#128](https://github.com/madangryscientist/hackcove/pull/128))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.10.6 (2026-11-14)
 
 ### 🚀 Features
