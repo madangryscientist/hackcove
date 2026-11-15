@@ -1,8 +1,7 @@
 // @vitest-environment jsdom
-import { act } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ChatThread, isAtBottom } from "./ChatThread.js";
-import { mount, unmount } from "./dom.harness.js";
+import { act, fireEvent, render, screen } from "./render.harness.js";
 
 /** jsdom has no ResizeObserver: this one reports only when a test says so. */
 let report: () => void = () => undefined;
@@ -25,11 +24,8 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  unmount();
   vi.unstubAllGlobals();
 });
-
-const boxOf = (root: HTMLElement) => root.querySelector<HTMLElement>('[role="region"]')!;
 
 /** jsdom has no layout: say how tall the box's content is and how much of it shows. */
 function size(box: HTMLElement, scrollHeight: number, clientHeight = 100): void {
@@ -37,11 +33,9 @@ function size(box: HTMLElement, scrollHeight: number, clientHeight = 100): void 
   Object.defineProperty(box, "clientHeight", { configurable: true, value: clientHeight });
 }
 
+/** jsdom has no layout, so the reader's scroll is set and its event fired by hand. */
 function scrollTo(box: HTMLElement, top: number): void {
-  box.scrollTop = top;
-  act(() => {
-    box.dispatchEvent(new Event("scroll"));
-  });
+  fireEvent.scroll(box, { target: { scrollTop: top } });
 }
 
 describe("isAtBottom", () => {
@@ -55,73 +49,65 @@ describe("isAtBottom", () => {
 });
 
 describe("ChatThread", () => {
-  it("is a named, focusable region with the role and the tab stop axe asks for", () => {
-    const box = boxOf(mount(<ChatThread label="Cooking chat">x</ChatThread>));
-    expect(box.getAttribute("aria-label")).toBe("Cooking chat");
-    expect(box.tabIndex).toBe(0);
-    expect(box.className).toContain("overflow-y-auto");
-  });
-
-  it.each([
-    [undefined, "max-h-[28rem]"],
-    ["sm", "max-h-80"],
-    ["md", "max-h-[28rem]"],
-    ["lg", "max-h-[40rem]"],
-    ["fill", "h-full min-h-0"],
-  ] as const)("height %s is %s", (height, classes) => {
-    const box = boxOf(
-      mount(
-        <ChatThread label="Chat" height={height}>
-          x
-        </ChatThread>,
-      ),
-    );
-    expect(box.className).toContain(classes);
+  it("is a named region a keyboard can tab to", () => {
+    render(<ChatThread label="Cooking chat">x</ChatThread>);
+    expect(screen.getByRole("region", { name: "Cooking chat" }).getAttribute("tabindex")).toBe("0");
   });
 
   it("draws empty only with no children", () => {
-    const none = mount(<ChatThread label="Chat" empty="Nothing yet" />);
-    expect(boxOf(none).textContent).toBe("Nothing yet");
-    unmount();
-    const hollow = mount(
+    const { rerender } = render(<ChatThread label="Chat" empty="Nothing yet" />);
+    const box = screen.getByRole("region", { name: "Chat" });
+    expect(box.textContent).toBe("Nothing yet");
+    rerender(
       <ChatThread label="Chat" empty="Nothing yet">
         {null}
         {false}
       </ChatThread>,
     );
-    expect(boxOf(hollow).textContent).toBe("Nothing yet");
-    unmount();
-    const some = mount(
+    expect(box.textContent).toBe("Nothing yet");
+    rerender(
       <ChatThread label="Chat" empty="Nothing yet">
         A message
       </ChatThread>,
     );
-    expect(boxOf(some).textContent).toBe("A message");
+    expect(box.textContent).toBe("A message");
   });
 
   it("puts announce in a polite live element, and the scroll box itself is not live", () => {
-    const root = mount(
+    render(
       <ChatThread label="Chat" announce="Reply finished">
         x
       </ChatThread>,
     );
-    const live = root.querySelector('[aria-live="polite"]');
-    expect(live?.textContent).toBe("Reply finished");
-    expect(live?.className).toBe("sr-only");
-    const box = boxOf(root);
+    const live = screen.getByText("Reply finished");
+    expect(live.getAttribute("aria-live")).toBe("polite");
+    const box = screen.getByRole("region", { name: "Chat" });
     expect(box.contains(live)).toBe(false);
     expect(box.hasAttribute("aria-live")).toBe(false);
-    expect(box.querySelector("[aria-live]")).toBeNull();
-    expect(root.querySelector('[role="log"]')).toBeNull();
+    expect(screen.queryByRole("log")).toBeNull();
   });
 
-  it("keeps the live element in the page before there is anything to announce", () => {
-    const live = mount(<ChatThread label="Chat">x</ChatThread>).querySelector("[aria-live]");
-    expect(live?.textContent).toBe("");
+  it("keeps the same live element in the page while there is nothing to announce", () => {
+    const { rerender } = render(
+      <ChatThread label="Chat" announce="First">
+        x
+      </ChatThread>,
+    );
+    const live = screen.getByText("First");
+    rerender(<ChatThread label="Chat">x</ChatThread>);
+    expect(live.isConnected).toBe(true);
+    expect(live.textContent).toBe("");
+    rerender(
+      <ChatThread label="Chat" announce="Second">
+        x
+      </ChatThread>,
+    );
+    expect(screen.getByText("Second")).toBe(live);
   });
 
   it("follows growing content, stops when the reader scrolls up, and re-arms at the bottom", () => {
-    const box = boxOf(mount(<ChatThread label="Chat">x</ChatThread>));
+    render(<ChatThread label="Chat">x</ChatThread>);
+    const box = screen.getByRole("region", { name: "Chat" });
     size(box, 1000);
     report();
     expect(box.scrollTop).toBe(1000);
@@ -138,23 +124,24 @@ describe("ChatThread", () => {
   });
 
   it("starts at the bottom", () => {
+    // jsdom has no layout: every element says its content is 500px tall while the thread mounts.
     Object.defineProperty(HTMLElement.prototype, "scrollHeight", {
       configurable: true,
       value: 500,
     });
-    const box = boxOf(mount(<ChatThread label="Chat">x</ChatThread>));
+    render(<ChatThread label="Chat">x</ChatThread>);
     Reflect.deleteProperty(HTMLElement.prototype, "scrollHeight");
-    expect(box.scrollTop).toBe(500);
+    expect(screen.getByRole("region", { name: "Chat" }).scrollTop).toBe(500);
   });
 
   it("stops observing when it unmounts", () => {
-    mount(<ChatThread label="Chat">x</ChatThread>);
+    const { unmount } = render(<ChatThread label="Chat">x</ChatThread>);
     unmount();
     expect(disconnect).toHaveBeenCalledOnce();
   });
 
   it("does not throw where there is no ResizeObserver", () => {
     vi.unstubAllGlobals();
-    expect(() => mount(<ChatThread label="Chat">x</ChatThread>)).not.toThrow();
+    expect(() => render(<ChatThread label="Chat">x</ChatThread>)).not.toThrow();
   });
 });

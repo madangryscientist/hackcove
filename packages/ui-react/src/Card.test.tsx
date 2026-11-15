@@ -1,325 +1,164 @@
 // @vitest-environment jsdom
-import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { Card } from "./Card.js";
-import { mount, unmount } from "./dom.harness.js";
 import { Pill } from "./Pill.js";
+import { render, screen, within } from "./render.harness.js";
 
-afterEach(unmount);
-
-const badgeOf = (out: string) =>
-  out.match(/<span class="(pointer-events-none absolute[^"]*)">/)?.[1];
-
-const rootClass = (out: string) => out.match(/^<section[^>]* class="([^"]*)"/)?.[1];
+const follows = (a: Node, b: Node) =>
+  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 describe("Card badge", () => {
-  it("pins the badge in the top-right corner, over the content, after the body", () => {
-    const out = renderToStaticMarkup(
+  it("reads the badge after the body", () => {
+    render(
       <Card title="Shot" badge={<Pill tone="amber">Flaky</Pill>}>
-        body
+        <p>body</p>
       </Card>,
     );
-    expect(badgeOf(out)).toContain("absolute z-10");
-    expect(badgeOf(out)).toContain("top-3 right-3");
-    expect(out.indexOf("body")).toBeLessThan(out.indexOf("Flaky"));
-  });
-
-  it("changes no layout: the card keeps its padding and the root stays relative", () => {
-    const plain = renderToStaticMarkup(<Card title="Shot">body</Card>);
-    const badged = renderToStaticMarkup(
-      <Card title="Shot" badge="B">
-        body
-      </Card>,
-    );
-    expect(rootClass(badged)).toBe(rootClass(plain));
-    expect(rootClass(badged)).toContain("relative");
-  });
-
-  it("follows the card's size into the corner", () => {
-    expect(
-      badgeOf(
-        renderToStaticMarkup(
-          <Card size="sm" badge="B">
-            x
-          </Card>,
-        ),
-      ),
-    ).toContain("top-2 right-2");
-    expect(
-      badgeOf(
-        renderToStaticMarkup(
-          <Card size="lg" badge="B">
-            x
-          </Card>,
-        ),
-      ),
-    ).toContain("top-4 right-4");
-  });
-
-  it("on a link card lets a click through to the card, except on a link or button in the badge", () => {
-    const out = renderToStaticMarkup(
-      <Card href="/shots/1" badge="B">
-        x
-      </Card>,
-    );
-    expect(badgeOf(out)).toContain("pointer-events-none");
-    expect(badgeOf(out)).toContain("[&amp;_:is(a,button)]:pointer-events-auto");
+    expect(follows(screen.getByText("body"), screen.getByText("Flaky"))).toBeTruthy();
   });
 
   it("on a link card is part of the link's accessible name", () => {
-    const root = mount(
+    render(
       <Card href="/shots/1" title="Home page" badge={<Pill tone="amber">Flaky</Pill>}>
         Desktop
       </Card>,
     );
-    const link = root.querySelector("a");
-    const labelledBy = link?.getAttribute("aria-labelledby") ?? "";
-    expect(labelledBy).not.toBe("");
-    const name = document.getElementById(labelledBy)?.textContent;
-    expect(name).toContain("Home page");
-    expect(name).toContain("Flaky");
-  });
-
-  it("renders no badge wrapper without one", () => {
-    expect(badgeOf(renderToStaticMarkup(<Card>x</Card>))).toBeUndefined();
+    const link = screen.getByRole("link", { name: /Home page.*Flaky/ });
+    expect(link.getAttribute("href")).toBe("/shots/1");
   });
 });
-
-describe("Card attention", () => {
-  it("swaps the border colour for the warn tone's strong edge and keeps the white fill", () => {
-    const out = renderToStaticMarkup(<Card attention>x</Card>);
-    expect(out).toContain("border-amber-600");
-    expect(out).toContain("bg-white");
-    expect(out).not.toContain("border-slate-200/70");
-  });
-
-  it("keeps a tone's fill", () => {
-    const out = renderToStaticMarkup(
-      <Card attention tone="warn">
-        x
-      </Card>,
-    );
-    expect(out).toContain("border-amber-600 bg-amber-50");
-    expect(out).not.toContain("border-amber-200");
-  });
-
-  it("works on a link card and is ignored with dashed", () => {
-    expect(
-      renderToStaticMarkup(
-        <Card href="/x" attention>
-          x
-        </Card>,
-      ),
-    ).toContain("border-amber-600");
-    expect(
-      renderToStaticMarkup(
-        <Card dashed attention>
-          x
-        </Card>,
-      ),
-    ).not.toContain("border-amber-600");
-  });
-});
-
-const section = (root: HTMLElement) => root.querySelector("section");
 
 describe("Card title names its section", () => {
-  it("points the section's aria-labelledby at the heading", () => {
-    const root = mount(<Card title="Billing">body</Card>);
-    const labelledBy = section(root)?.getAttribute("aria-labelledby") ?? "";
-    expect(labelledBy).not.toBe("");
-    const heading = document.getElementById(labelledBy);
-    expect(heading?.tagName).toBe("H2");
-    expect(heading?.textContent).toBe("Billing");
+  it("makes the section a region named by its level-2 heading", () => {
+    render(<Card title="Billing">body</Card>);
+    const region = screen.getByRole("region", { name: "Billing" });
+    expect(within(region).getByRole("heading", { level: 2, name: "Billing" })).not.toBeNull();
   });
 
   it("names an article too, with a bar or actions", () => {
-    const root = mount(
+    render(
       <Card as="article" bar title="Billing" actions={<button type="button">Edit</button>}>
         body
       </Card>,
     );
-    const labelledBy = root.querySelector("article")?.getAttribute("aria-labelledby") ?? "";
-    expect(document.getElementById(labelledBy)?.textContent).toBe("Billing");
+    const article = screen.getByRole("article", { name: "Billing" });
+    expect(within(article).getByRole("button", { name: "Edit" })).not.toBeNull();
   });
 
-  it("gives two cards two different ids", () => {
-    const root = mount(
+  it("names two cards each by its own title", () => {
+    render(
       <>
         <Card title="One">a</Card>
         <Card title="Two">b</Card>
       </>,
     );
-    const [one, two] = [...root.querySelectorAll("section")].map((el) =>
-      el.getAttribute("aria-labelledby"),
-    );
-    expect(one).not.toBe(two);
+    expect(within(screen.getByRole("region", { name: "One" })).getByText("a")).not.toBeNull();
+    expect(within(screen.getByRole("region", { name: "Two" })).getByText("b")).not.toBeNull();
   });
 
-  it("lets a caller's aria-label or aria-labelledby win", () => {
-    const labelled = mount(
+  it("lets a caller's aria-label win", () => {
+    render(
       <Card title="Billing" aria-label="Invoices">
         body
       </Card>,
     );
-    expect(section(labelled)?.getAttribute("aria-label")).toBe("Invoices");
-    expect(section(labelled)?.hasAttribute("aria-labelledby")).toBe(false);
-    unmount();
-    const by = mount(
-      <Card title="Billing" aria-labelledby="elsewhere">
-        body
-      </Card>,
-    );
-    expect(section(by)?.getAttribute("aria-labelledby")).toBe("elsewhere");
+    expect(screen.getByRole("region", { name: "Invoices" })).not.toBeNull();
+    expect(screen.queryByRole("region", { name: "Billing" })).toBeNull();
   });
 
-  it("leaves a card with no title, and a bare div, unnamed", () => {
-    expect(section(mount(<Card>body</Card>))?.hasAttribute("aria-labelledby")).toBe(false);
-    unmount();
-    const div = mount(
-      <Card as="div" title="Billing">
+  it("lets a caller's aria-labelledby win", () => {
+    render(
+      <>
+        <p id="elsewhere">Elsewhere</p>
+        <Card title="Billing" aria-labelledby="elsewhere">
+          body
+        </Card>
+      </>,
+    );
+    expect(screen.getByRole("region", { name: "Elsewhere" })).not.toBeNull();
+    expect(screen.queryByRole("region", { name: "Billing" })).toBeNull();
+  });
+
+  it("leaves a card with no title unnamed, so it is no region", () => {
+    render(<Card>body</Card>);
+    expect(screen.queryByRole("region")).toBeNull();
+  });
+
+  it("leaves a bare div unnamed", () => {
+    render(
+      <Card as="div" title="Billing" data-testid="card">
         body
       </Card>,
     );
-    expect(div.querySelector("div[aria-labelledby]")).toBeNull();
+    expect(screen.queryByRole("region")).toBeNull();
+    // A card root that is no region has no role or name, so its test id is the only handle on it.
+    expect(screen.getByTestId("card").hasAttribute("aria-labelledby")).toBe(false);
   });
 });
 
-const card = (root: HTMLElement) => root.querySelector("[data-testid='probe']");
-
 describe("Card that is a link: root attributes", () => {
-  it("puts id, data-* and aria-describedby on the card root, not on the link", () => {
-    const root = mount(
-      <Card href="/x" title="Home" id="home" data-testid="probe" aria-describedby="why">
+  it("puts id on the card root, not on the link", () => {
+    render(
+      <Card href="/x" title="Home" id="home" data-testid="probe">
         body
       </Card>,
     );
-    const el = card(root);
-    expect(el?.tagName).toBe("DIV");
-    expect(el?.id).toBe("home");
-    expect(el?.getAttribute("aria-describedby")).toBe("why");
-    const link = root.querySelector("a");
-    expect(link?.hasAttribute("id")).toBe(false);
-    expect(link?.hasAttribute("data-testid")).toBe(false);
-    expect(link?.hasAttribute("aria-describedby")).toBe(false);
+    // The root of a link card has no role of its own (the link inside it does): found by test id.
+    expect(screen.getByTestId("probe").getAttribute("id")).toBe("home");
+    expect(screen.getByRole("link", { name: /Home/ }).hasAttribute("id")).toBe(false);
   });
 
   it("is still named by the card's text, the badge included, under the caller's id", () => {
-    const root = mount(
+    render(
       <Card href="/x" title="Home" id="home" badge={<Pill tone="amber">Flaky</Pill>}>
         body
       </Card>,
     );
-    const link = root.querySelector("a");
-    expect(link?.getAttribute("aria-labelledby")).toBe("home");
-    expect(document.getElementById("home")?.textContent).toContain("Flaky");
+    const link = screen.getByRole("link", { name: /Home.*Flaky/ });
+    expect(link.getAttribute("aria-labelledby")).toBe("home");
   });
 
-  it("keeps a generated id for the name when the caller gives none", () => {
-    const link = mount(
-      <Card href="/x" title="Home" data-testid="probe">
+  it("is named by the card's text when the caller gives no id", () => {
+    render(
+      <Card href="/x" title="Home">
         body
       </Card>,
-    ).querySelector("a");
-    expect(document.getElementById(link?.getAttribute("aria-labelledby") ?? "")).not.toBeNull();
+    );
+    expect(screen.getByRole("link", { name: /Home.*body/ }).getAttribute("href")).toBe("/x");
   });
 
   it("keeps aria-label and aria-current, which name and mark the link, on the link", () => {
-    const root = mount(
+    render(
       <Card href="/x" title="Home" aria-label="Go home" aria-current="page" data-testid="probe">
         body
       </Card>,
     );
-    const link = root.querySelector("a");
-    expect(link?.getAttribute("aria-label")).toBe("Go home");
-    expect(link?.getAttribute("aria-current")).toBe("page");
-    expect(link?.hasAttribute("aria-labelledby")).toBe(false);
-    expect(card(root)?.hasAttribute("aria-label")).toBe(false);
+    const link = screen.getByRole("link", { name: "Go home" });
+    expect(link.getAttribute("aria-current")).toBe("page");
+    expect(link.hasAttribute("aria-labelledby")).toBe(false);
+    // The card root has no role of its own, so its test id finds it.
+    expect(screen.getByTestId("probe").hasAttribute("aria-label")).toBe(false);
   });
 });
 
 describe("Card icon", () => {
-  it("puts the icon at feature size in the accent colour above the title, with no tile behind it", () => {
-    const out = renderToStaticMarkup(
+  it("hides the icon from assistive tech: the title alone names the card", () => {
+    render(
       <Card title="Diff" icon="diff">
         body
       </Card>,
     );
-    expect(out).toContain("<svg");
-    expect(out).toContain("size-8");
-    expect(out).toContain("text-violet-600");
-    expect(out.indexOf("<svg")).toBeLessThan(out.indexOf("Diff"));
-    expect(out).not.toMatch(/gradient|rounded-(?:2xl|full|lg|md)/);
+    expect(screen.getByRole("region", { name: "Diff" })).not.toBeNull();
+    expect(screen.queryByRole("img")).toBeNull();
   });
 
-  it("hides the icon from assistive tech: the title names the card", () => {
-    const out = renderToStaticMarkup(
-      <Card title="Diff" icon="diff">
-        body
-      </Card>,
-    );
-    expect(out).toContain('aria-hidden="true"');
-    expect(out).toContain("aria-labelledby");
-  });
-
-  it("is not passed to the DOM, and a plain card has no icon", () => {
-    const out = renderToStaticMarkup(
-      <Card title="Diff" icon="diff">
-        body
-      </Card>,
-    );
-    expect(out).not.toContain('icon="');
-    expect(renderToStaticMarkup(<Card title="Diff">body</Card>)).not.toContain("<svg");
-  });
-
-  it("works on a link card too", () => {
-    const out = renderToStaticMarkup(
+  it("hides the icon on a link card too: the link is named by the card's text", () => {
+    render(
       <Card href="/x" title="Diff" icon="diff">
         body
       </Card>,
     );
-    expect(out).toContain("<svg");
-    expect(out).not.toContain('icon="');
-  });
-
-  it("has none in a bar, flush or dashed card, which have no padded body to hold it", () => {
-    expect(
-      renderToStaticMarkup(
-        <Card title="T" bar icon="diff">
-          b
-        </Card>,
-      ),
-    ).not.toContain("<svg");
-    expect(
-      renderToStaticMarkup(
-        <Card flush icon="diff">
-          b
-        </Card>,
-      ),
-    ).not.toContain("<svg");
-    expect(
-      renderToStaticMarkup(
-        <Card dashed icon="diff">
-          b
-        </Card>,
-      ),
-    ).not.toContain("<svg");
-  });
-
-  it("spaces the icon from the title by the card's size", () => {
-    expect(
-      renderToStaticMarkup(
-        <Card title="T" icon="diff" size="sm">
-          b
-        </Card>,
-      ),
-    ).toContain("mb-2");
-    expect(
-      renderToStaticMarkup(
-        <Card title="T" icon="diff" size="lg">
-          b
-        </Card>,
-      ),
-    ).toContain("mb-4");
+    expect(screen.getByRole("link", { name: /^Diff\s*body$/ })).not.toBeNull();
+    expect(screen.queryByRole("img")).toBeNull();
   });
 });

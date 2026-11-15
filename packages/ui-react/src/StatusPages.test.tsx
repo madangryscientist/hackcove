@@ -1,9 +1,11 @@
+// @vitest-environment jsdom
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { Button } from "./Button.js";
 import { ErrorPage, Forbidden, Maintenance, NotFound, Offline } from "./StatusPages.js";
 import type { LinkRenderProps } from "./link.js";
+import { render, screen, user } from "./render.harness.js";
 
 const Link = ({ to, ...rest }: { to: string } & LinkRenderProps): ReactElement => (
   <a data-router-link="" data-to={to} {...rest} />
@@ -111,5 +113,17 @@ describe("NotFound with its own action", () => {
     );
     expect(out).toContain("Open the map");
     expect(out).not.toContain("Back to home");
+  });
+});
+
+describe.each([
+  ["ErrorPage", ErrorPage],
+  ["Offline", Offline],
+] as const)("%s onRetry", (_name, Page) => {
+  it("Try again calls onRetry once", async () => {
+    const onRetry = vi.fn<() => void>();
+    render(<Page onRetry={onRetry} />);
+    await user().click(screen.getByRole("button", { name: "Try again" }));
+    expect(onRetry).toHaveBeenCalledOnce();
   });
 });

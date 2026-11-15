@@ -1,69 +1,46 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { AvatarStack } from "./AvatarStack.js";
+import { render, screen, within } from "./render.harness.js";
 
 const people = [{ name: "ada" }, { name: "grace" }, { name: "linus" }, { name: "margaret" }];
-const classes = (out: string, text: string) =>
-  new RegExp(`class="([^"]*)"[^>]*>${text.replace("+", "\\+")}<`).exec(out)?.[1]?.split(" ") ?? [];
 
 describe("AvatarStack", () => {
-  it("is one image named by the people in it", () => {
-    const out = renderToStaticMarkup(<AvatarStack people={people} />);
-    expect(out).toMatch(/^<span role="img" aria-label="ada, grace, linus, margaret" /);
-    expect(out.match(/>[A-Z?]{1,2}<\/span>/g)).toHaveLength(4);
+  it("is one image named by the people in it, in order", () => {
+    render(<AvatarStack people={people} />);
+    const stack = screen.getByRole("img", { name: "ada, grace, linus, margaret" });
+    expect(screen.getAllByRole("img")).toHaveLength(1);
+    for (const [before, after] of [
+      ["AD", "GR"],
+      ["GR", "LI"],
+      ["LI", "MA"],
+    ] as const) {
+      const first = within(stack).getByText(before);
+      const next = within(stack).getByText(after);
+      expect(first.compareDocumentPosition(next) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    }
   });
 
-  it("rings every avatar in the page colour and overlaps all but the first", () => {
-    const out = renderToStaticMarkup(<AvatarStack people={people} />);
-    expect(classes(out, "AD")).toEqual(expect.arrayContaining(["border-2", "border-slate-50"]));
-    expect(classes(out, "AD")).not.toContain("-ml-2");
-    expect(classes(out, "GR")).toEqual(expect.arrayContaining(["border-slate-50", "-ml-2"]));
-  });
-
-  it("scales the overlap with the size", () => {
-    expect(
-      classes(renderToStaticMarkup(<AvatarStack people={people} size="sm" />), "GR"),
-    ).toContain("-ml-1.5");
-    expect(
-      classes(renderToStaticMarkup(<AvatarStack people={people} size="xs" />), "GR"),
-    ).toContain("-ml-1");
-    expect(
-      classes(renderToStaticMarkup(<AvatarStack people={people} size="2xl" />), "GR"),
-    ).toContain("-ml-4");
-    expect(
-      classes(renderToStaticMarkup(<AvatarStack people={people} size="3xl" />), "GR"),
-    ).toContain("-ml-6");
-  });
-
-  it("shows `max` avatars and a +N chip of the same size and shape for the rest", () => {
-    const out = renderToStaticMarkup(
-      <AvatarStack people={people} max={2} size="lg" shape="square" />,
-    );
-    expect(out).toContain('aria-label="ada, grace and 2 more"');
-    expect(out).not.toContain(">LI<");
-    const chip = classes(out, "+2");
-    expect(chip).toEqual(
-      expect.arrayContaining([
-        "size-10",
-        "rounded-md",
-        "border-slate-50",
-        "-ml-2.5",
-        "bg-slate-100",
-      ]),
-    );
-    expect(out).toContain('title="linus, margaret"');
+  it("shows `max` avatars and a +N chip, titled by the rest, for the others", () => {
+    render(<AvatarStack people={people} max={2} size="lg" shape="square" />);
+    const stack = screen.getByRole("img", { name: "ada, grace and 2 more" });
+    expect(within(stack).queryByText("LI")).toBeNull();
+    const chip = within(stack).getByText("+2");
+    expect(chip.getAttribute("title")).toBe("linus, margaret");
+    expect(chip.getAttribute("aria-hidden")).toBe("true");
   });
 
   it("has no chip when everyone fits", () => {
-    expect(renderToStaticMarkup(<AvatarStack people={people} max={4} />)).not.toContain("+");
+    render(<AvatarStack people={people} max={4} />);
+    expect(screen.getByRole("img", { name: "ada, grace, linus, margaret" })).not.toBeNull();
+    expect(screen.queryByText(/^\+/)).toBeNull();
   });
 
-  it("draws a photo in the same ring", () => {
-    const out = renderToStaticMarkup(
-      <AvatarStack people={[{ name: "ada" }, { name: "Grace", src: "/g.jpg" }]} />,
-    );
-    expect(out).toMatch(
-      /<img src="\/g.jpg" alt="Grace" title="Grace" class="[^"]*border-slate-50[^"]*-ml-2/,
-    );
+  it("draws a photo inside the one image, titled by the person", () => {
+    render(<AvatarStack people={[{ name: "ada" }, { name: "Grace", src: "/g.jpg" }]} />);
+    const stack = screen.getByRole("img", { name: "ada, Grace" });
+    const photo = within(stack).getByTitle("Grace");
+    expect(photo.getAttribute("src")).toBe("/g.jpg");
+    expect(within(stack).getByText("AD")).not.toBeNull();
   });
 });

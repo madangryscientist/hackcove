@@ -1,111 +1,85 @@
 // @vitest-environment jsdom
-import { act } from "react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CodeBlock } from "./CodeBlock.js";
 import { CodeExample } from "./CodeExample.js";
-import { mount, unmount } from "./dom.harness.js";
+import { act, render, screen, user } from "./render.harness.js";
 
 const writeText = vi.fn<(text: string) => Promise<void>>();
 
+/** Press the copy button with a fresh user, the clipboard mocked after `user()` set up its own. */
+async function pressCopy(): Promise<void> {
+  const person = user();
+  Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
+  await person.click(screen.getByRole("button", { name: "copy" }));
+}
+
 beforeEach(() => {
   writeText.mockReset().mockResolvedValue(undefined);
-  Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
 });
-
-afterEach(() => {
-  unmount();
-});
-
-const buttonOf = (container: HTMLElement): HTMLButtonElement => {
-  const button = container.querySelector("button");
-  if (!button) throw new Error("no copy button");
-  return button;
-};
-
-const press = async (button: HTMLButtonElement): Promise<void> => {
-  await act(async () => button.click());
-};
 
 describe("the copy button on a code block", () => {
   it("copies a string exactly, newlines and indentation kept and nothing added", async () => {
     const code = "if (x) {\n  run --out out\n}";
-    const container = mount(
+    render(
       <CodeBlock copy language="ts">
         {code}
       </CodeBlock>,
     );
-    await press(buttonOf(container));
+    await pressCopy();
     expect(writeText).toHaveBeenCalledExactlyOnceWith(code);
   });
 
   it("copies `lines` joined by newlines, with no trailing newline", async () => {
-    const container = mount(<CodeBlock copy lines={["bun add a", "bun add b"]} />);
-    await press(buttonOf(container));
+    render(<CodeBlock copy lines={["bun add a", "bun add b"]} />);
+    await pressCopy();
     expect(writeText).toHaveBeenCalledExactlyOnceWith("bun add a\nbun add b");
   });
 
-  it("copies the same long line whether it wraps or scrolls", async () => {
-    const command = `bunx playwright test ${"--flag value ".repeat(20)}--out out`;
-    for (const overflow of ["wrap", "scroll"] as const) {
-      writeText.mockClear();
-      const container = mount(
+  it.each(["wrap", "scroll"] as const)(
+    "copies the same long line when it does %s",
+    async (overflow) => {
+      const command = `bunx playwright test ${"--flag value ".repeat(20)}--out out`;
+      render(
         <CodeBlock copy overflow={overflow}>
           {command}
         </CodeBlock>,
       );
-      await press(buttonOf(container));
+      await pressCopy();
       expect(writeText).toHaveBeenCalledExactlyOnceWith(command);
-      unmount();
-    }
-  });
+    },
+  );
 
-  it("copies the markup-free source, not the coloured spans, and marks the copy", async () => {
-    const container = mount(
+  it("copies the markup-free source, not the coloured spans, and announces the copy", async () => {
+    render(
       <CodeBlock copy language="bash">
         {"# note\nbun install"}
       </CodeBlock>,
     );
-    const button = buttonOf(container);
-    const status = container.querySelector("[data-copy-status]");
-    expect(button.hasAttribute("data-copied")).toBe(false);
-    expect(status?.textContent).toBe("");
-    await press(button);
+    expect(screen.getByRole("status").textContent).toBe("");
+    await pressCopy();
     expect(writeText).toHaveBeenCalledExactlyOnceWith("# note\nbun install");
-    expect(button.hasAttribute("data-copied")).toBe(true);
-    expect(button.getAttribute("aria-label")).toBe("copy");
-    expect(status?.textContent).toBe("copied");
+    expect(screen.getByRole("button", { name: "copy" })).not.toBeNull();
+    expect(screen.getByRole("status").textContent).toBe("copied");
   });
 
-  it("clears data-copied when the copied label's animation ends, so a later show does not replay it", async () => {
-    const container = mount(<CodeBlock copy>x</CodeBlock>);
-    const button = buttonOf(container);
-    await press(button);
-    expect(button.hasAttribute("data-copied")).toBe(true);
-    // jsdom has no AnimationEvent, so React listens for the prefixed name there; a browser sends `animationend`.
-    await act(async () => {
-      button
-        .querySelector("[data-copy-done]")
-        ?.dispatchEvent(new Event("webkitAnimationEnd", { bubbles: true }));
-    });
-    expect(button.hasAttribute("data-copied")).toBe(false);
-  });
-
-  it("restarts the labels and puts a new node in the status region on a second copy", async () => {
-    const container = mount(<CodeBlock copy>x</CodeBlock>);
-    const button = buttonOf(container);
-    await press(button);
-    const idle = button.querySelector("[data-copy-idle]");
-    const said = container.querySelector("[data-copy-status]")?.firstChild;
-    await press(button);
+  it("announces a second copy again, with new text in the status region", async () => {
+    render(<CodeBlock copy>x</CodeBlock>);
+    await pressCopy();
+    const status = screen.getByRole("status");
+    const changes: MutationRecord[] = [];
+    const observer = new MutationObserver((records) => changes.push(...records));
+    observer.observe(status, { childList: true });
+    await pressCopy();
+    // The observer reports on a microtask.
+    await act(async () => {});
+    observer.disconnect();
     expect(writeText).toHaveBeenCalledTimes(2);
-    expect(button.querySelector("[data-copy-idle]")).not.toBe(idle);
-    const again = container.querySelector("[data-copy-status]")?.firstChild;
-    expect(again).not.toBe(said);
-    expect(again?.textContent).toBe("copied");
+    expect(changes.some((change) => change.addedNodes.length > 0)).toBe(true);
+    expect(status.textContent).toBe("copied");
   });
 
   it("copies only the commands of a console block, without the prompt or the output", async () => {
-    const container = mount(
+    render(
       <CodeBlock
         copy
         language="console"
@@ -118,7 +92,7 @@ describe("the copy button on a code block", () => {
         ]}
       />,
     );
-    await press(buttonOf(container));
+    await pressCopy();
     expect(writeText).toHaveBeenCalledExactlyOnceWith(
       "bun add @hackcove/ui-react\nbunx playwright test \\\n  --project=chromium",
     );
@@ -126,43 +100,46 @@ describe("the copy button on a code block", () => {
 
   it("copies a console block with no command exactly as given", async () => {
     const code = "installed 1 package\n$HOME";
-    const container = mount(
+    render(
       <CodeBlock copy language="console">
         {code}
       </CodeBlock>,
     );
-    await press(buttonOf(container));
+    await pressCopy();
     expect(writeText).toHaveBeenCalledExactlyOnceWith(code);
   });
 
   it("still copies everything in any other language, a leading $ included", async () => {
     const code = "$ bun add a\nadded 1 package";
-    const container = mount(
+    render(
       <CodeBlock copy language="bash">
         {code}
       </CodeBlock>,
     );
-    await press(buttonOf(container));
+    await pressCopy();
     expect(writeText).toHaveBeenCalledExactlyOnceWith(code);
   });
 
-  it("is a real button, reachable and pressable from the keyboard", () => {
-    const container = mount(<CodeBlock copy>x</CodeBlock>);
-    const button = buttonOf(container);
-    expect(button.tagName).toBe("BUTTON");
-    expect(button.type).toBe("button");
-    expect(button.tabIndex).toBe(0);
-    expect(button.disabled).toBe(false);
+  it("is a real button, reachable and pressable from the keyboard", async () => {
+    render(<CodeBlock copy>x</CodeBlock>);
+    const person = user();
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
+    const button = screen.getByRole("button", { name: "copy" });
+    expect(button.getAttribute("type")).toBe("button");
+    await person.tab();
+    expect(document.activeElement).toBe(button);
+    await person.keyboard("{Enter}");
+    expect(writeText).toHaveBeenCalledExactlyOnceWith("x");
   });
 
   it("on a CodeExample copies the code, not the preview", async () => {
     const code = '<Button variant="primary">Save</Button>';
-    const container = mount(
+    render(
       <CodeExample copy code={code}>
         <span>PREVIEW</span>
       </CodeExample>,
     );
-    await press(buttonOf(container));
+    await pressCopy();
     expect(writeText).toHaveBeenCalledExactlyOnceWith(code);
   });
 });

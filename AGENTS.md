@@ -187,7 +187,7 @@ global rule; what is particular to hackcove:
    (`bg-white`, `text-slate-900`, …) and never contain a `dark:` variant or a palette colour. A
    theme is the only place a palette lives, and it remaps those utilities under its own scope
    class (`.dark` for Mocha). Components use only the colour utilities in
-   `packages/ui-react/palette.json` (`palette.test.ts`). A new colour utility in a component is a
+   `packages/ui-react/palette.json` (the lint, `scripts/slopRules.ts`). A new colour utility in a component is a
    palette change: add it to `palette.json` and remap it in every theme in the same commit.
 2. **A theme is a file and nothing else registers it.** No theme name appears in code: Storybook
    globs `themes/*.css`, and `themes/themes.test.ts` is the contract for every CSS file there (name

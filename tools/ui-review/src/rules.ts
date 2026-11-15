@@ -27,7 +27,7 @@ const NOT_APP_CODE = /(?:\.(?:test|spec)\.[cm]?[jt]sx?|\.d\.ts)$/;
 const isCode = (path: string) => CODE.test(path) && !NOT_APP_CODE.test(path);
 const isStylesheet = (path: string) => STYLESHEET.test(path);
 
-/** The stock colour utilities `packages/ui-react/src/palette.test.ts` looks for, with their variants. */
+/** The stock colour utilities the palette lint (`scripts/slopRules.ts`) looks for, with their variants. */
 const COLOUR =
   /(?<![\w-])(?:[a-z-]+:)*(?:bg|text|border|outline|ring|accent|fill|stroke|decoration|divide)-(?:white|black|slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)(?:-\d{2,3})?(?:\/\d+)?(?![\w-])/g;
 const ARBITRARY_COLOUR =

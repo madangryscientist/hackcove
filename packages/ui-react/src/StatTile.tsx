@@ -43,7 +43,7 @@ export function StatTile({
   value: ReactNode;
   /** A muted line under the value. */
   hint?: ReactNode;
-  /** Defaults to "neutral". */
+  /** Defaults to "neutral". Say it in the text too: colour alone says nothing to a screen reader. */
   tone?: StatTileTone;
   /** A bar across the top edge in the tone's colour. */
   accent?: boolean;

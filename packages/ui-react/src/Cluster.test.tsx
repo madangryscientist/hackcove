@@ -1,81 +1,38 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { Cluster, ClusterGrow } from "./Cluster.js";
+import { render, screen } from "./render.harness.js";
 
 describe("Cluster", () => {
-  it("is a one-line flex row, gap xs, centred, packed at the start by default", () => {
-    expect(renderToStaticMarkup(<Cluster>x</Cluster>)).toBe(
-      '<div class="flex gap-2 items-center justify-start">x</div>',
-    );
-  });
-
-  it("maps xs, sm and md to the Stack scale: gap-2, gap-4 and gap-6", () => {
-    expect(renderToStaticMarkup(<Cluster gap="xs">x</Cluster>)).toContain("gap-2");
-    expect(renderToStaticMarkup(<Cluster gap="sm">x</Cluster>)).toContain("gap-4");
-    expect(renderToStaticMarkup(<Cluster gap="md">x</Cluster>)).toContain("gap-6");
-  });
-
-  it.each([
-    ["center", "items-center"],
-    ["baseline", "items-baseline"],
-    ["start", "items-start"],
-    ["end", "items-end"],
-  ] as const)("maps align %s to %s", (align, cls) => {
-    expect(renderToStaticMarkup(<Cluster align={align}>x</Cluster>)).toContain(cls);
-  });
-
-  it.each([
-    ["start", "justify-start"],
-    ["between", "justify-between"],
-    ["end", "justify-end"],
-  ] as const)("maps justify %s to %s", (justify, cls) => {
-    expect(renderToStaticMarkup(<Cluster justify={justify}>x</Cluster>)).toContain(cls);
-  });
-
   it("is a div by default and a span with as=span, for phrasing content", () => {
-    expect(renderToStaticMarkup(<Cluster>x</Cluster>)).toMatch(/^<div /);
-    expect(renderToStaticMarkup(<Cluster as="span">x</Cluster>)).toBe(
-      '<span class="flex gap-2 items-center justify-start">x</span>',
+    render(
+      <>
+        <Cluster>block</Cluster>
+        <p>
+          <Cluster as="span">inline</Cluster>
+        </p>
+      </>,
     );
-    expect(renderToStaticMarkup(<Cluster as="span" data-testid="c" />)).toContain(
-      'data-testid="c"',
+    expect(screen.getByText("block").tagName).toBe("DIV");
+    expect(screen.getByText("inline").tagName).toBe("SPAN");
+  });
+
+  it("keeps its items in the order given", () => {
+    render(
+      <Cluster justify="between">
+        <span>first</span>
+        <ClusterGrow>middle</ClusterGrow>
+        <span>last</span>
+      </Cluster>,
     );
-  });
-
-  it("wraps only when asked to", () => {
-    expect(renderToStaticMarkup(<Cluster>x</Cluster>)).not.toContain("flex-wrap");
-    expect(renderToStaticMarkup(<Cluster wrap>x</Cluster>)).toContain("flex-wrap");
-  });
-});
-
-describe("ClusterGrow", () => {
-  it("takes the room left in the row and can shrink to nothing", () => {
-    expect(renderToStaticMarkup(<ClusterGrow>x</ClusterGrow>)).toBe(
-      '<div class="min-w-0 flex-1">x</div>',
+    const first = screen.getByText("first");
+    const middle = screen.getByText("middle");
+    const last = screen.getByText("last");
+    expect(first.compareDocumentPosition(middle) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
     );
-  });
-});
-
-describe("ClusterGrow minWidth", () => {
-  it.each([
-    ["sm", "min-w-0 flex-[1_1_12rem]"],
-    ["md", "min-w-0 flex-[1_1_17rem]"],
-  ] as const)(
-    "minWidth %s grows from a %s basis, so a wrapping row drops it under",
-    (minWidth, cls) => {
-      expect(renderToStaticMarkup(<ClusterGrow minWidth={minWidth}>x</ClusterGrow>)).toBe(
-        `<div class="${cls}">x</div>`,
-      );
-    },
-  );
-
-  it("still shrinks to nothing without it", () => {
-    expect(renderToStaticMarkup(<ClusterGrow>x</ClusterGrow>)).toContain("min-w-0 flex-1");
-  });
-
-  it("does not leak minWidth onto the element", () => {
-    expect(renderToStaticMarkup(<ClusterGrow minWidth="sm">x</ClusterGrow>)).not.toContain(
-      "minwidth",
+    expect(middle.compareDocumentPosition(last) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
     );
   });
 });

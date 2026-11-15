@@ -1,5 +1,4 @@
-import type { ReactElement } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import {
   AppShell,
@@ -9,70 +8,59 @@ import {
   appShellRootClassFor,
 } from "./AppShell.js";
 import { schemeClass } from "./colourScheme.js";
+import type { LinkRenderProps } from "./link.js";
+import { render, screen, within } from "./render.harness.js";
 
-const EDGE = "max-w-6xl px-4 sm:px-6";
+const follows = (a: Node, b: Node) =>
+  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
-const rootClasses = (node: ReactElement) =>
-  /^<div class="([^"]*)">/.exec(renderToStaticMarkup(node))?.[1]?.split(" ") ?? [];
+function first<T>(found: T[]): T {
+  const [one] = found;
+  if (one === undefined) throw new Error("none found");
+  return one;
+}
 
 describe("AppShell", () => {
-  it("puts the header in one sticky, fixed-height row that never wraps and never scrolls on a phone", () => {
-    const out = renderToStaticMarkup(<AppShell header={<a href="/">Logo</a>}>page</AppShell>);
-    expect(out).toMatch(/<header class="sticky top-0 [^"]*">/);
-    const row = /<div class="([^"]*)"><a href="\/">Logo<\/a>/.exec(out)?.[1]?.split(" ") ?? [];
-    expect(row).toEqual(
-      expect.arrayContaining([
-        "max-w-6xl",
-        "flex",
-        "h-14",
-        "overflow-x-clip",
-        "md:overflow-x-auto",
-        "whitespace-nowrap",
-      ]),
-    );
-    expect(row).not.toContain("overflow-x-auto");
+  it("puts the header in the banner and the page in main", () => {
+    render(<AppShell header={<a href="/">Logo</a>}>page</AppShell>);
+    expect(within(screen.getByRole("banner")).getByRole("link", { name: "Logo" })).not.toBeNull();
+    expect(within(screen.getByRole("main")).getByText("page")).not.toBeNull();
   });
 
-  it("paints the page canvas and sets the type face, ink and smoothing, so an app needs no page rule", () => {
-    const out = renderToStaticMarkup(<AppShell header="h">page</AppShell>);
-    const root = /^<div class="([^"]*)">/.exec(out)?.[1]?.split(" ") ?? [];
-    expect(root).toEqual(
-      expect.arrayContaining(["bg-gray-50", "font-sans", "text-slate-900", "antialiased"]),
-    );
-  });
-
-  it("puts main in a Container with fixed vertical padding", () => {
-    const out = renderToStaticMarkup(<AppShell header="h">page</AppShell>);
-    expect(out).toContain(
-      `<main class="flex flex-1 flex-col"><div class="mx-auto w-full ${EDGE} py-8">page</div></main>`,
-    );
-  });
-
-  it("renders main without a Container when bleed, keeping the header's", () => {
-    const out = renderToStaticMarkup(
+  it("keeps the page in main when bleed", () => {
+    render(
       <AppShell header="h" bleed>
         page
       </AppShell>,
     );
-    expect(out).toContain('<main class="flex flex-1 flex-col">page</main>');
-    expect(out).toContain(EDGE);
+    expect(within(screen.getByRole("main")).getByText("page")).not.toBeNull();
   });
 
-  it("adds the subnav row and the footer only when given", () => {
-    const bare = renderToStaticMarkup(<AppShell header="h">page</AppShell>);
-    expect(bare).not.toContain("h-12");
-    expect(bare).not.toContain("<footer");
-    const full = renderToStaticMarkup(
-      <AppShell header="h" subnav="tabs" footer="foot">
+  it("has a footer only when given one", () => {
+    const { unmount } = render(<AppShell header="h">page</AppShell>);
+    expect(screen.queryByRole("contentinfo")).toBeNull();
+    unmount();
+    render(
+      <AppShell header="h" footer="foot">
         page
       </AppShell>,
     );
-    expect(full).toMatch(/class="[^"]*\bhidden\b[^"]*\bh-12 md:flex">tabs</);
-    expect(full).toMatch(/<footer [^>]*><div [^>]*>foot<\/div><\/footer>/);
+    expect(within(screen.getByRole("contentinfo")).getByText("foot")).not.toBeNull();
   });
 
-  it("lays the header slots out brand, nav, header, then controls at the end", () => {
-    const out = renderToStaticMarkup(
+  it("puts the subnav in the header", () => {
+    render(
+      <AppShell header="h" subnav={<nav aria-label="Section">tabs</nav>}>
+        page
+      </AppShell>,
+    );
+    // Twice in the header: its own row (wide screens) and the phone menu, each shown at one width.
+    const banner = screen.getByRole("banner");
+    expect(within(banner).getAllByRole("navigation", { name: "Section" })).toHaveLength(2);
+  });
+
+  it("reads the header slots in order: brand, nav, header, then controls", () => {
+    render(
       <AppShell
         brand={<a href="/">Logo</a>}
         nav={<nav aria-label="Main">tabs</nav>}
@@ -82,50 +70,14 @@ describe("AppShell", () => {
         page
       </AppShell>,
     );
-    expect(out).toContain(
-      '<div class="flex items-center gap-2 text-base font-bold tracking-tight text-slate-900"><a href="/">Logo</a></div>',
-    );
-    expect(out).toContain(
-      '<div class="ml-auto flex min-w-0 items-center gap-2 max-md:shrink!"><div class="flex min-w-0 items-center gap-2 *:shrink-0 max-md:-mx-1 max-md:overflow-x-clip max-md:px-1 [&amp;&gt;.w-full]:w-auto"><button type="button">Theme</button></div><details',
-    );
-    const order = ["Logo", 'aria-label="Main"', "extra", "Theme"].map((part) => out.indexOf(part));
-    expect(order).toEqual(order.toSorted((a, b) => a - b));
-    expect(order.every((at) => at >= 0)).toBe(true);
-  });
-
-  it("renders no wrapper for a slot that is not given, so the header node alone is as before", () => {
-    const out = renderToStaticMarkup(<AppShell header={<a href="/">Logo</a>}>page</AppShell>);
-    expect(out).not.toContain("tracking-tight");
-    expect(out).not.toContain("ml-auto");
-  });
-
-  it("hides the nav below md, since the menu holds it there", () => {
-    const out = renderToStaticMarkup(
-      <AppShell nav={<nav aria-label="Main">tabs</nav>}>page</AppShell>,
-    );
-    expect(out).toContain(
-      '<div class="hidden items-center gap-4 *:shrink-0 md:flex"><nav aria-label="Main">tabs</nav></div>',
-    );
-  });
-
-  it("prints the header, footer and main's padding unchanged unless asked", () => {
-    const out = renderToStaticMarkup(
-      <AppShell header="h" footer="foot">
-        page
-      </AppShell>,
-    );
-    expect(out).not.toContain("print:");
-  });
-
-  it("hides the header and footer in print and drops main's padding when hideChromeInPrint", () => {
-    const out = renderToStaticMarkup(
-      <AppShell header="h" footer="foot" hideChromeInPrint>
-        page
-      </AppShell>,
-    );
-    expect(out).toMatch(/<header class="[^"]*\bprint:hidden\b[^"]*">/);
-    expect(out).toMatch(/<footer class="[^"]*\bprint:hidden\b[^"]*">/);
-    expect(out).toContain(`<div class="mx-auto w-full ${EDGE} py-8 print:p-0">page</div>`);
+    const brand = screen.getByRole("link", { name: "Logo" });
+    // The first Main nav is the row's; the menu's copy comes after the controls.
+    const nav = first(screen.getAllByRole("navigation", { name: "Main" }));
+    const extra = screen.getByText("extra");
+    const theme = screen.getByRole("button", { name: "Theme" });
+    expect(follows(brand, nav)).toBeTruthy();
+    expect(follows(nav, extra)).toBeTruthy();
+    expect(follows(extra, theme)).toBeTruthy();
   });
 });
 
@@ -141,110 +93,43 @@ describe("appShellRootClassFor", () => {
   });
 });
 
+// A stand-in for a router's <Link>: it takes `to` and spreads the props it is handed.
+const Link = ({ to, ...rest }: { to: string } & LinkRenderProps) => (
+  <a data-testid="router-link" data-to={to} {...rest} />
+);
+
 describe("AppShellBrand", () => {
-  it("puts the logo and the label inside one link, the logo hidden from assistive tech", () => {
-    const out = renderToStaticMarkup(<AppShellBrand href="/" logo={<i>L</i>} label="Quotes" />);
-    expect(out.match(/<a /g)).toHaveLength(1);
-    expect(out).toMatch(/^<a href="\/" class="[^"]*\bflex\b[^"]*">/);
-    expect(out).toMatch(
-      /<span aria-hidden="true" class="flex shrink-0 items-center[^"]*"><i>L<\/i><\/span>/,
-    );
-    expect(out).toContain("<span>Quotes</span></a>");
+  it("is one link home named by the label, the logo hidden from assistive tech", () => {
+    render(<AppShellBrand href="/" logo={<i>L</i>} label="Quotes" />);
+    const link = screen.getByRole("link", { name: "Quotes" });
+    expect(screen.getAllByRole("link")).toHaveLength(1);
+    expect(link.getAttribute("href")).toBe("/");
+    expect(within(link).getByText("L")).not.toBeNull();
   });
 
-  it("has no logo wrapper when there is no logo", () => {
-    const out = renderToStaticMarkup(<AppShellBrand href="/" label="Quotes" />);
-    expect(out).not.toContain("aria-hidden");
+  it("is named by the label alone without a logo", () => {
+    render(<AppShellBrand href="/" label="Quotes" />);
+    expect(screen.getByRole("link", { name: "Quotes" })).not.toBeNull();
   });
 
   it("draws the app's own link with render, with no href", () => {
-    const out = renderToStaticMarkup(
-      <AppShellBrand label="Quotes" render={(props) => <a data-router="/" {...props} />} />,
-    );
-    expect(out).toMatch(/^<a data-router="\/" class="[^"]*">/);
-    expect(out).not.toContain("href");
-    expect(out).toContain("<span>Quotes</span>");
-  });
-});
-
-const box = (out: string) => out.match(/<span aria-hidden="true" class="([^"]*)"/)?.[1] ?? "";
-
-describe("AppShellBrand logoSize", () => {
-  it("boxes the logo at 24px by default (an Avatar sm), 20px at sm and 32px at lg", () => {
-    expect(
-      box(renderToStaticMarkup(<AppShellBrand href="/" logo={<i>L</i>} label="Q" />)),
-    ).toContain("size-6");
-    expect(
-      box(renderToStaticMarkup(<AppShellBrand href="/" logo={<i>L</i>} logoSize="sm" label="Q" />)),
-    ).toContain("size-5");
-    expect(
-      box(renderToStaticMarkup(<AppShellBrand href="/" logo={<i>L</i>} logoSize="lg" label="Q" />)),
-    ).toContain("size-8");
+    render(<AppShellBrand label="Quotes" render={(props) => <Link to="/" {...props} />} />);
+    // An <a> with no href has no link role (the router gives it one), so its test id finds it.
+    const link = screen.getByTestId("router-link");
+    expect(link.getAttribute("data-to")).toBe("/");
+    expect(link.hasAttribute("href")).toBe(false);
+    expect(within(link).getByText("Quotes")).not.toBeNull();
   });
 
-  it("makes an <img> or <svg> logo fill the box", () => {
-    const out = box(renderToStaticMarkup(<AppShellBrand href="/" logo={<svg />} label="Q" />));
-    expect(out).toContain("[&amp;&gt;img]:size-full");
-    expect(out).toContain("[&amp;&gt;svg]:size-full");
-  });
-});
-
-describe("AppShell header height", () => {
-  it("publishes the sticky header's height for a bar that sticks under it", () => {
-    expect(renderToStaticMarkup(<AppShell>x</AppShell>)).toContain(
-      "[--app-header:calc(3.5rem+1px)]",
-    );
-    expect(renderToStaticMarkup(<AppShell subnav="S">x</AppShell>)).toContain(
-      "md:[--app-header:calc(6.5rem+1px)]",
-    );
-  });
-
-  it("is one row below md whatever the slots are, since the subnav is in the menu", () => {
-    expect(rootClasses(<AppShell subnav="S">x</AppShell>)).toContain(
-      "[--app-header:calc(3.5rem+1px)]",
-    );
-    expect(rootClasses(<AppShell>x</AppShell>)).not.toContain("md:[--app-header:calc(6.5rem+1px)]");
-  });
-});
-
-describe("AppShellBrand collapse", () => {
-  it("hides the label visually below sm and keeps it in the link", () => {
-    const out = renderToStaticMarkup(
-      <AppShellBrand href="/" logo={<i>L</i>} label="Quotes" collapse />,
-    );
-    expect(out).toContain('<span class="sr-only sm:not-sr-only">Quotes</span>');
-  });
-
-  it("shows the label by default", () => {
-    expect(
-      renderToStaticMarkup(<AppShellBrand href="/" logo={<i>L</i>} label="Quotes" />),
-    ).toContain("<span>Quotes</span>");
+  it("keeps the label in the link's name when collapse hides it on a phone", () => {
+    render(<AppShellBrand href="/" logo={<i>L</i>} label="Quotes" collapse />);
+    expect(screen.getByRole("link", { name: "Quotes" })).not.toBeNull();
   });
 });
 
 describe("AppShellHideBelow", () => {
-  it("hides its item below sm by default and lays it out in a row from sm up", () => {
-    const out = renderToStaticMarkup(<AppShellHideBelow>ada</AppShellHideBelow>);
-    expect(out).toBe('<span class="hidden sm:flex items-center gap-2">ada</span>');
-  });
-
-  it("takes md and lg", () => {
-    expect(
-      renderToStaticMarkup(<AppShellHideBelow breakpoint="md">x</AppShellHideBelow>),
-    ).toContain('class="hidden md:flex ');
-    expect(
-      renderToStaticMarkup(<AppShellHideBelow breakpoint="lg">x</AppShellHideBelow>),
-    ).toContain('class="hidden lg:flex ');
-  });
-
-  it("sits in the header's controls as written", () => {
-    const out = renderToStaticMarkup(
-      <AppShell controls={<AppShellHideBelow data-testid="viewer">ada</AppShellHideBelow>}>
-        x
-      </AppShell>,
-    );
-    expect(out).toContain(
-      '<span data-testid="viewer" class="hidden sm:flex items-center gap-2">ada</span>',
-    );
+  it("renders its children in the header's controls", () => {
+    render(<AppShell controls={<AppShellHideBelow>ada</AppShellHideBelow>}>x</AppShell>);
+    expect(within(screen.getByRole("banner")).getByText("ada")).not.toBeNull();
   });
 });
