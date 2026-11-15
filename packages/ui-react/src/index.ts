@@ -100,6 +100,7 @@ export { NavigationProgress } from "./NavigationProgress.js";
 export { Dialog, type DialogProps } from "./Dialog.js";
 export { SiteSearch, type SiteSearchItem } from "./SiteSearch.js";
 export { Drawer, type DrawerProps } from "./Drawer.js";
+export { BottomSheet, type BottomSheetProps, type BottomSheetSnap } from "./BottomSheet.js";
 export { Lightbox, type LightboxProps } from "./Lightbox.js";
 export { Icon } from "./Icon.js";
 export type { IconName } from "./icons.js";

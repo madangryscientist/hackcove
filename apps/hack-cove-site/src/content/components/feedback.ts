@@ -97,6 +97,32 @@ export const feedback: ComponentSection = {
       api: ["Drawer"],
     },
     {
+      slug: "bottom-sheet",
+      name: "BottomSheet",
+      summary:
+        "A non-modal panel docked to the bottom edge, at snap heights, over a map or a canvas.",
+      whenToUse:
+        "A list or details over a full-screen view (a map, a canvas) that must stay usable behind it.",
+      pairs: ["BottomSheet/Header"],
+      usage: [
+        "Put it in a positioned parent (`relative`) that holds the full-screen view; it docks to that parent's bottom edge, full width on a phone and a panel at the start edge from `md` up.",
+        "Hold `snap` in your state and set it in `onSnapChange`: `<BottomSheet snap={snap} onSnapChange={setSnap} …>`.",
+        'List `snaps` lowest first, at least two: a number from 0 to 1 is a share of the parent\'s height, a `"120px"` string is pixels.',
+        "The heading and a count go in `header`, never first in the body, so they stay put while the list scrolls.",
+        "Pad the map camera by the height `onHeightChange` reports, so a pin is never hidden under the sheet.",
+        "A record or a form that stops the page is a `Drawer`; a question is a `Dialog`.",
+        "Render the first snap first: the server render, and a page with no JavaScript, show a static panel at it.",
+      ],
+      accessibility: [
+        "It is a region named by `label`.",
+        "The handle is a button named by `label`, with `aria-expanded` and `aria-controls` on the body. Enter and Space step through the snaps, and Escape inside the sheet returns it to the first.",
+        "Nothing behind it is inert, and focus is never trapped or moved.",
+        "The settle between snaps is switched off under `prefers-reduced-motion: reduce`.",
+        "The body scrolls on its own and never scrolls the page.",
+      ],
+      api: ["BottomSheet"],
+    },
+    {
       slug: "lightbox",
       name: "Lightbox",
       summary: "A full-screen viewer for one photo or video, on a dark scrim.",

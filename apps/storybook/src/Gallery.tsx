@@ -20,6 +20,7 @@ import {
 import { GalleryBars } from "./GalleryBars";
 import { GalleryControls } from "./GalleryControls";
 import { GalleryButtons } from "./GalleryButtons";
+import { GalleryBottomSheet } from "./GalleryBottomSheet";
 import { GalleryChat } from "./GalleryChat";
 import { GalleryChoice } from "./GalleryChoice";
 import { GalleryData } from "./GalleryData";
@@ -213,6 +214,8 @@ export const gallerySections: GallerySection[] = [
         <GalleryNavigationProgress />
 
         <GalleryDialogs />
+
+        <GalleryBottomSheet />
       </>
     ),
   },

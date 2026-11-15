@@ -15,6 +15,9 @@ export const CASES: Record<string, () => ReactElement> = {
   Avatar: () => <ui.Avatar name="Ada Lovelace" {...A} />,
   AvatarStack: () => <ui.AvatarStack people={[{ name: "Ada Lovelace" }]} {...A} />,
   Badge: () => <ui.Badge count={3} {...A} />,
+  BottomSheet: () => (
+    <ui.BottomSheet label="Sheet" snaps={[0.25, 0.5]} snap={0} onSnapChange={noop} {...A} />
+  ),
   Breadcrumbs: () => <ui.Breadcrumbs crumbs={["Home", "Page"]} {...A} />,
   BulletList: () => <ui.BulletList {...A} />,
   Button: () => <ui.Button {...A}>x</ui.Button>,
