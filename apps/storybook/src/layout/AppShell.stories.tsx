@@ -15,7 +15,7 @@ import {
 } from "@hackcove/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 
-/** Every story under `Layout/AppShell` keeps the page title at the logo's x; the visual check shoots each at 1280. */
+/** Each page story here keeps the page title at the logo's x; the visual check shoots each at 1280. */
 const meta: Meta = {
   title: "Layout/AppShell",
   parameters: { layout: "fullscreen", bare: true },

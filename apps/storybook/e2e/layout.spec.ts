@@ -2,8 +2,8 @@ import { expect, test, type Locator } from "@playwright/test";
 
 /**
  * The layouts that are asserted on their own terms: the AppShell subnav, the form column, and the
- * `SidebarLayout`, `FullBleedLayout` and `CenteredLayout` stories. Where the page title starts
- * (the logo's x on every page story) is the PixelSlash shot's job, not this file's.
+ * `SidebarLayout`, `FullBleedLayout` and `CenteredLayout` stories. That the other page stories
+ * share one title x (the logo's) is the PixelSlash shot's job, not this file's.
  */
 const widths = [375, 768, 1280];
 
