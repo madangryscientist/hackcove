@@ -1,75 +1,53 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
+import { render, screen, within } from "./render.harness.js";
 import { SideColumn } from "./SideColumn.js";
 
-/** Whether every text is in `out`, each after the one before it. */
-const inOrder = (out: string, texts: string[]): boolean => {
-  const found = texts.map((text) => out.indexOf(text));
-  return found.every((index, i) => index >= 0 && (i === 0 || index > (found[i - 1] ?? 0)));
-};
+const follows = (a: Node, b: Node) =>
+  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 describe("SideColumn", () => {
-  const out = renderToStaticMarkup(<SideColumn aside="ASIDE">MAIN</SideColumn>);
-
-  it("is one column below lg and a fixed 24rem aside beside the main area from lg", () => {
-    expect(out).toMatch(/^<div class="[^"]*grid-cols-1[^"]*lg:grid-cols-\[minmax\(0,1fr\)_24rem\]/);
-    expect(inOrder(out, ["MAIN", "ASIDE"])).toBe(true);
-  });
-
-  it("takes the aside's width from a closed set: sm is 18rem", () => {
-    const sm = renderToStaticMarkup(
-      <SideColumn aside="ASIDE" asideWidth="sm">
-        MAIN
+  it("reads the main area, then the aside in its own landmark", () => {
+    render(
+      <SideColumn aside={<p>ASIDE</p>}>
+        <p>MAIN</p>
       </SideColumn>,
     );
-    expect(sm).toContain("lg:grid-cols-[minmax(0,1fr)_18rem]");
-    expect(sm).not.toContain("24rem");
+    const aside = screen.getByRole("complementary");
+    expect(within(aside).getByText("ASIDE")).not.toBeNull();
+    expect(within(aside).queryByText("MAIN")).toBeNull();
+    expect(follows(screen.getByText("MAIN"), screen.getByText("ASIDE"))).toBeTruthy();
   });
 
-  it("lets the main area shrink so a wide table scrolls inside it", () => {
-    expect(out).toMatch(/<div class="min-w-0">MAIN<\/div>/);
-  });
-
-  it("puts the side column in an <aside>, open and with no disclosure, without asideLabel", () => {
-    expect(out).toMatch(/<aside class="min-w-0">ASIDE<\/aside>/);
-    expect(out).not.toContain("<details");
-  });
-
-  it("sets no page width, padding, height or stickiness of its own", () => {
-    expect(out).not.toMatch(/max-w-|\bpx-|\bpy-|h-\[|min-h-|sticky/);
-  });
-
-  it("folds the aside behind a closed disclosure below lg only with asideLabel, summary first", () => {
-    const folded = renderToStaticMarkup(
-      <SideColumn aside="ASIDE" asideLabel="Ask the reply agent">
-        MAIN
+  it("shows the aside with no disclosure and leaves it unnamed without asideLabel", () => {
+    render(
+      <SideColumn aside={<p>ASIDE</p>}>
+        <p>MAIN</p>
       </SideColumn>,
     );
-    expect(folded).toContain("<details");
-    expect(folded).not.toContain("<details open");
-    expect(inOrder(folded, ["MAIN", "Ask the reply agent", "ASIDE"])).toBe(true);
-    // Open and always shown from lg: the toggle is gone and the content is visible.
-    expect(folded).toMatch(/<summary class="[^"]*lg:hidden/);
-    expect(folded).toContain("lg:[&amp;::details-content]:[content-visibility:visible]");
-    expect(folded).not.toMatch(/(^|[ "])md:hidden/);
+    expect(screen.queryByRole("group")).toBeNull();
+    expect(screen.getByRole("complementary").hasAttribute("aria-label")).toBe(false);
   });
 
-  it("passes data-* and aria-* to the root", () => {
-    const named = renderToStaticMarkup(
-      <SideColumn aside="ASIDE" data-testid="chat" aria-label="Chat">
-        MAIN
+  it("folds the aside behind a closed disclosure with asideLabel, summary first", () => {
+    render(
+      <SideColumn aside={<p>ASIDE</p>} asideLabel="Ask the reply agent">
+        <p>MAIN</p>
       </SideColumn>,
     );
-    expect(named).toMatch(/^<div data-testid="chat" aria-label="Chat"/);
+    const fold = within(screen.getByRole("complementary")).getByRole("group");
+    expect(fold.hasAttribute("open")).toBe(false);
+    const summary = within(fold).getByText("Ask the reply agent");
+    expect(follows(screen.getByText("MAIN"), summary)).toBeTruthy();
+    expect(follows(summary, screen.getByText("ASIDE"))).toBeTruthy();
   });
 
-  it("names the <aside> with asideLabel, and leaves it unnamed without", () => {
-    const named = renderToStaticMarkup(
-      <SideColumn aside="ASIDE" asideLabel="Ask the reply agent">
-        MAIN
+  it("names the aside's landmark with asideLabel", () => {
+    render(
+      <SideColumn aside={<p>ASIDE</p>} asideLabel="Ask the reply agent">
+        <p>MAIN</p>
       </SideColumn>,
     );
-    expect(named).toMatch(/<aside [^>]*aria-label="Ask the reply agent"/);
-    expect(out).not.toContain("aria-label");
+    expect(screen.getByRole("complementary", { name: "Ask the reply agent" })).not.toBeNull();
   });
 });

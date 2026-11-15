@@ -1,14 +1,10 @@
 // @vitest-environment jsdom
-import { act } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { mount, unmount } from "./dom.harness.js";
+import { describe, expect, it, vi } from "vitest";
+import { act, render, screen, user, within } from "./render.harness.js";
 import { TableEditCell } from "./TableEditCell.js";
 
-afterEach(unmount);
-
-const open = (onSave = vi.fn<(value: string) => void>(), autoFocus = false) => {
-  const container = mount(
+const open = (onSave = vi.fn<(value: string) => void>(), autoFocus = false) =>
+  render(
     <>
       <button type="button">Elsewhere</button>
       <table>
@@ -39,133 +35,101 @@ const open = (onSave = vi.fn<(value: string) => void>(), autoFocus = false) => {
       </table>
     </>,
   );
-  return container;
+
+// jsdom's name computation drops the space a browser keeps between the value and the sr-only label,
+// so the name is matched with the gap optional; textContent shows the space is there.
+const trigger = () => screen.getByRole("button", { name: /^Groceries\s?Edit category$/ });
+const editor = () => screen.queryByRole("group", { name: "Edit category" });
+const start = async () => {
+  await user().click(trigger());
 };
-
-const trigger = (container: HTMLElement) => {
-  const button = container.querySelector<HTMLButtonElement>("td button");
-  if (!button) throw new Error("no trigger");
-  return button;
-};
-
-const editorOf = (container: HTMLElement) => container.querySelector('td [role="group"]');
-
-const press = (el: Element, key: string) =>
-  act(() => {
-    el.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }));
-  });
 
 describe("TableEditCell", () => {
-  it("is a TableCell that shows its value as a button, named by the value then the label", () => {
-    const out = renderToStaticMarkup(
-      <table>
-        <tbody>
-          <tr>
-            <TableEditCell
-              label="Edit category"
-              tone="strong"
-              align="end"
-              renderEditor={() => null}
-            >
-              Groceries
-            </TableEditCell>
-          </tr>
-        </tbody>
-      </table>,
-    );
-    expect(out).toMatch(/<td class="[^"]*text-right[^"]*font-medium text-slate-900/);
-    expect(out).toContain('<button type="button"');
-    expect(out).toContain('Groceries<span class="sr-only"> Edit category</span></button>');
-    expect(out).toContain("focus-visible:outline-violet-600");
+  it("is a cell that shows its value as a button, named by the value then the label", () => {
+    open();
+    const cell = screen.getByRole("cell");
+    expect(within(cell).getByRole("button").textContent).toBe("Groceries Edit category");
+    expect(trigger().getAttribute("type")).toBe("button");
   });
 
-  it("opens on click, with the focus on the editor's first control", () => {
-    const container = open();
-    expect(editorOf(container)).toBeNull();
-    act(() => trigger(container).click());
-    expect(editorOf(container)?.getAttribute("aria-label")).toBe("Edit category");
-    expect(container.querySelector("td button")?.textContent).toBe("Help");
-    expect(document.activeElement?.textContent).toBe("Help");
+  it("opens on click, with the focus on the editor's first control", async () => {
+    open();
+    expect(editor()).toBeNull();
+    await start();
+    expect(
+      within(screen.getByRole("cell")).getByRole("group", { name: "Edit category" }),
+    ).not.toBeNull();
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Help" }));
   });
 
-  it("leaves the focus on the control the editor focused itself", () => {
-    const container = open(vi.fn(), true);
-    act(() => trigger(container).click());
-    expect(document.activeElement?.getAttribute("aria-label")).toBe("Category");
+  it("leaves the focus on the control the editor focused itself", async () => {
+    open(vi.fn(), true);
+    await start();
+    expect(document.activeElement).toBe(screen.getByRole("textbox", { name: "Category" }));
   });
 
-  it("Esc closes it and returns the focus to the value", () => {
-    const container = open();
-    act(() => trigger(container).click());
-    const active = document.activeElement;
-    if (!active) throw new Error("nothing focused");
-    press(active, "Escape");
-    expect(editorOf(container)).toBeNull();
-    expect(document.activeElement).toBe(trigger(container));
+  it("Esc closes it and returns the focus to the value", async () => {
+    open();
+    await start();
+    await user().keyboard("{Escape}");
+    expect(editor()).toBeNull();
+    expect(document.activeElement).toBe(trigger());
   });
 
-  it("another key does not close it", () => {
-    const container = open();
-    act(() => trigger(container).click());
-    const active = document.activeElement;
-    if (!active) throw new Error("nothing focused");
-    press(active, "a");
-    expect(editorOf(container)).not.toBeNull();
+  it("another key does not close it", async () => {
+    open();
+    await start();
+    await user().keyboard("a");
+    expect(editor()).not.toBeNull();
   });
 
-  it("the editor's close returns the focus to the value", () => {
+  it("the editor's close returns the focus to the value", async () => {
     const onSave = vi.fn<(value: string) => void>();
-    const container = open(onSave);
-    act(() => trigger(container).click());
-    const input = container.querySelector("input");
-    if (!input) throw new Error("no input");
-    act(() => {
-      Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set?.call(input, "Fun");
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-    });
-    expect(onSave).toHaveBeenCalledWith("Fun");
-    expect(editorOf(container)).toBeNull();
-    expect(document.activeElement).toBe(trigger(container));
+    open(onSave);
+    await start();
+    const input = screen.getByRole("textbox", { name: "Category" });
+    await user().type(input, "F", { initialSelectionStart: 0, initialSelectionEnd: 9 });
+    expect(onSave).toHaveBeenCalledWith("F");
+    expect(editor()).toBeNull();
+    expect(document.activeElement).toBe(trigger());
   });
 
-  it("a press outside closes it and leaves the focus alone", () => {
-    const container = open();
-    act(() => trigger(container).click());
-    const outside = container.querySelector<HTMLButtonElement>(":scope > button");
-    if (!outside) throw new Error("no outside button");
-    act(() => {
-      outside.dispatchEvent(new Event("pointerdown", { bubbles: true }));
-    });
-    expect(editorOf(container)).toBeNull();
-    expect(document.activeElement).not.toBe(trigger(container));
+  it("a press outside closes it and leaves the focus alone", async () => {
+    open();
+    await start();
+    // A press on the page itself moves the focus to nowhere, so only the outside press can close it.
+    await user().click(document.body);
+    expect(editor()).toBeNull();
+    expect(document.activeElement).not.toBe(trigger());
   });
 
-  it("a press inside the editor keeps it open", () => {
-    const container = open();
-    act(() => trigger(container).click());
-    const input = container.querySelector("input");
-    if (!input) throw new Error("no input");
-    act(() => {
-      input.dispatchEvent(new Event("pointerdown", { bubbles: true }));
-    });
-    expect(editorOf(container)).not.toBeNull();
+  it("a press inside the editor keeps it open", async () => {
+    open();
+    await start();
+    await user().click(screen.getByRole("textbox", { name: "Category" }));
+    expect(editor()).not.toBeNull();
   });
 
-  it("focus moving out closes it; focus moving inside, or to nowhere, does not", () => {
-    const container = open();
-    act(() => trigger(container).click());
-    const input = container.querySelector("input");
-    if (!input) throw new Error("no input");
-    act(() => input.focus());
-    expect(editorOf(container)).not.toBeNull();
+  it("focus moving inside the editor keeps it open", async () => {
+    open();
+    await start();
+    await user().tab();
+    expect(document.activeElement).toBe(screen.getByRole("textbox", { name: "Category" }));
+    expect(editor()).not.toBeNull();
+  });
+
+  it("focus moving to nowhere keeps it open", async () => {
+    open();
+    await start();
     // Safari does not focus a pressed button: the blur has no target, and the press must still land.
-    act(() => input.blur());
-    expect(editorOf(container)).not.toBeNull();
-    const outside = container.querySelector<HTMLButtonElement>(":scope > button");
-    act(() => {
-      input.focus();
-      outside?.focus();
-    });
-    expect(editorOf(container)).toBeNull();
+    act(() => screen.getByRole("button", { name: "Help" }).blur());
+    expect(editor()).not.toBeNull();
+  });
+
+  it("focus moving out closes it", async () => {
+    open();
+    await start();
+    act(() => screen.getByRole("button", { name: "Elsewhere" }).focus());
+    expect(editor()).toBeNull();
   });
 });

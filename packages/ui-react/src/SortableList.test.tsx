@@ -1,15 +1,13 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it } from "vitest";
-import { mount, unmount } from "./dom.harness.js";
+import { describe, expect, it } from "vitest";
 import { SortableItem, SortableList, SortableSection } from "./index.js";
+import { render, screen, within } from "./render.harness.js";
 import { dropOperation, moveOf } from "./SortableList.js";
-
-afterEach(unmount);
 
 const noop = () => undefined;
 
 const queue = () =>
-  mount(
+  render(
     <SortableList label="Queue" onReorder={noop}>
       <SortableSection id="urgent" title="Urgent">
         <SortableItem id="a" title="Alpha" />
@@ -23,58 +21,71 @@ const queue = () =>
     </SortableList>,
   );
 
-const section = (container: HTMLElement, name: string) => {
-  const group = container.querySelector(`[role="rowgroup"][aria-label="${name}"]`);
-  if (!group) throw new Error(`no section ${name}`);
-  return group;
-};
+/** A section, found by the title its name starts with (the heading, count included, follows it). */
+const section = (title: string) =>
+  within(screen.getByRole("rowgroup", { name: new RegExp(`^${title} `) }));
+
+/** A section's rows below its heading. */
+const rowsOf = (title: string) =>
+  section(title)
+    .getAllByRole("row")
+    .filter((row) => within(row).queryByRole("rowheader") === null);
+
+function disabled(button: HTMLElement): boolean {
+  expect(button).toBeInstanceOf(HTMLButtonElement);
+  return button instanceof HTMLButtonElement && button.disabled;
+}
 
 describe("SortableList", () => {
+  it("is a grid named by its label", () => {
+    queue();
+    expect(screen.getByRole("grid", { name: "Queue" })).not.toBeNull();
+  });
+
   it("each heading's count is its number of items, the empty section's placeholder not counted", () => {
-    const container = queue();
+    queue();
     const counts = ["Urgent", "High", "Low"].map(
-      (name) => section(container, name).querySelector(".tabular-nums")?.textContent,
+      (title) => within(section(title).getByRole("rowheader")).getByText(/^\d+$/).textContent,
     );
     expect(counts).toEqual(["3", "1", "0"]);
   });
 
   it("ends a section with items with an empty, disabled tail row", () => {
-    const container = queue();
-    const rows = [...section(container, "High").querySelectorAll('[role="row"][data-key]')];
-    expect(rows.map((r) => r.getAttribute("aria-label"))).toEqual(["Delta", "End of High"]);
-    expect(rows[1]?.textContent).toBe("");
-    expect(rows[1]?.getAttribute("aria-disabled")).toBe("true");
+    queue();
+    const rows = rowsOf("High");
+    expect(rows.map((row) => row.getAttribute("aria-label"))).toEqual(["Delta", "End of High"]);
+    const tail = section("High").getByRole("row", { name: "End of High" });
+    expect(tail.textContent).toBe("");
+    expect(tail.getAttribute("aria-disabled")).toBe("true");
   });
 
   it("keeps a section and an item with the same id apart", () => {
-    const container = mount(
+    render(
       <SortableList label="Queue" onReorder={noop}>
         <SortableSection id="1" title="One">
           <SortableItem id="1" title="Ticket one" />
         </SortableSection>
       </SortableList>,
     );
-    expect(section(container, "One").querySelector('[data-key="1"]')?.textContent).toBe(
-      "Ticket one",
-    );
+    expect(section("One").getByRole("row", { name: "Ticket one" }).textContent).toBe("Ticket one");
   });
 
   it("names each handle Reorder <title>", () => {
-    const container = queue();
-    const names = [...container.querySelectorAll('[slot="drag"]:not([disabled])')].map((b) =>
-      b.getAttribute("aria-label"),
-    );
+    queue();
+    const names = screen
+      .getAllByRole("button", { name: /^Reorder / })
+      .map((button) => button.getAttribute("aria-label"));
     expect(names).toEqual(["Reorder Alpha", "Reorder Bravo", "Reorder Charlie", "Reorder Delta"]);
   });
 
   it("shows the empty section a Drop here row that is disabled and never a tab stop", () => {
-    const container = queue();
-    const placeholder = section(container, "Low").querySelector('[role="row"][data-key]');
-    expect(section(container, "Low").querySelectorAll('[role="row"][data-key]')).toHaveLength(1);
-    expect(placeholder?.textContent).toBe("Drop here");
-    expect(placeholder?.getAttribute("aria-disabled")).toBe("true");
-    expect(placeholder?.hasAttribute("tabindex")).toBe(false);
-    expect(placeholder?.querySelector('[slot="drag"]')?.hasAttribute("disabled")).toBe(true);
+    queue();
+    expect(rowsOf("Low")).toHaveLength(1);
+    const placeholder = section("Low").getByRole("row", { name: "Drop here" });
+    expect(placeholder.textContent).toBe("Drop here");
+    expect(placeholder.getAttribute("aria-disabled")).toBe("true");
+    expect(placeholder.hasAttribute("tabindex")).toBe(false);
+    expect(disabled(within(placeholder).getByRole("button"))).toBe(true);
   });
 
   it("refuses a drop on a row's centre or on the list, and takes one before or after a row", () => {

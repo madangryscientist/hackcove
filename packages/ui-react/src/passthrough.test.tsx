@@ -86,6 +86,43 @@ describe("every exported component passes data-* and aria-* through", () => {
     expect(found[0]?.getAttribute("aria-describedby")).toBe("described");
   });
 
+  it("a CardGrid as=ul puts both on its <ul>", () => {
+    mount(
+      <ui.CardGrid as="ul" {...A}>
+        <p>x</p>
+      </ui.CardGrid>,
+    );
+    const found = probes();
+    expect(found).toHaveLength(1);
+    expect(found[0]?.tagName).toBe("UL");
+    expect(found[0]?.getAttribute("aria-describedby")).toBe("described");
+  });
+
+  it("a removable button Pill puts both on its button, not on the shell or the x", () => {
+    mount(
+      <ui.Pill onClick={() => undefined} onRemove={() => undefined} removeLabel="Remove" {...A}>
+        x
+      </ui.Pill>,
+    );
+    const found = probes();
+    expect(found).toHaveLength(1);
+    expect(found[0]?.tagName).toBe("BUTTON");
+    expect(found[0]?.textContent).toBe("x");
+    expect(found[0]?.getAttribute("aria-describedby")).toBe("described");
+  });
+
+  it("a removable plain Pill puts both on its shell", () => {
+    mount(
+      <ui.Pill onRemove={() => undefined} removeLabel="Remove" {...A}>
+        x
+      </ui.Pill>,
+    );
+    const found = probes();
+    expect(found).toHaveLength(1);
+    expect(found[0]?.tagName).toBe("SPAN");
+    expect(found[0]?.getAttribute("aria-describedby")).toBe("described");
+  });
+
   for (const name of SPLIT) {
     it(`${name} puts data-* on its wrapper and the description on the field inside`, () => {
       mount(CASES[name]?.() ?? <div />);

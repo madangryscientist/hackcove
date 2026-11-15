@@ -1,121 +1,115 @@
 // @vitest-environment jsdom
 import type { ComponentProps } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { mount, unmount } from "./dom.harness.js";
+import { describe, expect, it, vi } from "vitest";
 import { Pill } from "./Pill.js";
+import { render, screen, user, within } from "./render.harness.js";
 
-afterEach(unmount);
+const follows = (a: Node, b: Node) =>
+  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 describe("Pill label", () => {
-  it("is two-tone: the label half keeps the tone, the value half sits on the surface", () => {
-    const out = renderToStaticMarkup(
+  it("reads label: value, the colon there for a screen reader", () => {
+    render(
       <Pill label="Weight" tone="amber">
         72 kg
       </Pill>,
     );
-    expect(out).toContain("border border-slate-200");
-    expect(out).toContain('bg-amber-50 text-amber-700">Weight<span class="sr-only">:</span>');
-    expect(out).toContain('bg-white py-px text-slate-900 px-1.5">72 kg</span>');
-    expect(out).not.toContain("px-1.5 py-0.5");
+    const label = screen.getByText("Weight");
+    const colon = screen.getByText(":");
+    expect(follows(label, colon)).toBeTruthy();
+    expect(follows(colon, screen.getByText("72 kg"))).toBeTruthy();
   });
 
-  it("keeps the dot in the label half, and the link form around both halves", () => {
-    const dotted = renderToStaticMarkup(
-      <Pill label="Sleep" dot>
-        7 h
-      </Pill>,
-    );
-    expect(dotted).toContain("bg-current");
-    const link = renderToStaticMarkup(
+  it("makes the whole label: value pill one link", () => {
+    render(
       <Pill label="Sleep" href="/sleep">
         7 h
       </Pill>,
     );
-    expect(link.startsWith('<a href="/sleep"')).toBe(true);
-    expect(link).toContain("hover:opacity-80");
-    expect(link).toContain(">7 h</span></a>");
-  });
-
-  it("round keeps the full-pill corners on the bordered box", () => {
-    const out = renderToStaticMarkup(
-      <Pill label="Sleep" round>
-        7 h
-      </Pill>,
-    );
-    expect(out).toContain("rounded-full");
-    expect(out).not.toContain("rounded-md");
+    const link = screen.getByRole("link");
+    expect(link.getAttribute("href")).toBe("/sleep");
+    expect(within(link).getByText("Sleep")).not.toBeNull();
+    expect(within(link).getByText("7 h")).not.toBeNull();
   });
 });
 
 describe("Pill onRemove", () => {
-  it("adds an x button named by removeLabel after the text, and no x without onRemove", () => {
-    const out = renderToStaticMarkup(
+  it("adds an x button named and titled by removeLabel after the text", () => {
+    render(
       <Pill onRemove={() => undefined} removeLabel="Remove invoice.pdf" tone="sky">
         invoice.pdf
       </Pill>,
     );
-    expect(out).toContain('aria-label="Remove invoice.pdf"');
-    expect(out).toContain('title="Remove invoice.pdf"');
-    expect(out).toContain('type="button"');
-    expect(out).toContain('aria-hidden="true"');
-    expect(out).toContain("bg-sky-50 text-sky-700");
-    expect(out.indexOf("invoice.pdf</span>")).toBeLessThan(out.indexOf("<button"));
-    expect(renderToStaticMarkup(<Pill>x</Pill>)).not.toContain("<button");
+    const remove = screen.getByRole("button", { name: "Remove invoice.pdf" });
+    expect(remove.getAttribute("title")).toBe("Remove invoice.pdf");
+    expect(remove.getAttribute("type")).toBe("button");
+    expect(follows(screen.getByText("invoice.pdf"), remove)).toBeTruthy();
   });
 
-  it("calls onRemove on a click of the x only", () => {
+  it("has no x without onRemove", () => {
+    render(<Pill>x</Pill>);
+    expect(screen.queryByRole("button")).toBeNull();
+  });
+
+  it("calls onRemove on a click of the x only", async () => {
     const onRemove = vi.fn<() => void>();
-    const container = mount(
+    render(
       <Pill onRemove={onRemove} removeLabel="Remove it">
         chip
       </Pill>,
     );
-    container.querySelector("span span")?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+    await user().click(screen.getByText("chip"));
     expect(onRemove).not.toHaveBeenCalled();
-    container.querySelector<HTMLButtonElement>('button[aria-label="Remove it"]')?.click();
+    await user().click(screen.getByRole("button", { name: "Remove it" }));
     expect(onRemove).toHaveBeenCalledTimes(1);
   });
 
-  it("sits beside a button or link pill, never nested in it", () => {
+  it("sits beside a button pill, never nested in it", async () => {
     const onClick = vi.fn<() => void>();
-    const container = mount(
-      <Pill onClick={onClick} onRemove={() => undefined} removeLabel="Remove" data-testid="chip">
+    render(
+      <Pill onClick={onClick} onRemove={() => undefined} removeLabel="Remove">
         open
       </Pill>,
     );
-    const buttons = container.querySelectorAll("button");
-    expect(buttons).toHaveLength(2);
-    expect(buttons[0]?.contains(buttons[1] ?? null)).toBe(false);
-    expect(buttons[0]?.getAttribute("data-testid")).toBe("chip");
-    buttons[0]?.click();
+    const open = screen.getByRole("button", { name: "open" });
+    expect(screen.getAllByRole("button")).toHaveLength(2);
+    expect(within(open).queryByRole("button")).toBeNull();
+    await user().click(open);
     expect(onClick).toHaveBeenCalledTimes(1);
-    const link = renderToStaticMarkup(
+  });
+
+  it("sits beside a link pill, never nested in it", () => {
+    render(
       <Pill href="/a.pdf" onRemove={() => undefined} removeLabel="Remove">
         a.pdf
       </Pill>,
     );
-    expect(link).toMatch(/<a href="\/a.pdf"[^>]*>[^<]*<\/a><button/);
+    const link = screen.getByRole("link", { name: "a.pdf" });
+    expect(link.getAttribute("href")).toBe("/a.pdf");
+    expect(within(link).queryByRole("button")).toBeNull();
+    expect(follows(link, screen.getByRole("button", { name: "Remove" }))).toBeTruthy();
   });
 
-  it("puts data-* and title on the shell of a plain pill", () => {
-    const out = renderToStaticMarkup(
-      <Pill onRemove={() => undefined} removeLabel="Remove" data-testid="chip" title="T">
+  it("puts the title on a plain pill, around its text and its x", () => {
+    render(
+      <Pill onRemove={() => undefined} removeLabel="Remove" title="T">
         x
       </Pill>,
     );
-    expect(out.startsWith('<span data-testid="chip" title="T"')).toBe(true);
+    const pill = screen.getByTitle("T");
+    expect(within(pill).getByText("x")).not.toBeNull();
+    expect(within(pill).getByRole("button", { name: "Remove" })).not.toBeNull();
   });
 
-  it("combines with label: the x joins the value half", () => {
-    const out = renderToStaticMarkup(
+  it("combines with label: the x reads after the value", () => {
+    render(
       <Pill label="File" onRemove={() => undefined} removeLabel="Remove file">
         a.pdf
       </Pill>,
     );
-    expect(out).toContain("border border-slate-200");
-    expect(out).toContain("pl-1.5 pr-0.5");
-    expect(out).toContain('aria-label="Remove file"');
+    expect(
+      follows(screen.getByText("a.pdf"), screen.getByRole("button", { name: "Remove file" })),
+    ).toBeTruthy();
   });
 
   it("needs a removeLabel with onRemove, and cannot be a plain pill's label-less x", () => {

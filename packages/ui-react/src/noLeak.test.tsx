@@ -38,10 +38,23 @@ const CASES: Record<string, Case[]> = {
       ),
     },
   ],
+  CardGrid: [
+    {
+      prop: "as",
+      node: () => (
+        <ui.CardGrid as="ul">
+          <p>x</p>
+        </ui.CardGrid>
+      ),
+    },
+  ],
   ClusterGrow: [{ prop: "minWidth", node: () => <ui.ClusterGrow minWidth="sm">x</ui.ClusterGrow> }],
   EmptyState: [
     { prop: "level", node: () => <ui.EmptyState title="T" level={3} /> },
     { prop: "padding", node: () => <ui.EmptyState title="T" padding="inset" /> },
+  ],
+  FullBleedLayout: [
+    { prop: "padded", node: () => <ui.FullBleedLayout padded>x</ui.FullBleedLayout> },
   ],
   ListRow: [
     {

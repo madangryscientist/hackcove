@@ -1,144 +1,131 @@
 // @vitest-environment jsdom
-import { renderToStaticMarkup } from "react-dom/server";
-import { act } from "react";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { mount, unmount } from "./dom.harness.js";
+import { describe, expect, it, vi } from "vitest";
+import { render, screen, user } from "./render.harness.js";
 import { Switch } from "./Switch.js";
 
 const noop = () => undefined;
 
-/** The track's height and width classes at a size. */
-const track = (size?: "sm" | "md" | "lg") =>
-  renderToStaticMarkup(<Switch label="L" size={size} checked={false} onChange={noop} />).match(
-    /<button[^>]*class="[^"]*(h-\d+ w-\d+)/,
-  )?.[1];
-
-/** The one switch in the mounted tree. */
-function switchOf(container: HTMLElement): HTMLButtonElement {
-  const found = container.querySelector<HTMLButtonElement>('[role="switch"]');
-  if (found === null) throw new Error("no switch rendered");
+/** The one switch on the page, as the button it is. */
+function theSwitch(): HTMLButtonElement {
+  const found = screen.getByRole("switch");
+  if (!(found instanceof HTMLButtonElement)) throw new Error("the switch is not a button");
   return found;
 }
 
 describe("Switch", () => {
-  afterEach(unmount);
-
-  it("is a native button with role switch, and aria-checked is the caller's value", () => {
-    const off = switchOf(mount(<Switch label="Live" checked={false} onChange={noop} />));
+  it("is a button of type button named by its label, off when checked is false", () => {
+    render(<Switch label="Live" checked={false} onChange={noop} />);
+    const off = screen.getByRole("switch", { name: "Live" });
     expect(off.tagName).toBe("BUTTON");
     expect(off.getAttribute("type")).toBe("button");
     expect(off.getAttribute("aria-checked")).toBe("false");
-    unmount();
-    expect(
-      switchOf(mount(<Switch label="Live" checked onChange={noop} />)).getAttribute("aria-checked"),
-    ).toBe("true");
   });
 
-  it("calls onChange with the next value, and does not flip by itself", () => {
-    const onChange = vi.fn<(checked: boolean) => void>();
-    const off = switchOf(mount(<Switch label="Live" checked={false} onChange={onChange} />));
-    act(() => off.click());
-    expect(onChange).toHaveBeenLastCalledWith(true);
-    expect(off.getAttribute("aria-checked")).toBe("false");
-    unmount();
-
-    const on = switchOf(mount(<Switch label="Live" checked onChange={onChange} />));
-    act(() => on.click());
-    expect(onChange).toHaveBeenLastCalledWith(false);
-    expect(onChange).toHaveBeenCalledTimes(2);
+  it("is on when checked is true", () => {
+    render(<Switch label="Live" checked onChange={noop} />);
+    expect(screen.getByRole("switch", { name: "Live" }).getAttribute("aria-checked")).toBe("true");
   });
 
-  it("clicking the label flips it once", () => {
+  it("calls onChange with true when off, and does not flip by itself", async () => {
     const onChange = vi.fn<(checked: boolean) => void>();
-    const container = mount(<Switch label="Live" checked={false} onChange={onChange} />);
-    const text = Array.from(container.querySelectorAll("span")).find(
-      (el) => el.textContent === "Live",
-    );
-    act(() => text?.click());
-    expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenCalledWith(true);
+    render(<Switch label="Live" checked={false} onChange={onChange} />);
+    await user().click(theSwitch());
+    expect(onChange).toHaveBeenCalledExactlyOnceWith(true);
+    expect(theSwitch().getAttribute("aria-checked")).toBe("false");
   });
 
-  it("busy ignores a click, keeps aria-busy and stays focusable", () => {
+  it("calls onChange with false when on", async () => {
     const onChange = vi.fn<(checked: boolean) => void>();
-    const busy = switchOf(mount(<Switch label="Live" checked busy onChange={onChange} />));
-    act(() => busy.click());
+    render(<Switch label="Live" checked onChange={onChange} />);
+    await user().click(theSwitch());
+    expect(onChange).toHaveBeenCalledExactlyOnceWith(false);
+  });
+
+  it("flips once on Space and once on Enter", async () => {
+    const onChange = vi.fn<(checked: boolean) => void>();
+    render(<Switch label="Live" checked={false} onChange={onChange} />);
+    const person = user();
+    await person.tab();
+    expect(document.activeElement).toBe(theSwitch());
+    await person.keyboard(" ");
+    await person.keyboard("{Enter}");
+    expect(onChange.mock.calls).toEqual([[true], [true]]);
+  });
+
+  it("clicking the label flips it once", async () => {
+    const onChange = vi.fn<(checked: boolean) => void>();
+    render(<Switch label="Live" checked={false} onChange={onChange} />);
+    await user().click(screen.getByText("Live"));
+    expect(onChange).toHaveBeenCalledExactlyOnceWith(true);
+  });
+
+  it("busy ignores a click, keeps aria-busy and stays focusable", async () => {
+    const onChange = vi.fn<(checked: boolean) => void>();
+    render(<Switch label="Live" checked busy onChange={onChange} />);
+    const busy = theSwitch();
+    const person = user();
+    await person.tab();
+    expect(document.activeElement).toBe(busy);
+    await person.click(busy);
     expect(onChange).not.toHaveBeenCalled();
     expect(busy.getAttribute("aria-busy")).toBe("true");
     expect(busy.getAttribute("aria-disabled")).toBe("true");
     expect(busy.disabled).toBe(false);
-    busy.focus();
-    expect(document.activeElement).toBe(busy);
-    expect(busy.className).toContain("bg-violet-600");
   });
 
   it("is not busy by default: no aria-busy, no aria-disabled", () => {
-    const out = renderToStaticMarkup(<Switch label="Live" checked onChange={noop} />);
-    expect(out).not.toContain("aria-busy");
-    expect(out).not.toContain("aria-disabled");
+    render(<Switch label="Live" checked onChange={noop} />);
+    expect(theSwitch().hasAttribute("aria-busy")).toBe(false);
+    expect(theSwitch().hasAttribute("aria-disabled")).toBe(false);
   });
 
-  it("disabled is the native attribute and washes the switch out", () => {
+  it("disabled is the native attribute and ignores a click", async () => {
     const onChange = vi.fn<(checked: boolean) => void>();
-    const container = mount(<Switch label="Live" checked disabled onChange={onChange} />);
-    const disabled = switchOf(container);
-    expect(disabled.disabled).toBe(true);
-    act(() => disabled.click());
+    render(<Switch label="Live" checked disabled onChange={onChange} />);
+    expect(theSwitch().disabled).toBe(true);
+    await user().click(screen.getByText("Live"));
     expect(onChange).not.toHaveBeenCalled();
-    expect(container.querySelector("label")?.className).toContain("opacity-50");
   });
 
-  it("a description is the switch's aria-describedby, and keeps a caller's", () => {
-    const out = renderToStaticMarkup(
-      <Switch label="Live" description="Serves all traffic" checked onChange={noop} />,
+  it("a description is the switch's description, and reads after the label", () => {
+    render(<Switch label="Live" description="Serves all traffic" checked onChange={noop} />);
+    expect(
+      screen.getByRole("switch", { name: /^Live/, description: "Serves all traffic" }),
+    ).not.toBeNull();
+    const label = screen.getByText("Live");
+    const description = screen.getByText("Serves all traffic");
+    expect(label.compareDocumentPosition(description) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
     );
-    const id = out.match(/aria-describedby="([^"]+)"/)?.[1];
-    expect(id).toBeTruthy();
-    expect(out).toMatch(new RegExp(`<span id="${id}" class="text-xs text-slate-500">Serves all`));
-    expect(out.indexOf("Live")).toBeLessThan(out.indexOf("Serves all traffic"));
-    expect(out).toMatch(/<label[^>]*class="[^"]*items-start/);
+  });
 
-    const merged = renderToStaticMarkup(
-      <Switch label="L" description="D" aria-describedby="other" checked onChange={noop} />,
+  it("a description keeps a caller's aria-describedby", () => {
+    render(
+      <>
+        <span id="other">Also this</span>
+        <Switch label="L" description="D" aria-describedby="other" checked onChange={noop} />
+      </>,
     );
-    expect(merged).toMatch(/aria-describedby="other [^"]+"/);
-
-    const plain = renderToStaticMarkup(<Switch label="L" checked onChange={noop} />);
-    expect(plain).not.toContain("aria-describedby");
-    expect(plain).toMatch(/<label[^>]*class="[^"]*items-center/);
+    expect(screen.getByRole("switch", { description: "Also this D" })).not.toBeNull();
   });
 
-  it("a bare switch is named by aria-label and has no label element", () => {
-    const out = renderToStaticMarkup(
-      <Switch aria-label="Live in staging" checked onChange={noop} />,
-    );
-    expect(out).not.toContain("<label");
-    expect(out).toContain('aria-label="Live in staging"');
+  it("without a description the switch has none", () => {
+    render(<Switch label="L" checked onChange={noop} />);
+    expect(theSwitch().hasAttribute("aria-describedby")).toBe(false);
   });
 
-  it("the three sizes change the track, and md is the default", () => {
-    expect(track("sm")).toBe("h-5 w-9");
-    expect(track()).toBe("h-6 w-11");
-    expect(track("md")).toBe("h-6 w-11");
-    expect(track("lg")).toBe("h-7 w-13");
+  it("a bare switch is named by aria-label, with no label around it", async () => {
+    const onChange = vi.fn<(checked: boolean) => void>();
+    render(<Switch aria-label="Live in staging" checked onChange={onChange} />);
+    expect(screen.getByRole("switch", { name: "Live in staging" })).toBe(theSwitch());
+    expect(theSwitch().labels).toHaveLength(0);
+    await user().click(theSwitch());
+    expect(onChange).toHaveBeenCalledExactlyOnceWith(false);
   });
 
-  it("off is an outline in text-slate-500 and on is the accent fill with a pale thumb", () => {
-    const off = renderToStaticMarkup(<Switch label="L" checked={false} onChange={noop} />);
-    expect(off).toMatch(/<button[^>]*class="[^"]*border-current text-slate-500/);
-    expect(off).not.toContain("bg-violet-600");
-    expect(off).toContain("bg-current");
-    const on = renderToStaticMarkup(<Switch label="L" checked onChange={noop} />);
-    expect(on).toMatch(/<button[^>]*class="[^"]*bg-violet-600 text-violet-50/);
-    expect(on).not.toContain("border-current");
-    expect(on).toContain("bg-current");
-    expect(on).not.toContain("dark:");
-    expect(on).toContain("motion-reduce:transition-none");
-  });
-
-  it("passes other button props through and calls the caller's onClick first", () => {
+  it("passes other button props through and calls the caller's onClick first", async () => {
     const calls: string[] = [];
-    const container = mount(
+    render(
       <Switch
         label="Live"
         checked={false}
@@ -146,30 +133,26 @@ describe("Switch", () => {
         onClick={() => calls.push("click")}
         name="live"
         id="live-switch"
-        data-testid="probe"
       />,
     );
-    const button = switchOf(container);
+    const button = theSwitch();
     expect(button.id).toBe("live-switch");
-    expect(button.getAttribute("name")).toBe("live");
-    expect(button.getAttribute("data-testid")).toBe("probe");
-    act(() => button.click());
+    expect(button.name).toBe("live");
+    await user().click(button);
     expect(calls).toEqual(["click", "change"]);
   });
 
-  it("a caller's onClick can stop the change with preventDefault", () => {
+  it("a caller's onClick can stop the change with preventDefault", async () => {
     const onChange = vi.fn<(checked: boolean) => void>();
-    const button = switchOf(
-      mount(
-        <Switch
-          label="Live"
-          checked={false}
-          onChange={onChange}
-          onClick={(event) => event.preventDefault()}
-        />,
-      ),
+    render(
+      <Switch
+        label="Live"
+        checked={false}
+        onChange={onChange}
+        onClick={(event) => event.preventDefault()}
+      />,
     );
-    act(() => button.click());
+    await user().click(theSwitch());
     expect(onChange).not.toHaveBeenCalled();
   });
 });

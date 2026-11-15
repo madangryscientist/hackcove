@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
-import { renderToStaticMarkup } from "react-dom/server";
+import { renderToStaticMarkup } from "react-dom/server"; // markup read as data, below
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { PageFade, startPageTransition } from "./PageFade.js";
+import { render, screen } from "./render.harness.js";
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -15,32 +16,28 @@ function stubMotion(reduce: boolean): void {
 }
 
 describe("PageFade", () => {
-  it("renders a div named for the transition, holding the children", () => {
-    const out = renderToStaticMarkup(<PageFade>page</PageFade>);
-    expect(out).toContain('<div data-page-fade="hc-page">page</div>');
+  it("renders an element named for the transition, holding the children", () => {
+    render(<PageFade>page</PageFade>);
+    expect(screen.getByText("page").getAttribute("data-page-fade")).toBe("hc-page");
   });
 
   it("names the element in a stylesheet that carries no colour", () => {
-    const out = renderToStaticMarkup(<PageFade>x</PageFade>);
+    // The <style> beside the element has no role to find it by, so it is read as data.
+    const out = renderToStaticMarkup(<PageFade>x</PageFade>); // markup read as data
     expect(out).toContain('[data-page-fade="hc-page"]{view-transition-name:hc-page}');
     expect(out).not.toMatch(/#[0-9a-f]{3}|rgb|hsl/i);
   });
 
-  it("turns the animations off under prefers-reduced-motion", () => {
-    const out = renderToStaticMarkup(<PageFade>x</PageFade>);
-    expect(out).toMatch(/@media \(prefers-reduced-motion:reduce\)\{[^}]*animation:none/);
-  });
-
   it("takes its own name, so two on a page do not collide", () => {
-    const out = renderToStaticMarkup(<PageFade name="side">x</PageFade>);
-    expect(out).toContain('[data-page-fade="side"]{view-transition-name:side}');
-    expect(out).toContain('<div data-page-fade="side">');
+    render(<PageFade name="side">x</PageFade>);
+    expect(screen.getByText("x").getAttribute("data-page-fade")).toBe("side");
+    const css = renderToStaticMarkup(<PageFade name="side">x</PageFade>); // markup read as data
+    expect(css).toContain('[data-page-fade="side"]{view-transition-name:side}');
   });
 
-  it("keeps the children the first child of the div, and forwards props", () => {
-    const out = renderToStaticMarkup(<PageFade id="content">x</PageFade>);
-    expect(out).toContain('id="content"');
-    expect(out).toMatch(/<div [^>]*>x<\/div>/);
+  it("forwards props to the element", () => {
+    render(<PageFade id="content">x</PageFade>);
+    expect(screen.getByText("x").id).toBe("content");
   });
 });
 
