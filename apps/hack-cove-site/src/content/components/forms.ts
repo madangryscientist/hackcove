@@ -239,7 +239,7 @@ export const forms: ComponentSection = {
           "Switching the panel under a row of headings is `Tabs`.",
           "A `count` sits muted after the label.",
           "A disabled option keeps a `title` as the reason; `disabled` on the group disables every option.",
-          "Options that go to another page are links: `href` on each, or `render` to draw the app's own router link. `value` marks the current page.",
+          "Options that go to another page are links: `href` on each, drawn by the app's router link through `LinkProvider`. `value` marks the current page.",
         ],
       },
       accessibility: [

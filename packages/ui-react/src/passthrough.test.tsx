@@ -26,6 +26,9 @@ const SPLIT = new Set(["DateField", "DateRangePicker", "Radio"]);
  * Parts whose `id` is a prop of their own, not the root's: a `Section`'s anchors its heading, and a
  * `SortableSection`'s or `SortableItem`'s is its key in the list's moves.
  */
+/** Parts that render no element of their own, so there is no root to pass anything to. */
+const NO_ROOT = new Set(["LinkProvider"]);
+
 const OWN_ID = new Set(["Section", "SortableSection", "SortableItem"]);
 
 describe("every exported component passes id, data-* and aria-* through", () => {
@@ -33,7 +36,7 @@ describe("every exported component passes id, data-* and aria-* through", () => 
   afterEach(unmount);
 
   it("has a case for every exported component, and no stale one", () => {
-    const components = Object.keys(ui).filter((name) => /^[A-Z]/.test(name));
+    const components = Object.keys(ui).filter((name) => /^[A-Z]/.test(name) && !NO_ROOT.has(name));
     expect(Object.keys(CASES).toSorted()).toEqual(components.toSorted());
   });
 

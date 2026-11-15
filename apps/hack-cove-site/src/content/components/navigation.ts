@@ -15,7 +15,7 @@ export const navigation: ComponentSection = {
       usage: {
         do: [
           "`Tabs` switches a view in place; the caller owns `value` and `onChange`, and the panel sits right under the row.",
-          'Going to another page is `variant="pill"` with link items (`href` or `render`, and `active` on the current one): links, so the URL, the back button and a new tab all work.',
+          'Going to another page is `variant="pill"` with link items (`href`, and `active` on the current one): links, so the URL, the back button and a new tab all work.',
           "A `count` sits muted after the label and is read as part of the tab's name.",
           '`variant="pill"` fills the current tab, for under a `PageHeader`.',
           "`size` (`sm`, `md` the default, `lg`) sets a pill row on the control scale, so they line up with a `Button` of the same size.",
@@ -40,7 +40,7 @@ export const navigation: ComponentSection = {
       pairs: ["Breadcrumbs/Trail", "Breadcrumbs/Hierarchy"],
       usage: {
         do: [
-          "Give the trail in order, parents first. A parent that links is `{ label, href }` (or `{ label, render }` for the app's router link); the last crumb is the current page, plain text.",
+          "Give the trail in order, parents first. A parent that links is `{ label, href }`, drawn through the app's `LinkProvider` for an in-app path; the last crumb is the current page, plain text.",
           "Breadcrumbs show a hierarchy. Peer sections are pill `Tabs` of links.",
           "Each crumb truncates, so a long name does not widen the row.",
           "Put the trail in the `breadcrumbs` slot of a `PageHeader`.",

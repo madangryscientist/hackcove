@@ -6,7 +6,7 @@ import { BODY_PAD, cardBody } from "./CardBody.js";
 import { CardFooter } from "./CardParts.js";
 import { cx, focusRing, liftInteractive } from "./cx.js";
 import type { IconName } from "./icons.js";
-import { type LinkRender, renderLink } from "./link.js";
+import { renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 /** A card with a `footer`: a `dashed` card stands alone and has none. */
@@ -138,7 +138,6 @@ type CardPanelProps = CardBase & {
    */
   as?: "section" | "article" | "div";
   href?: undefined;
-  render?: undefined;
   external?: undefined;
 } & Omit<ComponentPropsWithoutRef<"section">, "title" | "className" | "style" | "children">;
 
@@ -149,24 +148,15 @@ type CardLinkProps = CardBase & {
   as?: undefined;
   /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
   external?: boolean | undefined;
-} & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href" | "title" | "children">> &
-  (
-    | {
-        /** Makes the whole card one link to this URL, with no `actions`, `footer` or `as`. */
-        href: string;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/shots/1" {...p} />`. */
-        render?: LinkRender | undefined;
-      }
-    | {
-        /** Makes the whole card one link to this URL, with no `actions`, `footer` or `as`. */
-        href?: string | undefined;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/shots/1" {...p} />`. */
-        render: LinkRender;
-      }
-  );
+  /**
+   * Makes the whole card one link to this URL, with no `actions`, `footer` or `as`; an in-app path
+   * goes through the app's `LinkProvider`.
+   */
+  href: string;
+} & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href" | "title" | "children">>;
 
 function isCardLink(props: CardPanelProps | CardLinkProps): props is CardLinkProps {
-  return props.href !== undefined || props.render !== undefined;
+  return props.href !== undefined;
 }
 
 /**
@@ -198,8 +188,8 @@ function isCardLink(props: CardPanelProps | CardLinkProps): props is CardLinkPro
  *
  * `href` makes the whole card one link: a hover border and the focus ring, with the link stretched
  * over the card, so it takes no `actions`, `footer` or `as`. A `TextLink`, `Button` or `Checkbox` in
- * the body sits above the link and is clickable on its own. With `render` it draws the app's own router `<Link>`
- * (`render={(p) => <Link to="/shots/1" {...p} />}`). `external` opens it in a new tab. On a link card
+ * the body sits above the link and is clickable on its own. An in-app `href` is drawn by the app's
+ * router link through `LinkProvider`. `external` opens it in a new tab. On a link card
  * `id`, `data-*` and the describing `aria-*` (`aria-describedby`, `aria-details`, …) go on the card
  * root, not the link; the link's own `aria-label`, `aria-labelledby` and `aria-current` stay on the
  * link. The link is named by the card's text (title, body, `badge`) through the root's id, which is
@@ -286,6 +276,7 @@ function LinkCard(props: CardLinkProps): ReactElement {
     size = "md",
     children,
     external = false,
+    href,
     ...rest
   } = props;
   const form = cardForm({ flush, bar, dashed, tone, attention, icon, size }, Boolean(title));
@@ -302,6 +293,7 @@ function LinkCard(props: CardLinkProps): ReactElement {
       {renderLink({
         ...(link["aria-label"] === undefined ? { "aria-labelledby": cardId } : {}),
         ...link,
+        href,
         external,
         className: cx(
           "link-stretch absolute inset-0 rounded-xl",

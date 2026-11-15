@@ -1,7 +1,7 @@
 import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
 import { Badge } from "./Badge.js";
 import { cx, focusRing } from "./cx.js";
-import { type LinkRender, renderLink } from "./link.js";
+import { renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 
@@ -50,28 +50,15 @@ type IconButtonProps = {
 type IconButtonAsButton = IconButtonProps &
   Unstyled<Omit<ComponentPropsWithoutRef<"button">, "children">> & {
     href?: undefined;
-    render?: undefined;
     external?: undefined;
   };
 
 type IconButtonAsLink = IconButtonProps & {
   /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
   external?: boolean | undefined;
-} & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href" | "children">> &
-  (
-    | {
-        /** Makes the button a link to this URL. */
-        href: string;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/settings" {...p} />`. */
-        render?: LinkRender | undefined;
-      }
-    | {
-        /** Makes the button a link to this URL. */
-        href?: string | undefined;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/settings" {...p} />`. */
-        render: LinkRender;
-      }
-  );
+  /** Makes the button a link to this URL; an in-app path goes through the app's `LinkProvider`. */
+  href: string;
+} & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href" | "children">>;
 
 /** The classes for a variant, tone and size, each at its default when left out. Shared with `ColourSchemeToggle`, which draws its own `<button>`; not exported from `index.ts`. */
 export function look({
@@ -83,7 +70,7 @@ export function look({
 }
 
 function isLink(props: IconButtonAsButton | IconButtonAsLink): props is IconButtonAsLink {
-  return props.href !== undefined || props.render !== undefined;
+  return props.href !== undefined;
 }
 
 /**
@@ -91,8 +78,8 @@ function isLink(props: IconButtonAsButton | IconButtonAsLink): props is IconButt
  * drops the border for a quiet action in a row or a toolbar; `size` matches the height of a
  * `Button` of the same size (`sm` 26px, `md` 38px, `lg` 46px); `tone="danger"` is red, for delete
  * and clear; `badge` pins a red count to the corner. Defaults to `type="button"`. `href` makes it
- * a link instead (a plain `<a>`, or with `render` the app's own router `<Link>`:
- * `render={(p) => <Link to="/settings" {...p} />}`; `external` opens a new tab), with the same look.
+ * a link instead (the app's router link through `LinkProvider` for an in-app path, else a plain
+ * `<a>`; `external` opens a new tab), with the same look.
  */
 export function IconButton(props: IconButtonAsButton | IconButtonAsLink): ReactElement {
   if (isLink(props)) {

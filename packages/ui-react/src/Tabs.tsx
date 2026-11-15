@@ -60,7 +60,7 @@ export type TabsProps = SwitchProps &
 /**
  * Underline tabs for switching a view in place: a row over a bottom rule, the current tab
  * underlined in the accent. `items` are `{ value, label }` buttons (`value` and `onChange` are the
- * caller's state; the arrow keys, Home and End move between tabs) or links (`href`, or `render` to
+ * caller's state; the arrow keys, Home and End move between tabs) or links (`href`, an in-app one through `LinkProvider`, to
  * draw the app's own router `<Link>`; `active` on an item, or `value`, marks the current one, which
  * gets `aria-current`). `variant="pill"` fills the current tab instead, with no rule, for under a
  * `PageHeader` or as a site's section nav, and takes a `size`; `orientation="vertical"` stacks the

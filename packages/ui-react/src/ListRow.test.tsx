@@ -54,13 +54,6 @@ describe("ListRow", () => {
     expect(screen.getByRole("link", { name: "Status 3" }).getAttribute("href")).toBe("/status");
     expect(screen.queryByRole("button")).toBeNull();
   });
-
-  it("render draws the app's own link", () => {
-    render(<ListRow render={(props) => <a data-router="1" href="/x" {...props} />}>Go</ListRow>);
-    const link = screen.getByRole("link", { name: "Go" });
-    expect(link.getAttribute("data-router")).toBe("1");
-    expect(link.getAttribute("href")).toBe("/x");
-  });
 });
 
 describe("ListRow leading and selected", () => {

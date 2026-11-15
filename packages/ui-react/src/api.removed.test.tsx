@@ -47,6 +47,20 @@ export const removed = {
   r18: () => <ui.StatTile label="x" value="1" onClick={() => undefined} />,
   // @ts-expect-error Code passes only id, data-* and aria-*: no title
   r19: () => <ui.Code title="x">x</ui.Code>,
+
+  // The router link adapter
+  // @ts-expect-error LinkRender is gone: the app sets a LinkAdapter once on LinkProvider
+  r20: () => ((t: import("./index.js").LinkRender) => t)(() => null),
+  // @ts-expect-error LinkRenderProps is LinkAdapterProps
+  r21: () => ((t: import("./index.js").LinkRenderProps) => t)({ className: "", children: null }),
+  // @ts-expect-error render is gone: href, drawn through LinkProvider
+  r22: () => <ui.Button render={() => null}>x</ui.Button>,
+  // @ts-expect-error a Crumb has no render: { label, href }
+  r23: () => <ui.Breadcrumbs crumbs={[{ label: "x", render: () => null }]} />,
+  // @ts-expect-error renderHome is gone: the home link draws through LinkProvider
+  r24: () => <ui.NotFound renderHome={() => null} />,
+  // @ts-expect-error a Tabs link item has no render
+  r25: () => <ui.Tabs label="x" items={[{ label: "x", render: () => null }]} />,
 };
 
 describe("removed API", () => {

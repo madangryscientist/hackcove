@@ -48,7 +48,7 @@ export {
 export { Section, Stack, type StackGap, type StackRowFrom, type StackWidth } from "./Stack.js";
 export { Button, type ButtonSize, type ButtonTone, type ButtonVariant } from "./Button.js";
 export { ButtonGroup } from "./ButtonGroup.js";
-export { type LinkRender, type LinkRenderProps } from "./link.js";
+export { type LinkAdapter, type LinkAdapterProps, LinkProvider } from "./link.js";
 export {
   Avatar,
   avatarColourClass,

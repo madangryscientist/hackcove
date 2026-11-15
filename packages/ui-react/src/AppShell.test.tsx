@@ -8,7 +8,6 @@ import {
   appShellRootClassFor,
 } from "./AppShell.js";
 import { schemeClass } from "./colourScheme.js";
-import type { LinkRenderProps } from "./link.js";
 import { render, screen, within } from "./render.harness.js";
 
 const follows = (a: Node, b: Node) =>
@@ -94,9 +93,6 @@ describe("appShellRootClassFor", () => {
 });
 
 // A stand-in for a router's <Link>: it takes `to` and spreads the props it is handed.
-const Link = ({ to, ...rest }: { to: string } & LinkRenderProps) => (
-  <a data-testid="router-link" data-to={to} {...rest} />
-);
 
 describe("AppShellBrand", () => {
   it("is one link home named by the label, the logo hidden from assistive tech", () => {
@@ -110,15 +106,6 @@ describe("AppShellBrand", () => {
   it("is named by the label alone without a logo", () => {
     render(<AppShellBrand href="/" label="Quotes" />);
     expect(screen.getByRole("link", { name: "Quotes" })).not.toBeNull();
-  });
-
-  it("draws the app's own link with render, with no href", () => {
-    render(<AppShellBrand label="Quotes" render={(props) => <Link to="/" {...props} />} />);
-    // An <a> with no href has no link role (the router gives it one), so its test id finds it.
-    const link = screen.getByTestId("router-link");
-    expect(link.getAttribute("data-to")).toBe("/");
-    expect(link.hasAttribute("href")).toBe(false);
-    expect(within(link).getByText("Quotes")).not.toBeNull();
   });
 
   it("keeps the label in the link's name when collapse hides it on a phone", () => {

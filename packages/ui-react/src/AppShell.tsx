@@ -3,7 +3,7 @@ import { AppShellMenu } from "./AppShellMenu.js";
 import { ContainerFrame } from "./Container.js";
 import { schemeClass, type ColourScheme, type ColourSchemeClasses } from "./colourScheme.js";
 import { cx, focusRing } from "./cx.js";
-import { type LinkRender, renderLink } from "./link.js";
+import { renderLink } from "./link.js";
 import type { Passthrough, Unstyled } from "./props.js";
 import { useScrollEdges } from "./scrollEdges.js";
 import type { Size } from "./size.js";
@@ -28,8 +28,8 @@ const LOGO_BOX: Record<Size, string> = { sm: "size-5", md: "size-6", lg: "size-8
 /**
  * The `brand` slot as one link: a logo and a label inside the same `<a>`, so the whole brand is the
  * way home. The label names the link; the logo is decoration and hidden from assistive tech.
- * `collapse` shows only the logo below `sm`, the label staying in the accessible name. With
- * `render` it draws the app's own router `<Link>` (`render={(p) => <Link to="/" {...p} />}`).
+ * `collapse` shows only the logo below `sm`, the label staying in the accessible name. An in-app
+ * `href` is drawn by the app's router link through `LinkProvider`.
  */
 export function AppShellBrand({
   logo,
@@ -37,11 +37,12 @@ export function AppShellBrand({
   label,
   collapse = false,
   href,
-  render,
   ...rest
 }: Passthrough & {
   /** The name beside the logo. It is the link's accessible name. */
   label: ReactNode;
+  /** Where the brand links, usually the app's home (`/`). */
+  href: string;
   /** The logo slot's box: sm 20px, md 24px (the default, an `Avatar size="sm"`), lg 32px. An `<img>` or `<svg>` logo fills it. */
   logoSize?: Size;
 } & (
@@ -55,25 +56,10 @@ export function AppShellBrand({
         /** Below `sm` only the logo shows; the label is visually hidden and still names the link. Needs a `logo`. */
         collapse: true;
       }
-  ) &
-  (
-    | {
-        /** Where the brand links, usually the app's home (`/`). */
-        href: string;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/" {...p} />`. */
-        render?: LinkRender | undefined;
-      }
-    | {
-        /** Where the brand links, usually the app's home (`/`). */
-        href?: string | undefined;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/" {...p} />`. */
-        render: LinkRender;
-      }
   )): ReactElement {
   return renderLink({
     ...rest,
     href,
-    render,
     className: cx("flex items-center gap-2 rounded", focusRing),
     children: (
       <>

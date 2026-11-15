@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   Avatar,
   AppShellBrand,
+  LinkProvider,
   AppShellHideBelow,
   Cluster,
   Text,
@@ -36,14 +37,12 @@ export const DontBrand: S = {
   ),
 };
 
-/** With a router, `render` draws the app's own link and `AppShellBrand` adds the logo, the label and the focus ring (here a stand-in `<a>`). */
+/** With a router, the app's `LinkProvider` draws the link and `AppShellBrand` adds the logo, the label and the focus ring (here a stand-in `<a>`). */
 export const DoRouterBrand: S = {
   render: () => (
-    <AppShellBrand
-      logo={<Avatar name="Quotes" size="sm" />}
-      label="Quotes"
-      render={(props) => <a {...props} href="#home" />}
-    />
+    <LinkProvider link={({ href, ...rest }) => <a {...rest} href={`#${href}`} />}>
+      <AppShellBrand logo={<Avatar name="Quotes" size="sm" />} label="Quotes" href="/" />
+    </LinkProvider>
   ),
 };
 

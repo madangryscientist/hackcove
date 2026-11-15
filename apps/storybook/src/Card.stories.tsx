@@ -4,7 +4,6 @@ import {
   ButtonGroup,
   Card,
   CardGrid,
-  type LinkRenderProps,
   ListRow,
   Pill,
   Stack,
@@ -17,11 +16,6 @@ import { SampleTable } from "./sampleTable";
 const meta: Meta = { title: "Content/Card" };
 export default meta;
 type S = StoryObj;
-
-/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
-function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
-  return <a href={`#${to}`} {...rest} />;
-}
 
 /** `status` puts a Pill directly beside the title; `actions` stays at the far end. */
 export const DoStatus: S = {
@@ -215,11 +209,11 @@ export const AnchorTarget: S = {
   },
 };
 
-/** `render` draws the app's own router `<Link>`, already carrying the card's classes. */
-export const LinkRender: S = {
+/** An in-app `href` is drawn by the app's router `<Link>` through `LinkProvider`, already carrying the card's classes. */
+export const RouterLink: S = {
   render: () => (
     <div className="max-w-md">
-      <Card render={(p) => <FakeLink to="/shots/1" {...p} />} title="Dashboard">
+      <Card href="/shots/1" title="Dashboard">
         <Text tone="muted">The router Link is the card.</Text>
       </Card>
     </div>

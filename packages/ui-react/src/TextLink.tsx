@@ -1,6 +1,6 @@
 import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import { cx, focusRing } from "./cx.js";
-import { type LinkRender, renderLink } from "./link.js";
+import { renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 import { TEXT_TONE, type TextTone } from "./typography.js";
@@ -48,25 +48,13 @@ type TextLinkProps = {
   external?: boolean | undefined;
   /** The link covers its nearest `relative` ancestor, so the whole row or card is the click target. */
   stretch?: boolean | undefined;
-} & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href">> &
-  (
-    | {
-        /** Where the link goes. */
-        href: string;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/terms" {...p} />`. */
-        render?: LinkRender | undefined;
-      }
-    | {
-        /** Where the link goes. */
-        href?: string | undefined;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/terms" {...p} />`. */
-        render: LinkRender;
-      }
-  );
+  /** Where the link goes; an in-app path goes through the app's `LinkProvider`. */
+  href: string;
+} & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href">>;
 
 /**
- * An inline text link in the accent colour. Every anchor prop goes on the `<a>`. With `render` it
- * draws the app's own router `<Link>` instead (`render={(p) => <Link to="/terms" {...p} />}`).
+ * An inline text link in the accent colour. Every anchor prop goes on the `<a>`; an in-app `href`
+ * is drawn by the app's router link through `LinkProvider`.
  * `size` pins the type size (`sm`, `md` or `lg`), `tone` gives it a meaning's colour and `mono` sets the
  * monospace face.
  */
@@ -77,14 +65,12 @@ export function TextLink({
   external = false,
   stretch = false,
   href,
-  render,
   children,
   ...rest
 }: TextLinkProps): ReactElement {
   return renderLink({
     ...rest,
     href,
-    render,
     external,
     className: cx(
       tone && tone !== "neutral" ? toneClass(tone) : linkClass,

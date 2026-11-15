@@ -1,20 +1,21 @@
 import { isValidElement, type ReactElement, type ReactNode } from "react";
 import { cx, focusRing } from "./cx.js";
-import { type LinkRender, renderLink } from "./link.js";
+import { renderLink } from "./link.js";
 import type { Passthrough } from "./props.js";
 
 /** The classes of a crumb that links somewhere, for a router's own <Link>. The current page is plain text, not a link. */
 export const crumbLinkClass = cx("rounded text-slate-500 hover:underline", focusRing);
 
 /**
- * A crumb that links: a plain `<a href>`, or with `render` the app's own router `<Link>`
- * (`render: (p) => <Link to="/quotes" {...p} />`; `href` is then not used). `external` opens in a
- * new tab. The last crumb is the current page and is never a link.
+ * A crumb that links: `href`, drawn by the app's router link through `LinkProvider` for an in-app
+ * path, else a plain `<a>`. `external` opens in a new tab. The last crumb is the current page and is
+ * never a link.
  */
 export type Crumb = {
   label: ReactNode;
+  href: string;
   external?: boolean;
-} & ({ href: string; render?: LinkRender } | { href?: string; render: LinkRender });
+};
 
 function isCrumb(crumb: Crumb | ReactNode): crumb is Crumb {
   return typeof crumb === "object" && crumb !== null && !isValidElement(crumb) && "label" in crumb;
@@ -31,7 +32,6 @@ function CrumbContent({
   if (current) return crumb.label;
   return renderLink({
     href: crumb.href,
-    render: crumb.render,
     external: crumb.external,
     className: crumbLinkClass,
     children: crumb.label,
@@ -46,7 +46,7 @@ export function Breadcrumbs({
   crumbs,
   ...rest
 }: {
-  /** The trail, first to current: a node, or a `Crumb` (`{ label, href | render, external? }`) for one that links. The last is the current page and never a link. */
+  /** The trail, first to current: a node, or a `Crumb` (`{ label, href, external? }`) for one that links. The last is the current page and never a link. */
   crumbs: Array<Crumb | ReactNode>;
 } & Passthrough): ReactElement {
   const last = crumbs.length - 1;

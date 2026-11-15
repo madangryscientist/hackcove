@@ -91,7 +91,7 @@ export const text: ComponentSection = {
         ],
       },
       accessibility: [
-        "`Text`, `Caption` and `Overline` render a `span`, and `Lead` a `p`. `as` changes the element, for a `p` or an `li`, or a `label` for an `Overline` with `htmlFor`.",
+        "`Text`, `Caption` and `Lead` render a `p`, and `Overline` a `span`. `as` changes the element: a `span` for `Text` or `Caption` inside a row or a sentence, an `li`, or a `label` for an `Overline` with `htmlFor`.",
         "`Overline` is a label, not a heading: it adds nothing to the page outline.",
         "`truncate` sets the full text as the `title` when the content is plain text, so a pointer user can read what was cut. Give a `title` of your own when the content is not.",
         "A `tone` changes only the colour. The wording has to carry the meaning.",
@@ -194,22 +194,27 @@ export const text: ComponentSection = {
       pairs: ["TextLink/InSentence", "TextLink/External", "TextLink/Router", "TextLink/Stretch"],
       usage: {
         do: [
-          "Use `TextLink` for every link in running text.",
+          "Use `TextLink` for every link in running text. Never a bare `<a>`.",
           '`external` is for another site: it opens a new tab with `rel="noreferrer"`.',
-          'In an app with a router, `render` draws the router\'s own `<Link>`: `render={(p) => <Link to="/terms" {...p} />}`. The library has no router.',
+          "In an app with a router, set the router's `<Link>` once on a `LinkProvider` and give each `TextLink` its `href`. The library has no router.",
+          'Set the adapter once, at the router. TanStack Router: `InnerWrap: ({ children }) => <LinkProvider link={(p) => <Link to="." {...p} />}>{children}</LinkProvider>` on `createRouter` (`to="."` satisfies the typed `to`; the `href` wins). React Router: `<LinkProvider link={({ href, ...p }) => <Link to={href} {...p} />}>`. Astro: no provider.',
+          "Only an in-app path (`/quotes?page=2#top`) reaches the adapter; `external`, `https:`, `mailto:`, `#hash` and a relative path are a plain `<a>`.",
           "`size` pins the type size to `sm`, `md` or `lg`; left out, the link takes the size of its text. `mono` sets the monospace face for a path or an id.",
           '`tone` gives the link a meaning\'s colour (`warn`, `danger`, `positive`, `info`, `muted`), underlined on hover. Use it for a link that is the message, like "3 failed".',
           "`stretch` makes the nearest `relative` ancestor the click target: a `Card` or a `TableRow`. Put it on the one link in that row; any other link or button in the row sits above it and is clickable on its own.",
         ],
-        dont: ["Never write a bare `<a>` for a link in running text."],
+        dont: [
+          "Never write a bare `<a>` for a link in running text.",
+          "Never a render prop or a wrapper component per link. Every part that links (`Button`, `Card`, `ListRow`, `Tabs`, `Breadcrumbs` and the rest) takes `href` and goes through the same `LinkProvider`.",
+        ],
       },
       accessibility: [
         "A `TextLink` is a native `<a>`, so it is in the tab order and opens with Enter.",
         "It has a focus ring from the component, so the keyboard focus is always visible.",
         '`external` sets `target="_blank"` and `rel="noreferrer"`.',
-        "Every anchor prop (`aria-*`, `download`, `title`, a handler) goes on the `<a>`; `render` receives them as well.",
+        "Every anchor prop (`aria-*`, `download`, `title`, a handler) goes on the `<a>`; the app's `LinkProvider` adapter receives them as well.",
       ],
-      api: ["TextLink"],
+      api: ["TextLink", "LinkProvider"],
     },
     {
       slug: "bullet-list",

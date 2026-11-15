@@ -2,17 +2,12 @@ import type { ComponentProps } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import { IconButton } from "./IconButton.js";
-import type { LinkRenderProps } from "./link.js";
 import { focusRing } from "./cx.js";
 import { Pill } from "./Pill.js";
 import { Card } from "./Card.js";
 
-// `href` (and `render`, the router hook TextLink and Button use) makes the whole part the link:
+// `href` makes the whole part the link:
 // Card, IconButton and Pill. Pill also has a button form.
-
-function Router({ to, ...rest }: { to: string } & LinkRenderProps) {
-  return <a data-router="yes" href={`/app${to}`} {...rest} />;
-}
 
 describe("Card href", () => {
   it("is a card with the link stretched over it: the card holds the hover border and the body, the empty link the focus ring", () => {
@@ -31,16 +26,6 @@ describe("Card href", () => {
     expect(out).toContain("<h2");
     expect(out.endsWith("body</div>")).toBe(true);
     expect(out).not.toContain("<section");
-  });
-
-  it("draws the app's router link with the card classes through render", () => {
-    const out = renderToStaticMarkup(
-      <Card render={(p) => <Router to="/shots/1" {...p} />}>body</Card>,
-    );
-    expect(out).toContain('data-router="yes"');
-    expect(out).toContain('href="/app/shots/1"');
-    expect(out).toContain("rounded-xl border");
-    expect(out).toContain("link-stretch");
   });
 
   it("opens a new tab when external, and passes data-* and aria-* to the anchor", () => {
@@ -104,17 +89,6 @@ describe("IconButton href", () => {
     expect(out).toContain(focusRing);
     expect(out).not.toContain("type=");
     expect(out).not.toContain("<button");
-  });
-
-  it("draws the app's router link through render", () => {
-    const out = renderToStaticMarkup(
-      <IconButton render={(p) => <Router to="/settings" {...p} />} label="Settings" tone="danger">
-        x
-      </IconButton>,
-    );
-    expect(out).toContain('data-router="yes"');
-    expect(out).toContain('href="/app/settings"');
-    expect(out).toContain("text-red-700");
   });
 
   it("badge pins a count to the corner and names it, on a link and on a button", () => {
@@ -186,21 +160,6 @@ describe("Pill href and onClick", () => {
     expect(out).toContain("rounded-full");
     expect(out).toContain("hover:opacity-80");
     expect(out).toContain(focusRing);
-  });
-
-  it("render draws the app's router link, and external opens a new tab", () => {
-    const routed = renderToStaticMarkup(
-      <Pill render={(p) => <Router to="/flakes" {...p} />}>flaky</Pill>,
-    );
-    expect(routed).toContain('data-router="yes"');
-    expect(routed).toContain('href="/app/flakes"');
-    const ext = renderToStaticMarkup(
-      <Pill href="https://example.com" external>
-        x
-      </Pill>,
-    );
-    expect(ext).toContain('target="_blank"');
-    expect(ext).toContain('rel="noreferrer"');
   });
 
   it("onClick makes it a type=button button", () => {

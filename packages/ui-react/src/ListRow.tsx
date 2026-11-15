@@ -7,7 +7,7 @@ import {
 } from "react";
 import { Chevron } from "./Chevron.js";
 import { cx, focusRing, liftInteractive } from "./cx.js";
-import { type LinkRender, renderLink } from "./link.js";
+import { renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 
@@ -113,7 +113,6 @@ type ListRowButtonProps = Shared &
      */
     expanded?: boolean | undefined;
     href?: undefined;
-    render?: undefined;
     /** On the row, not its button, so a link or button in `trailing` does not count as entering it. */
     onPointerEnter?: PointerEventHandler<HTMLDivElement> | undefined;
     /** On the row, not its button, so a link or button in `trailing` does not count as leaving it. */
@@ -132,21 +131,10 @@ type ListRowLinkProps = Shared &
     onPointerLeave?: PointerEventHandler<HTMLDivElement> | undefined;
   } & Unstyled<
     Omit<ComponentPropsWithoutRef<"a">, "href" | "children" | "onPointerEnter" | "onPointerLeave">
-  > &
-  (
-    | {
-        /** Makes the row a link to this URL. */
-        href: string;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/quotes/1" {...p} />`. */
-        render?: LinkRender | undefined;
-      }
-    | {
-        /** Makes the row a link to this URL. */
-        href?: string | undefined;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/quotes/1" {...p} />`. */
-        render: LinkRender;
-      }
-  );
+  > & {
+    /** Makes the row a link to this URL; an in-app path goes through the app's `LinkProvider`. */
+    href: string;
+  };
 
 type ListRowStaticProps = Shared & {
   /**
@@ -169,7 +157,6 @@ type ListRowStaticProps = Shared & {
   detail?: ReactNode | undefined;
   expanded?: undefined;
   href?: undefined;
-  render?: undefined;
 } & Unstyled<Omit<ComponentPropsWithoutRef<"div">, "children">>;
 
 export type ListRowProps = ListRowButtonProps | ListRowLinkProps | ListRowStaticProps;
@@ -228,7 +215,6 @@ function StaticRow(props: ListRowStaticProps & Pieces): ReactElement {
     detail,
     expanded: _e,
     href: _h,
-    render: _r,
     start,
     label,
     end,
@@ -345,7 +331,6 @@ function ButtonRow(props: ListRowButtonProps & Pieces & { labelId: string }): Re
     revealOnHover: _rh,
     detail: _dt,
     href: _h,
-    render: _r,
     start,
     label,
     end,
@@ -374,7 +359,7 @@ function ButtonRow(props: ListRowButtonProps & Pieces & { labelId: string }): Re
 }
 
 /**
- * A full-width row that runs `onClick` (or, with `href` or `render`, opens a link) with a hover
+ * A full-width row that runs `onClick` (or, with `href`, opens a link) with a hover
  * fill, a left-aligned label and `trailing` content at the far end. The row is a `<div>` with its
  * `<button>` or link stretched over it, so a tap anywhere on the row runs it; a `TextLink`,
  * `Button` or `Checkbox` in the row (in `trailing`, say a "View" link on a row that selects) sits
@@ -396,7 +381,7 @@ function ButtonRow(props: ListRowButtonProps & Pieces & { labelId: string }): Re
 export function ListRow(props: ListRowProps): ReactElement {
   const labelId = useId();
   if (props.static) return <StaticRow {...props} {...piecesOf(props)} />;
-  if (props.href !== undefined || props.render !== undefined) {
+  if (props.href !== undefined) {
     return <LinkRow {...props} {...piecesOf(props)} />;
   }
   return <ButtonRow {...props} {...piecesOf(props, labelId)} labelId={labelId} />;

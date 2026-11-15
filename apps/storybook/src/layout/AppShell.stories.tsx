@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   AppShellBrand,
+  LinkProvider,
   AppShellHideBelow,
   Avatar,
   Button,
@@ -296,20 +297,21 @@ export const CollapsedBrand: S = {
   ),
 };
 
-/** The same brand drawn by the app's own router link, through `render` (here a stand-in `<a>`). */
+/** The same brand drawn by the app's own router link, set once on a `LinkProvider` (here a stand-in `<a>`). */
 export const RouterBrand: S = {
   render: () => (
-    <DemoShell
-      brand={
-        <AppShellBrand
-          logo={<Avatar name="Quotes" size="sm" />}
-          label="Quotes"
-          render={(props) => <a {...props} href="#router" data-router="/" />}
-        />
-      }
+    <LinkProvider
+      link={({ href, ...rest }) => <a {...rest} href={`#${href}`} data-router={href} />}
     >
-      <PageHeader title="Router brand" subtitle="Drawn by render, no href of its own." />
-    </DemoShell>
+      <DemoShell
+        brand={<AppShellBrand logo={<Avatar name="Quotes" size="sm" />} label="Quotes" href="/" />}
+      >
+        <PageHeader
+          title="Router brand"
+          subtitle="Drawn by the app's router link through LinkProvider."
+        />
+      </DemoShell>
+    </LinkProvider>
   ),
 };
 

@@ -1,10 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, IconButton, type LinkRenderProps } from "@hackcove/ui-react";
-
-/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
-function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
-  return <a href={`#${to}`} {...rest} />;
-}
+import { Button, IconButton } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Actions/IconButton" };
 export default meta;
@@ -169,14 +164,14 @@ export const GhostAndDanger: S = {
   ),
 };
 
-/** `href` draws a link with the button's look; `render` draws the app's router `<Link>`. */
+/** `href` draws a link with the button's look; an in-app one goes through the app's router `<Link>`. */
 export const AsLink: S = {
   render: () => (
     <div className="flex items-center gap-2">
       <IconButton href="#settings" label="Settings" variant="ghost">
         {moon}
       </IconButton>
-      <IconButton render={(p) => <FakeLink to="/settings" {...p} />} label="Settings">
+      <IconButton href="/settings" label="Settings">
         {moon}
       </IconButton>
     </div>

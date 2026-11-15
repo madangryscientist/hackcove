@@ -22,7 +22,7 @@ const OFF_LIVE = "hover:bg-violet-50 hover:text-violet-700";
 /**
  * A joined pill group where one option is filled: a mode or a range chosen in place. `items` are
  * `{ value, label }` buttons (`value` and `onChange` are the caller's state; the arrow keys, Home
- * and End move the choice) or links (`href`, or `render` to draw the app's own router `<Link>`;
+ * and End move the choice) or links (`href`, an in-app one drawn by the app's router `<Link>` through `LinkProvider`;
  * `value` marks the current one, which gets `aria-current`). An item may carry a `count`, and a
  * button one `disabled` (with a `title` for the reason); `disabled` on the group disables every
  * option. `label` names the group. `size` matches the height of a `Button` of the same size.

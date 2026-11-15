@@ -1,7 +1,6 @@
 import type { ReactElement, ReactNode } from "react";
 import { Button } from "./Button.js";
 import { CodeBlock } from "./CodeBlock.js";
-import { type LinkRender } from "./link.js";
 import { CenteredLayout } from "./PageLayouts.js";
 import type { Passthrough } from "./props.js";
 
@@ -20,28 +19,18 @@ type StatusPageProps = {
    * There is no label prop.
    */
   action?: ReactNode;
-  /** Adds a "Back to home" button linking here. With neither this nor `renderHome` there is no home link. */
+  /**
+   * Adds a "Back to home" button linking here, drawn by the app's router link through
+   * `LinkProvider`. Without it there is no home link.
+   */
   homeHref?: string;
-  /** Draws the home link with the app's own router `<Link>`, as on `Button`. */
-  renderHome?: LinkRender;
 } & Passthrough;
 
 type Copy = { title: string; body: string };
 
 type StatusPageInner = StatusPageProps & { copy: Copy; extra?: ReactNode; mark?: ReactNode };
 
-function homeLink(
-  variant: "primary" | "outline",
-  href: string | undefined,
-  render: LinkRender | undefined,
-): ReactNode {
-  if (render) {
-    return (
-      <Button render={render} variant={variant}>
-        Back to home
-      </Button>
-    );
-  }
+function homeLink(variant: "primary" | "outline", href: string | undefined): ReactNode {
   if (href === undefined) return null;
   return (
     <Button href={href} variant={variant}>
@@ -56,12 +45,11 @@ function StatusPage({
   children,
   action,
   homeHref,
-  renderHome,
   extra,
   mark,
   ...rest
 }: StatusPageInner): ReactElement {
-  const home = homeLink(action === undefined ? "primary" : "outline", homeHref, renderHome);
+  const home = homeLink(action === undefined ? "primary" : "outline", homeHref);
   return (
     <CenteredLayout
       {...rest}

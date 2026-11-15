@@ -1,7 +1,5 @@
-import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import type { LinkRenderProps } from "./link.js";
 import { linkClass, linkStretchClass, TextLink } from "./TextLink.js";
 import { TEXT_TONE } from "./typography.js";
 
@@ -54,9 +52,6 @@ describe("TextLink", () => {
 });
 
 // A stand-in for a router's <Link>: it takes `to` and spreads the props it is handed.
-const Link = ({ to, ...rest }: { to: string } & LinkRenderProps): ReactElement => (
-  <a data-to={to} {...rest} />
-);
 
 describe("TextLink stretch", () => {
   it("covers the nearest relative ancestor with the link's ::after", () => {
@@ -71,37 +66,6 @@ describe("TextLink stretch", () => {
 
   it("is off by default", () => {
     expect(renderToStaticMarkup(<TextLink href="/a">a</TextLink>)).not.toContain("after:");
-  });
-});
-
-describe("TextLink with a router Link", () => {
-  it("draws the app's Link with the link classes and no href", () => {
-    const out = renderToStaticMarkup(
-      <TextLink render={(p) => <Link to="/terms" {...p} />}>Terms</TextLink>,
-    );
-    expect(out).toContain('data-to="/terms"');
-    expect(out).toContain(`class="${linkClass}"`);
-    expect(out).toContain(">Terms</a>");
-    expect(out).not.toContain("href=");
-  });
-
-  it("keeps stretch and external through render", () => {
-    const out = renderToStaticMarkup(
-      <TextLink stretch external render={(p) => <Link to="/x" {...p} />}>
-        X
-      </TextLink>,
-    );
-    expect(out).toContain(`class="${linkClass} ${linkStretchClass}"`);
-    expect(out).toContain('target="_blank"');
-  });
-
-  it("passes other anchor props to render", () => {
-    const out = renderToStaticMarkup(
-      <TextLink download="a.pdf" render={(p) => <Link to="/x" {...p} />}>
-        X
-      </TextLink>,
-    );
-    expect(out).toContain('download="a.pdf"');
   });
 });
 
@@ -134,16 +98,6 @@ describe("TextLink size and mono", () => {
     );
     expect(out).toContain("font-mono");
     expect(out).not.toContain("mono=");
-  });
-
-  it("reaches a router link through `render`", () => {
-    const out = renderToStaticMarkup(
-      <TextLink size="md" mono render={(p) => <a href="#x" {...p} />}>
-        x
-      </TextLink>,
-    );
-    expect(out).toContain("text-sm/5");
-    expect(out).toContain("font-mono");
   });
 });
 

@@ -171,7 +171,7 @@ export function TableFoot({
 }
 
 /**
- * A `<tr>`, `relative`: the anchor a `TextLink stretch` (with `href`, or `render` for a router `<Link>`) stretches to. Any other link, button or
+ * A `<tr>`, `relative`: the anchor a `TextLink stretch` (with `href`) stretches to. Any other link, button or
  * control in the row (a `TextLink`, a `Button`, a `Checkbox`) sits above that link and is clickable
  * on its own, with no class from the caller. Use it in the head and the
  * body. In the body it also draws the line above the row and, unless the table is `plain`, the hover

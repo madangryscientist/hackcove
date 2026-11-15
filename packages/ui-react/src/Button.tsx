@@ -1,6 +1,6 @@
 import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
 import { cx, focusRing } from "./cx.js";
-import { type LinkRender, renderLink } from "./link.js";
+import { renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 
@@ -175,7 +175,6 @@ type ButtonAsButton = ButtonLook & {
    */
   count?: number | undefined;
   href?: undefined;
-  render?: undefined;
   external?: undefined;
 } & Unstyled<ComponentPropsWithoutRef<"button">>;
 
@@ -192,26 +191,14 @@ type ButtonAsLink = ButtonLook & {
    * shown. For a button that opens something, also pass `aria-expanded`.
    */
   count?: number | undefined;
-} & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href">> &
-  (
-    | {
-        /** Makes the button a link to this URL. */
-        href: string;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/quotes" {...p} />`. */
-        render?: LinkRender | undefined;
-      }
-    | {
-        /** Makes the button a link to this URL. */
-        href?: string | undefined;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/quotes" {...p} />`. */
-        render: LinkRender;
-      }
-  );
+  /** Makes the button a link to this URL; an in-app path goes through the app's `LinkProvider`. */
+  href: string;
+} & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href">>;
 
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 function isLink(props: ButtonProps): props is ButtonAsLink {
-  return props.href !== undefined || props.render !== undefined;
+  return props.href !== undefined;
 }
 
 type State = "blocked" | "busy" | "idle";
@@ -245,8 +232,8 @@ function stateClass(
  * also takes `aria-expanded`.
  * Defaults to `type="button"`. `disabledReason` and `busy` are the two disabled states that say
  * more than a plain `disabled`, which keeps its half-opacity look. `href` makes it a link instead,
- * with the same look (a plain `<a>`, or with `render` the app's own router `<Link>`:
- * `render={(p) => <Link to="/quotes" {...p} />}`; `external` opens a new tab).
+ * with the same look (the app's router link through `LinkProvider` for an in-app path, else a plain
+ * `<a>`; `external` opens a new tab).
  */
 export function Button(props: ButtonProps): ReactElement {
   return isLink(props) ? <LinkButton {...props} /> : <PlainButton {...props} />;
@@ -257,7 +244,6 @@ function LinkButton({
   size = "md",
   tone = "default",
   href,
-  render,
   external = false,
   count,
   children,
@@ -266,7 +252,6 @@ function LinkButton({
   return renderLink({
     ...rest,
     href,
-    render,
     external,
     className: buttonClass(variant, { size, tone }),
     children: withCount(children, count),

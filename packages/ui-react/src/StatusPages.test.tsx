@@ -1,17 +1,11 @@
 // @vitest-environment jsdom
-import type { ReactElement } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { Button } from "./Button.js";
 import { ErrorPage, Forbidden, Maintenance, NotFound, Offline } from "./StatusPages.js";
-import type { LinkRenderProps } from "./link.js";
 import { render, screen, user, within } from "./render.harness.js";
 
 const follows = (a: Node, b: Node) =>
   a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
-
-const Link = ({ to, ...rest }: { to: string } & LinkRenderProps): ReactElement => (
-  <a data-router-link="" href={to} {...rest} />
-);
 
 const pages = [
   ["NotFound", NotFound, "Page not found"],
@@ -42,13 +36,6 @@ describe("the shared props", () => {
   it("links home with homeHref", () => {
     render(<NotFound homeHref="/" />);
     expect(screen.getByRole("link", { name: "Back to home" }).getAttribute("href")).toBe("/");
-  });
-
-  it("draws the home link with the app's own Link", () => {
-    render(<NotFound renderHome={(p) => <Link to="/" {...p} />} />);
-    const home = screen.getByRole("link", { name: "Back to home" });
-    expect(home.hasAttribute("data-router-link")).toBe(true);
-    expect(home.getAttribute("href")).toBe("/");
   });
 
   it("reads a custom action before the home link", () => {

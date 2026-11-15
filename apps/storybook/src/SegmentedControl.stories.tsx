@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { SegmentedControl, type LinkRenderProps } from "@hackcove/ui-react";
+import { SegmentedControl } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Forms/SegmentedControl" };
 export default meta;
@@ -97,20 +97,15 @@ export const Disabled: S = {
   ),
 };
 
-/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
-function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
-  return <a href={`#${to}`} {...rest} />;
-}
-
-/** Each option's `render` draws the app's own Link; `value` marks the current route and gets `aria-current`. */
+/** Each option's `href` is drawn by the app's own Link through `LinkProvider`; `value` marks the current route and gets `aria-current`. */
 export const WithRouterLink: S = {
   render: () => (
     <SegmentedControl
       label="Journal"
       value="daily"
       items={[
-        { value: "daily", label: "Daily", render: (p) => <FakeLink to="/daily" {...p} /> },
-        { value: "weekly", label: "Weekly", render: (p) => <FakeLink to="/weekly" {...p} /> },
+        { value: "daily", label: "Daily", href: "/daily" },
+        { value: "weekly", label: "Weekly", href: "/weekly" },
       ]}
     />
   ),

@@ -1,6 +1,6 @@
 import type { MouseEventHandler, ReactElement, ReactNode } from "react";
 import { cx, focusRing } from "./cx.js";
-import { type LinkRender, renderLink } from "./link.js";
+import { renderLink } from "./link.js";
 import type { Passthrough } from "./props.js";
 
 export type PillTone = "slate" | "amber" | "emerald" | "blue" | "red" | "violet" | "sky";
@@ -39,32 +39,20 @@ type PillProps = PillBase &
   Removable &
   Passthrough &
   (
-    | { href?: undefined; render?: undefined; external?: undefined; onClick?: undefined }
+    | { href?: undefined; external?: undefined; onClick?: undefined }
     | {
         /** A Pill that is a button: runs `onClick`. Defaults to `type="button"`. */
         onClick: MouseEventHandler<HTMLButtonElement>;
         href?: undefined;
-        render?: undefined;
         external?: undefined;
       }
-    | ({
+    | {
         onClick?: undefined;
         /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
         external?: boolean | undefined;
-      } & (
-        | {
-            /** Makes the pill a link to this URL. */
-            href: string;
-            /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/flakes" {...p} />`. */
-            render?: LinkRender | undefined;
-          }
-        | {
-            /** Makes the pill a link to this URL. */
-            href?: string | undefined;
-            /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/flakes" {...p} />`. */
-            render: LinkRender;
-          }
-      ))
+        /** Makes the pill a link to this URL; an in-app path goes through the app's `LinkProvider`. */
+        href: string;
+      }
   );
 
 const PILL_TONES: Record<PillTone, string> = {
@@ -182,28 +170,19 @@ type MainParts = {
   look: Look;
   rest: object;
   href: string | undefined;
-  render: LinkRender | undefined;
   external: boolean;
   onClick: MouseEventHandler<HTMLButtonElement> | undefined;
   body: ReactNode;
 };
 
 /** The pill itself, or the text half of a removable one: a link, a button or a span. */
-function renderMain({
-  isLink,
-  interactive,
-  look,
-  rest,
-  href,
-  render,
-  external,
-  onClick,
-  body,
-}: MainParts) {
+function renderMain({ isLink, interactive, look, rest, href, external, onClick, body }: MainParts) {
   const className = look.removable ? mainClass(look, interactive) : pillClass(look, interactive);
   // A removable pill's attributes go on its link or button; on a plain one, the shell is the pill.
   const own = look.removable && !interactive ? {} : rest;
-  if (isLink) return renderLink({ ...own, href, render, external, className, children: body });
+  if (isLink && href !== undefined) {
+    return renderLink({ ...own, href, external, className, children: body });
+  }
   if (onClick) {
     return (
       <button type="button" {...own} onClick={onClick} className={cx(className, "cursor-pointer")}>
@@ -252,8 +231,8 @@ function RemoveShell({
  * A small tinted label; `dot` adds a leading dot in the pill's own text colour, `round` swaps the
  * rounded-md corners for a full pill shape. `label` makes it two-tone, `label: value`: the label
  * keeps the tone's tint and the children, the value, sit on the surface beside it. `href` makes it
- * a link (a plain `<a>`, or with `render` the app's own router `<Link>`:
- * `render={(p) => <Link to="/flakes" {...p} />}`; `external` opens a new tab) and `onClick` makes it
+ * a link (the app's router link through `LinkProvider` for an in-app path, else a plain `<a>`;
+ * `external` opens a new tab) and `onClick` makes it
  * a button, each with a hover dim and the focus ring. `onRemove` adds an x button after the text
  * (named by `removeLabel`), a separate button beside a link or button pill rather than nested in
  * it. `title` is the native tooltip.
@@ -265,14 +244,13 @@ export function Pill({
   round = false,
   label,
   href,
-  render,
   external = false,
   onClick,
   onRemove,
   removeLabel,
   ...rest
 }: PillProps): ReactElement {
-  const isLink = href !== undefined || render !== undefined;
+  const isLink = href !== undefined;
   const interactive = isLink || onClick !== undefined;
   const look: Look = {
     tone,
@@ -292,7 +270,6 @@ export function Pill({
     look,
     rest,
     href,
-    render,
     external,
     onClick,
     body,

@@ -1,14 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import {
-  Breadcrumbs,
-  Button,
-  type LinkRenderProps,
-  Tabs,
-  PageHeader,
-  Stack,
-  Text,
-} from "@hackcove/ui-react";
+import { Breadcrumbs, Button, Tabs, PageHeader, Stack, Text } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Navigation/Tabs" };
 export default meta;
@@ -279,20 +271,15 @@ export const InPageHeader: S = {
   },
 };
 
-/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
-function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
-  return <a href={`#${to}`} {...rest} />;
-}
-
-/** Each tab's `render` draws the app's own Link; `value` marks the current route and gets `aria-current`. */
+/** Each tab's `href` is drawn by the app's own Link through `LinkProvider`; `value` marks the current route and gets `aria-current`. */
 export const WithRouterLink: S = {
   render: () => (
     <Tabs
       label="Business"
       value="quotes"
       items={[
-        { value: "quotes", label: "Quotes", render: (p) => <FakeLink to="/quotes" {...p} /> },
-        { value: "invoices", label: "Invoices", render: (p) => <FakeLink to="/invoices" {...p} /> },
+        { value: "quotes", label: "Quotes", href: "/quotes" },
+        { value: "invoices", label: "Invoices", href: "/invoices" },
         { value: "traces", label: "Traces", href: "https://example.com/traces", external: true },
       ]}
     />

@@ -1,7 +1,7 @@
 import { type KeyboardEvent, type ReactElement, type ReactNode } from "react";
 import { cx } from "./cx.js";
 import type { Passthrough } from "./props.js";
-import { type DataAttributes, dataAttributes, type LinkRender, renderLink } from "./link.js";
+import { type DataAttributes, dataAttributes, renderLink } from "./link.js";
 
 type Option = DataAttributes & {
   label: ReactNode;
@@ -24,12 +24,11 @@ export type SwitchButton = Option & {
   /** The id of the element this option controls (a tab's panel). */
   controls?: string;
   href?: undefined;
-  render?: undefined;
   external?: undefined;
 };
 
 /**
- * An option that is a link: `href`, or `render` to draw the app's own router `<Link>`. The router
+ * An option that is a link: `href`, drawn by the app's router link through `LinkProvider`. The router
  * changes the page; `active` on the item, or a `value` equal to the group's, marks the current one.
  * `external` opens a new tab.
  */
@@ -41,7 +40,9 @@ export type SwitchLink = Option & {
   disabled?: undefined;
   controls?: undefined;
   external?: boolean;
-} & ({ href: string; render?: LinkRender } | { href?: string; render: LinkRender });
+  /** Where the option links. */
+  href: string;
+};
 
 /** One option of a Tabs or SegmentedControl: a button or a link, never both in one group. */
 export type SwitchItem = SwitchButton | SwitchLink;
@@ -54,7 +55,7 @@ type Shared = {
 export type SwitchProps = Shared &
   (
     | {
-        /** The options in order: `{ value, label }` buttons, or links (`href` or `render`) with `value` marking the current one. Either may carry a `count`; a button may be `disabled`. */
+        /** The options in order: `{ value, label }` buttons, or links (`href`) with `value` marking the current one. Either may carry a `count`; a button may be `disabled`. */
         items: SwitchButton[];
         /** The `value` of the current option. */
         value: string;
@@ -64,7 +65,7 @@ export type SwitchProps = Shared &
         disabled?: boolean;
       }
     | {
-        /** The options in order: links (`href` or `render`), the current one marked by its `active` or by a `value` equal to the group's. A link may carry a `count`. */
+        /** The options in order: links (`href`), the current one marked by its `active` or by a `value` equal to the group's. A link may carry a `count`. */
         items: SwitchLink[];
         /** The `value` of the current link, as an alternative to `active` on the item. */
         value?: string;
@@ -105,7 +106,7 @@ function Label({ item }: { item: SwitchItem }): ReactElement {
 }
 
 const isLinks = (items: SwitchProps["items"]): items is SwitchLink[] =>
-  items.some((item) => item.href !== undefined || item.render !== undefined);
+  items.some((item) => item.href !== undefined);
 
 const isCurrent = (item: SwitchLink, value: string | undefined): boolean =>
   item.active === true || (item.value !== undefined && item.value === value);
@@ -122,7 +123,6 @@ function SwitchLinkItem({
   return renderLink({
     ...dataAttributes(item),
     href: item.href,
-    render: item.render,
     external: item.external,
     className: parts.option(current, false),
     "aria-current": current ? "page" : undefined,

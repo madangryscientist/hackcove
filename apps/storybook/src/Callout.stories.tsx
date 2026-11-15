@@ -100,10 +100,7 @@ export const Linked: S = {
       <Callout
         tone="info"
         actions={
-          <TextLink
-            stretch
-            render={(props) => <a {...props} href="#router" data-router="/imports" />}
-          >
+          <TextLink stretch href="#imports">
             Open
           </TextLink>
         }

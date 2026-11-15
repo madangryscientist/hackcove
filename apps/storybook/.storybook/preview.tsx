@@ -1,10 +1,14 @@
 import type { Preview } from "@storybook/react-vite";
+import { type LinkAdapter, LinkProvider } from "@hackcove/ui-react";
 import { declaresDark } from "@hackcove/themes-shared";
 import { ThemeDocument, THEMES, themeNames } from "./themes";
 import "./tailwind.css";
 
 // Storybook opens in the dark theme, as it always has. The first theme by id is now a light one.
 const initialTheme = themeNames.find((name) => declaresDark(THEMES[name] ?? "")) ?? themeNames[0];
+
+/** Stands in for an app's router Link: an in-app href stays on the story instead of leaving Storybook. */
+const StoryLink: LinkAdapter = ({ href, ...rest }) => <a {...rest} href={`#${href}`} />;
 
 const preview: Preview = {
   parameters: {
@@ -51,7 +55,9 @@ const preview: Preview = {
           context.parameters["layout"] === "fullscreen" && context.parameters["bare"] !== true
         }
       >
-        <Story />
+        <LinkProvider link={StoryLink}>
+          <Story />
+        </LinkProvider>
       </ThemeDocument>
     ),
   ],

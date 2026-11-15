@@ -42,6 +42,29 @@ is one step darker than `color="muted"` was, a chart's `violet` part is now the 
 `Text` or `Caption` is now a block `<p>`, which also must not sit inside another `<p>`, a `<span>`,
 a `<button>`, an `<a>` or a `<label>`.
 
+### The router link adapter
+
+The app names its router's link once, on `LinkProvider`, and every part that links takes a plain
+`href`. `render` is gone from `Button`, `IconButton`, `TextLink`, `Pill`, `Card`, `ListRow`,
+`AppShellBrand`, a `Crumb` and a `Tabs` or `SegmentedControl` link item; `renderHome` is gone from
+the status pages.
+
+| Old | New | |
+| --- | --- | --- |
+| a `render` on each link | wrap the app once: TanStack Router `createRouter({ InnerWrap: ({ children }) => <LinkProvider link={(p) => <Link to="." {...p} />}>{children}</LinkProvider> })` (`to="."` satisfies the typed `to`; the `href` wins), or React Router `<LinkProvider link={({ href, ...p }) => <Link to={href} {...p} />}>` | by hand, once |
+| `render={(p) => <Link to="/quotes" {...p} />}` | `href="/quotes"` | codemod |
+| `to="/stores/$storeId" params={{ storeId: id }}` | ``href={`/stores/${encodeURIComponent(id)}`}`` | by hand |
+| `search={{ project, env }}`, `hash="for-shops"` | `href={"/?" + new URLSearchParams({ project, env })}`, `href="/about#for-shops"` | by hand |
+| `{ label, render }` crumbs and items | `{ label, href }` | codemod for a literal `to`, else by hand |
+| `renderHome={(p) => <Link to="/" {...p} />}` | `homeHref="/"` | codemod |
+| `LinkRenderProps`, `LinkRender` | `LinkAdapterProps`, `LinkAdapter` | codemod |
+| `viewTransition` on one `Link` | `defaultViewTransition` on `createRouter` | by hand |
+
+New, nothing to change: `MediaTile` and `Avatar` take `href` and `external` beside `onClick`, and
+their `onClick` is handed the click event. A `SiteSearch` result is a client-side navigation under
+a `LinkProvider`. Only an in-app path (one that starts with a single `/`) reaches the adapter; an
+`external` link, a full URL, a `#hash` and a relative path stay a plain `<a>`.
+
 ## 0.9 → 0.10: Avatar `2xl` is 64px, the old 96px is `3xl`
 
 `Avatar` gained a 64px size. The sizes keep their order (`xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`),

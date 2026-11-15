@@ -5,7 +5,6 @@ import {
   EmptyState,
   EpicHeader,
   groupByEpic,
-  type LinkRenderProps,
   Markdown,
   Pill,
   Stack,
@@ -29,19 +28,14 @@ export const Pills: S = {
     </div>
   ),
 };
-/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
-function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
-  return <a href={`#${to}`} {...rest} />;
-}
-
-/** `href` makes a Pill a link, `render` the app's router `<Link>`, `onClick` a button: all with a hover dim and the focus ring. */
+/** `href` makes a Pill a link (an in-app one through the app's router `<Link>`), `onClick` a button: all with a hover dim and the focus ring. */
 export const PillsInteractive: S = {
   render: () => (
     <div className="flex items-center gap-2">
       <Pill href="#flakes" tone="amber" round>
         flaky
       </Pill>
-      <Pill render={(p) => <FakeLink to="/flakes" {...p} />} tone="violet">
+      <Pill href="/flakes" tone="violet">
         router link
       </Pill>
       <Pill onClick={() => undefined} tone="sky" dot>

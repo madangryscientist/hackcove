@@ -160,7 +160,7 @@ export const content: ComponentSection = {
           "`dot` adds a leading dot in the Pill's colour; `round` swaps the rounded-square corners for a full pill shape. Use one look across a view.",
           '`label` makes a two-tone `label: value` pill (`<Pill label="Weight">72 kg</Pill>`): the label keeps the tone\'s tint and the children sit on the surface beside it. Keep the label to a word or two.',
           "`onRemove` adds an x button after the text, for a chip the reader can drop (an attachment, a filter); `removeLabel` names it (`Remove invoice.pdf`) and is required with it. On a link or button Pill the x is a separate button beside it, never nested inside.",
-          "A Pill that goes somewhere takes `href` (or `render` for your router's `Link`, `external` for a new tab); one that does something takes `onClick`.",
+          "A Pill that goes somewhere takes `href` (`external` for a new tab; an in-app one goes through your router's `Link` on `LinkProvider`); one that does something takes `onClick`.",
           "`title` is a native tooltip for detail the short label leaves out; it is not shown on touch or to a keyboard, so never put anything a reader needs only there.",
           "A Pill beside a card's title is the Card's `status`, not a hand-built row.",
           "A message to read is a `Callout`, and an action is a `Button`.",
