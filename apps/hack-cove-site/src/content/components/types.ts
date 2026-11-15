@@ -27,7 +27,12 @@ export type ComponentPage = {
    * page names.
    */
   stories?: string[];
-  usage: string[];
+  /**
+   * The usage rules, printed under the Usage heading and in llms.txt. `do` says the one right way;
+   * `dont` says what not to do, each bullet opening with "Never" or "Do not". A pair's Dont story is
+   * not one of these: that is `pairs`.
+   */
+  usage: { do: string[]; dont?: string[] };
   accessibility: string[];
   /** The components whose props the API table lists. */
   api: string[];

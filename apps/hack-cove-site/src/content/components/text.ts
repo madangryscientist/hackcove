@@ -13,15 +13,17 @@ export const text: ComponentSection = {
         "Any title on a page: the public headline, the page title, a section, a subsection.",
       pairs: ["Headings/Scale", "Headings/Hero"],
       stories: ["typography"],
-      usage: [
-        "A page has one title: `PageHeading` for an app page, `Display` for the headline of a public page. A `PageHeader` already draws the `PageHeading` and its subtitle, so use it for the top of a page.",
-        "Name the parts of a page with `SectionHeading`; `rule` puts the hairline under it, with the space either side built in.",
-        "Name what is inside a part with `SubsectionHeading`: `size` `sm` is a form-group caption, `md` (default) a card title in a header bar, `lg` a drawer title. `truncate` cuts one that is too long for its column to a single line.",
-        'Put a `Lead` under a `Display`, and a `Text as="p"` under any other heading. `Dialog` and `Drawer` draw their own title from their `title`.',
-        "Pick the heading for its place in the outline, never for its size. `Display` is not a big `SectionHeading`.",
-        "`color` takes `default`, `secondary`, `tertiary`, `muted` or `brand` for the hierarchy of the text. A heading's meaning is carried by its words, not a colour.",
-        "`as` changes the element, only to keep the outline in order, and never the look.",
-      ],
+      usage: {
+        do: [
+          "A page has one title: `PageHeading` for an app page, `Display` for the headline of a public page. A `PageHeader` already draws the `PageHeading` and its subtitle, so use it for the top of a page.",
+          "Name the parts of a page with `SectionHeading`; `rule` puts the hairline under it, with the space either side built in.",
+          "Name what is inside a part with `SubsectionHeading`: `size` `sm` is a form-group caption, `md` (default) a card title in a header bar, `lg` a drawer title. `truncate` cuts one that is too long for its column to a single line.",
+          'Put a `Lead` under a `Display`, and a `Text as="p"` under any other heading. `Dialog` and `Drawer` draw their own title from their `title`.',
+          "Pick the heading for its place in the outline, never for its size. `Display` is not a big `SectionHeading`.",
+          "`color` takes `default`, `secondary`, `tertiary`, `muted` or `brand` for the hierarchy of the text. A heading's meaning is carried by its words, not a colour.",
+          "`as` changes the element, only to keep the outline in order, and never the look.",
+        ],
+      },
       accessibility: [
         "Each heading renders a real heading element: `Display` and `PageHeading` an `h1`, `SectionHeading` an `h2`, `SubsectionHeading` an `h3`.",
         "`as` swaps the element and keeps the look, so the outline can follow the page without a visual change.",
@@ -39,14 +41,18 @@ export const text: ComponentSection = {
         "The body of a docs page or an article, where a reader scans headings. An app screen never uses it.",
       pairs: ["Prose/Docs"],
       stories: ["Prose"],
-      usage: [
-        "Wrap the body of a docs page or an article in `Prose`, inside a `ProseLayout`, a `SidebarLayout` or anywhere else. `ProseLayout` takes no prop for it.",
-        'Write the page with the usual parts: `SectionHeading` is the h2, `SubsectionHeading` the h3 and `SubsectionHeading size="sm"` (as `h4`) the h4, `Text` the paragraph. Inside `Prose` they take the long-form sizes; nothing else about them changes.',
-        "`Callout` text, `BulletList` items, inline `Code` and a `TextLink` follow the body size. `Caption`, `Overline`, `Table`, `CodeBlock` and the form controls keep theirs.",
-        "A `Dialog`, `Drawer` or `EmptyState` inside `Prose` looks as it does on any app screen.",
-        "Never use `Prose` on an app screen. A dashboard, a form or a list keeps the dense app sizes.",
-        "The sizes are fixed: `Prose` has no size to choose.",
-      ],
+      usage: {
+        do: [
+          "Wrap the body of a docs page or an article in `Prose`, inside a `ProseLayout`, a `SidebarLayout` or anywhere else. `ProseLayout` takes no prop for it.",
+          'Write the page with the usual parts: `SectionHeading` is the h2, `SubsectionHeading` the h3 and `SubsectionHeading size="sm"` (as `h4`) the h4, `Text` the paragraph. Inside `Prose` they take the long-form sizes; nothing else about them changes.',
+          "`Callout` text, `BulletList` items, inline `Code` and a `TextLink` follow the body size. `Caption`, `Overline`, `Table`, `CodeBlock` and the form controls keep theirs.",
+          "A `Dialog`, `Drawer` or `EmptyState` inside `Prose` looks as it does on any app screen.",
+          "The sizes are fixed: `Prose` has no size to choose.",
+        ],
+        dont: [
+          "Never use `Prose` on an app screen. A dashboard, a form or a list keeps the dense app sizes.",
+        ],
+      },
       accessibility: [
         "`Prose` renders a `div` and adds nothing to the page outline or to what a screen reader announces.",
         "The heading elements are unchanged: pick `as` to keep the outline in order, as everywhere else.",
@@ -68,18 +74,22 @@ export const text: ComponentSection = {
         "ui/EmptyNote",
         "ui/EmptyView",
       ],
-      usage: [
-        'Set a paragraph in `Text as="p"`. `Text` is a `span` by default so it sits inside a sentence; a block of it stops at a readable line length.',
-        'Emphasise a run with `Text strong` inside the `Text`: font-medium in the primary ink. Use `Caption` for fine print and metadata, as `Caption as="p"` when it stands alone.',
-        'Put a `Text as="p"` under a heading and `Lead` under a `Display`. `Overline` is the small all-caps label above a group, not a title.',
-        'A Card or a list with nothing in it yet gets one muted line, `Text as="p" color="muted"`: "Nothing finished yet." A whole empty view, with a way forward, is an `EmptyState` with its `actions`.',
-        "`tone` says what a run means: `positive`, `warn`, `danger`, `info` or `muted`. It beats `color`, and the words still say it, so colour is never the only signal. `color` is only the hierarchy of the text.",
-        "`numeric` sets tabular figures so a column of amounts lines up, `mono` the monospace face for an id or a path, and `truncate` cuts a run to one line.",
-        '`align` sets a run at `start`, `center` or `end` of its block, for a table header or a right-hand column. `minWidth="amount"` on `Text` fixes a width and right-aligns a money figure in it, so a column of amounts lines up.',
-        "`italic` on `Text` or `Caption` sets a muted hint or a caption in italic. `breakWords` breaks a long unbroken string, such as a URL or a token, at the edge of its box.",
-        "`preserveNewlines` on `Text` keeps the line breaks of text a person typed, such as a note.",
-        "Never write a bare `<p>`, `<span>`, `<strong>` or `<small>`: they carry none of the theme's type scale or colour.",
-      ],
+      usage: {
+        do: [
+          'Set a paragraph in `Text as="p"`. `Text` is a `span` by default so it sits inside a sentence; a block of it stops at a readable line length.',
+          'Emphasise a run with `Text strong` inside the `Text`: font-medium in the primary ink. Use `Caption` for fine print and metadata, as `Caption as="p"` when it stands alone.',
+          'Put a `Text as="p"` under a heading and `Lead` under a `Display`. `Overline` is the small all-caps label above a group, not a title.',
+          'A Card or a list with nothing in it yet gets one muted line, `Text as="p" color="muted"`: "Nothing finished yet." A whole empty view, with a way forward, is an `EmptyState` with its `actions`.',
+          "`tone` says what a run means: `positive`, `warn`, `danger`, `info` or `muted`. It beats `color`, and the words still say it, so colour is never the only signal. `color` is only the hierarchy of the text.",
+          "`numeric` sets tabular figures so a column of amounts lines up, `mono` the monospace face for an id or a path, and `truncate` cuts a run to one line.",
+          '`align` sets a run at `start`, `center` or `end` of its block, for a table header or a right-hand column. `minWidth="amount"` on `Text` fixes a width and right-aligns a money figure in it, so a column of amounts lines up.',
+          "`italic` on `Text` or `Caption` sets a muted hint or a caption in italic. `breakWords` breaks a long unbroken string, such as a URL or a token, at the edge of its box.",
+          "`preserveNewlines` on `Text` keeps the line breaks of text a person typed, such as a note.",
+        ],
+        dont: [
+          "Never write a bare `<p>`, `<span>`, `<strong>` or `<small>`: they carry none of the theme's type scale or colour.",
+        ],
+      },
       accessibility: [
         "`Text`, `Caption` and `Overline` render a `span`, and `Lead` a `p`. `as` changes the element, for a `p` or an `li`, or a `label` for an `Overline` with `htmlFor`.",
         "`Overline` is a label, not a heading: it adds nothing to the page outline.",
@@ -95,16 +105,18 @@ export const text: ComponentSection = {
       whenToUse:
         "A command, name or path inside a sentence is `Code`; several lines of code are a `CodeBlock`.",
       pairs: ["Code/Inline", "CodeBlock/Snippet"],
-      usage: [
-        "Use `Code` for one short run inside a sentence. It takes the text colour and size around it, and keeps no line breaks.",
-        "Use `CodeBlock` for several lines. Give the text as `children`, or as `lines` with one entry per line.",
-        "`label` names the language or file (`bash`, `css`) in a caption above the code; `language` says what to colour, from `tsx`, `ts`, `js`, `json`, `bash`, `console`, `css`, `html` and `yaml`.",
-        "A shell session is `console`: a line starting with `$ ` is a command, coloured as bash, and every other line is output. With `copy`, only the commands are copied, without the `$ `.",
-        "A line a reader copies is a `CopyLine`, not a one-line `CodeBlock`. A rendered part shown with its code is a `CodeExample`.",
-        "Without a `language` the code is one colour (`text`), which suits an error or a log.",
-        'A long line wraps, so a command is never cut off and still copies as one line. `overflow="scroll"` keeps lines whole and scrolls them sideways under a thin scrollbar in the theme\'s colour, for code whose layout matters.',
-        "`copy` adds a copy button beside the code. It needs client JS; on a page rendered to static HTML, inline `copyScript` once (see CopyButton).",
-      ],
+      usage: {
+        do: [
+          "Use `Code` for one short run inside a sentence. It takes the text colour and size around it, and keeps no line breaks.",
+          "Use `CodeBlock` for several lines. Give the text as `children`, or as `lines` with one entry per line.",
+          "`label` names the language or file (`bash`, `css`) in a caption above the code; `language` says what to colour, from `tsx`, `ts`, `js`, `json`, `bash`, `console`, `css`, `html` and `yaml`.",
+          "A shell session is `console`: a line starting with `$ ` is a command, coloured as bash, and every other line is output. With `copy`, only the commands are copied, without the `$ `.",
+          "A line a reader copies is a `CopyLine`, not a one-line `CodeBlock`. A rendered part shown with its code is a `CodeExample`.",
+          "Without a `language` the code is one colour (`text`), which suits an error or a log.",
+          'A long line wraps, so a command is never cut off and still copies as one line. `overflow="scroll"` keeps lines whole and scrolls them sideways under a thin scrollbar in the theme\'s colour, for code whose layout matters.',
+          "`copy` adds a copy button beside the code. It needs client JS; on a page rendered to static HTML, inline `copyScript` once (see CopyButton).",
+        ],
+      },
       accessibility: [
         "`Code` renders a `<code>`. `CodeBlock` renders a `<figure>` with the code in `<pre><code>`, so the line breaks are kept.",
         "`label` is the `<figcaption>`, which names the figure.",
@@ -118,15 +130,17 @@ export const text: ComponentSection = {
       summary: "A rendered example with the code that makes it, in one frame.",
       whenToUse: "Documentation that shows a part and its source together.",
       pairs: ["CodeExample/Preview"],
-      usage: [
-        "Put the rendered part in `children` and its source in `code`, a string with the newlines kept.",
-        "`caption` is one note on the example, the last band of the frame.",
-        "Side by side in a grid, each frame is its own height, so do not pad the previews to match.",
-        "A wide preview or a long line of code scrolls inside the frame under a thin themed scrollbar; it does not widen the page.",
-        "`copy` adds a button beside the code that copies the code, not the preview. It needs client JS; on a page rendered to static HTML, inline `copyScript` once (see CopyButton).",
-        "Inside a `Prose` the preview stays on the app scale, so the part looks as it does on an app screen; the caption is outside it.",
-        "Only for documentation. A command to copy is a `CopyLine`, and code alone is a `CodeBlock`.",
-      ],
+      usage: {
+        do: [
+          "Put the rendered part in `children` and its source in `code`, a string with the newlines kept.",
+          "`caption` is one note on the example, the last band of the frame.",
+          "Side by side in a grid, each frame is its own height, so do not pad the previews to match.",
+          "A wide preview or a long line of code scrolls inside the frame under a thin themed scrollbar; it does not widen the page.",
+          "`copy` adds a button beside the code that copies the code, not the preview. It needs client JS; on a page rendered to static HTML, inline `copyScript` once (see CopyButton).",
+          "Inside a `Prose` the preview stays on the app scale, so the part looks as it does on an app screen; the caption is outside it.",
+          "Only for documentation. A command to copy is a `CopyLine`, and code alone is a `CodeBlock`.",
+        ],
+      },
       accessibility: [
         "A `<figure>` holds the preview and the code in `<pre><code>`; `caption` is its `<figcaption>`.",
         "`aria-*` and `data-*` go on the figure.",
@@ -139,10 +153,12 @@ export const text: ComponentSection = {
       summary: "A keyboard key, drawn as a keycap.",
       whenToUse: "A key or a shortcut the reader presses: `Esc`, `?`, `⌘S`.",
       pairs: ["Kbd/Key"],
-      usage: [
-        "Use `Kbd` for a key the reader presses, in a sentence or as the shortcut on a `Button`.",
-        "A command or a name is `Code`, never `Kbd`.",
-      ],
+      usage: {
+        do: [
+          "Use `Kbd` for a key the reader presses, in a sentence or as the shortcut on a `Button`.",
+          "A command or a name is `Code`, never `Kbd`.",
+        ],
+      },
       accessibility: [
         "`Kbd` renders a `<kbd>` element, which marks the text as keyboard input.",
         "Its border takes the colour of the text around it, so it reads on plain text and on a filled button.",
@@ -155,12 +171,14 @@ export const text: ComponentSection = {
       summary: "A small, safe renderer for a summary written in markdown.",
       whenToUse: "Text that arrives as markdown, such as an agent's summary, shown on a page.",
       pairs: ["Markdown/Summary"],
-      usage: [
-        "Pass the markdown as `md`. It renders `##` as a label heading, `###` as a subheading, lines starting `- ` or `* ` as bullets, `**bold**` and plain paragraphs.",
-        "Nothing else is supported: no `#` title, numbered list, link, code span, table or HTML. Those show as plain text.",
-        "The text becomes React nodes and never HTML, so untrusted text cannot inject markup.",
-        "Text you write yourself is not markdown: use `Text`, `BulletList` and the heading components.",
-      ],
+      usage: {
+        do: [
+          "Pass the markdown as `md`. It renders `##` as a label heading, `###` as a subheading, lines starting `- ` or `* ` as bullets, `**bold**` and plain paragraphs.",
+          "Nothing else is supported: no `#` title, numbered list, link, code span, table or HTML. Those show as plain text.",
+          "The text becomes React nodes and never HTML, so untrusted text cannot inject markup.",
+          "Text you write yourself is not markdown: use `Text`, `BulletList` and the heading components.",
+        ],
+      },
       accessibility: [
         "`##` renders an `h2` and `###` an `h3`, bullets render a `ul` with `li`s, bold a `strong` and a paragraph a `p`.",
         "The headings start at `h2`, so the page needs its own `h1` above.",
@@ -174,14 +192,17 @@ export const text: ComponentSection = {
       summary: "A link in the accent colour, inside a sentence or on its own.",
       whenToUse: "A link that sits in text. A link that is an action is a `Button` with `href`.",
       pairs: ["TextLink/InSentence", "TextLink/External", "TextLink/Router", "TextLink/Stretch"],
-      usage: [
-        "Use `TextLink` for every link in running text. Never a bare `<a>`.",
-        '`external` is for another site: it opens a new tab with `rel="noreferrer"`.',
-        'In an app with a router, `render` draws the router\'s own `<Link>`: `render={(p) => <Link to="/terms" {...p} />}`. The library has no router.',
-        "`size` pins the type size to `sm`, `md` or `lg`; left out, the link takes the size of its text. `mono` sets the monospace face for a path or an id.",
-        '`tone` gives the link a meaning\'s colour (`warn`, `danger`, `positive`, `info`, `muted`), underlined on hover. Use it for a link that is the message, like "3 failed".',
-        "`stretch` makes the nearest `relative` ancestor the click target: a `Card` or a `TableRow`. Put it on the one link in that row; any other link or button in the row sits above it and is clickable on its own.",
-      ],
+      usage: {
+        do: [
+          "Use `TextLink` for every link in running text.",
+          '`external` is for another site: it opens a new tab with `rel="noreferrer"`.',
+          'In an app with a router, `render` draws the router\'s own `<Link>`: `render={(p) => <Link to="/terms" {...p} />}`. The library has no router.',
+          "`size` pins the type size to `sm`, `md` or `lg`; left out, the link takes the size of its text. `mono` sets the monospace face for a path or an id.",
+          '`tone` gives the link a meaning\'s colour (`warn`, `danger`, `positive`, `info`, `muted`), underlined on hover. Use it for a link that is the message, like "3 failed".',
+          "`stretch` makes the nearest `relative` ancestor the click target: a `Card` or a `TableRow`. Put it on the one link in that row; any other link or button in the row sits above it and is clickable on its own.",
+        ],
+        dont: ["Never write a bare `<a>` for a link in running text."],
+      },
       accessibility: [
         "A `TextLink` is a native `<a>`, so it is in the tab order and opens with Enter.",
         "It has a focus ring from the component, so the keyboard focus is always visible.",
@@ -196,11 +217,13 @@ export const text: ComponentSection = {
       summary: "A bulleted list with the discs, indent and gap built in.",
       whenToUse: "Items that read as a list of points: what changed, what to bring.",
       pairs: ["BulletList/Items"],
-      usage: [
-        'Give a `BulletList` `<li>` children, set in `Text as="li"`.',
-        "Never type a hyphen into a paragraph to make a list.",
-        "Items that have a label and a value are a `KeyValueList`; a list of records is a `Table` or a `ListRow`.",
-      ],
+      usage: {
+        do: [
+          'Give a `BulletList` `<li>` children, set in `Text as="li"`.',
+          "Items that have a label and a value are a `KeyValueList`; a list of records is a `Table` or a `ListRow`.",
+        ],
+        dont: ["Never type a hyphen into a paragraph to make a list."],
+      },
       accessibility: [
         "A `BulletList` renders a `<ul>`, so a screen reader announces a list and the number of items.",
         "`id`, `aria-*` and `data-*` go on the list.",
@@ -214,14 +237,18 @@ export const text: ComponentSection = {
       whenToUse:
         "The facts about a record under its title (branch, SHA, date), or a footer's row of links (Privacy, Terms, Contact).",
       pairs: ["MetaList/Facts", "MetaList/Footer"],
-      usage: [
-        "Each child is one item: text, a `Code` or a `TextLink`.",
-        "`separator` is `·` (default), `•` or `none`.",
-        "`nowrap` keeps each item on one line, for a row of links; the row still wraps between items.",
-        "`mono` sets the whole row in the monospace face, for ids and paths.",
-        "Never type the separators yourself: they wrap onto the end of a line and a screen reader reads them.",
-        "A labelled fact is a `KeyValueList`.",
-      ],
+      usage: {
+        do: [
+          "Each child is one item: text, a `Code` or a `TextLink`.",
+          "`separator` is `·` (default), `•` or `none`.",
+          "`nowrap` keeps each item on one line, for a row of links; the row still wraps between items.",
+          "`mono` sets the whole row in the monospace face, for ids and paths.",
+          "A labelled fact is a `KeyValueList`.",
+        ],
+        dont: [
+          "Never type the separators yourself: they wrap onto the end of a line and a screen reader reads them.",
+        ],
+      },
       accessibility: [
         "A `MetaList` renders a `<ul>` with an `<li>` per item.",
         "The separators are `aria-hidden` and lead every item but the first, held to their item so a wrap never leaves one at the end of a line.",

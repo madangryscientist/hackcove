@@ -12,6 +12,7 @@ import {
   TextLink,
   type ClusterJustify,
 } from "@hackcove/ui-react";
+import { useId } from "react";
 import type { ComponentPage as Page } from "../content/components/index";
 import { neighboursOf } from "../content/components/index";
 import { DoDont } from "../docs/DoDont";
@@ -36,9 +37,10 @@ function topicTitle(topic: string): string {
   return name.replace(/(?<=[a-z])([A-Z])/g, (c) => ` ${c.toLowerCase()}`);
 }
 
-function Rules({ items }: { items: string[] }) {
+/** A list of rules; `labelledBy` names it by its heading's id. */
+function Rules({ items, labelledBy }: { items: string[]; labelledBy?: string | undefined }) {
   return (
-    <BulletList>
+    <BulletList aria-labelledby={labelledBy}>
       {items.map((item) => (
         <Text as="li" key={item} breakWords>
           <InlineCode text={item} />
@@ -91,6 +93,9 @@ function PreviousAndNext({
  */
 export function ComponentPage({ page }: { page: Page }) {
   const { previous, next } = neighboursOf(page.slug);
+  // Each usage list is named by its heading, so it is found by role and name.
+  const doId = useId();
+  const dontId = useId();
   return (
     <Stack gap="xl">
       <PageHeader title={page.name} subtitle={page.summary} />
@@ -114,7 +119,16 @@ export function ComponentPage({ page }: { page: Page }) {
             </Section>
           )}
           <Section id="usage" title="Usage" gap="md">
-            <Rules items={page.usage} />
+            <Stack gap="sm">
+              <SubsectionHeading id={doId}>Do</SubsectionHeading>
+              <Rules items={page.usage.do} labelledBy={doId} />
+            </Stack>
+            {page.usage.dont !== undefined && page.usage.dont.length > 0 && (
+              <Stack gap="sm">
+                <SubsectionHeading id={dontId}>Don't</SubsectionHeading>
+                <Rules items={page.usage.dont} labelledBy={dontId} />
+              </Stack>
+            )}
           </Section>
           <Section id="accessibility" title="Accessibility" gap="md">
             <Rules items={page.accessibility} />

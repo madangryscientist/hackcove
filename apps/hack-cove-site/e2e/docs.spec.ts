@@ -262,6 +262,28 @@ test("at 390px the component rail is folded and the page comes first", async ({ 
   expect(box?.y).toBeLessThan(250);
 });
 
+/** A rule as it reads on the page: `InlineCode` renders the backticked parts as code, without the backticks. */
+const visible = (rule: string) => rule.replaceAll("`", "");
+
+test("Usage lists the do rules and the dont rules as two named lists", async ({ page }) => {
+  const withDont = componentPages.find((p) => (p.usage.dont ?? []).length > 0);
+  if (withDont === undefined) throw new Error("no component page has a usage.dont rule");
+  const { slug, usage } = withDont;
+  await page.goto(`/ui/${slug}/`);
+  const region = page.getByRole("region", { name: "Usage" });
+  const lists = {
+    do: region.getByRole("list", { name: "Do", exact: true }),
+    dont: region.getByRole("list", { name: "Don't", exact: true }),
+  };
+  await expect(lists.do.getByRole("listitem")).toHaveText(usage.do.map(visible));
+  await expect(lists.dont.getByRole("listitem")).toHaveText((usage.dont ?? []).map(visible));
+
+  await page.goto("/ui/button/");
+  const button = page.getByRole("region", { name: "Usage" });
+  await expect(button.getByRole("list", { name: "Do", exact: true })).toBeVisible();
+  await expect(button.getByRole("list", { name: "Don't", exact: true })).toHaveCount(0);
+});
+
 test("/ui/llms.txt is served as plain text, one section per component page", async ({
   request,
 }) => {

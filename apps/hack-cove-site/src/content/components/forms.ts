@@ -1,3 +1,4 @@
+import { datePages } from "./dates";
 import type { ComponentSection } from "./types";
 
 export const forms: ComponentSection = {
@@ -12,14 +13,16 @@ export const forms: ComponentSection = {
       whenToUse:
         "Every text, select or file control: it gets a label, visible unless its purpose is plain from what surrounds it.",
       pairs: ["Field/Label", "Field/Error"],
-      usage: [
-        "Wrap every `Input`, `Textarea`, `Select` and `FileDrop` in a `Field`; `htmlFor` is the control's `id`, and the `label` is always in the accessibility tree.",
-        '`hideLabel` draws no label text but keeps it for assistive tech: use it only when the control\'s purpose is plain from what surrounds it (a search box in a toolbar). Otherwise leave the label visible; a placeholder is not a label. With `layout="row"` it draws as a column.',
-        "A `hint` is the one line of help under the control.",
-        "A validation message is `error`, not `hint`: it replaces the hint, in red.",
-        'Inside a `FormGrid` a `Field` takes one column; `span="full"` runs it across both.',
-        "A `Checkbox` and a `DateField` draw their own `label`; do not wrap them in a `Field`.",
-      ],
+      usage: {
+        do: [
+          "Wrap every `Input`, `Textarea`, `Select` and `FileDrop` in a `Field`; `htmlFor` is the control's `id`, and the `label` is always in the accessibility tree.",
+          '`hideLabel` draws no label text but keeps it for assistive tech: use it only when the control\'s purpose is plain from what surrounds it (a search box in a toolbar). Otherwise leave the label visible; a placeholder is not a label. With `layout="row"` it draws as a column.',
+          "A `hint` is the one line of help under the control.",
+          "A validation message is `error`, not `hint`: it replaces the hint, in red.",
+          'Inside a `FormGrid` a `Field` takes one column; `span="full"` runs it across both.',
+          "A `Checkbox` and a `DateField` draw their own `label`; do not wrap them in a `Field`.",
+        ],
+      },
       accessibility: [
         "The label is a real `<label>` tied to the control by `htmlFor`, so clicking the text focuses the control and a screen reader reads it as the control's name.",
         'An `error` is a `<p role="alert">`, so it is announced when it appears. The hint is plain text.',
@@ -34,14 +37,16 @@ export const forms: ComponentSection = {
       whenToUse: "A short piece of text: a name, an amount, a search term.",
       pairs: ["Input/Amount", "Input/Search"],
       stories: ["ControlHeights"],
-      usage: [
-        "Put an `Input` in a `Field`. Without one, name it with `aria-label`.",
-        'A search box is `type="search"` with an `icon`; the clear button appears by itself.',
-        '`prefix` is short text inside the border before the value, such as a currency symbol. It is for a plain field, not one with an `icon` or `type="search"`. Pair it with `align="end"` and `inputMode="decimal"` for an amount.',
-        '`size="sm"` is for a dense form or a table row, `size="lg"` for a sign-in or search form that stands alone; `md` is the default.',
-        "`width` is `full` by default; `xs`, `sm`, `md` and `lg` are fixed widths for a short value; `fill` grows to the room beside other items in a row; `auto` is as wide as the browser makes it.",
-        "A paragraph is a `Textarea`; a choice from a list is a `Select`; a date is a `DateField`.",
-      ],
+      usage: {
+        do: [
+          "Put an `Input` in a `Field`. Without one, name it with `aria-label`.",
+          'A search box is `type="search"` with an `icon`; the clear button appears by itself.',
+          '`prefix` is short text inside the border before the value, such as a currency symbol. It is for a plain field, not one with an `icon` or `type="search"`. Pair it with `align="end"` and `inputMode="decimal"` for an amount.',
+          '`size="sm"` is for a dense form or a table row, `size="lg"` for a sign-in or search form that stands alone; `md` is the default.',
+          "`width` is `full` by default; `xs`, `sm`, `md` and `lg` are fixed widths for a short value; `fill` grows to the room beside other items in a row; `auto` is as wide as the browser makes it.",
+          "A paragraph is a `Textarea`; a choice from a list is a `Select`; a date is a `DateField`.",
+        ],
+      },
       accessibility: [
         "An `Input` is a native `<input>`: it takes `type`, `inputMode`, `autoComplete`, `required`, `disabled` and the `aria-*` and `data-*` props.",
         'A `type="search"` field shows a "Clear search" button while it has a value; the button is labelled and is hidden when the field is disabled or read-only.',
@@ -56,12 +61,14 @@ export const forms: ComponentSection = {
       summary: "A multi-line text input.",
       whenToUse: "Text that runs to a sentence or a paragraph: a review, a note, a message.",
       pairs: ["Textarea/LongText"],
-      usage: [
-        "Put a `Textarea` in a `Field`, as with an `Input`.",
-        "`rows` is 3 unless you set it; set more for a long answer.",
-        "`size` and `width` are the same choices as on `Input`.",
-        "One line of text is an `Input`.",
-      ],
+      usage: {
+        do: [
+          "Put a `Textarea` in a `Field`, as with an `Input`.",
+          "`rows` is 3 unless you set it; set more for a long answer.",
+          "`size` and `width` are the same choices as on `Input`.",
+          "One line of text is an `Input`.",
+        ],
+      },
       accessibility: [
         "A `Textarea` is a native `<textarea>`: it takes `name`, `required`, `disabled`, `maxLength` and the `aria-*` props.",
         "The focus ring comes from the component.",
@@ -74,12 +81,14 @@ export const forms: ComponentSection = {
       summary: "Choose one option from a list.",
       whenToUse: "One choice from a list of about five or more: a category, a country, a rating.",
       pairs: ["Select/Choice"],
-      usage: [
-        "Put a `Select` in a `Field`, with `<option>` children; set `defaultValue` or control it with `value` and `onChange`.",
-        "A yes or no is a `Checkbox`.",
-        "Two to four modes switched in place are a `SegmentedControl`.",
-        "`size` and `width` are the same choices as on `Input`.",
-      ],
+      usage: {
+        do: [
+          "Put a `Select` in a `Field`, with `<option>` children; set `defaultValue` or control it with `value` and `onChange`.",
+          "A yes or no is a `Checkbox`.",
+          "Two to four modes switched in place are a `SegmentedControl`.",
+          "`size` and `width` are the same choices as on `Input`.",
+        ],
+      },
       accessibility: [
         "A `Select` is a native `<select>`, so it keeps the browser's arrow, its keyboard handling and its mobile picker.",
         "The focus ring comes from the component.",
@@ -92,15 +101,17 @@ export const forms: ComponentSection = {
       summary: "A yes or no, with its label.",
       whenToUse: "An on/off option the person ticks: a setting, a filter, a row to select.",
       pairs: ["Checkbox/Label", "Checkbox/Row"],
-      usage: [
-        "Give a `Checkbox` a `label`; the whole label is the click target.",
-        'In a table cell leave the `label` out, use `size="sm"` and name the box with `aria-label`. `size="lg"` matches a large `Input`.',
-        '`align="start"` puts the box on the first line of a label that wraps onto several; the default centres it.',
-        "A `description` is a muted line under the label for an option that needs a sentence; the box sits on the label's first line and is described by it.",
-        "Do not wrap a `Checkbox` in a `Field`; it is its own label.",
-        "A setting that takes effect the moment it is flipped, usually by saving it, is a `Switch`. A `Checkbox` is ticked and then submitted with the form.",
-        "Choosing one of several is a `RadioGroup`, a `Select` or a `SegmentedControl`, not a row of checkboxes.",
-      ],
+      usage: {
+        do: [
+          "Give a `Checkbox` a `label`; the whole label is the click target.",
+          'In a table cell leave the `label` out, use `size="sm"` and name the box with `aria-label`. `size="lg"` matches a large `Input`.',
+          '`align="start"` puts the box on the first line of a label that wraps onto several; the default centres it.',
+          "A `description` is a muted line under the label for an option that needs a sentence; the box sits on the label's first line and is described by it.",
+          "A setting that takes effect the moment it is flipped, usually by saving it, is a `Switch`. A `Checkbox` is ticked and then submitted with the form.",
+          "Choosing one of several is a `RadioGroup`, a `Select` or a `SegmentedControl`, not a row of checkboxes.",
+        ],
+        dont: ["Do not wrap a `Checkbox` in a `Field`; it is its own label."],
+      },
       accessibility: [
         'A native `<input type="checkbox">` inside a `<label>`, so clicking the text toggles it and the label is its name.',
         "A bare box has no name of its own: `aria-label` is required.",
@@ -116,15 +127,17 @@ export const forms: ComponentSection = {
       whenToUse:
         "A setting that acts the moment it is flipped, usually by saving it to a server: a flag per environment, notifications on or off.",
       pairs: ["Switch/Label", "Switch/Row"],
-      usage: [
-        "Control it: you own `checked`, and `onChange` gets the next value. There is no uncontrolled mode.",
-        'Give a `Switch` a `label`; the whole label is the click target. In a table cell leave the `label` out, use `size="sm"` and name it with `aria-label`: one of the two is required.',
-        "Keep `checked` as it was while the change saves and pass `busy`: a click or a key does nothing, and it keeps its colour and its focus. Flip `checked` when the save lands.",
-        "A `description` is a muted line under the label for a setting that needs a sentence; the switch sits on the label's first line and is described by it.",
-        "`size` is `sm`, `md` (default) or `lg`, the same scale as a `Checkbox`.",
-        "A value sent with a form, ticked and then submitted, is a `Checkbox`. One of several is a `RadioGroup`, a `Select` or a `SegmentedControl`.",
-        "Do not wrap a `Switch` in a `Field`; it is its own label.",
-      ],
+      usage: {
+        do: [
+          "Control it: you own `checked`, and `onChange` gets the next value. There is no uncontrolled mode.",
+          'Give a `Switch` a `label`; the whole label is the click target. In a table cell leave the `label` out, use `size="sm"` and name it with `aria-label`: one of the two is required.',
+          "Keep `checked` as it was while the change saves and pass `busy`: a click or a key does nothing, and it keeps its colour and its focus. Flip `checked` when the save lands.",
+          "A `description` is a muted line under the label for a setting that needs a sentence; the switch sits on the label's first line and is described by it.",
+          "`size` is `sm`, `md` (default) or `lg`, the same scale as a `Checkbox`.",
+          "A value sent with a form, ticked and then submitted, is a `Checkbox`. One of several is a `RadioGroup`, a `Select` or a `SegmentedControl`.",
+        ],
+        dont: ["Do not wrap a `Switch` in a `Field`; it is its own label."],
+      },
       accessibility: [
         'A native `<button type="button" role="switch">` with `aria-checked`, inside a `<label>`, so clicking the text flips it and the label is its name. Space and Enter flip it.',
         "A bare switch has no name of its own: `aria-label` is required.",
@@ -141,16 +154,18 @@ export const forms: ComponentSection = {
       whenToUse:
         "A setting or answer with two to five options the person should see side by side: a visibility, a delivery method, a type.",
       pairs: ["RadioGroup/Choice"],
-      usage: [
-        "Give the `RadioGroup` a `label` that names the question, and a `Radio` per option with its own `label` and a `value`.",
-        "Keep the choice with `defaultValue`, or control it with `value` and `onChange(value)`. `name` posts it in a form.",
-        "A `description` on a `Radio` is a muted line under its label, for the option that needs a sentence.",
-        "An `error` on the group is a red line under the options and marks every circle red; it is the same wording rule as `Field`'s.",
-        "`isDisabled` on the group disables every option; on a `Radio` it disables that one.",
-        "`isRequired` marks a choice the form cannot submit without; the group is `aria-required`.",
-        "`size` (`sm`, `md` the default, `lg`) sets every circle and label, to match the `Input`s around it.",
-        "More than five options, or a list that grows, is a `Select`. Several ticks are `Checkbox`es. Switching a view in place is a `SegmentedControl`.",
-      ],
+      usage: {
+        do: [
+          "Give the `RadioGroup` a `label` that names the question, and a `Radio` per option with its own `label` and a `value`.",
+          "Keep the choice with `defaultValue`, or control it with `value` and `onChange(value)`. `name` posts it in a form.",
+          "A `description` on a `Radio` is a muted line under its label, for the option that needs a sentence.",
+          "An `error` on the group is a red line under the options and marks every circle red; it is the same wording rule as `Field`'s.",
+          "`isDisabled` on the group disables every option; on a `Radio` it disables that one.",
+          "`isRequired` marks a choice the form cannot submit without; the group is `aria-required`.",
+          "`size` (`sm`, `md` the default, `lg`) sets every circle and label, to match the `Input`s around it.",
+          "More than five options, or a list that grows, is a `Select`. Several ticks are `Checkbox`es. Switching a view in place is a `SegmentedControl`.",
+        ],
+      },
       accessibility: [
         'The group is a `role="radiogroup"` named by its label; each `Radio` is a native `<input type="radio">` inside its `<label>`, so clicking the words chooses it.',
         "The group is one tab stop. The arrow keys move between the options and choose, wrapping at each end and skipping a disabled one.",
@@ -165,13 +180,15 @@ export const forms: ComponentSection = {
       summary: "A dashed zone that takes a file by click or drop.",
       whenToUse: "Uploading a file: a statement, a photo, an import.",
       pairs: ["FileDrop/Chosen"],
-      usage: [
-        "Say what the zone wants in its children, and restrict the type with `accept`.",
-        "Show the chosen file's name in the children from `onChange`; the zone does not do it for you.",
-        '`size="sm"` is a compact chip or tile, `size="lg"` a roomy drop zone; `md` is the default.',
-        "`multiple`, `name` and `disabled` go on the zone like any file input.",
-        "Put a `FileDrop` in a `Field` when it needs a label of its own above it.",
-      ],
+      usage: {
+        do: [
+          "Say what the zone wants in its children, and restrict the type with `accept`.",
+          "Show the chosen file's name in the children from `onChange`; the zone does not do it for you.",
+          '`size="sm"` is a compact chip or tile, `size="lg"` a roomy drop zone; `md` is the default.',
+          "`multiple`, `name` and `disabled` go on the zone like any file input.",
+          "Put a `FileDrop` in a `Field` when it needs a label of its own above it.",
+        ],
+      },
       accessibility: [
         'A real `<input type="file">` covers the whole zone, invisible, so a click opens the file dialog, a dragged file is taken as by any file input, and the browser\'s keyboard handling applies.',
         "The zone is a `<label>`, so its children are the input's accessible name.",
@@ -186,13 +203,15 @@ export const forms: ComponentSection = {
       whenToUse:
         "`FormGrid` lays Fields out in two columns; `FormRow` puts several controls and a save button on one line.",
       pairs: ["FormRow/InlineEdit", "FormRow/TwoColumns"],
-      usage: [
-        'A form of several fields is a `FormGrid` of `Field`s: two columns from `md`, one below. A long control, such as a `Textarea`, takes `span="full"`.',
-        "A line of controls to edit one record in place is a `FormRow` of `FormRowField`s, with the save `Button` as `action`.",
-        "`FormRowField` `span` 1 to 4 is its share of the row's width.",
-        "The `hint` or `error` goes on the `FormRow`, once, under the whole line. A `FormRowField` has no hint or error, and a `Field` does not belong inside a `FormRow`.",
-        "A `FormRow` inside a `FormGrid` runs across both columns.",
-      ],
+      usage: {
+        do: [
+          'A form of several fields is a `FormGrid` of `Field`s: two columns from `md`, one below. A long control, such as a `Textarea`, takes `span="full"`.',
+          "A line of controls to edit one record in place is a `FormRow` of `FormRowField`s, with the save `Button` as `action`.",
+          "`FormRowField` `span` 1 to 4 is its share of the row's width.",
+          "The `hint` or `error` goes on the `FormRow`, once, under the whole line. A `FormRowField` has no hint or error, and a `Field` does not belong inside a `FormRow`.",
+          "A `FormRow` inside a `FormGrid` runs across both columns.",
+        ],
+      },
       accessibility: [
         "`FormRowField` renders a `<label>` tied to its control by `htmlFor`, as `Field` does.",
         'The row\'s `error` is a `<p role="alert">`.',
@@ -200,77 +219,24 @@ export const forms: ComponentSection = {
       ],
       api: ["FormRow", "FormRowField", "FormGrid"],
     },
-    {
-      slug: "date-field",
-      name: "DateField",
-      summary:
-        "A date in DD/MM/YYYY segments, with a calendar to pick from when `calendar` is set.",
-      whenToUse:
-        "Any date a person enters; leave `calendar` off for a date the person knows by heart.",
-      pairs: ["DateField/Date", "DateField/Error", "DateField/Value", "DateField/TypedOnly"],
-      usage: [
-        "A date is a `DateField`, never an `Input`. The format is always DD/MM/YYYY and weeks start on Monday, whatever the browser's locale.",
-        "`calendar` adds a calendar button, and `defaultOpen` opens it on mount; without `calendar` the field is typed only, for a date the person knows by heart (a birthday).",
-        "It draws its own label: give them `label` and `description`, and do not wrap them in a `Field`.",
-        "A message from outside, a server's say, is `error`; it replaces the description. An impossible date, such as 31/02/1990, shows its own message. `isInvalid` alone marks the field with no reason, so pair it with `errorMessage`.",
-        "The value is a `CalendarDate` (`value`, `defaultValue`, `onChange`, `minValue`, `maxValue`). `fromISODate` reads a stored `YYYY-MM-DD` and `toISODate` writes one.",
-        "`name` posts the date as `YYYY-MM-DD` in a form, or an empty string.",
-        "`size` is `sm`, `md` (default) or `lg`, the same heights as `Input`.",
-      ],
-      accessibility: [
-        'The label names a `role="group"`; each of day, month and year is its own editable segment (`role="spinbutton"`), so a person can type digits or use the arrow keys.',
-        'The `description` is the field\'s `aria-describedby`; the `error` and the built-in messages replace it, and an `error` is `role="alert"`.',
-        'With `calendar`, the calendar button is labelled "Calendar" and opens a popover dialog, with a Month and a Year select, arrow-key movement across days and a Clear button.',
-        "Inside a `Dialog` or `Drawer` the calendar opens inside it, so it still takes focus.",
-        "The focus ring comes from the component.",
-      ],
-      api: ["DateField"],
-      functions: [
-        {
-          name: "fromISODate",
-          text: 'Reads a stored `"YYYY-MM-DD"` into the `CalendarDate` a picker takes; `null` for an empty, malformed or impossible string.',
-        },
-        {
-          name: "toISODate",
-          text: 'Writes a `CalendarDate` as `"YYYY-MM-DD"`, or `""` for none, so it drops into a form field or storage.',
-        },
-      ],
-    },
-    {
-      slug: "date-range-picker",
-      name: "DateRangePicker",
-      summary: "A from and to date in one field, typed or picked from a month or a preset.",
-      whenToUse: "A from and to date: a report period, a timeline filter.",
-      pairs: ["DateRangePicker/Presets"],
-      usage: [
-        "A from and to date is one `DateRangePicker`, never two `DateField`s. A single date is a `DateField`.",
-        "The value is `{ start, end }` of `CalendarDate`s, or `null`. It is reported only when both sides are complete, real dates within `minValue` and `maxValue` and the start is on or before the end; anything else reports `null` and the field says why. `startName` and `endName` post each side as `YYYY-MM-DD` in a form, or an empty string while there is no range.",
-        'Presets come from the app: build "Last 7 days", "Last 30 days" and "Last 90 days" from the app\'s own today (`today(getLocalTimeZone())` from `@internationalized/date`) and pass them as `presets`. The picker has none of its own and never reads the clock. A preset sets the range and closes the calendar.',
-        "It draws its own label: give it `label` and `description`, and do not wrap it in a `Field`. `error`, `isInvalid`, `errorMessage` and `size` work as on `DateField`.",
-      ],
-      accessibility: [
-        'Each side is a `role="group"` named "Start date" and "End date", of DD, MM and YYYY segments (`role="spinbutton"`) that take digits or the arrow keys.',
-        'The calendar button is labelled "Calendar" and opens a popover dialog: the arrow keys move across days, Enter on a day starts the range and Enter on a second ends it, and Escape closes it without a change.',
-        'An impossible day, such as 31/02/2026, keeps what was typed and says which side and why: "End date: February 2026 has 28 days."',
-        "Inside a `Dialog` or `Drawer` the calendar opens inside it, so it still takes focus. The focus ring comes from the component.",
-      ],
-      api: ["DateRangePicker"],
-    },
+    ...datePages,
     {
       slug: "segmented-control",
       name: "SegmentedControl",
       summary: "A joined group of options where one is filled.",
       whenToUse: "A mode or a range chosen in place: daily or weekly, split or even.",
       pairs: ["SegmentedControl/Mode", "SegmentedControl/DisabledReason", "SegmentedControl/Links"],
-      usage: [
-        "Two to five short options. The caller owns `value` and `onChange`; `label` names the group.",
-        "`size` is `sm`, `md` (default) or `lg`, the heights of a `Button`.",
-        "An on/off setting is a `Checkbox` or a `Switch`; a long list is a `Select`.",
-        "Switching the panel under a row of headings is `Tabs`.",
-        "A `count` sits muted after the label.",
-        "A disabled option keeps a `title` as the reason; `disabled` on the group disables every option.",
-        "Options that go to another page are links: `href` on each, or `render` to draw the app's own router link. `value` marks the current page.",
-      ],
+      usage: {
+        do: [
+          "Two to five short options. The caller owns `value` and `onChange`; `label` names the group.",
+          "`size` is `sm`, `md` (default) or `lg`, the heights of a `Button`.",
+          "An on/off setting is a `Checkbox` or a `Switch`; a long list is a `Select`.",
+          "Switching the panel under a row of headings is `Tabs`.",
+          "A `count` sits muted after the label.",
+          "A disabled option keeps a `title` as the reason; `disabled` on the group disables every option.",
+          "Options that go to another page are links: `href` on each, or `render` to draw the app's own router link. `value` marks the current page.",
+        ],
+      },
       accessibility: [
         "Buttons form a `radiogroup` named by `label`; each option is a `radio` with `aria-checked`.",
         "The group is one tab stop. The arrow keys (all four), Home and End move to the next enabled option and choose it.",
@@ -286,11 +252,13 @@ export const forms: ComponentSection = {
       summary: "A named set of filter chips.",
       whenToUse: "Two or more pressed-toggle `Button`s that filter the same thing.",
       pairs: ["FilterGroup/Legend", "FilterGroup/Facets"],
-      usage: [
-        "The `legend` names the set, such as the type of shop; the chips below wrap onto further lines when they run out of room.",
-        "One `FilterGroup` per facet; stack several in a `Stack`.",
-        'The children are `Button`s with `variant="outline"`, `size="sm"` and `pressed`.',
-      ],
+      usage: {
+        do: [
+          "The `legend` names the set, such as the type of shop; the chips below wrap onto further lines when they run out of room.",
+          "One `FilterGroup` per facet; stack several in a `Stack`.",
+          'The children are `Button`s with `variant="outline"`, `size="sm"` and `pressed`.',
+        ],
+      },
       accessibility: [
         "A `<fieldset>` with a `<legend>`, so a screen reader announces the group's name on entering it.",
         "`disabled` on the group disables every chip in it.",
