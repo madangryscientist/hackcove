@@ -1,3 +1,15 @@
+## 0.10.13 (2026-11-15)
+
+### 🩹 Fixes
+
+- **ui-react:** a button ListRow can hold a link or button in trailing ([#140](https://github.com/madangryscientist/hackcove/pull/140))
+- **ui-react:** give Morph a 450 ms settling morph instead of the browser's 250 ms ([#141](https://github.com/madangryscientist/hackcove/pull/141))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+- Jacobus Langner @madangryscientist
+
 ## 0.10.12 (2026-11-15)
 
 ### 🚀 Features
