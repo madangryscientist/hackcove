@@ -1,3 +1,17 @@
+## 0.10.10 (2026-11-15)
+
+### 🚀 Features
+
+- **ui-react:** Card fill, so a panel can take its parent's full height ([#135](https://github.com/madangryscientist/hackcove/pull/135))
+
+### 🩹 Fixes
+
+- **lint:** fail an em or en dash in any source file, and rewrite the ones in the repo ([#134](https://github.com/madangryscientist/hackcove/pull/134))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.10.9 (2026-11-15)
 
 ### 🚀 Features
