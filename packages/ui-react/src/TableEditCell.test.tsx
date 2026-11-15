@@ -122,6 +122,7 @@ describe("TableEditCell", () => {
     open();
     await start();
     // Safari does not focus a pressed button: the blur has no target, and the press must still land.
+    // No user() call blurs to nowhere without the press that closes it, so the blur is called direct.
     act(() => screen.getByRole("button", { name: "Help" }).blur());
     expect(editor()).not.toBeNull();
   });
@@ -129,7 +130,8 @@ describe("TableEditCell", () => {
   it("focus moving out closes it", async () => {
     open();
     await start();
-    act(() => screen.getByRole("button", { name: "Elsewhere" }).focus());
+    await user().tab({ shift: true });
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Elsewhere" }));
     expect(editor()).toBeNull();
   });
 });

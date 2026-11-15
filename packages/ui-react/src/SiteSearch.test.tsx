@@ -47,13 +47,17 @@ function firstTrigger(): HTMLElement {
 
 const search = () => render(<SiteSearch items={ITEMS} label="Search components" />);
 
-/** Whether the last keydown to reach the window had its default prevented. */
+/** Whether the last keydown to reach the window had its default prevented; reading it stops listening. */
 function lastKeyPrevented(): () => boolean | undefined {
   let prevented: boolean | undefined;
-  window.addEventListener("keydown", (event) => {
+  const listen = (event: KeyboardEvent) => {
     prevented = event.defaultPrevented;
-  });
-  return () => prevented;
+  };
+  window.addEventListener("keydown", listen);
+  return () => {
+    window.removeEventListener("keydown", listen);
+    return prevented;
+  };
 }
 
 describe("SiteSearch", () => {

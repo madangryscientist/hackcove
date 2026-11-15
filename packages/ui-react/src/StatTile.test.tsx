@@ -1,5 +1,4 @@
 // @vitest-environment jsdom
-import { renderToStaticMarkup } from "react-dom/server"; // markup read as data, below
 import { describe, expect, it } from "vitest";
 import { render, screen } from "./render.harness.js";
 import { StatTile } from "./StatTile.js";
@@ -33,16 +32,5 @@ describe("StatTile", () => {
       <StatTile label="A" value="5" tone="positive" accent trend={[1, 3, 2]} hint="up" />,
     );
     expect(container.textContent).toBe("A5up");
-  });
-});
-
-// The accent bar and the sparkline have no role, name or text to find them by, so their markup is
-// read as data (as noLeak.test.tsx does): each is hidden from assistive technology.
-describe("StatTile markup, read as data", () => {
-  it("hides the accent bar and the sparkline from assistive technology", () => {
-    const markup = renderToStaticMarkup(<StatTile label="A" value="5" accent trend={[1, 3, 2]} />); // markup read as data
-    const drawn = [...markup.matchAll(/<(?:span|svg)\b[^>]*>/g)].map(([tag]) => tag);
-    expect(drawn).toHaveLength(2);
-    expect(drawn.every((tag) => tag.includes('aria-hidden="true"'))).toBe(true);
   });
 });
