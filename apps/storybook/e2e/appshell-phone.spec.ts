@@ -21,7 +21,7 @@ const HEADER_HEIGHT = 57;
 const stories = [
   { id: "layout-appshell--long-page", links: 7 + 6 },
   { id: "layout-appshell--short-page", links: 7 },
-  { id: "layout-appshell--overflowing-subnav", links: 7 + 12 },
+  { id: "layout-appshell--overflowing-subnav", links: 7 + 16 },
   { id: "layout-appshell--phone-menu", links: 7 + 6 },
   { id: "layout-appshell--header-slots", links: 7 },
   // Its menuControls sit above the nav in the menu; the links are the nav's.

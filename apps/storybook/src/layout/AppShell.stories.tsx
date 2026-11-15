@@ -94,6 +94,10 @@ const personal = [
   "Travel",
   "Health",
   "Journal",
+  "Contacts",
+  "Photos",
+  "Files",
+  "Goals",
   "Settings",
 ];
 
