@@ -1,7 +1,8 @@
 name: Visual
 
-# The visual check: captures every story and uploads every group to its project on the hosted
-# PixelSlash server, which diffs it against main and posts a check run on the commit. A pull
+# The visual check: captures every story and uploads every group to its project on the project's
+# own PixelSlash server, which diffs it against main. The server's address is the PIXELSLASH_SERVER
+# secret, so it is never written in this public repo. A pull
 # request uploads its head commit on its own branch; a push to main uploads main, which the server
 # takes as the new baseline. It uses the plain `pull_request` trigger, so a fork's pull request runs
 # with no secrets and this job skips with a notice. Never switch it to `pull_request_target`: this
@@ -30,8 +31,8 @@ jobs:
         if: env.PIXELSLASH_TOKEN == ''
         run: echo "::notice::The visual check needs the PIXELSLASH_TOKEN secret, so it was skipped. A fork's pull request gets no secrets; the maintainers check its visuals."
 
-      # The pull request's head commit, never GitHub's synthetic merge commit: the server posts its
-      # check run on the commit it was given, and only the head's shows on the pull request. Full
+      # The pull request's head commit, never GitHub's synthetic merge commit: the server keys the
+      # build on the commit it was given, and only the head is the pull request's code. Full
       # history, since the upload finds the merge-base with origin/main and walks main's builds.
       - name: Check out hackcove
         if: env.PIXELSLASH_TOKEN != ''
@@ -99,7 +100,7 @@ jobs:
         if: env.PIXELSLASH_TOKEN != ''
         working-directory: hackcove
         env:
-          PIXELSLASH_SERVER: https://app.pixelslash.dev
+          PIXELSLASH_SERVER: ${{ secrets.PIXELSLASH_SERVER }}
           PIXELSLASH_DIR: ${{ github.workspace }}/pixelslash
           VISUAL_PARALLEL: 2
           MOON_BASE: HEAD
