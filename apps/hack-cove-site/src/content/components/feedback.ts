@@ -164,6 +164,29 @@ export const feedback: ComponentSection = {
       ],
     },
     {
+      slug: "morph",
+      name: "Morph",
+      summary:
+        "An element that grows into its counterpart on the next page, and shrinks back on Back.",
+      whenToUse:
+        "A card or thumbnail that opens into its own page, where the reader should see the one become the other.",
+      pairs: ["Morph/UniqueName", "Morph/Transition"],
+      usage: [
+        'Wrap the card in the grid and the element on the detail page, each with the same `name` and the record\'s id as `item`: `<Morph name="shop" item={shop.id}>`.',
+        "The same `name` and `item` may appear only once on a page. Two on one page and the browser skips the morph, so a list passes each record's own id.",
+        "Start the change inside a view transition: `startPageTransition(() => setOpen(id))` for a state change, or the router's own option (TanStack Router `defaultViewTransition: true` on `createRouter`, or `viewTransition` on a `Link`; React Router's `viewTransition`, Astro's `ClientRouter`). Without one nothing morphs.",
+        "The destination's Morph must be in the page when the navigation lands: a route that shows a pending component first has nothing to morph into.",
+        "Inside a `PageFade` the rest of the page cross-fades while the card morphs over it.",
+        "Portal an overlay such as a dropdown to the body: the morphing element is a stacking context, so an overlay inside it cannot rise above a sticky header outside it.",
+      ],
+      accessibility: [
+        "A Morph is a plain `<div>` with no role, so it changes nothing for assistive technology.",
+        "Under `prefers-reduced-motion: reduce` the element swaps with no animation, and `startPageTransition` just runs the update.",
+        "Where the browser has no View Transitions it is a plain `<div>` and the content swaps.",
+      ],
+      api: ["Morph"],
+    },
+    {
       slug: "navigation-progress",
       name: "NavigationProgress",
       summary: "A thin bar across the top of the page while a route change is loading.",

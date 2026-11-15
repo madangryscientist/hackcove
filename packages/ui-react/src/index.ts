@@ -95,6 +95,7 @@ export { CodeExample } from "./CodeExample.js";
 export { Disclosure } from "./Disclosure.js";
 export { Divider } from "./Divider.js";
 export { PageFade, startPageTransition } from "./PageFade.js";
+export { Morph } from "./Morph.js";
 export { NavigationProgress } from "./NavigationProgress.js";
 export { Dialog, type DialogProps } from "./Dialog.js";
 export { SiteSearch, type SiteSearchItem } from "./SiteSearch.js";
