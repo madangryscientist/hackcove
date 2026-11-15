@@ -17,8 +17,8 @@ import { DemoShell, layoutPage } from "./DemoShell";
 /**
  * A vertical link list beside the canvas, both inside the shell's Container, so the rail starts at
  * the header logo's x and the canvas ends at the header's right edge. The rail has no background;
- * it stacks above the canvas below `md`, or folds behind a disclosure when it sets `railLabel`. Not in the no-jump title check (its canvas sits right of
- * the rail); the e2e asserts the shared edges on their own terms. From `md` the rail stays in view
+ * it stacks above the canvas below `md`, or folds behind a disclosure when it sets `railLabel`. Its canvas sits right of the rail, so
+ * the e2e asserts the shared edges on their own terms. From `md` the rail stays in view
  * under the shell's header as a long page scrolls, with or without `railLabel`; a rail taller than
  * the screen scrolls itself. Below `md` nothing sticks.
  */

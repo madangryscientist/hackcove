@@ -10,7 +10,7 @@ import {
 } from "@hackcove/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 
-/** The one layout whose width differs on purpose, so the no-jump title check skips it (e2e/layout.spec.ts). */
+/** The one layout whose width differs on purpose: a narrow centred card, asserted on its own terms (e2e/layout.spec.ts). */
 const meta: Meta = {
   title: "Page layouts/CenteredLayout",
   parameters: { layout: "fullscreen", bare: true },
