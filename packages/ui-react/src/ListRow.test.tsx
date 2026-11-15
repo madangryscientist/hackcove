@@ -3,12 +3,9 @@ import { describe, expect, it } from "vitest";
 import { ListRow } from "./ListRow.js";
 
 describe("ListRow", () => {
-  it("is a full-width button with a hover fill and the label and trailing content", () => {
+  it("holds the label and trailing content, with no chevron unless expanded", () => {
     const out = renderToStaticMarkup(<ListRow trailing="R 4 250">Rent</ListRow>);
-    expect(out).toContain('<button type="button"');
-    expect(out).toContain("w-full");
-    expect(out).toContain("hover:bg-slate-50");
-    expect(out).toContain('<div class="min-w-0 flex-1">Rent</div>');
+    expect(out).toContain(">Rent</div>");
     expect(out).toContain(">R 4 250</span>");
     expect(out).not.toContain("aria-expanded");
     expect(out).not.toContain("<svg");
@@ -85,7 +82,7 @@ describe("ListRow leading and selected", () => {
   it("leading sits before the label, on a button and a link alike", () => {
     const button = renderToStaticMarkup(<ListRow leading={<i data-av />}>Ada</ListRow>);
     expect(button).toMatch(
-      /<span class="shrink-0"><i data-av[^>]*><\/i><\/span><div class="min-w-0 flex-1">Ada/,
+      /<span class="shrink-0"><i data-av[^>]*><\/i><\/span><div id="[^"]*" class="min-w-0 flex-1">Ada/,
     );
     const link = renderToStaticMarkup(
       <ListRow href="#a" leading="L">
@@ -280,8 +277,8 @@ describe("ListRow active", () => {
 describe("ListRow secondary", () => {
   it("puts a muted line under the label, inside the label column", () => {
     const out = renderToStaticMarkup(<ListRow secondary="Due 1 Dec">Rent</ListRow>);
-    expect(out).toContain(
-      '<div class="min-w-0 flex-1">Rent<div class="text-xs font-normal text-slate-500">Due 1 Dec</div></div>',
+    expect(out).toMatch(
+      /<div id="[^"]*" class="min-w-0 flex-1">Rent<div class="text-xs font-normal text-slate-500">Due 1 Dec<\/div><\/div>/,
     );
     expect(out).not.toContain("secondary");
   });

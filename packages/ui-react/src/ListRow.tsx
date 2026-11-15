@@ -11,17 +11,20 @@ import { type LinkRender, renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 
-const ROW_LOOK =
-  "flex w-full items-center gap-3 text-left text-sm text-slate-900 disabled:pointer-events-none disabled:opacity-50";
+const ROW_LOOK = "flex w-full items-center gap-3 text-left text-sm text-slate-900";
 
 const INSET_RING = `${focusRing} focus-visible:-outline-offset-2`;
 
-const ROW = `${ROW_LOOK} ${INSET_RING}`;
-
-/** A linked row is a `relative` box; its link is an empty overlay, so the row's own links and buttons are not nested in it. */
+/**
+ * A button or linked row is a `relative` box; its button or link is an empty overlay, so the row's
+ * own links and buttons are not nested in it.
+ */
 const LINK_ROW = `relative ${ROW_LOOK} ${liftInteractive}`;
 
 const OVERLAY = `link-stretch absolute inset-0 ${INSET_RING}`;
+
+/** A disabled button row: faded, whatever its fill. Its overlay button is disabled, so the row does not fire. */
+const DISABLED = "opacity-50";
 
 const STATIC = "group/row flex w-full items-center gap-3 text-sm text-slate-900";
 
@@ -111,7 +114,13 @@ type ListRowButtonProps = Shared &
     expanded?: boolean | undefined;
     href?: undefined;
     render?: undefined;
-  } & Unstyled<Omit<ComponentPropsWithoutRef<"button">, "children">>;
+    /** On the row, not its button, so a link or button in `trailing` does not count as entering it. */
+    onPointerEnter?: PointerEventHandler<HTMLDivElement> | undefined;
+    /** On the row, not its button, so a link or button in `trailing` does not count as leaving it. */
+    onPointerLeave?: PointerEventHandler<HTMLDivElement> | undefined;
+  } & Unstyled<
+    Omit<ComponentPropsWithoutRef<"button">, "children" | "onPointerEnter" | "onPointerLeave">
+  >;
 
 type ListRowLinkProps = Shared &
   NotStatic & {
@@ -155,8 +164,7 @@ type ListRowStaticProps = Shared & {
   /**
    * Content under the row, lined up with the label rather than the row's edge (past `leading`): the
    * panel of a row that opens in place, such as a conversation under its chat. It sits inside the
-   * row, so `divided`, the fill and `revealOnHover` cover it too. Only a `static` row takes it: a
-   * button or a link row cannot hold controls.
+   * row, so `divided`, the fill and `revealOnHover` cover it too. Only a `static` row takes it.
    */
   detail?: ReactNode | undefined;
   expanded?: undefined;
@@ -172,7 +180,13 @@ type Pieces = { start: ReactNode; label: ReactNode; end: ReactNode };
 function fillOf(props: ListRowProps): string | undefined {
   if (props.selected) return SELECTED;
   if (props.active) return ACTIVE;
+  if (isDisabled(props)) return undefined;
   return props.static && !props.revealOnHover ? undefined : FILL;
+}
+
+/** A button row with `disabled`: its button is disabled, so the row fades and takes no hover fill. */
+function isDisabled(props: ListRowProps): boolean {
+  return !props.static && "disabled" in props && props.disabled === true;
 }
 
 /** `detail={open && <Panel />}` is a common way to write it, so `false` is as empty as `null`. */
@@ -181,8 +195,8 @@ function hasDetail(detail: ReactNode): boolean {
 }
 
 function rowBase(props: ListRowProps): string {
-  if (props.static) return hasDetail(props.detail) ? STATIC_DETAIL : STATIC;
-  return props.href !== undefined || props.render !== undefined ? LINK_ROW : ROW;
+  if (!props.static) return LINK_ROW;
+  return hasDetail(props.detail) ? STATIC_DETAIL : STATIC;
 }
 
 function look(props: ListRowProps): string {
@@ -192,6 +206,7 @@ function look(props: ListRowProps): string {
     PAD[size],
     divided && "border-t border-slate-200/70",
     fillOf(props),
+    isDisabled(props) && DISABLED,
     focused && FOCUSED,
   );
 }
@@ -313,7 +328,7 @@ function LinkRow(props: ListRowLinkProps & Pieces): ReactElement {
   );
 }
 
-function ButtonRow(props: ListRowButtonProps & Pieces): ReactElement {
+function ButtonRow(props: ListRowButtonProps & Pieces & { labelId: string }): ReactElement {
   const {
     leading: _l,
     secondary: _sec,
@@ -334,51 +349,68 @@ function ButtonRow(props: ListRowButtonProps & Pieces): ReactElement {
     start,
     label,
     end,
+    labelId,
+    children: _c,
+    onPointerEnter,
+    onPointerLeave,
     ...rest
   } = props;
   return (
-    <button
-      type="button"
-      {...rest}
-      {...(selected ? { "aria-current": "true" as const } : {})}
-      {...(expanded === undefined ? {} : { "aria-expanded": expanded })}
-      className={look(props)}
-    >
+    <div onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave} className={look(props)}>
+      <button
+        type="button"
+        {...(rest["aria-label"] === undefined ? { "aria-labelledby": labelId } : {})}
+        {...rest}
+        {...(selected ? { "aria-current": "true" as const } : {})}
+        {...(expanded === undefined ? {} : { "aria-expanded": expanded })}
+        className={OVERLAY}
+      />
       {expanded !== undefined && <Chevron open={expanded} />}
       {start}
       {label}
       {end}
-    </button>
+    </div>
   );
 }
 
 /**
- * A full-width row that is a `<button>` (or, with `href` or `render`, a link) with a hover fill, a
- * left-aligned label and `trailing` content at the far end. A linked row is a `<div>` with the link
- * stretched over it, so the whole row opens the link; a `TextLink`, `Button` or `Checkbox` in the
- * row sits above the link and is clickable on its own. With `expanded` it is the header of a
+ * A full-width row that runs `onClick` (or, with `href` or `render`, opens a link) with a hover
+ * fill, a left-aligned label and `trailing` content at the far end. The row is a `<div>` with its
+ * `<button>` or link stretched over it, so a tap anywhere on the row runs it; a `TextLink`,
+ * `Button` or `Checkbox` in the row (in `trailing`, say a "View" link on a row that selects) sits
+ * above it and is clickable on its own. A button row's button is named by the label alone. With `expanded` it is the header of a
  * collapsible section: `aria-expanded` and a chevron. Rows sit in a `Card flush`; `divided` draws
  * the line between them, on each row after the first.
  *
  * `secondary` is a second, muted line under the label. `leading` is content before the label (`leadingWidth="thumbnail"` gives it a fixed picture width),
  * `selected` marks the row in view, `focused` the one the keyboard cursor is on and `active` fills
  * the row a list follows (`onPointerEnter`, `onPointerLeave` and `onFocus` reach
- * every form; on a linked row the pointer handlers go on the row itself). The label is a
+ * every form; on a button or linked row the pointer handlers go on the row itself). The label is a
  * `<div>`, so it can hold block content (a name over a path). `static` makes the
- * row a plain `<div>` for one that holds its own buttons (a button cannot sit inside a button or a
- * link): `actions` follow `trailing`, and `revealOnHover` shows them only on hover or focus.
+ * row a plain `<div>` with no action of its own, for one that holds its own buttons: `actions`
+ * follow `trailing`, and `revealOnHover` shows them only on hover or focus.
  * A `static` row also takes `detail`, content under the row that starts where the label does (a
  * conversation that opens under its chat); `divided` draws the line above the whole row, detail
  * included, so a list of them is `divided={index > 0}` on each.
  */
 export function ListRow(props: ListRowProps): ReactElement {
+  const labelId = useId();
+  if (props.static) return <StaticRow {...props} {...piecesOf(props)} />;
+  if (props.href !== undefined || props.render !== undefined) {
+    return <LinkRow {...props} {...piecesOf(props)} />;
+  }
+  return <ButtonRow {...props} {...piecesOf(props, labelId)} labelId={labelId} />;
+}
+
+/** The row's cells. `labelId` names the label, for a button row's button to be labelled by it. */
+function piecesOf(props: ListRowProps, labelId?: string): Pieces {
   const { leading, leadingWidth, trailing, secondary, children } = props;
-  const pieces: Pieces = {
+  return {
     start: leading != null && (
       <span className={cx("shrink-0", leadingWidth === "thumbnail" && THUMBNAIL)}>{leading}</span>
     ),
     label: (
-      <div className="min-w-0 flex-1">
+      <div id={labelId} className="min-w-0 flex-1">
         {children}
         {secondary != null && secondary !== false && (
           <div className="text-xs font-normal text-slate-500">{secondary}</div>
@@ -389,9 +421,4 @@ export function ListRow(props: ListRowProps): ReactElement {
       <span className="shrink-0 tabular-nums text-slate-500">{trailing}</span>
     ),
   };
-  if (props.static) return <StaticRow {...props} {...pieces} />;
-  if (props.href !== undefined || props.render !== undefined) {
-    return <LinkRow {...props} {...pieces} />;
-  }
-  return <ButtonRow {...props} {...pieces} />;
 }

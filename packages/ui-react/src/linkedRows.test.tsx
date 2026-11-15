@@ -139,3 +139,24 @@ describe("a linked ListRow and Card", () => {
     }
   });
 });
+
+// A button ListRow is the same shape as a linked one (its click and tap order are proven in a
+// browser, `list-row-button.spec.ts`); a disabled one disables its button, so the row does not fire.
+describe("a disabled button ListRow", () => {
+  it("disables the row's button, so a tap on the row does nothing", () => {
+    const select = vi.fn<() => void>();
+    const container = mount(
+      <ListRow disabled onClick={select}>
+        Grace
+      </ListRow>,
+    );
+    const button = container.querySelector<HTMLButtonElement>("button[aria-labelledby]");
+    if (!button) throw new Error("no row button");
+    expect(document.getElementById(button.getAttribute("aria-labelledby") ?? "")?.textContent).toBe(
+      "Grace",
+    );
+    expect(button.disabled).toBe(true);
+    click(button);
+    expect(select).not.toHaveBeenCalled();
+  });
+});

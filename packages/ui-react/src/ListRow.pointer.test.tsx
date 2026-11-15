@@ -19,7 +19,7 @@ function pointerOutOf(el: Element) {
 }
 
 describe("ListRow pointer and focus handlers", () => {
-  it("reach a button row and a static row", () => {
+  it("reach a button row and a static row; a button row's pointer handlers sit on the row", () => {
     for (const form of ["button", "static"] as const) {
       const enter = vi.fn<() => void>();
       const leave = vi.fn<() => void>();
@@ -45,7 +45,10 @@ describe("ListRow pointer and focus handlers", () => {
       if (!(row instanceof HTMLElement)) throw new Error("no row");
       pointerInto(row);
       pointerOutOf(row);
-      act(() => row.focus());
+      // A button row takes focus on its stretched button; a static row on itself.
+      const target = form === "static" ? row : row.querySelector("button");
+      if (!(target instanceof HTMLElement)) throw new Error("no focus target");
+      act(() => target.focus());
       expect([enter.mock.calls.length, leave.mock.calls.length, focus.mock.calls.length]).toEqual([
         1, 1, 1,
       ]);
