@@ -23,7 +23,7 @@ const LINK_ROW = `relative ${ROW_LOOK} ${liftInteractive}`;
 
 const OVERLAY = `link-stretch absolute inset-0 ${INSET_RING}`;
 
-/** A disabled button row: faded, with no hover fill. Its overlay button is disabled, so the row does not fire. */
+/** A disabled button row: faded, whatever its fill. Its overlay button is disabled, so the row does not fire. */
 const DISABLED = "opacity-50";
 
 const STATIC = "group/row flex w-full items-center gap-3 text-sm text-slate-900";
@@ -180,8 +180,13 @@ type Pieces = { start: ReactNode; label: ReactNode; end: ReactNode };
 function fillOf(props: ListRowProps): string | undefined {
   if (props.selected) return SELECTED;
   if (props.active) return ACTIVE;
-  if (!props.static && "disabled" in props && props.disabled) return DISABLED;
+  if (isDisabled(props)) return undefined;
   return props.static && !props.revealOnHover ? undefined : FILL;
+}
+
+/** A button row with `disabled`: its button is disabled, so the row fades and takes no hover fill. */
+function isDisabled(props: ListRowProps): boolean {
+  return !props.static && "disabled" in props && props.disabled === true;
 }
 
 /** `detail={open && <Panel />}` is a common way to write it, so `false` is as empty as `null`. */
@@ -201,6 +206,7 @@ function look(props: ListRowProps): string {
     PAD[size],
     divided && "border-t border-slate-200/70",
     fillOf(props),
+    isDisabled(props) && DISABLED,
     focused && FOCUSED,
   );
 }

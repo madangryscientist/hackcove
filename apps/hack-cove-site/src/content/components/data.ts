@@ -78,10 +78,10 @@ export const data: ComponentSection = {
         "Records with several columns to compare are a `Table`, not rows.",
       ],
       accessibility: [
-        'A button row is a `<div>` with a native `<button type="button">` stretched over it, named by the label alone; a link row is the same with a real link; a `static` row is a plain `<div>` with no click target.',
+        'A button row is a `<div>` with a native `<button type="button">` stretched over it, named by the label alone; a link row is a `<div>` with a real link stretched over it, named by the whole row; a `static` row is a plain `<div>` with no click target.',
         '`selected` sets `aria-current="true"` on the row.',
         "`expanded` sets `aria-expanded` and draws a chevron, which is hidden from assistive tech.",
-        "A button or link row has a focus ring from the component; a button row's `disabled` fades the row and disables its button, so a tap on the row does nothing.",
+        "A button or link row has a focus ring from the component; a button row's `disabled` fades the row and disables its button, so a tap on the row itself does nothing; a link or button in `trailing` still works.",
         "`revealOnHover` actions appear when the row is hovered or has focus inside it, so a keyboard user can reach them, and they are always shown on a touch screen.",
       ],
       api: ["ListRow"],

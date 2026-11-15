@@ -140,75 +140,22 @@ describe("a linked ListRow and Card", () => {
   });
 });
 
-/** The button or link in `container` whose accessible name is `name`. */
-const named = (container: HTMLElement, role: "button" | "link", name: string) => {
-  const found = [...container.querySelectorAll<HTMLElement>(role === "link" ? "a" : "button")].find(
-    (el) => {
-      const by = el.getAttribute("aria-labelledby");
-      const text = by ? document.getElementById(by)?.textContent : el.textContent;
-      return (el.getAttribute("aria-label") ?? text)?.trim() === name;
-    },
-  );
-  if (!found) throw new Error(`no ${role} named ${name}`);
-  return found;
-};
-
-// A button ListRow is the same shape: a div with its button stretched over it, so `trailing` can
-// hold a link drawn by the app's router and a tap on that link is not a tap on the row.
-describe("a button ListRow with a trailing link", () => {
-  const select = vi.fn<() => void>();
-  const view = vi.fn<() => void>();
-  const renderRow = () =>
-    mount(
-      <ListRow
-        onClick={select}
-        trailing={
-          <Button
-            size="sm"
-            variant="outline"
-            render={(p) => <a data-router="1" href="/shops/grace" {...p} />}
-            onClick={keep(view)}
-          >
-            View
-          </Button>
-        }
-      >
-        Grace
-      </ListRow>,
-    );
-  it("runs onClick from the row's button, which is named by the label alone", () => {
-    vi.clearAllMocks();
-    const container = renderRow();
-    click(named(container, "button", "Grace"));
-    expect(select).toHaveBeenCalledTimes(1);
-    expect(view).not.toHaveBeenCalled();
-  });
-
-  it("follows the trailing link and does not run the row's onClick", () => {
-    vi.clearAllMocks();
-    const container = renderRow();
-    click(named(container, "link", "View"));
-    expect(view).toHaveBeenCalledTimes(1);
-    expect(select).not.toHaveBeenCalled();
-  });
-
-  it("nests no link in the button, and puts the button before the link in tab order", () => {
-    const container = renderRow();
-    const button = named(container, "button", "Grace");
-    const link = named(container, "link", "View");
-    expect(container.querySelector("button a, a button")).toBeNull();
-    expect(button.compareDocumentPosition(link) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-  });
-
-  it("a disabled row's button is disabled, so a tap on the row does nothing", () => {
-    vi.clearAllMocks();
+// A button ListRow is the same shape as a linked one (its click and tap order are proven in a
+// browser, `list-row-button.spec.ts`); a disabled one disables its button, so the row does not fire.
+describe("a disabled button ListRow", () => {
+  it("disables the row's button, so a tap on the row does nothing", () => {
+    const select = vi.fn<() => void>();
     const container = mount(
       <ListRow disabled onClick={select}>
         Grace
       </ListRow>,
     );
-    const button = named(container, "button", "Grace");
-    expect(button).toHaveProperty("disabled", true);
+    const button = container.querySelector<HTMLButtonElement>("button[aria-labelledby]");
+    if (!button) throw new Error("no row button");
+    expect(document.getElementById(button.getAttribute("aria-labelledby") ?? "")?.textContent).toBe(
+      "Grace",
+    );
+    expect(button.disabled).toBe(true);
     click(button);
     expect(select).not.toHaveBeenCalled();
   });

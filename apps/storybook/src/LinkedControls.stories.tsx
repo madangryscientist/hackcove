@@ -16,7 +16,13 @@ import {
   TableHeaderCell,
   TableRow,
   Text,
+  type LinkRenderProps,
 } from "@hackcove/ui-react";
+
+/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
+function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
+  return <a href={`#${to}`} {...rest} />;
+}
 
 const meta: Meta = { title: "Data/ListRow" };
 export default meta;
@@ -60,7 +66,11 @@ function SelectingRows() {
             selected={selected === shop}
             onClick={() => setSelected(shop)}
             trailing={
-              <Button size="sm" variant="outline" href={`#shop-${shop.toLowerCase()}`}>
+              <Button
+                size="sm"
+                variant="outline"
+                render={(p) => <FakeLink to={`shop-${shop.toLowerCase()}`} {...p} />}
+              >
                 View
               </Button>
             }
@@ -76,7 +86,7 @@ function SelectingRows() {
   );
 }
 
-/** A button row can hold a link too: a tap on the row runs its `onClick` (here, selecting the shop), and the "View" link in `trailing` sits above the row's button and opens the shop's page on its own. */
+/** A button row can hold a link too: a tap on the row runs its `onClick` (here, selecting the shop), and the "View" link in `trailing` (drawn with `render`, as an app's router link is) sits above the row's button and opens the shop's page on its own. */
 export const ButtonRowWithLink: S = {
   render: () => (
     <div className="max-w-md">
