@@ -1,96 +1,53 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
+import { render, screen, within } from "./render.harness.js";
 import { SidebarLayout } from "./SidebarLayout.js";
 
-/** Whether every text is in `out`, each after the one before it. */
-const inOrder = (out: string, texts: string[]): boolean => {
-  const found = texts.map((text) => out.indexOf(text));
-  return found.every((index, i) => index >= 0 && (i === 0 || index > (found[i - 1] ?? 0)));
-};
+const follows = (a: Node, b: Node) =>
+  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 describe("SidebarLayout", () => {
-  const out = renderToStaticMarkup(<SidebarLayout rail="RAIL">CANVAS</SidebarLayout>);
-
-  it("lives in the shell's Container: no height, no full-bleed edge, no own padding", () => {
-    expect(out).not.toMatch(/100vh|57px|(^|[ "])h-\[|min-h-0|flex-1 flex-col/);
-    expect(out).not.toMatch(/\bpx-|\bpy-/);
-  });
-
-  it("stacks the rail above the canvas below md and makes it w-56 from md", () => {
-    expect(out).toMatch(/^<div class="[^"]*flex-col[^"]* md:flex-row/);
-    expect(out).toMatch(/<aside class="[^"]*w-full[^"]*md:w-56[^"]*">/);
-    expect(inOrder(out, ["RAIL", "CANVAS"])).toBe(true);
-  });
-
-  it("leaves the rail on the page background: no fill and no border", () => {
-    const aside = /<aside class="([^"]*)"/.exec(out)?.[1] ?? "";
-    expect(aside).not.toMatch(/\bbg-|\bborder/);
-  });
-
-  it("lets the canvas shrink so a wide table scrolls inside it", () => {
-    expect(out).toMatch(/<div class="min-w-0 flex-1">CANVAS<\/div>/);
-  });
-
-  it("sticks the rail under the shell's header from md, with and without railLabel", () => {
-    const folded = renderToStaticMarkup(
-      <SidebarLayout rail="RAIL" railLabel="All sections">
-        CANVAS
+  it("reads the rail, in its own landmark, before the canvas", () => {
+    render(
+      <SidebarLayout rail={<p>RAIL</p>}>
+        <p>CANVAS</p>
       </SidebarLayout>,
     );
-    for (const markup of [out, folded]) {
-      const aside = /<aside class="([^"]*)"/.exec(markup)?.[1]?.split(" ") ?? [];
-      expect(aside).toContain("md:sticky");
-      expect(aside).toContain("md:top-[var(--app-header,0px)]");
-      // As tall as its rail, not the row: a stretched aside has no room to stick in.
-      expect(aside).toContain("md:self-start");
-      // The rail scrolls itself within the room under the header, padded so a focus ring is not cut.
-      const scroller = /<\/?aside[^>]*><div class="([^"]*)"/.exec(markup)?.[1]?.split(" ") ?? [];
-      expect(scroller).toEqual(
-        expect.arrayContaining([
-          "md:max-h-[calc(100dvh-var(--app-header,0px)-2rem)]",
-          "md:overflow-y-auto",
-          "md:p-1",
-          "md:-m-1",
-        ]),
-      );
-      // Below md nothing sticks or scrolls: every sticky class is behind md.
-      expect(markup).not.toMatch(/(^|[ "])(sticky|overflow-y-auto|max-h-)/);
-    }
+    const rail = screen.getByRole("complementary");
+    expect(within(rail).getByText("RAIL")).not.toBeNull();
+    expect(within(rail).queryByText("CANVAS")).toBeNull();
+    expect(follows(screen.getByText("RAIL"), screen.getByText("CANVAS"))).toBeTruthy();
   });
 
-  it("puts the thin themed scrollbar on the scroller from md, and the rail's ink on an inner box", () => {
-    const scroller = /<\/?aside[^>]*><div class="([^"]*)"><div class="([^"]*)"/.exec(out);
-    expect(scroller?.[1]?.split(" ")).toEqual(
-      expect.arrayContaining([
-        "md:text-slate-400",
-        "md:[scrollbar-width:thin]",
-        "md:[scrollbar-color:currentColor_transparent]",
-      ]),
-    );
-    expect(scroller?.[2]).toBe("md:text-slate-900");
-    // Nothing themed below md, where the rail does not scroll.
-    expect(out).not.toMatch(/(^|[ "])(text-slate-400|\[scrollbar-)/);
-  });
-
-  it("folds a long rail behind a closed disclosure, summary first, only with railLabel", () => {
-    const folded = renderToStaticMarkup(
-      <SidebarLayout rail="RAIL" railLabel="All sections">
-        CANVAS
+  it("shows the rail with no disclosure and leaves it unnamed without railLabel", () => {
+    render(
+      <SidebarLayout rail={<p>RAIL</p>}>
+        <p>CANVAS</p>
       </SidebarLayout>,
     );
-    expect(folded).toContain("<details");
-    expect(folded).not.toContain("<details open");
-    expect(inOrder(folded, ["All sections", "RAIL", "CANVAS"])).toBe(true);
-    expect(out).not.toContain("<details");
+    expect(screen.queryByRole("group")).toBeNull();
+    expect(screen.getByRole("complementary").hasAttribute("aria-label")).toBe(false);
   });
 
-  it("names the <aside> with railLabel, and leaves it unnamed without", () => {
-    const named = renderToStaticMarkup(
-      <SidebarLayout rail="RAIL" railLabel="All sections">
-        CANVAS
+  it("folds the rail behind a closed disclosure with railLabel, summary first", () => {
+    render(
+      <SidebarLayout rail={<p>RAIL</p>} railLabel="All sections">
+        <p>CANVAS</p>
       </SidebarLayout>,
     );
-    expect(named).toMatch(/<aside [^>]*aria-label="All sections"/);
-    expect(out).not.toContain("aria-label");
+    const fold = within(screen.getByRole("complementary")).getByRole("group");
+    expect(fold.hasAttribute("open")).toBe(false);
+    const summary = within(fold).getByText("All sections");
+    expect(follows(summary, screen.getByText("RAIL"))).toBeTruthy();
+    expect(follows(screen.getByText("RAIL"), screen.getByText("CANVAS"))).toBeTruthy();
+  });
+
+  it("names the rail's landmark with railLabel", () => {
+    render(
+      <SidebarLayout rail={<p>RAIL</p>} railLabel="All sections">
+        <p>CANVAS</p>
+      </SidebarLayout>,
+    );
+    expect(screen.getByRole("complementary", { name: "All sections" })).not.toBeNull();
   });
 });

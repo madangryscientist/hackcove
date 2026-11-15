@@ -1,24 +1,29 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
+import { render, screen, within } from "./render.harness.js";
 import { Step, Steps } from "./Steps.js";
 
+const follows = (a: Node, b: Node) =>
+  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
+
 describe("Steps", () => {
-  it("is an ordered list with one li per step", () => {
-    const out = renderToStaticMarkup(
+  it("is an ordered list named by its label, with one item per step", () => {
+    render(
       <Steps aria-label="Get started">
         <Step title="Install">npm i</Step>
         <Step title="Log in" />
       </Steps>,
     );
-    expect(out).toMatch(/^<ol role="list" /);
-    expect(out).toContain('aria-label="Get started"');
-    expect(out.match(/<li/g)).toHaveLength(2);
-    expect(out).toContain('<span aria-hidden="true"');
+    const list = screen.getByRole("list", { name: "Get started" });
+    expect(list.tagName).toBe("OL");
+    const items = within(list).getAllByRole("listitem");
+    expect(items.map((item) => item.textContent)).toEqual(["Installnpm i", "Log in"]);
   });
 
-  it("shows the title and the detail", () => {
-    const out = renderToStaticMarkup(<Step title="Install">Run the installer.</Step>);
-    expect(out).toContain("Install");
-    expect(out).toContain("Run the installer.");
+  it("reads the title, then the detail", () => {
+    render(<Step title="Install">Run the installer.</Step>);
+    expect(
+      follows(screen.getByText("Install"), screen.getByText("Run the installer.")),
+    ).toBeTruthy();
   });
 });

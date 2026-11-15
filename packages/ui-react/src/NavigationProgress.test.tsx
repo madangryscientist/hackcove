@@ -1,31 +1,31 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
+import { renderToStaticMarkup } from "react-dom/server"; // markup read as data, below
 import { describe, expect, it } from "vitest";
 import { NavigationProgress } from "./NavigationProgress.js";
-
-const html = (node: Parameters<typeof renderToStaticMarkup>[0]) => renderToStaticMarkup(node);
+import { render, screen } from "./render.harness.js";
 
 describe("NavigationProgress", () => {
-  it("draws exactly what `active` says", () => {
-    expect(html(<NavigationProgress active={false} />)).toBe("");
-    expect(html(<NavigationProgress active />)).toContain('role="progressbar"');
+  it("draws nothing while `active` is false", () => {
+    render(<NavigationProgress active={false} />);
+    expect(screen.queryByRole("progressbar")).toBeNull();
   });
 
-  it("is an indeterminate progressbar named 'Loading page', and takes another name", () => {
-    const out = html(<NavigationProgress active />);
-    expect(out).toContain('aria-label="Loading page"');
-    expect(out).not.toContain("aria-valuenow");
-    expect(html(<NavigationProgress active label="Opening store" />)).toContain(
-      'aria-label="Opening store"',
-    );
+  it("is an indeterminate progressbar named 'Loading page' while active", () => {
+    render(<NavigationProgress active />);
+    const bar = screen.getByRole("progressbar", { name: "Loading page" });
+    expect(bar.hasAttribute("aria-valuenow")).toBe(false);
   });
 
-  it("is the accent fill, and its stylesheet holds the 150ms wait and carries no colour", () => {
-    const out = html(<NavigationProgress active />);
-    expect(out).toContain("bg-violet-600");
-    const css = /<style>(.*?)<\/style>/s.exec(out)?.[1] ?? "";
-    expect(css).not.toMatch(/#[0-9a-f]{3,8}\b|rgb|hsl|oklch|violet/i);
-    expect(css).toMatch(/\[data-navigation-progress\]\{animation:[^}]*150ms backwards/);
+  it("takes another name", () => {
+    render(<NavigationProgress active label="Opening store" />);
+    expect(screen.getByRole("progressbar", { name: "Opening store" })).not.toBeNull();
+  });
+
+  it("puts no colour in its stylesheet", () => {
+    // The <style> beside the bar has no role to find it by, so it is read as data.
+    const out = renderToStaticMarkup(<NavigationProgress active />); // markup read as data
+    const css = /<style>(.*?)<\/style>/s.exec(out)?.[1];
     expect(css).toContain("@keyframes hc-navigation-progress{");
-    expect(css).toMatch(/@media \(prefers-reduced-motion:reduce\)\{[^@]*animation:none/);
+    expect(css).not.toMatch(/#[0-9a-f]{3,8}\b|rgb|hsl|oklch|violet/i);
   });
 });

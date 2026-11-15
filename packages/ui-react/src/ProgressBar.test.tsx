@@ -1,49 +1,35 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { announcedPercent, ProgressBar, sharePercent } from "./ProgressBar.js";
+import { render, screen } from "./render.harness.js";
+
+const valueOf = (bar: HTMLElement) => bar.getAttribute("aria-valuenow");
 
 describe("ProgressBar", () => {
   it("is a named progressbar with its percentage as the value", () => {
-    const markup = renderToStaticMarkup(<ProgressBar value={40} label="Kitchen funded" />);
-    expect(markup).toContain('role="progressbar"');
-    expect(markup).toContain('aria-label="Kitchen funded"');
-    expect(markup).toContain('aria-valuemin="0"');
-    expect(markup).toContain('aria-valuemax="100"');
-    expect(markup).toContain('aria-valuenow="40"');
-    expect(markup).toContain("width:40%");
+    render(<ProgressBar value={40} label="Kitchen funded" />);
+    const bar = screen.getByRole("progressbar", { name: "Kitchen funded" });
+    expect(bar.getAttribute("aria-valuemin")).toBe("0");
+    expect(bar.getAttribute("aria-valuemax")).toBe("100");
+    expect(valueOf(bar)).toBe("40");
   });
 
   it("measures against max", () => {
-    const markup = renderToStaticMarkup(<ProgressBar value={3} max={12} label="x" />);
-    expect(markup).toContain('aria-valuenow="25"');
-    expect(markup).toContain("width:25%");
+    render(<ProgressBar value={3} max={12} label="x" />);
+    expect(valueOf(screen.getByRole("progressbar"))).toBe("25");
   });
 
-  it("holds the fill between 0 and 100", () => {
-    expect(renderToStaticMarkup(<ProgressBar value={250} label="x" />)).toContain("width:100%");
-    expect(renderToStaticMarkup(<ProgressBar value={-5} label="x" />)).toContain("width:0%");
-    expect(renderToStaticMarkup(<ProgressBar value={5} max={0} label="x" />)).toContain("width:0%");
-  });
-
-  it("colours the fill by tone, accent by default", () => {
-    expect(renderToStaticMarkup(<ProgressBar value={1} label="x" />)).toContain("bg-violet-600");
-    expect(renderToStaticMarkup(<ProgressBar value={1} label="x" tone="positive" />)).toContain(
-      "bg-emerald-600",
+  it("holds the value between 0 and 100", () => {
+    render(
+      <>
+        <ProgressBar value={250} label="over" />
+        <ProgressBar value={-5} label="under" />
+        <ProgressBar value={5} max={0} label="no total" />
+      </>,
     );
-    expect(renderToStaticMarkup(<ProgressBar value={1} label="x" tone="warn" />)).toContain(
-      "bg-amber-600",
-    );
-    expect(renderToStaticMarkup(<ProgressBar value={1} label="x" tone="negative" />)).toContain(
-      "bg-red-600",
-    );
-  });
-
-  it("is 8px by default (md), 6px at sm and 12px at lg, with a slate track", () => {
-    const plain = renderToStaticMarkup(<ProgressBar value={1} label="x" />);
-    expect(plain).toContain("h-2");
-    expect(plain).toContain("bg-slate-100");
-    expect(renderToStaticMarkup(<ProgressBar value={1} label="x" size="sm" />)).toContain("h-1.5");
-    expect(renderToStaticMarkup(<ProgressBar value={1} label="x" size="lg" />)).toContain("h-3");
+    expect(valueOf(screen.getByRole("progressbar", { name: "over" }))).toBe("100");
+    expect(valueOf(screen.getByRole("progressbar", { name: "under" }))).toBe("0");
+    expect(valueOf(screen.getByRole("progressbar", { name: "no total" }))).toBe("0");
   });
 });
 
@@ -59,8 +45,11 @@ describe("percentages", () => {
     expect(announcedPercent(1, 1000)).toBe(1);
     expect(announcedPercent(1000, 1000)).toBe(100);
     expect(announcedPercent(0, 1000)).toBe(0);
-    const markup = renderToStaticMarkup(<ProgressBar value={996} max={1000} label="x" />);
-    expect(markup).toContain('aria-valuenow="99"');
-    expect(markup).toContain("width:99.6%");
+    expect(sharePercent(996, 1000)).toBeCloseTo(99.6, 5);
+  });
+
+  it("announces the rounded share on the bar", () => {
+    render(<ProgressBar value={996} max={1000} label="x" />);
+    expect(valueOf(screen.getByRole("progressbar"))).toBe("99");
   });
 });

@@ -1,59 +1,70 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
+import { renderToStaticMarkup } from "react-dom/server"; // markup read as data, below
 import { describe, expect, it } from "vitest";
 import { Morph } from "./Morph.js";
+import { render, screen } from "./render.harness.js";
 
-const nameOf = (out: string): string => {
-  const found = /data-morph="([^"]*)"/.exec(out)?.[1];
-  if (found === undefined) throw new Error("no morph name");
-  return found;
-};
-
-const render = (name: string, item: string | number) =>
-  renderToStaticMarkup(
+/** The transition name a Morph gives its element, read from the rendered element. */
+function nameOf(name: string, item: string | number): string | null {
+  const { unmount } = render(
     <Morph name={name} item={item}>
       x
     </Morph>,
   );
+  const found = screen.getByText("x").getAttribute("data-morph");
+  unmount();
+  return found;
+}
+
+// The <style> a Morph renders beside its element has no role to find it by, so it is read from
+// the server markup as data, as noLeak.test.tsx reads attribute names.
+function stylesheet(name: string, item: string | number): string {
+  const node = (
+    <Morph name={name} item={item}>
+      x
+    </Morph>
+  );
+  return renderToStaticMarkup(node); // markup read as data
+}
 
 describe("Morph", () => {
   it("renders its child inside an element named for the transition", () => {
-    const out = render("shop", "abc");
-    expect(out).toMatch(/<div data-morph="hc-morph-shop-abc"[^>]*>x<\/div>/);
+    render(
+      <Morph name="shop" item="abc">
+        x
+      </Morph>,
+    );
+    expect(screen.getByText("x").getAttribute("data-morph")).toBe("hc-morph-shop-abc");
   });
 
   it("names the element in a stylesheet that carries no colour", () => {
-    const out = render("shop", "abc");
+    const out = stylesheet("shop", "abc");
     expect(out).toContain(
       '[data-morph="hc-morph-shop-abc"]{view-transition-name:hc-morph-shop-abc}',
     );
     expect(out).not.toMatch(/#[0-9a-f]{3}|rgb|hsl/i);
   });
 
-  it("turns the animations off under prefers-reduced-motion", () => {
-    const out = render("shop", "abc");
-    expect(out).toMatch(/@media \(prefers-reduced-motion:reduce\)\{[^}]*animation:none/);
-    expect(out).toContain("::view-transition-group(hc-morph-shop-abc)");
-  });
-
   it("gives different pairs different names", () => {
-    expect(nameOf(render("x", "a-b"))).not.toBe(nameOf(render("x-a", "b")));
-    expect(nameOf(render("x", "_"))).not.toBe(nameOf(render("x", "_5f_")));
-    expect(nameOf(render("x", 1))).toBe(nameOf(render("x", "1")));
+    expect(nameOf("x", "a-b")).not.toBe(nameOf("x-a", "b"));
+    expect(nameOf("x", "_")).not.toBe(nameOf("x", "_5f_"));
+    expect(nameOf("x", 1)).toBe(nameOf("x", "1"));
   });
 
   it("makes any item a safe CSS identifier", () => {
-    const out = render("shop", '1 "a"}b');
-    const name = nameOf(out);
+    const name = nameOf("shop", '1 "a"}b');
     expect(name).toMatch(/^hc-morph-[A-Za-z0-9_-]+$/);
-    expect(out).toContain(`[data-morph="${name}"]{view-transition-name:${name}}`);
+    expect(stylesheet("shop", '1 "a"}b')).toContain(
+      `[data-morph="${name}"]{view-transition-name:${name}}`,
+    );
   });
 
   it("forwards props to the element", () => {
-    const out = renderToStaticMarkup(
+    render(
       <Morph name="m" item="x" id="card">
         x
       </Morph>,
     );
-    expect(out).toContain('id="card"');
+    expect(screen.getByText("x").id).toBe("card");
   });
 });

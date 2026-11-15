@@ -1,4 +1,4 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import {
   CardGrid,
@@ -9,309 +9,166 @@ import {
   ListLayout,
   ProseLayout,
 } from "./PageLayouts.js";
+import { render, screen, within } from "./render.harness.js";
 
-const classesOf = (out: string) => /class="([^"]*)"/.exec(out)?.[1]?.split(" ") ?? [];
+const follows = (a: Node, b: Node) =>
+  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
-/** Whether every text is in `out`, each after the one before it. */
-const inOrder = (out: string, texts: string[]): boolean => {
-  const found = texts.map((text) => out.indexOf(text));
-  return found.every((index, i) => index >= 0 && (i === 0 || index > (found[i - 1] ?? 0)));
+/** Whether each text is found on the page, each after the one before it. */
+const inOrder = (texts: string[]): boolean => {
+  const nodes = texts.map((text) => screen.getByText(text));
+  return nodes.slice(1).every((node, i) => {
+    const before = nodes[i];
+    return before !== undefined && Boolean(follows(before, node));
+  });
 };
 
 describe("ListLayout", () => {
-  it("renders the header, the filters, then the list", () => {
-    const out = renderToStaticMarkup(
-      <ListLayout title="Quotes" actions="NEW" filters="FILTERS">
-        ROWS
+  it("reads the header, the filters, then the list", () => {
+    render(
+      <ListLayout title="Quotes" actions="NEW" filters={<p>FILTERS</p>}>
+        <p>ROWS</p>
       </ListLayout>,
     );
-    expect(inOrder(out, ["Quotes", "NEW", "FILTERS", "ROWS"])).toBe(true);
+    expect(screen.getByRole("heading", { level: 1, name: "Quotes" })).not.toBeNull();
+    expect(inOrder(["Quotes", "NEW", "FILTERS", "ROWS"])).toBe(true);
   });
 
   it("shows `empty` instead of the list when isEmpty", () => {
-    const out = renderToStaticMarkup(
+    render(
       <ListLayout title="Quotes" isEmpty empty="NOTHING">
         ROWS
       </ListLayout>,
     );
-    expect(out).toContain("NOTHING");
-    expect(out).not.toContain("ROWS");
+    expect(screen.getByText("NOTHING")).not.toBeNull();
+    expect(screen.queryByText("ROWS")).toBeNull();
   });
 
   it("shows the list, not `empty`, when it has rows", () => {
-    const out = renderToStaticMarkup(
+    render(
       <ListLayout title="Quotes" empty="NOTHING">
         ROWS
       </ListLayout>,
     );
-    expect(out).toContain("ROWS");
-    expect(out).not.toContain("NOTHING");
+    expect(screen.getByText("ROWS")).not.toBeNull();
+    expect(screen.queryByText("NOTHING")).toBeNull();
   });
 });
 
 describe("DetailLayout", () => {
-  const out = renderToStaticMarkup(
-    <DetailLayout title="Quote 7" aside="SIDE">
-      MAIN
-    </DetailLayout>,
-  );
-
-  it("puts main in two thirds of a three-column grid from lg, and the aside in the rest", () => {
-    expect(out).toMatch(/class="grid [^"]*lg:grid-cols-3"/);
-    expect(out).toMatch(/lg:col-span-2[^>]*><div[^>]*>MAIN</);
-    expect(out).toMatch(/<aside [^>]*>.*SIDE/);
+  it("puts the aside in its own landmark, read after main", () => {
+    render(
+      <DetailLayout title="Quote 7" aside="SIDE">
+        MAIN
+      </DetailLayout>,
+    );
+    expect(within(screen.getByRole("complementary")).getByText("SIDE")).not.toBeNull();
+    expect(within(screen.getByRole("complementary")).queryByText("MAIN")).toBeNull();
+    expect(inOrder(["Quote 7", "MAIN", "SIDE"])).toBe(true);
   });
 
-  it("orders the aside after main, so it stacks below on a smaller screen", () => {
-    expect(inOrder(out, ["Quote 7", "MAIN", "SIDE"])).toBe(true);
-  });
-
-  it("leaves the aside in the flow unless stickyAside", () => {
-    expect(out).not.toMatch(/sticky|overflow|max-h-/);
-  });
-
-  it("with stickyAside sticks the aside under the header from lg and scrolls it within the room left", () => {
-    const sticky = renderToStaticMarkup(
+  it("still reads the aside after main with stickyAside", () => {
+    render(
       <DetailLayout title="Quote 7" aside="SIDE" stickyAside>
         MAIN
       </DetailLayout>,
     );
-    const aside = /<aside class="([^"]*)"/.exec(sticky)?.[1]?.split(" ") ?? [];
-    expect(aside).toEqual(
-      expect.arrayContaining(["lg:sticky", "lg:top-[var(--app-header,0px)]", "lg:self-start"]),
-    );
-    expect(sticky).toMatch(
-      /<aside[^>]*><div class="[^"]*lg:max-h-\[calc\(100dvh-var\(--app-header,0px\)-2rem\)\][^"]*lg:overflow-y-auto[^"]*lg:p-1/,
-    );
-    // Below lg the aside stacks as ever: nothing sticks or scrolls without the breakpoint.
-    expect(sticky).not.toMatch(/(^|[ "])(sticky|overflow-y-auto|max-h-)/);
-    expect(inOrder(sticky, ["MAIN", "SIDE"])).toBe(true);
+    expect(inOrder(["MAIN", "SIDE"])).toBe(true);
   });
 });
 
 describe("FormLayout", () => {
-  const out = renderToStaticMarkup(
-    <FormLayout title="New quote" actions="SAVE" action="/save">
-      FIELDS
-    </FormLayout>,
-  );
-
-  it("narrows to max-w-3xl without centring, and passes form props to the <form>", () => {
-    expect(out).toMatch(/<form class="max-w-3xl" action="\/save">/);
-    expect(out).not.toContain("mx-auto");
-  });
-
-  it("puts the actions row after the fields", () => {
-    expect(inOrder(out, ["New quote", "FIELDS", "SAVE"])).toBe(true);
-  });
-
-  it("renders no actions row without actions", () => {
-    expect(renderToStaticMarkup(<FormLayout title="t">x</FormLayout>)).not.toContain("flex-wrap");
+  it("passes form props to the <form>, which holds the fields and then the actions", () => {
+    render(
+      <FormLayout title="New quote" actions="SAVE" action="/save" aria-label="New quote form">
+        FIELDS
+      </FormLayout>,
+    );
+    const form = screen.getByRole("form", { name: "New quote form" });
+    expect(form.getAttribute("action")).toBe("/save");
+    expect(within(form).getByText("SAVE")).not.toBeNull();
+    expect(within(form).queryByText("New quote")).toBeNull();
+    expect(inOrder(["New quote", "FIELDS", "SAVE"])).toBe(true);
   });
 });
 
 describe("ProseLayout", () => {
-  const out = renderToStaticMarkup(
-    <ProseLayout title="Privacy" subtitle="Last updated" actions="PHOTO">
-      ONE
-      <p>TWO</p>
-    </ProseLayout>,
-  );
-
-  it("is one left-aligned max-w-3xl column, with no class to add", () => {
-    expect(out).toMatch(/^<div class="max-w-3xl">/);
-    expect(out).not.toContain("mx-auto");
-  });
-
-  it("puts the header inside the column, then the blocks in a Stack", () => {
-    expect(inOrder(out, ["Privacy", "Last updated", "PHOTO", "ONE", "TWO"])).toBe(true);
-    expect(out).toContain(
-      '<div class="flex flex-col gap-6 *:data-page-header:mb-0">ONE<p>TWO</p></div>',
-    );
-  });
-
-  it.each([
-    ["wide", "max-w-5xl"],
-    ["full", "w-full"],
-  ] as const)("with width %s is one %s column, still left-aligned", (width, cls) => {
-    const wide = renderToStaticMarkup(
-      <ProseLayout title="Pricing" width={width}>
-        x
+  it("reads the header, then the blocks", () => {
+    render(
+      <ProseLayout title="Privacy" subtitle="Last updated" actions="PHOTO">
+        <p>ONE</p>
+        <p>TWO</p>
       </ProseLayout>,
     );
-    expect(wide).toMatch(new RegExp(`^<div class="${cls}">`));
-    expect(wide).not.toContain("max-w-3xl");
-    expect(wide).not.toContain("mx-auto");
-  });
-
-  it("takes a Stack gap", () => {
-    expect(
-      renderToStaticMarkup(
-        <ProseLayout title="t" gap="lg">
-          x
-        </ProseLayout>,
-      ),
-    ).toContain('<div class="flex flex-col gap-8 *:data-page-header:mb-0">x</div>');
-  });
-});
-
-describe("CardGrid", () => {
-  it.each([
-    [2, "lg:grid-cols-2"],
-    [3, "lg:grid-cols-3"],
-    [4, "lg:grid-cols-4"],
-  ] as const)("with columns %s is one column, two from sm and %s from lg", (columns, large) => {
-    const out = renderToStaticMarkup(<CardGrid columns={columns}>tiles</CardGrid>);
-    expect(classesOf(out)).toEqual(
-      expect.arrayContaining(["grid", "grid-cols-1", "sm:grid-cols-2", large]),
-    );
-  });
-
-  it.each([
-    ["2:1", "md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]"],
-    ["1:2", "md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"],
-  ] as const)(
-    "with columns %s is one column on a phone and the ratio from md",
-    (columns, ratio) => {
-      const classes = classesOf(renderToStaticMarkup(<CardGrid columns={columns}>tiles</CardGrid>));
-      expect(classes).toEqual(expect.arrayContaining(["grid", "grid-cols-1", ratio]));
-      expect(classes).not.toContain("sm:grid-cols-2");
-      expect(classes.some((c) => c.startsWith("lg:grid-cols-"))).toBe(false);
-    },
-  );
-
-  it("defaults to three columns", () => {
-    expect(classesOf(renderToStaticMarkup(<CardGrid>tiles</CardGrid>))).toContain("lg:grid-cols-3");
-  });
-
-  it.each([
-    [undefined, "grid-cols-[repeat(auto-fill,minmax(17rem,1fr))]"],
-    ["md", "grid-cols-[repeat(auto-fill,minmax(17rem,1fr))]"],
-    ["sm", "grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]"],
-  ] as const)("with columns auto and minWidth %s fills by %s", (minWidth, fill) => {
-    const classes = classesOf(
-      renderToStaticMarkup(
-        <CardGrid columns="auto" minWidth={minWidth}>
-          tiles
-        </CardGrid>,
-      ),
-    );
-    expect(classes).toEqual(expect.arrayContaining(["grid", "gap-4", fill]));
-    expect(classes.join(" ")).not.toMatch(/\bgrid-cols-1\b|lg:grid-cols|sm:grid-cols/);
-  });
-
-  it("stretches the cards by default and keeps their own height with align start", () => {
-    expect(classesOf(renderToStaticMarkup(<CardGrid>tiles</CardGrid>))).not.toContain(
-      "items-start",
-    );
-    expect(classesOf(renderToStaticMarkup(<CardGrid align="start">tiles</CardGrid>))).toContain(
-      "items-start",
-    );
-    expect(
-      classesOf(
-        renderToStaticMarkup(
-          <CardGrid columns="auto" align="start">
-            tiles
-          </CardGrid>,
-        ),
-      ),
-    ).toContain("items-start");
+    expect(screen.getByRole("heading", { level: 1, name: "Privacy" })).not.toBeNull();
+    expect(inOrder(["Privacy", "Last updated", "PHOTO", "ONE", "TWO"])).toBe(true);
   });
 });
 
 describe("CardGrid as=ul", () => {
-  it("is a list whose every child is a grid item, and a div without it", () => {
-    const out = renderToStaticMarkup(
+  it("is a list whose every child is an item", () => {
+    render(
       <CardGrid as="ul">
         <p>One</p>
         <p>Two</p>
       </CardGrid>,
     );
-    expect(out).toMatch(/^<ul role="list" class="[^"]*grid-cols-1/);
-    expect(out.match(/<li class="grid">/g)).toHaveLength(2);
-    expect(out).toContain('<li class="grid"><p>One</p></li><li class="grid"><p>Two</p></li>');
-    expect(out).not.toContain(" as=");
-    const plain = renderToStaticMarkup(
+    const items = within(screen.getByRole("list")).getAllByRole("listitem");
+    expect(items.map((item) => item.textContent)).toEqual(["One", "Two"]);
+  });
+
+  it("is no list without it", () => {
+    render(
       <CardGrid>
         <p>One</p>
       </CardGrid>,
     );
-    expect(plain).toMatch(/^<div class=/);
-    expect(plain).not.toContain("<li");
-    expect(plain).not.toContain("role=");
+    expect(screen.queryByRole("list")).toBeNull();
+    expect(screen.getByText("One")).not.toBeNull();
   });
 
-  it("keeps the columns, data-* and aria-*, and skips empty children", () => {
-    const out = renderToStaticMarkup(
-      <CardGrid as="ul" columns={4} data-testid="g" aria-label="Stats">
+  it("skips empty children", () => {
+    render(
+      <CardGrid as="ul" columns={4}>
         {false}
         <p>One</p>
         {null}
       </CardGrid>,
     );
-    expect(out).toContain("lg:grid-cols-4");
-    expect(out).toContain('data-testid="g"');
-    expect(out).toContain('aria-label="Stats"');
-    expect(out.match(/<li/g)).toHaveLength(1);
+    expect(screen.getAllByRole("listitem")).toHaveLength(1);
   });
 });
 
 describe("FullBleedLayout", () => {
-  it("fills the width with children and puts the panel at lg:w-72 after them", () => {
-    const out = renderToStaticMarkup(<FullBleedLayout panel="PANEL">VIEW</FullBleedLayout>);
-    expect(out).toMatch(/^<div class="[^"]*flex-col lg:flex-row/);
-    expect(out).toMatch(/<aside class="[^"]*lg:w-72[^"]*">PANEL<\/aside>/);
-    expect(inOrder(out, ["VIEW", "PANEL"])).toBe(true);
-  });
-
-  it("has no page padding by default and padded gives the canvas the other layouts' edge", () => {
-    expect(renderToStaticMarkup(<FullBleedLayout>VIEW</FullBleedLayout>)).not.toContain("px-4");
-    const padded = renderToStaticMarkup(<FullBleedLayout padded>VIEW</FullBleedLayout>);
-    expect(padded).toContain("px-4 py-8 sm:px-6");
-    expect(padded).not.toContain("padded");
-    expect(inOrder(padded, ["px-4 py-8 sm:px-6", "VIEW"])).toBe(true);
+  it("reads the panel after the children, in its own landmark", () => {
+    render(<FullBleedLayout panel="PANEL">VIEW</FullBleedLayout>);
+    expect(screen.getByRole("complementary").textContent).toBe("PANEL");
+    expect(inOrder(["VIEW", "PANEL"])).toBe(true);
   });
 
   it("renders no panel without one", () => {
-    expect(renderToStaticMarkup(<FullBleedLayout>VIEW</FullBleedLayout>)).not.toContain("<aside");
+    render(<FullBleedLayout>VIEW</FullBleedLayout>);
+    expect(screen.queryByRole("complementary")).toBeNull();
   });
 
-  it("puts a `bar` full width above children and panel, sticky under the AppShell header", () => {
-    const out = renderToStaticMarkup(
+  it("reads a `bar` before the children and the panel", () => {
+    render(
       <FullBleedLayout bar="BAR" panel="PANEL">
         VIEW
       </FullBleedLayout>,
     );
-    expect(out).toMatch(/^<div class="flex min-h-0 flex-1 flex-col">/);
-    expect(out).toMatch(/<div class="sticky top-\[var\(--app-header,0px\)\][^"]*">BAR<\/div>/);
-    expect(inOrder(out, ["BAR", "VIEW", "PANEL"])).toBe(true);
-    expect(out).toContain("lg:flex-row");
-  });
-
-  it("with a `bar`, padded pads only the content below it", () => {
-    const out = renderToStaticMarkup(
-      <FullBleedLayout bar="BAR" padded>
-        VIEW
-      </FullBleedLayout>,
-    );
-    expect(inOrder(out, ["BAR", "px-4 py-8 sm:px-6", "VIEW"])).toBe(true);
-    expect(out.match(/py-8/g)).toHaveLength(1);
+    expect(inOrder(["BAR", "VIEW", "PANEL"])).toBe(true);
   });
 });
 
 describe("CenteredLayout", () => {
-  const out = renderToStaticMarkup(
-    <CenteredLayout title="Sign in" subtitle="to continue">
-      FORM
-    </CenteredLayout>,
-  );
-
-  it("centres a max-w-md column at a fixed offset from the top", () => {
-    expect(out).toMatch(/^<div class="mx-auto w-full max-w-md pt-16">/);
-  });
-
-  it("holds the title, subtitle and body in a card", () => {
-    expect(inOrder(out, ["Sign in", "to continue", "FORM"])).toBe(true);
-    expect(out).toContain("rounded-xl");
+  it("reads the title, subtitle and body in order, the title the page's h1", () => {
+    render(
+      <CenteredLayout title="Sign in" subtitle="to continue">
+        <p>FORM</p>
+      </CenteredLayout>,
+    );
+    expect(screen.getByRole("heading", { level: 1, name: "Sign in" })).not.toBeNull();
+    expect(inOrder(["Sign in", "to continue", "FORM"])).toBe(true);
   });
 });

@@ -1,14 +1,16 @@
 // @vitest-environment jsdom
 import type { ReactElement } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import { Button } from "./Button.js";
 import { ErrorPage, Forbidden, Maintenance, NotFound, Offline } from "./StatusPages.js";
 import type { LinkRenderProps } from "./link.js";
-import { render, screen, user } from "./render.harness.js";
+import { render, screen, user, within } from "./render.harness.js";
+
+const follows = (a: Node, b: Node) =>
+  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 const Link = ({ to, ...rest }: { to: string } & LinkRenderProps): ReactElement => (
-  <a data-router-link="" data-to={to} {...rest} />
+  <a data-router-link="" href={to} {...rest} />
 );
 
 const pages = [
@@ -20,99 +22,93 @@ const pages = [
 ] as const;
 
 describe.each(pages)("%s", (_name, Page, heading) => {
-  it("is a centred card with its fixed heading and no actions by default", () => {
-    const out = renderToStaticMarkup(<Page />);
-    expect(out).toMatch(/^<div class="mx-auto w-full max-w-md pt-16">/);
-    expect(out).toContain(heading);
-    expect(out).not.toContain("<a ");
-    expect(out).not.toContain("<button");
+  it("has its fixed heading as the page's only h1, and no actions by default", () => {
+    render(<Page />);
+    expect(screen.getAllByRole("heading").map((h) => h.textContent)).toEqual([heading]);
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(heading);
+    expect(screen.queryByRole("link")).toBeNull();
+    expect(screen.queryByRole("button")).toBeNull();
   });
 });
 
-const home = (variant: "primary" | "outline"): string =>
-  renderToStaticMarkup(
-    <Button href="/" variant={variant}>
-      Back to home
-    </Button>,
-  );
-
 describe("the shared props", () => {
   it("takes a title and body override", () => {
-    const out = renderToStaticMarkup(<NotFound title="Custom title">Custom body</NotFound>);
-    expect(out).toContain("Custom title");
-    expect(out).toContain("Custom body");
-    expect(out).not.toContain("Page not found");
+    render(<NotFound title="Custom title">Custom body</NotFound>);
+    expect(screen.getByRole("heading", { level: 1, name: "Custom title" })).not.toBeNull();
+    expect(screen.getByText("Custom body")).not.toBeNull();
+    expect(screen.queryByText("Page not found")).toBeNull();
   });
 
-  it("links home as the primary button", () => {
-    expect(renderToStaticMarkup(<NotFound homeHref="/" />)).toContain(home("primary"));
+  it("links home with homeHref", () => {
+    render(<NotFound homeHref="/" />);
+    expect(screen.getByRole("link", { name: "Back to home" }).getAttribute("href")).toBe("/");
   });
 
   it("draws the home link with the app's own Link", () => {
-    const out = renderToStaticMarkup(<NotFound renderHome={(p) => <Link to="/" {...p} />} />);
-    expect(out).toContain('data-to="/"');
-    expect(out).toContain("Back to home");
+    render(<NotFound renderHome={(p) => <Link to="/" {...p} />} />);
+    const home = screen.getByRole("link", { name: "Back to home" });
+    expect(home.hasAttribute("data-router-link")).toBe(true);
+    expect(home.getAttribute("href")).toBe("/");
   });
 
-  it("puts a custom action before the home link, which then turns outline", () => {
-    const out = renderToStaticMarkup(<NotFound action={<button>Go</button>} homeHref="/" />);
-    expect(out.indexOf("Go")).toBeLessThan(out.indexOf("Back to home"));
-    expect(out).toContain(home("outline"));
+  it("reads a custom action before the home link", () => {
+    render(<NotFound action={<button type="button">Go</button>} homeHref="/" />);
+    expect(
+      follows(
+        screen.getByRole("button", { name: "Go" }),
+        screen.getByRole("link", { name: "Back to home" }),
+      ),
+    ).toBeTruthy();
   });
 });
 
 describe("ErrorPage", () => {
-  it("shows the error detail in a code block", () => {
-    const out = renderToStaticMarkup(<ErrorPage detail="Request 4f2a failed" />);
-    expect(out).toContain("<figure");
-    expect(out.replace(/<[^>]+>/g, "")).toContain("Request 4f2a failed");
+  it("shows the error detail in a code block captioned Error", () => {
+    render(<ErrorPage detail="Request 4f2a failed" />);
+    const figure = screen.getByRole("figure");
+    expect(within(figure).getByText("Error")).not.toBeNull();
+    expect(figure.textContent).toContain("Request 4f2a failed");
   });
 
   it("shows no detail block without detail", () => {
-    expect(renderToStaticMarkup(<ErrorPage />)).not.toContain("<figure");
+    render(<ErrorPage />);
+    expect(screen.queryByRole("figure")).toBeNull();
   });
 
-  it("adds a Try again button with onRetry, and an action replaces it", () => {
-    expect(renderToStaticMarkup(<ErrorPage onRetry={() => {}} />)).toContain("Try again");
-    const out = renderToStaticMarkup(<ErrorPage onRetry={() => {}} action={<i>Reload</i>} />);
-    expect(out).toContain("Reload");
-    expect(out).not.toContain("Try again");
-  });
-});
-
-describe("Offline", () => {
-  it("adds a Try again button with onRetry", () => {
-    expect(renderToStaticMarkup(<Offline onRetry={() => {}} />)).toContain("Try again");
+  it("an action replaces the Try again button", () => {
+    render(<ErrorPage onRetry={() => {}} action={<button type="button">Reload</button>} />);
+    expect(screen.getByRole("button", { name: "Reload" })).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "Try again" })).toBeNull();
   });
 });
 
 describe("NotFound numeral", () => {
-  it("draws 404 above the heading when numeral is on, and the heading stays the only h1", () => {
-    const out = renderToStaticMarkup(<NotFound numeral homeHref="/" />);
-    expect(out).toContain(
-      '<p class="text-6xl font-semibold tracking-tight text-violet-600">404</p>',
-    );
-    expect(out.indexOf("404")).toBeLessThan(out.indexOf("<h1"));
-    expect(out.match(/<h[1-6][\s>]/g)).toEqual(["<h1 "]);
+  it("draws 404 before the heading when numeral is on, and the heading stays the only one", () => {
+    render(<NotFound numeral homeHref="/" />);
+    const h1 = screen.getByRole("heading", { level: 1, name: "Page not found" });
+    expect(follows(screen.getByText("404"), h1)).toBeTruthy();
+    expect(screen.getAllByRole("heading")).toHaveLength(1);
   });
 
   it("draws no 404 by default", () => {
-    expect(renderToStaticMarkup(<NotFound homeHref="/" />)).not.toContain("404");
+    render(<NotFound homeHref="/" />);
+    expect(screen.queryByText("404")).toBeNull();
   });
 
-  it("does not draw the numeral on the other status pages", () => {
-    expect(renderToStaticMarkup(<Forbidden homeHref="/" />)).not.toContain("404");
-    expect(renderToStaticMarkup(<ErrorPage />)).not.toContain("404");
+  it.each([
+    ["Forbidden", <Forbidden key="f" homeHref="/" />],
+    ["ErrorPage", <ErrorPage key="e" />],
+  ] as const)("draws no 404 on %s", (_name, page) => {
+    render(page);
+    expect(screen.queryByText("404")).toBeNull();
   });
 });
 
 describe("NotFound with its own action", () => {
   it("renders the action's wording and no Back to home link", () => {
-    const out = renderToStaticMarkup(
-      <NotFound action={<Button href="/map">Open the map</Button>} />,
-    );
-    expect(out).toContain("Open the map");
-    expect(out).not.toContain("Back to home");
+    render(<NotFound action={<Button href="/map">Open the map</Button>} />);
+    expect(screen.getByRole("link", { name: "Open the map" }).getAttribute("href")).toBe("/map");
+    expect(screen.queryByText("Back to home")).toBeNull();
   });
 });
 

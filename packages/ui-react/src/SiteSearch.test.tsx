@@ -1,12 +1,10 @@
 // @vitest-environment jsdom
-import { act } from "react";
-import { renderToString } from "react-dom/server";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { mount, stubDialog, unmount } from "./dom.harness.js";
+import { beforeEach, describe, expect, it } from "vitest";
+import { stubDialog } from "./dom.harness.js";
+import { render, screen, user, within } from "./render.harness.js";
 import { rankSiteSearch, SiteSearch, type SiteSearchItem } from "./SiteSearch.js";
 
 beforeEach(stubDialog);
-afterEach(unmount);
 
 const ITEMS: SiteSearchItem[] = [
   { label: "Drawer", description: "A panel from the side, not a dialog.", href: "/drawer/" },
@@ -40,74 +38,90 @@ describe("rankSiteSearch", () => {
   });
 });
 
-function type(host: HTMLElement, value: string): void {
-  const el = host.ownerDocument.querySelector("dialog input");
-  if (!(el instanceof HTMLInputElement)) throw new Error("no field");
-  act(() => {
-    Reflect.set(HTMLInputElement.prototype, "value", value, el);
-    el.dispatchEvent(new Event("input", { bubbles: true }));
-  });
+/** The first of the two triggers (the wide one; the other is the phone's icon button). */
+function firstTrigger(): HTMLElement {
+  const [first] = screen.getAllByRole("button", { name: "Search components" });
+  if (!first) throw new Error("no trigger");
+  return first;
 }
 
-const press = (init: KeyboardEventInit) =>
-  act(() => {
-    window.dispatchEvent(
-      new KeyboardEvent("keydown", { bubbles: true, cancelable: true, ...init }),
-    );
-  });
+const search = () => render(<SiteSearch items={ITEMS} label="Search components" />);
+
+/** Whether the last keydown to reach the window had its default prevented; reading it stops listening. */
+function lastKeyPrevented(): () => boolean | undefined {
+  let prevented: boolean | undefined;
+  const listen = (event: KeyboardEvent) => {
+    prevented = event.defaultPrevented;
+  };
+  window.addEventListener("keydown", listen);
+  return () => {
+    window.removeEventListener("keydown", listen);
+    return prevented;
+  };
+}
 
 describe("SiteSearch", () => {
-  it("renders the two triggers, named by the label, and Ctrl K on the server", () => {
-    const html = renderToString(<SiteSearch items={ITEMS} label="Search components" />);
-    expect(html.match(/aria-label="Search components"/g)).toHaveLength(2);
-    expect(html).toContain("<kbd");
-    expect(html).toContain("Ctrl K");
-    expect(html).not.toContain("<dialog");
+  it("renders two triggers named by the label, showing Ctrl K, and no dialog until asked", () => {
+    search();
+    const triggers = screen.getAllByRole("button", { name: "Search components" });
+    expect(triggers).toHaveLength(2);
+    expect(triggers.map((t) => t.getAttribute("aria-haspopup"))).toEqual(["dialog", "dialog"]);
+    expect(screen.getByText("Ctrl K")).not.toBeNull();
+    expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("opens on Ctrl+K and on Cmd+K, and the browser's own shortcut is prevented", () => {
-    const host = mount(<SiteSearch items={ITEMS} label="Search components" />);
-    expect(host.querySelector("dialog")).toBeNull();
-    const event = new KeyboardEvent("keydown", { key: "k", ctrlKey: true, cancelable: true });
-    act(() => {
-      window.dispatchEvent(event);
-    });
-    expect(event.defaultPrevented).toBe(true);
-    expect(host.querySelector("dialog")?.getAttribute("aria-labelledby")).toBeTruthy();
-    unmount();
-    const again = mount(<SiteSearch items={ITEMS} label="Search components" />);
-    press({ key: "k", metaKey: true });
-    expect(again.querySelector("dialog")).not.toBeNull();
+  it("opens on Ctrl+K, named by the label, and the browser's own shortcut is prevented", async () => {
+    search();
+    const prevented = lastKeyPrevented();
+    await user().keyboard("{Control>}k{/Control}");
+    expect(screen.getByRole("dialog", { name: "Search components" })).not.toBeNull();
+    expect(prevented()).toBe(true);
   });
 
-  it("does not open on K with Shift or Alt, or on a plain K", () => {
-    const host = mount(<SiteSearch items={ITEMS} label="Search components" />);
-    press({ key: "k" });
-    press({ key: "K", ctrlKey: true, shiftKey: true });
-    press({ key: "k", ctrlKey: true, altKey: true });
-    expect(host.querySelector("dialog")).toBeNull();
+  it("opens on Cmd+K", async () => {
+    search();
+    await user().keyboard("{Meta>}k{/Meta}");
+    expect(screen.getByRole("dialog", { name: "Search components" })).not.toBeNull();
   });
 
-  it("shows the prompt while empty, the ranked links as typed, and the no-match line", () => {
-    const host = mount(<SiteSearch items={ITEMS} label="Search components" />);
-    press({ key: "k", ctrlKey: true });
-    const dialog = host.querySelector("dialog");
-    if (!dialog) throw new Error("no dialog");
-    expect(dialog.textContent).toContain("Type a name");
-    expect(dialog.querySelector('[role="status"]')?.textContent).toBe("");
+  it("opens from a click on a trigger", async () => {
+    search();
+    await user().click(firstTrigger());
+    expect(screen.getByRole("dialog", { name: "Search components" })).not.toBeNull();
+  });
 
-    type(host, "dia");
-    const hrefs = [...dialog.querySelectorAll("a")].map((a) => a.getAttribute("href"));
+  it("does not open on K with Shift or Alt, or on a plain K", async () => {
+    search();
+    const person = user();
+    await person.keyboard("k");
+    await person.keyboard("{Control>}{Shift>}K{/Shift}{/Control}");
+    await person.keyboard("{Control>}{Alt>}k{/Alt}{/Control}");
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("shows the prompt while empty, the ranked links as typed, and the no-match line", async () => {
+    search();
+    const person = user();
+    await person.keyboard("{Control>}k{/Control}");
+    const dialog = within(screen.getByRole("dialog", { name: "Search components" }));
+    expect(dialog.getByText("Type a name")).not.toBeNull();
+    expect(dialog.getByRole("status").textContent).toBe("");
+
+    const field = dialog.getByRole("searchbox", { name: "Search components" });
+    await person.type(field, "dia");
+    const hrefs = dialog.getAllByRole("link").map((a) => a.getAttribute("href"));
     expect(hrefs).toEqual(["/dialog/", "/diagram/", "/field-dialog/", "/tabs/", "/drawer/"]);
-    expect(dialog.textContent).not.toContain("Type a name");
-    expect(dialog.querySelector('[role="status"]')?.textContent).toBe("5 results");
+    expect(dialog.queryByText("Type a name")).toBeNull();
+    expect(dialog.getByRole("status").textContent).toBe("5 results");
 
-    type(host, "modal");
-    expect(dialog.querySelector('[role="status"]')?.textContent).toBe("1 result");
+    await person.clear(field);
+    await person.type(field, "modal");
+    expect(dialog.getByRole("status").textContent).toBe("1 result");
 
-    type(host, "zzz");
-    expect(dialog.querySelectorAll("a")).toHaveLength(0);
-    expect(dialog.textContent).toContain("No results for zzz");
-    expect(dialog.querySelector('[role="status"]')?.textContent).toBe("No results");
+    await person.clear(field);
+    await person.type(field, "zzz");
+    expect(dialog.queryAllByRole("link")).toHaveLength(0);
+    expect(dialog.getByText("No results for zzz")).not.toBeNull();
+    expect(dialog.getByRole("status").textContent).toBe("No results");
   });
 });

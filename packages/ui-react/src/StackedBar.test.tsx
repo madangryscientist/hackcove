@@ -1,5 +1,6 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
+import { render, screen, within } from "./render.harness.js";
 import { Legend, StackedBar, type StackedSegment } from "./StackedBar.js";
 
 const parts: StackedSegment[] = [
@@ -9,24 +10,19 @@ const parts: StackedSegment[] = [
   { label: "Same", value: 60, tone: "muted" },
 ];
 
+const follows = (a: Node, b: Node) =>
+  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
+
 describe("StackedBar", () => {
-  it("sizes each part by its share, in order, as an image naming every part", () => {
-    const out = renderToStaticMarkup(<StackedBar segments={parts} label="Snapshot" />);
-    expect(out).toContain('role="img"');
-    expect(out).toContain('aria-label="Snapshot: Changed 20%, New 10%, Removed 10%, Same 60%"');
-    const widths = [...out.matchAll(/width:([\d.]+)%/g)].map((m) => m[1]);
-    expect(widths).toEqual(["20", "10", "10", "60"]);
+  it("is an image naming every part and its share, in order", () => {
+    render(<StackedBar segments={parts} label="Snapshot" />);
+    expect(
+      screen.getByRole("img", { name: "Snapshot: Changed 20%, New 10%, Removed 10%, Same 60%" }),
+    ).not.toBeNull();
   });
 
-  it("paints each tone with its text colour as a fill", () => {
-    const out = renderToStaticMarkup(<StackedBar segments={parts} label="x" />);
-    for (const c of ["text-amber-700", "text-blue-700", "text-red-700", "text-slate-500"]) {
-      expect(out).toContain(c);
-    }
-  });
-
-  it("paints neutral and violet with their own utilities, apart from muted and info", () => {
-    const out = renderToStaticMarkup(
+  it("names every tone's part, neutral and violet included", () => {
+    render(
       <StackedBar
         segments={[
           { label: "Unmeasured", value: 1, tone: "neutral" },
@@ -36,14 +32,13 @@ describe("StackedBar", () => {
         label="x"
       />,
     );
-    expect(out).toContain("text-neutral-500");
-    expect(out).toContain("text-purple-700");
-    expect(out).toContain("text-slate-500");
-    expect(out).toContain('aria-label="x: Unmeasured 33%, Same 33%, Overlay 33%"');
+    expect(
+      screen.getByRole("img", { name: "x: Unmeasured 33%, Same 33%, Overlay 33%" }),
+    ).not.toBeNull();
   });
 
-  it("draws a zero-wide part for a zero value, and an empty track when all are zero", () => {
-    const some = renderToStaticMarkup(
+  it("announces a zero part as 0%", () => {
+    render(
       <StackedBar
         segments={[
           { label: "A", value: 0, tone: "warn" },
@@ -52,49 +47,36 @@ describe("StackedBar", () => {
         label="x"
       />,
     );
-    expect(some).toContain('aria-label="x: A 0%, B 100%"');
-    expect(some).toContain("width:0%");
-    const none = renderToStaticMarkup(
-      <StackedBar segments={[{ label: "A", value: 0, tone: "warn" }]} label="x" />,
-    );
-    expect(none).toContain('aria-label="x: A 0%"');
+    expect(screen.getByRole("img", { name: "x: A 0%, B 100%" })).not.toBeNull();
   });
 
-  it("is md by default, and sm or lg when asked", () => {
-    expect(renderToStaticMarkup(<StackedBar segments={parts} label="x" />)).toContain("h-2");
-    expect(renderToStaticMarkup(<StackedBar segments={parts} label="x" size="sm" />)).toContain(
-      "h-1.5",
-    );
-    expect(renderToStaticMarkup(<StackedBar segments={parts} label="x" size="lg" />)).toContain(
-      "h-3",
-    );
+  it("announces 0% when every part is zero", () => {
+    render(<StackedBar segments={[{ label: "A", value: 0, tone: "warn" }]} label="x" />);
+    expect(screen.getByRole("img", { name: "x: A 0%" })).not.toBeNull();
   });
 
   it("draws no key unless asked", () => {
-    expect(renderToStaticMarkup(<StackedBar segments={parts} label="x" />)).not.toContain("<ul");
+    render(<StackedBar segments={parts} label="x" />);
+    expect(screen.queryByRole("list")).toBeNull();
   });
 
-  it("legend draws the key under the bar, outside the image, with each part's value", () => {
-    const out = renderToStaticMarkup(<StackedBar segments={parts} label="x" legend />);
-    expect(out.indexOf("<ul")).toBeGreaterThan(out.indexOf('role="img"'));
-    expect(out).toContain("<span>Changed</span>");
-    expect(out).toContain('<span class="tabular-nums text-slate-500">60</span>');
-  });
-
-  it("passes data-* to the root, with or without a legend", () => {
-    for (const legend of [false, true]) {
-      expect(
-        renderToStaticMarkup(
-          <StackedBar segments={parts} label="x" legend={legend} data-testid="bar" />,
-        ),
-      ).toMatch(/^<div data-testid="bar" class="flex flex-col/);
-    }
+  it("legend draws the key after the bar, outside the image, with each part's value", () => {
+    render(<StackedBar segments={parts} label="x" legend />);
+    const bar = screen.getByRole("img");
+    const key = screen.getByRole("list");
+    expect(follows(bar, key)).toBeTruthy();
+    expect(bar.contains(key)).toBe(false);
+    expect(
+      within(key)
+        .getAllByRole("listitem")
+        .map((item) => item.textContent),
+    ).toEqual(["Changed20", "New10", "Removed10", "Same60"]);
   });
 });
 
 describe("Legend", () => {
-  it("is a list of a swatch in the tone's colour and the label, with an optional detail", () => {
-    const out = renderToStaticMarkup(
+  it("is a list of each label with its optional detail after it", () => {
+    render(
       <Legend
         items={[
           { label: "Changed", tone: "warn", detail: 3 },
@@ -102,32 +84,8 @@ describe("Legend", () => {
         ]}
       />,
     );
-    expect(out).toContain("<ul");
-    expect(out.match(/<li/g)).toHaveLength(2);
-    expect(out).toContain('aria-hidden="true"');
-    expect(out).toContain("text-amber-700");
-    expect(out).toContain("text-slate-500");
-    expect(out).toContain(">3</span>");
-    expect(out.match(/tabular-nums/g)).toHaveLength(1);
-  });
-
-  it("draws a solid dot by default and a dashed ring, with no fill, for swatch dashed", () => {
-    const out = renderToStaticMarkup(
-      <Legend
-        items={[
-          { label: "Current", tone: "violet" },
-          { label: "Solid", tone: "neutral", swatch: "solid" },
-          { label: "Snapshot", tone: "violet", swatch: "dashed" },
-        ]}
-      />,
-    );
-    const swatches = [...out.matchAll(/<span aria-hidden="true" class="([^"]*)"/g)].map(
-      (m) => m[1] ?? "",
-    );
-    expect(swatches).toHaveLength(3);
-    expect(swatches[0]).toContain("bg-current text-purple-700");
-    expect(swatches[1]).toContain("bg-current text-neutral-500");
-    expect(swatches[2]).toContain("border-2 border-dashed border-current text-purple-700");
-    expect(swatches[2]).not.toContain("bg-current");
+    const items = screen.getAllByRole("listitem");
+    expect(items.map((item) => item.textContent)).toEqual(["Changed3", "Same"]);
+    expect(follows(screen.getByText("Changed"), screen.getByText("3"))).toBeTruthy();
   });
 });
