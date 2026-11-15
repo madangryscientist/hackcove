@@ -11,9 +11,9 @@ const themes = themeFiles(`${import.meta.dirname}/../../../themes`);
 
 const STORY = "feedback-navigationprogress--default";
 
-const open = async (page: Page, theme: string, active: boolean) => {
+const open = async (page: Page, theme: string, loading: boolean) => {
   await page.goto(
-    `/iframe.html?id=${STORY}&viewMode=story&globals=theme:${theme}&args=active:!${active}`,
+    `/iframe.html?id=${STORY}&viewMode=story&globals=theme:${theme}&args=loading:!${loading}`,
   );
   await page.getByRole("banner").waitFor();
 };

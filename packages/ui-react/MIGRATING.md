@@ -124,6 +124,7 @@ TypeScript does not flag these:
 | `Tabs variant="pill" orientation="vertical"` | `Tabs orientation="vertical"` | codemod |
 | `Tabs variant="pill"` across (and its `size`) | `Tabs`: across is always underline | codemod drops it, and reports it |
 | `Container elementRef` | `ref` | codemod |
+| `NavigationProgress active` | `loading`, the one name for a pending state | codemod |
 | any other HTML attribute on `Avatar` or `AppShell` (`onError`, a `div` handler) | only `id`, `data-*` and `aria-*` | by hand |
 
 New, nothing to change: `Breadcrumbs label` (default `Breadcrumb`), `Lightbox closeLabel`,

@@ -139,6 +139,8 @@ export const removed = {
   r56: () => <ui.Tabs label="x" variant="pill" items={[{ label: "x", href: "/" }]} />,
   // @ts-expect-error elementRef is ref
   r57: () => <ui.Container elementRef={() => undefined} />,
+  // @ts-expect-error active is loading, the one name for a pending state
+  r62: () => <ui.NavigationProgress active />,
   // @ts-expect-error Avatar passes only id, data-* and aria-*: no handler but onClick
   r58: () => <ui.Avatar name="x" onError={() => undefined} />,
 

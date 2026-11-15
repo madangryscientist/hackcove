@@ -171,7 +171,7 @@ export const CASES: Record<string, () => ReactElement> = {
       x
     </ui.Morph>
   ),
-  NavigationProgress: () => <ui.NavigationProgress active {...A} />,
+  NavigationProgress: () => <ui.NavigationProgress loading {...A} />,
   NotFound: () => <ui.NotFound {...A} />,
   Offline: () => <ui.Offline {...A} />,
   OutlineRegion: () => (

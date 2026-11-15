@@ -243,8 +243,8 @@ export const feedback: ComponentSection = {
       pairs: ["NavigationProgress/Pending"],
       usage: {
         do: [
-          'Render it once per app, beside the page frame, and pass `active` from the router\'s pending state: with TanStack Router, `active={useRouterState({ select: (s) => s.status === "pending" })}`. It has no router dependency.',
-          "There is nothing to configure: it draws the bar while `active` is true and nothing while it is false. The bar is invisible for its first 150ms, so a fast navigation shows nothing.",
+          'Render it once per app, beside the page frame, and pass `loading` from the router\'s pending state: with TanStack Router, `loading={useRouterState({ select: (s) => s.status === "pending" })}`. It has no router dependency.',
+          "There is nothing to configure: it draws the bar while `loading` is true and nothing while it is false. The bar is invisible for its first 150ms, so a fast navigation shows nothing.",
           "It is fixed to the top edge of the viewport and overlays the header, so nothing on the page moves. Pair it with `PageFade`: the bar says the page is loading, and the fade swaps the content when it arrives.",
           "A task with a known length and a value is a `ProgressBar`, not this.",
         ],

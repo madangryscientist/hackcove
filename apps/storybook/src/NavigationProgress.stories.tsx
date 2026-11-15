@@ -14,19 +14,19 @@ import {
 
 const meta: Meta = { title: "Feedback/NavigationProgress", parameters: { layout: "fullscreen" } };
 export default meta;
-type S = StoryObj<{ active: boolean }>;
+type S = StoryObj<{ loading: boolean }>;
 
 /**
  * The bar in its shown state, fixed to the top edge of the viewport and over the AppShell header.
- * It draws what `active` says; the stylesheet holds it invisible for the first 150ms.
+ * It draws what `loading` says; the stylesheet holds it invisible for the first 150ms.
  * A real app passes the router's pending flag; here it is a story arg.
  */
 export const Default: S = {
   parameters: { bare: true },
-  args: { active: true },
-  render: ({ active }) => (
+  args: { loading: true },
+  render: ({ loading }) => (
     <>
-      <NavigationProgress active={active} />
+      <NavigationProgress loading={loading} />
       <AppShell
         brand={<AppShellBrand href="#" label="Quotes" />}
         nav={
@@ -46,13 +46,13 @@ export const Default: S = {
   ),
 };
 
-/** Pass `active` from the router's pending state: the bar shows while it is true and is gone when the page has arrived. */
+/** Pass `loading` from the router's pending state: the bar shows while it is true and is gone when the page has arrived. */
 export const DoPending: S = {
   render: () => {
     const [pending, setPending] = useState(true);
     return (
       <Stack gap="sm">
-        <NavigationProgress active={pending} />
+        <NavigationProgress loading={pending} />
         <Button variant="outline" onClick={() => setPending(!pending)}>
           {pending ? "The page has arrived" : "Open the store page"}
         </Button>
