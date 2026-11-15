@@ -28,15 +28,16 @@ type Shop = (typeof shops)[number];
  * `startPageTransition`; a router's own view-transition option does the same job. Only the card
  * pressed has a partner on the next page, so it grows into the detail while the rest of the page
  * fades, and Back shrinks it into its place. Each story on the docs page uses its own `name`, as
- * two on one page with the same pair would skip the morph.
+ * two on one page with the same pair would skip the morph. The Do and Dont stories repeat their
+ * render in full, as a doc snippet must stand alone.
  */
-function Shops({ name }: { name: string }) {
+function Shops() {
   const [open, setOpen] = useState<Shop | undefined>(undefined);
   const go = (next: Shop | undefined) => startPageTransition(() => setOpen(next));
   return (
-    <PageFade name={`hc-page-${name}`}>
+    <PageFade>
       {open ? (
-        <Morph name={name} item={open.id} data-testid="morph-detail">
+        <Morph name="shop" item={open.id} data-testid="morph-detail">
           <Card
             title={open.name}
             size="lg"
@@ -57,7 +58,7 @@ function Shops({ name }: { name: string }) {
       ) : (
         <CardGrid>
           {shops.map((shop) => (
-            <Morph key={shop.id} name={name} item={shop.id} data-testid={`morph-${shop.id}`}>
+            <Morph key={shop.id} name="shop" item={shop.id} data-testid={`morph-${shop.id}`}>
               <Card
                 title={shop.name}
                 footer={
@@ -82,7 +83,7 @@ function Shops({ name }: { name: string }) {
  * Press a shop: its card grows into the shop's page while the rest fades; Back shrinks it back.
  * With `prefers-reduced-motion: reduce`, or in a browser without View Transitions, it just swaps.
  */
-export const Default: S = { render: () => <Shops name="shop" /> };
+export const Default: S = { render: () => <Shops /> };
 
 /** Each card's `item` is its shop's id, so only the pressed card has a partner on the next page and it morphs. */
 export const DoUniqueName: S = {
