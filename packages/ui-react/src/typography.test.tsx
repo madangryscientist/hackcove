@@ -18,14 +18,9 @@ describe("typography", () => {
     expect(out).toContain("text-slate-900");
   });
 
-  it("makes inline roles spans, and `as` turns them into blocks", () => {
-    expect(renderToStaticMarkup(<Text>x</Text>)).toMatch(/^<span /);
-    expect(renderToStaticMarkup(<Text as="p">x</Text>)).toMatch(/^<p /);
-  });
-
-  it("maps the colour prop to its slate/violet utility", () => {
-    expect(renderToStaticMarkup(<Caption color="brand">x</Caption>)).toContain("text-violet-600");
-    expect(renderToStaticMarkup(<Caption color="muted">x</Caption>)).toContain("text-slate-400");
+  it("maps the accent and muted tones to their utilities", () => {
+    expect(renderToStaticMarkup(<Caption tone="accent">x</Caption>)).toContain("text-violet-600");
+    expect(renderToStaticMarkup(<Caption tone="muted">x</Caption>)).toContain("text-slate-500");
   });
 
   it("forwards element props", () => {
@@ -109,11 +104,11 @@ describe("typography", () => {
     expect(renderToStaticMarkup(<Text>x</Text>)).toContain("text-sm/5 font-normal text-slate-600");
     expect(
       renderToStaticMarkup(
-        <Text strong color="muted">
+        <Text strong tone="muted">
           x
         </Text>,
       ),
-    ).toContain("font-medium text-slate-400");
+    ).toContain("font-medium text-slate-500");
     expect(
       renderToStaticMarkup(
         <Text strong tone="danger">
@@ -147,16 +142,12 @@ describe("typography inline roles: tone, numeric, mono, truncate", () => {
     }
   });
 
-  it("a tone replaces the role's colour, and wins over `color`", () => {
-    const out = renderToStaticMarkup(
-      <Text tone="danger" color="brand">
-        x
-      </Text>,
-    );
+  it("a tone replaces the role's ink, and `neutral` keeps it", () => {
+    const out = renderToStaticMarkup(<Text tone="danger">x</Text>);
     expect(out).toContain("text-red-700");
-    expect(out).not.toContain("text-violet-600");
     expect(out).not.toContain("text-slate-600");
     expect(renderToStaticMarkup(<Text>x</Text>)).toContain("text-slate-600");
+    expect(renderToStaticMarkup(<Text tone="neutral">x</Text>)).toContain("text-slate-600");
   });
 
   it.each(roles)("%s `numeric` and `mono` are opt-in and not forwarded", (_name, Role) => {

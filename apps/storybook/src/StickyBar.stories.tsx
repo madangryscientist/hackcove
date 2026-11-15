@@ -19,11 +19,7 @@ const filters = (
   </Cluster>
 );
 
-const rows = Array.from({ length: 40 }, (_, index) => (
-  <Text key={index} as="p">
-    Build {40 - index}
-  </Text>
-));
+const rows = Array.from({ length: 40 }, (_, index) => <Text key={index}>Build {40 - index}</Text>);
 
 /** A bar at the top of an `AppShell bleed` page: it spans the page and sticks under the header as the page scrolls. */
 export const Default: S = {

@@ -59,7 +59,7 @@ export const ShortPage: S = {
   render: () => (
     <DemoShell>
       <PageHeader title="About" />
-      <Text as="p">One short paragraph.</Text>
+      <Text>One short paragraph.</Text>
     </DemoShell>
   ),
 };
@@ -74,7 +74,7 @@ export const ThemeCanvas: S = {
     <DemoShell>
       <PageHeader title="Canvas" subtitle="The page behind the cards." />
       <Card title="On the canvas">
-        <Text as="p">
+        <Text>
           Body text in the theme's sans face, and <Code>mono_in_the_theme_face</Code> beside it.
         </Text>
       </Card>
@@ -130,7 +130,7 @@ export const PhoneMenu: S = {
   render: () => (
     <DemoShell subnav={subnav} controls={<ColourSchemeToggle />}>
       <PageHeader title="Phone menu" subtitle="Nav and subnav behind one button." />
-      <Text as="p">The header is the same height on every page.</Text>
+      <Text>The header is the same height on every page.</Text>
     </DemoShell>
   ),
 };
@@ -321,7 +321,7 @@ export const HiddenInPrint: S = {
   render: () => (
     <DemoShell footer="Hack Cove · MIT" hideChromeInPrint>
       <PageHeader title="Printed page" subtitle="Only this prints." />
-      <Text as="p">The header and footer above and below are hidden in print.</Text>
+      <Text>The header and footer above and below are hidden in print.</Text>
     </DemoShell>
   ),
 };

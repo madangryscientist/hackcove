@@ -59,20 +59,12 @@ export const FullPage: S = {
         }
       >
         <Card as="article">
-          <Text strong as="p">
-            Naledi Mokoena
-          </Text>
-          <Text as="p" color="secondary">
-            Q-1042 · R 1 240 / mo
-          </Text>
+          <Text strong>Naledi Mokoena</Text>
+          <Text>Q-1042 · R 1 240 / mo</Text>
         </Card>
         <Card as="article">
-          <Text strong as="p">
-            Pieter van Wyk
-          </Text>
-          <Text as="p" color="secondary">
-            Q-1041 · R 860 / mo
-          </Text>
+          <Text strong>Pieter van Wyk</Text>
+          <Text>Q-1041 · R 860 / mo</Text>
         </Card>
       </ListLayout>
     </AppShell>
@@ -115,10 +107,10 @@ export const DoRows: S = {
       }
     >
       <Card as="article" title="Naledi Mokoena" status={<Pill tone="emerald">Accepted</Pill>}>
-        <Text as="p">Q-1042 · R 1 240 / mo</Text>
+        <Text>Q-1042 · R 1 240 / mo</Text>
       </Card>
       <Card as="article" title="Pieter van Wyk" status={<Pill tone="slate">Sent</Pill>}>
-        <Text as="p">Q-1041 · R 860 / mo</Text>
+        <Text>Q-1041 · R 860 / mo</Text>
       </Card>
     </ListLayout>
   ),
@@ -130,7 +122,7 @@ export const DontRows: S = {
     <Stack>
       <PageHeader title="Quotes" subtitle="Every quote you have sent." />
       <Card as="article" title="Naledi Mokoena">
-        <Text as="p">Q-1042 · R 1 240 / mo</Text>
+        <Text>Q-1042 · R 1 240 / mo</Text>
       </Card>
     </Stack>
   ),
@@ -145,9 +137,7 @@ export const DoNothingYet: S = {
       isEmpty
       empty={
         <EmptyState title="No quotes yet" actions={<Button>New quote</Button>}>
-          <Text as="p" color="secondary">
-            Quotes you send show up here.
-          </Text>
+          <Text>Quotes you send show up here.</Text>
         </EmptyState>
       }
     />

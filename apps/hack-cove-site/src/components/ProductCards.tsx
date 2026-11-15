@@ -1,4 +1,5 @@
 import {
+  BulletItem,
   BulletList,
   Button,
   Card,
@@ -59,9 +60,7 @@ function Feature({ number, product }: { number: number; product: Product }) {
         {features && (
           <BulletList>
             {features.map((feature) => (
-              <Text as="li" key={feature}>
-                {feature}
-              </Text>
+              <BulletItem key={feature}>{feature}</BulletItem>
             ))}
           </BulletList>
         )}
@@ -96,7 +95,7 @@ function Fit() {
               <div>
                 <Overline mono>{product}</Overline>
               </div>
-              <Text as="p">{answer}</Text>
+              <Text>{answer}</Text>
             </Stack>
           </Card>
         ))}
@@ -116,7 +115,7 @@ function ComingCard({ name, status, pitch, action }: Product) {
       status={<Pill tone={tone}>{label}</Pill>}
       footer={action && <ActionButton action={action} />}
     >
-      <Text as="p">{pitch}</Text>
+      <Text>{pitch}</Text>
     </Card>
   );
 }

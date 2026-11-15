@@ -3,7 +3,10 @@ import { describe, expect, it } from "vitest";
 import { TableBody, TableCell, TableHead, TableRow } from "./Table.js";
 import type { TextTone } from "./typography.js";
 
-const stripeRow = (stripe: TextTone, section: "body" | "head" = "body"): string => {
+const stripeRow = (
+  stripe: Exclude<TextTone, "neutral">,
+  section: "body" | "head" = "body",
+): string => {
   const Section = section === "body" ? TableBody : TableHead;
   return renderToStaticMarkup(
     <table>
@@ -18,7 +21,7 @@ const stripeRow = (stripe: TextTone, section: "body" | "head" = "body"): string 
 
 describe("TableRow stripe", () => {
   it("each tone is a stripe on the leading edge in its text colour, with no fill, keeping the hover", () => {
-    const looks: Array<[TextTone, string]> = [
+    const looks: Array<[Exclude<TextTone, "neutral">, string]> = [
       ["muted", "text-slate-500"],
       ["info", "text-blue-700"],
       ["positive", "text-emerald-700"],

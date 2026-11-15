@@ -1,4 +1,5 @@
 import {
+  BulletItem,
   BulletList,
   Cluster,
   Code,
@@ -42,9 +43,9 @@ function Rules({ items, labelledBy }: { items: string[]; labelledBy?: string | u
   return (
     <BulletList aria-labelledby={labelledBy}>
       {items.map((item) => (
-        <Text as="li" key={item} breakWords>
+        <BulletItem key={item}>
           <InlineCode text={item} />
-        </Text>
+        </BulletItem>
       ))}
     </BulletList>
   );
@@ -103,7 +104,7 @@ export function ComponentPage({ page }: { page: Page }) {
       <Prose>
         <Stack gap="xl">
           <Section id="overview" title="Overview" gap="md">
-            <Text as="p">
+            <Text>
               <InlineCode text={page.whenToUse} />
             </Text>
             {page.pairs.map((topic) => (
@@ -142,10 +143,10 @@ export function ComponentPage({ page }: { page: Page }) {
                 <SubsectionHeading>Functions</SubsectionHeading>
                 <BulletList>
                   {page.functions.map((fn) => (
-                    <Text as="li" key={fn.name}>
+                    <BulletItem key={fn.name}>
                       <Code>{docOf(fn.name).signature ?? fn.name}</Code>{" "}
                       <InlineCode text={fn.text} />
-                    </Text>
+                    </BulletItem>
                   ))}
                 </BulletList>
               </Stack>

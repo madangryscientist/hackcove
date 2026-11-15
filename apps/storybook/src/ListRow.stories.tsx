@@ -145,8 +145,8 @@ export const Thumbnail: S = {
             leading={<img alt="" src={samplePhoto} />}
             trailing={<Pill tone="amber">changed</Pill>}
           >
-            <Text as="p">{name}</Text>
-            <Caption as="p">0.4% of pixels differ</Caption>
+            <Text>{name}</Text>
+            <Caption>0.4% of pixels differ</Caption>
           </ListRow>
         ))}
       </Card>

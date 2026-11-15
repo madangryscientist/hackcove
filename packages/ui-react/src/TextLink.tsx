@@ -12,7 +12,7 @@ export const linkClass = cx(LINK, "text-violet-600 hover:text-violet-700", focus
 
 // A toned link takes its tone's text colour, shared with Table's cells and the inline roles, and
 // underlines on hover in place of a hover shade.
-const toneClass = (tone: TextTone): string =>
+const toneClass = (tone: Exclude<TextTone, "neutral">): string =>
   cx(LINK, TEXT_TONE[tone], "hover:underline", focusRing);
 
 /**
@@ -87,7 +87,7 @@ export function TextLink({
     render,
     external,
     className: cx(
-      tone ? toneClass(tone) : linkClass,
+      tone && tone !== "neutral" ? toneClass(tone) : linkClass,
       size && SIZE[size],
       mono && "font-mono",
       stretch && linkStretchClass,

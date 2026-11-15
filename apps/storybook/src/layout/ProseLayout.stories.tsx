@@ -40,9 +40,9 @@ export const FullPage: S = {
     >
       <ProseLayout title="Privacy" subtitle="How we handle your data.">
         <SectionHeading>What we keep</SectionHeading>
-        <Text as="p">We keep your account details and the quotes you send, and nothing else.</Text>
+        <Text>We keep your account details and the quotes you send, and nothing else.</Text>
         <SectionHeading>Who sees it</SectionHeading>
-        <Text as="p">Only you and the people you invite to your organisation.</Text>
+        <Text>Only you and the people you invite to your organisation.</Text>
       </ProseLayout>
     </AppShell>
   ),
@@ -61,9 +61,9 @@ export const DoArticle: S = {
   render: () => (
     <ProseLayout title="Privacy" subtitle="How we handle your data.">
       <SectionHeading>What we keep</SectionHeading>
-      <Text as="p">We keep your account details and the quotes you send, and nothing else.</Text>
+      <Text>We keep your account details and the quotes you send, and nothing else.</Text>
       <SectionHeading>Who sees it</SectionHeading>
-      <Text as="p">Only you and the people you invite to your organisation.</Text>
+      <Text>Only you and the people you invite to your organisation.</Text>
     </ProseLayout>
   ),
 };
@@ -81,7 +81,7 @@ export const Wide: S = {
         <CardGrid columns={3}>
           {["Free", "Team", "Business"].map((plan) => (
             <Card key={plan} title={plan}>
-              <Text as="p">Everything you need to review a visual change before it ships.</Text>
+              <Text>Everything you need to review a visual change before it ships.</Text>
             </Card>
           ))}
         </CardGrid>
@@ -95,7 +95,7 @@ export const DontArticle: S = {
   render: () => (
     <ListLayout title="Privacy" subtitle="How we handle your data.">
       <Card>
-        <Text as="p">
+        <Text>
           We keep your account details and the quotes you send, and nothing else. Only you and the
           people you invite to your organisation can see them.
         </Text>

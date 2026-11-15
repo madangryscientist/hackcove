@@ -77,9 +77,7 @@ function AddMessageDemo() {
       <ChatThread label="Growing chat" height="sm">
         {messages(count)}
       </ChatThread>
-      <Text as="p" color="muted">
-        {count} messages
-      </Text>
+      <Text tone="muted">{count} messages</Text>
     </Stack>
   );
 }

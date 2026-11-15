@@ -41,7 +41,7 @@ export const Default: S = {
           />
         }
       >
-        <Text as="p">The page the reader is leaving. The bar runs along the very top.</Text>
+        <Text>The page the reader is leaving. The bar runs along the very top.</Text>
       </AppShell>
     </>
   ),

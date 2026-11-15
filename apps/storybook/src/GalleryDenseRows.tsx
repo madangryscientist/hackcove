@@ -22,7 +22,7 @@ export function DenseRows() {
           static
           leading={<Avatar name="Linus T" />}
           trailing="10:42"
-          detail={<Text as="p">A thread opens under the label.</Text>}
+          detail={<Text>A thread opens under the label.</Text>}
         >
           Static row with detail
         </ListRow>

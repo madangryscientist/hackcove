@@ -66,10 +66,12 @@ export const StaticDetail: S = {
                   {open === chat.name ? "Close" : "Open"}
                 </Button>
               }
-              detail={open === chat.name && <Text as="p">Thread with {chat.name} opens here.</Text>}
+              detail={open === chat.name && <Text>Thread with {chat.name} opens here.</Text>}
             >
-              <Text strong>{chat.name}</Text>
-              <Caption as="p">{chat.last}</Caption>
+              <Text as="span" strong>
+                {chat.name}
+              </Text>
+              <Caption>{chat.last}</Caption>
             </ListRow>
           ))}
         </Card>

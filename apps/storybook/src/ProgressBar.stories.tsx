@@ -5,7 +5,7 @@ const meta: Meta = { title: "Data/ProgressBar", parameters: { layout: "padded" }
 export default meta;
 type S = StoryObj;
 
-const tones: BarTone[] = ["accent", "positive", "warn", "negative"];
+const tones: BarTone[] = ["accent", "positive", "warn", "danger"];
 
 export const Default: S = {
   render: () => (
@@ -50,8 +50,8 @@ export const DoProgress: S = {
   render: () => (
     <Stack gap="xs">
       <Cluster justify="between">
-        <Text>Kitchen funded</Text>
-        <Caption>R 45 000 of R 75 000</Caption>
+        <Text as="span">Kitchen funded</Text>
+        <Caption as="span">R 45 000 of R 75 000</Caption>
       </Cluster>
       <ProgressBar value={45000} max={75000} label="Kitchen funded" />
     </Stack>

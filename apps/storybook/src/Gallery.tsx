@@ -76,10 +76,14 @@ export const gallerySections: GallerySection[] = [
         </div>
 
         <div className="flex flex-col gap-2">
-          <Text as="p">
-            Text with a <Text strong>strong run</Text> inside it.
+          <Text>
+            Text with a{" "}
+            <Text as="span" strong>
+              strong run
+            </Text>{" "}
+            inside it.
           </Text>
-          <Caption as="p">Caption: fine print and metadata.</Caption>
+          <Caption>Caption: fine print and metadata.</Caption>
         </div>
       </>
     ),
@@ -240,9 +244,7 @@ export const gallerySections: GallerySection[] = [
       <>
         <GalleryStatusPages />
 
-        <Text as="p" color="muted">
-          nothing here yet
-        </Text>
+        <Text tone="muted">nothing here yet</Text>
       </>
     ),
   },

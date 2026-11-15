@@ -18,7 +18,7 @@ export const text: ComponentSection = {
           "A page has one title: `PageHeading` for an app page, `Display` for the headline of a public page. A `PageHeader` already draws the `PageHeading` and its subtitle, so use it for the top of a page.",
           "Name the parts of a page with `SectionHeading`; `rule` puts the hairline under it, with the space either side built in.",
           "Name what is inside a part with `SubsectionHeading`: `size` `sm` is a form-group caption, `md` (default) a card title in a header bar, `lg` a drawer title. `truncate` cuts one that is too long for its column to a single line.",
-          'Put a `Lead` under a `Display`, and a `Text as="p"` under any other heading. `Dialog` and `Drawer` draw their own title from their `title`.',
+          "Put a `Lead` under a `Display`, and a `Text` under any other heading. `Dialog` and `Drawer` draw their own title from their `title`.",
           "Pick the heading for its place in the outline, never for its size. `Display` is not a big `SectionHeading`.",
           "`color` takes `default`, `secondary`, `tertiary`, `muted` or `brand` for the hierarchy of the text. A heading's meaning is carried by its words, not a colour.",
           "`as` changes the element, only to keep the outline in order, and never the look.",
@@ -76,10 +76,10 @@ export const text: ComponentSection = {
       ],
       usage: {
         do: [
-          'Set a paragraph in `Text as="p"`. `Text` is a `span` by default so it sits inside a sentence; a block of it stops at a readable line length.',
-          'Emphasise a run with `Text strong` inside the `Text`: font-medium in the primary ink. Use `Caption` for fine print and metadata, as `Caption as="p"` when it stands alone.',
-          'Put a `Text as="p"` under a heading and `Lead` under a `Display`. `Overline` is the small all-caps label above a group, not a title.',
-          'A Card or a list with nothing in it yet gets one muted line, `Text as="p" color="muted"`: "Nothing finished yet." A whole empty view, with a way forward, is an `EmptyState` with its `actions`.',
+          'Set a paragraph in `Text`, a `<p>`. Inside a row, a cell or a sentence it is `Text as="span"`. A block of it stops at a readable line length.',
+          'Emphasise a run with `Text strong` inside the `Text`: font-medium in the primary ink. Use `Caption` for fine print and metadata, `Caption as="span"` inside a row.',
+          "Put a `Text` under a heading and `Lead` under a `Display`. `Overline` is the small all-caps label above a group, not a title.",
+          'A Card or a list with nothing in it yet gets one muted line, `Text tone="muted"`: "Nothing finished yet." A whole empty view, with a way forward, is an `EmptyState` with its `actions`.',
           "`tone` says what a run means: `positive`, `warn`, `danger`, `info` or `muted`. It beats `color`, and the words still say it, so colour is never the only signal. `color` is only the hierarchy of the text.",
           "`numeric` sets tabular figures so a column of amounts lines up, `mono` the monospace face for an id or a path, and `truncate` cuts a run to one line.",
           '`align` sets a run at `start`, `center` or `end` of its block, for a table header or a right-hand column. `minWidth="amount"` on `Text` fixes a width and right-aligns a money figure in it, so a column of amounts lines up.',
@@ -214,21 +214,22 @@ export const text: ComponentSection = {
     {
       slug: "bullet-list",
       name: "BulletList",
-      summary: "A bulleted list with the discs, indent and gap built in.",
+      summary:
+        "A bulleted list with the discs, indent and gap built in; each item is a `BulletItem`.",
       whenToUse: "Items that read as a list of points: what changed, what to bring.",
       pairs: ["BulletList/Items"],
       usage: {
         do: [
-          'Give a `BulletList` `<li>` children, set in `Text as="li"`.',
+          "Give a `BulletList` `BulletItem` children: each is an `<li>` in the body text.",
           "Items that have a label and a value are a `KeyValueList`; a list of records is a `Table` or a `ListRow`.",
         ],
         dont: ["Never type a hyphen into a paragraph to make a list."],
       },
       accessibility: [
         "A `BulletList` renders a `<ul>`, so a screen reader announces a list and the number of items.",
-        "`id`, `aria-*` and `data-*` go on the list.",
+        "`id`, `aria-*` and `data-*` go on the list, or on one item.",
       ],
-      api: ["BulletList"],
+      api: ["BulletList", "BulletItem"],
     },
     {
       slug: "meta-list",

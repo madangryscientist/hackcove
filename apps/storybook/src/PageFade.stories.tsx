@@ -37,8 +37,8 @@ export const Default: S = {
         />
         <PageFade>
           <div className="flex flex-col gap-2 rounded-lg border border-slate-200 p-4">
-            <Text as="p">{page?.label}</Text>
-            <Text>{page?.text}</Text>
+            <Text>{page?.label}</Text>
+            <Text as="span">{page?.text}</Text>
           </div>
         </PageFade>
       </div>

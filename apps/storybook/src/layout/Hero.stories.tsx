@@ -21,7 +21,7 @@ export const Landing: S = {
             more on the way.
           </Lead>
         </Hero>
-        <Text as="p">The page's first block starts here, a page gap under the hero.</Text>
+        <Text>The page's first block starts here, a page gap under the hero.</Text>
       </Stack>
     </DemoShell>
   ),

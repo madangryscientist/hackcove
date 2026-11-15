@@ -167,9 +167,7 @@ export const CalendarInCard: S = {
         <DateField calendar label="Visit date" />
       </Card>
       <Card title="Below">
-        <Text as="p" color="muted">
-          The calendar opens over this card.
-        </Text>
+        <Text tone="muted">The calendar opens over this card.</Text>
       </Card>
     </Stack>
   ),

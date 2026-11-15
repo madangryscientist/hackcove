@@ -121,25 +121,19 @@ export const MarkdownStory: S = {
   render: () => <Markdown md={"## What I did\n- **HC-42** shipped\n- plain item"} />,
 };
 export const EmptyLine: S = {
-  render: () => (
-    <Text as="p" color="muted">
-      nothing here yet
-    </Text>
-  ),
+  render: () => <Text tone="muted">nothing here yet</Text>,
 };
 
-/** A Card with nothing to show yet holds one muted line, `Text as="p" color="muted"`. */
+/** A Card with nothing to show yet holds one muted line, `Text tone="muted"`. */
 export const DoEmptyNote: S = {
   render: () => (
     <Card title="Done" count={0}>
-      <Text as="p" color="muted">
-        Nothing finished yet.
-      </Text>
+      <Text tone="muted">Nothing finished yet.</Text>
     </Card>
   ),
 };
 
-/** A bare `<p>` in a Card has its own colour and size, so it drifts from every other empty Card: use `Text as="p" color="muted"`. */
+/** A bare `<p>` in a Card has its own colour and size, so it drifts from every other empty Card: use `Text tone="muted"`. */
 export const DontEmptyNote: S = {
   render: () => (
     <Card title="Done" count={0}>
@@ -161,9 +155,7 @@ export const DoEmptyView: S = {
 export const DontEmptyView: S = {
   render: () => (
     <Stack>
-      <Text as="p" color="muted">
-        No projects yet.
-      </Text>
+      <Text tone="muted">No projects yet.</Text>
       <Button>Create a project</Button>
     </Stack>
   ),
@@ -184,9 +176,7 @@ export const DoEpicGroups: S = {
         <div key={epic ?? "none"}>
           <EpicHeader color={items[0]?.colour ?? "#9399b2"} label={epic ?? "No epic"} />
           {items.map((item) => (
-            <Text as="p" key={item.task}>
-              {item.task}
-            </Text>
+            <Text key={item.task}>{item.task}</Text>
           ))}
         </div>
       ))}
@@ -199,7 +189,7 @@ export const DontEpicGroups: S = {
   render: () => (
     <Stack>
       <EpicHeader color="#cba6f7" label="Settings" />
-      <Text as="p">Choose how the site looks and what it tells you about.</Text>
+      <Text>Choose how the site looks and what it tells you about.</Text>
     </Stack>
   ),
 };

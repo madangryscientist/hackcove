@@ -73,12 +73,16 @@ type Through = DataAttributes & Pick<AriaAttributes, "aria-describedby" | "aria-
  * react-aria drops an `aria-describedby` or `aria-details` it is handed on a row or a section, and
  * sets its own describedby on a row. This draws the element with both: its own ids and the app's.
  */
-function describedBy({ "aria-describedby": described, "aria-details": details, ...data }: Through) {
+function describedBy(
+  { "aria-describedby": described, "aria-details": details, ...data }: Through,
+  id?: string,
+) {
   return {
     ...data,
     render: (props: JSX.IntrinsicElements["div"]) => (
       <div
         {...props}
+        id={id ?? props.id}
         aria-describedby={
           [props["aria-describedby"], described].filter(Boolean).join(" ") || undefined
         }
@@ -219,8 +223,13 @@ export function SortableList({
   onReorder: (move: SortableMove) => void;
   /** `SortableSection`s, or `SortableItem`s for a list with no sections. */
   children: ReactNode;
-} & Through): ReactElement {
-  const listId = useId();
+} & Through & {
+    /** The list's `id`. */
+    id?: string | undefined;
+  }): ReactElement {
+  const ownId = useId();
+  const { id, ...through } = rest;
+  const listId = id ?? ownId;
   const dragType = `application/x-hackcove-sortable-${useId()
     .replace(/[^a-z0-9]/gi, "")
     .toLowerCase()}`;
@@ -255,7 +264,7 @@ export function SortableList({
   });
   return (
     <GridList
-      {...describedBy(rest)}
+      {...describedBy(through, listId)}
       id={listId}
       aria-label={label}
       dragAndDropHooks={dragAndDropHooks}

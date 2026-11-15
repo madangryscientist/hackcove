@@ -1,5 +1,47 @@
 # Migrating @hackcove/ui-react
 
+## 0.10 to 0.11: one API pass
+
+Each idea has one name, one value set and one default. Every old name below is gone in 0.11, with no
+alias. A codemod rewrites the mechanical swaps (marked **codemod** below) and prints a `file:line`
+for each one a person has to decide (marked **by hand**); how to run it is at the end of this section.
+
+### Tone, text and passthrough
+
+There is one tone vocabulary, `Tone` (`neutral`, `info`, `positive`, `warn`, `danger`), exported
+from the package. `neutral` is every default. `tone` is the one ink prop on `Text`, `Caption` and
+`Overline`; their `TextTone` adds `muted` and `accent`.
+
+| Old | New | |
+| --- | --- | --- |
+| `import type { CalloutTone }` | `import type { Tone }` | codemod |
+| `Callout` with no `tone` (was `info`) | `neutral`; write `tone="info"` to keep the blue box | codemod pins `tone="info"` |
+| `Text color="muted"` (and `Caption`, `Overline`) | `tone="muted"`, one step darker (`text-slate-500`) | codemod |
+| `color="tertiary"` | `tone="muted"` (the same ink) | codemod |
+| `color="brand"` | `tone="accent"` | codemod |
+| `Text color="secondary"` | nothing: it is the default | codemod |
+| `Caption color="secondary"`, `Overline color="secondary"` | no swap: pick `tone` or leave the role's ink | by hand |
+| `color="default"` on an inline role | no exact swap: `Text strong` adds the weight in the primary ink | by hand |
+| `color` on `Display`, `Lead`, `PageHeading`, `SectionHeading`, `SubsectionHeading` | removed: each heading has its fixed ink | by hand |
+| `TypographyColor` | removed | by hand |
+| `Text` and `Caption` are a `<span>` | a `<p>`; `as="span"` is the inline form, inside a row, a cell, a button or a sentence | codemod drops `as="p"` and pins `as="span"` where there is no `as` |
+| `Icon tone="inherit"` | leave `tone` out | codemod |
+| `ProgressBar`, `SplitBar`, `StatTile` `tone="negative"` (and `toneA`, `toneB`) | `danger` | codemod |
+| `StackedBar`, `Legend`, `TrendChart` `tone: "violet"` | `accent`, the theme's accent ink | codemod |
+| `StackedBar segments` | `items` | codemod |
+| `BulletList` with `<li>` or `Text as="li"` children | `BulletItem` children | by hand |
+| `Callout`, `StatTile`, `Badge`, `Kbd`, `Code`, `Divider`, `BulletList`, `KeyValueList`, `KeyValue`, `PageFade`, `Morph`, `CopyLine` took their element's every attribute | `id`, `data-*` and `aria-*` only | by hand (any other prop is reported) |
+| `PageHeaderProps`, `HeroProps`, `ListRowProps`, `DialogProps`, `DrawerProps`, `BottomSheetProps`, `LightboxProps`, `TabsProps`, `FieldDialogProps`, `ImageProps`, `MediaTileProps`, `ScrollStripProps`, `TypographyProps`, `DateFieldProps`, `DateRangePickerProps` | not exported: `ComponentProps<typeof Dialog>` | by hand |
+| `ButtonLook` | not exported | by hand |
+
+New, nothing to change: `Callout icon`; every component takes an `id` on its root; `StackRowFrom`,
+`ClusterGrowMinWidth`, `TextAlign` and `TextMinWidth` are exported.
+
+Not flagged by TypeScript: a `Callout` with no `tone` is now neutral (grey, not blue), `tone="muted"`
+is one step darker than `color="muted"` was, a chart's `violet` part is now the accent, and a bare
+`Text` or `Caption` is now a block `<p>`, which also must not sit inside another `<p>`, a `<span>`,
+a `<button>`, an `<a>` or a `<label>`.
+
 ## 0.9 → 0.10: Avatar `2xl` is 64px, the old 96px is `3xl`
 
 `Avatar` gained a 64px size. The sizes keep their order (`xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`),

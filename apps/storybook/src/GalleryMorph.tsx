@@ -28,7 +28,7 @@ export function GalleryMorph() {
               </Button>
             }
           >
-            <Text as="p">{shown.text}</Text>
+            <Text>{shown.text}</Text>
           </Card>
         </Morph>
       ) : (
@@ -46,9 +46,7 @@ export function GalleryMorph() {
                   </Button>
                 }
               >
-                <Text as="p" color="muted">
-                  {i.text}
-                </Text>
+                <Text tone="muted">{i.text}</Text>
               </Card>
             </Morph>
           ))}

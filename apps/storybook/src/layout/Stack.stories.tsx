@@ -60,7 +60,7 @@ export const SectionGap: S = {
       <Stack gap="xl">
         <PageHeader title="Page" subtitle="Stack gap section: the step between a page's blocks." />
         <Section title="Intro">
-          <Text as="p">First block of the page.</Text>
+          <Text>First block of the page.</Text>
         </Section>
         <Section title="Details">
           <Card>
@@ -68,7 +68,7 @@ export const SectionGap: S = {
           </Card>
         </Section>
         <Section title="Contact">
-          <Text as="p">Third block.</Text>
+          <Text>Third block.</Text>
         </Section>
       </Stack>
     </DemoShell>
@@ -82,8 +82,10 @@ export const TextBlock: S = {
       <PageHeader title="Team" subtitle="Stack gap xs: the step between lines of one text block." />
       <Stack gap="xs">
         <SubsectionHeading>Jacobus Langner</SubsectionHeading>
-        <Text color="tertiary">Founder</Text>
-        <Text as="p">Builds the Hack Cove design system and the sites that use it.</Text>
+        <Text as="span" tone="muted">
+          Founder
+        </Text>
+        <Text>Builds the Hack Cove design system and the sites that use it.</Text>
       </Stack>
     </DemoShell>
   ),
@@ -159,10 +161,10 @@ export const AsList: S = {
         </Stack>
         <Stack as="ol" gap="sm" aria-label="Steps">
           <li>
-            <Text>1. Install the package.</Text>
+            <Text as="span">1. Install the package.</Text>
           </li>
           <li>
-            <Text>2. Import the theme.</Text>
+            <Text as="span">2. Import the theme.</Text>
           </li>
         </Stack>
       </Stack>
@@ -178,11 +180,11 @@ export const RowFromMd: S = {
       <Stack rowFrom="md" gap="sm">
         <ClusterGrow>
           <Card title="Conversation">
-            <Text as="p">The thread takes the width that is left.</Text>
+            <Text>The thread takes the width that is left.</Text>
           </Card>
         </ClusterGrow>
         <Card title="Details" size="sm">
-          <Text as="p">Side column.</Text>
+          <Text>Side column.</Text>
         </Card>
       </Stack>
     </DemoShell>

@@ -52,10 +52,10 @@ export const FullPage: S = {
         }
       >
         <Card title="Cover">
-          <Text as="p">Life cover of R 1 500 000, to age 65.</Text>
+          <Text>Life cover of R 1 500 000, to age 65.</Text>
         </Card>
         <Card title="Notes">
-          <Text as="p">The client asked to be debited on the 25th.</Text>
+          <Text>The client asked to be debited on the 25th.</Text>
         </Card>
       </DetailLayout>
     </AppShell>
@@ -72,7 +72,7 @@ export const MainAndAside: S = {
 
 const longMain = Array.from({ length: 12 }, (_, i) => (
   <Card key={i} title={`Block ${i + 1}`}>
-    <Text as="p">A block of a long record. The aside stays in view while this scrolls.</Text>
+    <Text>A block of a long record. The aside stays in view while this scrolls.</Text>
   </Card>
 ));
 
@@ -101,7 +101,7 @@ export const StickyAside: S = {
 };
 
 const notes = Array.from({ length: 18 }, (_, i) => (
-  <Text key={i} as="p">
+  <Text key={i}>
     Note {i + 1}: the client asked for a call back about the cover, and for the quote to be sent by
     email, not post.
   </Text>
@@ -146,7 +146,7 @@ export const DoRecord: S = {
       }
     >
       <Card title="Cover">
-        <Text as="p">Life cover of R 1 500 000, to age 65.</Text>
+        <Text>Life cover of R 1 500 000, to age 65.</Text>
       </Card>
     </DetailLayout>
   ),
@@ -161,7 +161,7 @@ export const DontRecord: S = {
       actions={<Button variant="outline">Edit</Button>}
     >
       <Card title="Cover">
-        <Text as="p">Life cover of R 1 500 000, to age 65.</Text>
+        <Text>Life cover of R 1 500 000, to age 65.</Text>
       </Card>
       <Card title="Details">
         <KeyValueList>

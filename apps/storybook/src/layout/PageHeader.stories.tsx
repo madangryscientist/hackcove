@@ -39,7 +39,7 @@ export const AllSlots: S = {
           />
         }
       />
-      <Text as="p">The first block starts here, the same distance under every header.</Text>
+      <Text>The first block starts here, the same distance under every header.</Text>
     </DemoShell>
   ),
 };
@@ -48,7 +48,7 @@ export const TitleOnly: S = {
   render: () => (
     <DemoShell>
       <PageHeader title="Settings" />
-      <Text as="p">The first block starts here.</Text>
+      <Text>The first block starts here.</Text>
     </DemoShell>
   ),
 };

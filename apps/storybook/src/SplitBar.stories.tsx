@@ -52,8 +52,8 @@ export const DoParties: S = {
     <Stack gap="xs">
       <SplitBar a={35} b={65} label="Pot split" names={["Debt", "Renos"]} />
       <Cluster justify="between">
-        <Caption>Debt 35%</Caption>
-        <Caption>Renos 65%</Caption>
+        <Caption as="span">Debt 35%</Caption>
+        <Caption as="span">Renos 65%</Caption>
       </Cluster>
     </Stack>
   ),

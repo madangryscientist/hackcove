@@ -103,7 +103,7 @@ export function GalleryLayout() {
           </Section>
           <Stack gap="xs">
             <SubsectionHeading>Text block</SubsectionHeading>
-            <Text as="p">A Stack at gap xs, in a narrow (max-w-3xl) column.</Text>
+            <Text>A Stack at gap xs, in a narrow (max-w-3xl) column.</Text>
           </Stack>
           <Stack as="form" gap="sm" aria-label="Stack as form" onSubmit={(e) => e.preventDefault()}>
             <Field label="Stack as form" htmlFor="gallery-stack-form">

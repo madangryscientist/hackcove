@@ -27,9 +27,7 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
       {doc.sections.map((section) => (
         <Section key={section.heading} title={section.heading}>
           {section.paragraphs.map((para) => (
-            <Text key={para} as="p">
-              {para}
-            </Text>
+            <Text key={para}>{para}</Text>
           ))}
         </Section>
       ))}
@@ -37,7 +35,7 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
       <footer className="mt-8">
         <Divider />
         <Stack gap="xs">
-          <Caption as="p">{site.legalName}</Caption>
+          <Caption>{site.legalName}</Caption>
           <MetaList nowrap>
             <TextLink href={`mailto:${site.contactEmail}`}>{site.contactEmail}</TextLink>
             <TextLink href={other.href}>{other.label}</TextLink>

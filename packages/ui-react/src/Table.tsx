@@ -1,6 +1,6 @@
 import { Children, createContext, useContext } from "react";
 import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
-import type { CalloutTone } from "./Callout.js";
+import type { Tone } from "./tone.js";
 import { cx, liftInteractive } from "./cx.js";
 import { TEXT_TONE, type TextTone } from "./typography.js";
 
@@ -17,7 +17,7 @@ const ALIGN: Record<Align, string> = {
  * rest are the Callout's tones, for an amount that carries a meaning (a gain, an overspend). Colour
  * alone does not say it, so a signed figure or a word says it too.
  */
-export type CellTone = "default" | "strong" | "muted" | CalloutTone;
+export type CellTone = "default" | "strong" | "muted" | Tone;
 
 const TONE: Record<CellTone, string> = {
   default: "text-slate-700",
@@ -57,7 +57,7 @@ type RowMark =
     }
   | {
       /** A stripe on the leading edge in this tone, with no fill. Give only one of `tone`, `stripe` and `emphasis`. */
-      stripe?: TextTone | undefined;
+      stripe?: Exclude<TextTone, "neutral"> | undefined;
       /** The row's status: a stripe on the leading edge plus the tone's soft fill, or `muted` to fade the row. Give only one of `tone`, `stripe` and `emphasis`. */
       tone?: undefined;
       /** A subtotal in the body: the look of a `TableFoot` row, with strong cells, a firmer line above and no hover. Give only one of `tone`, `stripe` and `emphasis`. */
@@ -207,7 +207,7 @@ function rowClass(
   section: "head" | "body" | "foot" | undefined,
   plain: boolean,
   tone: RowTone | undefined,
-  stripe: TextTone | undefined,
+  stripe: Exclude<TextTone, "neutral"> | undefined,
 ): string {
   if (section === "foot") return cx("relative border-t border-slate-300", liftInteractive);
   if (section !== "body") return cx("relative", liftInteractive);

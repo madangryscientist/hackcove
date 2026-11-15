@@ -57,7 +57,7 @@ export const DontSlots: S = {
     <Cluster justify="between">
       <Stack gap="xs">
         <PageHeading>Build 412</PageHeading>
-        <Text as="p">main · 3 changed</Text>
+        <Text>main · 3 changed</Text>
       </Stack>
       <Button>Accept all</Button>
     </Cluster>

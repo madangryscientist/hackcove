@@ -11,12 +11,12 @@ export function Contact() {
     <Stack width="narrow" gap="lg">
       <Stack gap="xs">
         <SectionHeading>Get in touch</SectionHeading>
-        <Text as="p">
+        <Text>
           Email <TextLink href={`mailto:${site.contactEmail}`}>{site.contactEmail}</TextLink>.
         </Text>
       </Stack>
       <Stack gap="xs">
-        <Caption as="p">{site.legalName}</Caption>
+        <Caption>{site.legalName}</Caption>
         <MetaList nowrap>
           <TextLink href="/privacy">Privacy</TextLink>
           <TextLink href="/terms">Terms</TextLink>

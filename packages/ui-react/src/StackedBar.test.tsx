@@ -15,19 +15,19 @@ const follows = (a: Node, b: Node) =>
 
 describe("StackedBar", () => {
   it("is an image naming every part and its share, in order", () => {
-    render(<StackedBar segments={parts} label="Snapshot" />);
+    render(<StackedBar items={parts} label="Snapshot" />);
     expect(
       screen.getByRole("img", { name: "Snapshot: Changed 20%, New 10%, Removed 10%, Same 60%" }),
     ).not.toBeNull();
   });
 
-  it("names every tone's part, neutral and violet included", () => {
+  it("names every tone's part, neutral and accent included", () => {
     render(
       <StackedBar
-        segments={[
+        items={[
           { label: "Unmeasured", value: 1, tone: "neutral" },
           { label: "Same", value: 1, tone: "muted" },
-          { label: "Overlay", value: 1, tone: "violet" },
+          { label: "Overlay", value: 1, tone: "accent" },
         ]}
         label="x"
       />,
@@ -40,7 +40,7 @@ describe("StackedBar", () => {
   it("announces a zero part as 0%", () => {
     render(
       <StackedBar
-        segments={[
+        items={[
           { label: "A", value: 0, tone: "warn" },
           { label: "B", value: 5, tone: "info" },
         ]}
@@ -51,17 +51,17 @@ describe("StackedBar", () => {
   });
 
   it("announces 0% when every part is zero", () => {
-    render(<StackedBar segments={[{ label: "A", value: 0, tone: "warn" }]} label="x" />);
+    render(<StackedBar items={[{ label: "A", value: 0, tone: "warn" }]} label="x" />);
     expect(screen.getByRole("img", { name: "x: A 0%" })).not.toBeNull();
   });
 
   it("draws no key unless asked", () => {
-    render(<StackedBar segments={parts} label="x" />);
+    render(<StackedBar items={parts} label="x" />);
     expect(screen.queryByRole("list")).toBeNull();
   });
 
   it("legend draws the key after the bar, outside the image, with each part's value", () => {
-    render(<StackedBar segments={parts} label="x" legend />);
+    render(<StackedBar items={parts} label="x" legend />);
     const bar = screen.getByRole("img");
     const key = screen.getByRole("list");
     expect(follows(bar, key)).toBeTruthy();

@@ -65,9 +65,7 @@ export function GalleryLinkedRows() {
       <CardGrid>
         <Card href="#shot-9" title="Settings">
           <Stack>
-            <Text as="p" color="muted">
-              A link card with its own link and button.
-            </Text>
+            <Text tone="muted">A link card with its own link and button.</Text>
             <TextLink href="#shot-9-history">History</TextLink>
             <Button size="sm" variant="outline">
               Accept
@@ -75,14 +73,10 @@ export function GalleryLinkedRows() {
           </Stack>
         </Card>
         <Card href="#shot-10" title="Dashboard" badge={<Pill tone="amber">Flaky</Pill>}>
-          <Text as="p" color="muted">
-            A link card with a badge.
-          </Text>
+          <Text tone="muted">A link card with a badge.</Text>
         </Card>
         <Card title="Flaky" attention>
-          <Text as="p" color="muted">
-            A card that needs a look.
-          </Text>
+          <Text tone="muted">A card that needs a look.</Text>
         </Card>
       </CardGrid>
       <IconCards />
@@ -94,19 +88,13 @@ function IconCards() {
   return (
     <CardGrid>
       <Card icon="diff" title="Visual diffs">
-        <Text as="p" color="muted">
-          A feature card: an icon above the title.
-        </Text>
+        <Text tone="muted">A feature card: an icon above the title.</Text>
       </Card>
       <Card icon="self-host" title="Self-host" href="#self-host">
-        <Text as="p" color="muted">
-          A link card with an icon.
-        </Text>
+        <Text tone="muted">A link card with an icon.</Text>
       </Card>
       <Card icon="privacy" title="Privacy" size="sm">
-        <Text as="p" color="muted">
-          A dense one.
-        </Text>
+        <Text tone="muted">A dense one.</Text>
       </Card>
     </CardGrid>
   );

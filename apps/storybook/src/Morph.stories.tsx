@@ -49,10 +49,8 @@ function Shops() {
             }
           >
             <Stack gap="sm">
-              <Text as="p">{open.text}</Text>
-              <Text as="p" color="muted">
-                Open Tuesday to Saturday, 09:00 to 17:00.
-              </Text>
+              <Text>{open.text}</Text>
+              <Text tone="muted">Open Tuesday to Saturday, 09:00 to 17:00.</Text>
             </Stack>
           </Card>
         </Morph>
@@ -68,9 +66,7 @@ function Shops() {
                   </Button>
                 }
               >
-                <Text as="p" color="muted">
-                  {shop.text}
-                </Text>
+                <Text tone="muted">{shop.text}</Text>
               </Card>
             </Morph>
           ))}
@@ -129,9 +125,7 @@ function LongShops() {
                   </Button>
                 }
               >
-                <Text as="p" color="muted">
-                  {shop.text}
-                </Text>
+                <Text tone="muted">{shop.text}</Text>
               </Card>
             </Morph>
           ))}
@@ -211,9 +205,7 @@ function RestoreShops() {
                   </Button>
                 }
               >
-                <Text as="p" color="muted">
-                  {shop.text}
-                </Text>
+                <Text tone="muted">{shop.text}</Text>
               </Card>
             </Morph>
           ))}

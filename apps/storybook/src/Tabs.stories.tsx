@@ -273,7 +273,7 @@ export const InPageHeader: S = {
             />
           }
         />
-        <Text as="p">Showing {value}.</Text>
+        <Text>Showing {value}.</Text>
       </div>
     );
   },

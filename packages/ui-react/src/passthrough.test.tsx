@@ -22,7 +22,13 @@ function probes(): Element[] {
  */
 const SPLIT = new Set(["DateField", "DateRangePicker", "Radio"]);
 
-describe("every exported component passes data-* and aria-* through", () => {
+/**
+ * Parts whose `id` is a prop of their own, not the root's: a `Section`'s anchors its heading, and a
+ * `SortableSection`'s or `SortableItem`'s is its key in the list's moves.
+ */
+const OWN_ID = new Set(["Section", "SortableSection", "SortableItem"]);
+
+describe("every exported component passes id, data-* and aria-* through", () => {
   beforeEach(stubDialog);
   afterEach(unmount);
 
@@ -39,6 +45,13 @@ describe("every exported component passes data-* and aria-* through", () => {
       expect(found[0]?.getAttribute("aria-describedby"), `${name}: aria-describedby`).toBe(
         "described",
       );
+    });
+  }
+
+  for (const name of Object.keys(CASES).filter((n) => !SPLIT.has(n) && !OWN_ID.has(n))) {
+    it(`${name} puts the id on that element`, () => {
+      mount(CASES[name]?.() ?? <div />);
+      expect(probes()[0]?.id, `${name}: id`).toBe("probe-id");
     });
   }
 

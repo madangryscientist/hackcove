@@ -26,7 +26,7 @@ export const InABleedShell: S = {
       </div>
       <Container>
         <div className="py-8">
-          <Text as="p">Below the band, another Container.</Text>
+          <Text>Below the band, another Container.</Text>
         </div>
       </Container>
     </DemoShell>

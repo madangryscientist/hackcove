@@ -131,7 +131,7 @@ export const data: ComponentSection = {
         do: [
           "Pass `value` already formatted, with its unit and grouping (`R 4 250`, `Mar 2029`); the tile does not format.",
           "`label` names the figure; `hint` is one short line under it.",
-          "`tone` is `neutral`, `positive` or `negative`. A tone colours the value, so give it a sign or a `hint` that says the same; `accent` adds a bar in the same tone across the top.",
+          "`tone` is `neutral`, `positive`, `warn` or `danger`. A tone colours the value, so give it a sign or a `hint` that says the same; `accent` adds a bar in the same tone across the top.",
           "Lay several tiles out in a `CardGrid`. A tile is not a button or a link.",
           "`trend` takes the figure over time, oldest first, and draws a small line under the value in its colour, on a scale from 0. The line is decoration, so say the trend in `hint` too (`up 12% on last month`). A chart with axes is a `TrendChart`.",
         ],
@@ -154,7 +154,7 @@ export const data: ComponentSection = {
           "`value` is on the scale of `max`, which is 100 unless you pass one: three of twelve is `value={3} max={12}`. A fraction such as `0.25` is read as a quarter of one percent. A value past `max` is held at full.",
           "`label` is required and names what the bar measures.",
           "Say the figures in words beside the bar; the bar draws none.",
-          "`tone` is `accent`, `positive`, `warn` or `negative`; `size` is `sm`, `md` (default) or `lg`.",
+          "`tone` is `accent`, `positive`, `warn` or `danger`; `size` is `sm`, `md` (default) or `lg`.",
           "A share between two parties is a `SplitBar`; the parts of one whole are a `StackedBar`.",
         ],
       },
@@ -175,7 +175,7 @@ export const data: ComponentSection = {
         do: [
           "`a` is the left party and `b` the right; each is sized by its share of `a + b`.",
           "Give `names` as `[left, right]`, and draw the same names under the bar yourself; the bar draws no text.",
-          "`toneA` defaults to `negative` and `toneB` to `positive`. Set both when neither side is good or bad, e.g. `accent` and `warn`. `size` is `sm`, `md` (default) or `lg`.",
+          "`toneA` defaults to `danger` and `toneB` to `positive`. Set both when neither side is good or bad, e.g. `accent` and `warn`. `size` is `sm`, `md` (default) or `lg`.",
           "More than two parts are a `StackedBar`; progress toward a total is a `ProgressBar`.",
         ],
       },
@@ -195,7 +195,7 @@ export const data: ComponentSection = {
       pairs: ["StackedBar/Legend"],
       usage: {
         do: [
-          "`segments` are `{ label, value, tone }` in the order to draw; `tone` is `muted`, `positive`, `warn`, `danger`, `info`, `neutral` (a grey apart from `muted`) or `violet`, and you map your own roles onto them. Five distinguishable parts are `warn`, `info`, `danger`, `neutral` and `muted`.",
+          "`items` are `{ label, value, tone }` in the order to draw; `tone` is `muted`, `positive`, `warn`, `danger`, `info`, `neutral` (a grey apart from `muted`) or `accent`, and you map your own roles onto them. Five distinguishable parts are `warn`, `info`, `danger`, `neutral` and `muted`.",
           "Set `legend` so every colour is named in words under the bar, with its value.",
           '`Legend` alone is the key for colours drawn elsewhere, such as a `TableRow` `stripe`. An item with `swatch: "dashed"` is a dashed ring with no fill, the key for an outline drawn over the chart.',
           "`size` is `sm`, `md` (default) or `lg`. A part with no value is zero wide.",

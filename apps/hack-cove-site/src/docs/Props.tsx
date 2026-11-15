@@ -32,7 +32,7 @@ function PropEntry({ prop }: { prop: PropDoc }) {
         {prop.required && <Caption> required</Caption>}
       </div>
       {prop.description && (
-        <Text as="p" breakWords>
+        <Text breakWords>
           <InlineCode text={prop.description} />
         </Text>
       )}
@@ -57,7 +57,7 @@ export function Props({ of }: { of: string }) {
     <Stack gap="sm">
       <SubsectionHeading>{name}</SubsectionHeading>
       {description && (
-        <Text as="p" breakWords>
+        <Text breakWords>
           <InlineCode text={description.replace(/\s*\n\s*/g, " ")} />
         </Text>
       )}

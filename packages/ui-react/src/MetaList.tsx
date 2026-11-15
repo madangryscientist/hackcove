@@ -44,7 +44,11 @@ export function MetaList({
           key={index}
           className={cx("inline-flex items-center gap-x-3", nowrap && "whitespace-nowrap")}
         >
-          {index > 0 && separator !== "none" && <Caption aria-hidden="true">{separator}</Caption>}
+          {index > 0 && separator !== "none" && (
+            <Caption as="span" aria-hidden="true">
+              {separator}
+            </Caption>
+          )}
           {child}
         </li>
       ))}

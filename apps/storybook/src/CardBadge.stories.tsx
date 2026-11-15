@@ -23,14 +23,10 @@ export const Badge: S = {
   render: () => (
     <CardGrid>
       <Card title="Dashboard" badge={<Pill tone="sky">UI</Pill>}>
-        <Text as="p" color="muted">
-          A panel with a badge.
-        </Text>
+        <Text tone="muted">A panel with a badge.</Text>
       </Card>
       <Card href="#shot-3" title="Settings" badge={<Pill tone="amber">Flaky</Pill>}>
-        <Text as="p" color="muted">
-          A link card with a badge.
-        </Text>
+        <Text tone="muted">A link card with a badge.</Text>
       </Card>
     </CardGrid>
   ),
@@ -41,14 +37,10 @@ export const Attention: S = {
   render: () => (
     <CardGrid columns={2}>
       <Card title="Flaky" attention>
-        <Text as="p" color="muted">
-          Three shots changed on a rerun.
-        </Text>
+        <Text tone="muted">Three shots changed on a rerun.</Text>
       </Card>
       <Card title="Flaky" tone="warn" attention>
-        <Text as="p" color="muted">
-          The same, on the warn surface.
-        </Text>
+        <Text tone="muted">The same, on the warn surface.</Text>
       </Card>
     </CardGrid>
   ),
@@ -64,9 +56,7 @@ const filters = (
 );
 
 const builds = Array.from({ length: 40 }, (_, index) => (
-  <Text key={index} as="p">
-    Build {40 - index}
-  </Text>
+  <Text key={index}>Build {40 - index}</Text>
 ));
 
 /**
@@ -83,9 +73,7 @@ export const UnderStickyBars: S = {
       <div className="px-4 py-4 sm:px-6">
         <Stack gap="sm">
           <Card href="#build-41" title="Build 41" badge={<TextLink href="#flaky">Flaky</TextLink>}>
-            <Text as="p" color="muted">
-              Open the build to review its shots.
-            </Text>
+            <Text tone="muted">Open the build to review its shots.</Text>
             <Cluster>
               <TextLink href="#open">Open the build</TextLink>
               <Button size="sm" variant="outline">

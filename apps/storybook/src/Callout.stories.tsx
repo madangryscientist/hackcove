@@ -75,9 +75,7 @@ export const InPaddedColumn: S = {
   render: () => (
     <FullBleedLayout padded panel={<Text tone="muted">The side panel.</Text>}>
       <Stack gap="sm">
-        <Callout tone="danger" role="alert">
-          The decision did not save. Try again.
-        </Callout>
+        <Callout tone="danger">The decision did not save. Try again.</Callout>
         <Text>The column's content sits under the notice, on the same edge.</Text>
       </Stack>
     </FullBleedLayout>

@@ -4,7 +4,7 @@ import type { Passthrough } from "./props.js";
 import type { Size } from "./size.js";
 
 /** The colour of a bar's fill. */
-export type BarTone = "accent" | "positive" | "warn" | "negative";
+export type BarTone = "accent" | "positive" | "warn" | "danger";
 
 /** 6px, 8px or 12px tall. */
 export type BarSize = Size;
@@ -13,7 +13,7 @@ export const BAR_FILL: Record<BarTone, string> = {
   accent: "bg-violet-600",
   positive: "bg-emerald-600",
   warn: "bg-amber-600",
-  negative: "bg-red-600",
+  danger: "bg-red-600",
 };
 
 export const BAR_TRACK: Record<BarSize, string> = {

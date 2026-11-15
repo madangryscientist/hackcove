@@ -26,7 +26,7 @@ function Install() {
     <Section title={ui.install.title} gap="md">
       {ui.install.steps.map((step) => (
         <Stack key={step.text} gap="xs">
-          <Text as="p">{step.text}</Text>
+          <Text>{step.text}</Text>
           {step.code !== undefined && (
             <CodeBlock
               lines={[step.code].flat()}
@@ -44,7 +44,7 @@ function Install() {
 function Themes() {
   return (
     <Section title={ui.themes.title} gap="md">
-      <Text as="p">{ui.themes.intro}</Text>
+      <Text>{ui.themes.intro}</Text>
       <Table caption={ui.themes.title}>
         <TableHead>
           <TableRow>
@@ -70,7 +70,7 @@ function Themes() {
 function Components() {
   return (
     <Section title={ui.components.title} gap="md">
-      <Text as="p">{ui.components.intro}</Text>
+      <Text>{ui.components.intro}</Text>
       <Stack gap="sm">
         {componentSections.map((section) => (
           <Card
@@ -81,7 +81,7 @@ function Components() {
             count={section.pages.length}
           >
             <Stack gap="sm">
-              <Text as="p">{section.description}</Text>
+              <Text>{section.description}</Text>
               <MetaList nowrap>
                 {section.pages.map((page) => (
                   <TextLink key={page.slug} href={`/ui/${page.slug}/`}>
@@ -104,9 +104,7 @@ export function UiPage() {
       <Stack gap="xl">
         <Stack gap="md">
           {ui.intro.map((paragraph) => (
-            <Text as="p" key={paragraph}>
-              {paragraph}
-            </Text>
+            <Text key={paragraph}>{paragraph}</Text>
           ))}
         </Stack>
         <Install />

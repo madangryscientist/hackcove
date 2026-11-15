@@ -3,7 +3,7 @@ import { cx } from "./cx.js";
 import { type IconName, iconGlyph } from "./icons.js";
 import type { Passthrough } from "./props.js";
 import type { Size } from "./size.js";
-import { TEXT_TONE, type TextTone } from "./typography.js";
+import { type TextTone, textToneClass } from "./typography.js";
 
 const BOX: Record<Size | "feature", string> = {
   sm: "size-3.5",
@@ -15,8 +15,8 @@ const BOX: Record<Size | "feature", string> = {
 type IconProps = Passthrough & {
   /** The box: sm 14px, md 16px (the default), lg 20px, `feature` 32px for an icon that stands for an idea on its own (a feature card). */
   size?: Size | "feature";
-  /** A text tone, or `inherit` (the default) for the colour of the text around it. */
-  tone?: TextTone | "inherit";
+  /** A text tone. Left out, the icon takes the colour of the text around it. */
+  tone?: TextTone | undefined;
   /** Names the icon (`role="img"`). Without one the icon is hidden from assistive tech. */
   label?: string;
 };
@@ -35,7 +35,7 @@ type IconProps = Passthrough & {
  */
 export function Icon({
   size = "md",
-  tone = "inherit",
+  tone,
   label,
   name,
   children,
@@ -57,11 +57,7 @@ export function Icon({
     <span
       {...rest}
       {...(label ? { role: "img", "aria-label": label } : { "aria-hidden": true })}
-      className={cx(
-        "inline-flex shrink-0 [&>svg]:size-full",
-        BOX[size],
-        tone !== "inherit" && TEXT_TONE[tone],
-      )}
+      className={cx("inline-flex shrink-0 [&>svg]:size-full", BOX[size], textToneClass(tone))}
     >
       {name === undefined ? children : iconGlyph(name)}
     </span>

@@ -27,9 +27,7 @@ function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
 export const DoStatus: S = {
   render: () => (
     <Card title="PixelSlash" status={<Pill tone="amber">Coming soon</Pill>}>
-      <Text as="p" color="muted">
-        Visual review for every pull request.
-      </Text>
+      <Text tone="muted">Visual review for every pull request.</Text>
     </Card>
   ),
 };
@@ -40,9 +38,7 @@ export const DontStatus: S = {
     <Card>
       <SubsectionHeading>PixelSlash</SubsectionHeading>
       <Pill tone="amber">Coming soon</Pill>
-      <Text as="p" color="muted">
-        Visual review for every pull request.
-      </Text>
+      <Text tone="muted">Visual review for every pull request.</Text>
     </Card>
   ),
 };
@@ -52,14 +48,10 @@ export const DoSpacing: S = {
   render: () => (
     <Stack>
       <Card title="Open" count={3}>
-        <Text as="p" color="muted">
-          Three things to do.
-        </Text>
+        <Text tone="muted">Three things to do.</Text>
       </Card>
       <Card title="Done" count={12}>
-        <Text as="p" color="muted">
-          Twelve things finished.
-        </Text>
+        <Text tone="muted">Twelve things finished.</Text>
       </Card>
     </Stack>
   ),
@@ -70,14 +62,10 @@ export const DontSpacing: S = {
   render: () => (
     <>
       <Card title="Open" count={3}>
-        <Text as="p" color="muted">
-          Three things to do.
-        </Text>
+        <Text tone="muted">Three things to do.</Text>
       </Card>
       <Card title="Done" count={12}>
-        <Text as="p" color="muted">
-          Twelve things finished.
-        </Text>
+        <Text tone="muted">Twelve things finished.</Text>
       </Card>
     </>
   ),
@@ -88,9 +76,7 @@ export const Status: S = {
   render: () => (
     <div className="flex max-w-md flex-col gap-4">
       <Card title="Hack Cove UI" status={<Pill tone="emerald">Available</Pill>}>
-        <Text as="p" color="muted">
-          Components and themes, designed together.
-        </Text>
+        <Text tone="muted">Components and themes, designed together.</Text>
       </Card>
       <Card
         bar
@@ -205,14 +191,10 @@ export const Link: S = {
   render: () => (
     <CardGrid>
       <Card href="#shot-1" title="Dashboard" status={<Pill tone="amber">changed</Pill>}>
-        <Text as="p" color="muted">
-          Open the diff for this shot.
-        </Text>
+        <Text tone="muted">Open the diff for this shot.</Text>
       </Card>
       <Card href="#shot-2" title="Settings">
-        <Text as="p" color="muted">
-          Unchanged.
-        </Text>
+        <Text tone="muted">Unchanged.</Text>
       </Card>
     </CardGrid>
   ),
@@ -224,9 +206,7 @@ export const AnchorTarget: S = {
     <div className="flex max-w-md flex-col gap-4">
       <TextLink href="#billing">Jump to billing</TextLink>
       <Card id="billing" title="Billing">
-        <Text as="p" color="muted">
-          This card is the target of the link above.
-        </Text>
+        <Text tone="muted">This card is the target of the link above.</Text>
       </Card>
     </div>
   ),
@@ -240,9 +220,7 @@ export const LinkRender: S = {
   render: () => (
     <div className="max-w-md">
       <Card render={(p) => <FakeLink to="/shots/1" {...p} />} title="Dashboard">
-        <Text as="p" color="muted">
-          The router Link is the card.
-        </Text>
+        <Text tone="muted">The router Link is the card.</Text>
       </Card>
     </div>
   ),
@@ -327,9 +305,7 @@ export const Sizes: S = {
     <div className="flex max-w-md flex-col gap-4">
       {(["sm", "md", "lg"] as const).map((size) => (
         <Card key={size} size={size} title={`Open, ${size}`} count={3}>
-          <Text as="p" color="muted">
-            Three things to do.
-          </Text>
+          <Text tone="muted">Three things to do.</Text>
         </Card>
       ))}
     </div>

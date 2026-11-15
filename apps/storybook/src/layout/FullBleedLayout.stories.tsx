@@ -55,9 +55,7 @@ export const FullPage: S = {
         }
       >
         <EmptyState title="Snapshot viewer">
-          <Text as="p" color="secondary">
-            Your viewer goes here and fills the width.
-          </Text>
+          <Text>Your viewer goes here and fills the width.</Text>
         </EmptyState>
       </FullBleedLayout>
     </AppShell>
@@ -66,9 +64,7 @@ export const FullPage: S = {
 
 const snapshotCanvas = (
   <div className="flex h-96 items-center justify-center bg-slate-100">
-    <Text as="p" color="secondary">
-      Snapshot viewer: fills the width
-    </Text>
+    <Text>Snapshot viewer: fills the width</Text>
   </div>
 );
 
@@ -107,7 +103,7 @@ export const Padded: S = {
     <DemoShell bleed>
       <FullBleedLayout padded panel={snapshotPanel}>
         <Card title="Quotes">
-          <Text as="p">Every quote you have sent.</Text>
+          <Text>Every quote you have sent.</Text>
         </Card>
       </FullBleedLayout>
     </DemoShell>
@@ -116,7 +112,7 @@ export const Padded: S = {
 
 const viewerBar = (
   <Cluster justify="between" gap="md">
-    <Text as="p">Button / Primary</Text>
+    <Text>Button / Primary</Text>
     <Button size="sm" variant="outline">
       Accept
     </Button>
@@ -140,7 +136,7 @@ export const BarPadded: S = {
     <DemoShell bleed>
       <FullBleedLayout bar={viewerBar} padded panel={snapshotPanel}>
         <Card title="Quotes">
-          <Text as="p">Every quote you have sent.</Text>
+          <Text>Every quote you have sent.</Text>
         </Card>
       </FullBleedLayout>
     </DemoShell>
@@ -161,9 +157,7 @@ export const DoViewer: S = {
         </>
       }
     >
-      <Text as="p" color="secondary">
-        The snapshot fills the width.
-      </Text>
+      <Text>The snapshot fills the width.</Text>
     </FullBleedLayout>
   ),
 };
@@ -173,7 +167,7 @@ export const DontViewer: S = {
   render: () => (
     <FullBleedLayout>
       <Card title="Quotes">
-        <Text as="p">Every quote you have sent.</Text>
+        <Text>Every quote you have sent.</Text>
       </Card>
     </FullBleedLayout>
   ),

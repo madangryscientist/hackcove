@@ -149,8 +149,8 @@ function GalleryStaticRows() {
         leading={<img alt="" src={samplePhoto} />}
         trailing={<Pill tone="amber">changed</Pill>}
       >
-        <Text as="p">Thumbnail row</Text>
-        <Caption as="p">A block label under the title.</Caption>
+        <Text>Thumbnail row</Text>
+        <Caption>A block label under the title.</Caption>
       </ListRow>
     </Card>
   );

@@ -92,7 +92,7 @@ export const pagelayouts: ComponentSection = {
       fullPage: "ProseLayout/FullPage",
       usage: {
         do: [
-          'The text is the `children`: `SectionHeading`s and `Text as="p"` paragraphs, spaced `md` apart.',
+          "The text is the `children`: `SectionHeading`s and `Text` paragraphs, spaced `md` apart.",
           "`gap` picks another spacing from the same scale (`xs` to `xl`) for the whole page; the default is right for most pages.",
           "The header sits inside the column, so its `actions` stay beside the text.",
           "The `subtitle` is the page's lede, set larger than the paragraphs after it, and the title above it is the strongest text on the page.",

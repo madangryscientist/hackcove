@@ -1,13 +1,13 @@
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { cx } from "./cx.js";
-import type { Unstyled } from "./props.js";
+import { Icon } from "./Icon.js";
+import type { IconName } from "./icons.js";
+import type { Passthrough } from "./props.js";
+import type { Tone } from "./tone.js";
 import { useProse } from "./typography.js";
 
-/** The colour family of a callout. */
-export type CalloutTone = "neutral" | "info" | "positive" | "warn" | "danger";
-
 /** The soft fill and border of each tone; a toned `Card` uses the same. */
-export const TONE_SURFACE: Record<CalloutTone, string> = {
+export const TONE_SURFACE: Record<Tone, string> = {
   neutral: "border-slate-200 bg-slate-50",
   info: "border-blue-200 bg-blue-50",
   positive: "border-emerald-200 bg-emerald-50",
@@ -15,7 +15,7 @@ export const TONE_SURFACE: Record<CalloutTone, string> = {
   danger: "border-red-200 bg-red-50",
 };
 
-const TONE_TEXT: Record<CalloutTone, string> = {
+const TONE_TEXT: Record<Tone, string> = {
   neutral: "text-slate-700",
   info: "text-blue-800",
   positive: "text-emerald-800",
@@ -29,10 +29,12 @@ const TONE_TEXT: Record<CalloutTone, string> = {
  * at the end of the row; `banner` makes it a flat strip (bottom border only, no radius) for the
  * top of a `Card flush` and nowhere else: a padded card or a padded `FullBleedLayout` column
  * would inset it. `align="center"` centres the text. In a page's column the notice is a plain Callout, first in the column's `Stack`. With `actions` the box is `relative`, so a `TextLink
- * stretch` there makes the whole callout its click target, like a link in a table row.
+ * stretch` there makes the whole callout its click target, like a link in a table row. `icon`
+ * sets one of the library's icons at the start of the box, in the tone's ink.
  */
 export function Callout({
-  tone = "info",
+  tone = "neutral",
+  icon,
   title,
   actions,
   banner = false,
@@ -40,8 +42,13 @@ export function Callout({
   children,
   ...rest
 }: {
-  /** Defaults to "info". */
-  tone?: CalloutTone;
+  /**
+   * What the notice means; `neutral` is a plain note.
+   * @default neutral
+   */
+  tone?: Tone;
+  /** One of the library's icons, at the start of the box beside the text. */
+  icon?: IconName | undefined;
   /** A bold line above the body. */
   title?: ReactNode;
   /** A flat strip: `border-b` only and no radius, for the top of a `Card flush` only. */
@@ -55,15 +62,18 @@ export function Callout({
   /** A button or link at the end of the row, beside the title and body. */
   actions?: ReactNode;
   children: ReactNode;
-} & Unstyled<Omit<HTMLAttributes<HTMLDivElement>, "title">>): ReactElement {
+} & Passthrough): ReactElement {
   const size = useProse() ? "text-base/7" : "text-sm";
-  const content = title ? (
-    <>
-      <p className="font-semibold">{title}</p>
-      <div className="mt-1">{children}</div>
-    </>
-  ) : (
-    children
+  const content = withIcon(
+    icon,
+    title ? (
+      <>
+        <p className="font-semibold">{title}</p>
+        <div className="mt-1">{children}</div>
+      </>
+    ) : (
+      children
+    ),
   );
   return (
     <div
@@ -85,6 +95,19 @@ export function Callout({
       ) : (
         content
       )}
+    </div>
+  );
+}
+
+/** The callout's text with its `icon` at the start, the icon centred on the first line. */
+function withIcon(icon: IconName | undefined, text: ReactNode): ReactNode {
+  if (icon === undefined) return text;
+  return (
+    <div className="flex items-start gap-3">
+      <span className="flex h-[1lh] items-center">
+        <Icon name={icon} />
+      </span>
+      <div className="min-w-0 flex-1">{text}</div>
     </div>
   );
 }

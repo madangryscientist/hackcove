@@ -61,7 +61,7 @@ export const DoFacts: S = {
 
 /** Dots typed into one string are one item to a screen reader and can wrap onto the end of a line. */
 export const DontFacts: S = {
-  render: () => <Caption as="p">hc-145 · 0f9d376 · 26 Oct 2026</Caption>,
+  render: () => <Caption>hc-145 · 0f9d376 · 26 Oct 2026</Caption>,
 };
 
 const links = [

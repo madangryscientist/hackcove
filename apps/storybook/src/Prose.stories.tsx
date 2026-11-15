@@ -55,7 +55,7 @@ export const CodeExampleInProse: S = {
       <Prose>
         <Stack gap="md">
           <SectionHeading>Primary action</SectionHeading>
-          <Text as="p">
+          <Text>
             The page has one primary button; the demo below is drawn at the app size, and the code
             under it (a `CodeExample`, a `CodeBlock`, a `CopyLine`) keeps its own line height.
           </Text>

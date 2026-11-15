@@ -1,13 +1,7 @@
-import {
-  createContext,
-  useContext,
-  type HTMLAttributes,
-  type ReactElement,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, type ReactElement, type ReactNode } from "react";
 import { cx } from "./cx.js";
-import type { Unstyled } from "./props.js";
-import { TEXT_TONE, type TextTone } from "./typography.js";
+import type { Passthrough } from "./props.js";
+import { type TextTone, textToneClass } from "./typography.js";
 
 type KeyValueAlign = "end" | "start";
 
@@ -29,7 +23,7 @@ export function KeyValueList({
    */
   align?: KeyValueAlign;
   children: ReactNode;
-} & Unstyled<HTMLAttributes<HTMLDListElement>>): ReactElement {
+} & Passthrough): ReactElement {
   return (
     <dl
       {...rest}
@@ -61,10 +55,10 @@ export function KeyValue({
   label: ReactNode;
   /** The sum the rows above add up to: a firm rule above it and the label and value in strong ink. */
   total?: boolean | undefined;
-  /** The meaning of the value, in the colours of a `Table` cell's `tone` (`muted`, `positive`, `warn`, `danger`, `info`); the label keeps its ink. Colour alone does not say it, so the value or the label says it too: a sign, a word. */
+  /** The meaning of the value, in the colours of a `Table` cell's `tone` (`TextTone`; `neutral`, the default, is the list's ink); the label keeps its ink. Colour alone does not say it, so the value or the label says it too: a sign, a word. */
   tone?: TextTone | undefined;
   children: ReactNode;
-} & Unstyled<HTMLAttributes<HTMLDivElement>>): ReactElement {
+} & Passthrough): ReactElement {
   const start = useContext(AlignContext) === "start";
   return (
     <div
@@ -75,7 +69,7 @@ export function KeyValue({
       )}
     >
       <dt className={total ? "text-slate-900" : "text-slate-600"}>{label}</dt>
-      <dd className={cx(!start && "text-right", "tabular-nums", tone && TEXT_TONE[tone])}>
+      <dd className={cx(!start && "text-right", "tabular-nums", textToneClass(tone))}>
         {children}
       </dd>
     </div>

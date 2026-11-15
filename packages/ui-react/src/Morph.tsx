@@ -1,13 +1,6 @@
-import {
-  type HTMLAttributes,
-  type ReactElement,
-  type ReactNode,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { type ReactElement, type ReactNode, useLayoutEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import type { Unstyled } from "./props.js";
+import type { Passthrough } from "./props.js";
 
 // Keeps letters and digits and writes every other character, `-` and `_` included, as
 // `_<hex code point>_`, so two different pairs never give one name and no character can end the
@@ -61,7 +54,7 @@ export function Morph({
   /** Which one, usually the record's id. Any text or number; unique on the page for one `name`. */
   item: string | number;
   children: ReactNode;
-} & Unstyled<HTMLAttributes<HTMLDivElement>>): ReactElement {
+} & Passthrough): ReactElement {
   const n = morphName(name, item);
   const ref = useRef<HTMLDivElement>(null);
   // Named until measured, so the server render and an engine with no IntersectionObserver keep the

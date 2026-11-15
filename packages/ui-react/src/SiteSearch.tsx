@@ -140,16 +140,8 @@ function SearchBody({ items, label }: { items: readonly SiteSearchItem[]; label:
       <div role="status" aria-live="polite" className="sr-only">
         {countText(query, results.length)}
       </div>
-      {!typed && (
-        <Text as="p" tone="muted">
-          Type a name
-        </Text>
-      )}
-      {typed && results.length === 0 && (
-        <Text as="p" tone="muted">
-          No results for {query.trim()}
-        </Text>
-      )}
+      {!typed && <Text tone="muted">Type a name</Text>}
+      {typed && results.length === 0 && <Text tone="muted">No results for {query.trim()}</Text>}
       {results.length > 0 && (
         // The keys only move focus between the links inside it; the list itself takes none.
         <ul ref={list} aria-label="Results" onKeyDown={onListKey} onClick={onListClick}>

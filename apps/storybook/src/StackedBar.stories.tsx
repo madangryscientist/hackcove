@@ -12,11 +12,11 @@ const snapshot: StackedSegment[] = [
   { label: "Same", value: 163, tone: "muted" },
 ];
 
-/** Any number of parts, each a `VizTone` (`muted`, `positive`, `warn`, `danger`, `info`, `neutral`, `violet`), sized by its share. The consumer maps its own roles to tones. */
+/** Any number of parts, each a `VizTone` (`neutral`, `muted`, `accent`, `info`, `positive`, `warn`, `danger`), sized by its share. The consumer maps its own roles to tones. */
 export const Default: S = {
   render: () => (
     <div className="max-w-md">
-      <StackedBar segments={snapshot} label="Screenshots by status" />
+      <StackedBar items={snapshot} label="Screenshots by status" />
     </div>
   ),
 };
@@ -25,7 +25,7 @@ export const Default: S = {
 export const WithLegend: S = {
   render: () => (
     <div className="max-w-md">
-      <StackedBar segments={snapshot} label="Screenshots by status" legend />
+      <StackedBar items={snapshot} label="Screenshots by status" legend />
     </div>
   ),
 };
@@ -42,7 +42,7 @@ const buildMix: StackedSegment[] = [
 export const BuildMix: S = {
   render: () => (
     <div className="max-w-md">
-      <StackedBar segments={buildMix} label="Build by status" legend />
+      <StackedBar items={buildMix} label="Build by status" legend />
     </div>
   ),
 };
@@ -50,9 +50,9 @@ export const BuildMix: S = {
 export const Sizes: S = {
   render: () => (
     <div className="flex max-w-md flex-col gap-3">
-      <StackedBar segments={snapshot} size="sm" label="sm, 6px" />
-      <StackedBar segments={snapshot} label="md, 8px (the default)" />
-      <StackedBar segments={snapshot} size="lg" label="lg, 12px" />
+      <StackedBar items={snapshot} size="sm" label="sm, 6px" />
+      <StackedBar items={snapshot} label="md, 8px (the default)" />
+      <StackedBar items={snapshot} size="lg" label="lg, 12px" />
     </div>
   ),
 };
@@ -60,9 +60,9 @@ export const Sizes: S = {
 export const Edges: S = {
   render: () => (
     <div className="flex max-w-md flex-col gap-3">
-      <StackedBar segments={snapshot.map((s) => ({ ...s, value: 0 }))} label="Nothing yet" />
+      <StackedBar items={snapshot.map((s) => ({ ...s, value: 0 }))} label="Nothing yet" />
       <StackedBar
-        segments={[
+        items={[
           { label: "Passed", value: 1, tone: "positive" },
           { label: "Failed", value: 999, tone: "danger" },
         ]}
@@ -86,13 +86,13 @@ export const LegendOnly: S = {
   ),
 };
 
-/** `violet` is a seventh tone, and `swatch="dashed"` is a dashed ring with no fill: the key for an outline drawn over the chart. */
+/** `accent` is the seventh tone, and `swatch="dashed"` is a dashed ring with no fill: the key for an outline drawn over the chart. */
 export const LegendSwatches: S = {
   render: () => (
     <Legend
       items={[
-        { label: "Current", tone: "violet" },
-        { label: "Snapshot", tone: "violet", swatch: "dashed" },
+        { label: "Current", tone: "accent" },
+        { label: "Snapshot", tone: "accent", swatch: "dashed" },
         { label: "Unmeasured", tone: "neutral" },
         { label: "Unmeasured overlay", tone: "neutral", swatch: "dashed" },
         { label: "Changed", tone: "warn", swatch: "dashed", detail: 24 },
@@ -105,7 +105,7 @@ export const LegendSwatches: S = {
 export const DoLegend: S = {
   render: () => (
     <StackedBar
-      segments={[
+      items={[
         { label: "Changed", value: 24, tone: "warn" },
         { label: "New", value: 9, tone: "info" },
         { label: "Same", value: 163, tone: "muted" },
@@ -120,7 +120,7 @@ export const DoLegend: S = {
 export const DontLegend: S = {
   render: () => (
     <StackedBar
-      segments={[
+      items={[
         { label: "Changed", value: 24, tone: "warn" },
         { label: "New", value: 9, tone: "info" },
         { label: "Same", value: 163, tone: "muted" },

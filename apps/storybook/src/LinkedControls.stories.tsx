@@ -79,9 +79,7 @@ function SelectingRows() {
           </ListRow>
         ))}
       </Card>
-      <Text as="p" color="muted">
-        Selected: {selected ?? "none"}
-      </Text>
+      <Text tone="muted">Selected: {selected ?? "none"}</Text>
     </Stack>
   );
 }
@@ -140,9 +138,7 @@ export const CardWithAction: S = {
     <CardGrid>
       <Card href="#shot-1" title="Dashboard" status={<Pill tone="amber">changed</Pill>}>
         <Stack>
-          <Text as="p" color="muted">
-            Open the diff for this shot.
-          </Text>
+          <Text tone="muted">Open the diff for this shot.</Text>
           <TextLink href="#shot-1-history">History</TextLink>
           <Button size="sm" variant="outline">
             Accept

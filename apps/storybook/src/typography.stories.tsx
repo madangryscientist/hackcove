@@ -10,14 +10,11 @@ import {
   SubsectionHeading,
   Text,
   type TextTone,
-  type TypographyColor,
 } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Text/Headings" };
 export default meta;
 type S = StoryObj;
-
-const COLORS: TypographyColor[] = ["default", "secondary", "tertiary", "muted", "brand"];
 
 // One story per component --------------------------------------------------
 
@@ -46,7 +43,7 @@ export const SectionHeadingRuleStory: S = {
   render: () => (
     <div className="max-w-xl">
       <SectionHeading rule>In progress</SectionHeading>
-      <Text as="p">The rule and the space either side of it are built in.</Text>
+      <Text>The rule and the space either side of it are built in.</Text>
     </div>
   ),
 };
@@ -76,7 +73,10 @@ export const TextStory: S = {
   name: "Text",
   render: () => (
     <Text>
-      Default running text. Inline by default, so an emphasised <Text strong>run of text</Text>{" "}
+      Default running text. Inline by default, so an emphasised{" "}
+      <Text as="span" strong>
+        run of text
+      </Text>{" "}
       composes right inside the sentence.
     </Text>
   ),
@@ -86,10 +86,8 @@ export const TextPreserveNewlines: S = {
   name: "Text preserveNewlines",
   render: () => (
     <div className="flex max-w-xl flex-col gap-3">
-      <Text as="p">{"Collapsed (default):\nthe note's line break is lost."}</Text>
-      <Text as="p" preserveNewlines>
-        {"Preserved:\nthe note's line break is kept."}
-      </Text>
+      <Text>{"Collapsed (default):\nthe note's line break is lost."}</Text>
+      <Text preserveNewlines>{"Preserved:\nthe note's line break is kept."}</Text>
     </div>
   ),
 };
@@ -98,21 +96,11 @@ export const TextToneStory: S = {
   name: "Text tone",
   render: () => (
     <div className="flex max-w-xl flex-col gap-1">
-      <Text as="p" tone="positive">
-        Saved.
-      </Text>
-      <Text as="p" tone="danger">
-        Could not save: the name is taken.
-      </Text>
-      <Text as="p" tone="warn">
-        This quote expires tomorrow.
-      </Text>
-      <Text as="p" tone="info">
-        Changes sync in the background.
-      </Text>
-      <Text as="p" tone="muted">
-        Nothing to show yet.
-      </Text>
+      <Text tone="positive">Saved.</Text>
+      <Text tone="danger">Could not save: the name is taken.</Text>
+      <Text tone="warn">This quote expires tomorrow.</Text>
+      <Text tone="info">Changes sync in the background.</Text>
+      <Text tone="muted">Nothing to show yet.</Text>
     </div>
   ),
 };
@@ -121,25 +109,31 @@ export const InlineFigures: S = {
   name: "numeric, mono and truncate",
   render: () => (
     <div className="flex w-72 flex-col gap-2">
-      <Text as="p">
+      <Text>
         Amount{" "}
-        <Text strong numeric>
+        <Text as="span" strong numeric>
           1,111.11
         </Text>{" "}
         vs{" "}
-        <Text strong numeric>
+        <Text as="span" strong numeric>
           8,888.88
         </Text>{" "}
         (tabular figures)
       </Text>
-      <Text as="p">
-        Commit <Text mono>c870e81</Text> on{" "}
-        <Caption mono>packages/ui-react/src/typography.tsx</Caption>
+      <Text>
+        Commit{" "}
+        <Text as="span" mono>
+          c870e81
+        </Text>{" "}
+        on{" "}
+        <Caption as="span" mono>
+          packages/ui-react/src/typography.tsx
+        </Caption>
       </Text>
-      <Text as="p" truncate>
+      <Text truncate>
         A long line of body text that does not fit the width of its container and is cut off.
       </Text>
-      <Caption as="p" truncate tone="muted">
+      <Caption truncate tone="muted">
         packages/ui-react/src/some/very/deeply/nested/path/typography.test.tsx
       </Caption>
     </div>
@@ -162,81 +156,28 @@ export const Specimen: S = {
   render: () => (
     <div className="flex max-w-xl flex-col gap-4">
       <PageHeading>Typography specimen</PageHeading>
-      <Text as="p">Every semantic role in the design system, on the Catppuccin base surface.</Text>
+      <Text>Every semantic role in the design system, on the Catppuccin base surface.</Text>
       <div className="flex flex-col gap-1">
         <Overline>Overline</Overline>
         <SectionHeading>Section heading</SectionHeading>
         <SubsectionHeading>Subsection heading</SubsectionHeading>
       </div>
-      <Text as="p">
-        This is a paragraph of <Text strong>body text</Text> rendered with <code>as="p"</code> so it
-        takes block layout, while the default <Text>Text</Text> stays inline.
+      <Text>
+        This is a paragraph of{" "}
+        <Text as="span" strong>
+          body text
+        </Text>{" "}
+        a paragraph, the default, while <Text as="span">Text as="span"</Text> stays inline in a
+        sentence.
       </Text>
-      <Caption as="p">Caption: fine print and metadata.</Caption>
+      <Caption>Caption: fine print and metadata.</Caption>
     </div>
   ),
 };
 
-// Colour axis: each component × each colour --------------------------------
-
-export const ColorAxis: S = {
-  name: "Colour axis (component × color)",
-  render: () => {
-    const rows: Array<[string, (c: TypographyColor) => ReactNode]> = [
-      ["PageHeading", (c) => <PageHeading color={c}>PageHeading</PageHeading>],
-      ["SectionHeading", (c) => <SectionHeading color={c}>SectionHeading</SectionHeading>],
-      [
-        "SubsectionHeading",
-        (c) => <SubsectionHeading color={c}>SubsectionHeading</SubsectionHeading>,
-      ],
-      ["Overline", (c) => <Overline color={c}>Overline</Overline>],
-      ["Text", (c) => <Text color={c}>Text</Text>],
-      [
-        "Text strong",
-        (c) => (
-          <Text strong color={c}>
-            Text strong
-          </Text>
-        ),
-      ],
-      ["Caption", (c) => <Caption color={c}>Caption</Caption>],
-    ];
-    return (
-      <table className="border-separate border-spacing-x-6 border-spacing-y-3 text-left">
-        <thead>
-          <tr>
-            <th>
-              <Overline color="muted">component</Overline>
-            </th>
-            {COLORS.map((c) => (
-              <th key={c}>
-                <Overline color="muted">{c}</Overline>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map(([label, render]) => (
-            <tr key={label}>
-              <td className="align-middle">
-                <Caption color="muted">{label}</Caption>
-              </td>
-              {COLORS.map((c) => (
-                <td key={c} className="align-middle">
-                  {render(c)}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
-  },
-};
-
 // Tone axis: each inline role × each tone ----------------------------------
 
-const TONES: TextTone[] = ["muted", "positive", "warn", "danger", "info"];
+const TONES: TextTone[] = ["neutral", "muted", "accent", "info", "positive", "warn", "danger"];
 
 export const ToneAxis: S = {
   name: "Tone axis (inline role × tone)",
@@ -247,7 +188,7 @@ export const ToneAxis: S = {
           <th />
           {TONES.map((t) => (
             <th key={t}>
-              <Overline color="muted">{t}</Overline>
+              <Overline tone="muted">{t}</Overline>
             </th>
           ))}
         </tr>
@@ -270,7 +211,9 @@ export const ToneAxis: S = {
         ).map(([label, render]) => (
           <tr key={label}>
             <td>
-              <Caption color="muted">{label}</Caption>
+              <Caption as="span" tone="muted">
+                {label}
+              </Caption>
             </td>
             {TONES.map((t) => (
               <td key={t}>{render(t)}</td>
@@ -288,15 +231,17 @@ export const AsOverride: S = {
   name: "as override",
   render: () => (
     <div className="flex flex-col gap-3">
-      <Caption color="muted">
+      <Caption as="span" tone="muted">
         Same PageHeading style rendered as different elements via `as`:
       </Caption>
       <PageHeading>as="h1" (default)</PageHeading>
       <PageHeading as="h2">as="h2"</PageHeading>
       <PageHeading as="div">as="div"</PageHeading>
-      <Caption color="muted">Inline roles turned into block elements:</Caption>
-      <Text as="p">Text as="p": now a block paragraph.</Text>
-      <Caption as="p">Caption as="p": now a block.</Caption>
+      <Caption as="span" tone="muted">
+        Text and Caption are paragraphs; as="span" is their inline form:
+      </Caption>
+      <Text>Text (default): a block paragraph.</Text>
+      <Caption>Caption (default): a block.</Caption>
       <Overline as="label" htmlFor="x">
         Overline as="label" (accepts label props like htmlFor)
       </Overline>

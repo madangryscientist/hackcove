@@ -18,7 +18,7 @@ type S = StoryObj;
 export const TitleAndBody: S = {
   render: () => (
     <EmptyState title="No builds yet">
-      <Text as="p">Builds appear here once a project has uploaded its first capture.</Text>
+      <Text>Builds appear here once a project has uploaded its first capture.</Text>
     </EmptyState>
   ),
 };
@@ -29,7 +29,7 @@ export const Level: S = {
     <Stack gap="xl">
       <SectionHeading as="h2">Builds</SectionHeading>
       <EmptyState title="No builds yet" level={3}>
-        <Text as="p">Builds appear here once a project has uploaded its first capture.</Text>
+        <Text>Builds appear here once a project has uploaded its first capture.</Text>
       </EmptyState>
     </Stack>
   ),
@@ -48,7 +48,7 @@ export const WithActions: S = {
         </>
       }
     >
-      <Text as="p">A project holds the stories you compare from build to build.</Text>
+      <Text>A project holds the stories you compare from build to build.</Text>
     </EmptyState>
   ),
 };
@@ -58,7 +58,7 @@ export const GetStarted: S = {
   render: () => (
     <Card>
       <EmptyState title="Get your first build" actions={<Button>Copy the token</Button>}>
-        <Text as="p">Three steps and the first comparison is on this page.</Text>
+        <Text>Three steps and the first comparison is on this page.</Text>
         <Steps>
           <Step title="Install the CLI">
             Run <Code>bun add -d pixelslash</Code> in your repo.
@@ -77,7 +77,7 @@ export const GetStarted: S = {
 export const DoNextStep: S = {
   render: () => (
     <EmptyState title="No builds yet" actions={<Button>Create a project</Button>}>
-      <Text as="p">Builds appear here once a project has uploaded its first capture.</Text>
+      <Text>Builds appear here once a project has uploaded its first capture.</Text>
     </EmptyState>
   ),
 };
@@ -87,13 +87,11 @@ export const DontNextStep: S = {
   render: () => <EmptyState title="Nothing here" />,
 };
 
-/** An empty list inside a card is one muted line: `Text as="p" color="muted"`. */
+/** An empty list inside a card is one muted line: `Text tone="muted"`. */
 export const DoInline: S = {
   render: () => (
     <Card title="Builds">
-      <Text as="p" color="muted">
-        No builds yet.
-      </Text>
+      <Text tone="muted">No builds yet.</Text>
     </Card>
   ),
 };
@@ -103,7 +101,7 @@ export const DontInline: S = {
   render: () => (
     <Card title="Builds">
       <EmptyState title="No builds yet">
-        <Text as="p">Builds appear here once a project has uploaded its first capture.</Text>
+        <Text>Builds appear here once a project has uploaded its first capture.</Text>
       </EmptyState>
     </Card>
   ),
@@ -114,7 +112,7 @@ export const InsetPadding: S = {
   render: () => (
     <Card flush>
       <EmptyState title="No forecast yet" padding="inset">
-        <Text as="p">Add an income and a bill to see the months ahead.</Text>
+        <Text>Add an income and a bill to see the months ahead.</Text>
       </EmptyState>
     </Card>
   ),

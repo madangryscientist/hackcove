@@ -1,4 +1,13 @@
-import { BulletList, Card, MetaList, Pill, Stack, Text, TextLink } from "@hackcove/ui-react";
+import {
+  BulletItem,
+  BulletList,
+  Card,
+  MetaList,
+  Pill,
+  Stack,
+  Text,
+  TextLink,
+} from "@hackcove/ui-react";
 
 const STATUS = {
   available: { label: "Available", tone: "emerald" },
@@ -26,13 +35,11 @@ export function StatusCard({
   return (
     <Card as="article" title={title} status={<Pill tone={tone}>{label}</Pill>}>
       <Stack gap="sm">
-        {summary && <Text as="p">{summary}</Text>}
+        {summary && <Text>{summary}</Text>}
         {items.length > 0 && (
           <BulletList>
             {items.map((item) => (
-              <Text as="li" key={item} color="secondary">
-                {item}
-              </Text>
+              <BulletItem key={item}>{item}</BulletItem>
             ))}
           </BulletList>
         )}

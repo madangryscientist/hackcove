@@ -42,7 +42,7 @@ export const FullPage: S = {
         <CardGrid columns={3}>
           <StatTile label="Open" value="12" />
           <StatTile label="Won" value="8" tone="positive" />
-          <StatTile label="Lost" value="3" tone="negative" />
+          <StatTile label="Lost" value="3" tone="danger" />
         </CardGrid>
       </Stack>
     </AppShell>
@@ -82,10 +82,10 @@ function Ratio({ columns }: { columns: "2:1" | "1:2" }) {
       <PageHeader title="Transaction" subtitle={`columns="${columns}": one column on a phone.`} />
       <CardGrid columns={columns}>
         <Card title="Detail">
-          <Text as="p">The wide column, twice the width of the narrow one from md.</Text>
+          <Text>The wide column, twice the width of the narrow one from md.</Text>
         </Card>
         <Card title="Notes">
-          <Text as="p">The narrow column.</Text>
+          <Text>The narrow column.</Text>
         </Card>
       </CardGrid>
     </DemoShell>
@@ -141,7 +141,7 @@ export const AsList: S = {
       <CardGrid as="ul" columns={3} aria-label="This month">
         <StatTile label="Open" value="12" />
         <StatTile label="Won" value="8" tone="positive" />
-        <StatTile label="Lost" value="3" tone="negative" />
+        <StatTile label="Lost" value="3" tone="danger" />
       </CardGrid>
     </DemoShell>
   ),
@@ -153,7 +153,7 @@ export const DoTiles: S = {
     <CardGrid columns={3}>
       <StatTile label="Open" value="12" />
       <StatTile label="Won" value="8" tone="positive" />
-      <StatTile label="Lost" value="3" tone="negative" />
+      <StatTile label="Lost" value="3" tone="danger" />
     </CardGrid>
   ),
 };
@@ -164,7 +164,7 @@ export const DontTiles: S = {
     <Stack>
       <StatTile label="Open" value="12" />
       <StatTile label="Won" value="8" tone="positive" />
-      <StatTile label="Lost" value="3" tone="negative" />
+      <StatTile label="Lost" value="3" tone="danger" />
     </Stack>
   ),
 };
@@ -174,13 +174,13 @@ export const DoAuto: S = {
   render: () => (
     <CardGrid columns="auto" minWidth="sm" align="start">
       <Card title="Dashboard">
-        <Text as="p">Quotes and renewals this week.</Text>
+        <Text>Quotes and renewals this week.</Text>
       </Card>
       <Card title="Billing">
-        <Text as="p">Invoices and payments.</Text>
+        <Text>Invoices and payments.</Text>
       </Card>
       <Card title="Members">
-        <Text as="p">Who can sign in.</Text>
+        <Text>Who can sign in.</Text>
       </Card>
     </CardGrid>
   ),

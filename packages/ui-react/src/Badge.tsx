@@ -1,12 +1,12 @@
-import type { HTMLAttributes } from "react";
+import type { ReactElement } from "react";
 import { cx } from "./cx.js";
-import type { Unstyled } from "./props.js";
+import type { Passthrough } from "./props.js";
 
 /**
  * A small red count, 10px, for sitting on an icon. `corner` pins it to the top-right corner of its
  * `relative` parent (wrap the icon button and the badge in a `relative inline-flex` element); a
  * count above 99 reads `99+`. Name the control it sits on (`aria-label` on the button) for a
- * screen reader. An `IconButton` takes `badge` itself and does all of this.
+ * screen reader. An `IconButton` takes `count` itself and does all of this.
  */
 export function Badge({
   count,
@@ -17,7 +17,7 @@ export function Badge({
   count: number;
   /** Pin it to the top-right corner of its `relative` parent, over the icon. */
   corner?: boolean;
-} & Unstyled<Omit<HTMLAttributes<HTMLSpanElement>, "children">>) {
+} & Passthrough): ReactElement {
   return (
     <span
       {...rest}

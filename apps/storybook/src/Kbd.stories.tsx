@@ -24,7 +24,7 @@ export const OnButton: S = {
 /** `Kbd` is a key the reader presses: in a sentence, or as the shortcut on a button. */
 export const DoKey: S = {
   render: () => (
-    <Text as="p">
+    <Text>
       Press <Kbd>Esc</Kbd> to close this list, or <Kbd>⌘S</Kbd> to save.
     </Text>
   ),
@@ -33,7 +33,7 @@ export const DoKey: S = {
 /** A command is `Code`, not a key. `Kbd` draws a keycap, which says "press this". */
 export const DontKey: S = {
   render: () => (
-    <Text as="p">
+    <Text>
       Run <Kbd>bun install</Kbd> to install.
     </Text>
   ),

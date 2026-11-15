@@ -5,18 +5,16 @@ import type { Passthrough } from "./props.js";
 import { TEXT_TONE, type TextTone } from "./typography.js";
 
 /**
- * The colour of a `StackedBar` segment or a `Legend` swatch: the five `TextTone` meanings plus two
- * that only a chart needs, `neutral` (a grey that sits apart from `muted`, for "unmeasured" next to
- * "same") and `violet` (the chart's own purple, apart from `info`). Text, links and icons keep the
- * five `TextTone` names; a chart with more than five parts is why these two live here.
+ * The colour of a `StackedBar` segment or a `Legend` swatch: the `TextTone` names, painted as a
+ * fill. On a chart `neutral` is a grey of its own that sits apart from `muted` (for "unmeasured"
+ * next to "same"), and `accent` is the theme's accent, apart from `info`.
  */
-export type VizTone = TextTone | "neutral" | "violet";
+export type VizTone = TextTone;
 
-/** Tone → text utility, painted as a fill. The five `TextTone` colours are shared; the two extra ones are remapped by every theme. */
+/** Tone → text utility, painted as a fill. The `TextTone` colours are shared; `neutral` is the chart's own grey, remapped by every theme. */
 export const VIZ_TONE: Record<VizTone, string> = {
   ...TEXT_TONE,
   neutral: "text-neutral-500",
-  violet: "text-purple-700",
 };
 
 /** One part of a `StackedBar`: its `label`, its `value` (its share is `value` over the sum) and its colour. */
@@ -77,14 +75,14 @@ export function Legend({
  * label with its value, so the colours are named in words.
  */
 export function StackedBar({
-  segments,
+  items,
   label,
   legend = false,
   size = "md",
   ...rest
 }: {
   /** The parts in order, each a `label`, a `value` (its share is the value over the sum) and a `tone`. */
-  segments: readonly StackedSegment[];
+  items: readonly StackedSegment[];
   /** What the bar shows, for a screen reader, which hears it before every part's name and percent. */
   label: string;
   /** Draw the key under the bar. Defaults to false. */
@@ -95,8 +93,8 @@ export function StackedBar({
    */
   size?: BarSize;
 } & Passthrough): ReactElement {
-  const total = segments.reduce((sum, s) => sum + Math.max(0, s.value), 0);
-  const spoken = segments.map((s) => `${s.label} ${announcedPercent(s.value, total)}%`).join(", ");
+  const total = items.reduce((sum, s) => sum + Math.max(0, s.value), 0);
+  const spoken = items.map((s) => `${s.label} ${announcedPercent(s.value, total)}%`).join(", ");
   return (
     <div {...rest} className="flex flex-col gap-2">
       <div
@@ -104,7 +102,7 @@ export function StackedBar({
         aria-label={`${label}: ${spoken}`}
         className={cx("flex overflow-hidden rounded-full bg-slate-100", BAR_TRACK[size])}
       >
-        {segments.map((s) => (
+        {items.map((s) => (
           <div
             key={s.label}
             className={FILL(s.tone)}
@@ -113,7 +111,7 @@ export function StackedBar({
         ))}
       </div>
       {legend && (
-        <Legend items={segments.map((s) => ({ label: s.label, tone: s.tone, detail: s.value }))} />
+        <Legend items={items.map((s) => ({ label: s.label, tone: s.tone, detail: s.value }))} />
       )}
     </div>
   );

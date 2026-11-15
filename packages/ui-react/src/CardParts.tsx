@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { cx } from "./cx.js";
 import { Icon } from "./Icon.js";
 import type { IconName } from "./icons.js";
-import { Overline } from "./typography.js";
+import { CardOverline } from "./typography.js";
 import type { Size } from "./size.js";
 
 /** The space under a card's heading, by `size`. */
@@ -54,9 +54,9 @@ export function CardHeading({
       {titleStyle === "name" ? (
         <NameTitle id={id}>{title}</NameTitle>
       ) : (
-        <Overline as="h2" id={id} color={bar ? "tertiary" : "muted"}>
+        <CardOverline id={id} faint={!bar}>
           {title}
-        </Overline>
+        </CardOverline>
       )}
       {count !== undefined && <span className={cx("text-xs font-medium", ink)}>{count}</span>}
       {status}

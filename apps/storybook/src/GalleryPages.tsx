@@ -28,10 +28,10 @@ function RatioGrids() {
       {(["2:1", "1:2"] as const).map((columns) => (
         <CardGrid key={columns} columns={columns}>
           <Card title={`Wide ${columns}`}>
-            <Text as="p">First column.</Text>
+            <Text>First column.</Text>
           </Card>
           <Card title="Narrow">
-            <Text as="p">Second column.</Text>
+            <Text>Second column.</Text>
           </Card>
         </CardGrid>
       ))}
@@ -81,16 +81,16 @@ export function GalleryBleedPages() {
   return (
     <div className="flex flex-col gap-6">
       <PageBox label="FullBleedLayout" bleed>
-        <FullBleedLayout panel={<Text as="p">Panel</Text>}>
+        <FullBleedLayout panel={<Text>Panel</Text>}>
           <div className="flex h-full min-h-48 items-center justify-center bg-slate-100">
-            <Text as="p">Fills the width</Text>
+            <Text>Fills the width</Text>
           </div>
         </FullBleedLayout>
       </PageBox>
       <PageBox label="FullBleedLayout padded" bleed>
-        <FullBleedLayout padded panel={<Text as="p">Panel</Text>}>
+        <FullBleedLayout padded panel={<Text>Panel</Text>}>
           <Card title="Padded canvas">
-            <Text as="p">Given the other layouts' page padding.</Text>
+            <Text>Given the other layouts' page padding.</Text>
           </Card>
         </FullBleedLayout>
       </PageBox>
@@ -99,7 +99,7 @@ export function GalleryBleedPages() {
           <Text strong>Sticks under the header</Text>
         </StickyBar>
         <div className="p-4">
-          <Text as="p">The page scrolls under the bar.</Text>
+          <Text>The page scrolls under the bar.</Text>
         </div>
       </PageBox>
       <PageBox label="CenteredLayout">
@@ -141,15 +141,15 @@ export function GalleryGridPages() {
       <PageBox label="CardGrid columns auto, align start">
         <CardGrid columns="auto" minWidth="sm" align="start">
           <Card title="Dashboard">
-            <Text as="p">One line.</Text>
+            <Text>One line.</Text>
           </Card>
           <Card title="Settings">
-            <Text as="p">
+            <Text>
               A longer note that wraps onto a few lines, so this card is taller than its neighbours.
             </Text>
           </Card>
-          <Card title="Billing" footer={<Text as="p">Footer</Text>}>
-            <Text as="p">One line.</Text>
+          <Card title="Billing" footer={<Text>Footer</Text>}>
+            <Text>One line.</Text>
           </Card>
         </CardGrid>
       </PageBox>
@@ -167,7 +167,7 @@ export function GalleryGridPages() {
             />
           }
         >
-          <Text as="p">The canvas.</Text>
+          <Text>The canvas.</Text>
         </SidebarLayout>
       </PageBox>
       <PageBox label="SidebarLayout, current link low in a long rail">
@@ -186,20 +186,20 @@ export function GalleryGridPages() {
             />
           }
         >
-          <Text as="p">Section 45, scrolled into view in the rail.</Text>
+          <Text>Section 45, scrolled into view in the rail.</Text>
         </SidebarLayout>
       </PageBox>
       <PageBox label="SideColumn">
         <SideColumn
           aside={
             <Card title="Reply agent">
-              <Text as="p">A 24rem column from lg.</Text>
+              <Text>A 24rem column from lg.</Text>
             </Card>
           }
           asideLabel="Ask the reply agent"
         >
           <Card title="Thread">
-            <Text as="p">The main area takes the room left.</Text>
+            <Text>The main area takes the room left.</Text>
           </Card>
         </SideColumn>
       </PageBox>

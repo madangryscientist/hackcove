@@ -21,7 +21,7 @@ export const Default: S = {
     <Stack>
       {(["xs", "sm", "md"] as const).map((gap) => (
         <Cluster key={gap} gap={gap}>
-          <Caption>{gap}</Caption>
+          <Caption as="span">{gap}</Caption>
           <Pill>Draft</Pill>
           <Pill>Paid</Pill>
           <Pill>Overdue</Pill>
@@ -74,7 +74,9 @@ export const Justify: S = {
     <Stack>
       {(["start", "between", "end"] as const).map((justify) => (
         <Cluster key={justify} justify={justify}>
-          <Text strong>Invoice 1042</Text>
+          <Text as="span" strong>
+            Invoice 1042
+          </Text>
           <Pill>{justify}</Pill>
         </Cluster>
       ))}
@@ -104,8 +106,10 @@ export const Align: S = {
     <Stack>
       {(["center", "baseline", "start", "end"] as const).map((align) => (
         <Cluster key={align} align={align}>
-          <Caption>{align}</Caption>
-          <Text strong>Total</Text>
+          <Caption as="span">{align}</Caption>
+          <Text as="span" strong>
+            Total
+          </Text>
           <Input aria-label={`Amount (${align})`} defaultValue="1,240.00" width="md" />
         </Cluster>
       ))}
@@ -132,13 +136,13 @@ export const Wraps: S = {
 /** `as="span"` is for a Cluster inside a paragraph, where a `div` is not allowed: the row sits on the paragraph's line. Its items must be phrasing content, so no `ClusterGrow`. */
 export const InsideAParagraph: S = {
   render: () => (
-    <Text as="p">
+    <Text>
       <Cluster as="span" gap="xs">
         <Pill tone="emerald" dot>
           Paid
         </Pill>
-        <Caption>12 Oct</Caption>
-        <Caption>Invoice 1042</Caption>
+        <Caption as="span">12 Oct</Caption>
+        <Caption as="span">Invoice 1042</Caption>
       </Cluster>
     </Text>
   ),

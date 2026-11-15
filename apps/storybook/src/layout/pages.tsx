@@ -53,20 +53,14 @@ export function ListPage({ isEmpty = false }: { isEmpty?: boolean }) {
         </FilterGroup>
       }
       isEmpty={isEmpty}
-      empty={
-        <Text as="p" color="muted">
-          No quotes match these filters.
-        </Text>
-      }
+      empty={<Text tone="muted">No quotes match these filters.</Text>}
     >
       {quotes.map(([ref, name, premium, status]) => (
         <Card key={ref} as="article">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
-              <Text strong as="p">
-                {name}
-              </Text>
-              <Text as="p" color="secondary">
+              <Text strong>{name}</Text>
+              <Text>
                 {ref} · {premium}
               </Text>
             </div>
@@ -102,10 +96,10 @@ export function DetailPage() {
       }
     >
       <Card title="Cover">
-        <Text as="p">Life cover of R 1 500 000 with a funeral benefit, to age 65.</Text>
+        <Text>Life cover of R 1 500 000 with a funeral benefit, to age 65.</Text>
       </Card>
       <Card title="Notes">
-        <Text as="p">Client asked for the premium to be debited on the 25th.</Text>
+        <Text>Client asked for the premium to be debited on the 25th.</Text>
       </Card>
     </DetailLayout>
   );
@@ -161,17 +155,17 @@ export function ProsePage() {
       gap="lg"
     >
       <Section title="What we collect">
-        <Text as="p">
+        <Text>
           We keep the email address you write to us from and nothing else: no cookies, no analytics
           and no accounts. A message stays in one inbox until the question it asks is answered.
         </Text>
-        <Text as="p">
+        <Text>
           This paragraph is long on purpose: the column stops at the reading measure, so a line
           holds a comfortable number of words however wide the window is.
         </Text>
       </Section>
       <Section title="Who to ask">
-        <Text as="p">Write to the address in the footer and we reply within a working week.</Text>
+        <Text>Write to the address in the footer and we reply within a working week.</Text>
       </Section>
     </ProseLayout>
   );

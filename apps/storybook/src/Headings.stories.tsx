@@ -20,7 +20,7 @@ export const DoScale: S = {
       <PageHeading>Quotes</PageHeading>
       <SectionHeading rule>Open</SectionHeading>
       <SubsectionHeading>Awaiting reply</SubsectionHeading>
-      <Text as="p">Three quotes are waiting on the customer.</Text>
+      <Text>Three quotes are waiting on the customer.</Text>
     </Stack>
   ),
 };
@@ -30,9 +30,9 @@ export const DontScale: S = {
   render: () => (
     <Stack gap="sm">
       <PageHeading>Quotes</PageHeading>
-      <Text as="p">Three quotes are waiting on the customer.</Text>
+      <Text>Three quotes are waiting on the customer.</Text>
       <PageHeading>Open</PageHeading>
-      <Text as="p">Two quotes are open.</Text>
+      <Text>Two quotes are open.</Text>
     </Stack>
   ),
 };
@@ -64,7 +64,7 @@ export const DontHero: S = {
     <Stack gap="sm">
       <PageHeading>Dashboard</PageHeading>
       <Display as="h2">Recent activity</Display>
-      <Text as="p">Nothing has changed since yesterday.</Text>
+      <Text>Nothing has changed since yesterday.</Text>
     </Stack>
   ),
 };

@@ -3,7 +3,11 @@ import type { ReactElement } from "react";
 import * as ui from "./index.js";
 
 /** The two attributes every case passes, and every test looks for. */
-export const A = { "data-testid": "probe", "aria-describedby": "described" } as const;
+export const A = {
+  id: "probe-id",
+  "data-testid": "probe",
+  "aria-describedby": "described",
+} as const;
 const noop = () => undefined;
 const ITEMS = [<li key="x">x</li>];
 
@@ -19,7 +23,8 @@ export const CASES: Record<string, () => ReactElement> = {
     <ui.BottomSheet label="Sheet" snaps={[0.25, 0.5]} snap={0} onSnapChange={noop} {...A} />
   ),
   Breadcrumbs: () => <ui.Breadcrumbs crumbs={["Home", "Page"]} {...A} />,
-  BulletList: () => <ui.BulletList {...A} />,
+  BulletItem: () => <ui.BulletItem {...A}>x</ui.BulletItem>,
+  BulletList: () => <ui.BulletList {...A}>x</ui.BulletList>,
   Button: () => <ui.Button {...A}>x</ui.Button>,
   ButtonGroup: () => <ui.ButtonGroup {...A}>x</ui.ButtonGroup>,
   Callout: () => <ui.Callout {...A}>x</ui.Callout>,
@@ -152,14 +157,14 @@ export const CASES: Record<string, () => ReactElement> = {
   ),
   SortableSection: () => (
     <ui.SortableList label="Queue" onReorder={noop}>
-      <ui.SortableSection id="s" title="S" {...A}>
+      <ui.SortableSection title="S" {...A} id="s">
         <ui.SortableItem id="a" title="A" />
       </ui.SortableSection>
     </ui.SortableList>
   ),
   SortableItem: () => (
     <ui.SortableList label="Queue" onReorder={noop}>
-      <ui.SortableItem id="a" title="A" {...A} />
+      <ui.SortableItem title="A" {...A} id="a" />
     </ui.SortableList>
   ),
   Maintenance: () => <ui.Maintenance {...A} />,
@@ -237,7 +242,7 @@ export const CASES: Record<string, () => ReactElement> = {
   Stack: () => <ui.Stack {...A}>x</ui.Stack>,
   StickyBar: () => <ui.StickyBar {...A}>x</ui.StickyBar>,
   StackedBar: () => (
-    <ui.StackedBar segments={[{ label: "a", value: 1, tone: "info" }]} label="L" {...A} />
+    <ui.StackedBar items={[{ label: "a", value: 1, tone: "info" }]} label="L" {...A} />
   ),
   StatTile: () => <ui.StatTile label="L" value="1" {...A} />,
   TrendChart: () => (

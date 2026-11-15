@@ -1,25 +1,25 @@
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
-import type { Unstyled } from "./props.js";
+import type { ReactElement, ReactNode } from "react";
+import type { Passthrough } from "./props.js";
 import { cx } from "./cx.js";
 import { BAR_FILL } from "./ProgressBar.js";
 import { drawn, largest, plotY, runs, scaleMax } from "./trend.js";
 import { Overline } from "./typography.js";
 
 /** The colour of a tile's value (and of its accent bar): plain ink, green, amber or red. */
-export type StatTileTone = "neutral" | "positive" | "warn" | "negative";
+export type StatTileTone = "neutral" | "positive" | "warn" | "danger";
 
 const VALUE: Record<StatTileTone, string> = {
   neutral: "text-slate-900",
   positive: "text-emerald-700",
   warn: "text-amber-700",
-  negative: "text-red-700",
+  danger: "text-red-700",
 };
 
 const BAR: Record<StatTileTone, string> = {
   neutral: BAR_FILL.accent,
   positive: BAR_FILL.positive,
   warn: BAR_FILL.warn,
-  negative: BAR_FILL.negative,
+  danger: BAR_FILL.danger,
 };
 
 /**
@@ -52,7 +52,7 @@ export function StatTile({
    * from 0. It is decoration, so say the trend in `hint` as well.
    */
   trend?: readonly number[];
-} & Unstyled<Omit<HTMLAttributes<HTMLDivElement>, "children">>): ReactElement {
+} & Passthrough): ReactElement {
   return (
     <div
       {...rest}

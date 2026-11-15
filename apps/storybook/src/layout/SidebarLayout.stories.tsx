@@ -66,7 +66,7 @@ export const FullPage: S = {
           actions={<Button>New project</Button>}
         />
         <Card title="Projects">
-          <Text as="p">Storybook, Dashboard, Site.</Text>
+          <Text>Storybook, Dashboard, Site.</Text>
         </Card>
       </SidebarLayout>
     </AppShell>
@@ -95,7 +95,7 @@ export const Orgs: S = {
         />
         <Stack>
           <Card title="Projects">
-            <Text as="p">Storybook, Dashboard, Site.</Text>
+            <Text>Storybook, Dashboard, Site.</Text>
           </Card>
         </Stack>
       </SidebarLayout>
@@ -126,7 +126,7 @@ export const LongRail: S = {
         <PageHeader title="Section 1" subtitle="24 sections." />
         <Stack>
           <Card title="Overview">
-            <Text as="p">The page is first on a phone; the rail opens from the disclosure.</Text>
+            <Text>The page is first on a phone; the rail opens from the disclosure.</Text>
           </Card>
         </Stack>
       </SidebarLayout>
@@ -136,7 +136,7 @@ export const LongRail: S = {
 
 const longPage = Array.from({ length: 12 }, (_, i) => (
   <Card key={i} title={`Block ${i + 1}`}>
-    <Text as="p">
+    <Text>
       A block of a long page. The rail beside it stays in view under the header while this scrolls.
     </Text>
   </Card>
@@ -276,7 +276,7 @@ export const DoSections: S = {
     >
       <PageHeader title="Profile" subtitle="Your name and email." />
       <Card title="Account">
-        <Text as="p">Naledi Mokoena, naledi@example.com</Text>
+        <Text>Naledi Mokoena, naledi@example.com</Text>
       </Card>
     </SidebarLayout>
   ),
@@ -300,7 +300,7 @@ export const DontSections: S = {
     >
       <PageHeader title="Profile" subtitle="Your name and email." />
       <Card title="Account">
-        <Text as="p">Naledi Mokoena, naledi@example.com</Text>
+        <Text>Naledi Mokoena, naledi@example.com</Text>
       </Card>
     </SidebarLayout>
   ),

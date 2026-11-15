@@ -1,5 +1,6 @@
 import { type ComponentPropsWithoutRef, type ReactElement, type ReactNode, useId } from "react";
-import { type CalloutTone, TONE_SURFACE } from "./Callout.js";
+import { TONE_SURFACE } from "./Callout.js";
+import type { Tone } from "./tone.js";
 import { CardBadge } from "./CardBadge.js";
 import { BODY_PAD, cardBody } from "./CardBody.js";
 import { CardFooter } from "./CardParts.js";
@@ -32,7 +33,7 @@ function cardForm(
     flush?: boolean | undefined;
     bar?: boolean | undefined;
     dashed?: boolean | "filled" | undefined;
-    tone?: CalloutTone | undefined;
+    tone?: Tone | undefined;
     attention?: boolean | undefined;
     icon?: IconName | undefined;
     fill?: boolean | undefined;
@@ -106,7 +107,7 @@ type CardBase = {
   /** An empty-state shell: dashed outline, no shadow, no fill, centred muted text. `"filled"` puts it on a surface fill with more padding. */
   dashed?: boolean | "filled";
   /** A soft fill and border in the Callout's tones, for a data panel with a status. Ignored with `bar` and `dashed`. */
-  tone?: CalloutTone;
+  tone?: Tone;
   /** One of the library's icons, drawn at feature size in the accent colour above the title: the mark of a feature card. Ignored with `bar`, `flush` and `dashed`. */
   icon?: IconName;
   /** A band across the card, edge to edge inside its padding, under the title and above the children: a `ProgressBar` or a strip of colour that runs the card's full width. Ignored with `dashed`. */
