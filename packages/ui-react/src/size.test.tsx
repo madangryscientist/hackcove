@@ -83,11 +83,7 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
   ],
   [
     "IconButton",
-    (size) => (
-      <IconButton label="x" {...at(size)}>
-        x
-      </IconButton>
-    ),
+    (size) => <IconButton label="x" {...at(size)} icon="close" />,
     { sm: "size-6.5", md: "size-9.5", lg: "size-11.5" },
   ],
   [

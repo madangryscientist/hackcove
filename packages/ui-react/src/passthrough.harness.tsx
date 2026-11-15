@@ -122,11 +122,7 @@ export const CASES: Record<string, () => ReactElement> = {
       <svg />
     </ui.Icon>
   ),
-  IconButton: () => (
-    <ui.IconButton label="L" {...A}>
-      x
-    </ui.IconButton>
-  ),
+  IconButton: () => <ui.IconButton label="L" {...A} icon="close" />,
   InlineEdit: () => (
     <ui.InlineEdit label="Edit" renderEditor={() => null} {...A}>
       x

@@ -64,7 +64,7 @@ function CategoryInCell() {
       >
         {category}
       </InlineEdit>
-      <Pill tone="amber" dot>
+      <Pill tone="warn" dot>
         Needs a receipt
       </Pill>
     </TableCell>

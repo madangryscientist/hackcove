@@ -13,7 +13,7 @@ export const Rows: S = {
       <Card flush>
         <div>
           <ListRow trailing="R 9 500">Rent</ListRow>
-          <ListRow divided trailing={<Pill tone="amber">due</Pill>}>
+          <ListRow divided trailing={<Pill tone="warn">due</Pill>}>
             Insurance
           </ListRow>
           <ListRow divided href="#status" trailing="3">
@@ -143,7 +143,7 @@ export const Thumbnail: S = {
             href={`#${name.toLowerCase()}`}
             leadingWidth="thumbnail"
             leading={<img alt="" src={samplePhoto} />}
-            trailing={<Pill tone="amber">changed</Pill>}
+            trailing={<Pill tone="warn">changed</Pill>}
           >
             <Text>{name}</Text>
             <Caption>0.4% of pixels differ</Caption>
@@ -162,7 +162,7 @@ export const StaticWithActions: S = {
         <ListRow
           static
           leading={<Avatar name="Ada Lovelace" size="sm" />}
-          trailing={<Pill tone="slate">admin</Pill>}
+          trailing={<Pill tone="neutral">admin</Pill>}
         >
           Ada Lovelace
         </ListRow>
@@ -208,7 +208,7 @@ export const RevealOnHover: S = {
             revealOnHover
             divided={index > 0}
             trailing="R 1 850"
-            actions={<IconButton label={`Remove ${name}`}>×</IconButton>}
+            actions={<IconButton label={`Remove ${name}`} icon="close" />}
           >
             {name}
           </ListRow>

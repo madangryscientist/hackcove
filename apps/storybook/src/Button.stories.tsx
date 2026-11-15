@@ -98,13 +98,13 @@ export const Dashed: S = {
   render: () => (
     <div className="flex max-w-sm flex-col gap-2">
       <Button variant="dashed">Add a budget line</Button>
-      <Button variant="dashed" size="sm">
-        <span aria-hidden="true">+</span> Add a category
+      <Button variant="dashed" size="sm" icon="plus">
+        Add a category
       </Button>
       <Button variant="dashed" disabledReason="Pick a month first">
         Add a line
       </Button>
-      <Button variant="dashed" busy busyLabel="Adding…">
+      <Button variant="dashed" busy="Adding…">
         Add a line
       </Button>
     </div>
@@ -148,7 +148,7 @@ export const Danger: S = {
       <Button tone="danger" disabledReason="Nothing to delete">
         Blocked
       </Button>
-      <Button tone="danger" busy busyLabel="Deleting…">
+      <Button tone="danger" busy="Deleting…">
         Delete
       </Button>
     </div>
@@ -174,7 +174,7 @@ export const Positive: S = {
       <Button tone="positive" disabledReason="Nothing to accept">
         Blocked
       </Button>
-      <Button tone="positive" busy busyLabel="Accepting…">
+      <Button tone="positive" busy="Accepting…">
         Accept
       </Button>
     </div>
@@ -235,7 +235,7 @@ export const LinkLook: S = {
 export const Disabled: S = {
   render: () => (
     <div className="flex flex-col gap-3">
-      {(["default", "positive", "danger"] as const).map((tone) => (
+      {(["neutral", "positive", "danger"] as const).map((tone) => (
         <div key={tone} className="flex flex-wrap items-center gap-2">
           <Button tone={tone} disabled>
             Save
@@ -270,10 +270,8 @@ export const Blocked: S = {
 export const Busy: S = {
   render: () => (
     <div className="flex flex-wrap gap-2">
-      <Button busy busyLabel="Saving…">
-        Save
-      </Button>
-      <Button variant="outline" busy busyLabel="Cancelling…">
+      <Button busy="Saving…">Save</Button>
+      <Button variant="outline" busy="Cancelling…">
         Cancel
       </Button>
       <Button variant="ghost" busy>

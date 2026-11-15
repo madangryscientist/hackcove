@@ -48,7 +48,7 @@ function QuotesTable() {
               {q.premium}
             </TableCell>
             <TableCell tone="muted">
-              <Pill tone={q.status === "accepted" ? "emerald" : "amber"}>{q.status}</Pill>
+              <Pill tone={q.status === "accepted" ? "positive" : "warn"}>{q.status}</Pill>
             </TableCell>
           </TableRow>
         ))}

@@ -21,22 +21,9 @@ describe("groupByEpic", () => {
 });
 
 describe("Pill", () => {
-  it("defaults to the slate tone and takes a named tone", () => {
+  it("defaults to the neutral tone and takes a named tone", () => {
     expect(renderToStaticMarkup(<Pill>x</Pill>)).toContain("bg-slate-100");
-    expect(renderToStaticMarkup(<Pill tone="red">x</Pill>)).toContain("text-red-900");
-  });
-
-  it("renders the same markup as before when dot is off", () => {
-    expect(renderToStaticMarkup(<Pill tone="amber">x</Pill>)).toBe(
-      '<span class="rounded-md px-1.5 py-0.5 text-xs font-medium bg-amber-50 text-amber-700">x</span>',
-    );
-  });
-
-  it("takes the violet and sky tones", () => {
-    expect(renderToStaticMarkup(<Pill tone="violet">x</Pill>)).toContain(
-      "bg-violet-50 text-violet-700",
-    );
-    expect(renderToStaticMarkup(<Pill tone="sky">x</Pill>)).toContain("bg-sky-50 text-sky-700");
+    expect(renderToStaticMarkup(<Pill tone="danger">x</Pill>)).toContain("text-red-900");
   });
 
   it("swaps rounded-md for rounded-full when round is on", () => {
@@ -46,8 +33,8 @@ describe("Pill", () => {
   });
 
   it("title is the native tooltip on a plain, link and button pill, and absent without it", () => {
-    expect(renderToStaticMarkup(<Pill title="Accepted on 12 Oct">x</Pill>)).toBe(
-      '<span title="Accepted on 12 Oct" class="rounded-md px-1.5 py-0.5 text-xs font-medium bg-slate-100 text-slate-600">x</span>',
+    expect(renderToStaticMarkup(<Pill title="Accepted on 12 Oct">x</Pill>)).toContain(
+      'title="Accepted on 12 Oct"',
     );
     expect(
       renderToStaticMarkup(
@@ -68,7 +55,7 @@ describe("Pill", () => {
 
   it("adds a leading dot in the text colour when dot is on", () => {
     const markup = renderToStaticMarkup(
-      <Pill tone="amber" dot>
+      <Pill tone="warn" dot>
         x
       </Pill>,
     );

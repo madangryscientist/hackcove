@@ -10,7 +10,7 @@ const follows = (a: Node, b: Node) =>
 describe("Card badge", () => {
   it("reads the badge after the body", () => {
     render(
-      <Card title="Shot" badge={<Pill tone="amber">Flaky</Pill>}>
+      <Card title="Shot" badge={<Pill tone="warn">Flaky</Pill>}>
         <p>body</p>
       </Card>,
     );
@@ -19,7 +19,7 @@ describe("Card badge", () => {
 
   it("on a link card is part of the link's accessible name", () => {
     render(
-      <Card href="/shots/1" title="Home page" badge={<Pill tone="amber">Flaky</Pill>}>
+      <Card href="/shots/1" title="Home page" badge={<Pill tone="warn">Flaky</Pill>}>
         Desktop
       </Card>,
     );
@@ -110,7 +110,7 @@ describe("Card that is a link: root attributes", () => {
 
   it("is still named by the card's text, the badge included, under the caller's id", () => {
     render(
-      <Card href="/x" title="Home" id="home" badge={<Pill tone="amber">Flaky</Pill>}>
+      <Card href="/x" title="Home" id="home" badge={<Pill tone="warn">Flaky</Pill>}>
         body
       </Card>,
     );

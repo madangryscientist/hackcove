@@ -1,5 +1,5 @@
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
-import type { Unstyled } from "./props.js";
+import type { ReactElement, ReactNode } from "react";
+import type { Passthrough } from "./props.js";
 
 /**
  * A wrapping row of buttons with one optional item pushed to the far end (a Back link, say). On a
@@ -18,7 +18,7 @@ export function ButtonGroup({
   end?: ReactNode;
   /** The accessible name of the group: sets `role="group"` and `aria-label`. */
   label?: string;
-} & Unstyled<Omit<HTMLAttributes<HTMLDivElement>, "children">>): ReactElement {
+} & Passthrough): ReactElement {
   return (
     <div
       {...rest}

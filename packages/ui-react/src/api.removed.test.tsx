@@ -67,6 +67,36 @@ export const removed = {
   r26: () => <ui.NotFound homeHref="/" />,
   // @ts-expect-error a page takes no home prop
   r27: () => <ui.Maintenance homeHref="/" />,
+
+  // Actions and density
+  // @ts-expect-error tone="default" is neutral, the default
+  r28: () => <ui.Button tone="default">x</ui.Button>,
+  // @ts-expect-error tone="default" is neutral, the default
+  r29: () => <ui.IconButton label="x" icon="plus" tone="default" />,
+  // @ts-expect-error badge is count
+  r30: () => <ui.IconButton label="x" icon="bell" badge={3} />,
+  // @ts-expect-error the icon is icon, a name from the set: no children
+  r31: () => <ui.IconButton label="x">+</ui.IconButton>,
+  // @ts-expect-error busyLabel is gone: busy={saving && "Saving"}
+  r32: () => <ui.Button busy busyLabel="S" />,
+  // @ts-expect-error slate is neutral
+  r33: () => <ui.Pill tone="slate">x</ui.Pill>,
+  // @ts-expect-error amber is warn
+  r34: () => <ui.Pill tone="amber">x</ui.Pill>,
+  // @ts-expect-error emerald is positive
+  r35: () => <ui.Pill tone="emerald">x</ui.Pill>,
+  // @ts-expect-error blue is info
+  r36: () => <ui.Pill tone="blue">x</ui.Pill>,
+  // @ts-expect-error red is danger
+  r37: () => <ui.Pill tone="red">x</ui.Pill>,
+  // @ts-expect-error violet is accent
+  r38: () => <ui.Pill tone="violet">x</ui.Pill>,
+  // @ts-expect-error sky is gone: info
+  r39: () => <ui.Pill tone="sky">x</ui.Pill>,
+  // @ts-expect-error label (the name half) is name
+  r40: () => <ui.Pill label="Weight">x</ui.Pill>,
+  // @ts-expect-error ButtonGroup passes only id, data-* and aria-*: no handler
+  r41: () => <ui.ButtonGroup onClick={() => undefined}>x</ui.ButtonGroup>,
 };
 
 describe("removed API", () => {

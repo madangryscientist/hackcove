@@ -13,7 +13,7 @@ export const NameTitle: S = {
       <Card
         title="Corner Books"
         titleStyle="name"
-        status={<Pill tone="emerald">Open</Pill>}
+        status={<Pill tone="positive">Open</Pill>}
         footer={<Button size="sm">Visit</Button>}
       >
         <Text tone="muted">Second-hand paperbacks and a reading corner.</Text>

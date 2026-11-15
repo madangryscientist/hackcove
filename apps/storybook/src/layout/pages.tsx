@@ -64,7 +64,7 @@ export function ListPage({ isEmpty = false }: { isEmpty?: boolean }) {
                 {ref} · {premium}
               </Text>
             </div>
-            <Pill tone={status === "Accepted" ? "emerald" : "slate"}>{status}</Pill>
+            <Pill tone={status === "Accepted" ? "positive" : "neutral"}>{status}</Pill>
           </div>
         </Card>
       ))}

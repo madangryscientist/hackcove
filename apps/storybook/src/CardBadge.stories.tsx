@@ -22,10 +22,10 @@ type S = StoryObj;
 export const Badge: S = {
   render: () => (
     <CardGrid>
-      <Card title="Dashboard" badge={<Pill tone="sky">UI</Pill>}>
+      <Card title="Dashboard" badge={<Pill tone="info">UI</Pill>}>
         <Text tone="muted">A panel with a badge.</Text>
       </Card>
-      <Card href="#shot-3" title="Settings" badge={<Pill tone="amber">Flaky</Pill>}>
+      <Card href="#shot-3" title="Settings" badge={<Pill tone="warn">Flaky</Pill>}>
         <Text tone="muted">A link card with a badge.</Text>
       </Card>
     </CardGrid>

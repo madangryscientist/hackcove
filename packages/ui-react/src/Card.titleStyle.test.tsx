@@ -17,7 +17,7 @@ describe("Card titleStyle", () => {
         title="Corner Books"
         titleStyle="name"
         count={4}
-        status={<Pill tone="amber">Open</Pill>}
+        status={<Pill tone="warn">Open</Pill>}
         actions={<button type="button">Edit</button>}
         bar
       >

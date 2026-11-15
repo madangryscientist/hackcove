@@ -50,7 +50,7 @@ export const GrowMinWidth: S = {
     <Stack>
       <div className="w-64">
         <Cluster wrap gap="sm">
-          <Pill tone="emerald">Active</Pill>
+          <Pill tone="positive">Active</Pill>
           <ClusterGrow minWidth="md">
             <Text>With minWidth md it drops under the pill and keeps its width.</Text>
           </ClusterGrow>
@@ -58,7 +58,7 @@ export const GrowMinWidth: S = {
       </div>
       <div className="w-64">
         <Cluster wrap gap="sm">
-          <Pill tone="emerald">Active</Pill>
+          <Pill tone="positive">Active</Pill>
           <ClusterGrow>
             <Text>Without minWidth it is squashed beside the pill.</Text>
           </ClusterGrow>
@@ -138,7 +138,7 @@ export const InsideAParagraph: S = {
   render: () => (
     <Text>
       <Cluster as="span" gap="xs">
-        <Pill tone="emerald" dot>
+        <Pill tone="positive" dot>
           Paid
         </Pill>
         <Caption as="span">12 Oct</Caption>

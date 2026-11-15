@@ -26,7 +26,7 @@ export const content: ComponentSection = {
           '`CardGrid` takes `columns` 2, 3 or 4, `"2:1"` or `"1:2"` for unequal columns, or `columns="auto"` with `minWidth` `sm` or `md` to fill by width; `align="start"` stops cards stretching to the tallest in their row.',
           '`inset` is a band across the card, edge to edge inside its padding, under the title: a `ProgressBar` that runs the card\'s full width. A bordered sub-card inside a card is a nested `Card tone="neutral"`, not a hand-built box.',
           "`dashed` is the empty state.",
-          '`badge` pins a `Pill` to the top-right corner, over the content, on a panel or a link card: a category (`Pill tone="sky"`) or a flag on the thing itself.',
+          '`badge` pins a `Pill` to the top-right corner, over the content, on a panel or a link card: a category (`Pill tone="info"`) or a flag on the thing itself.',
           '`attention` draws the strong warn edge round a card that needs a look (a flaky shot, a failing check); add `tone="warn"` for the warn surface too. It does nothing on a `dashed` card.',
           "`icon` puts one of the library's icons above the title at feature size, in the accent colour: the mark of a feature card. Pick it by the idea it stands for; it is ignored on a `bar`, `flush` or `dashed` card.",
           "`size` sets the padding: `sm` for a dense dashboard, `md` (default), `lg` for a card that stands alone.",
@@ -135,7 +135,7 @@ export const content: ComponentSection = {
       pairs: ["Badge/OnIcon", "Badge/Count"],
       usage: {
         do: [
-          "On an icon, give the `IconButton` a `badge` count; it pins the Badge to the corner and puts the count in the button's name.",
+          "On an icon, give the `IconButton` a `count`; it pins the Badge to the corner and puts the count in the button's name.",
           "A `count` above 99 reads `99+`.",
           "Show a Badge only when there is something to count: a `count` of 0 still draws a `0`, so leave it out instead.",
           "A tinted label with words in it is a `Pill`, not a Badge.",
@@ -156,9 +156,10 @@ export const content: ComponentSection = {
       pairs: ["Pill/Status", "Pill/Link"],
       usage: {
         do: [
-          "Choose `tone` by meaning: `emerald` for done or good, `amber` for waiting or at risk, `red` for failed, `slate` for neutral or draft; `blue`, `sky` and `violet` for kinds and categories.",
+          "Choose `tone` by meaning: `positive` for done or good, `warn` for waiting or at risk, `danger` for failed, `neutral` (the default) for a draft or no state, `info` for a note; `accent` for a kind or category that is none of those.",
+          "`size` is `sm`, `md` (default) or `lg`; with none, a Pill takes the size of the `Card`, `ListRow` or `Table` it sits in.",
           "`dot` adds a leading dot in the Pill's colour; `round` swaps the rounded-square corners for a full pill shape. Use one look across a view.",
-          '`label` makes a two-tone `label: value` pill (`<Pill label="Weight">72 kg</Pill>`): the label keeps the tone\'s tint and the children sit on the surface beside it. Keep the label to a word or two.',
+          '`name` makes a two-tone `name: value` pill (`<Pill name="Weight">72 kg</Pill>`): the name keeps the tone\'s tint and the children sit on the surface beside it. Keep the name to a word or two.',
           "`onRemove` adds an x button after the text, for a chip the reader can drop (an attachment, a filter); `removeLabel` names it (`Remove invoice.pdf`) and is required with it. On a link or button Pill the x is a separate button beside it, never nested inside.",
           "A Pill that goes somewhere takes `href` (`external` for a new tab; an in-app one goes through your router's `Link` on `LinkProvider`); one that does something takes `onClick`.",
           "`title` is a native tooltip for detail the short label leaves out; it is not shown on touch or to a keyboard, so never put anything a reader needs only there.",

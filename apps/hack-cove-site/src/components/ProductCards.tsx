@@ -18,10 +18,10 @@ import { site } from "../content/site";
 import type { Product, Status } from "../content/site";
 
 const STATUS = {
-  available: { label: "Available now", tone: "emerald" },
-  "early-development": { label: "In early development", tone: "amber" },
-  "coming-soon": { label: "Coming soon", tone: "amber" },
-} as const satisfies Record<Status, { label: string; tone: "emerald" | "amber" }>;
+  available: { label: "Available now", tone: "positive" },
+  "early-development": { label: "In early development", tone: "warn" },
+  "coming-soon": { label: "Coming soon", tone: "warn" },
+} as const satisfies Record<Status, { label: string; tone: "positive" | "warn" }>;
 
 function ActionButton({ action, size }: Pick<Product, "action"> & { size?: "lg" }) {
   if (!action) return null;

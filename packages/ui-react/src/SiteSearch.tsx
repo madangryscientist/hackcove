@@ -231,9 +231,8 @@ export function SiteSearch({
           aria-haspopup="dialog"
           aria-keyshortcuts="Control+K Meta+K"
           onClick={openFrom}
-        >
-          <Icon name="search" size="sm" />
-        </IconButton>
+          icon="search"
+        />
       </span>
       {open && (
         <Dialog title={label} size="md" onClose={close}>

@@ -158,7 +158,7 @@ export const DoRowStatus: S = {
         <TableRow tone="danger">
           <TableCell tone="strong">Gym</TableCell>
           <TableCell>
-            <Pill tone="red">Failed</Pill>
+            <Pill tone="danger">Failed</Pill>
           </TableCell>
           <TableCell align="end" numeric>
             R 349.00

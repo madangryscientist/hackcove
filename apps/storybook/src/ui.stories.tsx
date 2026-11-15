@@ -19,12 +19,12 @@ export const Pills: S = {
   render: () => (
     <div className="flex gap-2">
       <Pill>slate</Pill>
-      <Pill tone="amber">amber</Pill>
-      <Pill tone="emerald">emerald</Pill>
-      <Pill tone="blue">blue</Pill>
-      <Pill tone="red">red</Pill>
-      <Pill tone="violet">violet</Pill>
-      <Pill tone="sky">sky</Pill>
+      <Pill tone="warn">amber</Pill>
+      <Pill tone="positive">emerald</Pill>
+      <Pill tone="info">blue</Pill>
+      <Pill tone="danger">red</Pill>
+      <Pill tone="accent">violet</Pill>
+      <Pill tone="info">sky</Pill>
     </div>
   ),
 };
@@ -32,13 +32,13 @@ export const Pills: S = {
 export const PillsInteractive: S = {
   render: () => (
     <div className="flex items-center gap-2">
-      <Pill href="#flakes" tone="amber" round>
+      <Pill href="#flakes" tone="warn" round>
         flaky
       </Pill>
-      <Pill href="/flakes" tone="violet">
+      <Pill href="/flakes" tone="accent">
         router link
       </Pill>
-      <Pill onClick={() => undefined} tone="sky" dot>
+      <Pill onClick={() => undefined} tone="info" dot>
         button
       </Pill>
     </div>
@@ -48,22 +48,22 @@ export const PillsRound: S = {
   render: () => (
     <div className="flex gap-2">
       <Pill round>slate</Pill>
-      <Pill tone="amber" round>
+      <Pill tone="warn" round>
         amber
       </Pill>
-      <Pill tone="emerald" round>
+      <Pill tone="positive" round>
         emerald
       </Pill>
-      <Pill tone="blue" round>
+      <Pill tone="info" round>
         blue
       </Pill>
-      <Pill tone="red" round>
+      <Pill tone="danger" round>
         red
       </Pill>
-      <Pill tone="violet" round>
+      <Pill tone="accent" round>
         violet
       </Pill>
-      <Pill tone="sky" round dot>
+      <Pill tone="info" round dot>
         sky
       </Pill>
     </div>
@@ -73,22 +73,22 @@ export const PillsWithDot: S = {
   render: () => (
     <div className="flex gap-2">
       <Pill dot>slate</Pill>
-      <Pill tone="amber" dot>
+      <Pill tone="warn" dot>
         amber
       </Pill>
-      <Pill tone="emerald" dot>
+      <Pill tone="positive" dot>
         emerald
       </Pill>
-      <Pill tone="blue" dot>
+      <Pill tone="info" dot>
         blue
       </Pill>
-      <Pill tone="red" dot>
+      <Pill tone="danger" dot>
         red
       </Pill>
-      <Pill tone="violet" dot>
+      <Pill tone="accent" dot>
         violet
       </Pill>
-      <Pill tone="sky" dot>
+      <Pill tone="info" dot>
         sky
       </Pill>
     </div>

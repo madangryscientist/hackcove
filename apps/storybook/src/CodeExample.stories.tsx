@@ -42,7 +42,7 @@ export const LongCode: S = {
     <div className="max-w-sm">
       <CodeExample
         code={
-          '<Button variant="outline" tone="danger" size="sm" busyLabel="Deleting the build…">Delete build</Button>'
+          '<Button variant="outline" tone="danger" size="sm" busy={deleting && "Deleting the build…"}>Delete build</Button>'
         }
       >
         <Button variant="outline" tone="danger" size="sm">
@@ -61,7 +61,7 @@ export const Copy: S = {
       <CodeExample
         copy
         code={
-          '<Button variant="outline" tone="danger" size="sm" busyLabel="Deleting the build…">Delete build</Button>'
+          '<Button variant="outline" tone="danger" size="sm" busy={deleting && "Deleting the build…"}>Delete build</Button>'
         }
       >
         <Button variant="outline" tone="danger" size="sm">

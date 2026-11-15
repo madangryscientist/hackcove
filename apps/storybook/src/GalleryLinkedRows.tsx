@@ -72,7 +72,7 @@ export function GalleryLinkedRows() {
             </Button>
           </Stack>
         </Card>
-        <Card href="#shot-10" title="Dashboard" badge={<Pill tone="amber">Flaky</Pill>}>
+        <Card href="#shot-10" title="Dashboard" badge={<Pill tone="warn">Flaky</Pill>}>
           <Text tone="muted">A link card with a badge.</Text>
         </Card>
         <Card title="Flaky" attention>

@@ -3,6 +3,7 @@ import {
   createContext,
   type ReactElement,
   type ReactNode,
+  type Ref,
   useContext,
   useMemo,
 } from "react";
@@ -99,6 +100,7 @@ type AppLinkProps = {
   rel?: string | undefined;
   title?: string | undefined;
   external?: boolean | undefined;
+  ref?: Ref<HTMLAnchorElement> | undefined;
 } & Omit<ComponentPropsWithoutRef<"a">, "href" | "className" | "children" | "aria-current">;
 
 /**

@@ -172,12 +172,12 @@ test("a copy button copies the code exactly, by keyboard, and shows copied", asy
   });
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/iframe.html?id=text-code--copy&viewMode=story");
-  const button = page.getByRole("button", { name: "copy", exact: true });
+  const button = page.getByRole("button", { name: "Copy", exact: true });
   await button.focus();
   await expect(button).toBeFocused();
   await page.keyboard.press("Enter");
-  await expect(button.getByText("copied", { exact: true })).toBeVisible();
-  await expect(page.getByRole("status")).toHaveText("copied");
+  await expect(button.getByText("Copied", { exact: true })).toBeVisible();
+  await expect(page.getByRole("status")).toHaveText("Copied");
   await expect(button).toBeFocused();
   // Wrapped onto several lines on screen, yet one unbroken line on the clipboard.
   await expect(page.locator("body")).toHaveAttribute("data-written", COMMAND);

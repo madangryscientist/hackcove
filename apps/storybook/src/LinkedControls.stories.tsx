@@ -38,7 +38,7 @@ export const ListRowWithControls: S = {
         >
           Grace Hopper
         </ListRow>
-        <ListRow divided href="#ada" trailing={<Pill tone="amber">pending</Pill>}>
+        <ListRow divided href="#ada" trailing={<Pill tone="warn">pending</Pill>}>
           Ada Lovelace
         </ListRow>
       </Card>
@@ -126,7 +126,7 @@ export const TableRowWithControls: S = {
 export const CardWithAction: S = {
   render: () => (
     <CardGrid>
-      <Card href="#shot-1" title="Dashboard" status={<Pill tone="amber">changed</Pill>}>
+      <Card href="#shot-1" title="Dashboard" status={<Pill tone="warn">changed</Pill>}>
         <Stack>
           <Text tone="muted">Open the diff for this shot.</Text>
           <TextLink href="#shot-1-history">History</TextLink>

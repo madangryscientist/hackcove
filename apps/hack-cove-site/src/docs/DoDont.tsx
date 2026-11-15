@@ -4,18 +4,18 @@ import { pairOf } from "./pairs.js";
 import type { DocStory } from "./stories.js";
 
 const SIDE = {
-  emerald: "Do",
-  red: "Don't",
+  positive: "Do",
+  danger: "Don't",
 } as const;
 
 /** One side: a pill, the framed example, its caption. Both sides are this, so they line up. */
-function Side({ story, tone }: { story: DocStory; tone: "emerald" | "red" }) {
+function Side({ story, tone }: { story: DocStory; tone: "positive" | "danger" }) {
   return (
     <Stack gap="xs">
       <div>
         <Pill tone={tone}>{SIDE[tone]}</Pill>
       </div>
-      <Example of={story.id} copy={tone === "emerald"} />
+      <Example of={story.id} copy={tone === "positive"} />
     </Stack>
   );
 }
@@ -32,15 +32,15 @@ export function DoDont({ of }: { of: string }) {
   }
   if (right === undefined || wrong === undefined) {
     return right ? (
-      <Side story={right} tone="emerald" />
+      <Side story={right} tone="positive" />
     ) : (
-      wrong && <Side story={wrong} tone="red" />
+      wrong && <Side story={wrong} tone="danger" />
     );
   }
   return (
     <Stack gap="md">
-      <Side story={right} tone="emerald" />
-      <Side story={wrong} tone="red" />
+      <Side story={right} tone="positive" />
+      <Side story={wrong} tone="danger" />
     </Stack>
   );
 }

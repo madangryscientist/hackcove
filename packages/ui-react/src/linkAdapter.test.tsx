@@ -35,11 +35,7 @@ const PARTS: Array<[string, Part]> = [
   [
     "IconButton",
     {
-      ui: (
-        <IconButton href="/to" label="Settings">
-          x
-        </IconButton>
-      ),
+      ui: <IconButton href="/to" label="Settings" icon="close" />,
       name: "Settings",
     },
   ],

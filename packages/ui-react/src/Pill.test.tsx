@@ -10,7 +10,7 @@ const follows = (a: Node, b: Node) =>
 describe("Pill label", () => {
   it("reads label: value, the colon there for a screen reader", () => {
     render(
-      <Pill label="Weight" tone="amber">
+      <Pill name="Weight" tone="warn">
         72 kg
       </Pill>,
     );
@@ -22,7 +22,7 @@ describe("Pill label", () => {
 
   it("makes the whole label: value pill one link", () => {
     render(
-      <Pill label="Sleep" href="/sleep">
+      <Pill name="Sleep" href="/sleep">
         7 h
       </Pill>,
     );
@@ -36,7 +36,7 @@ describe("Pill label", () => {
 describe("Pill onRemove", () => {
   it("adds an x button named and titled by removeLabel after the text", () => {
     render(
-      <Pill onRemove={() => undefined} removeLabel="Remove invoice.pdf" tone="sky">
+      <Pill onRemove={() => undefined} removeLabel="Remove invoice.pdf" tone="info">
         invoice.pdf
       </Pill>,
     );
@@ -103,7 +103,7 @@ describe("Pill onRemove", () => {
 
   it("combines with label: the x reads after the value", () => {
     render(
-      <Pill label="File" onRemove={() => undefined} removeLabel="Remove file">
+      <Pill name="File" onRemove={() => undefined} removeLabel="Remove file">
         a.pdf
       </Pill>,
     );

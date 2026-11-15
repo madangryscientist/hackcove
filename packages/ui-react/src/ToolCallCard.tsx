@@ -4,9 +4,9 @@ import { Pill, type PillTone } from "./Pill.js";
 import type { Passthrough } from "./props.js";
 
 const STATUS: Record<"running" | "done" | "error", { word: string; tone: PillTone }> = {
-  running: { word: "Running", tone: "slate" },
-  done: { word: "Done", tone: "emerald" },
-  error: { word: "Failed", tone: "red" },
+  running: { word: "Running", tone: "neutral" },
+  done: { word: "Done", tone: "positive" },
+  error: { word: "Failed", tone: "danger" },
 };
 
 /**

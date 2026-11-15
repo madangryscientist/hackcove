@@ -35,9 +35,7 @@ function Row({ size }: { size: Size }) {
       <Button data-control="Button href" href="#heights" size={size}>
         Link
       </Button>
-      <IconButton data-control="IconButton" label="Icon button" size={size}>
-        +
-      </IconButton>
+      <IconButton data-control="IconButton" label="Icon button" size={size} icon="plus" />
       <SegmentedControl
         data-control="SegmentedControl"
         label="Range"

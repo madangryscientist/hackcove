@@ -106,10 +106,10 @@ export const DoRows: S = {
         </FilterGroup>
       }
     >
-      <Card as="article" title="Naledi Mokoena" status={<Pill tone="emerald">Accepted</Pill>}>
+      <Card as="article" title="Naledi Mokoena" status={<Pill tone="positive">Accepted</Pill>}>
         <Text>Q-1042 · R 1 240 / mo</Text>
       </Card>
-      <Card as="article" title="Pieter van Wyk" status={<Pill tone="slate">Sent</Pill>}>
+      <Card as="article" title="Pieter van Wyk" status={<Pill tone="neutral">Sent</Pill>}>
         <Text>Q-1041 · R 860 / mo</Text>
       </Card>
     </ListLayout>

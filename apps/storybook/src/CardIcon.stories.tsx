@@ -13,7 +13,7 @@ export const Icon: S = {
       <Card icon="diff" title="Visual diffs">
         <Text tone="muted">Every changed pixel, side by side with the approved screenshot.</Text>
       </Card>
-      <Card icon="review" title="Review" status={<Pill tone="emerald">New</Pill>}>
+      <Card icon="review" title="Review" status={<Pill tone="positive">New</Pill>}>
         <Text tone="muted">Approve or reject each change from the pull request.</Text>
       </Card>
       <Card icon="self-host" title="Self-host">

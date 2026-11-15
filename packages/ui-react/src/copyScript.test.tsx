@@ -68,7 +68,7 @@ describe("copyScript", () => {
     await press(button);
     expect(writeText).toHaveBeenCalledExactlyOnceWith("bun add x");
     expect(button.hasAttribute("data-copied")).toBe(true);
-    expect(statusOf(button)).toBe("copied");
+    expect(statusOf(button)).toBe("Copied");
   });
 
   it("clears data-copied when the copied label's animation ends", async () => {
@@ -103,7 +103,7 @@ describe("copyScript", () => {
     expect(button.hasAttribute("data-copied")).toBe(true);
     const second = button.nextElementSibling?.firstChild;
     expect(second).not.toBe(first);
-    expect(statusOf(button)).toBe("copied");
+    expect(statusOf(button)).toBe("Copied");
   });
 
   it("copies a code block's code exactly", async () => {
@@ -169,7 +169,7 @@ describe("copyScript", () => {
     await press(button);
     expect(writeText).toHaveBeenCalledExactlyOnceWith("once");
     expect(button.hasAttribute("data-copied")).toBe(true);
-    expect(statusOf(button)).toBe("copied");
+    expect(statusOf(button)).toBe("Copied");
   });
 
   it("copies once when the script hears the click before React does", async () => {
@@ -212,7 +212,7 @@ describe("copyScript", () => {
     const node = <CopyButton text="early" />;
     const container = staticPage(node);
     await press(buttonOf(container));
-    expect(statusOf(buttonOf(container))).toBe("copied");
+    expect(statusOf(buttonOf(container))).toBe("Copied");
     await act(async () => {
       hydrateRoot(container, node, { onRecoverableError: (e) => errors.push(e) });
     });

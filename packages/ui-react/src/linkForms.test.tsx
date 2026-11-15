@@ -76,9 +76,7 @@ describe("Card href", () => {
 describe("IconButton href", () => {
   it("is an anchor with the button's classes, an accessible name and a title", () => {
     const out = renderToStaticMarkup(
-      <IconButton href="/settings" label="Settings" variant="ghost">
-        x
-      </IconButton>,
+      <IconButton href="/settings" label="Settings" variant="ghost" icon="close" />,
     );
     expect(out.startsWith("<a ")).toBe(true);
     expect(out).toContain('href="/settings"');
@@ -93,16 +91,8 @@ describe("IconButton href", () => {
 
   it("badge pins a count to the corner and names it, on a link and on a button", () => {
     for (const out of [
-      renderToStaticMarkup(
-        <IconButton href="/alerts" label="Alerts" badge={3}>
-          x
-        </IconButton>,
-      ),
-      renderToStaticMarkup(
-        <IconButton label="Alerts" badge={3}>
-          x
-        </IconButton>,
-      ),
+      renderToStaticMarkup(<IconButton href="/alerts" label="Alerts" count={3} icon="close" />),
+      renderToStaticMarkup(<IconButton label="Alerts" count={3} icon="close" />),
     ]) {
       expect(out).toContain('aria-label="Alerts, 3"');
       expect(out).toContain('title="Alerts, 3"');
@@ -113,27 +103,17 @@ describe("IconButton href", () => {
   });
 
   it("shows no badge at 0 or without one, and caps above 99", () => {
-    const zero = renderToStaticMarkup(
-      <IconButton label="Alerts" badge={0}>
-        x
-      </IconButton>,
-    );
+    const zero = renderToStaticMarkup(<IconButton label="Alerts" count={0} icon="close" />);
     expect(zero).not.toContain("absolute");
     expect(zero).toContain('aria-label="Alerts"');
-    expect(
-      renderToStaticMarkup(
-        <IconButton label="Alerts" badge={120}>
-          x
-        </IconButton>,
-      ),
-    ).toContain("99+");
+    expect(renderToStaticMarkup(<IconButton label="Alerts" count={120} icon="close" />)).toContain(
+      "99+",
+    );
   });
 
   it("passes data-* and aria-* to the anchor", () => {
     const out = renderToStaticMarkup(
-      <IconButton href="/x" label="L" data-testid="gear" aria-describedby="d">
-        x
-      </IconButton>,
+      <IconButton href="/x" label="L" data-testid="gear" aria-describedby="d" icon="close" />,
     );
     expect(out).toContain('data-testid="gear"');
     expect(out).toContain('aria-describedby="d"');
@@ -150,7 +130,7 @@ describe("Pill href and onClick", () => {
 
   it("href makes it an anchor with the tone, a hover dim and the focus ring", () => {
     const out = renderToStaticMarkup(
-      <Pill href="/flakes" tone="amber" round>
+      <Pill href="/flakes" tone="warn" round>
         flaky
       </Pill>,
     );

@@ -9,10 +9,10 @@ const clipboard = (page: import("@playwright/test").Page) =>
 
 /** After a copy: the copied label shows, the idle one hides, the name stays, the region says it. */
 async function expectCopied(button: import("@playwright/test").Locator): Promise<void> {
-  await expect(button.getByText("copied", { exact: true })).toBeVisible();
-  await expect(button.getByText("copy", { exact: true })).toBeHidden();
-  await expect(button).toHaveAccessibleName("copy");
-  await expect(button.locator("+ [data-copy-status]")).toHaveText("copied");
+  await expect(button.getByText("Copied", { exact: true })).toBeVisible();
+  await expect(button.getByText("Copy", { exact: true })).toBeHidden();
+  await expect(button).toHaveAccessibleName("Copy");
+  await expect(button.locator("+ [data-copy-status]")).toHaveText("Copied");
 }
 
 test("on /ui/button/ the first example's copy button copies its source and shows copied, twice", async ({
@@ -21,8 +21,8 @@ test("on /ui/button/ the first example's copy button copies its source and shows
   await page.goto("/ui/button/");
   const figure = page.locator("figure", { has: page.locator("pre") }).first();
   const button = figure.locator("button[data-copy-text]");
-  await expect(button).toHaveAccessibleName("copy");
-  await expect(button.getByText("copied", { exact: true })).toBeHidden();
+  await expect(button).toHaveAccessibleName("Copy");
+  await expect(button.getByText("Copied", { exact: true })).toBeHidden();
   const source = await figure.locator("pre").evaluate((el) => el.textContent ?? "");
   expect(source.length).toBeGreaterThan(0);
   await button.click();
@@ -69,7 +69,7 @@ test("on /ui/button/ every code example has a named copy button reached by Tab, 
     .getByText("Don't", { exact: true })
     .count();
   expect(examples).toBeGreaterThan(donts);
-  const buttons = page.locator("figure").getByRole("button", { name: "copy" });
+  const buttons = page.locator("figure").getByRole("button", { name: "Copy" });
   await expect(buttons).toHaveCount(examples - donts);
 
   // Tab through the page and collect the copy buttons that take focus.

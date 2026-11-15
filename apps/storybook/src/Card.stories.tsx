@@ -20,7 +20,7 @@ type S = StoryObj;
 /** `status` puts a Pill directly beside the title; `actions` stays at the far end. */
 export const DoStatus: S = {
   render: () => (
-    <Card title="PixelSlash" status={<Pill tone="amber">Coming soon</Pill>}>
+    <Card title="PixelSlash" status={<Pill tone="warn">Coming soon</Pill>}>
       <Text tone="muted">Visual review for every pull request.</Text>
     </Card>
   ),
@@ -31,7 +31,7 @@ export const DontStatus: S = {
   render: () => (
     <Card>
       <SubsectionHeading>PixelSlash</SubsectionHeading>
-      <Pill tone="amber">Coming soon</Pill>
+      <Pill tone="warn">Coming soon</Pill>
       <Text tone="muted">Visual review for every pull request.</Text>
     </Card>
   ),
@@ -69,13 +69,13 @@ export const DontSpacing: S = {
 export const Status: S = {
   render: () => (
     <div className="flex max-w-md flex-col gap-4">
-      <Card title="Hack Cove UI" status={<Pill tone="emerald">Available</Pill>}>
+      <Card title="Hack Cove UI" status={<Pill tone="positive">Available</Pill>}>
         <Text tone="muted">Components and themes, designed together.</Text>
       </Card>
       <Card
         bar
         title="PixelSlash"
-        status={<Pill tone="amber">Coming soon</Pill>}
+        status={<Pill tone="warn">Coming soon</Pill>}
         actions={
           <Button size="sm" variant="outline">
             Join
@@ -184,7 +184,7 @@ export const Tones: S = {
 export const Link: S = {
   render: () => (
     <CardGrid>
-      <Card href="#shot-1" title="Dashboard" status={<Pill tone="amber">changed</Pill>}>
+      <Card href="#shot-1" title="Dashboard" status={<Pill tone="warn">changed</Pill>}>
         <Text tone="muted">Open the diff for this shot.</Text>
       </Card>
       <Card href="#shot-2" title="Settings">

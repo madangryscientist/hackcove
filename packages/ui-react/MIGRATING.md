@@ -82,6 +82,30 @@ TypeScript does not flag these:
 - A `NotFound`, `ErrorPage`, `Offline` or `Forbidden` that had no `homeHref` gains "Back to home".
 - `Maintenance` draws no home link, even where it had a `homeHref`.
 
+### Buttons and pills
+
+| Old | New | |
+| --- | --- | --- |
+| `Button tone="default"`, `IconButton tone="default"` | leave `tone` out: `neutral` is the default | codemod |
+| `IconButton badge={3}` | `IconButton count={3}` | codemod |
+| `<IconButton label="Close"><Icon name="close" /></IconButton>` | `<IconButton label="Close" icon="close" />`: `icon` is required and there are no children | codemod for an `<Icon name>` child, else by hand |
+| an icon as a `Button`'s first child | `<Button icon="plus">Add a line</Button>` | by hand |
+| `busy={saving} busyLabel="Saving"` | `busy={saving && "Saving"}` | codemod |
+| `Pill tone="slate"` | leave `tone` out (`neutral`) | codemod |
+| `Pill tone="amber"`, `"emerald"`, `"blue"`, `"red"`, `"violet"` | `"warn"`, `"positive"`, `"info"`, `"danger"`, `"accent"` | codemod |
+| `Pill tone="sky"` | `tone="info"` (the blue tint) | codemod, and reported |
+| `Pill label="Weight"` (the name half) | `Pill name="Weight"` | codemod |
+| any `div` attribute on `ButtonGroup` | only `id`, `data-*` and `aria-*` | by hand |
+
+New, nothing to change: `Button` takes `ref`; `Pill` takes `size`. A `Button`, `IconButton` or
+`Pill` with no `size` takes the size of the `Card`, `ListRow` or `Table` it sits in, else `md`.
+
+TypeScript does not flag these:
+
+- `CopyButton`'s default words are `Copy` and `Copied` (were `copy` and `copied`), so an e2e or a
+  test that finds it by the name `copy` needs the capital.
+- `Pill tone="sky"` drew its own sky tint; `info` is the blue one.
+
 ## 0.9 → 0.10: Avatar `2xl` is 64px, the old 96px is `3xl`
 
 `Avatar` gained a 64px size. The sizes keep their order (`xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`),

@@ -78,7 +78,7 @@ export function GalleryData() {
           </ListRow>
         </div>
       </Card>
-      <Card title="PixelSlash" status={<Pill tone="amber">Coming soon</Pill>}>
+      <Card title="PixelSlash" status={<Pill tone="warn">Coming soon</Pill>}>
         Status beside the title.
       </Card>
       <Card size="sm" tone="positive" title="Forecast">
@@ -86,7 +86,7 @@ export function GalleryData() {
       </Card>
       <Card tone="warn">A toned data panel.</Card>
       <InsetAndNested />
-      <Card href="#shot" title="Dashboard" status={<Pill tone="amber">changed</Pill>}>
+      <Card href="#shot" title="Dashboard" status={<Pill tone="warn">changed</Pill>}>
         A card that is one link.
       </Card>
       <Callout
@@ -112,12 +112,12 @@ export function GalleryData() {
       <Timeline label="Status history">
         <TimelineItem
           tone="positive"
-          title={<Pill tone="emerald">accepted</Pill>}
+          title={<Pill tone="positive">accepted</Pill>}
           time="12 Oct 2026, 09:14"
         >
           Client confirmed by phone.
         </TimelineItem>
-        <TimelineItem title={<Pill tone="amber">sent</Pill>} time="10 Oct 2026, 16:02" />
+        <TimelineItem title={<Pill tone="warn">sent</Pill>} time="10 Oct 2026, 16:02" />
       </Timeline>
     </div>
   );
@@ -147,7 +147,7 @@ function GalleryStaticRows() {
         href="#dashboard"
         leadingWidth="thumbnail"
         leading={<img alt="" src={samplePhoto} />}
-        trailing={<Pill tone="amber">changed</Pill>}
+        trailing={<Pill tone="warn">changed</Pill>}
       >
         <Text>Thumbnail row</Text>
         <Caption>A block label under the title.</Caption>

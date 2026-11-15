@@ -62,6 +62,6 @@ describe("CodeBlock", () => {
 
   it("with `copy` has a button named by its label", () => {
     render(<CodeBlock copy>x</CodeBlock>);
-    expect(screen.getByRole("button", { name: "copy" }).getAttribute("type")).toBe("button");
+    expect(screen.getByRole("button", { name: "Copy" }).getAttribute("type")).toBe("button");
   });
 });

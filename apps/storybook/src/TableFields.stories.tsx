@@ -66,9 +66,13 @@ export const FieldsInRows: S = {
               </TableCell>
               <TableCell align="end">
                 {m.custom && (
-                  <IconButton label="Reset to default" size="sm" variant="ghost" tone="danger">
-                    ✕
-                  </IconButton>
+                  <IconButton
+                    label="Reset to default"
+                    size="sm"
+                    variant="ghost"
+                    tone="danger"
+                    icon="close"
+                  />
                 )}
               </TableCell>
             </TableRow>

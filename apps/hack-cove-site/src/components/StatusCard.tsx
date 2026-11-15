@@ -10,8 +10,8 @@ import {
 } from "@hackcove/ui-react";
 
 const STATUS = {
-  available: { label: "Available", tone: "emerald" },
-  "coming-soon": { label: "Coming soon", tone: "amber" },
+  available: { label: "Available", tone: "positive" },
+  "coming-soon": { label: "Coming soon", tone: "warn" },
 } as const;
 
 /**

@@ -43,9 +43,9 @@ describe("Button count", () => {
     expect(screen.getByRole("link", { name: counted("Comments", 5) })).not.toBeNull();
   });
 
-  it("drops the count while busy, since busyLabel replaces the content", () => {
+  it("drops the count while busy, since the busy label replaces the content", () => {
     render(
-      <Button busy busyLabel="Loading…" count={3}>
+      <Button busy="Loading…" count={3}>
         Splits
       </Button>,
     );
