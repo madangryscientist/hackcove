@@ -64,7 +64,10 @@ test("on /ui/button/ every code example has a named copy button reached by Tab, 
 }) => {
   await page.goto("/ui/button/");
   const examples = await page.locator("figure", { has: page.locator("pre") }).count();
-  const donts = await page.getByText("Don't", { exact: true }).count();
+  const donts = await page
+    .getByRole("region", { name: "Overview" })
+    .getByText("Don't", { exact: true })
+    .count();
   expect(examples).toBeGreaterThan(donts);
   const buttons = page.locator("figure").getByRole("button", { name: "copy" });
   await expect(buttons).toHaveCount(examples - donts);

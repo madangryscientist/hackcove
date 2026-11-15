@@ -14,24 +14,26 @@ export const content: ComponentSection = {
       whenToUse: "A titled block of related content: a record, a status, a list, an empty state.",
       pairs: ["Card/Status", "Card/Spacing"],
       stories: ["CardBadge", "CardFill", "CardIcon", "CardInset", "CardTitle"],
-      usage: [
-        "Name the Card with `title`; add a `count` or a `status` and they sit beside the title.",
-        '`titleStyle="name"` sets the title in sentence case and the primary ink, for a card that is a thing with a name (a shop, a listing, an event). The default `overline` is the small uppercase label of a panel (Status, Activity). Count, status, actions and `bar` work with both.',
-        "`actions` sit at the far end of the header; use `bar` to put the header in a tinted strip.",
-        "Space several Cards with a `Stack` or a `CardGrid`; never stack them with nothing between.",
-        "`flush` is for a table that runs edge to edge, and it needs a `bar` for its title.",
-        "A Card with `href` is one link; a `TextLink` or `Button` inside it sits above that link and is clickable on its own, and a click elsewhere on the card follows the link.",
-        "`footer` is a strip across the bottom for the card's own actions or a total; it stays at the foot of a stretched card in a `CardGrid`.",
-        '`CardGrid` takes `columns` 2, 3 or 4, `"2:1"` or `"1:2"` for unequal columns, or `columns="auto"` with `minWidth` `sm` or `md` to fill by width; `align="start"` stops cards stretching to the tallest in their row.',
-        '`inset` is a band across the card, edge to edge inside its padding, under the title: a `ProgressBar` that runs the card\'s full width. A bordered sub-card inside a card is a nested `Card tone="neutral"`, not a hand-built box.',
-        "`dashed` is the empty state.",
-        '`badge` pins a `Pill` to the top-right corner, over the content, on a panel or a link card: a category (`Pill tone="sky"`) or a flag on the thing itself.',
-        '`attention` draws the strong warn edge round a card that needs a look (a flaky shot, a failing check); add `tone="warn"` for the warn surface too. It does nothing on a `dashed` card.',
-        "`icon` puts one of the library's icons above the title at feature size, in the accent colour: the mark of a feature card. Pick it by the idea it stands for; it is ignored on a `bar`, `flush` or `dashed` card.",
-        "`size` sets the padding: `sm` for a dense dashboard, `md` (default), `lg` for a card that stands alone.",
-        "A Card with an `id` is an anchor target: a link to `#id` scrolls it clear of the sticky header and outlines it in violet while it is the target.",
-        "`fill` makes a card take its parent's full height, for a panel in a fixed-height layout such as a sheet over a map; the title or bar stays put and the body scrolls. Give the parent a height. Put links or controls in the body, so a keyboard can reach and scroll it.",
-      ],
+      usage: {
+        do: [
+          "Name the Card with `title`; add a `count` or a `status` and they sit beside the title.",
+          '`titleStyle="name"` sets the title in sentence case and the primary ink, for a card that is a thing with a name (a shop, a listing, an event). The default `overline` is the small uppercase label of a panel (Status, Activity). Count, status, actions and `bar` work with both.',
+          "`actions` sit at the far end of the header; use `bar` to put the header in a tinted strip.",
+          "Space several Cards with a `Stack` or a `CardGrid`; never stack them with nothing between.",
+          "`flush` is for a table that runs edge to edge, and it needs a `bar` for its title.",
+          "A Card with `href` is one link; a `TextLink` or `Button` inside it sits above that link and is clickable on its own, and a click elsewhere on the card follows the link.",
+          "`footer` is a strip across the bottom for the card's own actions or a total; it stays at the foot of a stretched card in a `CardGrid`.",
+          '`CardGrid` takes `columns` 2, 3 or 4, `"2:1"` or `"1:2"` for unequal columns, or `columns="auto"` with `minWidth` `sm` or `md` to fill by width; `align="start"` stops cards stretching to the tallest in their row.',
+          '`inset` is a band across the card, edge to edge inside its padding, under the title: a `ProgressBar` that runs the card\'s full width. A bordered sub-card inside a card is a nested `Card tone="neutral"`, not a hand-built box.',
+          "`dashed` is the empty state.",
+          '`badge` pins a `Pill` to the top-right corner, over the content, on a panel or a link card: a category (`Pill tone="sky"`) or a flag on the thing itself.',
+          '`attention` draws the strong warn edge round a card that needs a look (a flaky shot, a failing check); add `tone="warn"` for the warn surface too. It does nothing on a `dashed` card.',
+          "`icon` puts one of the library's icons above the title at feature size, in the accent colour: the mark of a feature card. Pick it by the idea it stands for; it is ignored on a `bar`, `flush` or `dashed` card.",
+          "`size` sets the padding: `sm` for a dense dashboard, `md` (default), `lg` for a card that stands alone.",
+          "A Card with an `id` is an anchor target: a link to `#id` scrolls it clear of the sticky header and outlines it in violet while it is the target.",
+          "`fill` makes a card take its parent's full height, for a panel in a fixed-height layout such as a sheet over a map; the title or bar stays put and the body scrolls. Give the parent a height. Put links or controls in the body, so a keyboard can reach and scroll it.",
+        ],
+      },
       accessibility: [
         "A Card is a `<section>` by default and its `title` names it (`aria-labelledby` points at the heading); `as` picks another element, e.g. `article`. Your own `aria-label` or `aria-labelledby` wins.",
         "`id`, `data-*` and `aria-*` go on the root element. On a link card too: the link inside it keeps only its own `aria-label`, `aria-labelledby` and `aria-current`, and is named by the card's text.",
@@ -47,11 +49,13 @@ export const content: ComponentSection = {
       summary: "A row that heads a group of work with a dot in its epic's colour and its label.",
       whenToUse: "Heading a group of tasks that share an epic, in a list grouped by `groupByEpic`.",
       pairs: ["ui/EpicGroups"],
-      usage: [
-        "Group the items with `groupByEpic(items, (item) => item.epic)` and put one `EpicHeader` over each group.",
-        "`color` is the epic's own colour, a CSS colour from your data; `label` is the epic's name. The no-epic group has a `null` key: give it a label such as \"No epic\".",
-        "`EpicHeader` is a row of data, not a heading. Title a section with `SectionHeading` or a `Card` `title`.",
-      ],
+      usage: {
+        do: [
+          "Group the items with `groupByEpic(items, (item) => item.epic)` and put one `EpicHeader` over each group.",
+          "`color` is the epic's own colour, a CSS colour from your data; `label` is the epic's name. The no-epic group has a `null` key: give it a label such as \"No epic\".",
+          "`EpicHeader` is a row of data, not a heading. Title a section with `SectionHeading` or a `Card` `title`.",
+        ],
+      },
       accessibility: [
         "The dot is decoration with no text alternative; the `label` carries the meaning, so the colour is never the only signal.",
         "The row is a `<div>`, not a heading element, so it does not appear in a screen reader's heading outline.",
@@ -72,15 +76,17 @@ export const content: ComponentSection = {
         "A person as a round badge of initials, or their photo; an org or team as a square one.",
       whenToUse: "Marking who did something or who owns something, next to their name.",
       pairs: ["Avatar/Identity", "Avatar/Beside"],
-      usage: [
-        "Pass the person's full `name`, the same string everywhere: the colour and the initials are worked out from it, so one person looks the same in every list and header.",
-        "`size` is `xs` (16px, for an inline mention in a line of text), `sm`, `md` (default), `lg`, `xl`, `2xl` (64px) or `3xl` (96px); use `sm` or `md` in a row and a larger one at the head of a profile.",
-        "`src` is the person's photo, as a path your app serves. It replaces the initials, and the Avatar never loads an image from another server on its own, so use your own local image. If the photo fails to load, the initials show instead.",
-        '`shape="square"` is for an org, a team or a project, not a person: rounded corners that scale with the size. Round (the default) is a person.',
-        "`onClick` makes the whole Avatar one button, for a profile or an account menu: it is named by `name`, keeps its shape and takes the focus ring. Without it the Avatar is a mark, and a click handler on it would be one no keyboard can reach.",
-        "Several people as one group is an `AvatarStack`, not a row of Avatars.",
-        "Put the person's name beside the Avatar as text; the Avatar is a mark, not a label.",
-      ],
+      usage: {
+        do: [
+          "Pass the person's full `name`, the same string everywhere: the colour and the initials are worked out from it, so one person looks the same in every list and header.",
+          "`size` is `xs` (16px, for an inline mention in a line of text), `sm`, `md` (default), `lg`, `xl`, `2xl` (64px) or `3xl` (96px); use `sm` or `md` in a row and a larger one at the head of a profile.",
+          "`src` is the person's photo, as a path your app serves. It replaces the initials, and the Avatar never loads an image from another server on its own, so use your own local image. If the photo fails to load, the initials show instead.",
+          '`shape="square"` is for an org, a team or a project, not a person: rounded corners that scale with the size. Round (the default) is a person.',
+          "`onClick` makes the whole Avatar one button, for a profile or an account menu: it is named by `name`, keeps its shape and takes the focus ring. Without it the Avatar is a mark, and a click handler on it would be one no keyboard can reach.",
+          "Several people as one group is an `AvatarStack`, not a row of Avatars.",
+          "Put the person's name beside the Avatar as text; the Avatar is a mark, not a label.",
+        ],
+      },
       accessibility: [
         'Initials are drawn in a `<span>` with `aria-hidden="true"` and a `title` of the name, so a screen reader skips them: the name has to be on the page as text.',
         "With `src` the Avatar is an `<img>` whose `alt` and `title` are the name.",
@@ -106,12 +112,14 @@ export const content: ComponentSection = {
       whenToUse:
         "Who is in something (a team, the reviewers, the people on a page) where one row says it.",
       pairs: ["AvatarStack/Max"],
-      usage: [
-        "Pass `people`, each with the full `name` and an optional local `src`, as for `Avatar`.",
-        "Each avatar overlaps the one before it, in a ring in the page colour that keeps them apart. Draw no ring or overlap of your own.",
-        '`max` shows the first `max` and a "+N" chip of the same size and shape for the rest; leave it off to show everyone.',
-        "`size` and `shape` are `Avatar`'s and apply to every avatar and the chip: `square` for a stack of orgs or teams.",
-      ],
+      usage: {
+        do: [
+          "Pass `people`, each with the full `name` and an optional local `src`, as for `Avatar`.",
+          "Each avatar overlaps the one before it, in a ring in the page colour that keeps them apart. Draw no ring or overlap of your own.",
+          '`max` shows the first `max` and a "+N" chip of the same size and shape for the rest; leave it off to show everyone.',
+          "`size` and `shape` are `Avatar`'s and apply to every avatar and the chip: `square` for a stack of orgs or teams.",
+        ],
+      },
       accessibility: [
         'The stack is one `role="img"` named by the people in it ("Ada Lovelace, Grace Hopper and 3 more"); the avatars inside are hidden from a screen reader.',
         "The +N chip is hidden from a screen reader (the name already counts the rest) and its `title` lists who it stands for.",
@@ -125,12 +133,14 @@ export const content: ComponentSection = {
       summary: "A small red count.",
       whenToUse: "A count of unread or pending things that sits on an icon button.",
       pairs: ["Badge/OnIcon", "Badge/Count"],
-      usage: [
-        "On an icon, give the `IconButton` a `badge` count; it pins the Badge to the corner and puts the count in the button's name.",
-        "A `count` above 99 reads `99+`.",
-        "Show a Badge only when there is something to count: a `count` of 0 still draws a `0`, so leave it out instead.",
-        "A tinted label with words in it is a `Pill`, not a Badge.",
-      ],
+      usage: {
+        do: [
+          "On an icon, give the `IconButton` a `badge` count; it pins the Badge to the corner and puts the count in the button's name.",
+          "A `count` above 99 reads `99+`.",
+          "Show a Badge only when there is something to count: a `count` of 0 still draws a `0`, so leave it out instead.",
+          "A tinted label with words in it is a `Pill`, not a Badge.",
+        ],
+      },
       accessibility: [
         "A Badge is a `<span>` with the number as its text.",
         'Inside an `IconButton`, the Badge is `aria-hidden` and the count is part of the button\'s `aria-label` and `title` ("Alerts, 3"), so it is announced once.',
@@ -144,16 +154,18 @@ export const content: ComponentSection = {
       summary: "A small tinted label for a status or a category.",
       whenToUse: "A short word that says what state or kind something is: paid, draft, flaky.",
       pairs: ["Pill/Status", "Pill/Link"],
-      usage: [
-        "Choose `tone` by meaning: `emerald` for done or good, `amber` for waiting or at risk, `red` for failed, `slate` for neutral or draft; `blue`, `sky` and `violet` for kinds and categories.",
-        "`dot` adds a leading dot in the Pill's colour; `round` swaps the rounded-square corners for a full pill shape. Use one look across a view.",
-        '`label` makes a two-tone `label: value` pill (`<Pill label="Weight">72 kg</Pill>`): the label keeps the tone\'s tint and the children sit on the surface beside it. Keep the label to a word or two.',
-        "`onRemove` adds an x button after the text, for a chip the reader can drop (an attachment, a filter); `removeLabel` names it (`Remove invoice.pdf`) and is required with it. On a link or button Pill the x is a separate button beside it, never nested inside.",
-        "A Pill that goes somewhere takes `href` (or `render` for your router's `Link`, `external` for a new tab); one that does something takes `onClick`.",
-        "`title` is a native tooltip for detail the short label leaves out; it is not shown on touch or to a keyboard, so never put anything a reader needs only there.",
-        "A Pill beside a card's title is the Card's `status`, not a hand-built row.",
-        "A message to read is a `Callout`, and an action is a `Button`.",
-      ],
+      usage: {
+        do: [
+          "Choose `tone` by meaning: `emerald` for done or good, `amber` for waiting or at risk, `red` for failed, `slate` for neutral or draft; `blue`, `sky` and `violet` for kinds and categories.",
+          "`dot` adds a leading dot in the Pill's colour; `round` swaps the rounded-square corners for a full pill shape. Use one look across a view.",
+          '`label` makes a two-tone `label: value` pill (`<Pill label="Weight">72 kg</Pill>`): the label keeps the tone\'s tint and the children sit on the surface beside it. Keep the label to a word or two.',
+          "`onRemove` adds an x button after the text, for a chip the reader can drop (an attachment, a filter); `removeLabel` names it (`Remove invoice.pdf`) and is required with it. On a link or button Pill the x is a separate button beside it, never nested inside.",
+          "A Pill that goes somewhere takes `href` (or `render` for your router's `Link`, `external` for a new tab); one that does something takes `onClick`.",
+          "`title` is a native tooltip for detail the short label leaves out; it is not shown on touch or to a keyboard, so never put anything a reader needs only there.",
+          "A Pill beside a card's title is the Card's `status`, not a hand-built row.",
+          "A message to read is a `Callout`, and an action is a `Button`.",
+        ],
+      },
       accessibility: [
         'A two-tone Pill reads "Weight: 72 kg" to a screen reader (a visually hidden colon follows the label). The x of `onRemove` is a `<button type="button">` with `removeLabel` as its `aria-label` and `title`, with the icon `aria-hidden`.',
         "A plain Pill is a `<span>`; the dot is `aria-hidden`. The tone is colour only, so the text must say the status itself.",
@@ -168,13 +180,17 @@ export const content: ComponentSection = {
       summary: "A numbered list of things to do, in order.",
       whenToUse: "The way into a product: install, log in, run.",
       pairs: ["Steps/Numbers", "Steps/Order"],
-      usage: [
-        "Give each `Step` a `title` and, as its children, one line of detail. A step with only a `title` is fine.",
-        "Do not type the numbers: `Steps` counts them, so a step can sit behind a condition and the rest still run 1, 2, 3.",
-        "For things done in order only. Nothing here is done or current, so it is not a progress indicator.",
-        "A list with no order is a `BulletList`.",
-        'In an empty view, put `Steps` inside the `EmptyState` as the "get started" list.',
-      ],
+      usage: {
+        do: [
+          "Give each `Step` a `title` and, as its children, one line of detail. A step with only a `title` is fine.",
+          "For things done in order only. Nothing here is done or current, so it is not a progress indicator.",
+          "A list with no order is a `BulletList`.",
+          'In an empty view, put `Steps` inside the `EmptyState` as the "get started" list.',
+        ],
+        dont: [
+          "Do not type the numbers: `Steps` counts them, so a step can sit behind a condition and the rest still run 1, 2, 3.",
+        ],
+      },
       accessibility: [
         '`Steps` is an `<ol role="list">` and each `Step` an `<li>`, so a screen reader announces the list and each step\'s position.',
         "The drawn number is `aria-hidden`, so it is not read twice.",
@@ -188,13 +204,15 @@ export const content: ComponentSection = {
       summary: "A vertical list of events on a rail.",
       whenToUse: "A history of what happened and when: status changes, a record's activity.",
       pairs: ["Timeline/Events", "Timeline/NoEvents"],
-      usage: [
-        "Name the list with `label`, and order the `TimelineItem`s yourself, newest or oldest first.",
-        "A `TimelineItem` has a `title` (a `Pill` or a short label), a `time` you have already formatted for the reader, and an optional note as its children.",
-        "`tone` colours the marker dot with the Callout's set (`neutral`, `info`, `positive`, `warn`, `danger`); `neutral` is a plain ring.",
-        "Give the Timeline an `empty` to draw when there are no items; without one it draws nothing.",
-        "Numbered instructions are `Steps`, not a Timeline.",
-      ],
+      usage: {
+        do: [
+          "Name the list with `label`, and order the `TimelineItem`s yourself, newest or oldest first.",
+          "A `TimelineItem` has a `title` (a `Pill` or a short label), a `time` you have already formatted for the reader, and an optional note as its children.",
+          "`tone` colours the marker dot with the Callout's set (`neutral`, `info`, `positive`, `warn`, `danger`); `neutral` is a plain ring.",
+          "Give the Timeline an `empty` to draw when there are no items; without one it draws nothing.",
+          "Numbered instructions are `Steps`, not a Timeline.",
+        ],
+      },
       accessibility: [
         "`Timeline` is an `<ol>` named by `label` (`aria-label`), and each `TimelineItem` is an `<li>`.",
         "The marker dot is `aria-hidden`, so `tone` is colour only: say the outcome in the `title`.",
@@ -209,14 +227,18 @@ export const content: ComponentSection = {
       whenToUse:
         "Detail the person may not need on first sight: a history, an FAQ answer, the fine print.",
       pairs: ["Disclosure/Secondary", "Disclosure/Essential"],
-      usage: [
-        "Give it a `summary` that says what is inside; the `children` are the body. It starts closed; `defaultOpen` starts it open.",
-        "It keeps its own state. Several in a column are independent of each other.",
-        "Do not hide what the person must read to carry on, such as an error or the one thing the page is for.",
-        "`bordered` draws it as a panel for a section that opens in place on a page of cards: a bordered box, the summary a full-width row that fills on hover, the body padded under a hairline.",
-        "A collapsible section header in a list of rows is a `ListRow` with `expanded`, where the caller owns the state.",
-        "It replaces `<details>` and `<summary>`.",
-      ],
+      usage: {
+        do: [
+          "Give it a `summary` that says what is inside; the `children` are the body. It starts closed; `defaultOpen` starts it open.",
+          "It keeps its own state. Several in a column are independent of each other.",
+          "`bordered` draws it as a panel for a section that opens in place on a page of cards: a bordered box, the summary a full-width row that fills on hover, the body padded under a hairline.",
+          "A collapsible section header in a list of rows is a `ListRow` with `expanded`, where the caller owns the state.",
+          "It replaces `<details>` and `<summary>`.",
+        ],
+        dont: [
+          "Do not hide what the person must read to carry on, such as an error or the one thing the page is for.",
+        ],
+      },
       accessibility: [
         "The summary is a real `<button>` with `aria-expanded` and `aria-controls`; Enter and Space toggle it.",
         'The body is a `role="group"` named by the summary, and hidden from assistive tech while closed.',
@@ -230,36 +252,20 @@ export const content: ComponentSection = {
       summary: "Labelled facts, one per row.",
       whenToUse: "A set of facts about one thing: size, status, dates, shortcut keys.",
       pairs: ["KeyValueList/FactsList", "KeyValueList/AlignStart"],
-      usage: [
-        "Put a `KeyValue` with a `label` for each fact; the value is its children.",
-        '`align="end"` is the default: each label at the left and its value right-aligned. `align="start"` puts every value left-aligned in one column beside the labels, which suits long values.',
-        "A value can be any content, such as a `Kbd` for a shortcut.",
-        '`total` closes a column of amounts: a firm rule above it and strong text. `tone` (`muted`, `positive`, `warn`, `danger`, `info`) colours the value on any row; a total that does not reconcile is `total tone="warn"`. Say it in words too, with a sign or "off", since colour alone does not.',
-        "Do not build the rows by hand from a `Cluster`; a grid of records is a `Table`.",
-      ],
+      usage: {
+        do: [
+          "Put a `KeyValue` with a `label` for each fact; the value is its children.",
+          '`align="end"` is the default: each label at the left and its value right-aligned. `align="start"` puts every value left-aligned in one column beside the labels, which suits long values.',
+          "A value can be any content, such as a `Kbd` for a shortcut.",
+          '`total` closes a column of amounts: a firm rule above it and strong text. `tone` (`muted`, `positive`, `warn`, `danger`, `info`) colours the value on any row; a total that does not reconcile is `total tone="warn"`. Say it in words too, with a sign or "off", since colour alone does not.',
+        ],
+        dont: ["Do not build the rows by hand from a `Cluster`; a grid of records is a `Table`."],
+      },
       accessibility: [
         "`KeyValueList` is a `<dl>`; each `KeyValue` is a `<div>` holding a `<dt>` for the label and a `<dd>` for the value, so a screen reader announces them as terms and definitions.",
         "`id`, `data-*` and `aria-*` go on the list and on each row.",
       ],
       api: ["KeyValueList", "KeyValue"],
-    },
-    {
-      slug: "video",
-      name: "Video",
-      summary: "A video with controls, full width.",
-      whenToUse: "Showing a recording or a walkthrough that your app serves.",
-      pairs: ["Video/Captions"],
-      usage: [
-        "`src` is your own video file. It loads only the metadata until it is played, so the page does not pull the whole file.",
-        "Give a `captions` WebVTT file for any video with speech; it is offered as the default track.",
-        "`poster` is the image shown before play; use a local one.",
-        "The children are the text for a browser that cannot play the video.",
-      ],
-      accessibility: [
-        "A native `<video controls>`: play, seek, volume and fullscreen work by keyboard through the browser's controls.",
-        '`captions` adds a `<track kind="captions" default>`, so captions are on by default.',
-      ],
-      api: ["Video"],
     },
     ...mediaPages,
     ...chatPages,
@@ -270,12 +276,14 @@ export const content: ComponentSection = {
       whenToUse:
         "Marking an area of a screenshot or an image: one that is ignored, flagged or picked.",
       pairs: ["OutlineRegion/Label"],
-      usage: [
-        "Put the picture in a `RegionFrame` (`src`, `alt`, and any `<img>` prop such as `onLoad`) and the `OutlineRegion`s inside it; each region places itself over the picture.",
-        "`rect` is the area and `within` the picture's full size, both in the picture's own pixels (its natural size), so the box stays on its area at any width.",
-        "`label` is a short tag in the top-left corner that says what the area is or where it came from. `hatched` stripes the inside, for an area that is left out.",
-        "The outline is the accent colour in every theme; do not draw a box of your own with a raw colour.",
-      ],
+      usage: {
+        do: [
+          "Put the picture in a `RegionFrame` (`src`, `alt`, and any `<img>` prop such as `onLoad`) and the `OutlineRegion`s inside it; each region places itself over the picture.",
+          "`rect` is the area and `within` the picture's full size, both in the picture's own pixels (its natural size), so the box stays on its area at any width.",
+          "`label` is a short tag in the top-left corner that says what the area is or where it came from. `hatched` stripes the inside, for an area that is left out.",
+          "The outline is the accent colour in every theme; do not draw a box of your own with a raw colour.",
+        ],
+      },
       accessibility: [
         "The region takes no pointer events, so it never blocks the picture or a layer drawn over it; the hatch is hidden from assistive tech.",
         "A `label` is plain text and is read out; a region with no label says nothing to a screen reader, so name the areas in text as well when they matter.",

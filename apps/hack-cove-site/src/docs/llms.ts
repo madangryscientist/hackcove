@@ -16,6 +16,15 @@ const fence = (code: string) => `\`\`\`tsx\n${code}\n\`\`\``;
 const captioned = ({ caption, code }: { caption?: string | undefined; code: string }) =>
   caption === undefined ? fence(code) : `${caption}\n${fence(code)}`;
 
+/** The bullets as a `- ` list, one per line. */
+const bullets = (rules: string[]) => rules.map((rule) => `- ${rule}`).join("\n");
+
+/** The Don't section: the `usage.dont` bullets first, then the Don't stories. */
+function dontSectionOf(page: ComponentPage): string {
+  const { dont = [] } = page.usage;
+  return [bullets(dont), dontsOf(page)].filter((part) => part !== "").join("\n\n");
+}
+
 /** Each Don't story: its caption over its code. */
 function dontsOf(page: ComponentPage): string {
   return page.pairs
@@ -61,9 +70,9 @@ function sectionOf(page: ComponentPage): string {
     `When to use: ${page.whenToUse}`,
     `### The one right way\n${captioned(right)}`,
     ...fullPageOf(page),
-    `### Do\n${page.usage.map((rule) => `- ${rule}`).join("\n")}`,
-    `### Don't\n${dontsOf(page)}`,
-    `### Accessibility\n${page.accessibility.map((rule) => `- ${rule}`).join("\n")}`,
+    `### Do\n${bullets(page.usage.do)}`,
+    `### Don't\n${dontSectionOf(page)}`,
+    `### Accessibility\n${bullets(page.accessibility)}`,
     `### Props\n${page.api.map(propsOf).join("\n\n")}`,
     ...functionsOf(page),
   ].join("\n\n");

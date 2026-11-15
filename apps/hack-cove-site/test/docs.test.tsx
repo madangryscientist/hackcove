@@ -18,6 +18,7 @@ import { pairOf } from "../src/docs/pairs";
 import { storyParts } from "../src/docs/source";
 import { GET } from "../src/pages/ui/llms.txt";
 import { generateProps, PROPS_JSON } from "../scripts/generate-props";
+import { dontWorded, opensDont } from "./usageRules";
 
 /** The section ids a page's "On this page" list links to, in the order it lists them. */
 function onThisPageHrefs(slug: string): string[] {
@@ -217,6 +218,36 @@ describe("props.json", () => {
   });
 });
 
+describe("the usage rules", () => {
+  // A do bullet that says what not to use without a don't word: it must read as a do.
+  const framed = componentPageOf("image").usage.do.find((rule) => rule.startsWith("`framed`"));
+
+  test("the framed bullet is still on the Image page", () => {
+    expect(framed).toBeDefined();
+  });
+
+  test.each([
+    ["Never nest a `Container` in a `Container`: the padding doubles.", true],
+    ["Use `TextLink` for every link in running text. Never a bare `<a>`.", true],
+    ["Draw it once: Avoid a second rule under it.", true],
+    ["Don't type the numbers.", true],
+    [framed ?? "", false],
+    ["Fill the slots and write no wrapper.", false],
+  ])("dontWorded(%j) is %s", (rule, expected) => {
+    expect(dontWorded(rule)).toBe(expected);
+  });
+
+  test.each(componentPages)(
+    "$slug: do says the right way, and every dont opens with a don't word",
+    (page) => {
+      const { do: dos, dont = [] } = page.usage;
+      expect(dos.length).toBeGreaterThan(0);
+      expect(dos.filter(dontWorded)).toEqual([]);
+      expect(dont.filter((rule) => !opensDont(rule))).toEqual([]);
+    },
+  );
+});
+
 describe("/ui/llms.txt", () => {
   const text = renderLlms();
 
@@ -260,6 +291,30 @@ describe("/ui/llms.txt", () => {
       }
     }
   });
+
+  test.each(componentPages)(
+    "$name: the do rules print under Do and the dont rules under Don't",
+    (page) => {
+      const start = text.indexOf(`\n## ${page.name}\n`);
+      const end = text.indexOf("\n## ", start + 1);
+      const section = text.slice(start, end === -1 ? undefined : end);
+      const doAt = section.indexOf("\n### Do\n");
+      const dontAt = section.indexOf("\n### Don't\n");
+      const a11yAt = section.indexOf("\n### Accessibility\n");
+      expect(start).toBeGreaterThan(-1);
+      expect(doAt).toBeGreaterThan(-1);
+      expect(dontAt).toBeGreaterThan(doAt);
+      expect(a11yAt).toBeGreaterThan(dontAt);
+      const doPart = section.slice(doAt, dontAt);
+      const dontPart = section.slice(dontAt, a11yAt);
+      const { do: dos, dont = [] } = page.usage;
+      for (const rule of dos) expect(doPart).toContain(`- ${rule}`);
+      for (const rule of dont) {
+        expect(doPart).not.toContain(rule);
+        expect(dontPart).toContain(`- ${rule}`);
+      }
+    },
+  );
 
   test("has no extension recipe or styling escape hatch", () => {
     expect(text).toContain("do not restyle a component");

@@ -15,13 +15,17 @@ export const pagelayouts: ComponentSection = {
       pairs: ["ListLayout/Rows", "ListLayout/NothingYet"],
       fullPage: "ListLayout/FullPage",
       stories: ["Pages"],
-      usage: [
-        "Put the page's title, subtitle and primary `actions` in the header props; `breadcrumbs` and `tabs` go there too.",
-        "`filters` sit between the header and the list: a `FilterGroup` of pressed-toggle `Button`s.",
-        "The items are the `children`, one `Card` per item, or a `Table`; the layout spaces them.",
-        "Set `isEmpty` and give `empty` an `EmptyState` that says what is missing and what to do next; `isEmpty` without `empty` is a blank page.",
-        "Do not build the header and the list by hand with `PageHeader` and `Stack`: the layout is the one right header, filters and list.",
-      ],
+      usage: {
+        do: [
+          "Put the page's title, subtitle and primary `actions` in the header props; `breadcrumbs` and `tabs` go there too.",
+          "`filters` sit between the header and the list: a `FilterGroup` of pressed-toggle `Button`s.",
+          "The items are the `children`, one `Card` per item, or a `Table`; the layout spaces them.",
+          "Set `isEmpty` and give `empty` an `EmptyState` that says what is missing and what to do next; `isEmpty` without `empty` is a blank page.",
+        ],
+        dont: [
+          "Do not build the header and the list by hand with `PageHeader` and `Stack`: the layout is the one right header, filters and list.",
+        ],
+      },
       accessibility: [
         "The title is the page's `h1`.",
         "`filters` and `children` render as given, so each filter group keeps its own `fieldset` and legend.",
@@ -37,15 +41,17 @@ export const pagelayouts: ComponentSection = {
         "One quote, build or member, with its content in the main column and its facts in the aside.",
       pairs: ["DetailLayout/Record"],
       fullPage: "DetailLayout/FullPage",
-      usage: [
-        "The record's content is the `children`, in the main two thirds; they are spaced as a `Stack`, so give each block its own `Card`.",
-        "The facts about the record go in `aside`, in the third beside it: a `Card` with a `KeyValueList`, a status, the people on it.",
-        "Both columns are required: with nothing for the aside, use `ListLayout`.",
-        "From `lg` the aside sits beside the content; below it, it stacks under the content.",
-        "`stickyAside` keeps the aside in view from `lg` as a long page scrolls: it sticks under the shell's header, and an aside taller than the room left scrolls inside itself, so its end stays reachable. Leave it off when the aside is ordinary cards that may be taller than the screen; below `lg` it stacks either way.",
-        "`asideLabel` names the aside's landmark. Set it when the page has another complementary landmark (a `SidebarLayout` rail, a `FullBleedLayout` panel), so a screen reader can tell them apart. It only names the aside; `DetailLayout` never folds it.",
-        "The header props are the same as `ListLayout`: `breadcrumbs`, `title`, `subtitle`, `actions`, `tabs`.",
-      ],
+      usage: {
+        do: [
+          "The record's content is the `children`, in the main two thirds; they are spaced as a `Stack`, so give each block its own `Card`.",
+          "The facts about the record go in `aside`, in the third beside it: a `Card` with a `KeyValueList`, a status, the people on it.",
+          "Both columns are required: with nothing for the aside, use `ListLayout`.",
+          "From `lg` the aside sits beside the content; below it, it stacks under the content.",
+          "`stickyAside` keeps the aside in view from `lg` as a long page scrolls: it sticks under the shell's header, and an aside taller than the room left scrolls inside itself, so its end stays reachable. Leave it off when the aside is ordinary cards that may be taller than the screen; below `lg` it stacks either way.",
+          "`asideLabel` names the aside's landmark. Set it when the page has another complementary landmark (a `SidebarLayout` rail, a `FullBleedLayout` panel), so a screen reader can tell them apart. It only names the aside; `DetailLayout` never folds it.",
+          "The header props are the same as `ListLayout`: `breadcrumbs`, `title`, `subtitle`, `actions`, `tabs`.",
+        ],
+      },
       accessibility: [
         "The title is the page's `h1`.",
         "The aside is an `<aside>`, a complementary landmark; the main column is a plain `div`.",
@@ -61,13 +67,15 @@ export const pagelayouts: ComponentSection = {
       whenToUse: "Creating or editing a record on a page of its own.",
       pairs: ["FormLayout/Form"],
       fullPage: "FormLayout/FullPage",
-      usage: [
-        "The fields are the `children`, grouped in `Card`s; the layout spaces them in a reading-width column.",
-        'Save and Cancel go in `actions`, at the end of the form: a `type="submit"` Button first, then a ghost Cancel. The header has no `actions` here.',
-        "Handle the submit with `onSubmit`: other props go on the `<form>` itself.",
-        "A form in a small panel is a `Dialog` or `FieldDialog`; a sign-in is `CenteredLayout`.",
-        "Do not put Save in the header of a `ListLayout`: that is not a form.",
-      ],
+      usage: {
+        do: [
+          "The fields are the `children`, grouped in `Card`s; the layout spaces them in a reading-width column.",
+          'Save and Cancel go in `actions`, at the end of the form: a `type="submit"` Button first, then a ghost Cancel. The header has no `actions` here.',
+          "Handle the submit with `onSubmit`: other props go on the `<form>` itself.",
+          "A form in a small panel is a `Dialog` or `FieldDialog`; a sign-in is `CenteredLayout`.",
+        ],
+        dont: ["Do not put Save in the header of a `ListLayout`: that is not a form."],
+      },
       accessibility: [
         'The root is a real `<form>`: Enter in a field submits it, and a `type="submit"` Button submits it.',
         "The title is the page's `h1`.",
@@ -82,14 +90,16 @@ export const pagelayouts: ComponentSection = {
       whenToUse: "Privacy, terms, help or any page that is mostly paragraphs.",
       pairs: ["ProseLayout/Article"],
       fullPage: "ProseLayout/FullPage",
-      usage: [
-        'The text is the `children`: `SectionHeading`s and `Text as="p"` paragraphs, spaced `md` apart.',
-        "`gap` picks another spacing from the same scale (`xs` to `xl`) for the whole page; the default is right for most pages.",
-        "The header sits inside the column, so its `actions` stay beside the text.",
-        "The `subtitle` is the page's lede, set larger than the paragraphs after it, and the title above it is the strongest text on the page.",
-        "`width` is `narrow` (the reading column, the default), `wide` or `full`. Use `wide` for a page that is not long prose, such as pricing, so it does not leave the right third empty; a paragraph and the lede keep their reading measure.",
-        "Data or cards in a grid are not prose: use `ListLayout` or `CardGrid`.",
-      ],
+      usage: {
+        do: [
+          'The text is the `children`: `SectionHeading`s and `Text as="p"` paragraphs, spaced `md` apart.',
+          "`gap` picks another spacing from the same scale (`xs` to `xl`) for the whole page; the default is right for most pages.",
+          "The header sits inside the column, so its `actions` stay beside the text.",
+          "The `subtitle` is the page's lede, set larger than the paragraphs after it, and the title above it is the strongest text on the page.",
+          "`width` is `narrow` (the reading column, the default), `wide` or `full`. Use `wide` for a page that is not long prose, such as pricing, so it does not leave the right third empty; a paragraph and the lede keep their reading measure.",
+          "Data or cards in a grid are not prose: use `ListLayout` or `CardGrid`.",
+        ],
+      },
       accessibility: [
         "The title is the page's `h1`.",
         "Use `SectionHeading` for sections so the outline runs h1 then h2.",
@@ -105,15 +115,17 @@ export const pagelayouts: ComponentSection = {
         "Several cards or `StatTile`s of the same weight that should sit side by side on a wide screen.",
       pairs: ["CardGrid/Tiles", "CardGrid/Auto"],
       fullPage: "CardGrid/FullPage",
-      usage: [
-        "Use `columns` 2, 3 or 4 when you know how many; it is one column on a phone, two from `sm` and `columns` from `lg`.",
-        'Use `columns="auto"` when the count varies: it fits as many per row as the width allows, none narrower than `minWidth` (`md`, the default, or `sm`).',
-        '`columns="2:1"` or `"1:2"` is two unequal columns from `md` (one on a phone): the wide one twice the narrow one, for a record\'s detail beside its side panel.',
-        '`align="start"` keeps each card its own height; by default every card stretches to the tallest in its row.',
-        "`CardGrid` goes inside a page layout; it sets no page width of its own.",
-        "A single column of blocks is a `Stack`, not a one-column `CardGrid`.",
-        '`as="ul"` makes the grid a list and wraps each child in a list item, for a set of like tiles a screen reader should count. The look is the same.',
-      ],
+      usage: {
+        do: [
+          "Use `columns` 2, 3 or 4 when you know how many; it is one column on a phone, two from `sm` and `columns` from `lg`.",
+          'Use `columns="auto"` when the count varies: it fits as many per row as the width allows, none narrower than `minWidth` (`md`, the default, or `sm`).',
+          '`columns="2:1"` or `"1:2"` is two unequal columns from `md` (one on a phone): the wide one twice the narrow one, for a record\'s detail beside its side panel.',
+          '`align="start"` keeps each card its own height; by default every card stretches to the tallest in its row.',
+          "`CardGrid` goes inside a page layout; it sets no page width of its own.",
+          "A single column of blocks is a `Stack`, not a one-column `CardGrid`.",
+          '`as="ul"` makes the grid a list and wraps each child in a list item, for a set of like tiles a screen reader should count. The look is the same.',
+        ],
+      },
       accessibility: [
         'The grid is a plain `div` with no role: the cards keep their own order and semantics. With `as="ul"` it is a list, and each child is a list item.',
         "The order is the DOM order, so the tab order follows the reading order.",
@@ -128,16 +140,18 @@ export const pagelayouts: ComponentSection = {
         "A section with several sub-pages, such as settings, where the rail is the way between them.",
       pairs: ["SidebarLayout/Sections"],
       fullPage: "SidebarLayout/FullPage",
-      usage: [
-        'The `rail` is pill `Tabs` of links with `orientation="vertical"`, one link per section and the current one `active`.',
-        "The `children` are the section's page: its `PageHeader`, then the content.",
-        "From `md` the rail is a fixed width beside the page; below it, the rail stacks above the page.",
-        "From `md` the rail stays in view under the shell's header as a long page scrolls, with or without `railLabel`; it is always on, not an option. A rail taller than the screen scrolls inside itself, so its last link is reachable. Below `md` nothing sticks.",
-        "The rail has no background or border: it is a list of links on the page.",
-        "A long rail sets `railLabel`: below `md` it folds behind a closed disclosure of that name, so the page comes first on a phone; from `md` it is the same rail. A short rail leaves it out.",
-        'Once the page has loaded, a rail that scrolls shows its current link (the one with `aria-current`) in view, with its own thin scrollbar, and the folded disclosure reads `railLabel` and the current link, such as "All components: Button". Nothing to set; in Astro, hydrate the layout (`client:load`).',
-        "Facts about one record go in `DetailLayout`'s aside, not a rail.",
-      ],
+      usage: {
+        do: [
+          'The `rail` is pill `Tabs` of links with `orientation="vertical"`, one link per section and the current one `active`.',
+          "The `children` are the section's page: its `PageHeader`, then the content.",
+          "From `md` the rail is a fixed width beside the page; below it, the rail stacks above the page.",
+          "From `md` the rail stays in view under the shell's header as a long page scrolls, with or without `railLabel`; it is always on, not an option. A rail taller than the screen scrolls inside itself, so its last link is reachable. Below `md` nothing sticks.",
+          "The rail has no background or border: it is a list of links on the page.",
+          "A long rail sets `railLabel`: below `md` it folds behind a closed disclosure of that name, so the page comes first on a phone; from `md` it is the same rail. A short rail leaves it out.",
+          'Once the page has loaded, a rail that scrolls shows its current link (the one with `aria-current`) in view, with its own thin scrollbar, and the folded disclosure reads `railLabel` and the current link, such as "All components: Button". Nothing to set; in Astro, hydrate the layout (`client:load`).',
+          "Facts about one record go in `DetailLayout`'s aside, not a rail.",
+        ],
+      },
       accessibility: [
         "The rail is an `<aside>` holding the `Tabs`, which is a `<nav>` named by its `label`. `railLabel` also names the `<aside>`, so a page with a second complementary landmark (a `DetailLayout` aside) can tell them apart.",
         'The current link has `aria-current="page"`.',
@@ -155,15 +169,17 @@ export const pagelayouts: ComponentSection = {
         "A viewer that needs the whole width, such as a snapshot, a canvas or a player; an ordinary page is not.",
       pairs: ["FullBleedLayout/Viewer"],
       fullPage: "FullBleedLayout/FullPage",
-      usage: [
-        "Render it in an `AppShell` with `bleed`; the canvas starts at the left edge of the viewport.",
-        "It adds no padding and has no page title; the canvas is the `children`. Set `padded` when the body is not a viewer and should have the other layouts' page padding.",
-        "Put the facts about what is shown in `panel`, a `KeyValueList` under an `Overline`. From `lg` the panel is a fixed-width column on the right; below it, it stacks under the canvas.",
-        "Omit `panel` when the canvas stands alone.",
-        "`panelLabel` names the panel's landmark. Set it when the page has another complementary landmark.",
-        "`bar` is a full-width row above the canvas and the panel, such as a viewer's title and its actions in a `Cluster justify=\"between\"`. It is a `StickyBar`: it sticks under the shell's header as the page scrolls; `padded` does not pad it.",
-        "A page with a title and content is `ListLayout` or `DetailLayout`.",
-      ],
+      usage: {
+        do: [
+          "Render it in an `AppShell` with `bleed`; the canvas starts at the left edge of the viewport.",
+          "It adds no padding and has no page title; the canvas is the `children`. Set `padded` when the body is not a viewer and should have the other layouts' page padding.",
+          "Put the facts about what is shown in `panel`, a `KeyValueList` under an `Overline`. From `lg` the panel is a fixed-width column on the right; below it, it stacks under the canvas.",
+          "Omit `panel` when the canvas stands alone.",
+          "`panelLabel` names the panel's landmark. Set it when the page has another complementary landmark.",
+          "`bar` is a full-width row above the canvas and the panel, such as a viewer's title and its actions in a `Cluster justify=\"between\"`. It is a `StickyBar`: it sticks under the shell's header as the page scrolls; `padded` does not pad it.",
+          "A page with a title and content is `ListLayout` or `DetailLayout`.",
+        ],
+      },
       accessibility: [
         'The panel is an `<aside>`, a complementary landmark; give it a heading with `Overline as="h2"`, or name it with `panelLabel`.',
         "The canvas comes first in the DOM, then the panel.",
@@ -177,12 +193,14 @@ export const pagelayouts: ComponentSection = {
       whenToUse: "Sign-in, a landing page, or a not-found or error page.",
       pairs: ["CenteredLayout/Page"],
       fullPage: "CenteredLayout/FullPage",
-      usage: [
-        "Give it a `title` and a `subtitle`; the `children` are the card's content: a `Field` or two and a `Button`.",
-        "It is the one layout that does not share the left edge: it is centred, at a fixed offset from the top.",
-        "A form inside the app is `FormLayout`, not this.",
-        "The ready-made status pages (not found, forbidden, offline, error, maintenance) are already built on it.",
-      ],
+      usage: {
+        do: [
+          "Give it a `title` and a `subtitle`; the `children` are the card's content: a `Field` or two and a `Button`.",
+          "It is the one layout that does not share the left edge: it is centred, at a fixed offset from the top.",
+          "A form inside the app is `FormLayout`, not this.",
+          "The ready-made status pages (not found, forbidden, offline, error, maintenance) are already built on it.",
+        ],
+      },
       accessibility: [
         "The title is the page's `h1`.",
         "The card is a plain `div`, not a landmark; the shell's `main` holds it.",
