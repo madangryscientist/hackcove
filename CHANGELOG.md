@@ -1,3 +1,13 @@
+## 0.10.11 (2026-11-15)
+
+### 🚀 Features
+
+- **ui-react:** Morph, an element that grows into its counterpart across a page change ([#136](https://github.com/madangryscientist/hackcove/pull/136))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.10.10 (2026-11-15)
 
 ### 🚀 Features
