@@ -24,7 +24,7 @@ jobs:
   visual:
     runs-on: ubuntu-latest
     env:
-      PIXELSLASH_TOKEN: ${{ secrets.PIXELSLASH_TOKEN }}
+      PIXELSLASH_TOKEN: ${{ secrets.PIXELSLASH_TOKEN_PROBE_UNSET }}
     steps:
       - name: Check for the PixelSlash token
         if: env.PIXELSLASH_TOKEN == ''
