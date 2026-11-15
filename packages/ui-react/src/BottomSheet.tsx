@@ -123,6 +123,8 @@ function useSheetDrag(
   const [dragHeight, setDragHeight] = useState<number | null>(null);
 
   const onPointerDown = (event: PointerEvent<HTMLButtonElement>) => {
+    // A second finger on the handle mid-drag is ignored: the first pointer's release ends the drag.
+    if (drag.current) return;
     dragged.current = false;
     const el = sheet.current;
     const parent = el && parentOf(el);
@@ -167,6 +169,8 @@ function useSheetDrag(
   };
 
   const onClick = (event: MouseEvent<HTMLButtonElement>) => {
+    // A second finger's tap mid-drag: the drag's release decides the snap.
+    if (drag.current) return;
     // A keyboard click (`detail` 0) is never the tail of a drag.
     const swallow = dragged.current && event.detail !== 0;
     dragged.current = false;
