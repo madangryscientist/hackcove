@@ -7,36 +7,31 @@ type S = StoryObj;
 
 export const WithInput: S = {
   render: () => (
-    <Field label="Display name" htmlFor="name" hint="Shown on your reviews.">
-      <Input id="name" />
+    <Field label="Display name" hint="Shown on your reviews.">
+      <Input />
     </Field>
   ),
 };
 export const WithError: S = {
   render: () => (
-    <Field
-      label="Display name"
-      htmlFor="name"
-      hint="Shown on your reviews."
-      error="Pick a shorter name."
-    >
-      <Input id="name" />
+    <Field label="Display name" hint="Shown on your reviews." error="Pick a shorter name.">
+      <Input />
     </Field>
   ),
 };
 export const WithTextarea: S = {
   render: () => (
-    <Field label="Review" htmlFor="review">
-      <Textarea id="review" />
+    <Field label="Review">
+      <Textarea />
     </Field>
   ),
 };
 
-/** Every control sits in a `Field`: the label is tied to the control by `htmlFor`, and the hint sits under it. */
+/** Every control sits in a `Field`, with no `htmlFor` and no `id`: the Field ties its label and hint to the control itself. */
 export const DoLabel: S = {
   render: () => (
-    <Field label="Display name" htmlFor="do-label-name" hint="Shown on your reviews.">
-      <Input id="do-label-name" />
+    <Field label="Display name" hint="Shown on your reviews.">
+      <Input />
     </Field>
   ),
 };
@@ -46,16 +41,11 @@ export const DontLabel: S = {
   render: () => <Input placeholder="Display name" />,
 };
 
-/** `error` replaces the hint, in red, and is announced as an alert. */
+/** `error` replaces the hint, in red, and is announced as an alert; the control's edge turns red and it is marked `aria-invalid`. */
 export const DoError: S = {
   render: () => (
-    <Field
-      label="Display name"
-      htmlFor="do-error-name"
-      hint="Shown on your reviews."
-      error="Pick a shorter name."
-    >
-      <Input id="do-error-name" defaultValue="A very long display name indeed" />
+    <Field label="Display name" hint="Shown on your reviews." error="Pick a shorter name.">
+      <Input defaultValue="A very long display name indeed" />
     </Field>
   ),
 };
@@ -63,8 +53,8 @@ export const DoError: S = {
 /** An error passed as the `hint` looks like help text: it is grey and is not announced. */
 export const DontError: S = {
   render: () => (
-    <Field label="Display name" htmlFor="dont-error-name" hint="Pick a shorter name.">
-      <Input id="dont-error-name" defaultValue="A very long display name indeed" />
+    <Field label="Display name" hint="Pick a shorter name.">
+      <Input defaultValue="A very long display name indeed" />
     </Field>
   ),
 };
@@ -73,14 +63,14 @@ export const DontError: S = {
 export const Row: S = {
   render: () => (
     <div className="flex max-w-md flex-col gap-3">
-      <Field label="Rank" htmlFor="row-rank" layout="row" hint="Lower numbers come first.">
-        <Input id="row-rank" defaultValue="3" />
+      <Field label="Rank" layout="row" hint="Lower numbers come first.">
+        <Input defaultValue="3" />
       </Field>
-      <Field label="Owner" htmlFor="row-owner" layout="row" error="Pick an owner.">
-        <Input id="row-owner" />
+      <Field label="Owner" layout="row" error="Pick an owner.">
+        <Input />
       </Field>
-      <Field label="Notification frequency for shared projects" htmlFor="row-long" layout="row">
-        <Input id="row-long" />
+      <Field label="Notification frequency for shared projects" layout="row">
+        <Input />
       </Field>
     </div>
   ),
@@ -90,17 +80,11 @@ export const Row: S = {
 export const HiddenLabel: S = {
   render: () => (
     <div className="flex max-w-md flex-col gap-4">
-      <Field label="Search shops" htmlFor="hidden-search" hideLabel>
-        <Input id="hidden-search" type="search" placeholder="Search shops" />
+      <Field label="Search shops" hideLabel>
+        <Input type="search" placeholder="Search shops" />
       </Field>
-      <Field
-        label="Search shops"
-        htmlFor="hidden-row"
-        hideLabel
-        layout="row"
-        hint="By name or town."
-      >
-        <Input id="hidden-row" type="search" placeholder="Search shops" />
+      <Field label="Search shops" hideLabel layout="row" hint="By name or town.">
+        <Input type="search" placeholder="Search shops" />
       </Field>
     </div>
   ),

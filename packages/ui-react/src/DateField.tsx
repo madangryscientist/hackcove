@@ -123,12 +123,11 @@ export function FieldSegment({
   return (
     <DateSegment
       segment={segment}
-      className={({ isFocused, isPlaceholder, isInvalid, type }) => {
+      className={({ isFocused, isPlaceholder, type }) => {
         if (type === "literal") return "text-slate-400";
         let tone = "text-slate-900";
         if (isFocused) tone = "bg-violet-50 text-violet-600";
         else if (isPlaceholder) tone = "text-slate-400";
-        else if (isInvalid) tone = "text-red-700";
         return cx("rounded px-0.5 tabular-nums outline-none", tone);
       }}
     >
@@ -147,7 +146,7 @@ export function frameClass({
   isDisabled: boolean;
 }): string {
   let tone = "border-slate-300 bg-white text-slate-900 hover:border-violet-400";
-  if (isInvalid) tone = "border-red-200 bg-red-50 text-red-700";
+  if (isInvalid) tone = "border-red-200 bg-white text-slate-900";
   else if (isFocusWithin) tone = "border-violet-600 bg-white text-slate-900";
   return cx(
     "flex w-full items-center rounded-lg border transition",

@@ -79,7 +79,7 @@ export const pagelayouts: ComponentSection = {
       accessibility: [
         'The root is a real `<form>`: Enter in a field submits it, and a `type="submit"` Button submits it.',
         "The title is the page's `h1`.",
-        "Give each control a `Field` with `htmlFor`, so every input has a label.",
+        "Give each control a `Field`, so every input has a label.",
       ],
       api: ["FormLayout"],
     },
@@ -204,7 +204,7 @@ export const pagelayouts: ComponentSection = {
       accessibility: [
         "The title is the page's `h1`.",
         "The card is a plain `div`, not a landmark; the shell's `main` holds it.",
-        "Give each control a `Field` with `htmlFor`, so every input has a label.",
+        "Give each control a `Field`, so every input has a label.",
       ],
       api: ["CenteredLayout"],
     },

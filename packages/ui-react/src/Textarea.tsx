@@ -1,6 +1,7 @@
 import { type ComponentPropsWithoutRef, forwardRef, type ReactElement } from "react";
 import { CONTROL_PAD, controlClass, type ControlProps } from "./control.js";
 import { cx } from "./cx.js";
+import { useFieldControl } from "./fieldControl.js";
 import type { Unstyled } from "./props.js";
 
 export type TextareaProps = ControlProps & {
@@ -13,10 +14,12 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
   { size = "md", width = "full", mono = false, ...rest },
   ref,
 ): ReactElement {
+  const field = useFieldControl(rest);
   return (
     <textarea
       rows={3}
       {...rest}
+      {...field}
       ref={ref}
       className={cx(controlClass(size, width), CONTROL_PAD[size].x, mono && "font-mono")}
     />

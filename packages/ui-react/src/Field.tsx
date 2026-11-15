@@ -1,25 +1,54 @@
-import type { ReactElement, ReactNode } from "react";
+import { type ReactElement, type ReactNode, useId } from "react";
 import { cx } from "./cx.js";
+import { FieldContext, type FieldControlContext } from "./fieldControl.js";
 import type { Passthrough } from "./props.js";
 
 /** The line under a control or a row: an error (`role="alert"`) replaces the hint; neither draws nothing. */
-export function fieldNote(hint: ReactNode, error: ReactNode): ReactElement | null {
+export function fieldNote(
+  hint: ReactNode,
+  error: ReactNode,
+  ids?: { hint: string; error: string },
+): ReactElement | null {
   if (error) {
     return (
-      <p role="alert" className="text-xs text-red-700">
+      <p id={ids?.error} role="alert" className="text-xs text-red-700">
         {error}
       </p>
     );
   }
   if (hint) {
-    return <p className="text-xs text-slate-500">{hint}</p>;
+    return (
+      <p id={ids?.hint} className="text-xs text-slate-500">
+        {hint}
+      </p>
+    );
   }
   return null;
 }
 
+/** The control's id, the note's id and the note itself: the error, or else the hint, or nothing. */
+function useFieldNote(
+  htmlFor: string | undefined,
+  hint: ReactNode,
+  error: ReactNode,
+): { control: FieldControlContext; note: ReactElement | null } {
+  const generatedId = useId();
+  const ids = { hint: useId(), error: useId() };
+  const note = fieldNote(hint, error, ids);
+  let describedBy: string | undefined;
+  if (error) describedBy = ids.error;
+  else if (hint) describedBy = ids.hint;
+  return {
+    control: { id: htmlFor ?? generatedId, describedBy, invalid: Boolean(error) },
+    note,
+  };
+}
+
 /**
  * A label above a control, with a hint or an error line under it. An error replaces the hint.
- * Inside a `FormGrid`, `span="full"` runs the field across both columns.
+ * Inside a `FormGrid`, `span="full"` runs the field across both columns. The `Input`, `Select`,
+ * `Textarea` or `FileDrop` inside takes the label, the note (`aria-describedby`) and, with an error,
+ * `aria-invalid` and a red edge by itself: give it no `id` and the Field no `htmlFor`.
  */
 export function Field({
   label,
@@ -34,8 +63,8 @@ export function Field({
 }: {
   /** The text above the control. */
   label: ReactNode;
-  /** The id of the control inside; the label's htmlFor. */
-  htmlFor: string;
+  /** A fixed id for the control inside, only when something else must name it. Unset, the Field makes one. */
+  htmlFor?: string | undefined;
   /** A muted line under the control that says more. */
   hint?: ReactNode;
   /** Replaces the hint when set. */
@@ -60,7 +89,7 @@ export function Field({
   children: ReactNode;
 } & Passthrough): ReactElement {
   const row = layout === "row" && !hideLabel;
-  const note = fieldNote(hint, error);
+  const { control, note } = useFieldNote(htmlFor, hint, error);
   return (
     <div
       {...rest}
@@ -70,7 +99,7 @@ export function Field({
       )}
     >
       <label
-        htmlFor={htmlFor}
+        htmlFor={control.id}
         className={
           hideLabel
             ? "sr-only"
@@ -79,7 +108,7 @@ export function Field({
       >
         {label}
       </label>
-      {children}
+      <FieldContext.Provider value={control}>{children}</FieldContext.Provider>
       {note && row ? <div className="col-start-2">{note}</div> : note}
     </div>
   );

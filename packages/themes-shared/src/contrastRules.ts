@@ -114,13 +114,17 @@ function toneRules(palette: Palette, role: string, narrow: string[]): Rule[] {
   ];
 }
 
-/** The invalid field's edge is the one tinted edge that must be seen: nothing else marks it. */
+/**
+ * The invalid field's edge is the one tinted edge that must be seen: nothing else marks it. It is
+ * the edge of an errored `DateField`, and of an `aria-invalid` `Input`, `Select`, `Textarea` or
+ * `FileDrop` (the `aria-invalid:` and `has-aria-invalid:` forms).
+ */
 function invalidEdge(palette: Palette, narrow: string[]): Rule {
   const danger = roleOf(palette, "danger");
   return {
     name: "invalid field edge",
     bar: UI_BAR,
-    fg: danger.filter((utility) => /^border-[a-z]+-200$/.test(utility)),
+    fg: danger.filter((utility) => /^(?:(?:has-)?aria-invalid:)?border-[a-z]+-200$/.test(utility)),
     on: stacks(narrow),
     base: narrow,
   };

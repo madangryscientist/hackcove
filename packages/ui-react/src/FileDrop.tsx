@@ -1,5 +1,6 @@
 import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
 import { cx } from "./cx.js";
+import { useFieldControl } from "./fieldControl.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 
@@ -25,10 +26,11 @@ export function FileDrop({
 } & Unstyled<
   Omit<ComponentPropsWithoutRef<"input">, "type" | "children" | "size" | "width">
 >): ReactElement {
+  const field = useFieldControl(rest);
   return (
     <label
       className={cx(
-        "relative flex items-center justify-center rounded-lg border border-dashed border-slate-300 text-center text-sm text-slate-500 transition hover:border-violet-400 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-violet-600",
+        "relative flex items-center justify-center rounded-lg border border-dashed border-slate-300 text-center text-sm text-slate-500 transition hover:border-violet-400 has-aria-invalid:border-red-200 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-violet-600",
         PAD[size],
         rest.disabled && "opacity-50",
       )}
@@ -37,6 +39,7 @@ export function FileDrop({
         type="file"
         className="absolute inset-0 h-full w-full cursor-pointer rounded-lg opacity-0 disabled:cursor-not-allowed"
         {...rest}
+        {...field}
       />
       {children}
     </label>

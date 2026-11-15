@@ -337,7 +337,9 @@
   border-color: #b45309;
 }
 
-.thriftloop .border-red-200 {
+.thriftloop .border-red-200,
+.thriftloop .aria-invalid\:border-red-200[aria-invalid="true"],
+.thriftloop .has-aria-invalid\:border-red-200:has([aria-invalid="true"]) {
   border-color: rgba(179, 25, 96, 0.7);
 }
 

@@ -61,7 +61,7 @@ export function GalleryNotes() {
   );
 }
 
-/** The two-column form: Fields, a full-width Field and a FormRow with a trailing action and a hint under the row. */
+/** The two-column form: Fields, an errored Field, a full-width Field and a FormRow with a trailing action and a hint under the row. */
 export function GalleryForm() {
   return (
     <div className="max-w-xl">
@@ -71,6 +71,9 @@ export function GalleryForm() {
         </Field>
         <Field label="Last name" htmlFor="gallery-last">
           <Input id="gallery-last" />
+        </Field>
+        <Field label="Email" span="full" error="Enter an email address with an @.">
+          <Input defaultValue="sam.example.com" />
         </Field>
         <Field label="Notes" htmlFor="gallery-notes" span="full">
           <Textarea id="gallery-notes" />

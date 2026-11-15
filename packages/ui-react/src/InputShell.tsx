@@ -78,7 +78,7 @@ export function PrefixShell({
     <div
       className={cx(
         controlClass(size, width),
-        "flex items-center has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-violet-600",
+        "flex items-center has-aria-invalid:border-red-200 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-violet-600",
         width === "auto" && "inline-flex",
         disabled && "opacity-50",
       )}

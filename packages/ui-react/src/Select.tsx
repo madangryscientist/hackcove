@@ -1,6 +1,7 @@
 import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import { CONTROL_PAD, controlClass, type ControlProps, type ControlSize } from "./control.js";
 import { cx } from "./cx.js";
+import { useFieldControl } from "./fieldControl.js";
 import type { Unstyled } from "./props.js";
 
 /** The height of a `Select` by `size`, the `Input`'s 26px, 38px and 46px: a native `<select>` sizes its text from the font and ignores the line height, so padding alone falls short at `md` and `lg`. */
@@ -11,12 +12,14 @@ export function Select({
   size = "md",
   width = "full",
   children,
-  ...rest
+  ...own
 }: ControlProps &
   Unstyled<Omit<ComponentPropsWithoutRef<"select">, "size" | "width">>): ReactElement {
+  const field = useFieldControl(own);
   return (
     <select
-      {...rest}
+      {...own}
+      {...field}
       className={cx(controlClass(size, width), SELECT_HEIGHT[size], CONTROL_PAD[size].x)}
     >
       {children}

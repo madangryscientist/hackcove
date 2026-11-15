@@ -352,7 +352,9 @@
   border-color: #fcd34d;
 }
 
-.thriftloop-dark .border-red-200 {
+.thriftloop-dark .border-red-200,
+.thriftloop-dark .aria-invalid\:border-red-200[aria-invalid="true"],
+.thriftloop-dark .has-aria-invalid\:border-red-200:has([aria-invalid="true"]) {
   border-color: rgba(252, 165, 165, 0.65);
 }
 

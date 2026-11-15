@@ -91,3 +91,14 @@ export const Sizes: S = {
     </div>
   ),
 };
+
+/** In an errored `Field`, the select takes a red edge and is described by the error. */
+export const Invalid: S = {
+  render: () => (
+    <div className="max-w-md">
+      <Field label="Rating" error="Pick a rating.">
+        <Select defaultValue={1}>{rating}</Select>
+      </Field>
+    </div>
+  ),
+};
