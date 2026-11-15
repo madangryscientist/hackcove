@@ -1,3 +1,14 @@
+## 0.10.12 (2026-11-15)
+
+### 🚀 Features
+
+- **ui-react:** BottomSheet, a non-modal sheet docked to the bottom edge with snap heights and drag ([#137](https://github.com/madangryscientist/hackcove/pull/137))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+- Jacobus Langner @madangryscientist
+
 ## 0.10.11 (2026-11-15)
 
 ### 🚀 Features
