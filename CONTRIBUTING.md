@@ -40,6 +40,7 @@ themes** shows every component in every theme on one page.
 | --- | --- | --- |
 | `packages/ui-react` | `@hackcove/ui-react` | The components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, react-dom, tailwindcss v4. No theme CSS. |
 | `themes` | `@hackcove/themes` | One CSS file per theme, `<id>.css`, shipped as-is. |
+| `packages/oxlint-testing` | `@hackcove/oxlint-testing` | The shared oxlint config and plugin for UI tests. Its fixture suite is its `test`; `bun run lint:testing` reports what it finds in this repo. |
 | `apps/storybook` | (private) | Storybook and the Playwright e2e. |
 | `packages/themes-shared` | (private) | How Storybook and the docs find the themes: the `themes/*.css` glob, the theme ids and each theme's scope class. |
 | `apps/hack-cove-site` | (private) | The hack-cove.com Astro site, including the `/ui/` component docs; run it with `bunx moon run hack-cove-site:dev` (http://localhost:4321). Its e2e is `bunx moon run hack-cove-site:e2e`. |
@@ -60,6 +61,10 @@ bunx moon run hack-cove-site:e2e                 # Playwright: builds the site, 
 
 moon runs every task through the cache, so an unchanged project is a cache hit; `--force` reruns
 one anyway. Lint rules are all errors: fix the code, do not disable a rule.
+
+`bun run lint:testing` reports, per project and per rule, what the shared testing lint
+(`@hackcove/oxlint-testing`) finds in the tests, and always exits 0. It is not part of the gate yet:
+each project moves into its own `lint` once its count is 0 (`packages/oxlint-testing/README.md`).
 
 **Nothing is time dependent.** Jacobus, 2026-11-14: "The architecture of the test is wrong if it relies on timings for displaying it. We should be able to pass it in a value and then render that. It should not be time dependent. The component itself should not be time dependent." A component renders from the value it is given, and a test passes that value and asserts what renders. No fake timers, no waiting on a delay, no story driven by a timer, no `waitForTimeout` in an e2e spec. A visual delay, a fade or a label that reverts is CSS (an animation and its delay), as `CopyButton` and `NavigationProgress` do; a pending state is a value the story holds (a promise that never settles, or a button that lands it). The lint (`scripts/slopRules.ts`) fails a test, story or e2e file that uses a fake or real timer, and a `@hackcove/ui-react` component that calls `setTimeout` or `setInterval`; a line with `// time-dependent: <why>` on it or above it is exempt, and needs a reason a reviewer accepts.
 

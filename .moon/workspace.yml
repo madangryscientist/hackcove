@@ -15,6 +15,7 @@ projects:
   storybook: "apps/storybook"
   hack-cove-site: "apps/hack-cove-site"
   ui-review: "tools/ui-review"
+  oxlint-testing: "packages/oxlint-testing"
 
 vcs:
   client: "git"
