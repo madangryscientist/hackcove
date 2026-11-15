@@ -25,14 +25,14 @@ const app = join(
 rmSync(app, { recursive: true, force: true });
 mkdirSync(join(app, "e2e"), { recursive: true });
 
-function run(cmd: string[], cwd: string): { code: number; out: string } {
+function run(cmd: string[], cwd: string): { code: number; out: string; err: string } {
   const result = Bun.spawnSync(cmd, { cwd, stdout: "pipe", stderr: "pipe" });
-  return { code: result.exitCode, out: `${result.stdout.toString()}${result.stderr.toString()}` };
+  return { code: result.exitCode, out: result.stdout.toString(), err: result.stderr.toString() };
 }
 
 function mustRun(cmd: string[], cwd: string): void {
-  const { code, out } = run(cmd, cwd);
-  if (code !== 0) throw new Error(`${cmd.join(" ")} failed in ${cwd}\n${out}`);
+  const { code, out, err } = run(cmd, cwd);
+  if (code !== 0) throw new Error(`${cmd.join(" ")} failed in ${cwd}\n${out}${err}`);
 }
 
 const BAD_SPEC = [
@@ -66,6 +66,7 @@ try {
   writeFileSync(join(app, "e2e", "save.spec.ts"), BAD_SPEC);
 
   mustRun(["bun", "install", "--prefer-offline"], app);
+  // The report is stdout alone; oxlint may print a notice on stderr.
   const { out } = run(["node_modules/.bin/oxlint", "-f", "json", "e2e"], app);
   const report: { diagnostics: { code: string }[] } = JSON.parse(out);
   const codes = new Set(report.diagnostics.map((d) => d.code));

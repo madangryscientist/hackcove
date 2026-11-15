@@ -177,6 +177,10 @@ const skipNamesTicket = rule("a skip names its ticket", (context) => ({
 // "off"; `retries` and `reuseExistingServer` already default to these.
 const HOUSE = { retries: 0, reuseExistingServer: false, trace: "retain-on-failure" };
 
+const modeOf = (object) =>
+  object.properties.find((property) => property.type === "Property" && keyOf(property) === "mode")
+    ?.value;
+
 const configShape = rule("the Playwright config keeps the house values", (context) => {
   let traced = false;
   return {
@@ -184,7 +188,10 @@ const configShape = rule("the Playwright config keeps the house values", (contex
       const key = keyOf(node);
       if (!Object.hasOwn(HOUSE, key)) return;
       if (key === "trace") traced = true;
-      if (node.value.type === "Literal" && node.value.value === HOUSE[key]) return;
+      // `trace` may be an object, `{ mode: "retain-on-failure", sources: false }`.
+      const mode =
+        node.value.type === "ObjectExpression" && key === "trace" ? modeOf(node.value) : node.value;
+      if (mode?.type === "Literal" && mode.value === HOUSE[key]) return;
       context.report({
         node,
         message: `${key} must be ${JSON.stringify(HOUSE[key])} (ob-ui-testing rule 8: One config shape)`,
