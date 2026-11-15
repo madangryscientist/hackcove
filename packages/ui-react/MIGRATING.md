@@ -106,6 +106,41 @@ TypeScript does not flag these:
   test that finds it by the name `copy` needs the capital.
 - `Pill tone="sky"` drew its own sky tint; `info` is the blue one.
 
+### Layouts and navigation
+
+| Old | New | |
+| --- | --- | --- |
+| `subtitle` on `PageHeader`, `ListLayout`, `DetailLayout`, `FormLayout`, `ProseLayout`, `CenteredLayout` | `description` | codemod |
+| `SidebarLayout rail`, `railLabel` | `aside`, `asideLabel` | codemod |
+| `FullBleedLayout panel`, `panelLabel` | `aside`, `asideLabel` | codemod |
+| `DetailLayout stickyAside` | `sticky` | codemod |
+| `ListLayout isEmpty={rows.length === 0}` | nothing: `empty` shows when there are no children | codemod drops it, and reports it |
+| `AppShell hideChromeInPrint` | `printChrome={false}` | codemod |
+| `action` on `NotFound`, `ErrorPage`, `Offline`, `Maintenance`, `Forbidden` | `actions` | codemod |
+| `FilterGroup legend` | `label` | codemod |
+| `Breadcrumbs crumbs` | `items` | codemod |
+| `AvatarStack people` | `items` | codemod |
+| `active: true` on a `Tabs` or `SegmentedControl` link item | `selected: true` | codemod for an inline `items`, else by hand |
+| `Tabs variant="pill" orientation="vertical"` | `Tabs orientation="vertical"` | codemod |
+| `Tabs variant="pill"` across (and its `size`) | `Tabs`: across is always underline | codemod drops it, and reports it |
+| `Container elementRef` | `ref` | codemod |
+| any other HTML attribute on `Avatar` or `AppShell` (`onError`, a `div` handler) | only `id`, `data-*` and `aria-*` | by hand |
+
+New, nothing to change: `Breadcrumbs label` (default `Breadcrumb`), `Lightbox closeLabel`,
+`previousLabel` and `nextLabel`, `MediaTile removeLabel` (default `Remove`) and
+`SortableSection emptyLabel` (default `Drop here`). `SortableList`, `SortableSection` and
+`SortableItem` pass every `aria-*`.
+
+TypeScript does not flag these:
+
+- A pill row across (`variant="pill"` in an `AppShell` `nav`, a `PageHeader` `tabs` slot or a
+  section nav) is now an underline row. Only the vertical rail is pills.
+- `active` on a link item in an array held in a variable (`const items = [{ ..., active: true }]`)
+  still compiles, since it is not an object literal at the `Tabs`, and is ignored: rename it to
+  `selected`, or no tab is marked current.
+- A `ListLayout` whose children are an empty array, `null` or `false` now shows `empty` without
+  `isEmpty`; one that passed `isEmpty` while it still had children now shows the children.
+
 ## 0.9 → 0.10: Avatar `2xl` is 64px, the old 96px is `3xl`
 
 `Avatar` gained a 64px size. The sizes keep their order (`xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`),

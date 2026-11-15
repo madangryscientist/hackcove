@@ -9,7 +9,7 @@ type S = StoryObj;
 export const DoTrail: S = {
   render: () => (
     <Breadcrumbs
-      crumbs={[
+      items={[
         { label: "Projects", href: "#projects" },
         { label: "Launch film", href: "#launch-film" },
         "Shots",
@@ -20,23 +20,23 @@ export const DoTrail: S = {
 
 /** Parents given as plain text look like the trail but lead nowhere, so a reader cannot go back up. */
 export const DontTrail: S = {
-  render: () => <Breadcrumbs crumbs={["Projects", "Launch film", "Shots"]} />,
+  render: () => <Breadcrumbs items={["Projects", "Launch film", "Shots"]} />,
 };
 
 /** Breadcrumbs show where the page sits in a hierarchy. */
 export const DoHierarchy: S = {
   render: () => (
     <Breadcrumbs
-      crumbs={[{ label: "Acme", href: "#acme" }, { label: "Quotes", href: "#quotes" }, "Quote 12"]}
+      items={[{ label: "Acme", href: "#acme" }, { label: "Quotes", href: "#quotes" }, "Quote 12"]}
     />
   ),
 };
 
-/** Siblings are not a hierarchy: switching between peer sections is `Tabs variant="pill"` of links. */
+/** Siblings are not a hierarchy: switching between peer sections is `Tabs` of links. */
 export const DontHierarchy: S = {
   render: () => (
     <Breadcrumbs
-      crumbs={[
+      items={[
         { label: "Quotes", href: "#quotes" },
         { label: "Invoices", href: "#invoices" },
         "Receipts",
@@ -48,26 +48,26 @@ export const DontHierarchy: S = {
 const link = (href: string, label: string) => ({ label, href });
 
 export const Two: S = {
-  render: () => <Breadcrumbs crumbs={[link("/", "Projects"), "Hack Cove"]} />,
+  render: () => <Breadcrumbs items={[link("/", "Projects"), "Hack Cove"]} />,
 };
 
 export const Four: S = {
   render: () => (
     <Breadcrumbs
-      crumbs={[link("/", "Org"), link("/project", "Project"), link("/build", "Build"), "Snapshot"]}
+      items={[link("/", "Org"), link("/project", "Project"), link("/build", "Build"), "Snapshot"]}
     />
   ),
 };
 
 export const PlainParents: S = {
-  render: () => <Breadcrumbs crumbs={["Org", "Project", "Build", "Snapshot"]} />,
+  render: () => <Breadcrumbs items={["Org", "Project", "Build", "Snapshot"]} />,
 };
 
 export const LongTruncates: S = {
   render: () => (
     <div className="flex w-72">
       <Breadcrumbs
-        crumbs={[
+        items={[
           link("/", "An organisation with a very long name"),
           link("/project", "A project whose name keeps going well past the width"),
           link("/build", "Build 2026-10-22"),
@@ -82,7 +82,7 @@ export const LongTruncates: S = {
 export const LinkCrumbs: S = {
   render: () => (
     <Breadcrumbs
-      crumbs={[
+      items={[
         { label: "Quotes", href: "/quotes" },
         { label: "Docs", href: "https://example.com/docs", external: true },
         "Quote 12",

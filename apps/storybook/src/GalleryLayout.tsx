@@ -75,10 +75,9 @@ export function GalleryLayout() {
         }
         nav={
           <Tabs
-            variant="pill"
             label="Gallery shell"
             items={[
-              { label: "Builds", href: "#builds", active: true },
+              { label: "Builds", href: "#builds", selected: true },
               { label: "Settings", href: "#settings" },
             ]}
           />
@@ -88,7 +87,7 @@ export function GalleryLayout() {
       >
         <PageHeader
           title="PageHeader"
-          subtitle="in an AppShell"
+          description="in an AppShell"
           actions={<Button>Action</Button>}
         />
         <Stack width="narrow">

@@ -18,25 +18,22 @@ import type { Passthrough, Unstyled } from "./props.js";
 // Compositions of the layout foundation. None sets a page width or outer padding of its own; the
 // ones that narrow their content do it inside the Container they are rendered in.
 
-/** A list page: header, an optional `filters` slot, then the list, or `empty` when `isEmpty`. */
+/** A list page: header, an optional `filters` slot, then the list, or `empty` when there are no children. */
 export function ListLayout({
   filters,
   empty,
-  isEmpty = false,
   children,
   breadcrumbs,
   title,
-  subtitle,
+  description,
   actions,
   tabs,
   ...rest
 }: PageHeaderProps & {
   /** A row between the header and the list, e.g. a `FilterGroup` or a `SearchInput`. */
   filters?: ReactNode;
-  /** Shown in place of `children` when `isEmpty`. */
+  /** Shown in place of `children` when there are none: no rows, an empty array, `null`. */
   empty?: ReactNode;
-  /** Show `empty` instead of `children`. */
-  isEmpty?: boolean;
   children?: ReactNode;
 } & Passthrough): ReactElement {
   return (
@@ -44,13 +41,13 @@ export function ListLayout({
       <PageHeader
         breadcrumbs={breadcrumbs}
         title={title}
-        subtitle={subtitle}
+        description={description}
         actions={actions}
         tabs={tabs}
       />
       <Stack {...rest}>
         {filters}
-        {isEmpty ? empty : children}
+        {Children.toArray(children).length === 0 ? empty : children}
       </Stack>
     </>
   );
@@ -58,18 +55,18 @@ export function ListLayout({
 
 /**
  * A detail page: header, then `children` (two thirds from `lg`) beside `aside` (one third), which
- * stacks below on a smaller screen. `stickyAside` keeps the aside in view from `lg` as a long page
+ * stacks below on a smaller screen. `sticky` keeps the aside in view from `lg` as a long page
  * scrolls: it sticks under AppShell's header and, if it is taller than the room left, scrolls
  * itself so its end stays reachable.
  */
 export function DetailLayout({
   aside,
   asideLabel,
-  stickyAside = false,
+  sticky = false,
   children,
   breadcrumbs,
   title,
-  subtitle,
+  description,
   actions,
   tabs,
   ...rest
@@ -84,18 +81,18 @@ export function DetailLayout({
    * taller than the screen. Below `lg` the aside stacks as ever.
    * @default false
    */
-  stickyAside?: boolean | undefined;
+  sticky?: boolean | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {
   const { element, attach, stop } = useScrollStop();
   useScrollEdges(element, "y");
-  const { props, ring } = scrollStopProps(stickyAside && stop, { label: asideLabel });
+  const { props, ring } = scrollStopProps(sticky && stop, { label: asideLabel });
   return (
     <>
       <PageHeader
         breadcrumbs={breadcrumbs}
         title={title}
-        subtitle={subtitle}
+        description={description}
         actions={actions}
         tabs={tabs}
       />
@@ -103,11 +100,11 @@ export function DetailLayout({
         <div className="min-w-0 lg:col-span-2">
           <Stack>{children}</Stack>
         </div>
-        <aside className={cx("min-w-0", stickyAside && STICKY_ASIDE_LG)} aria-label={asideLabel}>
+        <aside className={cx("min-w-0", sticky && STICKY_ASIDE_LG)} aria-label={asideLabel}>
           <div
-            ref={stickyAside ? attach : undefined}
+            ref={sticky ? attach : undefined}
             {...props}
-            className={stickyAside ? cx(STICKY_SCROLL_LG, STICKY_FADE_LG, ring) : undefined}
+            className={sticky ? cx(STICKY_SCROLL_LG, STICKY_FADE_LG, ring) : undefined}
           >
             <Stack>{aside}</Stack>
           </div>
@@ -123,7 +120,7 @@ export function FormLayout({
   children,
   breadcrumbs,
   title,
-  subtitle,
+  description,
   tabs,
   ...form
 }: Omit<PageHeaderProps, "actions"> & {
@@ -133,7 +130,7 @@ export function FormLayout({
 } & Unstyled<Omit<ComponentPropsWithoutRef<"form">, "title">>): ReactElement {
   return (
     <>
-      <PageHeader breadcrumbs={breadcrumbs} title={title} subtitle={subtitle} tabs={tabs} />
+      <PageHeader breadcrumbs={breadcrumbs} title={title} description={description} tabs={tabs} />
       <form {...form} className="max-w-3xl">
         <Stack>
           {children}
@@ -159,7 +156,7 @@ export function ProseLayout({
   children,
   breadcrumbs,
   title,
-  subtitle,
+  description,
   actions,
   tabs,
   ...rest
@@ -181,7 +178,7 @@ export function ProseLayout({
       <PageHeader
         breadcrumbs={breadcrumbs}
         title={title}
-        subtitle={subtitle}
+        description={description}
         actions={actions}
         tabs={tabs}
       />
@@ -287,27 +284,27 @@ export function CardGrid({
 }
 
 /**
- * Edge-to-edge `children` with an optional right `panel` (`lg:w-72`) that stacks below on a smaller
+ * Edge-to-edge `children` with an optional right `aside` (`lg:w-72`) that stacks below on a smaller
  * screen. Render it in `<AppShell bleed>`. It deliberately breaks the shared left edge: a viewer
  * that needs the whole width has no Container of its own, so `children` start at the viewport's
  * left edge. `padded` gives them the Container's padding instead (`px-4`, `sm:px-6`, `py-8`), for
- * a page of ordinary content beside a full-height `panel`. A `bar` is a `StickyBar` above both: the
+ * a page of ordinary content beside a full-height `aside`. A `bar` is a `StickyBar` above both: the
  * full width, on the surface with a bottom line, sticking under AppShell's header as the page scrolls.
  */
 export function FullBleedLayout({
   bar,
-  panel,
-  panelLabel,
+  aside,
+  asideLabel,
   padded = false,
   children,
   ...rest
 }: {
-  /** A full-width row above `children` and `panel` that sticks under the header, e.g. a viewer's title and actions. `padded` does not pad it. */
+  /** A full-width row above `children` and `aside` that sticks under the header, e.g. a viewer's title and actions. `padded` does not pad it. */
   bar?: ReactNode;
   /** A side column on the right (`lg:w-72`) on a tinted surface; below `lg` it stacks under `children`. */
-  panel?: ReactNode;
-  /** Names the panel's `<aside>` landmark (`aria-label`). Left out, the panel is unnamed. */
-  panelLabel?: string | undefined;
+  aside?: ReactNode;
+  /** Names the `<aside>` landmark (`aria-label`). Left out, it is unnamed. */
+  asideLabel?: string | undefined;
   /**
    * Pads `children` as the Container pads every other page. Off, they run to the viewport's edges.
    * A notice in the column is a plain `Callout` in a `Stack`, never a `Callout banner`.
@@ -318,12 +315,12 @@ export function FullBleedLayout({
   const row = (
     <>
       <div className={cx("min-w-0 flex-1", padded && "px-4 py-8 sm:px-6")}>{children}</div>
-      {panel && (
+      {aside && (
         <aside
           className="w-full shrink-0 border-t border-slate-200 bg-slate-50 p-4 lg:w-72 lg:border-t-0 lg:border-l"
-          aria-label={panelLabel}
+          aria-label={asideLabel}
         >
-          {panel}
+          {aside}
         </aside>
       )}
     </>
@@ -347,7 +344,7 @@ export function FullBleedLayout({
 export function CenteredLayout({
   mark,
   title,
-  subtitle,
+  description,
   children,
   ...rest
 }: {
@@ -356,7 +353,7 @@ export function CenteredLayout({
   /** The card's `h1`. */
   title: ReactNode;
   /** A muted line under the title. */
-  subtitle?: ReactNode;
+  description?: ReactNode;
   children?: ReactNode;
 } & Passthrough): ReactElement {
   return (
@@ -364,7 +361,7 @@ export function CenteredLayout({
       <Card as="div">
         <Stack>
           {mark}
-          <PageHeaderContent title={title} subtitle={subtitle} />
+          <PageHeaderContent title={title} description={description} />
           {children}
         </Stack>
       </Card>

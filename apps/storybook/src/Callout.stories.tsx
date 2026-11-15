@@ -73,7 +73,7 @@ export const Banner: S = {
 /** In a padded `FullBleedLayout` column the notice is a plain Callout, first in the column's `Stack`: `banner` is for the top of a `Card flush` only, and the padding would inset it. */
 export const InPaddedColumn: S = {
   render: () => (
-    <FullBleedLayout padded panel={<Text tone="muted">The side panel.</Text>}>
+    <FullBleedLayout padded aside={<Text tone="muted">The side panel.</Text>}>
       <Stack gap="sm">
         <Callout tone="danger">The decision did not save. Try again.</Callout>
         <Text>The column's content sits under the notice, on the same edge.</Text>

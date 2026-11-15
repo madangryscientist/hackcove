@@ -1,7 +1,7 @@
-import type { HTMLAttributes, MouseEventHandler, ReactElement } from "react";
+import type { MouseEventHandler, ReactElement } from "react";
 import { cx, focusRing } from "./cx.js";
 import { renderLink } from "./link.js";
-import type { Unstyled } from "./props.js";
+import type { Passthrough } from "./props.js";
 import { useImageFailed } from "./useImageFailed.js";
 
 /** The identity colours, in hash order. Each is a stock background utility; a theme remaps them. */
@@ -86,7 +86,7 @@ type AvatarProps = {
    * @default round
    */
   shape?: AvatarShape;
-} & Unstyled<Omit<HTMLAttributes<HTMLElement>, "children" | "onClick">> &
+} & Passthrough &
   (
     | { onClick?: undefined; href?: undefined; external?: undefined }
     | {
@@ -125,7 +125,6 @@ export function AvatarMark({
   size = "md",
   shape = "round",
   ring = false,
-  onError,
   onClick,
   href,
   external = false,
@@ -143,10 +142,7 @@ export function AvatarMark({
         alt={name}
         title={name}
         className={cx("shrink-0 object-cover", corners, SIZE_CLASSES[size], ring)}
-        onError={(event) => {
-          onError?.(event);
-          markFailed();
-        }}
+        onError={markFailed}
         {...markProps}
       />
     ) : (

@@ -15,10 +15,10 @@ type StatusPageProps = {
   /** Replaces the default body copy. */
   children?: ReactNode;
   /**
-   * The page's own action, before "Back to home", which turns outline beside it. This is the one
+   * The page's own buttons, before "Back to home", which turns outline beside them. This is the one
    * way to a button worded differently; there is no label prop.
    */
-  action?: ReactNode;
+  actions?: ReactNode;
 } & Passthrough;
 
 type Copy = { title: string; body: string };
@@ -31,7 +31,7 @@ type StatusPageInner = StatusPageProps & {
   homeward?: boolean;
 };
 
-/** "Back to home", to the `LinkProvider`'s `home`: the primary button alone, outline after an action. */
+/** "Back to home", to the `LinkProvider`'s `home`: the primary button alone, outline after the page's actions. */
 function HomeLink({ outline }: { outline: boolean }): ReactElement {
   return (
     <Button href={useHome()} variant={outline ? "outline" : "primary"}>
@@ -44,24 +44,24 @@ function StatusPage({
   copy,
   title,
   children,
-  action,
+  actions,
   extra,
   mark,
   homeward = true,
   ...rest
 }: StatusPageInner): ReactElement {
-  const home = homeward && <HomeLink outline={Boolean(action)} />;
+  const home = homeward && <HomeLink outline={Boolean(actions)} />;
   return (
     <CenteredLayout
       {...rest}
       mark={mark}
       title={title ?? copy.title}
-      subtitle={children ?? copy.body}
+      description={children ?? copy.body}
     >
       {extra}
-      {(action || home) && (
+      {(actions || home) && (
         <div className="flex flex-wrap items-center gap-2">
-          {action}
+          {actions}
           {home}
         </div>
       )}
@@ -102,17 +102,17 @@ export function NotFound({
 /**
  * 500 or any failure. `detail` is the error text, shown in a `CodeBlock` under the copy; pass it
  * only where a reader may see it (a request id, a message), never a stack trace. `onRetry` adds a
- * "Try again" button, unless `action` replaces it.
+ * "Try again" button, unless `actions` replaces it.
  */
 export function ErrorPage({
   detail,
   onRetry,
-  action,
+  actions,
   ...props
 }: StatusPageProps & {
   /** The error text, in a `CodeBlock` under the copy: a request id or a message a reader may see, never a stack trace. */
   detail?: string;
-  /** Adds a "Try again" button that calls it, unless `action` replaces the button. */
+  /** Adds a "Try again" button that calls it, unless `actions` replaces the button. */
   onRetry?: () => void;
 }): ReactElement {
   return (
@@ -121,20 +121,20 @@ export function ErrorPage({
         title: "Something went wrong",
         body: "An error stopped this page from loading. You can try again.",
       }}
-      action={action ?? retry(onRetry)}
+      actions={actions ?? retry(onRetry)}
       extra={detail && <CodeBlock label="Error">{detail}</CodeBlock>}
       {...props}
     />
   );
 }
 
-/** The device has no connection. `onRetry` adds a "Try again" button, unless `action` replaces it. */
+/** The device has no connection. `onRetry` adds a "Try again" button, unless `actions` replaces it. */
 export function Offline({
   onRetry,
-  action,
+  actions,
   ...props
 }: StatusPageProps & {
-  /** Adds a "Try again" button that calls it, unless `action` replaces the button. */
+  /** Adds a "Try again" button that calls it, unless `actions` replaces the button. */
   onRetry?: () => void;
 }): ReactElement {
   return (
@@ -143,7 +143,7 @@ export function Offline({
         title: "You are offline",
         body: "Check your connection and try again.",
       }}
-      action={action ?? retry(onRetry)}
+      actions={actions ?? retry(onRetry)}
       {...props}
     />
   );

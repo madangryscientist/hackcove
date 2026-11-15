@@ -1,4 +1,10 @@
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
+import {
+  type HTMLAttributes,
+  type ReactElement,
+  type ReactNode,
+  type Ref,
+  useCallback,
+} from "react";
 import { cx } from "./cx.js";
 import type { Unstyled } from "./props.js";
 
@@ -6,9 +12,9 @@ import type { Unstyled } from "./props.js";
  * The one content edge: every page's width and side padding. This file is the only place they are
  * defined, so a header, a page and a footer inside a Container start at the same x.
  */
-export function Container({ as, elementRef, children, ...rest }: ContainerProps): ReactElement {
+export function Container({ as, ref, children, ...rest }: ContainerProps): ReactElement {
   return (
-    <ContainerFrame {...rest} {...(as && { as })} elementRef={elementRef}>
+    <ContainerFrame {...rest} {...(as && { as })} ref={ref}>
       {children}
     </ContainerFrame>
   );
@@ -20,8 +26,8 @@ type ContainerProps = {
    * @default div
    */
   as?: "div" | "main" | "header" | "footer" | "section" | "nav";
-  /** The rendered element, for a parent that measures or scrolls it. */
-  elementRef?: ((element: HTMLElement | null) => void) | undefined;
+  /** Reaches the rendered element, for a parent that measures or scrolls it. */
+  ref?: Ref<HTMLElement> | undefined;
   children?: ReactNode;
 } & Unstyled<Omit<HTMLAttributes<HTMLElement>, "children">>;
 
@@ -29,16 +35,20 @@ type ContainerProps = {
 export function ContainerFrame({
   as: Tag = "div",
   className,
-  elementRef,
+  ref,
   children,
   ...rest
 }: ContainerProps & { className?: string }): ReactElement {
+  // The tag varies, so the element is handed over by a callback that takes any HTMLElement.
+  const attach = useCallback(
+    (element: HTMLElement | null) => {
+      if (typeof ref === "function") ref(element);
+      else if (ref) ref.current = element;
+    },
+    [ref],
+  );
   return (
-    <Tag
-      {...rest}
-      ref={elementRef}
-      className={cx("mx-auto w-full max-w-6xl px-4 sm:px-6", className)}
-    >
+    <Tag {...rest} ref={attach} className={cx("mx-auto w-full max-w-6xl px-4 sm:px-6", className)}>
       {children}
     </Tag>
   );

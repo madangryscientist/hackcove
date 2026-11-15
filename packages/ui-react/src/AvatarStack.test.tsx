@@ -7,7 +7,7 @@ const people = [{ name: "ada" }, { name: "grace" }, { name: "linus" }, { name: "
 
 describe("AvatarStack", () => {
   it("is one image named by the people in it, in order", () => {
-    render(<AvatarStack people={people} />);
+    render(<AvatarStack items={people} />);
     const stack = screen.getByRole("img", { name: "ada, grace, linus, margaret" });
     expect(screen.getAllByRole("img")).toHaveLength(1);
     for (const [before, after] of [
@@ -22,7 +22,7 @@ describe("AvatarStack", () => {
   });
 
   it("shows `max` avatars and a +N chip, titled by the rest, for the others", () => {
-    render(<AvatarStack people={people} max={2} size="lg" shape="square" />);
+    render(<AvatarStack items={people} max={2} size="lg" shape="square" />);
     const stack = screen.getByRole("img", { name: "ada, grace and 2 more" });
     expect(within(stack).queryByText("LI")).toBeNull();
     const chip = within(stack).getByText("+2");
@@ -31,13 +31,13 @@ describe("AvatarStack", () => {
   });
 
   it("has no chip when everyone fits", () => {
-    render(<AvatarStack people={people} max={4} />);
+    render(<AvatarStack items={people} max={4} />);
     expect(screen.getByRole("img", { name: "ada, grace, linus, margaret" })).not.toBeNull();
     expect(screen.queryByText(/^\+/)).toBeNull();
   });
 
   it("draws a photo inside the one image, titled by the person", () => {
-    render(<AvatarStack people={[{ name: "ada" }, { name: "Grace", src: "/g.jpg" }]} />);
+    render(<AvatarStack items={[{ name: "ada" }, { name: "Grace", src: "/g.jpg" }]} />);
     const stack = screen.getByRole("img", { name: "ada, Grace" });
     const photo = within(stack).getByTitle("Grace");
     expect(photo.getAttribute("src")).toBe("/g.jpg");

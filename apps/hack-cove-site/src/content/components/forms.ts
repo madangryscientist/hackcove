@@ -259,7 +259,7 @@ export const forms: ComponentSection = {
       pairs: ["FilterGroup/Legend", "FilterGroup/Facets"],
       usage: {
         do: [
-          "The `legend` names the set, such as the type of shop; the chips below wrap onto further lines when they run out of room.",
+          "The `label` names the set, drawn as its legend, such as the type of shop; the chips below wrap onto further lines when they run out of room.",
           "One `FilterGroup` per facet; stack several in a `Stack`.",
           'The children are `Button`s with `variant="outline"`, `size="sm"` and `pressed`.',
         ],

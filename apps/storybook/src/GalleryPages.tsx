@@ -81,14 +81,14 @@ export function GalleryBleedPages() {
   return (
     <div className="flex flex-col gap-6">
       <PageBox label="FullBleedLayout" bleed>
-        <FullBleedLayout panel={<Text>Panel</Text>}>
+        <FullBleedLayout aside={<Text>Panel</Text>}>
           <div className="flex h-full min-h-48 items-center justify-center bg-slate-100">
             <Text>Fills the width</Text>
           </div>
         </FullBleedLayout>
       </PageBox>
       <PageBox label="FullBleedLayout padded" bleed>
-        <FullBleedLayout padded panel={<Text>Panel</Text>}>
+        <FullBleedLayout padded aside={<Text>Panel</Text>}>
           <Card title="Padded canvas">
             <Text>Given the other layouts' page padding.</Text>
           </Card>
@@ -103,7 +103,7 @@ export function GalleryBleedPages() {
         </div>
       </PageBox>
       <PageBox label="CenteredLayout">
-        <CenteredLayout title="Sign in" subtitle="Use your Hack Cove account.">
+        <CenteredLayout title="Sign in" description="Use your Hack Cove account.">
           <Button>Continue</Button>
         </CenteredLayout>
       </PageBox>
@@ -120,7 +120,7 @@ export function GalleryPages() {
         <ProsePage />
       </PageBox>
       <PageBox label="ProseLayout width wide">
-        <ProseLayout width="wide" title="Pricing" subtitle="Pay for what you review.">
+        <ProseLayout width="wide" title="Pricing" description="Pay for what you review.">
           <StatTiles columns={3} />
         </ProseLayout>
       </PageBox>
@@ -155,13 +155,12 @@ export function GalleryGridPages() {
       </PageBox>
       <PageBox label="SidebarLayout">
         <SidebarLayout
-          rail={
+          aside={
             <Tabs
-              variant="pill"
               orientation="vertical"
               label="Organisations"
               items={[
-                { label: "Hack Cove", href: "#hc", active: true },
+                { label: "Hack Cove", href: "#hc", selected: true },
                 { label: "Acme", href: "#acme" },
               ]}
             />
@@ -172,16 +171,15 @@ export function GalleryGridPages() {
       </PageBox>
       <PageBox label="SidebarLayout, current link low in a long rail">
         <SidebarLayout
-          railLabel="All sections"
-          rail={
+          asideLabel="All sections"
+          aside={
             <Tabs
-              variant="pill"
               orientation="vertical"
               label="Sections"
               items={Array.from({ length: 60 }, (_, i) => ({
                 label: `Section ${i + 1}`,
                 href: `#section-${i + 1}`,
-                active: i === 44,
+                selected: i === 44,
               }))}
             />
           }

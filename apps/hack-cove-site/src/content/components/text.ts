@@ -15,7 +15,7 @@ export const text: ComponentSection = {
       stories: ["typography"],
       usage: {
         do: [
-          "A page has one title: `PageHeading` for an app page, `Display` for the headline of a public page. A `PageHeader` already draws the `PageHeading` and its subtitle, so use it for the top of a page.",
+          "A page has one title: `PageHeading` for an app page, `Display` for the headline of a public page. A `PageHeader` already draws the `PageHeading` and its `description`, so use it for the top of a page.",
           "Name the parts of a page with `SectionHeading`; `rule` puts the hairline under it, with the space either side built in.",
           "Name what is inside a part with `SubsectionHeading`: `size` `sm` is a form-group caption, `md` (default) a card title in a header bar, `lg` a drawer title. `truncate` cuts one that is too long for its column to a single line.",
           "Put a `Lead` under a `Display`, and a `Text` under any other heading. `Dialog` and `Drawer` draw their own title from their `title`.",

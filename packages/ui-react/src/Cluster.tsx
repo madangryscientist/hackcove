@@ -31,7 +31,7 @@ const JUSTIFY: Record<ClusterJustify, string> = {
  * Put one `ClusterGrow` around the item that takes the room left over, an input beside its
  * buttons, say. An empty `ClusterGrow` is a spacer that pushes what follows it to the end.
  * `ButtonGroup` is the row for buttons; use `Cluster` for any other row. `as="span"` is for a row
- * inside phrasing content, such as a `PageHeader` subtitle (a `<p>`): its items must be phrasing
+ * inside phrasing content, such as a `PageHeader` description (a `<p>`): its items must be phrasing
  * content too, so no `ClusterGrow`.
  */
 export function Cluster({

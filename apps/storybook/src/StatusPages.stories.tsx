@@ -32,7 +32,7 @@ export const NotFoundWithNumeral: S = {
 export const NotFoundOwnAction: S = {
   render: () => (
     <DemoShell>
-      <NotFound action={<Button href="#">Open the map</Button>} />
+      <NotFound actions={<Button href="#">Open the map</Button>} />
     </DemoShell>
   ),
 };
@@ -80,7 +80,7 @@ export const ForbiddenPage: S = {
 export const CustomAction: S = {
   render: () => (
     <DemoShell>
-      <Forbidden title="Members only" action={<Button>Request access</Button>}>
+      <Forbidden title="Members only" actions={<Button>Request access</Button>}>
         Ask an owner of this organisation to invite you.
       </Forbidden>
     </DemoShell>

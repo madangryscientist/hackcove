@@ -7,7 +7,7 @@ type S = StoryObj;
 
 export const WithChips: S = {
   render: () => (
-    <FilterGroup legend="Type of shop">
+    <FilterGroup label="Type of shop">
       <Button variant="outline" size="sm" pressed={false}>
         Charity
       </Button>
@@ -24,10 +24,10 @@ export const WithChips: S = {
   ),
 };
 
-/** A `FilterGroup` names a set of chips with a `legend`, so the group is announced and the chips wrap together. */
+/** A `FilterGroup` names a set of chips with a `label`, its legend, so the group is announced and the chips wrap together. */
 export const DoLegend: S = {
   render: () => (
-    <FilterGroup legend="Type of shop">
+    <FilterGroup label="Type of shop">
       <Button variant="outline" size="sm" pressed>
         Vintage
       </Button>
@@ -62,7 +62,7 @@ export const DontLegend: S = {
 export const DoFacets: S = {
   render: () => (
     <Stack gap="sm">
-      <FilterGroup legend="Type of shop">
+      <FilterGroup label="Type of shop">
         <Button variant="outline" size="sm" pressed>
           Vintage
         </Button>
@@ -70,7 +70,7 @@ export const DoFacets: S = {
           Books
         </Button>
       </FilterGroup>
-      <FilterGroup legend="Open">
+      <FilterGroup label="Open">
         <Button variant="outline" size="sm" pressed={false}>
           Now
         </Button>

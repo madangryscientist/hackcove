@@ -43,17 +43,23 @@ function CrumbContent({
  * crumb is a node, or a `Crumb` object when it links.
  */
 export function Breadcrumbs({
-  crumbs,
+  items,
+  label = "Breadcrumb",
   ...rest
 }: {
   /** The trail, first to current: a node, or a `Crumb` (`{ label, href, external? }`) for one that links. The last is the current page and never a link. */
-  crumbs: Array<Crumb | ReactNode>;
+  items: Array<Crumb | ReactNode>;
+  /**
+   * The trail's accessible name, on its `<nav>`, for an app in another language.
+   * @default Breadcrumb
+   */
+  label?: string | undefined;
 } & Passthrough): ReactElement {
-  const last = crumbs.length - 1;
+  const last = items.length - 1;
   return (
-    <nav {...rest} aria-label="Breadcrumb" className="min-w-0">
+    <nav {...rest} aria-label={label} className="min-w-0">
       <ol className="flex min-w-0 items-center gap-2 text-sm">
-        {crumbs.map((crumb, index) => (
+        {items.map((crumb, index) => (
           <li
             key={index}
             aria-current={index === last ? "page" : undefined}

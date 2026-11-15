@@ -154,7 +154,7 @@ export const feedback: ComponentSection = {
       accessibility: [
         "A Lightbox is the browser's own `<dialog>` opened with `showModal()`: the page behind goes inert, focus stays inside it and Esc closes it.",
         "It is named by `label` through `aria-label`; give the `<img>` its own `alt`.",
-        "The close, previous and next buttons are named Close, Previous and Next, and keep a light focus ring that shows on the dark scrim in every theme.",
+        "The close, previous and next buttons are named Close, Previous and Next (`closeLabel`, `previousLabel` and `nextLabel` for another language), and keep a light focus ring that shows on the dark scrim in every theme.",
         "A click on the scrim around the media closes it; a click on the media or its text does not.",
         "Closing, or unmounting it, hands focus back to the element that opened it. The fade is switched off under `prefers-reduced-motion: reduce`.",
       ],

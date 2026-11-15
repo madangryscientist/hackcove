@@ -99,15 +99,24 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
     { sm: "px-2.5 py-1 text-xs", md: "px-3 py-2 text-sm", lg: "px-4 py-2.5 text-base" },
   ],
   [
-    "Tabs pill",
+    "Tabs rail",
     (size) => (
-      <Tabs variant="pill" items={items} value="a" label="x" onChange={() => {}} {...at(size)} />
+      <Tabs
+        items={items}
+        value="a"
+        label="x"
+        onChange={() => {}}
+        orientation="vertical"
+        {...at(size)}
+      />
     ),
     { sm: "px-2.5 py-1 text-xs", md: "px-3 py-2 text-sm", lg: "px-4 py-2.5 text-base" },
   ],
   [
-    "Tabs pill links",
-    (size) => <Tabs variant="pill" items={[{ label: "A", href: "/a" }]} label="x" {...at(size)} />,
+    "Tabs rail links",
+    (size) => (
+      <Tabs items={[{ label: "A", href: "/a" }]} label="x" orientation="vertical" {...at(size)} />
+    ),
     { sm: "px-2.5 py-1 text-xs", md: "px-3 py-2 text-sm", lg: "px-4 py-2.5 text-base" },
   ],
   [

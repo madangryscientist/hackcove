@@ -114,7 +114,7 @@ export const content: ComponentSection = {
       pairs: ["AvatarStack/Max"],
       usage: {
         do: [
-          "Pass `people`, each with the full `name` and an optional local `src`, as for `Avatar`.",
+          "Pass `items`, each with the full `name` and an optional local `src`, as for `Avatar`.",
           "Each avatar overlaps the one before it, in a ring in the page colour that keeps them apart. Draw no ring or overlap of your own.",
           '`max` shows the first `max` and a "+N" chip of the same size and shape for the rest; leave it off to show everyone.',
           "`size` and `shape` are `Avatar`'s and apply to every avatar and the chip: `square` for a stack of orgs or teams.",

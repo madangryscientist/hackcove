@@ -11,7 +11,7 @@ export const ActiveOnPanel: S = {
   render: () => (
     <FullBleedLayout
       padded
-      panel={
+      aside={
         <div>
           <ListRow size="sm" trailing="2">
             Missing part

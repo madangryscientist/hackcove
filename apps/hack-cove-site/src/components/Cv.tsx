@@ -104,7 +104,7 @@ export function Cv() {
           </div>
         }
         title={cv.name}
-        subtitle={
+        description={
           <>
             {cv.headline} · {cv.location}
           </>

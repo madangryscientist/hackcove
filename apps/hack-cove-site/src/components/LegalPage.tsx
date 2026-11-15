@@ -22,7 +22,7 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
       gap="lg"
       breadcrumbs={<TextLink href="/">{site.name}</TextLink>}
       title={doc.title}
-      subtitle={<>Last updated {doc.updated}</>}
+      description={<>Last updated {doc.updated}</>}
     >
       {doc.sections.map((section) => (
         <Section key={section.heading} title={section.heading}>

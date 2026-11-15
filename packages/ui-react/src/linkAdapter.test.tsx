@@ -56,20 +56,22 @@ const PARTS: Array<[string, Part]> = [
   [
     "a Tabs link item",
     {
-      ui: <Tabs label="Views" items={[{ label: "Shots", href: "/to", active: true }]} />,
+      ui: <Tabs label="Views" items={[{ label: "Shots", href: "/to", selected: true }]} />,
       name: "Shots",
     },
   ],
   [
     "a SegmentedControl link item",
     {
-      ui: <SegmentedControl label="Range" items={[{ label: "Week", href: "/to", active: true }]} />,
+      ui: (
+        <SegmentedControl label="Range" items={[{ label: "Week", href: "/to", selected: true }]} />
+      ),
       name: "Week",
     },
   ],
   [
     "a Breadcrumbs crumb",
-    { ui: <Breadcrumbs crumbs={[{ label: "Quotes", href: "/to" }, "Quote 12"]} />, name: "Quotes" },
+    { ui: <Breadcrumbs items={[{ label: "Quotes", href: "/to" }, "Quote 12"]} />, name: "Quotes" },
   ],
   ["AppShellBrand", { ui: <AppShellBrand label="Hack Cove" href="/to" />, name: "Hack Cove" }],
   [
@@ -177,7 +179,7 @@ describe("LinkProvider", () => {
         <Tabs
           label="Views"
           items={[
-            { label: "Shots", href: "/shots", active: true, "data-testid": "shots-tab" },
+            { label: "Shots", href: "/shots", selected: true, "data-testid": "shots-tab" },
             { label: "Builds", href: "/builds" },
           ]}
         />

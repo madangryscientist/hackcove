@@ -24,7 +24,7 @@ export const layout: ComponentSection = {
           "`bleed` drops main's `Container` for a layout that needs the whole width (`FullBleedLayout`); `SidebarLayout` needs no `bleed`.",
           "`controls` stay in the row at every width, so keep them few (a theme toggle, the viewer's avatar). Pickers and actions that do not fit a phone row go in `menuControls`: from `md` they sit in the row after `controls`, and below `md` they are at the top of the Menu.",
           "On a phone `nav` and `subnav` fold into one Menu button, so a nav of any length stays reachable with no sideways scroll; `menuLabel` renames the button (`Menu` by default), for a translated app.",
-          "`hideChromeInPrint` hides the header and footer and main's padding on paper; screen is unchanged.",
+          "`printChrome={false}` hides the header and footer and main's padding on paper; screen is unchanged.",
           "`header` is for a node no other slot covers. Prefer `brand`, `nav` and `controls`.",
           "Put `appShellRootClassFor(scheme)` on the app's own `<html>`. `AppShell` never touches `<html>`.",
           "A theme sets the canvas colour and the font, and the shell turns on font smoothing (`antialiased`); the app writes no page background, font or smoothing rule.",
@@ -82,7 +82,7 @@ export const layout: ComponentSection = {
           "`AppShell` already wraps its header, main and footer in one. Use `Container` only for a part of a `bleed` shell that spans the page, so its content still keeps the edge.",
           "`as` picks the element: `div` (default), `main`, `header`, `footer`, `section` or `nav`. A `section` or `nav` needs an `aria-label`.",
           "Space inside it with a `Stack`; a `Container` has no vertical padding or gap of its own.",
-          "`elementRef` hands over the rendered element, for a parent that measures or scrolls it.",
+          "`ref` reaches the rendered element, for a parent that measures or scrolls it.",
         ],
         dont: ["Never nest a `Container` in a `Container`: the padding doubles."],
       },
@@ -95,14 +95,14 @@ export const layout: ComponentSection = {
     {
       slug: "page-header",
       name: "PageHeader",
-      summary: "The top of a page: breadcrumbs, title, subtitle, actions and tabs.",
+      summary: "The top of a page: breadcrumbs, title, description, actions and tabs.",
       whenToUse:
         "The first block of every page but a landing page, which opens with a `Hero`; it puts the page's first content at the same y on every page.",
       pairs: ["PageHeaderDocs/Slots", "PageHeaderDocs/InStack"],
       stories: ["PageHeader"],
       usage: {
         do: [
-          "Pass `title`, and `subtitle`, `breadcrumbs`, `actions` and `tabs` as needed; never build a title row from a heading and a `Cluster`.",
+          "Pass `title`, and `description`, `breadcrumbs`, `actions` and `tabs` as needed; never build a title row from a heading and a `Cluster`.",
           "`actions` sit beside the title from `sm` up and under it on a phone: a `Button` or two, one primary.",
           "`breadcrumbs` take a `Breadcrumbs`; `tabs` take pill `Tabs` of links to pages.",
           "Its fixed bottom margin gives every page the same first-block position. As a direct child of a `Stack` it has none and the Stack's `gap` is the only space, so do not wrap it in another element.",
@@ -110,7 +110,7 @@ export const layout: ComponentSection = {
         ],
       },
       accessibility: [
-        "The title is the page's `<h1>`; the subtitle is a paragraph.",
+        "The title is the page's `<h1>`; the description is a paragraph.",
         '`Breadcrumbs` is a `<nav>` named Breadcrumb, with the last crumb marked `aria-current="page"`. Give the `Tabs` a `label`.',
         "On a narrow screen the actions move below the title.",
       ],

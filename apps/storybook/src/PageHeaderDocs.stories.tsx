@@ -16,13 +16,13 @@ const meta: Meta = { title: "Layout/PageHeader" };
 export default meta;
 type S = StoryObj;
 
-/** Breadcrumbs, title, subtitle, actions and tabs are slots of one `PageHeader`; each is optional. */
+/** Breadcrumbs, title, description, actions and tabs are slots of one `PageHeader`; each is optional. */
 export const DoSlots: S = {
   render: () => (
     <PageHeader
       breadcrumbs={
         <Breadcrumbs
-          crumbs={[
+          items={[
             { label: "Hack Cove", href: "#project" },
             { label: "Builds", href: "#builds" },
             "Build 412",
@@ -30,7 +30,7 @@ export const DoSlots: S = {
         />
       }
       title="Build 412"
-      subtitle="main · 3 changed"
+      description="main · 3 changed"
       actions={
         <>
           <Button variant="outline">Reject</Button>
@@ -39,10 +39,9 @@ export const DoSlots: S = {
       }
       tabs={
         <Tabs
-          variant="pill"
           label="Build"
           items={[
-            { label: "Changed", href: "#changed", active: true },
+            { label: "Changed", href: "#changed", selected: true },
             { label: "New", href: "#new" },
           ]}
         />
@@ -51,7 +50,7 @@ export const DoSlots: S = {
   ),
 };
 
-/** A title row built from a heading, a subtitle and a `Cluster` is a second header that drifts from every other page's. Use `PageHeader`. */
+/** A title row built from a heading, a description and a `Cluster` is a second header that drifts from every other page's. Use `PageHeader`. */
 export const DontSlots: S = {
   render: () => (
     <Cluster justify="between">
@@ -68,7 +67,7 @@ export const DontSlots: S = {
 export const DoInStack: S = {
   render: () => (
     <Stack gap="lg">
-      <PageHeader title="Members" subtitle="Who can see this project." />
+      <PageHeader title="Members" description="Who can see this project." />
       <Card title="Active">
         <Text>3 members</Text>
       </Card>
@@ -81,7 +80,7 @@ export const DontInStack: S = {
   render: () => (
     <Stack gap="lg">
       <div>
-        <PageHeader title="Members" subtitle="Who can see this project." />
+        <PageHeader title="Members" description="Who can see this project." />
       </div>
       <Card title="Active">
         <Text>3 members</Text>

@@ -29,14 +29,14 @@ export type SwitchButton = Option & {
 
 /**
  * An option that is a link: `href`, drawn by the app's router link through `LinkProvider`. The router
- * changes the page; `active` on the item, or a `value` equal to the group's, marks the current one.
+ * changes the page; `selected` on the item, or a `value` equal to the group's, marks the current one.
  * `external` opens a new tab.
  */
 export type SwitchLink = Option & {
   /** Marks this link current when it equals the group's `value`. */
   value?: string;
   /** This link is the current page. */
-  active?: boolean;
+  selected?: boolean;
   disabled?: undefined;
   controls?: undefined;
   external?: boolean;
@@ -65,9 +65,9 @@ export type SwitchProps = Shared &
         disabled?: boolean;
       }
     | {
-        /** The options in order: links (`href`), the current one marked by its `active` or by a `value` equal to the group's. A link may carry a `count`. */
+        /** The options in order: links (`href`), the current one marked by its `selected` or by a `value` equal to the group's. A link may carry a `count`. */
         items: SwitchLink[];
-        /** The `value` of the current link, as an alternative to `active` on the item. */
+        /** The `value` of the current link, as an alternative to `selected` on the item. */
         value?: string;
         onChange?: undefined;
         disabled?: undefined;
@@ -109,7 +109,7 @@ const isLinks = (items: SwitchProps["items"]): items is SwitchLink[] =>
   items.some((item) => item.href !== undefined);
 
 const isCurrent = (item: SwitchLink, value: string | undefined): boolean =>
-  item.active === true || (item.value !== undefined && item.value === value);
+  item.selected === true || (item.value !== undefined && item.value === value);
 
 function SwitchLinkItem({
   item,

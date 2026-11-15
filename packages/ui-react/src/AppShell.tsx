@@ -1,10 +1,10 @@
-import { type HTMLAttributes, type ReactElement, type ReactNode, useState } from "react";
+import { type ReactElement, type ReactNode, useState } from "react";
 import { AppShellMenu } from "./AppShellMenu.js";
 import { ContainerFrame } from "./Container.js";
 import { schemeClass, type ColourScheme, type ColourSchemeClasses } from "./colourScheme.js";
 import { cx, focusRing } from "./cx.js";
 import { renderLink } from "./link.js";
-import type { Passthrough, Unstyled } from "./props.js";
+import type { Passthrough } from "./props.js";
 import { useScrollEdges } from "./scrollEdges.js";
 import type { Size } from "./size.js";
 
@@ -128,7 +128,7 @@ function ScrollRow({ className, children }: { className: string; children: React
   const [row, setRow] = useState<HTMLElement | null>(null);
   useScrollEdges(row, "x");
   return (
-    <ContainerFrame elementRef={setRow} className={cx(ROW, FADE, className)}>
+    <ContainerFrame ref={setRow} className={cx(ROW, FADE, className)}>
       {children}
     </ContainerFrame>
   );
@@ -272,13 +272,13 @@ export function AppShell({
   menuLabel = "Menu",
   footer,
   bleed = false,
-  hideChromeInPrint = false,
+  printChrome = true,
   children,
   ...rest
 }: {
   /** The brand: a logo and a name, in the header's brand type, with the gap between them. `AppShellBrand` makes both one link. */
   brand?: ReactNode;
-  /** The main navigation, e.g. a `Tabs variant="pill"` of links (it is already a `<nav>`). Below `md` it is in the menu. */
+  /** The main navigation, e.g. a `Tabs` of links (it is already a `<nav>`). Below `md` it is in the menu. */
   nav?: ReactNode;
   /** The end of the row: a picker, a theme toggle. Gap-2, vertically centred; no child shrinks, and a full-width control (a `Select` at its default) sizes to its content. */
   controls?: ReactNode;
@@ -291,7 +291,7 @@ export function AppShell({
   menuControls?: ReactNode;
   /** The escape hatch: a free node in the header row, after `brand` and `nav`. */
   header?: ReactNode;
-  /** A second fixed-height row under the header from `md`, e.g. a `Tabs variant="pill"` of links. Below `md` it is in the menu with `nav`. */
+  /** A second fixed-height row under the header from `md`, e.g. a `Tabs` of links. Below `md` it is in the menu with `nav`. */
   subnav?: ReactNode;
   /**
    * The phone menu button's name, for an app in another language. Only drawn below `md`, and only
@@ -299,17 +299,19 @@ export function AppShell({
    * @default Menu
    */
   menuLabel?: string;
-  /** The page footer: small muted text in a `Container`, under a hairline. Hidden in print with `hideChromeInPrint`. */
+  /** The page footer: small muted text in a `Container`, under a hairline. Hidden in print with `printChrome={false}`. */
   footer?: ReactNode;
   /** Main without a Container, for a full-bleed layout. */
   bleed?: boolean;
   /**
-   * Print only the page: the header and footer are hidden, and main's Container drops its padding
-   * (the page margin is then `@page`'s). Off by default, so a print is unchanged unless an app asks.
+   * Whether a print shows the header and footer. `false` prints only the page: the header and
+   * footer are hidden, and main's Container drops its padding (the page margin is then `@page`'s).
+   * @default true
    */
-  hideChromeInPrint?: boolean;
+  printChrome?: boolean;
   children: ReactNode;
-} & Unstyled<Omit<HTMLAttributes<HTMLDivElement>, "children">>): ReactElement {
+} & Passthrough): ReactElement {
+  const hideChromeInPrint = !printChrome;
   return (
     <div
       {...rest}

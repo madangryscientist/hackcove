@@ -34,7 +34,7 @@ export function SiteShell({
       nav={<SiteNav pathname={pathname} />}
       footer={footer}
       controls={controls}
-      hideChromeInPrint={hideChromeInPrint}
+      printChrome={!hideChromeInPrint}
     >
       {children}
     </AppShell>

@@ -4,43 +4,41 @@ import { pillTabClass, Tabs } from "./Tabs.js";
 
 const items = [
   { label: "Map", href: "/" },
-  { label: "Directory", href: "/stores", active: true },
+  { label: "Directory", href: "/stores", selected: true },
   { label: "Events", href: "/events" },
 ];
 
 describe("Tabs pill links", () => {
   it("renders one <a> per item with its href", () => {
-    const out = renderToStaticMarkup(<Tabs variant="pill" items={items} label="Main" />);
+    const out = renderToStaticMarkup(<Tabs items={items} label="Main" />);
     expect(out.match(/<a /g)).toHaveLength(3);
     expect(out).toContain('href="/"');
     expect(out).toContain('href="/stores"');
     expect(out).toContain('href="/events"');
   });
 
-  it("marks only the active item with aria-current and font-medium", () => {
-    const out = renderToStaticMarkup(<Tabs variant="pill" items={items} label="Main" />);
+  it("marks only the selected item with aria-current and font-medium", () => {
+    const out = renderToStaticMarkup(<Tabs items={items} label="Main" />);
     expect(out.match(/aria-current="page"/g)).toHaveLength(1);
     expect(out.match(/font-medium/g)).toHaveLength(1);
     expect(out).toMatch(/<a href="\/stores"[^>]*aria-current="page"/);
   });
 
   it("names the nav landmark with aria-label", () => {
-    const out = renderToStaticMarkup(<Tabs variant="pill" items={items} label="Main" />);
+    const out = renderToStaticMarkup(<Tabs items={items} label="Main" />);
     expect(out).toContain('<nav aria-label="Main"');
   });
 });
 
 describe("Tabs pill links orientation", () => {
   it("is a wrapping row by default", () => {
-    const out = renderToStaticMarkup(<Tabs variant="pill" items={items} label="Main" />);
+    const out = renderToStaticMarkup(<Tabs items={items} label="Main" />);
     expect(out).toContain("flex-wrap");
     expect(out).not.toContain("flex-col");
   });
 
   it('stacks one link per line with orientation="vertical", with the same pills and aria-current', () => {
-    const out = renderToStaticMarkup(
-      <Tabs variant="pill" items={items} label="Main" orientation="vertical" />,
-    );
+    const out = renderToStaticMarkup(<Tabs items={items} label="Main" orientation="vertical" />);
     expect(out).toMatch(/<nav aria-label="Main" class="[^"]*flex-col/);
     expect(out).not.toContain("flex-wrap");
     expect(out.match(/<a /g)).toHaveLength(3);
@@ -66,7 +64,6 @@ describe("Tabs pill links external tabs", () => {
   it("opens an external tab in a new tab", () => {
     const out = renderToStaticMarkup(
       <Tabs
-        variant="pill"
         items={[{ label: "Traces", href: "https://t.example", external: true }]}
         label="Main"
       />,
@@ -77,7 +74,7 @@ describe("Tabs pill links external tabs", () => {
   });
 
   it("leaves a plain tab without target or rel", () => {
-    const out = renderToStaticMarkup(<Tabs variant="pill" items={items} label="Main" />);
+    const out = renderToStaticMarkup(<Tabs items={items} label="Main" />);
     expect(out).not.toContain("target");
     expect(out).not.toContain("rel=");
   });
@@ -87,7 +84,6 @@ describe("Tabs pill links data-*", () => {
   it("puts an item's data-* on its link, and no other item's", () => {
     const out = renderToStaticMarkup(
       <Tabs
-        variant="pill"
         label="Sections"
         items={[
           { label: "Map", href: "/", "data-testid": "tab-map" },

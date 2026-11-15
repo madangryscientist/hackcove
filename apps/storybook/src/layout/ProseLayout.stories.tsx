@@ -29,16 +29,15 @@ export const FullPage: S = {
       brand={<a href="#">Hack Cove</a>}
       nav={
         <Tabs
-          variant="pill"
           label="Main"
           items={[
-            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Quotes", href: "#quotes", selected: true },
             { label: "Clients", href: "#clients" },
           ]}
         />
       }
     >
-      <ProseLayout title="Privacy" subtitle="How we handle your data.">
+      <ProseLayout title="Privacy" description="How we handle your data.">
         <SectionHeading>What we keep</SectionHeading>
         <Text>We keep your account details and the quotes you send, and nothing else.</Text>
         <SectionHeading>Who sees it</SectionHeading>
@@ -59,7 +58,7 @@ export const Privacy: S = {
 /** Text pages (privacy, terms, help) are one reading column; the header sits inside it. */
 export const DoArticle: S = {
   render: () => (
-    <ProseLayout title="Privacy" subtitle="How we handle your data.">
+    <ProseLayout title="Privacy" description="How we handle your data.">
       <SectionHeading>What we keep</SectionHeading>
       <Text>We keep your account details and the quotes you send, and nothing else.</Text>
       <SectionHeading>Who sees it</SectionHeading>
@@ -75,7 +74,7 @@ export const Wide: S = {
       <ProseLayout
         width="wide"
         title="Pricing"
-        subtitle="Pay for what you review. Every plan includes unlimited projects."
+        description="Pay for what you review. Every plan includes unlimited projects."
         actions={<Button>Contact sales</Button>}
       >
         <CardGrid columns={3}>
@@ -93,7 +92,7 @@ export const Wide: S = {
 /** `ListLayout` is for lists: its content runs the full width, so lines of text get too long to read. Use `ProseLayout`. */
 export const DontArticle: S = {
   render: () => (
-    <ListLayout title="Privacy" subtitle="How we handle your data.">
+    <ListLayout title="Privacy" description="How we handle your data.">
       <Card>
         <Text>
           We keep your account details and the quotes you send, and nothing else. Only you and the

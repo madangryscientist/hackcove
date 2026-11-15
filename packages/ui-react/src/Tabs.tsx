@@ -34,48 +34,43 @@ export function pillTabClass(active: boolean, disabled = false, size: Size = "md
 export type TabsProps = SwitchProps &
   (
     | {
-        /** `underline` (default) is a row over a bottom rule; `pill` fills the current tab. */
-        variant?: "underline";
-        /** Only a `pill` row takes a `size`. */
+        /**
+         * `horizontal` is a row of underline tabs over a bottom rule; `vertical` is the pill rail, a
+         * column at the rail's width for a `SidebarLayout` aside, where the up and down arrows move
+         * between button tabs.
+         * @default horizontal
+         */
+        orientation?: "horizontal";
+        /** Only the vertical rail takes a `size`. */
         size?: undefined;
-        /** Only a `pill` row takes an `orientation`. */
-        orientation?: undefined;
       }
     | {
-        variant: "pill";
+        orientation: "vertical";
         /**
          * The pills' height and text, on the scale of a `Button`.
          * @default md
          */
         size?: Size;
-        /**
-         * `vertical` stacks the pills in one column at the rail's width, for a `SidebarLayout` rail;
-         * the up and down arrows then move between button tabs.
-         * @default horizontal
-         */
-        orientation?: "horizontal" | "vertical";
       }
   );
 
 /**
- * Underline tabs for switching a view in place: a row over a bottom rule, the current tab
- * underlined in the accent. `items` are `{ value, label }` buttons (`value` and `onChange` are the
- * caller's state; the arrow keys, Home and End move between tabs) or links (`href`, an in-app one through `LinkProvider`, to
- * draw the app's own router `<Link>`; `active` on an item, or `value`, marks the current one, which
- * gets `aria-current`). `variant="pill"` fills the current tab instead, with no rule, for under a
- * `PageHeader` or as a site's section nav, and takes a `size`; `orientation="vertical"` stacks the
- * pills for a `SidebarLayout` rail. An item may carry a `count`, and a button one `disabled` (with a
- * `title` for the reason); `disabled` on the row disables every tab. `label` names the tab list.
- * The panel is the caller's: give it `role="tabpanel"`, and a tab `controls` to point at it.
+ * Tabs for switching a view in place or between pages. Across (the default) they are underline
+ * tabs: a row over a bottom rule, the current tab underlined in the accent. `orientation="vertical"`
+ * is the pill rail instead, the current tab filled, for a `SidebarLayout` aside, and takes a
+ * `size`. `items` are `{ value, label }` buttons (`value` and `onChange` are the caller's state;
+ * the arrow keys, Home and End move between tabs) or links (`href`, an in-app one through
+ * `LinkProvider`; `selected` on an item, or `value`, marks the current one, which gets
+ * `aria-current`). An item may carry a `count`, and a button one `disabled` (with a `title` for
+ * the reason); `disabled` on the row disables every tab. `label` names the tab list. The panel is
+ * the caller's: give it `role="tabpanel"`, and a tab `controls` to point at it.
  */
 export function Tabs({
-  variant = "underline",
   size = "md",
   orientation = "horizontal",
   ...props
 }: TabsProps): ReactElement {
-  const pill = variant === "pill";
-  const stacked = pill && orientation === "vertical";
+  const stacked = orientation === "vertical";
   return (
     <Switcher
       {...props}
@@ -84,9 +79,9 @@ export function Tabs({
         item: "tab",
         vertical: stacked,
         stacked,
-        root: rootClass(pill, stacked),
+        root: stacked ? "flex flex-col gap-1" : UNDERLINE_ROW,
         option: (active, disabled) =>
-          pill
+          stacked
             ? pillTabClass(active, disabled, size)
             : cx(BASE, active ? ON : OFF, !active && !disabled && OFF_LIVE),
       }}
@@ -94,7 +89,4 @@ export function Tabs({
   );
 }
 
-function rootClass(pill: boolean, stacked: boolean): string {
-  if (stacked) return "flex flex-col gap-1";
-  return pill ? "flex flex-wrap gap-1" : "flex flex-wrap gap-x-5 border-b border-slate-200 text-sm";
-}
+const UNDERLINE_ROW = "flex flex-wrap gap-x-5 border-b border-slate-200 text-sm";

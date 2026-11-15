@@ -13,7 +13,7 @@ import {
 import { DemoShell, layoutPage } from "./DemoShell";
 import { DetailPage } from "./pages";
 
-/** Main two thirds and aside one third from `lg`; the aside stacks below main under it. `stickyAside` keeps the aside in view under the header from `lg` as a long page scrolls. */
+/** Main two thirds and aside one third from `lg`; the aside stacks below main under it. `sticky` keeps the aside in view under the header from `lg` as a long page scrolls. */
 const meta: Meta = {
   title: "Page layouts/DetailLayout",
   parameters: { layout: "fullscreen", bare: true },
@@ -29,10 +29,9 @@ export const FullPage: S = {
       brand={<a href="#">Hack Cove</a>}
       nav={
         <Tabs
-          variant="pill"
           label="Main"
           items={[
-            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Quotes", href: "#quotes", selected: true },
             { label: "Clients", href: "#clients" },
           ]}
         />
@@ -40,7 +39,7 @@ export const FullPage: S = {
     >
       <DetailLayout
         title="Quote Q-1042"
-        subtitle="Naledi Mokoena"
+        description="Naledi Mokoena"
         actions={<Button variant="outline">Edit</Button>}
         aside={
           <Card title="Details">
@@ -76,15 +75,15 @@ const longMain = Array.from({ length: 12 }, (_, i) => (
   </Card>
 ));
 
-/** `stickyAside` on a long page: from `lg` the aside sticks under the header; taller than the room left, it scrolls itself. Below `lg` it stacks. */
+/** `sticky` on a long page: from `lg` the aside sticks under the header; taller than the room left, it scrolls itself. Below `lg` it stacks. */
 export const StickyAside: S = {
   render: () => (
     <DemoShell>
       <DetailLayout
         title="Quote Q-1042"
-        subtitle="Naledi Mokoena"
+        description="Naledi Mokoena"
         actions={<Button variant="outline">Edit</Button>}
-        stickyAside
+        sticky
         aside={
           <Card title="Details">
             <KeyValueList>
@@ -117,9 +116,9 @@ export const StickyAsideText: S = {
     <DemoShell>
       <DetailLayout
         title="Quote Q-1042"
-        subtitle="Naledi Mokoena"
+        description="Naledi Mokoena"
         actions={<Button variant="outline">Edit</Button>}
-        stickyAside
+        sticky
         asideLabel="Quote notes"
         aside={notes}
       >
@@ -134,7 +133,7 @@ export const DoRecord: S = {
   render: () => (
     <DetailLayout
       title="Quote Q-1042"
-      subtitle="Naledi Mokoena"
+      description="Naledi Mokoena"
       actions={<Button variant="outline">Edit</Button>}
       aside={
         <Card title="Details">
@@ -157,7 +156,7 @@ export const DontRecord: S = {
   render: () => (
     <ListLayout
       title="Quote Q-1042"
-      subtitle="Naledi Mokoena"
+      description="Naledi Mokoena"
       actions={<Button variant="outline">Edit</Button>}
     >
       <Card title="Cover">

@@ -214,9 +214,9 @@ describe("Tabs", () => {
     expect(out.match(/border-transparent/g)).toHaveLength(3);
   });
 
-  it("fills the current tab as a pill, with no rule, for variant=pill", () => {
+  it("fills the current tab as a pill, with no rule, in the vertical rail", () => {
     const out = renderToStaticMarkup(
-      <Tabs items={items} value="day" onChange={() => {}} label="Range" variant="pill" />,
+      <Tabs items={items} value="day" onChange={() => {}} label="Range" orientation="vertical" />,
     );
     expect(out).not.toContain("border-b");
     expect(out).toContain("rounded-lg");
@@ -224,8 +224,8 @@ describe("Tabs", () => {
     expect(out.match(/hover:bg-slate-100/g)).toHaveLength(2);
   });
 
-  it("gives a disabled tab no hover look, in both variants", () => {
-    for (const variant of ["underline", "pill"] as const) {
+  it("gives a disabled tab no hover look, across and in the rail", () => {
+    for (const orientation of ["horizontal", "vertical"] as const) {
       const out = mount(
         <Tabs
           items={[
@@ -235,7 +235,7 @@ describe("Tabs", () => {
           value="a"
           onChange={() => {}}
           label="Range"
-          variant={variant}
+          orientation={orientation}
         />,
       );
       const [, b] = [...out.querySelectorAll("button")];

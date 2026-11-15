@@ -28,17 +28,16 @@ export const FullPage: S = {
       brand={<a href="#">Hack Cove</a>}
       nav={
         <Tabs
-          variant="pill"
           label="Main"
           items={[
-            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Quotes", href: "#quotes", selected: true },
             { label: "Clients", href: "#clients" },
           ]}
         />
       }
     >
       <Stack gap="xl">
-        <PageHeader title="Business" subtitle="This month at a glance." />
+        <PageHeader title="Business" description="This month at a glance." />
         <CardGrid columns={3}>
           <StatTile label="Open" value="12" />
           <StatTile label="Won" value="8" tone="positive" />
@@ -52,7 +51,7 @@ export const FullPage: S = {
 export const FourColumns: S = {
   render: () => (
     <DemoShell>
-      <PageHeader title="Business" subtitle="This month at a glance." />
+      <PageHeader title="Business" description="This month at a glance." />
       <StatTiles columns={4} />
     </DemoShell>
   ),
@@ -61,7 +60,7 @@ export const FourColumns: S = {
 export const ThreeColumns: S = {
   render: () => (
     <DemoShell>
-      <PageHeader title="Business" subtitle="This month at a glance." />
+      <PageHeader title="Business" description="This month at a glance." />
       <StatTiles columns={3} />
     </DemoShell>
   ),
@@ -70,7 +69,7 @@ export const ThreeColumns: S = {
 export const TwoColumns: S = {
   render: () => (
     <DemoShell>
-      <PageHeader title="Business" subtitle="This month at a glance." />
+      <PageHeader title="Business" description="This month at a glance." />
       <StatTiles columns={2} />
     </DemoShell>
   ),
@@ -79,7 +78,10 @@ export const TwoColumns: S = {
 function Ratio({ columns }: { columns: "2:1" | "1:2" }) {
   return (
     <DemoShell>
-      <PageHeader title="Transaction" subtitle={`columns="${columns}": one column on a phone.`} />
+      <PageHeader
+        title="Transaction"
+        description={`columns="${columns}": one column on a phone.`}
+      />
       <CardGrid columns={columns}>
         <Card title="Detail">
           <Text>The wide column, twice the width of the narrow one from md.</Text>
@@ -112,7 +114,7 @@ const shots = [
 function Shots({ minWidth, align }: { minWidth?: "sm" | "md"; align?: "start" | "stretch" }) {
   return (
     <DemoShell>
-      <PageHeader title="Shots" subtitle="As many per row as the width allows." />
+      <PageHeader title="Shots" description="As many per row as the width allows." />
       <CardGrid columns="auto" minWidth={minWidth} align={align}>
         {shots.map(([title, note]) => (
           <Card key={title} title={title}>
@@ -137,7 +139,7 @@ export const AlignStart: S = { render: () => <Shots align="start" /> };
 export const AsList: S = {
   render: () => (
     <DemoShell>
-      <PageHeader title="Business" subtitle="This month at a glance." />
+      <PageHeader title="Business" description="This month at a glance." />
       <CardGrid as="ul" columns={3} aria-label="This month">
         <StatTile label="Open" value="12" />
         <StatTile label="Won" value="8" tone="positive" />

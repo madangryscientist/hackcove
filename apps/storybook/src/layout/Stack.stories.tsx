@@ -27,7 +27,7 @@ export const StackAndSection: S = {
     <DemoShell>
       <PageHeader
         title="Project"
-        subtitle="Stack gaps: sm inside a group, md between blocks, lg between groups."
+        description="Stack gaps: sm inside a group, md between blocks, lg between groups."
       />
       <Stack gap="lg">
         <Section title="Recent builds" actions={<Button variant="outline">All builds</Button>}>
@@ -58,7 +58,10 @@ export const SectionGap: S = {
   render: () => (
     <DemoShell>
       <Stack gap="xl">
-        <PageHeader title="Page" subtitle="Stack gap section: the step between a page's blocks." />
+        <PageHeader
+          title="Page"
+          description="Stack gap section: the step between a page's blocks."
+        />
         <Section title="Intro">
           <Text>First block of the page.</Text>
         </Section>
@@ -79,7 +82,10 @@ export const SectionGap: S = {
 export const TextBlock: S = {
   render: () => (
     <DemoShell>
-      <PageHeader title="Team" subtitle="Stack gap xs: the step between lines of one text block." />
+      <PageHeader
+        title="Team"
+        description="Stack gap xs: the step between lines of one text block."
+      />
       <Stack gap="xs">
         <SubsectionHeading>Jacobus Langner</SubsectionHeading>
         <Text as="span" tone="muted">
@@ -97,7 +103,7 @@ export const Widths: S = {
     <DemoShell>
       <PageHeader
         title="Widths"
-        subtitle="Each Stack starts at the title's x; none is re-centred."
+        description="Each Stack starts at the title's x; none is re-centred."
       />
       <Stack gap="lg">
         {(["narrow", "default", "wide", "full"] as const).map((width) => (
@@ -118,7 +124,7 @@ export const AsForm: S = {
     <DemoShell>
       <PageHeader
         title="Form"
-        subtitle='Stack as="form": the fields are spaced, the submit is yours.'
+        description='Stack as="form": the fields are spaced, the submit is yours.'
       />
       <Stack
         as="form"
@@ -144,7 +150,7 @@ export const AsList: S = {
     <DemoShell>
       <PageHeader
         title="Lists"
-        subtitle='Stack as="ul" and as="ol": a spaced list, children are li.'
+        description='Stack as="ul" and as="ol": a spaced list, children are li.'
       />
       <Stack gap="lg" width="narrow">
         <Stack as="ul" gap="sm" aria-label="Builds">
@@ -176,7 +182,10 @@ export const AsList: S = {
 export const RowFromMd: S = {
   render: () => (
     <DemoShell>
-      <PageHeader title="Chat" subtitle='Stack rowFrom="md": stacked on a phone, a row from md.' />
+      <PageHeader
+        title="Chat"
+        description='Stack rowFrom="md": stacked on a phone, a row from md.'
+      />
       <Stack rowFrom="md" gap="sm">
         <ClusterGrow>
           <Card title="Conversation">

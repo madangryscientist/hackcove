@@ -18,13 +18,12 @@ type S = StoryObj;
 export const Pills: S = {
   render: () => (
     <div className="flex gap-2">
-      <Pill>slate</Pill>
-      <Pill tone="warn">amber</Pill>
-      <Pill tone="positive">emerald</Pill>
-      <Pill tone="info">blue</Pill>
-      <Pill tone="danger">red</Pill>
-      <Pill tone="accent">violet</Pill>
-      <Pill tone="info">sky</Pill>
+      <Pill>neutral</Pill>
+      <Pill tone="warn">warn</Pill>
+      <Pill tone="positive">positive</Pill>
+      <Pill tone="info">info</Pill>
+      <Pill tone="danger">danger</Pill>
+      <Pill tone="accent">accent</Pill>
     </div>
   ),
 };
@@ -47,21 +46,21 @@ export const PillsInteractive: S = {
 export const PillsRound: S = {
   render: () => (
     <div className="flex gap-2">
-      <Pill round>slate</Pill>
+      <Pill round>neutral</Pill>
       <Pill tone="warn" round>
-        amber
+        warn
       </Pill>
       <Pill tone="positive" round>
-        emerald
+        positive
       </Pill>
       <Pill tone="info" round>
-        blue
+        info
       </Pill>
       <Pill tone="danger" round>
-        red
+        danger
       </Pill>
       <Pill tone="accent" round>
-        violet
+        accent
       </Pill>
       <Pill tone="info" round dot>
         sky
@@ -72,24 +71,21 @@ export const PillsRound: S = {
 export const PillsWithDot: S = {
   render: () => (
     <div className="flex gap-2">
-      <Pill dot>slate</Pill>
+      <Pill dot>neutral</Pill>
       <Pill tone="warn" dot>
-        amber
+        warn
       </Pill>
       <Pill tone="positive" dot>
-        emerald
+        positive
       </Pill>
       <Pill tone="info" dot>
-        blue
+        info
       </Pill>
       <Pill tone="danger" dot>
-        red
+        danger
       </Pill>
       <Pill tone="accent" dot>
-        violet
-      </Pill>
-      <Pill tone="info" dot>
-        sky
+        accent
       </Pill>
     </div>
   ),

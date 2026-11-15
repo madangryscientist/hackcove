@@ -44,11 +44,11 @@ function scrollTo(el: HTMLElement, top: number) {
 }
 
 const detail = (aside: string) => (
-  <DetailLayout title="Quote" aside={aside} stickyAside>
+  <DetailLayout title="Quote" aside={aside} sticky>
     MAIN
   </DetailLayout>
 );
-const sidebar = (rail: string) => <SidebarLayout rail={rail}>CANVAS</SidebarLayout>;
+const sidebar = (rail: string) => <SidebarLayout aside={rail}>CANVAS</SidebarLayout>;
 
 describe("a sticky column's scroll-edge fade", () => {
   it("is a mask from its breakpoint up only, and off while the scroller is focus-visible", () => {

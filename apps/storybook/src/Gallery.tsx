@@ -172,7 +172,7 @@ export const gallerySections: GallerySection[] = [
     render: () => (
       <>
         <Breadcrumbs
-          crumbs={[
+          items={[
             { label: "Org", href: "#org" },
             { label: "Project", href: "#project" },
             "Build",

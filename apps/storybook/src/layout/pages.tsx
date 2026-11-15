@@ -34,10 +34,10 @@ export function ListPage({ isEmpty = false }: { isEmpty?: boolean }) {
   return (
     <ListLayout
       title="Quotes"
-      subtitle="Every quote you have sent."
+      description="Every quote you have sent."
       actions={<Button>New quote</Button>}
       filters={
-        <FilterGroup legend="Status">
+        <FilterGroup label="Status">
           <Button variant="outline" size="sm" pressed>
             All
           </Button>
@@ -52,10 +52,9 @@ export function ListPage({ isEmpty = false }: { isEmpty?: boolean }) {
           </Button>
         </FilterGroup>
       }
-      isEmpty={isEmpty}
       empty={<Text tone="muted">No quotes match these filters.</Text>}
     >
-      {quotes.map(([ref, name, premium, status]) => (
+      {(isEmpty ? [] : quotes).map(([ref, name, premium, status]) => (
         <Card key={ref} as="article">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
@@ -75,9 +74,9 @@ export function ListPage({ isEmpty = false }: { isEmpty?: boolean }) {
 export function DetailPage() {
   return (
     <DetailLayout
-      breadcrumbs={<Breadcrumbs crumbs={[{ label: "Quotes", href: "#quotes" }, "Q-1042"]} />}
+      breadcrumbs={<Breadcrumbs items={[{ label: "Quotes", href: "#quotes" }, "Q-1042"]} />}
       title="Quote Q-1042"
-      subtitle="Naledi Mokoena"
+      description="Naledi Mokoena"
       actions={
         <>
           <Button variant="outline">Edit</Button>
@@ -110,7 +109,7 @@ export function FormPage() {
   return (
     <FormLayout
       title="New quote"
-      subtitle="Start with who it is for."
+      description="Start with who it is for."
       onSubmit={(event) => event.preventDefault()}
       actions={
         <>
@@ -149,9 +148,9 @@ export function FormPage() {
 export function ProsePage() {
   return (
     <ProseLayout
-      breadcrumbs={<Breadcrumbs crumbs={[{ label: "Hack Cove", href: "#home" }, "Privacy"]} />}
+      breadcrumbs={<Breadcrumbs items={[{ label: "Hack Cove", href: "#home" }, "Privacy"]} />}
       title="Privacy"
-      subtitle="Last updated 12 October 2026"
+      description="Last updated 12 October 2026"
       gap="lg"
     >
       <Section title="What we collect">

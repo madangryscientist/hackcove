@@ -97,6 +97,50 @@ export const removed = {
   r40: () => <ui.Pill label="Weight">x</ui.Pill>,
   // @ts-expect-error ButtonGroup passes only id, data-* and aria-*: no handler
   r41: () => <ui.ButtonGroup onClick={() => undefined}>x</ui.ButtonGroup>,
+
+  // Layouts and navigation
+  // @ts-expect-error subtitle is description
+  r42: () => <ui.PageHeader title="x" subtitle="y" />,
+  // @ts-expect-error subtitle is description
+  r43: () => <ui.CenteredLayout title="x" subtitle="y" />,
+  // @ts-expect-error rail is aside
+  r44: () => <ui.SidebarLayout rail="x">y</ui.SidebarLayout>,
+  r45: () => (
+    // @ts-expect-error railLabel is asideLabel
+    <ui.SidebarLayout aside="x" railLabel="y">
+      z
+    </ui.SidebarLayout>
+  ),
+  // @ts-expect-error panel is aside
+  r46: () => <ui.FullBleedLayout panel="x">y</ui.FullBleedLayout>,
+  // @ts-expect-error panelLabel is asideLabel
+  r47: () => <ui.FullBleedLayout panelLabel="x">y</ui.FullBleedLayout>,
+  r48: () => (
+    // @ts-expect-error stickyAside is sticky
+    <ui.DetailLayout title="x" aside="y" stickyAside>
+      z
+    </ui.DetailLayout>
+  ),
+  // @ts-expect-error isEmpty is gone: empty shows when there are no children
+  r49: () => <ui.ListLayout title="x" isEmpty />,
+  // @ts-expect-error hideChromeInPrint is printChrome={false}
+  r50: () => <ui.AppShell hideChromeInPrint>x</ui.AppShell>,
+  // @ts-expect-error action is actions
+  r51: () => <ui.NotFound action="x" />,
+  // @ts-expect-error legend is label
+  r52: () => <ui.FilterGroup legend="x">y</ui.FilterGroup>,
+  // @ts-expect-error crumbs is items
+  r53: () => <ui.Breadcrumbs crumbs={["x"]} />,
+  // @ts-expect-error people is items
+  r54: () => <ui.AvatarStack people={[{ name: "x" }]} />,
+  // @ts-expect-error a link item's active is selected
+  r55: () => <ui.Tabs label="x" items={[{ label: "x", href: "/", active: true }]} />,
+  // @ts-expect-error variant is gone: orientation picks the look
+  r56: () => <ui.Tabs label="x" variant="pill" items={[{ label: "x", href: "/" }]} />,
+  // @ts-expect-error elementRef is ref
+  r57: () => <ui.Container elementRef={() => undefined} />,
+  // @ts-expect-error Avatar passes only id, data-* and aria-*: no handler but onClick
+  r58: () => <ui.Avatar name="x" onError={() => undefined} />,
 };
 
 describe("removed API", () => {

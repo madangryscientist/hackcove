@@ -19,7 +19,7 @@ export const InABleedShell: S = {
           <div className="py-8">
             <PageHeader
               title="Full-bleed band"
-              subtitle="The band is edge to edge; its content is not."
+              description="The band is edge to edge; its content is not."
             />
           </div>
         </Container>

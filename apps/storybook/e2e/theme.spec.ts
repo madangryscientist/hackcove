@@ -9,7 +9,7 @@ const pillStory = "text-body-text--pills";
 
 async function open(page: Page, theme: string) {
   await page.goto(`/iframe.html?id=${pillStory}&viewMode=story&globals=theme:${theme}`);
-  await page.getByText("amber", { exact: true }).waitFor();
+  await page.getByText("warn", { exact: true }).waitFor();
 }
 
 /**
@@ -39,8 +39,8 @@ async function snapshot(page: Page, theme: string) {
       .locator("[data-theme]")
       .first()
       .evaluate((el) => [...el.classList]),
-    amber: await pillBackgrounds(page, "amber"),
-    slate: await pillBackgrounds(page, "slate"),
+    warn: await pillBackgrounds(page, "warn"),
+    neutral: await pillBackgrounds(page, "neutral"),
   };
 }
 
@@ -51,13 +51,13 @@ test("the themes folder lists at least one theme", () => {
 for (const { id: theme, css } of themes) {
   const scope = themeScope(css);
 
-  test(`theme ${theme} remaps the slate and amber Pills under its own scope`, async ({ page }) => {
+  test(`theme ${theme} remaps the neutral and warn Pills under its own scope`, async ({ page }) => {
     const themed = await snapshot(page, theme);
 
     expect(scope).toBeDefined();
     expect(themed.classes).toEqual([scope]);
-    expect(themed.slate.themed).not.toBe(themed.slate.stock);
-    expect(themed.amber.themed).not.toBe(themed.amber.stock);
+    expect(themed.neutral.themed).not.toBe(themed.neutral.stock);
+    expect(themed.warn.themed).not.toBe(themed.warn.stock);
   });
 }
 

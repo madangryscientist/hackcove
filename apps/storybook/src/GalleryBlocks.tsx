@@ -43,14 +43,13 @@ export function GalleryHeader() {
         <Lead>A landing page's top block, over the theme's glow.</Lead>
       </Hero>
 
-      <PageHeader title="Status" subtitle="what's happening now" />
+      <PageHeader title="Status" description="what's happening now" />
 
       <Tabs
-        variant="pill"
         label="Main"
         items={[
           { label: "Map", href: "/" },
-          { label: "Directory", href: "/stores", active: true },
+          { label: "Directory", href: "/stores", selected: true },
           { label: "Events", href: "/events" },
           { label: "About", href: "/about" },
           { label: "Traces", href: "https://example.com/traces", external: true },
@@ -63,7 +62,7 @@ export function GalleryHeader() {
 /** The filter chips block of the Gallery: four pressable outline Buttons, one pressed, in a FilterGroup. */
 export function GalleryChips() {
   return (
-    <FilterGroup legend="Type of shop">
+    <FilterGroup label="Type of shop">
       <Button variant="outline" size="sm" pressed={false}>
         Charity
       </Button>
@@ -211,7 +210,7 @@ export function GalleryAvatars() {
         ))}
       </div>
       <AvatarStack
-        people={["ada", "grace", "linus", "margaret", "dennis"].map((name) => ({ name }))}
+        items={["ada", "grace", "linus", "margaret", "dennis"].map((name) => ({ name }))}
         max={3}
         size="lg"
       />

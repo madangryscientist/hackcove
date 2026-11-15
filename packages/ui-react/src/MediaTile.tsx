@@ -32,11 +32,16 @@ export type MediaTileProps = {
   /** Draws a play mark on the thumbnail: the tile opens a video, not a photo. Say so in `alt` too. */
   video?: boolean | undefined;
   /**
-   * Adds a round remove button on the picture's top-right corner, named "Remove" and `alt`: a
+   * Adds a round remove button on the picture's top-right corner, named `removeLabel` and `alt`: a
    * photo attached to a form, until it is sent. It is its own button, beside the tile's, so a tile
    * with `onClick` still opens its `Lightbox`.
    */
   onRemove?: (() => void) | undefined;
+  /**
+   * The remove button's word, before `alt` in its name and alone as its tooltip.
+   * @default Remove
+   */
+  removeLabel?: string | undefined;
 } & Passthrough &
   (
     | { onClick?: undefined; href?: undefined; external?: undefined }
@@ -78,6 +83,7 @@ export function MediaTile({
   href,
   external = false,
   onRemove,
+  removeLabel,
   ...rest
 }: MediaTileProps): ReactElement {
   const body = (
@@ -111,20 +117,35 @@ export function MediaTile({
   return (
     <div className={cx("relative min-w-0", IMAGE_WIDTH[width])}>
       {tile}
-      <button
-        type="button"
-        aria-label={`Remove ${alt}`}
-        title="Remove"
-        onClick={onRemove}
-        className="absolute top-1 right-1 inline-flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/90 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-      >
-        <Icon>
-          <svg viewBox="0 0 20 20" fill="currentColor">
-            <path d={CLOSE} />
-          </svg>
-        </Icon>
-      </button>
+      <RemoveButton label={removeLabel} alt={alt} onRemove={onRemove} />
     </div>
+  );
+}
+
+/** The round remove button on a tile's corner, named by its word and the picture's `alt`. */
+function RemoveButton({
+  label = "Remove",
+  alt,
+  onRemove,
+}: {
+  label: string | undefined;
+  alt: string;
+  onRemove: () => void;
+}): ReactElement {
+  return (
+    <button
+      type="button"
+      aria-label={`${label} ${alt}`}
+      title={label}
+      onClick={onRemove}
+      className="absolute top-1 right-1 inline-flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/90 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+    >
+      <Icon>
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <path d={CLOSE} />
+        </svg>
+      </Icon>
+    </button>
   );
 }
 

@@ -17,12 +17,12 @@ export const CASES: Record<string, () => ReactElement> = {
   AppShellBrand: () => <ui.AppShellBrand label="Brand" href="/" {...A} />,
   AppShellHideBelow: () => <ui.AppShellHideBelow {...A}>x</ui.AppShellHideBelow>,
   Avatar: () => <ui.Avatar name="Ada Lovelace" {...A} />,
-  AvatarStack: () => <ui.AvatarStack people={[{ name: "Ada Lovelace" }]} {...A} />,
+  AvatarStack: () => <ui.AvatarStack items={[{ name: "Ada Lovelace" }]} {...A} />,
   Badge: () => <ui.Badge count={3} {...A} />,
   BottomSheet: () => (
     <ui.BottomSheet label="Sheet" snaps={[0.25, 0.5]} snap={0} onSnapChange={noop} {...A} />
   ),
-  Breadcrumbs: () => <ui.Breadcrumbs crumbs={["Home", "Page"]} {...A} />,
+  Breadcrumbs: () => <ui.Breadcrumbs items={["Home", "Page"]} {...A} />,
   BulletItem: () => <ui.BulletItem {...A}>x</ui.BulletItem>,
   BulletList: () => <ui.BulletList {...A}>x</ui.BulletList>,
   Button: () => <ui.Button {...A}>x</ui.Button>,
@@ -101,7 +101,7 @@ export const CASES: Record<string, () => ReactElement> = {
     />
   ),
   FileDrop: () => <ui.FileDrop {...A}>x</ui.FileDrop>,
-  FilterGroup: () => <ui.FilterGroup legend="L" {...A} />,
+  FilterGroup: () => <ui.FilterGroup label="L" {...A} />,
   Forbidden: () => <ui.Forbidden {...A} />,
   FormGrid: () => <ui.FormGrid {...A}>x</ui.FormGrid>,
   FormLayout: () => (
@@ -228,7 +228,7 @@ export const CASES: Record<string, () => ReactElement> = {
     </ui.SideColumn>
   ),
   SidebarLayout: () => (
-    <ui.SidebarLayout rail="r" {...A}>
+    <ui.SidebarLayout aside="r" {...A}>
       x
     </ui.SidebarLayout>
   ),

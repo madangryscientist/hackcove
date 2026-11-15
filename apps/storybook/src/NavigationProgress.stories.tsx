@@ -31,10 +31,9 @@ export const Default: S = {
         brand={<AppShellBrand href="#" label="Quotes" />}
         nav={
           <Tabs
-            variant="pill"
             label="Main"
             items={[
-              { label: "Home", href: "#", active: true },
+              { label: "Home", href: "#", selected: true },
               { label: "Stores", href: "#stores" },
               { label: "Events", href: "#events" },
             ]}

@@ -89,7 +89,7 @@ describe("the home link", () => {
   });
 
   it("stays beside the page's own action, which Tab reaches first", async () => {
-    render(<NotFound action={<Button href="/map">Open the map</Button>} />);
+    render(<NotFound actions={<Button href="/map">Open the map</Button>} />);
     await user().tab();
     expect(document.activeElement).toBe(screen.getByRole("link", { name: "Open the map" }));
     await user().tab();
@@ -120,7 +120,7 @@ describe("ErrorPage", () => {
   });
 
   it("an action replaces the Try again button", () => {
-    render(<ErrorPage onRetry={() => {}} action={<button type="button">Reload</button>} />);
+    render(<ErrorPage onRetry={() => {}} actions={<button type="button">Reload</button>} />);
     expect(screen.getByRole("button", { name: "Reload" })).not.toBeNull();
     expect(screen.queryByRole("button", { name: "Try again" })).toBeNull();
   });
@@ -150,7 +150,7 @@ describe("NotFound numeral", () => {
 
 describe("NotFound with its own action", () => {
   it("renders the action's wording before Back to home", () => {
-    render(<NotFound action={<Button href="/map">Open the map</Button>} />);
+    render(<NotFound actions={<Button href="/map">Open the map</Button>} />);
     expect(screen.getByRole("link", { name: "Open the map" }).getAttribute("href")).toBe("/map");
     expect(follows(screen.getByRole("link", { name: "Open the map" }), home())).toBeTruthy();
   });

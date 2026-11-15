@@ -6,7 +6,7 @@ import { render, screen, within } from "./render.harness.js";
 describe("FilterGroup", () => {
   it("is a group named by its legend, holding the children", () => {
     render(
-      <FilterGroup legend="Type of shop">
+      <FilterGroup label="Type of shop">
         <span>Charity</span>
       </FilterGroup>,
     );

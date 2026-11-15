@@ -18,20 +18,20 @@ const team = [
 
 export const Default: S = {
   render: () => (
-    <AvatarStack people={[{ name: "Jacobus Langner", src: samplePhoto }, ...team.slice(0, 3)]} />
+    <AvatarStack items={[{ name: "Jacobus Langner", src: samplePhoto }, ...team.slice(0, 3)]} />
   ),
 };
 
 /** `max` shows the first few and a "+N" chip for the rest; the chip's `title` names who it stands for. */
 export const Overflow: S = {
-  render: () => <AvatarStack people={team} max={3} />,
+  render: () => <AvatarStack items={team} max={3} />,
 };
 
 export const Sizes: S = {
   render: () => (
     <Stack gap="sm">
       {(["sm", "md", "lg", "xl", "2xl", "3xl"] as const).map((size) => (
-        <AvatarStack key={size} people={team} max={3} size={size} />
+        <AvatarStack key={size} items={team} max={3} size={size} />
       ))}
     </Stack>
   ),
@@ -41,7 +41,7 @@ export const Sizes: S = {
 export const Square: S = {
   render: () => (
     <AvatarStack
-      people={["Hack Cove", "PixelSlash", "Omnibus", "Thrifty", "Quotes"].map((name) => ({ name }))}
+      items={["Hack Cove", "PixelSlash", "Omnibus", "Thrifty", "Quotes"].map((name) => ({ name }))}
       max={3}
       size="lg"
       shape="square"
@@ -53,7 +53,7 @@ export const Square: S = {
 export const DoMax: S = {
   render: () => (
     <AvatarStack
-      people={[
+      items={[
         { name: "Ada Lovelace" },
         { name: "Grace Hopper" },
         { name: "Linus Torvalds" },

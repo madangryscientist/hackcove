@@ -26,17 +26,16 @@ const meta: Meta = {
 export default meta;
 type S = StoryObj;
 
-/** A whole viewer page: the shell with `bleed`, then the layout with the viewer in `children` and the facts in `panel`. The `EmptyState` stands in for the app's own viewer. */
+/** A whole viewer page: the shell with `bleed`, then the layout with the viewer in `children` and the facts in `aside`. The `EmptyState` stands in for the app's own viewer. */
 export const FullPage: S = {
   render: () => (
     <AppShell
       brand={<a href="#">Hack Cove</a>}
       nav={
         <Tabs
-          variant="pill"
           label="Main"
           items={[
-            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Quotes", href: "#quotes", selected: true },
             { label: "Clients", href: "#clients" },
           ]}
         />
@@ -44,7 +43,7 @@ export const FullPage: S = {
       bleed
     >
       <FullBleedLayout
-        panel={
+        aside={
           <>
             <Overline as="h2">Snapshot</Overline>
             <KeyValueList>
@@ -84,7 +83,7 @@ const snapshotPanel = (
 export const WithPanel: S = {
   render: () => (
     <DemoShell bleed>
-      <FullBleedLayout panel={snapshotPanel}>{snapshotCanvas}</FullBleedLayout>
+      <FullBleedLayout aside={snapshotPanel}>{snapshotCanvas}</FullBleedLayout>
     </DemoShell>
   ),
 };
@@ -101,7 +100,7 @@ export const WithoutPanel: S = {
 export const Padded: S = {
   render: () => (
     <DemoShell bleed>
-      <FullBleedLayout padded panel={snapshotPanel}>
+      <FullBleedLayout padded aside={snapshotPanel}>
         <Card title="Quotes">
           <Text>Every quote you have sent.</Text>
         </Card>
@@ -123,7 +122,7 @@ const viewerBar = (
 export const WithBar: S = {
   render: () => (
     <DemoShell bleed>
-      <FullBleedLayout bar={viewerBar} panel={snapshotPanel}>
+      <FullBleedLayout bar={viewerBar} aside={snapshotPanel}>
         {snapshotCanvas}
       </FullBleedLayout>
     </DemoShell>
@@ -134,7 +133,7 @@ export const WithBar: S = {
 export const BarPadded: S = {
   render: () => (
     <DemoShell bleed>
-      <FullBleedLayout bar={viewerBar} padded panel={snapshotPanel}>
+      <FullBleedLayout bar={viewerBar} padded aside={snapshotPanel}>
         <Card title="Quotes">
           <Text>Every quote you have sent.</Text>
         </Card>
@@ -143,11 +142,11 @@ export const BarPadded: S = {
   ),
 };
 
-/** A viewer that needs the whole width (a snapshot, a canvas, a player) fills it, with the facts in the `panel`. */
+/** A viewer that needs the whole width (a snapshot, a canvas, a player) fills it, with the facts in the `aside`. */
 export const DoViewer: S = {
   render: () => (
     <FullBleedLayout
-      panel={
+      aside={
         <>
           <Overline as="h2">Snapshot</Overline>
           <KeyValueList>

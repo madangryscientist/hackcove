@@ -30,7 +30,7 @@ export const DontLanding: S = {
 
 /** Every page past the landing page opens with a `PageHeader`: one hero per site's front door. */
 export const DoInnerPage: S = {
-  render: () => <PageHeader title="Members" subtitle="Who can see this project." />,
+  render: () => <PageHeader title="Members" description="Who can see this project." />,
 };
 
 /** A `Hero` on an inner page shouts over the content it heads. Use `PageHeader`. */

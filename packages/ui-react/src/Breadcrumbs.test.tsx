@@ -7,21 +7,21 @@ const trail = () => screen.getByRole("navigation", { name: "Breadcrumb" });
 
 describe("Breadcrumbs", () => {
   it("names the nav landmark Breadcrumb over an ordered list of the crumbs, in order", () => {
-    render(<Breadcrumbs crumbs={["Org", "Project"]} />);
+    render(<Breadcrumbs items={["Org", "Project"]} />);
     const list = within(trail()).getByRole("list");
     const items = within(list).getAllByRole("listitem");
     expect(items.map((item) => item.textContent)).toEqual(["Org", "/Project"]);
   });
 
   it("marks only the last crumb as the current page", () => {
-    render(<Breadcrumbs crumbs={["Org", "Project", "Build"]} />);
+    render(<Breadcrumbs items={["Org", "Project", "Build"]} />);
     const items = within(trail()).getAllByRole("listitem");
     expect(items.map((item) => item.getAttribute("aria-current"))).toEqual([null, null, "page"]);
     expect(items[2]?.textContent).toBe("/Build");
   });
 
   it("puts one separator between each pair of crumbs, hidden from assistive tech", () => {
-    render(<Breadcrumbs crumbs={["Org", "Project", "Build", "Snap"]} />);
+    render(<Breadcrumbs items={["Org", "Project", "Build", "Snap"]} />);
     const separators = screen.getAllByText("/");
     expect(separators).toHaveLength(3);
     for (const separator of separators) {
@@ -35,14 +35,14 @@ describe("Breadcrumbs", () => {
 
 describe("Breadcrumbs link crumbs", () => {
   it("draws a crumb object with href as a link to it", () => {
-    render(<Breadcrumbs crumbs={[{ label: "Org", href: "/org" }, "Project"]} />);
+    render(<Breadcrumbs items={[{ label: "Org", href: "/org" }, "Project"]} />);
     expect(screen.getByRole("link", { name: "Org" }).getAttribute("href")).toBe("/org");
   });
 
   it("never links the last crumb, even if it is given a href", () => {
     render(
       <Breadcrumbs
-        crumbs={[
+        items={[
           { label: "Org", href: "/org" },
           { label: "Here", href: "/here" },
         ]}
@@ -56,7 +56,7 @@ describe("Breadcrumbs link crumbs", () => {
   it("external opens in a new tab", () => {
     render(
       <Breadcrumbs
-        crumbs={[{ label: "Docs", href: "https://d.example", external: true }, "Page"]}
+        items={[{ label: "Docs", href: "https://d.example", external: true }, "Page"]}
       />,
     );
     const link = screen.getByRole("link", { name: "Docs" });
@@ -67,7 +67,7 @@ describe("Breadcrumbs link crumbs", () => {
   it("still takes an element as a crumb", () => {
     render(
       <Breadcrumbs
-        crumbs={[
+        items={[
           <a key="a" href="/a">
             A
           </a>,

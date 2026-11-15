@@ -36,14 +36,13 @@ export const DoSwitchView: S = {
   },
 };
 
-/** Going to another page is not a tab: `Tabs variant="pill"` with `href` items are links, so the URL and history move. */
+/** Going to another page is not a tab: `Tabs` with `href` items are links, so the URL and history move. */
 export const DoSwitchPage: S = {
   render: () => (
     <Tabs
-      variant="pill"
       label="Sections"
       items={[
-        { label: "Quotes", href: "#quotes", active: true },
+        { label: "Quotes", href: "#quotes", selected: true },
         { label: "Invoices", href: "#invoices" },
       ]}
     />
@@ -161,13 +160,7 @@ export const Pill: S = {
     const [value, setValue] = useState("overview");
     return (
       <div className="flex max-w-xl flex-col gap-4">
-        <Tabs
-          variant="pill"
-          label="Project views"
-          items={views}
-          value={value}
-          onChange={setValue}
-        />
+        <Tabs label="Project views" items={views} value={value} onChange={setValue} />
         <Text id="panel" role="tabpanel">
           Showing {value}.
         </Text>
@@ -188,7 +181,7 @@ export const WithCounts: S = {
     return (
       <div className="flex max-w-xl flex-col gap-6">
         <Tabs label="Assets" items={items} value={value} onChange={setValue} />
-        <Tabs variant="pill" label="Assets" items={items} value={value} onChange={setValue} />
+        <Tabs label="Assets" items={items} value={value} onChange={setValue} />
       </div>
     );
   },
@@ -206,13 +199,7 @@ export const WithDisabledReason: S = {
     return (
       <div className="flex max-w-xl flex-col gap-6">
         <Tabs label="Project views" items={items} value={value} onChange={setValue} />
-        <Tabs
-          variant="pill"
-          label="Project views"
-          items={items}
-          value={value}
-          onChange={setValue}
-        />
+        <Tabs label="Project views" items={items} value={value} onChange={setValue} />
       </div>
     );
   },
@@ -223,14 +210,7 @@ export const Disabled: S = {
   render: () => (
     <div className="flex max-w-xl flex-col gap-6">
       <Tabs label="Project views" items={views} value="overview" onChange={() => {}} disabled />
-      <Tabs
-        variant="pill"
-        label="Project views"
-        items={views}
-        value="overview"
-        onChange={() => {}}
-        disabled
-      />
+      <Tabs label="Project views" items={views} value="overview" onChange={() => {}} disabled />
     </div>
   ),
 };
@@ -242,13 +222,12 @@ export const InPageHeader: S = {
     return (
       <div className="max-w-3xl">
         <PageHeader
-          breadcrumbs={<Breadcrumbs crumbs={["Projects", "Launch film"]} />}
+          breadcrumbs={<Breadcrumbs items={["Projects", "Launch film"]} />}
           title="Launch film"
-          subtitle="Updated 2 minutes ago"
+          description="Updated 2 minutes ago"
           actions={<Button>Upload</Button>}
           tabs={
             <Tabs
-              variant="pill"
               label="Assets"
               value={value}
               onChange={setValue}
@@ -293,8 +272,6 @@ export const PillSizes: S = {
       {(["sm", "md", "lg"] as const).map((size) => (
         <Tabs
           key={size}
-          variant="pill"
-          size={size}
           label={`Project views, ${size}`}
           items={views.map(({ value, label }) => ({ value, label }))}
           value="overview"

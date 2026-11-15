@@ -99,7 +99,7 @@ export function ComponentPage({ page }: { page: Page }) {
   const dontId = useId();
   return (
     <Stack gap="xl">
-      <PageHeader title={page.name} subtitle={page.summary} />
+      <PageHeader title={page.name} description={page.summary} />
       <OnThisPage sections={sectionsOf(page)} />
       <Prose>
         <Stack gap="xl">
