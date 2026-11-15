@@ -99,11 +99,11 @@ blocks). A text page uses `ProseLayout`, or
 `Stack width="narrow"`, for its reading measure. See
 [`packages/ui-react/README.md`](packages/ui-react/README.md#layout).
 
-The page-layout stories in Storybook (`Page layouts/…`, and `Layout/AppShell`) are checked at 375, 768 and 1280 px by `e2e/layout.spec.ts`: the
-page title must start at the logo's x, the same x on every one of them (found by title, so a
-new one needs no test edit). `CenteredLayout`, `SidebarLayout` and `FullBleedLayout` are the
-exceptions (a narrow card, a rail beside the canvas, no page padding) and are asserted on their own
-terms in the same file. `SidebarLayout`'s rail starts at the logo's x, so it keeps the edge.
+The page-layout stories in Storybook (`Page layouts/…`, and `Layout/AppShell`) keep the page
+title at the logo's x, the same x on every one of them; the visual check shoots every one at
+1280 px, so a title that moves there shows as a changed shot (375 and 768 px are not checked).
+`CenteredLayout`, `SidebarLayout` and `FullBleedLayout` are the exceptions (a narrow card, a rail
+beside the canvas, no page padding) and are asserted on their own terms in `e2e/layout.spec.ts`. `SidebarLayout`'s rail starts at the logo's x, so it keeps the edge.
 `FullBleedLayout` breaks it on purpose from `lg` up: an edge-to-edge viewer needs the viewport's
 edges (at 1280 px the logo and the other layouts are at x=88, the viewer at 0), so the header stays
 the constant and an app gives a whole section one layout. The screenshot-based visual check (see

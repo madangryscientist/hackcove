@@ -1,73 +1,11 @@
-import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
-import { expect, test, type Locator, type Page } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
 
 /**
- * The no-jump check: on every page story, at every width, the page title starts at the same x
- * as the header's logo, and that x is the same on every page story (short page and long alike).
- * Stories are found by title in Storybook's own index, so a new `Page layouts/…` story is checked with
- * no edit here.
- *
- * One test per story per width, never one test looping over the stories: each page load then has
- * its own test budget, so a slow engine under load cannot spend the next story's time, and a new
- * story adds a test instead of lengthening an existing one. The list comes from the built
- * `storybook-static/index.json` as the spec is collected (the `e2e` moon task builds Storybook
- * first); per width, one `beforeAll` measures the first story's logo x and every story's test
- * asserts its title x against both its own logo and that reference.
- *
- * The compact Do/Dont fragments the docs pages render are left out too.
- *
- * Three layouts are left out of that check and asserted on their own terms further down:
- * `CenteredLayout` is a narrow centred card on purpose (the one exception to the shared left edge),
- * `SidebarLayout` puts a rail left of its canvas and `FullBleedLayout` has no page title or padding.
+ * The layouts that are asserted on their own terms: the AppShell subnav, the form column, and the
+ * `SidebarLayout`, `FullBleedLayout` and `CenteredLayout` stories. Where the page title starts
+ * (the logo's x on every page story) is the PixelSlash shot's job, not this file's.
  */
 const widths = [375, 768, 1280];
-
-const ownTerms = new Set([
-  "Page layouts/CenteredLayout",
-  "Page layouts/SidebarLayout",
-  "Page layouts/FullBleedLayout",
-]);
-
-type IndexEntry = { id: string; title: string; name: string; type: string; importPath: string };
-
-/** The full-page stories: every `Page layouts/…` story, and the AppShell's own. */
-const isPageStory = (entry: IndexEntry) =>
-  (entry.title.startsWith("Page layouts/") &&
-    // List → Detail → Form is three pages in one story, so it has three titles.
-    !entry.importPath.endsWith("/Pages.stories.tsx")) ||
-  (entry.title === "Layout/AppShell" && !entry.importPath.endsWith("/AppShellDocs.stories.tsx"));
-
-/** The docs' compact `Do …` / `Dont …` fragments are not pages: they have no title or header to align. */
-const isDocsFragment = (entry: IndexEntry) => /^Do(nt)? /.test(entry.name);
-
-/** The build the e2e serves (`playwright.config.ts` points `serve.ts` at it). */
-const staticDir = join(import.meta.dirname, "..", "storybook-static");
-
-/**
- * The page stories, read from the build's index as this spec is collected. A missing index fails
- * collection naming the command that writes it, never a run that quietly checks nothing.
- */
-function layoutStoryIds(): string[] {
-  const path = join(staticDir, "index.json");
-  if (!existsSync(path))
-    throw new Error(
-      `${path} is missing: run \`bunx moon run storybook:e2e\`, which builds Storybook first`,
-    );
-  const { entries }: { entries: Record<string, IndexEntry> } = JSON.parse(
-    readFileSync(path, "utf8"),
-  );
-  return Object.values(entries)
-    .filter(
-      (entry) =>
-        entry.type === "story" &&
-        isPageStory(entry) &&
-        !ownTerms.has(entry.title) &&
-        !isDocsFragment(entry),
-    )
-    .map((entry) => entry.id)
-    .toSorted();
-}
 
 const boxOf = async (locator: Locator, what: string) => {
   const box = await locator.boundingBox();
@@ -76,44 +14,6 @@ const boxOf = async (locator: Locator, what: string) => {
 };
 
 const left = async (box: Promise<{ x: number } | null>) => (await box)?.x;
-
-async function edges(page: Page, id: string) {
-  await page.goto(`/iframe.html?id=${id}&viewMode=story&globals=theme:default`);
-  const title = page.getByRole("heading", { level: 1 });
-  const logo = page.getByRole("banner").getByRole("link").first();
-  await title.waitFor();
-  return { title: await left(title.boundingBox()), logo: await left(logo.boundingBox()) };
-}
-
-const storyIds = layoutStoryIds();
-// The story every other one is measured against at each width.
-const [reference] = storyIds;
-if (reference === undefined)
-  throw new Error(
-    `${join(staticDir, "index.json")} has no page stories: the build has no \`Page layouts/…\` story`,
-  );
-
-for (const width of widths) {
-  test.describe(`at ${width}px`, () => {
-    let referenceX: number | undefined;
-
-    test.beforeAll(async ({ browser }) => {
-      const page = await browser.newPage();
-      await page.setViewportSize({ width, height: 800 });
-      referenceX = (await edges(page, reference)).logo;
-      await page.close();
-    });
-
-    for (const id of storyIds) {
-      test(`${id}: the title starts at the logo's x`, async ({ page }) => {
-        await page.setViewportSize({ width, height: 800 });
-        const { title, logo } = await edges(page, id);
-        expect(title, `${id}: title x vs logo x`).toBe(logo);
-        expect(title, `${id}: title x vs ${reference}'s logo x`).toBe(referenceX);
-      });
-    }
-  });
-}
 
 const storyUrl = (id: string) => `/iframe.html?id=${id}&viewMode=story&globals=theme:default`;
 

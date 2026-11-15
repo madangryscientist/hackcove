@@ -15,7 +15,7 @@ import {
 import { DemoShell, layoutPage } from "./DemoShell";
 import { ListPage } from "./pages";
 
-/** Every story under `Page layouts/` is picked up by the no-jump e2e at 375, 768 and 1280. */
+/** Every story under `Page layouts/` keeps the page title at the logo's x; the visual check shoots each at 1280. */
 const meta: Meta = {
   title: "Page layouts/ListLayout",
   parameters: { layout: "fullscreen", bare: true },

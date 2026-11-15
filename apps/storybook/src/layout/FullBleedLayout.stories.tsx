@@ -15,8 +15,8 @@ import {
 import { DemoShell, layoutPage } from "./DemoShell";
 
 /**
- * Edge-to-edge canvas with an optional right panel that stacks below under `lg`. Not in the
- * no-jump title check (the canvas has no page title); the e2e asserts the panel on its own terms.
+ * Edge-to-edge canvas with an optional right panel that stacks below under `lg`. The canvas has
+ * no page title; the e2e asserts the panel on its own terms.
  */
 const meta: Meta = {
   title: "Page layouts/FullBleedLayout",

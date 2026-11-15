@@ -15,7 +15,7 @@ import {
 } from "@hackcove/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 
-/** Every story under `Layout/AppShell` is picked up by the no-jump e2e (e2e/layout.spec.ts) at 375, 768 and 1280. */
+/** Every story under `Layout/AppShell` keeps the page title at the logo's x; the visual check shoots each at 1280. */
 const meta: Meta = {
   title: "Layout/AppShell",
   parameters: { layout: "fullscreen", bare: true },

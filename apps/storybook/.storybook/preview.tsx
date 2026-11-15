@@ -10,7 +10,7 @@ const preview: Preview = {
   parameters: {
     // A story is cropped to its component by default; a page or layout opts in to "fullscreen".
     layout: "centered",
-    // The three widths the Layout stories and the no-jump e2e are checked at.
+    // The three widths the Layout stories are viewed at.
     viewport: {
       options: {
         phone: { name: "Phone (375)", styles: { width: "375px", height: "812px" }, type: "mobile" },
