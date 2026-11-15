@@ -134,7 +134,7 @@ it to contribute**: it runs from a separate checkout of PixelSlash.
 (`.github/workflows/visual.yml`) checks out the pull request's head commit (never GitHub's merge
 commit) and PixelSlash at a pinned commit, runs `storybook:visual-upload`, and sends every group to
 the hosted PixelSlash server. The server diffs a pull request against the `main` build it holds and
-posts one `PixelSlash` check run per group on the commit; a push to `main` becomes the next
+posts one `PixelSlash / hackcove-ui-<section>` check per section on the commit; a push to `main` becomes the next
 baseline. A fork's pull request gets no secrets, so the job skips with a notice and the maintainers
 check its visuals. A pull request not based on `main`'s tip fails the job with "rebase": rebase it.
 A local `bunx moon run storybook:visual` is your own check and needs no server. A manual

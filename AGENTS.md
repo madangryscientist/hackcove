@@ -96,7 +96,7 @@ named by a docs page (`pairs`, `fullPage` or `stories`); the storybook tests fai
 
 **CI uploads the screenshots.** `.github/workflows/visual.yml` runs `storybook:visual-upload` on every
 pull request's head commit and on every push to `main`, against the hosted PixelSlash server, and
-the server posts one `PixelSlash` check run per group on that commit. A local `storybook:visual` is
+the server posts the `PixelSlash / hackcove-ui-<section>` checks, one per section, on that commit. A local `storybook:visual` is
 the contributor's own check and needs no server. A manual `visual-upload` to the hosted server
 (with `PIXELSLASH_TOKEN`) is only for re-seeding `main`, and never mixes a local capture into a
 pull request's build.
@@ -159,8 +159,8 @@ global rule; what is particular to hackcove:
 
 - **Screenshots before the merge.** The `Visual` workflow uploads the PR's head commit, every
   group whole, each to its own `hackcove-ui-<section>` project, and the server diffs it against the
-  `main` build it already holds and posts a `PixelSlash` check run per group on the head. The planner
-  reads every `PixelSlash` check on the head and opens the report for any group that changed. A PR
+  `main` build it already holds and posts the `PixelSlash / hackcove-ui-<section>` checks, one per section, on the head. The
+  planner reads every one of them on the head and opens the report for any group that changed. A PR
   that is not based on origin/main's tip fails the job with "rebase", and a project that holds no
   `main` build at the merge-base or an ancestor fails it, named. Nobody uploads a PR by hand.
 - **Screenshots after the merge.** The `Visual` run on the push to `main` uploads the merge
@@ -175,7 +175,7 @@ global rule; what is particular to hackcove:
   because `nx release` reads it.
 - **No branch protection.** `publish.yml` pushes its release commit straight to `main`, so
   nothing on GitHub blocks a merge and the planner enforces the rule: no merge while CI or the
-  PixelSlash check is failing or pending, unless the PR changes nothing a screenshot can see and
+  `PixelSlash / hackcove-ui-<section>` checks are failing or pending, unless the PR changes nothing a screenshot can see and
   says so.
 - No commit, PR title or PR body carries a `Co-Authored-By` or any other AI attribution line.
 
