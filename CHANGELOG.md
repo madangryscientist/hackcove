@@ -1,3 +1,23 @@
+## 0.11.0 (2026-11-16)
+
+### 🚀 Features
+
+- **ui-react:** loading skeletons, a categorical colour scale, one empty state and table sort ([#157](https://github.com/madangryscientist/hackcove/pull/157))
+- ⚠️  **ui-react:** layout and composition: Show, Stack options, Section sizes, DocsLayout, AppShell edges ([#156](https://github.com/madangryscientist/hackcove/pull/156))
+- **ui-react:** Menu, tooltip, disabledReason, ToastRegion and Pagination ([#155](https://github.com/madangryscientist/hackcove/pull/155))
+- ⚠️  **ui-react:** a Dialog form, Fieldset and Input numeric ([#154](https://github.com/madangryscientist/hackcove/pull/154))
+- ⚠️  **ui-react:** one API pass, one name, value set and default for each idea ([#153](https://github.com/madangryscientist/hackcove/pull/153))
+
+### ⚠️  Breaking Changes
+
+- **ui-react:** layout and composition: Show, Stack options, Section sizes, DocsLayout, AppShell edges  ([#156](https://github.com/madangryscientist/hackcove/pull/156))
+- **ui-react:** a Dialog form, Fieldset and Input numeric  ([#154](https://github.com/madangryscientist/hackcove/pull/154))
+- **ui-react:** one API pass, one name, value set and default for each idea  ([#153](https://github.com/madangryscientist/hackcove/pull/153))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.10.16 (2026-11-16)
 
 ### 🩹 Fixes
