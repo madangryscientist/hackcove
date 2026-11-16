@@ -1,4 +1,4 @@
-import { EmptyState, /* c */ Text } from "@hackcove/ui-react";
+import { EmptyState, Text } from "@hackcove/ui-react";
 
 export const a = (
   <EmptyState title="x" />

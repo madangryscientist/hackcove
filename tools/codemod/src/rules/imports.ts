@@ -84,24 +84,35 @@ function merged(spans: readonly Span[]): Span[] {
   return out;
 }
 
+/** A block comment, unrolled so it can match only one way. */
+const BLOCK = String.raw`\/\*[^\n*]*(?:\*(?!\/)[^\n*]*)*\*\/`;
 /**
- * The comma that follows `end`, past spaces, block comments and a line comment on the same line
- * (`A // x` then `, B`, comma-first), with the spaces after it unless a comment follows them.
- * A comment on a line of its own stops it. No part of the pattern can match the same text two
- * ways, so it never backtracks far.
+ * Spaces, block comments and a line comment on the same line, then the comma (`A // x` then
+ * `, B` is comma-first), with the spaces after it unless a comment follows them. A comment on a
+ * line of its own stops it. No part can match the same text two ways, so it never backtracks far.
  */
+const COMMA_AFTER = new RegExp(
+  String.raw`^[ \t]*(?:${BLOCK}[ \t]*)*(?:\/\/[^\n]*(?=\n))?\s*,(?:(?![ \t]*\/[/*])[ \t]*)?`,
+);
+
+/** The comma that follows `end`, as `COMMA_AFTER` finds it. */
 function commaAfter(text: string, end: number): Span | undefined {
-  const match =
-    /^[ \t]*(?:\/\*[^\n*]*(?:\*(?!\/)[^\n*]*)*\*\/[ \t]*)*(?:\/\/[^\n]*(?=\n))?\s*,(?:(?![ \t]*\/[/*])[ \t]*)?/.exec(
-      text.slice(end),
-    );
+  const match = COMMA_AFTER.exec(text.slice(end));
   if (match === null) return undefined;
   return { start: end + match[0].lastIndexOf(","), end: end + match[0].length };
 }
 
-/** A dead specifier with the comma after it, or the one before it on its line (comma-first). */
+/** The block comments right before a specifier on its line, which go with it when it dies. */
+const BLOCKS_BEFORE = new RegExp(String.raw`(?:${BLOCK}[ \t]*)+$`);
+
+/**
+ * A dead specifier with any block comment right before it on its line, and with the comma after
+ * it, or the one before it on its line (comma-first).
+ */
 function deadSpan(element: ts.ImportSpecifier, file: ts.SourceFile): Span {
-  const start = element.getStart(file);
+  const named = element.getStart(file);
+  const line = file.text.slice(file.text.lastIndexOf("\n", named - 1) + 1, named);
+  const start = named - (BLOCKS_BEFORE.exec(line)?.[0].length ?? 0);
   const after = commaAfter(file.text, element.end);
   if (after !== undefined) return { start, end: after.end };
   const before = /,[ \t]*$/.exec(file.text.slice(0, start));
