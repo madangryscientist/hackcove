@@ -5,12 +5,12 @@ import {
   Card,
   CardGrid,
   CodeBlock,
-  Display,
   Hero,
   Image,
   Lead,
   Overline,
   Pill,
+  Section,
   Stack,
   Text,
 } from "@hackcove/ui-react";
@@ -42,21 +42,17 @@ function Feature({ number, product }: { number: number; product: Product }) {
   const { label, tone } = STATUS[status];
   const titleId = `product-${slug}`;
   return (
-    <Stack as="section" gap="lg" aria-labelledby={titleId}>
+    <Section
+      size="lg"
+      id={titleId}
+      overline={`${String(number).padStart(2, "0")} / ${kind}`}
+      title={name}
+      description={pitch}
+    >
       <Stack gap="sm" width="narrow">
-        {/* A plain block, not a Stack, so the inline Overline sits right on the heading. */}
-        <header>
-          <Overline mono>
-            {String(number).padStart(2, "0")} / {kind}
-          </Overline>
-          <Display as="h2" id={titleId}>
-            {name}
-          </Display>
-        </header>
         <div>
           <Pill tone={tone}>{label}</Pill>
         </div>
-        <Lead>{pitch}</Lead>
         {features && (
           <BulletList>
             {features.map((feature) => (
@@ -70,7 +66,7 @@ function Feature({ number, product }: { number: number; product: Product }) {
       </Stack>
       {image && <Image src={image.src} alt={image.alt} aspect="16:9" />}
       {sample && <CodeBlock label={sample.label} language="console" lines={sample.lines} />}
-    </Stack>
+    </Section>
   );
 }
 
@@ -78,16 +74,7 @@ function Feature({ number, product }: { number: number; product: Product }) {
 function Fit() {
   const { overline, title, lead, questions } = site.home.fit;
   return (
-    <Stack as="section" gap="lg" aria-labelledby="product-fit">
-      <Stack gap="sm" width="narrow">
-        <header>
-          <Overline mono>{overline}</Overline>
-          <Display as="h2" id="product-fit">
-            {title}
-          </Display>
-        </header>
-        <Lead>{lead}</Lead>
-      </Stack>
+    <Section size="lg" id="product-fit" overline={overline} title={title} description={lead}>
       <CardGrid as="ul" columns="auto">
         {questions.map(({ question, product, answer }) => (
           <Card as="article" key={product} titleStyle="name" title={question}>
@@ -100,7 +87,7 @@ function Fit() {
           </Card>
         ))}
       </CardGrid>
-    </Stack>
+    </Section>
   );
 }
 
@@ -138,13 +125,12 @@ export function ProductCards() {
         <Feature key={product.slug} number={i + 1} product={product} />
       ))}
       <Fit />
-      <Stack as="section" gap="lg" aria-labelledby="product-coming">
-        <header>
-          <Overline mono>{home.coming.overline}</Overline>
-          <Display as="h2" id="product-coming">
-            {home.coming.title}
-          </Display>
-        </header>
+      <Section
+        size="lg"
+        id="product-coming"
+        overline={home.coming.overline}
+        title={home.coming.title}
+      >
         {/* As many per row as fit at 17rem each, so a zoomed page drops a column instead of
             wrapping a card's status and action: three at 1280px. */}
         <CardGrid as="ul" columns="auto">
@@ -152,7 +138,7 @@ export function ProductCards() {
             <ComingCard key={product.slug} {...product} />
           ))}
         </CardGrid>
-      </Stack>
+      </Section>
     </Stack>
   );
 }

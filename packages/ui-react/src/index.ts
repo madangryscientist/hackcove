@@ -14,6 +14,7 @@ export {
 export { TrendChart, type TrendSeries } from "./TrendChart.js";
 export { Markdown } from "./Markdown.js";
 export { AppShell, AppShellBrand, type AppShellDensity, appShellRootClassFor } from "./AppShell.js";
+export { SiteFooter, type SiteFooterLink } from "./SiteFooter.js";
 export { Container } from "./Container.js";
 export { PageHeader } from "./PageHeader.js";
 export { Hero } from "./Hero.js";
@@ -75,7 +76,7 @@ export type { RowTone } from "./tableRow.js";
 export { InlineEdit } from "./InlineEdit.js";
 export { TableEditCell } from "./TableEditCell.js";
 export { EmptyState } from "./EmptyState.js";
-export { Step, Steps } from "./Steps.js";
+export { Step, Steps, type StepsSize } from "./Steps.js";
 export { Timeline, TimelineItem } from "./Timeline.js";
 export { ChatComposer } from "./ChatComposer.js";
 export { ChatMessage } from "./ChatMessage.js";

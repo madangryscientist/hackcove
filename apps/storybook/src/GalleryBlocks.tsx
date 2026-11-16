@@ -3,13 +3,12 @@ import {
   Avatar,
   AvatarStack,
   Button,
+  ButtonGroup,
   CopyButton,
   CopyLine,
   Dialog,
   Display,
   Drawer,
-  Lightbox,
-  ButtonGroup,
   FieldDialog,
   Fieldset,
   Hero,
@@ -17,23 +16,25 @@ import {
   KeyValue,
   KeyValueList,
   Lead,
+  Lightbox,
   MediaTile,
-  ScrollStrip,
-  Tabs,
   NavigationProgress,
   PageFade,
   PageHeader,
+  ScrollStrip,
   SegmentedControl,
   startPageTransition,
+  Tabs,
   Text,
   type Toast,
   ToastRegion,
 } from "@hackcove/ui-react";
+import { GalleryMarketing } from "./GalleryMarketing";
 import { samplePhoto } from "./samplePhoto";
 import { sampleCode } from "./sampleCode";
 import { samplePortrait, sampleScenes } from "./sampleScene";
 
-/** The page header block of the Gallery: a Display title, a Hero, a PageHeader and a pill Tabs row of links. */
+/** The page header block of the Gallery: a Display title, a Hero, a PageHeader, a Section size lg, a SiteFooter and a Tabs row of links. */
 export function GalleryHeader() {
   return (
     <>
@@ -47,6 +48,8 @@ export function GalleryHeader() {
       </Hero>
 
       <PageHeader title="Status" description="what's happening now" />
+
+      <GalleryMarketing />
 
       <Tabs
         label="Main"

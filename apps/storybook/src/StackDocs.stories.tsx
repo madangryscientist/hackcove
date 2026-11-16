@@ -3,10 +3,12 @@ import {
   Button,
   Card,
   Cluster,
+  Display,
   Field,
   Input,
   KeyValue,
   KeyValueList,
+  Lead,
   ListRow,
   Overline,
   Section,
@@ -272,5 +274,39 @@ export const DontSmallSection: S = {
         </Stack>
       </Stack>
     </Card>
+  ),
+};
+
+/** A landing page's section is `Section size="lg"`: the kicker, the display title and the lede in one region named by its title. */
+export const DoLandingSection: S = {
+  render: () => (
+    <Section
+      size="lg"
+      overline="Fit"
+      title="Built for agents."
+      description="A site from props alone, in every theme."
+    >
+      <Card>
+        <Text>Each tool answers one question about a change.</Text>
+      </Card>
+    </Section>
+  ),
+};
+
+/** An `Overline`, a `Display as="h2"` and a `Lead` by hand: nothing names the region and the spacing drifts from every other landing section. */
+export const DontLandingSection: S = {
+  render: () => (
+    <Stack as="section" gap="lg">
+      <Stack gap="sm">
+        <header>
+          <Overline mono>Fit</Overline>
+          <Display as="h2">Built for agents.</Display>
+        </header>
+        <Lead>A site from props alone, in every theme.</Lead>
+      </Stack>
+      <Card>
+        <Text>Each tool answers one question about a change.</Text>
+      </Card>
+    </Stack>
   ),
 };

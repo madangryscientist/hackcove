@@ -177,3 +177,56 @@ describe('Section size="sm"', () => {
     expect(screen.getByRole("heading", { level: 3, name: "Flaky" })).not.toBeNull();
   });
 });
+
+describe("Section overline, description and size lg", () => {
+  it("is named by its title only, with the overline in the same header as the heading", () => {
+    render(
+      <Section overline="Feature" title="Every theme" description="One switch reskins it.">
+        body
+      </Section>,
+    );
+    const region = screen.getByRole("region", { name: "Every theme" });
+    const heading = within(region).getByRole("heading", { level: 2, name: "Every theme" });
+    expect(heading.closest("header")?.textContent).toContain("Feature");
+    expect(screen.getByText("One switch reskins it.").closest("h2")).toBeNull();
+  });
+
+  it('size="lg" is an h2 title named by it, the description a paragraph, then the actions', () => {
+    render(
+      <Section
+        size="lg"
+        overline="Fit"
+        title="Built for agents"
+        description="A site from props alone."
+        actions={<a href="/ui/">Read the docs</a>}
+      >
+        body
+      </Section>,
+    );
+    const region = screen.getByRole("region", { name: "Built for agents" });
+    expect(
+      within(region).getByRole("heading", { level: 2, name: "Built for agents" }),
+    ).not.toBeNull();
+    const description = within(region).getByText("A site from props alone.");
+    expect(description.tagName).toBe("P");
+    const action = within(region).getByRole("link", { name: "Read the docs" });
+    expect(
+      description.compareDocumentPosition(action) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it("an overline with no title renders nothing", () => {
+    render(<Section overline="Feature">body</Section>);
+    expect(screen.queryByText("Feature")).toBeNull();
+    expect(screen.queryByRole("heading")).toBeNull();
+  });
+
+  it("keeps the overline and description off size sm, and the rule off size lg", () => {
+    type P = Parameters<typeof Section>[0];
+    // @ts-expect-error a small section has no overline
+    const small: P = { size: "sm", title: "Flaky", overline: "x" };
+    // @ts-expect-error a landing section has no rule
+    const large: P = { size: "lg", title: "Fit", rule: true };
+    expect([small, large]).toHaveLength(2);
+  });
+});

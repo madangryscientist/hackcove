@@ -1,3 +1,4 @@
+import { framePages } from "./frame";
 import type { ComponentSection } from "./types";
 
 export const layout: ComponentSection = {
@@ -5,49 +6,7 @@ export const layout: ComponentSection = {
   icon: "grid",
   description: "Where things go on the page: the shell, the width, the spacing between parts.",
   pages: [
-    {
-      slug: "app-shell",
-      name: "AppShell",
-      summary: "The page frame: header, optional subnav, main and footer.",
-      whenToUse:
-        "Every page of an app sits in one `AppShell`; it is the only place the page canvas, the font and the header live.",
-      pairs: ["AppShellDocs/Brand", "AppShellDocs/RouterBrand", "AppShellDocs/HideBelow"],
-      stories: ["AppShell"],
-      usage: {
-        do: [
-          "Fill the slots and write no wrapper: `brand`, `nav` (pill `Tabs` of links), `controls` (a picker, a `ColourSchemeToggle`), then an optional `subnav` row and `footer`.",
-          '`brand` is an `AppShellBrand`: logo and label in one link. `collapse` leaves only the logo below `sm`. `logoSize` is `sm` (20px), `md` (24px, the default, an `Avatar size="sm"`) or `lg` (32px); an `<img>` or `<svg>` logo fills it.',
-          'A header control that only matters on a wide screen, such as the viewer\'s name, goes in a `Show from="sm"` (or `md`, `lg`) in `controls`; put a `Cluster` inside it to keep an avatar and a name together.',
-          "A bar that sticks under the header at the top of a `bleed` page is a `StickyBar`.",
-          "With a router, `AppShellBrand`'s `href` goes through the app's `LinkProvider`, like every link.",
-          "Header, main and footer each sit in a `Container`, so a page never sets its own width or padding.",
-          "`bleed` drops main's `Container` for a layout that needs the whole width (`FullBleedLayout`); `SidebarLayout` needs no `bleed`.",
-          "`controls` stay in the row at every width, so keep them few (a theme toggle, the viewer's avatar). Pickers and actions that do not fit a phone row go in `menuControls`: from `md` they sit in the row after `controls`, and below `md` they are at the top of the Menu.",
-          "On a phone `nav` and `subnav` fold into one Menu button, so a nav of any length stays reachable with no sideways scroll; `menuLabel` renames the button (`Menu` by default), for a translated app.",
-          "`printChrome={false}` hides the header and footer and main's padding on paper; screen is unchanged.",
-          '`density="compact"` is the one type step an app may set, once, here: text, headings and controls one step down everywhere inside, for a dense app. A site leaves it out and reads at 16px.',
-          "`header` is for a node no other slot covers. Prefer `brand`, `nav` and `controls`.",
-          "Put `appShellRootClassFor(scheme)` on the app's own `<html>`. `AppShell` never touches `<html>`.",
-          "A theme sets the canvas colour and the font, and the shell turns on font smoothing (`antialiased`); the app writes no page background, font or smoothing rule.",
-        ],
-        dont: ["Do not add a `Container` inside the shell."],
-      },
-      accessibility: [
-        "The header is a `<header>` (the banner landmark), main is `<main>` and the footer is `<footer>`.",
-        "`AppShellBrand` is one link named by its `label`; the logo is `aria-hidden`. With `collapse` the label is visually hidden below `sm` and still names the link.",
-        "On a phone `nav` and `subnav` sit behind one Menu button, a native disclosure: it opens with no JavaScript, from the keyboard (Enter or Space) and for a screen reader, Escape closes it and returns to the button, and following a link closes it. The panel is not in the header's flow, so the header is the same height on every page.",
-        "`menuControls` render once, in the Menu below `md` and in the row from `md`, so a field keeps its value and its label names one control. A crowded `controls` clips beside the Menu button, never over it, so the nav stays reachable.",
-        "From `md` a header row that is wider than the screen (a long nav) scrolls sideways and never wraps; a link that takes focus scrolls into view, and the side with more to reach fades out.",
-        "Give `nav` and `subnav` pill `Tabs` of links, so each is a labelled `<nav>`.",
-      ],
-      api: ["AppShell", "AppShellBrand"],
-      functions: [
-        {
-          name: "appShellRootClassFor",
-          text: "Everything the app's `<html>` takes from the scheme the server knows: that scheme's class and the class that always reserves the scrollbar, so centred content does not shift between a short page and a long one.",
-        },
-      ],
-    },
+    ...framePages,
     {
       slug: "sticky-bar",
       name: "StickyBar",
@@ -159,6 +118,7 @@ export const layout: ComponentSection = {
         "StackDocs/Align",
         "StackDocs/Divided",
         "StackDocs/SmallSection",
+        "StackDocs/LandingSection",
       ],
       stories: ["Stack"],
       usage: {
@@ -172,8 +132,11 @@ export const layout: ComponentSection = {
           'A small titled group (a panel\'s "Flaky" block, a card\'s "Ignore areas") is `Section size="sm"`: a small all-caps title, its blocks `xs` apart, `actions` at the end of the title row.',
           "`rowFrom` (`sm`, `md` or `lg`) turns the column into a row from that breakpoint and leaves it a column below: a main block beside a side column on a wide screen, stacked on a phone. Put the block that takes the width left in a `ClusterGrow`.",
           "A row that is a row at every width is a `Cluster`, not a Stack.",
+          "`overline` puts a small label above a `Section`'s title, in the same `<header>`, and `description` a line under it that is not part of the heading's name.",
+          'A landing page\'s section under the `Hero` is `Section size="lg"` and nothing else: a mono `overline` kicker, the title at display size, `description` as a `Lead`, then `actions` as its calls to action, the opening capped at the reading measure at the left edge and the blocks `lg` apart. A feature card in it is a `Card href icon titleStyle="name"` in a `CardGrid`; text beside code is a `SideColumn`.',
         ],
         dont: [
+          "Never build a landing section from an `Overline`, a `Display` and a `Lead` by hand: it is unnamed and drifts from every other one.",
           'Do not build a small titled group from `Stack as="section"` and an `Overline as="h2"`: it is unnamed and its gap is a guess. It is `Section size="sm"`.',
         ],
       },

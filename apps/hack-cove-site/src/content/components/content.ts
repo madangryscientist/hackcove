@@ -151,6 +151,7 @@ export const content: ComponentSection = {
           "For things done in order only. Nothing here is done or current, so it is not a progress indicator.",
           "A list with no order is a `BulletList`.",
           'In an empty view, put `Steps` inside the `EmptyState` as the "get started" list.',
+          '`size="lg"` is a landing page\'s way in: two to four steps side by side from `md`, each number at feature size, stacked on a phone. `Step` takes its size from its `Steps`.',
         ],
         dont: [
           "Do not type the numbers: `Steps` counts them, so a step can sit behind a condition and the rest still run 1, 2, 3.",

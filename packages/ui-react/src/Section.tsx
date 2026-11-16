@@ -1,13 +1,14 @@
 import { type ReactElement, type ReactNode, useId } from "react";
+import { Cluster } from "./Cluster.js";
 import { cx } from "./cx.js";
 import { type HeadingLevel, HeadingLevelProvider, useHeadingLevel } from "./headingLevel.js";
 import type { Passthrough } from "./props.js";
 import type { Size } from "./size.js";
 import { Stack, type StackGap, type StackWidth } from "./Stack.js";
-import { CardOverline, SectionHeading } from "./typography.js";
+import { CardOverline, Display, Lead, Overline, SectionHeading } from "./typography.js";
 
-/** A `Section`'s scale: `sm` a small titled group, `md` a page's section. */
-export type SectionSize = Extract<Size, "sm" | "md">;
+/** A `Section`'s scale: `sm` a small titled group, `md` a page's section, `lg` a landing page's section. */
+export type SectionSize = Size;
 
 /** The id a `Section`'s heading takes: the caller's, or one of React's. */
 function useHeadingId(id: string | undefined): string {
@@ -15,60 +16,24 @@ function useHeadingId(id: string | undefined): string {
   return id ?? generated;
 }
 
-/**
- * A `<section>` Stack with an optional `SectionHeading` title (which names it) and `actions` beside
- * it. Its blocks are `gap` apart, from where it sits as in a `Stack`. `rule` draws a hairline under the
- * title row, `actions` included, as `SectionHeading`'s `rule` does for a bare heading. A line
- * between two sections is a `Divider` in the `Stack` that holds them. `level` is the title's
- * heading level, one below the heading that holds the section (an `h2` on the page), and a heading
- * inside it (a `Card`'s title) is one below that.
- *
- * `size="sm"` is the small titled group inside a page, a card, a drawer or a side panel (a panel's
- * "Flaky" block, a card's "Ignore areas"): the title is drawn small and all-caps like a `Card`'s
- * title, the blocks are `xs` apart, and it is still a region named by its title. Never build one
- * from a `Stack as="section"` and an `Overline`.
- */
-export function Section({
-  id,
-  title,
-  actions,
-  rule = false,
-  level,
-  size = "md",
-  gap,
-  width = "default",
-  children,
-  ...rest
-}: {
+type SectionBase = {
   /**
    * Makes the section a link target: `#<id>` scrolls to its heading, which stops below the sticky
    * AppShell header. Needs a `title`: with no title the heading that carries it is not rendered.
    */
   id?: string | undefined;
-  /** A `SectionHeading` at the top, which names the section. */
+  /** The heading at the top, which names the section. */
   title?: ReactNode;
-  /** Buttons or links at the end of the title row. */
+  /** Buttons or links: at the end of the title row, or under the description at `size="lg"`. */
   actions?: ReactNode;
-  /**
-   * A hairline under the title row across the section's width, `actions` included. Needs a `title`
-   * or `actions`.
-   * @default false
-   */
-  rule?: boolean | undefined;
   /**
    * The title's heading level, 2 to 6. It does not change how the title looks.
    * @default one below the heading that holds the section: 2 on the page
    */
   level?: HeadingLevel | undefined;
   /**
-   * `md` is a page's titled section; `sm` is a small titled group inside a page, a card or a panel,
-   * its title small and all-caps, its blocks `xs` apart.
-   * @default md
-   */
-  size?: SectionSize | undefined;
-  /**
    * The space between blocks: `xs` gap-2, `sm` gap-4, `md` gap-6, `lg` gap-8, `xl` gap-12 (gap-16 from `sm`).
-   * @default xs at `size="sm"`; else xs inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow`, else md
+   * @default xs at `size="sm"`, lg at `size="lg"`; else xs inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow`, else md
    */
   gap?: StackGap | undefined;
   /**
@@ -78,59 +43,185 @@ export function Section({
    */
   width?: StackWidth | undefined;
   children?: ReactNode;
-} & Passthrough): ReactElement {
+} & Passthrough;
+
+/** The opening a page or landing section takes over its title: a kicker and a line under it. */
+type Opening = {
+  /** A small label above the title, in the same `<header>` (mono at `size="lg"`). Needs a `title`. */
+  overline?: ReactNode;
+  /** The line under the title, outside the heading: a muted line at `md`, a `Lead` at `lg`. */
+  description?: ReactNode;
+};
+
+type SectionProps = SectionBase &
+  (
+    | ({
+        /**
+         * `sm` a small titled group inside a page, a card or a panel; `md` a page's section; `lg` a
+         * landing page's section, its title at display size.
+         * @default md
+         */
+        size?: "md" | undefined;
+        /**
+         * A hairline under the title row across the section's width, `actions` included. Needs a
+         * `title` or `actions`.
+         * @default false
+         */
+        rule?: boolean | undefined;
+      } & Opening)
+    | {
+        /** A small titled group: its title small and all-caps, its blocks `xs` apart. */
+        size: "sm";
+        /** A hairline under the title row, `actions` included. */
+        rule?: boolean | undefined;
+        overline?: never;
+        description?: never;
+      }
+    | ({
+        /** A landing page's section: a display title under a mono kicker, a `Lead`, then its calls to action. */
+        size: "lg";
+        rule?: never;
+      } & Opening)
+  );
+
+/**
+ * A `<section>` Stack with an optional title (which names it) and `actions`. Its blocks are `gap`
+ * apart, from where it sits as in a `Stack`. `level` is the title's heading level, one below the
+ * heading that holds the section (an `h2` on the page), and a heading inside it (a `Card`'s title)
+ * is one below that. A line between two sections is a `Divider` in the `Stack` that holds them.
+ *
+ * `size` picks the scale:
+ * - `md` (default): a page's section. A `SectionHeading` title with `actions` at the end of its row;
+ *   `rule` draws a hairline under the row, `overline` a small label above the title and
+ *   `description` a muted line under it.
+ * - `sm`: the small titled group inside a page, a card, a drawer or a side panel (a panel's "Flaky"
+ *   block, a card's "Ignore areas"): the title small and all-caps like a `Card`'s, the blocks `xs`
+ *   apart. Never build one from a `Stack as="section"` and an `Overline`.
+ * - `lg`: a landing page's section under the `Hero`: a mono `overline` kicker, the title at display
+ *   size, `description` as a `Lead` and `actions` under it as its calls to action, the opening
+ *   capped at the reading measure at the left edge, the blocks `lg` apart. It ignores the prose scale.
+ */
+export function Section({
+  id,
+  title,
+  actions,
+  rule = false,
+  overline,
+  description,
+  level,
+  size = "md",
+  gap,
+  width = "default",
+  children,
+  ...rest
+}: SectionProps): ReactElement {
   const titleId = useHeadingId(id);
   const own = useHeadingLevel(level);
+  const head = { title, actions, id: titleId, level: own };
   return (
     <Stack
       as="section"
       {...rest}
-      gap={gap ?? (size === "sm" ? "xs" : undefined)}
+      gap={gap ?? DEFAULT_GAP[size]}
       width={width}
       aria-labelledby={title ? titleId : rest["aria-labelledby"]}
     >
-      <TitleRow size={size} title={title} id={titleId} level={own} actions={actions} rule={rule} />
+      {size === "lg" ? (
+        <LandingOpening {...head} overline={overline} description={description} />
+      ) : (
+        <TitleRow
+          {...head}
+          small={size === "sm"}
+          rule={rule}
+          overline={overline}
+          description={description}
+        />
+      )}
       {title ? <HeadingLevelProvider level={own}>{children}</HeadingLevelProvider> : children}
     </Stack>
   );
 }
 
-/** A section's title row: its heading at `size`, then `actions` at the end. Nothing without either. */
+const DEFAULT_GAP: Record<SectionSize, StackGap | undefined> = {
+  sm: "xs",
+  md: undefined,
+  lg: "lg",
+};
+
+type Head = { title: ReactNode; actions: ReactNode; id: string; level: HeadingLevel };
+
+const present = (node: ReactNode) => node != null && node !== false;
+
+/** A `sm` or `md` section's title row: its heading, then `actions` at the end. Nothing without either. */
 function TitleRow({
-  size,
   title,
+  actions,
   id,
   level,
-  actions,
+  small,
   rule,
-}: {
-  size: SectionSize;
-  title: ReactNode;
-  id: string;
-  level: HeadingLevel;
-  actions: ReactNode;
+  overline,
+  description,
+}: Head & {
+  small: boolean;
   rule: boolean;
+  overline: ReactNode;
+  description: ReactNode;
 }): ReactElement | null {
   if (!title && !actions) return null;
+  const heading = small ? (
+    <CardOverline id={id} level={level} faint={false}>
+      {title}
+    </CardOverline>
+  ) : (
+    <SectionHeading as={`h${level}`} id={id} description={description}>
+      {title}
+    </SectionHeading>
+  );
   return (
     <div
       className={cx(
         "flex items-center justify-between",
-        size === "sm" ? "gap-2" : "gap-4",
+        small ? "gap-2" : "gap-4",
         rule && "border-b border-slate-200/70 pb-2",
       )}
     >
       {title &&
-        (size === "sm" ? (
-          <CardOverline id={id} level={level} faint={false}>
-            {title}
-          </CardOverline>
+        (present(overline) ? (
+          <header className="flex flex-col gap-1">
+            <Overline>{overline}</Overline>
+            {heading}
+          </header>
         ) : (
-          <SectionHeading as={`h${level}`} id={id}>
-            {title}
-          </SectionHeading>
+          heading
         ))}
       {actions && <div className="ml-auto flex items-center gap-2">{actions}</div>}
+    </div>
+  );
+}
+
+/** A `lg` section's opening: the kicker and the display title in one `<header>`, the lede, the calls to action. */
+function LandingOpening({
+  title,
+  actions,
+  id,
+  level,
+  overline,
+  description,
+}: Head & { overline: ReactNode; description: ReactNode }): ReactElement | null {
+  if (!title && !actions) return null;
+  return (
+    <div className="flex max-w-3xl flex-col gap-4">
+      {title && (
+        <header>
+          {present(overline) && <Overline mono>{overline}</Overline>}
+          <Display as={`h${level}`} id={id}>
+            {title}
+          </Display>
+        </header>
+      )}
+      {title && present(description) && <Lead>{description}</Lead>}
+      {actions && <Cluster>{actions}</Cluster>}
     </div>
   );
 }

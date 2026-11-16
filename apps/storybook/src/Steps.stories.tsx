@@ -78,3 +78,15 @@ export const DontOrder: S = {
     </Steps>
   ),
 };
+
+/** `size="lg"`: the steps across a landing page from `md`, each number at feature size; stacked on a phone. Two to four steps. */
+export const Large: S = {
+  parameters: { layout: "padded" },
+  render: () => (
+    <Steps size="lg" aria-label="How it works">
+      <Step title="Install">Add the package and a config file.</Step>
+      <Step title="Capture">Shoot every story in every theme.</Step>
+      <Step title="Review">Accept what changed, on the pull request.</Step>
+    </Steps>
+  ),
+};
