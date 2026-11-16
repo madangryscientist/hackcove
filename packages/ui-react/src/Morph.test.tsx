@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { renderToStaticMarkup } from "react-dom/server"; // markup read as data, below
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { Morph } from "./Morph.js";
+import { Morph, refreshMorphs } from "./Morph.js";
 import { act, render, screen } from "./render.harness.js";
 
 /** The transition name a Morph gives its element, read from the rendered element. */
@@ -116,5 +116,24 @@ describe("Morph", () => {
       </Morph>,
     );
     expect(screen.getByText("x").id).toBe("card");
+  });
+});
+
+describe("refreshMorphs", () => {
+  it("measures every mounted Morph again at once", () => {
+    const seen = stubObserver();
+    const { unmount } = render(
+      <Morph name="shop" item="abc">
+        x
+      </Morph>,
+    );
+    const el = screen.getByText("x");
+    act(() => seen.report?.(false));
+    expect(el.hasAttribute("data-morph-near")).toBe(false);
+    // jsdom lays nothing out, so the element measures at the viewport's corner: near.
+    act(() => refreshMorphs());
+    expect(el.hasAttribute("data-morph-near")).toBe(true);
+    unmount();
+    expect(() => refreshMorphs()).not.toThrow();
   });
 });
