@@ -13,9 +13,20 @@ import type { Size } from "./size.js";
  * What a `Table` tells the rows and cells inside it: whether it sits in a card (plain), its row
  * density, and which columns its head declares numeric. Internal: not exported from the package.
  */
-type TableSetting = { plain: boolean; size: Size; numeric: readonly boolean[] };
+type TableSetting = {
+  plain: boolean;
+  size: Size;
+  numeric: readonly boolean[];
+  /** How many columns the head declares, or `undefined` with no `TableHead`. */
+  columns: number | undefined;
+};
 
-export const TableContext = createContext<TableSetting>({ plain: false, size: "sm", numeric: [] });
+export const TableContext = createContext<TableSetting>({
+  plain: false,
+  size: "sm",
+  numeric: [],
+  columns: undefined,
+});
 
 /** The column a cell starts at, set by its `TableRow`. */
 const ColumnContext = createContext<number | undefined>(undefined);
@@ -56,6 +67,27 @@ export function numericColumns(children: ReactNode, head: unknown, row: unknown)
       ? Array.from({ length: span(cell.props) }, () => cell.props.numeric === true)
       : [],
   );
+}
+
+/**
+ * How many columns the table has: the largest total of `colSpan`s (one each when unset) over the
+ * rows of its `TableHead`, read through arrays and fragments. `undefined` when there is no head;
+ * a head drawn by an app's own component is not seen either.
+ */
+export function columnCount(children: ReactNode, head: unknown, row: unknown): number | undefined {
+  const headElement = first(children, head);
+  if (!isValidElement<CellProps>(headElement)) return undefined;
+  const totals = flat(headElement.props.children)
+    .filter((child) => isValidElement<CellProps>(child) && child.type === row)
+    .map((rowElement) =>
+      isValidElement<CellProps>(rowElement)
+        ? flat(rowElement.props.children).reduce<number>(
+            (sum, cell) => sum + (isValidElement<CellProps>(cell) ? span(cell.props) : 0),
+            0,
+          )
+        : 0,
+    );
+  return totals.length === 0 ? undefined : Math.max(...totals);
 }
 
 /** A row's cells, each told the column it starts at (counting `colSpan`). */

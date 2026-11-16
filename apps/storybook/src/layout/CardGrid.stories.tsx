@@ -3,6 +3,7 @@ import {
   AppShell,
   Card,
   CardGrid,
+  EmptyState,
   Tabs,
   PageHeader,
   Stack,
@@ -45,6 +46,15 @@ export const FullPage: S = {
         </CardGrid>
       </Stack>
     </AppShell>
+  ),
+};
+
+/** With no children the grid draws its `empty`, an `EmptyState` at its full size. */
+export const Empty: S = {
+  render: () => (
+    <DemoShell>
+      <CardGrid empty={<EmptyState title="No projects yet." />}>{[]}</CardGrid>
+    </DemoShell>
   ),
 };
 

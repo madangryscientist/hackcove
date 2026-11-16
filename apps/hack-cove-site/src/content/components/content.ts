@@ -175,7 +175,7 @@ export const content: ComponentSection = {
           "Name the list with `label`, and order the `TimelineItem`s yourself, newest or oldest first.",
           "A `TimelineItem` has a `title` (a `Pill` or a short label), a `time` you have already formatted for the reader, and an optional note as its children.",
           "`tone` colours the marker dot with the Callout's set (`neutral`, `info`, `positive`, `warn`, `danger`); `neutral` is a plain ring.",
-          "Give the Timeline an `empty` to draw when there are no items; without one it draws nothing.",
+          "Give the Timeline an `empty`, an `EmptyState`, to draw when there are no items (one muted line here); without one it draws nothing.",
           "Numbered instructions are `Steps`, not a Timeline.",
         ],
       },

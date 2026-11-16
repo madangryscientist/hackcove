@@ -1,3 +1,4 @@
+import type { Size } from "./size.js";
 import { cx, liftInteractive } from "./cx.js";
 import { TEXT_TONE, type TextTone } from "./typography.js";
 
@@ -69,3 +70,10 @@ export function rowClass(
   if (tone === "muted") return cx(line, hover, ROW_TONE.muted);
   return cx(line, ROW_TONE[tone], STRIPE);
 }
+
+/** The padding of a head cell, a body or foot cell, and a group row, by the table's `size`. */
+export const PAD: Record<Size, { head: string; cell: string; group: string }> = {
+  sm: { head: "px-4 py-2.5", cell: "px-4 py-3", group: "px-4 py-2" },
+  md: { head: "px-5 py-3", cell: "px-5 py-4", group: "px-5 py-2.5" },
+  lg: { head: "px-6 py-3.5", cell: "px-6 py-5", group: "px-6 py-3" },
+};

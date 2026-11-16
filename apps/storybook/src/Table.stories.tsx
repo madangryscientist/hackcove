@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   type CellTone,
   Card,
+  EmptyState,
   Pill,
   TextLink,
   Table,
@@ -59,6 +60,22 @@ function QuotesTable() {
 export const Quotes: S = { render: () => <QuotesTable /> };
 
 /** Narrow: the card scrolls sideways rather than squeezing the columns. */
+/** A table with no rows: `TableBody empty` draws one muted line across every column, under the head. */
+export const Empty: S = {
+  render: () => (
+    <Table label="Quotes">
+      <TableHead>
+        <TableRow>
+          <TableHeaderCell>Quote</TableHeaderCell>
+          <TableHeaderCell>Customer</TableHeaderCell>
+          <TableHeaderCell numeric>Total</TableHeaderCell>
+        </TableRow>
+      </TableHead>
+      <TableBody empty={<EmptyState title="No quotes yet." />}>{[]}</TableBody>
+    </Table>
+  ),
+};
+
 export const Narrow: S = {
   render: () => (
     <div className="max-w-xs">

@@ -4,9 +4,17 @@ import { useInCard } from "./cardContext.js";
 import { cx } from "./cx.js";
 import { DensityProvider } from "./density.js";
 import type { Size } from "./size.js";
-import { numericColumns, TableContext, useNumericColumn, withColumns } from "./tableColumns.js";
+import { hasNoChildren } from "./emptySlot.js";
+import {
+  columnCount,
+  numericColumns,
+  TableContext,
+  useNumericColumn,
+  withColumns,
+} from "./tableColumns.js";
 import type { Tone } from "./tone.js";
-import { type RowMark, rowClass, SELECTED, BODY_LINE } from "./tableRow.js";
+import { type RowMark, rowClass, SELECTED, BODY_LINE, PAD } from "./tableRow.js";
+import { EmptyRow } from "./tableEmpty.js";
 import { TEXT_TONE } from "./typography.js";
 
 type Align = "start" | "center" | "end";
@@ -28,13 +36,6 @@ const TONE: Record<CellTone, string> = {
   strong: "font-medium text-slate-900",
   neutral: "text-slate-700",
   ...TEXT_TONE,
-};
-
-/** The padding of a head cell, a body or foot cell, and a group row, by the table's `size`. */
-const PAD: Record<Size, { head: string; cell: string; group: string }> = {
-  sm: { head: "px-4 py-2.5", cell: "px-4 py-3", group: "px-4 py-2" },
-  md: { head: "px-5 py-3", cell: "px-5 py-4", group: "px-5 py-2.5" },
-  lg: { head: "px-6 py-3.5", cell: "px-6 py-5", group: "px-6 py-3" },
 };
 
 /**
@@ -75,8 +76,9 @@ export function Table({
 } & Rest<"table">): ReactElement {
   const plain = useInCard();
   const numeric = numericColumns(children, TableHead, TableRow);
+  const columns = columnCount(children, TableHead, TableRow);
   return (
-    <TableContext.Provider value={{ plain, size, numeric }}>
+    <TableContext.Provider value={{ plain, size, numeric, columns }}>
       <DensityProvider size={size}>
         <div
           className={cx(
@@ -110,14 +112,27 @@ export function TableHead({
   );
 }
 
-/** The `<tbody>`: the rows, each with a line above it and, unless the table is in a card, a fill on hover. */
+/**
+ * The `<tbody>`: the rows, each with a line above it and, unless the table is in a card, a fill on
+ * hover. With no rows it draws `empty` (an `EmptyState`, one muted line here) in one cell that spans
+ * every column the head declares; the head stays drawn, so the reader sees what the table holds.
+ */
 export function TableBody({
+  empty,
   children,
   ...rest
-}: { children: ReactNode } & Rest<"tbody">): ReactElement {
+}: {
+  /** Shown in one full-width cell when there are no rows: an `EmptyState`. */
+  empty?: ReactNode;
+  children?: ReactNode;
+} & Rest<"tbody">): ReactElement {
   return (
     <tbody {...rest}>
-      <SectionContext.Provider value="body">{children}</SectionContext.Provider>
+      {hasNoChildren(children) && empty != null ? (
+        <EmptyRow>{empty}</EmptyRow>
+      ) : (
+        <SectionContext.Provider value="body">{children}</SectionContext.Provider>
+      )}
     </tbody>
   );
 }
@@ -290,8 +305,8 @@ const INDENT: Record<Size, Record<Indent, string>> = {
  * cell (a figure, a code, a type) never breaks. `truncate` caps a long value's width, cuts it with
  * an ellipsis on one line and puts the full text in a `title`; the content is then plain text (strings and
  * numbers), since that is what the title shows. `colSpan` passes through: a cell that
- * spans the row is a full-width panel (an empty state, a note under a group), and `align="center"`
- * centres it. `indent` sets a start-aligned cell in by 1 to 3 levels, for a line under a parent row.
+ * spans the row is a full-width panel (a note under a group), and `align="center"` centres it. A
+ * table with no rows takes `TableBody empty`, not a cell built by hand. `indent` sets a start-aligned cell in by 1 to 3 levels, for a line under a parent row.
  */
 export function TableCell({
   align,
@@ -305,7 +320,7 @@ export function TableCell({
   ...rest
 }: {
   /**
-   * The cell's horizontal alignment; `center` for a full-width note or empty state.
+   * The cell's horizontal alignment; `center` for a full-width note.
    * @default end for a numeric cell, else start
    */
   align?: Align | undefined;

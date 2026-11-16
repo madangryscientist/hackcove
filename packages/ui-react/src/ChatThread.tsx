@@ -1,6 +1,7 @@
 import { Children, type ReactElement, type ReactNode, useLayoutEffect, useRef } from "react";
 import { cx, focusRing, themedScrollbar } from "./cx.js";
 import type { Passthrough } from "./props.js";
+import { EmptySlot } from "./emptySlot.js";
 
 const HEIGHT = {
   sm: "max-h-80",
@@ -96,7 +97,11 @@ export function ChatThread({
         className={cx("overflow-y-auto rounded-lg", HEIGHT[height], themedScrollbar, focusRing)}
       >
         <div ref={content} className="flex flex-col gap-3 text-slate-900">
-          {Children.toArray(children).length === 0 ? empty : children}
+          {Children.toArray(children).length === 0 ? (
+            <EmptySlot size="md">{empty}</EmptySlot>
+          ) : (
+            children
+          )}
         </div>
       </div>
     </>

@@ -13,6 +13,7 @@ import { STACK_WIDTH, Stack, type StackGap } from "./Stack.js";
 import { SplitColumns } from "./SideColumn.js";
 import { StickyBar } from "./StickyBar.js";
 import type { Passthrough, Unstyled } from "./props.js";
+import { EmptySlot, hasNoChildren } from "./emptySlot.js";
 
 // Compositions of the layout foundation. None sets a page width or outer padding of its own; the
 // ones that narrow their content do it inside the Container they are rendered in.
@@ -31,7 +32,7 @@ export function ListLayout({
 }: PageHeaderProps & {
   /** A row between the header and the list, e.g. a `Fieldset` of chips or a `SearchInput`. */
   filters?: ReactNode;
-  /** Shown in place of `children` when there are none: no rows, an empty array, `null`. */
+  /** Shown in place of `children` when there are none (no rows, an empty array, `null`): an `EmptyState`. */
   empty?: ReactNode;
   children?: ReactNode;
 } & Passthrough): ReactElement {
@@ -46,7 +47,11 @@ export function ListLayout({
       />
       <Stack {...rest}>
         {filters}
-        {Children.toArray(children).length === 0 ? empty : children}
+        {Children.toArray(children).length === 0 ? (
+          <EmptySlot size="md">{empty}</EmptySlot>
+        ) : (
+          children
+        )}
       </Stack>
     </>
   );
@@ -225,7 +230,9 @@ type CardGridProps = (
   align?: "stretch" | "start" | undefined;
   /** `ul` makes the grid a list: each child is wrapped in an `<li>`. Default `div`. */
   as?: "div" | "ul" | undefined;
-  children: ReactNode;
+  /** Drawn in place of the grid when there are no children: an `EmptyState`. */
+  empty?: ReactNode;
+  children?: ReactNode;
 } & Passthrough;
 
 function gridColumns(
@@ -243,15 +250,20 @@ function gridColumns(
  * `md` (17rem, the default) or `sm` (12rem). `align="start"` keeps each card its own height
  * instead of stretching it to the tallest in its row. `as="ul"` makes it a list of cards for a
  * screen reader: the grid is a `<ul>` and each child is wrapped in an `<li>`, still stretched.
+ * With no children it draws `empty` (an `EmptyState`) in place of the grid.
  */
 export function CardGrid({
   columns = 3,
   minWidth = "md",
   align = "stretch",
   as: Tag = "div",
+  empty,
   children,
   ...rest
 }: CardGridProps): ReactElement {
+  if (hasNoChildren(children)) {
+    return <EmptySlot size="md">{empty}</EmptySlot>;
+  }
   return (
     <Tag
       {...rest}

@@ -343,7 +343,7 @@ except the last four.
 ```tsx
 <AppShell header={header}>
   <ListLayout title="Quotes" actions={<Button>New</Button>} filters={<Fieldset …/>}
-    empty={<Text tone="muted">No quotes yet.</Text>}>
+    empty={<EmptyState title="No quotes yet." />}>
     {quotes.map(…)}
   </ListLayout>
 </AppShell>

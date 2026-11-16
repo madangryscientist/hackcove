@@ -1,5 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Callout, Card, FullBleedLayout, Stack, Text, TextLink } from "@hackcove/ui-react";
+import {
+  Button,
+  Callout,
+  Card,
+  ErrorPage,
+  FullBleedLayout,
+  Section,
+  Stack,
+  Text,
+  TextLink,
+} from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Feedback/Callout" };
 export default meta;
@@ -167,5 +177,29 @@ export const Centred: S = {
     <Callout tone="positive" title="All reviewed." align="center">
       Every shot in this build has been approved.
     </Callout>
+  ),
+};
+
+/** A section that failed to load is a danger `Callout`: a title that says what failed and one button that tries again. The rest of the page stays. */
+export const DoRetry: S = {
+  render: () => (
+    <Section title="Recent builds">
+      <Callout
+        tone="danger"
+        title="The builds did not load."
+        actions={<Button size="sm">Try again</Button>}
+      >
+        Nothing was lost; the list is still on the server.
+      </Callout>
+    </Section>
+  ),
+};
+
+/** A whole error page inside one section takes over the screen for a part that failed. */
+export const DontRetry: S = {
+  render: () => (
+    <Section title="Recent builds">
+      <ErrorPage />
+    </Section>
   ),
 };

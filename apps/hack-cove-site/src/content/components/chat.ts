@@ -13,7 +13,7 @@ export const chatPages: ComponentPage[] = [
         "Name it with `label`. Its children are `ChatMessage`s and anything else that belongs in the conversation (a tool call is a bordered `Disclosure` whose `summary` names the tool and carries a `Pill` for how it went), in order, oldest first.",
         "It starts at the bottom and stays there as content grows, a streamed reply included. When the reader scrolls up it leaves them where they are; scrolling back to the bottom (within 32px) follows again. You write no scrolling of your own.",
         "`height` caps it: `sm`, `md` (default) or `lg`. `fill` takes the height of a parent that sets one, for a whole-page chat.",
-        "`empty` is what it draws with no children, an `EmptyState`.",
+        "`empty` is what it draws with no children, an `EmptyState`, at its full size.",
         'Set `announce` when a message is finished ("Helper replied"), not on each token.',
         "An approval is a `Callout` with `Button`s in its `actions`, placed in the thread, not a component of its own. So is a notice beside a message.",
         "It knows nothing about where messages come from: no fetch, no AI SDK. Map your own messages to its children.",

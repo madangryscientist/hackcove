@@ -56,7 +56,7 @@ function GalleryInsetEmpty() {
   );
 }
 
-/** An EmptyState with a body, Steps and an action, one with `padding="inset"` in a flush Card, then Steps size lg. */
+/** An EmptyState with a body, Steps and an action, one with `padding="inset"` in a flush Card, the `sm` line in a Card, then Steps size lg. */
 function GalleryEmpty() {
   return (
     <>
@@ -70,6 +70,9 @@ function GalleryEmpty() {
         </Steps>
       </EmptyState>
       <GalleryInsetEmpty />
+      <Card title="Builds">
+        <EmptyState size="sm" title="EmptyState sm: one muted line." />
+      </Card>
       <Steps size="lg" aria-label="Steps size lg">
         <Step title="Steps size lg">Across the page from md.</Step>
         <Step title="A second">Each number at feature size.</Step>

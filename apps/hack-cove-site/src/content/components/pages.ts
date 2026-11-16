@@ -22,6 +22,7 @@ export const pages: ComponentSection = {
           'On `NotFound`, `numeral` draws a large "404" above the title, for a designed 404. Off by default; the digits are fixed.',
           'A button worded differently goes in `actions`: it comes first, and "Back to home" stays beside it. There is no label prop.',
           "On `ErrorPage`, `detail` is a request id or a short message a reader can quote.",
+          'A part of a page that failed to load is not an `ErrorPage`: it is a `Callout tone="danger"` with a title and a retry `Button` in its `actions`, and the rest of the page stays.',
           "Render one as the content of an `AppShell`, or on its own in a `Container`.",
         ],
         dont: [

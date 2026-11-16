@@ -61,7 +61,7 @@ export function Callout({
   /** A flat strip: `border-b` only and no radius, for the top of a `Card flush` only. */
   banner?: boolean;
   /**
-   * `center` centres the title and body, for a success or empty state that stands alone. With
+   * `center` centres the title and body, for a success that stands alone. With
    * `actions` only the text is centred.
    * @default start
    */

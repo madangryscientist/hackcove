@@ -147,7 +147,13 @@ export const DoNothingYet: S = {
   ),
 };
 
-/** An empty list with no `empty` leaves a blank page under the header. */
+/** A muted line as `empty` says nothing is here and offers no way forward: a dead end. */
 export const DontNothingYet: S = {
-  render: () => <ListLayout title="Quotes" description="Every quote you have sent." />,
+  render: () => (
+    <ListLayout
+      title="Quotes"
+      description="Every quote you have sent."
+      empty={<Text tone="muted">No quotes yet.</Text>}
+    />
+  ),
 };
