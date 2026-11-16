@@ -85,21 +85,32 @@ function merged(spans: readonly Span[]): Span[] {
 }
 
 /**
- * The comma that follows `end`, past any whitespace or comment between (a block comment before it, or a
- * comma-first `A // x` then `, B`), with the spaces after it unless a comment follows them.
+ * The comma that follows `end`, past spaces, block comments and a line comment on the same line
+ * (`A // x` then `, B`, comma-first), with the spaces after it unless a comment follows them.
+ * A comment on a line of its own stops it. No part of the pattern can match the same text two
+ * ways, so it never backtracks far.
  */
 function commaAfter(text: string, end: number): Span | undefined {
-  const match = /^(?:\s|\/\/[^\n]*|\/\*[\s\S]*?\*\/)*,(?:(?![ \t]*\/[/*])[ \t]*)?/.exec(
-    text.slice(end),
-  );
+  const match =
+    /^[ \t]*(?:\/\*[^\n*]*(?:\*(?!\/)[^\n*]*)*\*\/[ \t]*)*(?:\/\/[^\n]*)?\s*,(?:(?![ \t]*\/[/*])[ \t]*)?/.exec(
+      text.slice(end),
+    );
   if (match === null) return undefined;
   return { start: end + match[0].lastIndexOf(","), end: end + match[0].length };
 }
 
+/** A dead specifier with the comma after it, or the one before it on its line (comma-first). */
+function deadSpan(element: ts.ImportSpecifier, file: ts.SourceFile): Span {
+  const start = element.getStart(file);
+  const after = commaAfter(file.text, element.end);
+  if (after !== undefined) return { start, end: after.end };
+  const before = /,[ \t]*$/.exec(file.text.slice(0, start));
+  return { start: start - (before?.[0].length ?? 0), end: element.end };
+}
+
 /**
- * Each dead specifier up to the comma after it, a comment between them included. When the last
- * one dies and the app wrote no trailing comma, the new last specifier's comma goes too (only
- * the comma), so the style stays.
+ * Each dead specifier with its comma. When the last one dies and the app wrote no trailing
+ * comma, the new last specifier's comma goes too (only the comma), so the style stays.
  */
 function deadSpans(
   bindings: ts.NamedImports,
@@ -107,10 +118,7 @@ function deadSpans(
   file: ts.SourceFile,
 ): Span[] {
   const elements = bindings.elements;
-  const spans = dead.map((element) => ({
-    start: element.getStart(file),
-    end: commaAfter(file.text, element.end)?.end ?? element.end,
-  }));
+  const spans = dead.map((element) => deadSpan(element, file));
   const last = elements.at(-1);
   const lastKept = elements.findLast((element) => !dead.includes(element));
   if (last !== undefined && dead.includes(last) && !elements.hasTrailingComma && lastKept) {
