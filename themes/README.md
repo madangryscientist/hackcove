@@ -81,6 +81,10 @@ With no theme on the page the properties are unset, so the `var()` fallback is y
 values are the theme's own, and `themes.test.ts` checks that each equals its utility's, so a palette
 edit cannot leave them behind.
 
+The set grows only when two consumers need the same colour for chrome the kit cannot draw: a tone
+ink (`--hc-positive`, `--hc-warn`, `--hc-danger`, `--hc-info`) is added, tested and remapped in
+every theme then, and not before. A colour only one app needs stays in that app's CSS.
+
 ## Palettes and attribution
 
 ### Catppuccin Mocha and Latte
