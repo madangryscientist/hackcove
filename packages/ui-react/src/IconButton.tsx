@@ -5,7 +5,7 @@ import { useDensity } from "./density.js";
 import { Icon } from "./Icon.js";
 import type { IconName } from "./icons.js";
 import { renderLink } from "./link.js";
-import { blockedProps } from "./blocked.js";
+import { blockedProps, hasReason } from "./blocked.js";
 import { Tipped } from "./Tooltip.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
@@ -125,7 +125,7 @@ export function IconButton(props: IconButtonAsButton | IconButtonAsLink): ReactE
     );
   }
   const { label, variant, tone, size: _size, count, icon, disabledReason, ...rest } = props;
-  const blocked = disabledReason !== undefined;
+  const blocked = hasReason(disabledReason);
   return (
     // Blocked, the tooltip is the reason, a description and shown on a tap; else it is the name.
     <Tipped

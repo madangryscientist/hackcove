@@ -146,11 +146,14 @@ function handlers<E extends Element>(own: TriggerOwn<E>, tip: TipState): Trigger
     onFocus: (event) => {
       own.onFocus?.(event);
       tip.setTrigger(event.currentTarget);
-      if (!tip.pressed && focusVisible(event.currentTarget)) tip.setVia("focus");
+      // The focused element, not the trigger: a wrapper's focus is the button inside it.
+      if (!tip.pressed && focusVisible(event.target)) tip.setVia("focus");
       tip.setPressed(false);
     },
     onBlur: (event) => {
       own.onBlur?.(event);
+      // A click on a trigger that already has focus fires no focus event to clear the press.
+      tip.setPressed(false);
       tip.setVia((current) => (current === "tap" ? current : null));
     },
     onKeyDown: (event) => {

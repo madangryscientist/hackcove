@@ -12,6 +12,7 @@ import { Icon } from "./Icon.js";
 import { look, type IconButtonTone } from "./IconButton.js";
 import type { IconName } from "./icons.js";
 import { renderLink } from "./link.js";
+import { Tipped } from "./Tooltip.js";
 import { definedProps, type Passthrough } from "./props.js";
 import type { Size } from "./size.js";
 
@@ -88,6 +89,17 @@ function useDialogOf(): { container: Element | undefined; find: Ref<HTMLButtonEl
   return { container, find };
 }
 
+/** What the trigger shows: three dots, or the label and a chevron. */
+function Face({ icon, label, size }: { icon: boolean; label: string; size: Size }): ReactElement {
+  if (icon) return <Icon name="more" size={size} />;
+  return (
+    <>
+      {label}
+      <Icon name="chevron-down" size={size} />
+    </>
+  );
+}
+
 /**
  * A button that opens a short list of actions: the overflow menu at the end of a row, a card header
  * or a page header. Keep the one main action in view beside it and put the rest here, the `danger`
@@ -113,24 +125,37 @@ export function Menu({
   // A pointer opens the menu on its first item, as the keyboard's Enter does (the menu button
   // pattern); left to itself, React Aria focuses the menu box. ArrowUp still opens on the last.
   const [pointer, setPointer] = useState(false);
+  const button = (
+    <AriaButton
+      {...definedProps(rest)}
+      ref={find}
+      onPressStart={(event) => setPointer(event.pointerType !== "keyboard")}
+      // ArrowDown and ArrowUp open it with no press: they keep React Aria's first and last item.
+      onKeyDown={(event) => {
+        setPointer(false);
+        event.continuePropagation();
+      }}
+      {...(icon ? { "aria-label": label } : {})}
+      className={icon ? look({ variant: "ghost", size }) : buttonClass("outline", { size })}
+    >
+      <Face icon={icon} label={label} size={size} />
+    </AriaButton>
+  );
+  // The three-dot trigger shows its name as the library's tooltip, as an `IconButton` does. React
+  // Aria's button takes no pointer handlers, so they sit on a wrapper; focus and keys bubble to it.
   return (
     <MenuTrigger defaultOpen={defaultOpen}>
-      <AriaButton
-        {...definedProps(rest)}
-        ref={find}
-        onPressStart={(event) => setPointer(event.pointerType !== "keyboard")}
-        {...(icon ? { "aria-label": label, title: label } : {})}
-        className={icon ? look({ variant: "ghost", size }) : buttonClass("outline", { size })}
-      >
-        {icon ? (
-          <Icon name="more" size={size} />
-        ) : (
-          <>
-            {label}
-            <Icon name="chevron-down" size={size} />
-          </>
-        )}
-      </AriaButton>
+      {icon ? (
+        <Tipped<HTMLSpanElement> text={label} describes={false} own={{}}>
+          {(tip) => (
+            <span className="inline-flex" {...tip}>
+              {button}
+            </span>
+          )}
+        </Tipped>
+      ) : (
+        button
+      )}
       <Popover
         {...(container ? { UNSTABLE_portalContainer: container } : {})}
         placement="bottom end"

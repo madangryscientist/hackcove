@@ -141,3 +141,13 @@ describe.each([
     });
   }
 });
+
+it("treats an empty disabledReason as no reason: the control is not blocked", async () => {
+  const act = vi.fn<() => void>();
+  render(<IconButton label="Delete" icon="close" disabledReason="" onClick={act} />);
+  const button = screen.getByRole("button", { name: "Delete" });
+  expect(button.hasAttribute("aria-disabled")).toBe(false);
+  expect(button.getAttribute("title")).toBe("Delete");
+  await user().click(button);
+  expect(act).toHaveBeenCalledTimes(1);
+});

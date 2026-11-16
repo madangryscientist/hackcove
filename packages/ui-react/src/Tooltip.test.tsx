@@ -100,6 +100,22 @@ describe("tooltip, with anchor positioning", () => {
     expect(screen.queryByRole("tooltip")).toBeNull();
   });
 
+  it("shows the reason again on keyboard focus after a click on the focused button", async () => {
+    render(
+      <>
+        {blocked()}
+        <button type="button">Next</button>
+      </>,
+    );
+    const u = user();
+    await u.tab();
+    await u.click(save());
+    await u.tab();
+    await u.tab({ shift: true });
+    expect(document.activeElement).toBe(save());
+    expect(screen.getByRole("tooltip").textContent).toBe("Pick a shop first");
+  });
+
   it("shows an IconButton's label on hover and hides it on leave, as no description", async () => {
     render(<IconButton label="Settings" icon="settings" />);
     const button = screen.getByRole("button", { name: "Settings" });

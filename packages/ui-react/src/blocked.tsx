@@ -20,6 +20,11 @@ export function blockedProps(): {
   return { "aria-disabled": true, onClick: swallow };
 }
 
+/** Whether a `disabledReason` blocks: an empty one says nothing, so it blocks nothing either. */
+export function hasReason(reason: string | undefined): reason is string {
+  return reason !== undefined && reason !== "";
+}
+
 type Blocked = { "aria-disabled"?: true; onClick?: (event: SyntheticEvent) => void };
 
 /**
@@ -34,6 +39,6 @@ export function useBlocked<E extends Element>(
   own: TriggerOwn<E>,
 ): { props: TriggerProps<E> & Blocked; tooltip: ReactNode; blocked: boolean } {
   const { props, tooltip } = useTooltip(reason, { describes: true, tap: true }, own);
-  const blocked = reason !== undefined;
+  const blocked = hasReason(reason);
   return { props: blocked ? { ...props, ...blockedProps() } : props, tooltip, blocked };
 }

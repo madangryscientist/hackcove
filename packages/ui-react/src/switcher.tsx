@@ -3,6 +3,7 @@ import { cx } from "./cx.js";
 import type { Passthrough } from "./props.js";
 import { type DataAttributes, dataAttributes, renderLink } from "./link.js";
 import { Tipped } from "./Tooltip.js";
+import { hasReason } from "./blocked.js";
 
 type Option = DataAttributes & {
   label: ReactNode;
@@ -192,10 +193,10 @@ export function Switcher({
   }
 
   const off = (item: SwitchButton): boolean =>
-    groupDisabled === true || item.disabled === true || item.disabledReason !== undefined;
+    groupDisabled === true || item.disabled === true || hasReason(item.disabledReason);
   // An option with a reason stays reachable by the arrow keys, so the keyboard finds out why.
   const reasoned = (item: SwitchButton): boolean =>
-    groupDisabled !== true && item.disabledReason !== undefined;
+    groupDisabled !== true && hasReason(item.disabledReason);
   const enabled = items.filter((item) => !off(item));
   const stop = enabled.some((item) => item.value === value) ? value : enabled[0]?.value;
   return (
@@ -213,7 +214,7 @@ export function Switcher({
         // option it is the reason, and a tap shows it too.
         <Tipped
           key={item.value}
-          text={item.disabledReason ?? item.title}
+          text={hasReason(item.disabledReason) ? item.disabledReason : item.title}
           describes
           tap={off(item)}
           own={{}}

@@ -6,7 +6,7 @@ import { renderLink } from "./link.js";
 import type { Size } from "./size.js";
 import { GapProvider } from "./stackGap.js";
 import { SELECTED } from "./tableRow.js";
-import { useBlocked } from "./blocked.js";
+import { hasReason, useBlocked } from "./blocked.js";
 import type {
   ListRowButtonProps,
   ListRowLinkProps,
@@ -83,7 +83,7 @@ function fillOf(props: ListRowProps): string | undefined {
 
 /** A button row with `disabled` or `disabledReason`: it fades and takes no hover fill. */
 function isDisabled(props: ListRowProps): boolean {
-  if (props.disabledReason !== undefined) return true;
+  if (hasReason(props.disabledReason)) return true;
   return !isStatic(props) && "disabled" in props && props.disabled === true;
 }
 

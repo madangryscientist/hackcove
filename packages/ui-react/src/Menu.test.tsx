@@ -55,6 +55,18 @@ describe("Menu", () => {
     expect(document.activeElement).toBe(screen.getByRole("menuitem", { name: "Favourite" }));
   });
 
+  it("opens on ArrowUp with the last item focused after a click opened it before", async () => {
+    render(<Menu label="More actions" items={actions()} />);
+    const trigger = screen.getByRole("button", { name: "More actions" });
+    const u = user();
+    await u.click(trigger);
+    await u.click(screen.getByRole("menuitem", { name: "Favourite" }));
+    expect(screen.queryByRole("menu")).toBeNull();
+    trigger.focus();
+    await u.keyboard("{ArrowUp}");
+    expect(document.activeElement).toBe(screen.getByRole("menuitem", { name: "Hide chat" }));
+  });
+
   it.each(["{Enter}", " ", "{ArrowDown}"])(
     "opens on %s with the first item focused",
     async (key) => {

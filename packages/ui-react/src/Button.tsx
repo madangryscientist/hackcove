@@ -3,7 +3,7 @@ import { cx, focusRing } from "./cx.js";
 import { controlText, type TypeStep, useDensity, useTypeStep } from "./density.js";
 import { Icon } from "./Icon.js";
 import type { IconName } from "./icons.js";
-import { useBlocked } from "./blocked.js";
+import { hasReason, useBlocked } from "./blocked.js";
 import { renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
@@ -236,7 +236,7 @@ type State = "blocked" | "busy" | "idle";
 /** Busy wins over blocked. */
 function stateOf(busy: boolean, disabledReason: string | undefined): State {
   if (busy) return "busy";
-  return disabledReason === undefined ? "idle" : "blocked";
+  return hasReason(disabledReason) ? "blocked" : "idle";
 }
 
 /** The classes of a Button in a given state: blocked swaps the colour out, busy keeps it. */
