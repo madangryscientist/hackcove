@@ -1,3 +1,0 @@
-import { FilterGroup } from "@hackcove/ui-react";
-
-export const view = <FilterGroup legend="Status">x</FilterGroup>;

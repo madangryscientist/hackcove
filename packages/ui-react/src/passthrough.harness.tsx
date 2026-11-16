@@ -99,7 +99,11 @@ export const CASES: Record<string, () => ReactElement> = {
     />
   ),
   FileDrop: () => <ui.FileDrop {...A}>x</ui.FileDrop>,
-  FilterGroup: () => <ui.FilterGroup label="L" {...A} />,
+  Fieldset: () => (
+    <ui.Fieldset label="L" {...A}>
+      x
+    </ui.Fieldset>
+  ),
   Forbidden: () => <ui.Forbidden {...A} />,
   FormGrid: () => <ui.FormGrid {...A}>x</ui.FormGrid>,
   FormLayout: () => (

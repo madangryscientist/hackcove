@@ -4,7 +4,6 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { Breadcrumbs } from "./Breadcrumbs.js";
 import { Container } from "./Container.js";
 import { stubDialog, unmount } from "./dom.harness.js";
-import { FilterGroup } from "./FilterGroup.js";
 import { Lightbox } from "./Lightbox.js";
 import { MediaTile } from "./MediaTile.js";
 import { ListLayout } from "./PageLayouts.js";
@@ -50,17 +49,6 @@ describe("Breadcrumbs", () => {
     );
     expect(screen.getByRole("navigation", { name: "Breadcrumb" })).not.toBeNull();
     expect(screen.getByRole("navigation", { name: "Fil d'Ariane" })).not.toBeNull();
-  });
-});
-
-describe("FilterGroup", () => {
-  it("is a group named by its label", () => {
-    render(
-      <FilterGroup label="Status">
-        <button type="button">All</button>
-      </FilterGroup>,
-    );
-    expect(screen.getByRole("group", { name: "Status" })).not.toBeNull();
   });
 });
 

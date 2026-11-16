@@ -31,7 +31,7 @@ export function ListLayout({
   tabs,
   ...rest
 }: PageHeaderProps & {
-  /** A row between the header and the list, e.g. a `FilterGroup` or a `SearchInput`. */
+  /** A row between the header and the list, e.g. a `Fieldset` of chips or a `SearchInput`. */
   filters?: ReactNode;
   /** Shown in place of `children` when there are none: no rows, an empty array, `null`. */
   empty?: ReactNode;

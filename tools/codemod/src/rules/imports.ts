@@ -7,6 +7,7 @@ const RENAMED: Readonly<Record<string, string>> = {
   CalloutTone: "Tone",
   LinkRenderProps: "LinkAdapterProps",
   LinkRender: "LinkAdapter",
+  FilterGroup: "Fieldset",
 };
 
 const PROPS_TYPES = [

@@ -1,0 +1,9 @@
+import { Button, FilterGroup } from "@hackcove/ui-react";
+
+export const view = (
+  <FilterGroup legend="Type of shop">
+    <Button variant="outline" size="sm" pressed>
+      Vintage
+    </Button>
+  </FilterGroup>
+);

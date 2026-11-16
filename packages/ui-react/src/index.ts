@@ -106,7 +106,7 @@ export {
 } from "./colourScheme.js";
 export { Tabs, type Tab } from "./Tabs.js";
 export { SegmentedControl, type Segment } from "./SegmentedControl.js";
-export { FilterGroup } from "./FilterGroup.js";
+export { Fieldset } from "./Fieldset.js";
 export { Checkbox } from "./Checkbox.js";
 export { Switch } from "./Switch.js";
 export { Radio, RadioGroup } from "./RadioGroup.js";

@@ -152,7 +152,6 @@ const ONE_HALF: Record<string, string> = {
   "DateField/Value": "A feature: the `CalendarDate` value and the ISO helpers.",
   "Disclosure/Secondary":
     "Its wrong way is `Disclosure/Essential`'s Don't: hiding what must be read.",
-  "FilterGroup/Facets": "A feature: one group per facet.",
   "KeyValueList/AlignStart": "A feature: the `align` prop.",
   "ListRow/RowActions": "The wrong way does not compile: a button or link row takes no `actions`.",
   "Switch/Row": "The wrong way does not compile: a `Switch` takes a `label` or an `aria-label`.",

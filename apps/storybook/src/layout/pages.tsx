@@ -2,11 +2,12 @@ import { useId } from "react";
 import {
   Breadcrumbs,
   Button,
+  ButtonGroup,
   Card,
   CardGrid,
   DetailLayout,
   Field,
-  FilterGroup,
+  Fieldset,
   FormLayout,
   Input,
   KeyValue,
@@ -37,20 +38,22 @@ export function ListPage({ isEmpty = false }: { isEmpty?: boolean }) {
       description="Every quote you have sent."
       actions={<Button>New quote</Button>}
       filters={
-        <FilterGroup label="Status">
-          <Button variant="outline" size="sm" pressed>
-            All
-          </Button>
-          <Button variant="outline" size="sm" pressed={false}>
-            Draft
-          </Button>
-          <Button variant="outline" size="sm" pressed={false}>
-            Sent
-          </Button>
-          <Button variant="outline" size="sm" pressed={false}>
-            Accepted
-          </Button>
-        </FilterGroup>
+        <Fieldset label="Status">
+          <ButtonGroup>
+            <Button variant="outline" size="sm" pressed>
+              All
+            </Button>
+            <Button variant="outline" size="sm" pressed={false}>
+              Draft
+            </Button>
+            <Button variant="outline" size="sm" pressed={false}>
+              Sent
+            </Button>
+            <Button variant="outline" size="sm" pressed={false}>
+              Accepted
+            </Button>
+          </ButtonGroup>
+        </Fieldset>
       }
       empty={<Text tone="muted">No quotes match these filters.</Text>}
     >

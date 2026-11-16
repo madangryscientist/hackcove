@@ -2,9 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   AppShell,
   Button,
+  ButtonGroup,
   Card,
   EmptyState,
-  FilterGroup,
+  Fieldset,
   ListLayout,
   Tabs,
   PageHeader,
@@ -44,17 +45,19 @@ export const FullPage: S = {
         description="Every quote you have sent."
         actions={<Button>New quote</Button>}
         filters={
-          <FilterGroup label="Status">
-            <Button variant="outline" size="sm" pressed>
-              All
-            </Button>
-            <Button variant="outline" size="sm" pressed={false}>
-              Sent
-            </Button>
-            <Button variant="outline" size="sm" pressed={false}>
-              Accepted
-            </Button>
-          </FilterGroup>
+          <Fieldset label="Status">
+            <ButtonGroup>
+              <Button variant="outline" size="sm" pressed>
+                All
+              </Button>
+              <Button variant="outline" size="sm" pressed={false}>
+                Sent
+              </Button>
+              <Button variant="outline" size="sm" pressed={false}>
+                Accepted
+              </Button>
+            </ButtonGroup>
+          </Fieldset>
         }
       >
         <Card as="article">
@@ -95,14 +98,16 @@ export const DoRows: S = {
       description="Every quote you have sent."
       actions={<Button>New quote</Button>}
       filters={
-        <FilterGroup label="Status">
-          <Button variant="outline" size="sm" pressed>
-            All
-          </Button>
-          <Button variant="outline" size="sm" pressed={false}>
-            Sent
-          </Button>
-        </FilterGroup>
+        <Fieldset label="Status">
+          <ButtonGroup>
+            <Button variant="outline" size="sm" pressed>
+              All
+            </Button>
+            <Button variant="outline" size="sm" pressed={false}>
+              Sent
+            </Button>
+          </ButtonGroup>
+        </Fieldset>
       }
     >
       <Card as="article" title="Naledi Mokoena" status={<Pill tone="positive">Accepted</Pill>}>

@@ -292,11 +292,21 @@ New, nothing to change: `Dialog onSubmit` (one form round the body, the error an
 `Button type="submit"` in the footer needs no `form` attribute and the body no form id) and
 `Dialog error`; `FormLayout error`, directly above its `actions`.
 
+| Old | New | |
+| --- | --- | --- |
+| `<FilterGroup label={x}>{chips}</FilterGroup>` | `<Fieldset label={x}><ButtonGroup>{chips}</ButtonGroup></Fieldset>` | codemod |
+
+`Fieldset` is the one labelled group: checkboxes that answer one question, a set of fields, or the
+chips of one facet. It takes `hint` and `error` as a `Field` does. A `RadioGroup` is its own group
+and goes in no `Fieldset`.
+
 TypeScript does not flag these:
 
 - A `Callout tone="danger"` is `role="alert"` and a `Callout tone="warn"` is `role="status"`, so a
   test that asks for the only `alert` on a page can now find two. Find it by its text or scope it to
   a region.
+- A `Fieldset` legend has the `Field` label's look, where a `FilterGroup` legend was small
+  uppercase, and its chips sit 2px further apart (a `ButtonGroup`'s gap).
 
 ### Running the codemod
 

@@ -18,7 +18,7 @@ export const pagelayouts: ComponentSection = {
       usage: {
         do: [
           "Put the page's title, `description` and primary `actions` in the header props; `breadcrumbs` and `tabs` go there too.",
-          "`filters` sit between the header and the list: a `FilterGroup` of pressed-toggle `Button`s.",
+          "`filters` sit between the header and the list: a `Fieldset` of pressed-toggle `Button`s in a `ButtonGroup`.",
           "The items are the `children`, one `Card` per item, or a `Table`; the layout spaces them.",
           "Give `empty` an `EmptyState` that says what is missing and what to do next: it shows when there are no children, and with no `empty` an empty list is a blank page.",
         ],
