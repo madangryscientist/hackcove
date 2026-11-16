@@ -84,15 +84,22 @@ function merged(spans: readonly Span[]): Span[] {
   return out;
 }
 
-/** The comma right after `end` in `text`, with the spaces after it on the same line. */
+/**
+ * The comma that follows `end`, past any whitespace or comment between (a block comment before it, or a
+ * comma-first `A // x` then `, B`), with the spaces after it unless a comment follows them.
+ */
 function commaAfter(text: string, end: number): Span | undefined {
-  const match = /^\s*,[ \t]*/.exec(text.slice(end));
-  return match ? { start: end, end: end + match[0].length } : undefined;
+  const match = /^(?:\s|\/\/[^\n]*|\/\*[\s\S]*?\*\/)*,(?:(?![ \t]*\/[/*])[ \t]*)?/.exec(
+    text.slice(end),
+  );
+  if (match === null) return undefined;
+  return { start: end + match[0].lastIndexOf(","), end: end + match[0].length };
 }
 
 /**
- * Each dead specifier with the comma after it. When the last one dies and the app wrote no
- * trailing comma, the comma after the new last specifier goes too, so the style stays.
+ * Each dead specifier up to the comma after it, a comment between them included. When the last
+ * one dies and the app wrote no trailing comma, the new last specifier's comma goes too (only
+ * the comma), so the style stays.
  */
 function deadSpans(
   bindings: ts.NamedImports,
@@ -116,7 +123,8 @@ function deadSpans(
 /**
  * The span widened to its whole line, newline included, when the line is left with nothing but
  * whitespace or the comment that sat beside the dead specifier. Otherwise it takes the spaces
- * before it when it ran to the end of the line, or the spaces after it when it began the line.
+ * before it when only the line's end or a kept comment follows, or the spaces after it when it
+ * began the line.
  */
 function onItsLine(text: string, span: Span): Span {
   const start = text.lastIndexOf("\n", span.start - 1) + 1;
@@ -127,7 +135,8 @@ function onItsLine(text: string, span: Span): Span {
   const opens = before.trim() === "";
   const rest = after.trim();
   if (opens && (rest === "" || rest.startsWith("//"))) return { start, end: end + 1 };
-  if (rest === "") return { start: start + before.trimEnd().length, end: span.end };
+  if (rest === "" || rest.startsWith("//"))
+    return { start: start + before.trimEnd().length, end: span.end };
   if (opens) return { start: span.start, end: span.end + after.length - after.trimStart().length };
   return span;
 }
