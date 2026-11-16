@@ -26,6 +26,9 @@ export const STICKY_INK_MD = "md:text-slate-900";
 export const STICKY_ASIDE_LG = "lg:sticky lg:top-[var(--app-header,0px)] lg:self-start";
 export const STICKY_SCROLL_LG =
   "lg:-m-1 lg:max-h-[calc(100dvh-var(--app-header,0px)-2rem)] lg:overflow-y-auto lg:p-1";
+export const STICKY_ASIDE_XL = "xl:sticky xl:top-[var(--app-header,0px)] xl:self-start";
+export const STICKY_SCROLL_XL =
+  "xl:-m-1 xl:max-h-[calc(100dvh-var(--app-header,0px)-2rem)] xl:overflow-y-auto xl:p-1";
 
 /**
  * While a sticky column's scroller has more to scroll to on a side, that edge fades out (a mask, so
@@ -39,3 +42,5 @@ export const STICKY_FADE_MD =
   "md:data-more-start:[--fade-start:1.5rem] md:data-more-end:[--fade-end:1.5rem] md:data-more:[mask-image:linear-gradient(to_bottom,transparent,#000_var(--fade-start,0px),#000_calc(100%_-_var(--fade-end,0px)),transparent)] md:data-more:focus-visible:[mask-image:none]";
 export const STICKY_FADE_LG =
   "lg:data-more-start:[--fade-start:1.5rem] lg:data-more-end:[--fade-end:1.5rem] lg:data-more:[mask-image:linear-gradient(to_bottom,transparent,#000_var(--fade-start,0px),#000_calc(100%_-_var(--fade-end,0px)),transparent)] lg:data-more:focus-visible:[mask-image:none]";
+export const STICKY_FADE_XL =
+  "xl:data-more-start:[--fade-start:1.5rem] xl:data-more-end:[--fade-end:1.5rem] xl:data-more:[mask-image:linear-gradient(to_bottom,transparent,#000_var(--fade-start,0px),#000_calc(100%_-_var(--fade-end,0px)),transparent)] xl:data-more:focus-visible:[mask-image:none]";

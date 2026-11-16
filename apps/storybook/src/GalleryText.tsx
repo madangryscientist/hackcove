@@ -137,6 +137,10 @@ export function GalleryText() {
             Inline <Code>Code</Code> in an item
           </BulletItem>
         </BulletList>
+        <BulletList ordered>
+          <BulletItem>BulletList ordered, first</BulletItem>
+          <BulletItem>Second</BulletItem>
+        </BulletList>
       </div>
       <GalleryEmpty />
       <Text preserveNewlines>{"Text with preserveNewlines:\nthe second line of a note."}</Text>

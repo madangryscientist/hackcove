@@ -1,5 +1,5 @@
 ---
-import { ComponentPage } from "../../components/ComponentPage";
+import { ComponentPage, contentsOf, neighbourLinksOf } from "../../components/ComponentPage";
 import { Contact } from "../../components/Contact";
 import { DocsFrame } from "../../components/DocsFrame";
 import { componentPageOf, componentPages } from "../../content/components/index";
@@ -11,10 +11,19 @@ export function getStaticPaths() {
 }
 
 const page = componentPageOf(Astro.params.slug ?? "");
+const { previous, next } = neighbourLinksOf(page);
 ---
 
 <Base title={`${page.name} · Hack Cove UI · ${site.name}`} description={page.summary}>
-  <DocsFrame client:load pathname={Astro.url.pathname}>
+  <DocsFrame
+    client:load
+    pathname={Astro.url.pathname}
+    title={page.name}
+    description={page.summary}
+    contents={contentsOf(page)}
+    previous={previous}
+    next={next}
+  >
     <ComponentPage page={page} />
   </DocsFrame>
   <Contact slot="footer" />

@@ -14,4 +14,19 @@ describe("BulletList", () => {
     const items = within(screen.getByRole("list")).getAllByRole("listitem");
     expect(items.map((item) => item.textContent)).toEqual(["one", "two"]);
   });
+
+  it("ordered is a numbered ol; without it, an unordered ul", () => {
+    const { rerender } = render(
+      <BulletList ordered>
+        <li>one</li>
+      </BulletList>,
+    );
+    expect(screen.getByRole("list").tagName).toBe("OL");
+    rerender(
+      <BulletList>
+        <li>one</li>
+      </BulletList>,
+    );
+    expect(screen.getByRole("list").tagName).toBe("UL");
+  });
 });

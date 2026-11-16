@@ -28,6 +28,12 @@ export {
   ProseLayout,
 } from "./PageLayouts.js";
 export { SidebarLayout } from "./SidebarLayout.js";
+export {
+  DocsLayout,
+  type DocsHeading,
+  type DocsNavGroup,
+  type DocsNeighbour,
+} from "./DocsLayout.js";
 export { SideColumn, type SideColumnWidth } from "./SideColumn.js";
 export { StickyBar } from "./StickyBar.js";
 export { ErrorPage, Forbidden, Maintenance, NotFound, Offline } from "./StatusPages.js";

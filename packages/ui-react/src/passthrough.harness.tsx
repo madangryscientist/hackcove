@@ -1,6 +1,7 @@
 import { CalendarDate } from "@internationalized/date";
 import type { ReactElement } from "react";
 import * as ui from "./index.js";
+import { layoutCases } from "./passthroughLayouts.harness.js";
 
 /** The two attributes every case passes, and every test looks for. */
 export const A = {
@@ -13,6 +14,7 @@ const ITEMS = [<li key="x">x</li>];
 
 /** One render of each exported component, with both attributes. */
 export const CASES: Record<string, () => ReactElement> = {
+  ...layoutCases(A),
   AppShell: () => <ui.AppShell {...A}>x</ui.AppShell>,
   AppShellBrand: () => <ui.AppShellBrand label="Brand" href="/" {...A} />,
   Avatar: () => <ui.Avatar name="Ada Lovelace" {...A} />,
@@ -227,16 +229,6 @@ export const CASES: Record<string, () => ReactElement> = {
     />
   ),
   Select: () => <ui.Select items={[]} {...A} />,
-  SideColumn: () => (
-    <ui.SideColumn aside="a" {...A}>
-      x
-    </ui.SideColumn>
-  ),
-  SidebarLayout: () => (
-    <ui.SidebarLayout aside="r" {...A}>
-      x
-    </ui.SidebarLayout>
-  ),
   SiteSearch: () => <ui.SiteSearch items={[]} label="Search" {...A} />,
   Legend: () => <ui.Legend items={[{ label: "a", tone: "info" }]} {...A} />,
   SplitBar: () => <ui.SplitBar a={1} b={2} label="L" names={["a", "b"]} {...A} />,

@@ -4,6 +4,7 @@ import {
   Card,
   CardGrid,
   CenteredLayout,
+  DocsLayout,
   ErrorPage,
   Forbidden,
   FullBleedLayout,
@@ -201,6 +202,23 @@ export function GalleryGridPages() {
         >
           <Text>Section 45, scrolled into view in the rail.</Text>
         </SidebarLayout>
+      </PageBox>
+      <PageBox label="DocsLayout">
+        <DocsLayout
+          nav={[
+            { title: "Guides", items: [{ label: "Install", href: "#install", selected: true }] },
+          ]}
+          navLabel="Docs"
+          title="Install"
+          contents={[
+            { id: "gallery-setup", label: "Setup", level: 2 },
+            { id: "gallery-keys", label: "Keys", level: 3 },
+          ]}
+          current="gallery-setup"
+          next={{ label: "First build", href: "#first-build" }}
+        >
+          <Text>The article.</Text>
+        </DocsLayout>
       </PageBox>
       <SideColumnBoxes />
     </div>

@@ -227,12 +227,13 @@ export const text: ComponentSection = {
       usage: {
         do: [
           "Give a `BulletList` `BulletItem` children: each is an `<li>` in the body text.",
+          "Steps a reader follows in order are a `BulletList ordered`: a numbered `<ol>` with the same indent and gap.",
           "Items that have a label and a value are a `KeyValueList`; a list of records is a `Table` or a `ListRow`.",
         ],
         dont: ["Never type a hyphen into a paragraph to make a list."],
       },
       accessibility: [
-        "A `BulletList` renders a `<ul>`, so a screen reader announces a list and the number of items.",
+        "A `BulletList` renders a `<ul>` (an `<ol>` with `ordered`), so a screen reader announces a list and the number of items.",
         "`id`, `aria-*` and `data-*` go on the list, or on one item.",
       ],
       api: ["BulletList", "BulletItem"],
