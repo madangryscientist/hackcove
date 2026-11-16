@@ -53,6 +53,7 @@ export const actions: ComponentSection = {
           "An unread count is `count`, never part of the label; it is not shown at 0. The icon is `icon`, a name from the `Icon` set, never a child.",
           "Going to another page is `href` (through the app's `LinkProvider`), which draws the same button as a link.",
           "An action that needs a word is a `Button`.",
+          "A row of several icon buttons is a `Menu`: one main action in view, the rest behind it.",
         ],
       },
       accessibility: [
@@ -64,6 +65,34 @@ export const actions: ComponentSection = {
       api: ["IconButton"],
     },
     {
+      slug: "menu",
+      name: "Menu",
+      summary: "A button that opens a short list of actions.",
+      whenToUse:
+        "A row, card or header with more actions than fit: put the one main action in view and the rest in a Menu.",
+      pairs: ["Menu/Overflow", "Menu/Destructive"],
+      usage: {
+        do: [
+          "Keep the one main action in view as a `Button` and put the rest in one `Menu` beside it; a row of several icon buttons is a `Menu`.",
+          "`items` is data: each a `label` with `onSelect`, or a link with `href` (through the app's `LinkProvider`; `external` opens a new tab). `icon` adds a leading glyph from the `Icon` set and `disabled` dims one.",
+          'A destructive item is `tone="danger"` and goes last, so it is never the first thing the arrows reach.',
+          'The default trigger is a ghost three-dot button named by `label`; `trigger="button"` is an outline button reading `label`, for a menu whose name is worth a word ("Export"). `size="sm"` inside a row or a card header.',
+          "In a `ListRow` with `revealOnHover`, the row keeps its actions shown while the menu is open.",
+        ],
+        dont: [
+          "Never put the only action of a row in a `Menu`: one action is a `Button` or an `IconButton`.",
+          "Do not hide a reason in the menu: an item that cannot be chosen says why in its label or on the page.",
+        ],
+      },
+      accessibility: [
+        "The trigger is a button with `aria-haspopup` and `aria-expanded`, named by `label`; the menu takes the same name.",
+        "Enter, Space or ArrowDown open it on the first item, ArrowUp on the last; the arrows, Home, End and a typed letter move; Enter chooses; Escape closes it, and focus goes back to the trigger.",
+        'A link item is a real link with `role="menuitem"`; a disabled item is skipped by the arrows.',
+        "Inside a `Dialog` the menu opens in the dialog, so it is not inert, and Escape closes only the menu.",
+      ],
+      api: ["Menu"],
+    },
+    {
       slug: "icon",
       name: "Icon",
       summary: "The library's own icons, and a sizer and toner for one `<svg>` glyph.",
@@ -72,7 +101,7 @@ export const actions: ComponentSection = {
       pairs: ["Icon/Icon"],
       usage: {
         do: [
-          "`name` picks one of the library's icons, all on one grid and one stroke: `diff`, `baseline`, `review`, `ci`, `self-host`, `privacy`, `capture`, `branch`, `theme`, `speed`, `search`, `chevron-right`, `chevron-down`, `close`, `external-link`, `settings`, `bell`, `check`, `plus`, `grid`, `window`, `type`, `card`, `pointer`, `field`, `table`, `compass`, `page` and `briefcase`. Each is named for its idea or action, not a product. Prefer one to drawing your own.",
+          "`name` picks one of the library's icons, all on one grid and one stroke: `diff`, `baseline`, `review`, `ci`, `self-host`, `privacy`, `capture`, `branch`, `theme`, `speed`, `search`, `chevron-right`, `chevron-down`, `close`, `external-link`, `settings`, `bell`, `check`, `plus`, `more`, `grid`, `window`, `type`, `card`, `pointer`, `field`, `table`, `compass`, `page` and `briefcase`. Each is named for its idea or action, not a product. Prefer one to drawing your own.",
           "For a glyph the set lacks, put a bare `<svg>` (with a `viewBox`, no size or colour classes) in an `Icon`; it fills the box.",
           "`size` is `sm` (14px), `md` (16px, the default), `lg` (20px) or `feature` (32px), for an icon that stands for an idea on its own. A feature card takes its icon through `Card`'s `icon`.",
           "`tone` is a text tone (`muted`, `accent`, `info`, `positive`, `warn`, `danger`); left out, the icon takes the colour of the text around it, so draw the glyph with `currentColor`.",

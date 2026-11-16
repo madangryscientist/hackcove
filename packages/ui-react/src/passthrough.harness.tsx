@@ -168,6 +168,7 @@ export const CASES: Record<string, () => ReactElement> = {
   Maintenance: () => <ui.Maintenance {...A} />,
   Markdown: () => <ui.Markdown md="x" {...A} />,
   MediaTile: () => <ui.MediaTile src="/x.jpg" alt="X" onClick={noop} {...A} />,
+  Menu: () => <ui.Menu label="L" items={[{ label: "a", onSelect: noop }]} {...A} />,
   MetaList: () => <ui.MetaList {...A}>{ITEMS}</ui.MetaList>,
   Morph: () => (
     <ui.Morph name="m" item="x" {...A}>

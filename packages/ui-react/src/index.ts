@@ -94,6 +94,7 @@ export { Lightbox } from "./Lightbox.js";
 export { Icon } from "./Icon.js";
 export type { IconName } from "./icons.js";
 export { IconButton, type IconButtonTone, type IconButtonVariant } from "./IconButton.js";
+export { Menu, type MenuAction } from "./Menu.js";
 export { ColourSchemeToggle } from "./ColourSchemeToggle.js";
 export {
   applyColourScheme,

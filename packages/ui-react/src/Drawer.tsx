@@ -2,7 +2,7 @@ import { type ReactElement, type ReactNode, useId, useRef } from "react";
 import { cx } from "./cx.js";
 import { BodyContext, ModalScope } from "./Dialog.js";
 import { IconButton } from "./IconButton.js";
-import { useModal } from "./modal.js";
+import { useBackdropClose, useModal } from "./modal.js";
 import type { Passthrough } from "./props.js";
 import type { Size } from "./size.js";
 import { HeaderText, SectionHeading } from "./typography.js";
@@ -52,6 +52,7 @@ export function Drawer({
   const titleId = useId();
 
   const closed = useModal(dialog, onClose);
+  const backdrop = useBackdropClose(dialog);
 
   return (
     <ModalScope>
@@ -60,7 +61,7 @@ export function Drawer({
         ref={dialog}
         aria-labelledby={titleId}
         onClose={closed}
-        onClick={(event) => event.target === dialog.current && dialog.current?.close()}
+        {...backdrop}
         className={cx(PANEL, WIDTH[width])}
       >
         <header className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-200 px-5.5 py-3.5">

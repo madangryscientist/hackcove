@@ -55,9 +55,13 @@ const FOCUSED = "outline-2 -outline-offset-2 outline-violet-600";
 /** A thumbnail's width. A direct-child image fills it. */
 const THUMBNAIL = "block w-32 [&>img]:block [&>img]:h-auto [&>img]:w-full";
 
-/** Hidden until the row is hovered or has focus inside it; always shown where any pointer is coarse (a touch screen, hybrids included). */
+/**
+ * Hidden until the row is hovered or has focus inside it; always shown where any pointer is coarse
+ * (a touch screen, hybrids included), and while a `Menu` in it is open, since its menu takes the
+ * focus out of the row.
+ */
 const REVEAL =
-  "opacity-0 group-hover/row:opacity-100 group-focus-within/row:opacity-100 any-pointer-coarse:opacity-100";
+  "opacity-0 group-hover/row:opacity-100 group-focus-within/row:opacity-100 any-pointer-coarse:opacity-100 has-[[aria-expanded=true]]:opacity-100";
 
 const PAD: Record<Size, string> = { sm: "px-3 py-2", md: "px-4 py-3", lg: "px-5 py-4" };
 

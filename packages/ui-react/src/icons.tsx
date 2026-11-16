@@ -27,6 +27,7 @@ const NAMES = [
   "bell",
   "check",
   "plus",
+  "more",
   "grid",
   "window",
   "type",
@@ -147,6 +148,14 @@ const GLYPHS: Record<IconName, ReactNode> = {
   check: <path d="m4.5 12.5 5 5L19.5 7" />,
   /** Add or create: two strokes crossing, upright. */
   plus: <path d="M12 5v14M5 12h14" />,
+  /** More actions behind a menu: three dots in a row. */
+  more: (
+    <>
+      <circle cx="5.5" cy="12" r="1" />
+      <circle cx="12" cy="12" r="1" />
+      <circle cx="18.5" cy="12" r="1" />
+    </>
+  ),
   /** Things laid out in a grid: four tiles. */
   grid: (
     <>
