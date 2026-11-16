@@ -147,7 +147,8 @@ export const layout: ComponentSection = {
     {
       slug: "stack",
       name: "Stack",
-      summary: "A vertical column of blocks a fixed gap apart, and Section for a titled group.",
+      summary:
+        "A vertical column of blocks a fixed gap apart, and Section for a titled group, large or small.",
       whenToUse:
         "Any blocks that follow each other: space is a Stack's `gap`, never a margin on a block.",
       pairs: [
@@ -157,6 +158,7 @@ export const layout: ComponentSection = {
         "StackDocs/Width",
         "StackDocs/Align",
         "StackDocs/Divided",
+        "StackDocs/SmallSection",
       ],
       stories: ["Stack"],
       usage: {
@@ -167,8 +169,12 @@ export const layout: ComponentSection = {
           "`divided` draws a line between each pair of children and sets them touching, with no gap: rows that carry their own padding, such as `ListRow`s in a `Card flush`. For space and a line between blocks, put a `Divider` in the Stack.",
           '`as` is `div` (default), `section`, `form`, `ul` or `ol`. `as="form"` takes the form props and spaces its fields; `as="ul"` and `as="ol"` draw no markers and their children are `<li>`s.',
           "A titled group is a `Section`: `title`, `actions` beside it, then the blocks, spaced as a `Stack`. It takes `gap` and `width` as `Stack` does. `rule` draws a hairline under the title row, `actions` included. Its title is an `h2` on the page, one level below the section that holds it, and a `Card` or `EmptyState` inside it is one below that; `level` sets it by hand.",
+          'A small titled group (a panel\'s "Flaky" block, a card\'s "Ignore areas") is `Section size="sm"`: a small all-caps title, its blocks `xs` apart, `actions` at the end of the title row.',
           "`rowFrom` (`sm`, `md` or `lg`) turns the column into a row from that breakpoint and leaves it a column below: a main block beside a side column on a wide screen, stacked on a phone. Put the block that takes the width left in a `ClusterGrow`.",
           "A row that is a row at every width is a `Cluster`, not a Stack.",
+        ],
+        dont: [
+          'Do not build a small titled group from `Stack as="section"` and an `Overline as="h2"`: it is unnamed and its gap is a guess. It is `Section size="sm"`.',
         ],
       },
       accessibility: [

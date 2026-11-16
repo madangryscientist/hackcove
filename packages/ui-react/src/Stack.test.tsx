@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { render, screen, user, within } from "./render.harness.js";
-import { Section, Stack } from "./Stack.js";
+import { Section } from "./Section.js";
+import { Stack } from "./Stack.js";
 
 describe("Stack as", () => {
   it("renders a form that passes its form props through", () => {
@@ -130,5 +131,49 @@ describe("Section", () => {
     // The id is a link target, read as data: with no heading to carry it, no element has it.
     expect(document.getElementById("usage")).toBeNull();
     expect(screen.queryByRole("region")).toBeNull();
+  });
+});
+
+describe('Section size="sm"', () => {
+  it("is a region named by its title, a heading at the level md uses", () => {
+    render(
+      <Section size="sm" title="Flaky">
+        body
+      </Section>,
+    );
+    const region = screen.getByRole("region", { name: "Flaky" });
+    expect(within(region).getByRole("heading", { level: 2, name: "Flaky" })).not.toBeNull();
+  });
+
+  it("puts an id on its heading, so #id is a link target", () => {
+    render(
+      <Section size="sm" id="ignore-areas" title="Ignore areas">
+        body
+      </Section>,
+    );
+    expect(screen.getByRole("heading", { name: "Ignore areas" }).id).toBe("ignore-areas");
+  });
+
+  it("puts actions inside the region, after the heading", () => {
+    render(
+      <Section size="sm" title="Flaky" actions={<button type="button">Rerun</button>}>
+        body
+      </Section>,
+    );
+    const region = screen.getByRole("region", { name: "Flaky" });
+    const heading = within(region).getByRole("heading", { name: "Flaky" });
+    const action = within(region).getByRole("button", { name: "Rerun" });
+    expect(heading.compareDocumentPosition(action) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("nests one level below a Section that holds it", () => {
+    render(
+      <Section title="Build 412">
+        <Section size="sm" title="Flaky">
+          body
+        </Section>
+      </Section>,
+    );
+    expect(screen.getByRole("heading", { level: 3, name: "Flaky" })).not.toBeNull();
   });
 });

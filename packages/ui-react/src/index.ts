@@ -38,8 +38,8 @@ export {
   type ClusterGap,
   type ClusterJustify,
 } from "./Cluster.js";
+export { Section, type SectionSize } from "./Section.js";
 export {
-  Section,
   Stack,
   type StackAlign,
   type StackGap,

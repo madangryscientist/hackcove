@@ -89,6 +89,41 @@ function ClusterAndStackOptions() {
   );
 }
 
+/** Sections at md (plain, a second, with a rule) and at size sm, with and without actions. */
+function SectionOptions() {
+  return (
+    <>
+      <Section title="Section">
+        <Text>A Stack of Sections, gap md.</Text>
+      </Section>
+      <Section title="Another">
+        <Text>Each Section stacks its children at gap md.</Text>
+      </Section>
+      <Section rule title="With a rule" actions={<Button variant="outline">Action</Button>}>
+        <Text>A hairline under the title row.</Text>
+      </Section>
+      <Card>
+        <Stack gap="sm">
+          <Section size="sm" title="Section size sm">
+            <Text>A small titled group, xs apart.</Text>
+          </Section>
+          <Section
+            size="sm"
+            title="With actions"
+            actions={
+              <Button variant="ghost" size="sm">
+                Rerun
+              </Button>
+            }
+          >
+            <Text>The action at the end of the small title row.</Text>
+          </Section>
+        </Stack>
+      </Card>
+    </>
+  );
+}
+
 /** AppShell (its brand, nav and controls slots, a Show viewer chip, and the Container inside it), PageHeader, Section, Stack and Cluster, in a box that scrolls under the sticky header. */
 export function GalleryLayout() {
   return (
@@ -120,15 +155,7 @@ export function GalleryLayout() {
           actions={<Button>Action</Button>}
         />
         <Stack width="narrow">
-          <Section title="Section">
-            <Text>A Stack of Sections, gap md.</Text>
-          </Section>
-          <Section title="Another">
-            <Text>Each Section stacks its children at gap md.</Text>
-          </Section>
-          <Section rule title="With a rule" actions={<Button variant="outline">Action</Button>}>
-            <Text>A hairline under the title row.</Text>
-          </Section>
+          <SectionOptions />
           <Stack gap="xs">
             <SubsectionHeading>Text block</SubsectionHeading>
             <Text>A Stack at gap xs, in a narrow (max-w-3xl) column.</Text>

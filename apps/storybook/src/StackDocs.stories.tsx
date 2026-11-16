@@ -8,6 +8,7 @@ import {
   KeyValue,
   KeyValueList,
   ListRow,
+  Overline,
   Section,
   SectionHeading,
   Stack,
@@ -224,5 +225,52 @@ export const AlignStart: S = {
       </Text>
       <Button>Copy the key</Button>
     </Stack>
+  ),
+};
+
+/** A small titled group inside a card or a panel is `Section size="sm"`: a region named by its small title, its lines `xs` apart, an action at the end of the title row. */
+export const DoSmallSection: S = {
+  render: () => (
+    <Card>
+      <Stack gap="sm">
+        <Section
+          size="sm"
+          title="Flaky"
+          actions={
+            <Button variant="ghost" size="sm">
+              Rerun
+            </Button>
+          }
+        >
+          <Text>checkout.spec.ts failed once in the last 20 runs.</Text>
+        </Section>
+        <Section size="sm" title="Ignore areas">
+          <Text>The clock in the header and the avatar.</Text>
+        </Section>
+      </Stack>
+    </Card>
+  ),
+};
+
+/** Built from a `Stack as="section"` and an `Overline as="h2"`, the group is an unnamed section whose gap is a guess. */
+export const DontSmallSection: S = {
+  render: () => (
+    <Card>
+      <Stack gap="sm">
+        <Stack as="section" gap="xs">
+          <Cluster justify="between">
+            <Overline as="h2">Flaky</Overline>
+            <Button variant="ghost" size="sm">
+              Rerun
+            </Button>
+          </Cluster>
+          <Text>checkout.spec.ts failed once in the last 20 runs.</Text>
+        </Stack>
+        <Stack as="section" gap="xs">
+          <Overline as="h2">Ignore areas</Overline>
+          <Text>The clock in the header and the avatar.</Text>
+        </Stack>
+      </Stack>
+    </Card>
   ),
 };
