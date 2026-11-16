@@ -71,6 +71,81 @@ function specifierRemoval(element: ts.ImportSpecifier, file: ts.SourceFile): Edi
   return { start: start - (before?.[0].length ?? 0), end: element.end, text: "" };
 }
 
+type Span = { start: number; end: number };
+
+/** The spans sorted, with any two that overlap or touch made one. */
+function merged(spans: readonly Span[]): Span[] {
+  const out: Span[] = [];
+  for (const span of spans.toSorted((a, b) => a.start - b.start)) {
+    const last = out.at(-1);
+    if (last !== undefined && span.start <= last.end) last.end = Math.max(last.end, span.end);
+    else out.push({ ...span });
+  }
+  return out;
+}
+
+/** The comma right after `end` in `text`, with the spaces after it on the same line. */
+function commaAfter(text: string, end: number): Span | undefined {
+  const match = /^\s*,[ \t]*/.exec(text.slice(end));
+  return match ? { start: end, end: end + match[0].length } : undefined;
+}
+
+/**
+ * Each dead specifier with the comma after it. When the last one dies and the app wrote no
+ * trailing comma, the comma after the new last specifier goes too, so the style stays.
+ */
+function deadSpans(
+  bindings: ts.NamedImports,
+  dead: readonly ts.ImportSpecifier[],
+  file: ts.SourceFile,
+): Span[] {
+  const elements = bindings.elements;
+  const spans = dead.map((element) => ({
+    start: element.getStart(file),
+    end: commaAfter(file.text, element.end)?.end ?? element.end,
+  }));
+  const last = elements.at(-1);
+  const lastKept = elements.findLast((element) => !dead.includes(element));
+  if (last !== undefined && dead.includes(last) && !elements.hasTrailingComma && lastKept) {
+    const comma = commaAfter(file.text, lastKept.end);
+    if (comma !== undefined) spans.push(comma);
+  }
+  return spans;
+}
+
+/**
+ * The span widened to its whole line, newline included, when the line is left with nothing but
+ * whitespace or the comment that sat beside the dead specifier. Otherwise it takes the spaces
+ * before it when it ran to the end of the line, or the spaces after it when it began the line.
+ */
+function onItsLine(text: string, span: Span): Span {
+  const start = text.lastIndexOf("\n", span.start - 1) + 1;
+  // A newline always follows: the closing brace and `from` come after any specifier.
+  const end = text.indexOf("\n", span.end);
+  const before = text.slice(start, span.start);
+  const after = text.slice(span.end, end);
+  const opens = before.trim() === "";
+  const rest = after.trim();
+  if (opens && (rest === "" || rest.startsWith("//"))) return { start, end: end + 1 };
+  if (rest === "") return { start: start + before.trimEnd().length, end: span.end };
+  if (opens) return { start: span.start, end: span.end + after.length - after.trimStart().length };
+  return span;
+}
+
+/**
+ * Removes the dead specifiers from a named import in place, so every kept one keeps its line,
+ * indentation, comma and comment as the app wrote them. The edits never overlap or touch, so
+ * `applyEdits` takes them together.
+ */
+function specifiersRemoval(
+  bindings: ts.NamedImports,
+  dead: readonly ts.ImportSpecifier[],
+  file: ts.SourceFile,
+): Edit[] {
+  const spans = merged(deadSpans(bindings, dead, file)).map((span) => onItsLine(file.text, span));
+  return merged(spans).map((span) => ({ ...span, text: "" }));
+}
+
 function renameImport(element: ts.ImportSpecifier, context: Context): void {
   const exported = (element.propertyName ?? element.name).text;
   const to = RENAMED[exported];
@@ -126,14 +201,12 @@ export function pruneImports(before: ts.SourceFile, output: string, fileName: st
         usesOf(file, element.name.text).length === 1 &&
         usesOf(before, element.name.text).length > 1,
     );
-    const whole = dead.length === bindings.elements.length && !declaration.importClause?.name;
-    if (whole && dead.length > 0) {
-      edits.push({ start: declaration.getStart(file), end: declaration.end + 1, text: "" });
-    } else if (dead.length > 0) {
-      const kept = bindings.elements.filter((element) => !dead.includes(element));
-      const text = `{ ${kept.map((element) => element.getText(file)).join(", ")} }`;
-      edits.push({ start: bindings.getStart(file), end: bindings.end, text });
-    }
+    if (dead.length === 0) continue;
+    const name = declaration.importClause?.name;
+    if (dead.length < bindings.elements.length)
+      edits.push(...specifiersRemoval(bindings, dead, file));
+    else if (name !== undefined) edits.push({ start: name.end, end: bindings.end, text: "" });
+    else edits.push({ start: declaration.getStart(file), end: declaration.end + 1, text: "" });
   }
   return edits;
 }

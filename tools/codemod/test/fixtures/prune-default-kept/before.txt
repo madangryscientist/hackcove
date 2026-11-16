@@ -1,0 +1,9 @@
+import Ui, { Card } from "@hackcove/ui-react";
+import { EmptyState } from "@hackcove/ui-react";
+
+export const a = (
+  <Card dashed>
+    <EmptyState title="x" />
+  </Card>
+);
+export const u = Ui;

@@ -1,0 +1,8 @@
+import { EmptyState, /* c */ Card, Text } from "@hackcove/ui-react";
+
+export const a = (
+  <Card dashed>
+    <EmptyState title="x" />
+  </Card>
+);
+export const t = [Text];
