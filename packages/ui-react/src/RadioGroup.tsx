@@ -9,6 +9,8 @@ import {
 import { cx } from "./cx.js";
 import { definedProps, type Passthrough } from "./props.js";
 import type { Size } from "./size.js";
+import { WaitingChoice } from "./fieldWait.js";
+import { BusyLabel, busy, type LoadingProps, LoadingScope, useLoading } from "./skeleton.js";
 
 /** A radio's circle, its dot, its drop onto the label's first line and the label's text, by the group's `size`. */
 const SIZE: Record<Size, { circle: string; dot: string; label: string; gap: string }> = {
@@ -26,7 +28,8 @@ const RadioSize = createContext<Size>("md");
  * (`role="alert"`) and marks the group invalid. Give it `value` and `onChange`, or
  * `defaultValue` and let it keep the choice. `name` posts the choice in a form.
  * The arrow keys move between the radios and choose, and the group is one tab stop. `size` sizes
- * every radio in the group, the same scale as a `Checkbox`.
+ * every radio in the group, the same scale as a `Checkbox`. While `loading` the labels are drawn and
+ * each circle is a bone.
  */
 export function RadioGroup({
   label,
@@ -35,6 +38,8 @@ export function RadioGroup({
   size = "md",
   disabled,
   required,
+  loading,
+  loadingLabel,
   children,
   ...rest
 }: {
@@ -64,7 +69,9 @@ export function RadioGroup({
   size?: Size;
   /** The `Radio`s. */
   children: ReactNode;
-} & Passthrough): ReactElement {
+} & LoadingProps &
+  Passthrough): ReactElement {
+  const { loading: waiting, owner } = useLoading(loading);
   return (
     <AriaRadioGroup
       {...definedProps(rest)}
@@ -74,8 +81,11 @@ export function RadioGroup({
       className="flex flex-col gap-2"
     >
       <Label className="text-sm font-medium text-slate-700">{label}</Label>
-      <div className="flex flex-col gap-2.5">
-        <RadioSize.Provider value={size}>{children}</RadioSize.Provider>
+      <div {...busy(owner, waiting)} className="flex flex-col gap-2.5">
+        <RadioSize.Provider value={size}>
+          <LoadingScope loading={waiting}>{children}</LoadingScope>
+        </RadioSize.Provider>
+        <BusyLabel owner={owner} loading={waiting} label={loadingLabel} />
       </div>
       {hint && !error ? (
         <Text slot="description" className="text-xs text-slate-500">
@@ -94,15 +104,8 @@ function ringTone(invalid: boolean, selected: boolean): string {
   return selected ? "border-violet-600" : "border-slate-300";
 }
 
-/** One option of a `RadioGroup`: a `label` and, under it, an optional `hint`. Click the label or the circle. */
-export function Radio({
-  label,
-  hint,
-  value,
-  disabled,
-  "aria-describedby": describedBy,
-  ...rest
-}: {
+/** The props of a `Radio`. */
+type RadioProps = {
   /** The text beside the circle. */
   label: ReactNode;
   /** A muted line under the label that says more. It is the radio's `aria-describedby`. */
@@ -111,7 +114,39 @@ export function Radio({
   value: string;
   /** Disables this radio alone. */
   disabled?: boolean | undefined;
-} & Passthrough): ReactElement {
+} & Passthrough;
+
+/** One option of a `RadioGroup`: a `label` and, under it, an optional `hint`. Click the label or the circle. While `loading` the circle is a bone. */
+export function Radio({
+  loading,
+  loadingLabel,
+  ...props
+}: RadioProps & LoadingProps): ReactElement {
+  const size = SIZE[useContext(RadioSize)];
+  if (useLoading(loading).loading) {
+    return (
+      <WaitingChoice
+        own={loading}
+        loadingLabel={loadingLabel}
+        label={props.label}
+        look={cx(size.gap, size.label)}
+        shape={cx(size.circle, "rounded-full")}
+        attrs={props}
+      />
+    );
+  }
+  return <ShownRadio {...props} />;
+}
+
+/** A radio with its circle drawn. */
+function ShownRadio({
+  label,
+  hint,
+  value,
+  disabled,
+  "aria-describedby": describedBy,
+  ...rest
+}: RadioProps): ReactElement {
   const descriptionId = useId();
   const size = SIZE[useContext(RadioSize)];
   return (

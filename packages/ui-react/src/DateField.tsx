@@ -19,6 +19,8 @@ import { cx, focusRing } from "./cx.js";
 import { CalendarDateField } from "./DateFieldCalendar.js";
 import { toISODate } from "./isoDate.js";
 import { definedProps, type Passthrough } from "./props.js";
+import { WaitingField } from "./fieldWait.js";
+import { type LoadingProps, useLoading } from "./skeleton.js";
 import { ShownInput, useShownDate } from "./shownDate.js";
 import type { Size } from "./size.js";
 import { controlText, useTypeStep } from "./density.js";
@@ -75,6 +77,7 @@ type CalendarNames = {
 };
 
 export type DateFieldProps = FieldProps &
+  LoadingProps &
   (
     | {
         /** Adds a calendar button that opens a month view in a popover; the field is a date picker. */
@@ -228,15 +231,30 @@ export const iconButtonClass = `${iconButtonLook} h-7 w-7`;
 /**
  * A segmented DD / MM / YYYY date input. Values are `CalendarDate`s; `name` posts it as
  * `YYYY-MM-DD`. `calendar` adds a calendar button that opens a month view in a popover, at the
- * same height as the plain field; `defaultOpen` opens it on mount.
+ * same height as the plain field; `defaultOpen` opens it on mount. While `loading` the label is
+ * drawn and the field is a bone of its height.
  */
 export function DateField({
   calendar,
   defaultOpen,
   monthLabel = "Month",
   yearLabel = "Year",
+  loading,
+  loadingLabel,
   ...field
 }: DateFieldProps): ReactElement {
+  if (useLoading(loading).loading) {
+    return (
+      <WaitingField
+        own={loading}
+        loadingLabel={loadingLabel}
+        label={field.label}
+        look={labelClass}
+        size={field.size}
+        attrs={field}
+      />
+    );
+  }
   if (calendar) {
     return (
       <CalendarDateField

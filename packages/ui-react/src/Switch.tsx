@@ -4,6 +4,8 @@ import { useNote, Words } from "./labelWords.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 import { useBlocked } from "./blocked.js";
+import { WaitingChoice } from "./fieldWait.js";
+import { type LoadingProps, useLoading } from "./skeleton.js";
 
 /**
  * The label's gap and text, the track, its thumb and the thumb's slide, by `size`. The track is a
@@ -200,9 +202,31 @@ function Labelled({
  * `aria-describedby`. `size` is `sm`, `md` (the default) or `lg`. `busy` is for the save in
  * flight: clicks and keys do nothing, and the switch keeps its colour and its focus.
  * `disabledReason` blocks it, focusable, with the reason as its tooltip. `disabled` is the native
- * one, washed out.
+ * one, washed out. While `loading` the label is drawn and the track is a bone of its size.
  */
 export function Switch({
+  loading,
+  loadingLabel,
+  ...props
+}: SwitchProps & LoadingProps): ReactElement {
+  if (useLoading(loading).loading) {
+    const size = props.size ?? "md";
+    return (
+      <WaitingChoice
+        own={loading}
+        loadingLabel={loadingLabel}
+        label={props.label}
+        look={cx("items-center", SIZE[size].label)}
+        shape={cx(SIZE[size].track, "rounded-full")}
+        attrs={props}
+      />
+    );
+  }
+  return <ShownSwitch {...props} />;
+}
+
+/** A switch with its track drawn. */
+function ShownSwitch({
   label,
   hint,
   error,

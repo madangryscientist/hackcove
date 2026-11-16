@@ -3,10 +3,18 @@ import {
   AvatarStack,
   Badge,
   Card,
+  Checkbox,
+  DateField,
+  Field,
+  FormRow,
+  FormRowField,
   Image,
+  Input,
   ListRow,
   MediaTile,
   ProgressBar,
+  Radio,
+  RadioGroup,
   SplitBar,
   StackedBar,
   Table,
@@ -23,6 +31,7 @@ import {
   Pill,
   SectionHeading,
   StatTile,
+  Switch,
   Text,
 } from "@hackcove/ui-react";
 
@@ -50,6 +59,7 @@ export function GalleryLoading() {
       </div>
       <Markdown loading md={undefined} />
       <GalleryLoadingCollections />
+      <GalleryLoadingForms />
     </>
   );
 }
@@ -113,5 +123,35 @@ function GalleryLoadingCollections() {
         ]}
       />
     </>
+  );
+}
+
+/** The form parts while they wait: labels drawn, controls bones. */
+function GalleryLoadingForms() {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      <div className="flex flex-col gap-4">
+        <Field label="Display name" loading>
+          <Input />
+        </Field>
+        <DateField label="Delivery date" loading />
+        <FormRow>
+          <FormRowField label="Street" htmlFor="gallery-loading-street" span={2} loading>
+            <Input id="gallery-loading-street" />
+          </FormRowField>
+          <FormRowField label="Code" htmlFor="gallery-loading-code" loading>
+            <Input id="gallery-loading-code" />
+          </FormRowField>
+        </FormRow>
+      </div>
+      <div className="flex flex-col gap-4">
+        <Checkbox label="Email me when a quote is accepted" loading />
+        <Switch label="Weekly summary" loading />
+        <RadioGroup label="Delivery" loading>
+          <Radio label="Friday" value="fri" />
+          <Radio label="Monday" value="mon" />
+        </RadioGroup>
+      </div>
+    </div>
   );
 }

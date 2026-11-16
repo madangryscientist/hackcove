@@ -89,3 +89,13 @@ export const HiddenLabel: S = {
     </div>
   ),
 };
+
+/** While `loading` the label is drawn and the control is a bone of its height. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <Field label="Display name" hint="Shown on your reviews." loading={loading}>
+      <Input defaultValue="Cove Hardware" />
+    </Field>
+  ),
+};

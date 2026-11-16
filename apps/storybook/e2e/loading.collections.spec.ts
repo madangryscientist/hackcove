@@ -2,7 +2,7 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 import { themeFiles } from "@hackcove/themes-shared/files";
 
 /**
- * The `Loading` story of each collection, picture and figure part, in the reference theme (the
+ * The `Loading` story of each collection, picture, figure and form part, in the reference theme (the
  * Gallery's Loading block covers the rest): while `loading` an owner is busy, its label is in the
  * accessibility tree and no data shows; flipping the arg lands the data, by role, and drops
  * `aria-busy`.
@@ -30,6 +30,13 @@ const stories: Record<string, (page: Page) => Locator> = {
   "data-stackedbar--loading": (page) => page.getByRole("img", { name: /^Screenshots by status/ }),
   "data-trendchart--loading": (page) =>
     page.getByRole("table", { name: "Tickets opened and closed per week" }),
+  "forms-field--loading": (page) => page.getByRole("textbox", { name: "Display name" }),
+  "forms-formrow--loading": (page) => page.getByRole("textbox", { name: "Street" }),
+  "forms-checkbox--loading": (page) =>
+    page.getByRole("checkbox", { name: "Email me when a quote is accepted" }),
+  "forms-switch--loading": (page) => page.getByRole("switch", { name: "Weekly summary" }),
+  "forms-radiogroup--loading": (page) => page.getByRole("radio", { name: "Friday" }),
+  "forms-datefield--loading": (page) => page.getByRole("group", { name: "Delivery date" }),
 };
 
 test("the themes folder has a reference theme", () => {
@@ -51,7 +58,7 @@ for (const [story, data] of Object.entries(stories)) {
     }
 
     await open(page, story, false);
-    await expect(data(page)).toBeAttached();
+    await expect(data(page).first()).toBeAttached();
     await expect(busy(page)).toHaveCount(0);
     await expect(page.locator("[data-skeleton]")).toHaveCount(0);
   });

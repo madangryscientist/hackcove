@@ -167,3 +167,18 @@ export const DontTwoColumns: S = {
     </FormGrid>
   ),
 };
+
+/** While `loading` each label is drawn and each control is a bone of its height. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <FormRow>
+      <FormRowField label="Street" htmlFor="loading-street" span={2} loading={loading}>
+        <Input id="loading-street" defaultValue="12 Harbour Road" />
+      </FormRowField>
+      <FormRowField label="Code" htmlFor="loading-code" loading={loading}>
+        <Input id="loading-code" defaultValue="7975" />
+      </FormRowField>
+    </FormRow>
+  ),
+};
