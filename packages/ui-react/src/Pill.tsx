@@ -188,6 +188,10 @@ type MainParts = {
   interactive: boolean;
   look: Look;
   rest: object;
+  /** The tooltip's wiring alone, for the text half of a removable plain pill. */
+  tip: object;
+  /** A plain pill with a title takes a tab stop, so it draws the focus ring. */
+  focusable: boolean;
   href: string | undefined;
   external: boolean;
   onClick: MouseEventHandler<HTMLButtonElement> | undefined;
@@ -195,10 +199,15 @@ type MainParts = {
 };
 
 /** The pill itself, or the text half of a removable one: a link, a button or a span. */
-function renderMain({ interactive, look, rest, href, external, onClick, body }: MainParts) {
-  const className = look.removable ? mainClass(look, interactive) : pillClass(look, interactive);
-  // A removable pill's attributes go on its link or button; on a plain one, the shell is the pill.
-  const own = look.removable && !interactive ? {} : rest;
+function renderMain(parts: MainParts) {
+  const { interactive, look, rest, tip, focusable, href, external, onClick, body } = parts;
+  const className = cx(
+    look.removable ? mainClass(look, interactive) : pillClass(look, interactive),
+    focusable && focusRing,
+  );
+  // A removable pill's attributes go on its link or button. On a plain one the shell is the pill
+  // and keeps them, and the text half takes only the tooltip, so the x's own events never open it.
+  const own = look.removable && !interactive ? tip : rest;
   if (href !== undefined) {
     return renderLink({ ...own, href, external, className, children: body });
   }
@@ -214,6 +223,35 @@ function renderMain({ interactive, look, rest, href, external, onClick, body }: 
       {body}
     </span>
   );
+}
+
+/** The keys the tooltip owns on its trigger, with the tab stop it needs. */
+const TIP_KEYS = new Set([
+  "title",
+  "aria-describedby",
+  "style",
+  "tabIndex",
+  "onPointerEnter",
+  "onPointerLeave",
+  "onPointerDown",
+  "onFocus",
+  "onBlur",
+  "onKeyDown",
+]);
+
+/**
+ * A removable plain pill's attributes, split: the tooltip's wiring goes on its text, so the x's own
+ * focus and hover never reach it, and the rest stays on the shell, once.
+ */
+function splitTip(attrs: Record<string, unknown>): {
+  wiring: Record<string, unknown>;
+  rest: Record<string, unknown>;
+} {
+  const entries = Object.entries(attrs);
+  return {
+    wiring: Object.fromEntries(entries.filter(([key]) => TIP_KEYS.has(key))),
+    rest: Object.fromEntries(entries.filter(([key]) => !TIP_KEYS.has(key))),
+  };
 }
 
 /** The shell round a removable pill: the text half and the x button beside it. */
@@ -297,14 +335,26 @@ export function Pill({
     <Tipped text={title} describes tap={!interactive} own={{ ...own, title }}>
       {(tip) => {
         const attrs = { ...own, ...tip, ...(focusable ? { tabIndex: 0 } : {}) };
-        const main = renderMain({ interactive, look, rest: attrs, href, external, onClick, body });
+        const { wiring, rest: shell } =
+          title === undefined ? { wiring: {}, rest: attrs } : splitTip(attrs);
+        const main = renderMain({
+          interactive,
+          look,
+          rest: attrs,
+          tip: wiring,
+          focusable,
+          href,
+          external,
+          onClick,
+          body,
+        });
         return onRemove === undefined ? (
           main
         ) : (
           <RemoveShell
             look={look}
             remove={{ onRemove, removeLabel }}
-            attrs={attrs}
+            attrs={shell}
             interactive={interactive}
           >
             {main}

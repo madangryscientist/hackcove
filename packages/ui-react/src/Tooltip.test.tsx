@@ -209,4 +209,19 @@ describe("tooltip, with anchor positioning", () => {
     expect(screen.getByRole("tooltip").textContent).toBe("Paid on 3 May");
     expect(focused ? description(focused) : "").toBe("Paid on 3 May");
   });
+
+  it("on a removable titled Pill, keeps the pill's tooltip and the x's apart", async () => {
+    render(
+      <Pill title="Paid on 3 May" onRemove={() => undefined} removeLabel="Remove">
+        Paid
+      </Pill>,
+    );
+    const u = user();
+    await u.tab();
+    expect(shown().map((tip) => tip.textContent)).toEqual(["Paid on 3 May"]);
+    await u.tab();
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Remove" }));
+    // The x's focus is its own: it does not open the pill's tooltip.
+    expect(shown().map((tip) => tip.textContent)).not.toContain("Paid on 3 May");
+  });
 });

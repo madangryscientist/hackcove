@@ -69,3 +69,14 @@ test("the arrow keys reach a Tabs option with a disabledReason, choose nothing a
   await expect(overview).toHaveAttribute("aria-selected", "false");
   await expect(page.getByRole("tab", { name: "Builds" })).toHaveAttribute("aria-selected", "true");
 });
+
+test("the Menu trigger shows its name on hover and hides it when pressed", async ({ page }) => {
+  await page.goto(story("actions-menu--closed"));
+  const trigger = page.getByRole("button", { name: "More actions" });
+  const tip = page.locator("[role=tooltip]", { hasText: "More actions" });
+  await trigger.hover();
+  await expect(tip).toBeVisible();
+  await trigger.click();
+  await expect(page.getByRole("menu")).toBeVisible();
+  await expect(tip).toBeHidden();
+});
