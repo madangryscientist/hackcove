@@ -9,7 +9,7 @@ import type { Size } from "./size.js";
 
 // The props of `ListRow`, one type per form: a button row, a link row and a static row.
 
-export type Shared = {
+type Shared = {
   /**
    * `sm` is dense padding, `lg` one step roomier than `md`. A `Button`, `IconButton` or `Pill` in a
    * `sm` row with no `size` of its own is `sm` too.
@@ -50,7 +50,7 @@ export type Shared = {
   children: ReactNode;
 };
 
-export type NotStatic = { actions?: undefined; revealOnHover?: undefined; panel?: undefined };
+type NotStatic = { actions?: undefined; revealOnHover?: undefined; panel?: undefined };
 
 export type ListRowButtonProps = Shared &
   NotStatic & {
