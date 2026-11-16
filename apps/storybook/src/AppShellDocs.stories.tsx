@@ -48,6 +48,24 @@ export const DoRouterBrand: S = {
   ),
 };
 
+/** A link written by hand round the logo and the label, navigating in its own click handler, is a wrapper per link with no brand focus ring. Set the router once on `LinkProvider` and give `AppShellBrand` its `href`. */
+export const DontRouterBrand: S = {
+  render: () => (
+    <a
+      href="#/"
+      onClick={(event) => {
+        event.preventDefault();
+        history.pushState(null, "", "#/");
+      }}
+    >
+      <Cluster gap="xs">
+        <Avatar name="Quotes" size="sm" />
+        <Text as="span">Quotes</Text>
+      </Cluster>
+    </a>
+  ),
+};
+
 /** A header control that only matters on a wide screen (who is signed in) goes in a `Show from="sm"`, with a `Cluster` inside to keep the avatar and the name together. Narrow the viewport to see it go. */
 export const DoHideBelow: S = {
   render: () => (

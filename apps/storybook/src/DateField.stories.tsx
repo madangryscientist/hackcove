@@ -212,9 +212,29 @@ export const DoValue: S = {
   },
 };
 
+/** A stored date written by hand from its parts drops the leading zeros (2026-10-6). `toISODate` writes the one `YYYY-MM-DD` form. */
+export const DontValue: S = {
+  render: () => {
+    const [paid, setPaid] = useState(fromISODate("2026-10-06"));
+    return (
+      <Stack gap="xs">
+        <DateField calendar label="Paid on" value={paid} onChange={setPaid} />
+        <Caption>
+          Stored as {paid ? `${paid.year}-${paid.month}-${paid.day}` : "nothing yet"}.
+        </Caption>
+      </Stack>
+    );
+  },
+};
+
 /** `DateField` without `calendar` is the same input with no calendar button, for a date the person knows by heart. */
 export const DoTypedOnly: S = {
   render: () => <DateField label="Date of birth" hint="DD/MM/YYYY" />,
+};
+
+/** A calendar for a date the person knows by heart makes them page back decades. A birthday is typed: leave `calendar` out. */
+export const DontTypedOnly: S = {
+  render: () => <DateField calendar label="Date of birth" hint="DD/MM/YYYY" />,
 };
 
 /** `sm`, `md` (the default) and `lg`, with the calendar and without. */

@@ -3,7 +3,7 @@ import { highlight, type CodeLanguage, type TokenKind } from "./highlight.js";
 
 /**
  * Each kind borrows a colour family already in `palette.json`, so a theme recolours code like
- * anything else: keywords and element names read as the accent (violet), strings as positive
+ * anything else: keywords and element names read as the accent, strings as positive
  * (emerald), numbers as warn (amber), attribute names as sky, calls as info (blue), comments muted.
  * The `$ ` prompt of a console block is dimmer still and `select-none`, so selecting a command by
  * hand does not pick it up.

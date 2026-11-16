@@ -173,6 +173,23 @@ export const DoAuto: S = {
   ),
 };
 
+/** A fixed `columns={4}` for a count that varies leaves the row part empty when there are three. When the count varies, use `columns="auto"`. */
+export const DontAuto: S = {
+  render: () => (
+    <CardGrid columns={4} align="start">
+      <Card title="Dashboard">
+        <Text>Quotes and renewals this week.</Text>
+      </Card>
+      <Card title="Billing">
+        <Text>Invoices and payments.</Text>
+      </Card>
+      <Card title="Members">
+        <Text>Who can sign in.</Text>
+      </Card>
+    </CardGrid>
+  ),
+};
+
 /** While `loading` it owns the wait, and every part inside waits with it. */
 export const Loading: StoryObj<{ loading: boolean }> = {
   args: { loading: true },

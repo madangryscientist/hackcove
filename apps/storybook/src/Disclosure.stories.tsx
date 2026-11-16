@@ -77,6 +77,19 @@ export const DoSecondary: S = {
   ),
 };
 
+/** A hand-built `<details>` and `<summary>` has none of the library's look or focus ring. `Disclosure` replaces it. */
+export const DontSecondary: S = {
+  render: () => (
+    <Stack gap="xs">
+      <Text>Order 1042 was posted on Monday.</Text>
+      <details>
+        <summary>Tracking history</summary>
+        <Text>Posted Monday · Sorted Tuesday · Out for delivery Wednesday.</Text>
+      </details>
+    </Stack>
+  ),
+};
+
 /** What the person must read to carry on, such as an error, is in view: a `Callout`, not a `Disclosure`. */
 export const DoEssential: S = {
   render: () => (

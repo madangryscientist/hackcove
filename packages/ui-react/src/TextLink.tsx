@@ -23,6 +23,7 @@ const toneClass = (tone: Exclude<TextTone, "neutral">): string =>
  */
 export const linkStretchClass = "link-stretch after:absolute after:inset-0";
 
+/** A TextLink's pinned type size, on the `Size` scale; left out, it takes the size of the text around it. */
 export type TextLinkSize = Size;
 
 const SIZE: Record<TextLinkSize, string> = {

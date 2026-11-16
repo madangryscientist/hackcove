@@ -10,6 +10,11 @@ export const data: ComponentSection = {
       name: "Table",
       summary: "A list of records in a bordered card, one row per record.",
       whenToUse: "Records that share columns, where a person compares values down a column.",
+      siblings: [
+        { slug: "key-value-list", when: "One record's fields, each label beside its value." },
+        { slug: "list-row", when: "Each record is a thing to open, with a line or two of detail." },
+        { slug: "meta-list", when: "A few short facts inline, on one line under a title." },
+      ],
       pairs: [
         "TableRecords/Records",
         "TableRecords/Totals",
@@ -75,6 +80,7 @@ export const data: ComponentSection = {
         "TableGroupRow",
         "TableExpandCell",
       ],
+      types: ["CellTone", "RowTone", "TableSort"],
     },
     {
       slug: "list-row",
@@ -82,6 +88,11 @@ export const data: ComponentSection = {
       summary: "A full-width row in a list: a label, content before it and a value at the far end.",
       whenToUse:
         "A short list where each row opens something, toggles a section or holds its own buttons.",
+      siblings: [
+        { slug: "table", when: "The records are read and compared across columns." },
+        { slug: "key-value-list", when: "One record's fields, each label beside its value." },
+        { slug: "meta-list", when: "A few facts inline on one line, not rows to open." },
+      ],
       pairs: ["ListRow/List", "ListRow/RowActions", "ListRowReason/DisabledReason"],
       stories: ["ListRowPanel", "LinkedControls"],
       usage: {
@@ -89,7 +100,7 @@ export const data: ComponentSection = {
           "Put the rows in a `Card flush` and set `divided` on every row after the first. `trailing` is a value, a count or a `Pill`; `leading` is an `Avatar` or an icon.",
           "A row with `onClick` is a button; with `href` it is a link. `external` opens a link in a new tab.",
           "`expanded` makes the row the header of a collapsible section: you own the state and the section, and pass `aria-controls` to name it.",
-          "`selected` marks the one row whose detail is open; set it on a single row of a list. `focused` marks the row the keyboard cursor is on in a list you move through yourself: an inset violet ring, apart from `selected`'s fill.",
+          "`selected` marks the one row whose detail is open; set it on a single row of a list. `focused` marks the row the keyboard cursor is on in a list you move through yourself: an inset accent ring, apart from `selected`'s fill.",
           '`leadingWidth="thumbnail"` gives `leading` a fixed width that sizes an image to it, for a row that shows a screenshot. The label may hold block content, such as a title over a caption.',
           'A button row (`onClick`) or a link row (`href`) can hold its own link or button in `trailing`: it sits above the row\'s button or link and takes its own click, with no class from you, so a row that selects can still carry a "View" link to its page. A row with no `href` and no `onClick` has no action of its own: its buttons go in `actions`, after `trailing`. `revealOnHover` shows them only on hover or focus, so a long list is not a wall of buttons.',
           'A row\'s own link or button goes in `trailing`, never in the label. `size="sm"` is the dense padding for a list that must fit more rows, `size="lg"` the roomy one for a short list of big targets; `md` is the default.',
@@ -98,6 +109,7 @@ export const data: ComponentSection = {
           "A row that opens in place, such as a chat that shows its conversation under it, is a row with no action and a `panel`: the content sits under the row's line, starting where the label does (past `leading`), and the row's `divided` line, fill and `revealOnHover` cover it. A button or link row takes no `panel`.",
           "A button row that cannot act yet takes a `disabledReason` that says why.",
           "Records with several columns to compare are a `Table`, not rows.",
+          "`secondary` is a second, muted line under the label: a date or a note.",
         ],
         dont: ["Do not add your own indent or a wrapper around the row."],
       },
@@ -140,6 +152,7 @@ export const data: ComponentSection = {
         'Section headings are row headers with the section\'s title, and the "Drop here" row cannot be focused or dragged.',
       ],
       api: ["SortableList", "SortableSection", "SortableItem"],
+      types: ["SortableMove"],
     },
     {
       slug: "stat-tile",
@@ -162,6 +175,7 @@ export const data: ComponentSection = {
         "Colour alone never carries the tone; a sign or the hint says it.",
       ],
       api: ["StatTile"],
+      types: ["StatTileTone"],
     },
     {
       slug: "progress-bar",
@@ -184,6 +198,7 @@ export const data: ComponentSection = {
         "The bar draws no text, so the words beside it carry the figures for everyone.",
       ],
       api: ["ProgressBar"],
+      types: ["BarSize", "BarTone"],
     },
     {
       slug: "split-bar",
@@ -228,6 +243,7 @@ export const data: ComponentSection = {
         "A `Legend` is a list. Its swatches are hidden from assistive tech and its labels are always drawn, so colour is never the only signal.",
       ],
       api: ["StackedBar", "Legend"],
+      types: ["LegendItem", "StackedSegment", "VizTone"],
     },
     {
       slug: "trend-chart",
@@ -252,6 +268,7 @@ export const data: ComponentSection = {
         "Two series are named by a `Legend`, so colour is never the only way to tell them apart.",
       ],
       api: ["TrendChart"],
+      types: ["TrendSeries"],
     },
   ],
 };

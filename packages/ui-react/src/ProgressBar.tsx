@@ -78,11 +78,14 @@ export function ProgressBar({
 }: {
   /** How far along, held between 0 and `max`. */
   value: number;
-  /** Defaults to 100. */
+  /** The value that fills the bar; `value` is drawn as its share of this. Defaults to 100. */
   max?: number;
   /** What the bar measures, for a screen reader, which also hears the percentage. */
   label: string;
-  /** Defaults to "accent". */
+  /**
+   * What the progress means: `accent` (the default) plain progress, `positive` done or on track,
+   * `warn` at risk, `danger` over a limit or failed.
+   */
   tone?: BarTone;
   /**
    * The bar's height: `sm` 6px, `md` 8px, `lg` 12px.

@@ -150,8 +150,9 @@ export function Offline({
 }
 
 /**
- * The site is down on purpose and will be back. It has no "Back to home": home is the site that
- * is down.
+ * The site is down on purpose and will be back: the page for planned downtime, such as an upgrade.
+ * A failure is an `ErrorPage`, and no connection is `Offline`. It has no "Back to home": home is
+ * the site that is down.
  */
 export function Maintenance(props: StatusPageProps): ReactElement {
   return (
@@ -166,7 +167,10 @@ export function Maintenance(props: StatusPageProps): ReactElement {
   );
 }
 
-/** 403: signed in, or not, but not allowed here. */
+/**
+ * 403: signed in, or not, but not allowed here. The page for a route that exists and the reader may
+ * not see; a route that is not there is a `NotFound`.
+ */
 export function Forbidden(props: StatusPageProps): ReactElement {
   return (
     <StatusPage

@@ -79,6 +79,11 @@ export const DoNoEvents: S = {
   render: () => <Timeline label="Status history" empty={<EmptyState title="No history yet." />} />,
 };
 
+/** A Timeline with no items and no `empty` draws nothing, so the reader cannot tell an empty history from a missing one. Give it an `empty`. */
+export const DontNoEvents: S = {
+  render: () => <Timeline label="Status history" />,
+};
+
 /** While `loading`, a timeline with no items is three items of bones, never its empty state. */
 export const Loading: StoryObj<{ loading: boolean }> = {
   args: { loading: true },

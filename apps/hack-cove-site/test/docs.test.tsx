@@ -122,7 +122,7 @@ describe("the component pages", () => {
   });
 
   test("a Do story with no Dont is the only card and a missing story fails the build", () => {
-    expect(pairOf("Tabs/SwitchView").dont).toBeUndefined();
+    expect(pairOf("ListRow/RowActions").dont).toBeUndefined();
     expect(() =>
       renderToStaticMarkup(
         <ComponentPage page={{ ...componentPageOf("button"), pairs: ["Button/Nope"] }} />,
@@ -139,30 +139,29 @@ describe("the component pages", () => {
       })
       .toSorted();
     expect(oneHalf).toEqual(Object.keys(ONE_HALF).toSorted());
+    // A topic's other half teaches something unless the types refuse the wrong way outright.
+    for (const reason of Object.values(ONE_HALF)) {
+      expect(reason).toMatch(/^The wrong way does not compile/);
+    }
   });
+
+  test.each(componentPages)(
+    "$name: the first pair, the one right way, has a Do and a Dont",
+    (page) => {
+      const { do: right, dont: wrong } = pairOf(page.pairs[0] ?? "");
+      expect(right, `${page.pairs[0]} has no Do story`).toBeDefined();
+      expect(wrong, `${page.pairs[0]} has no Dont story`).toBeDefined();
+    },
+  );
 });
 
 /**
- * The Do/Don't topics that show one half, and why. A topic gets its other half when a
- * counter-example teaches something; a feature shown on its own, or a wrong way the types already
- * refuse, does not.
+ * The Do/Don't topics that show one half, and why. Every topic has both halves unless the types
+ * already refuse its wrong way, so the reason always says that.
  */
 const ONE_HALF: Record<string, string> = {
-  "AppShellDocs/RouterBrand": "A feature: `AppShellBrand` with the router's own link.",
-  "CardGrid/Auto": 'A feature: `columns="auto"`.',
-  "Divider/Footer": "A feature: the one hairline between content and its footer.",
-  "Tabs/SwitchView":
-    "Its wrong ways are the other Tabs topics; this one shows the panel under the row.",
-  "Checkbox/Row": "A feature: `ButtonGroup` spaces a row of checkboxes and buttons.",
-  "DateField/TypedOnly": "A feature: `DateField` without `calendar` is typed only.",
-  "DateField/Value": "A feature: the `CalendarDate` value and the ISO helpers.",
-  "Disclosure/Secondary":
-    "Its wrong way is `Disclosure/Essential`'s Don't: hiding what must be read.",
-  "KeyValueList/AlignStart": "A feature: the `align` prop.",
   "ListRow/RowActions": "The wrong way does not compile: a button or link row takes no `actions`.",
   "Switch/Row": "The wrong way does not compile: a `Switch` takes a `label` or an `aria-label`.",
-  "TextLink/Stretch": "A feature: the `stretch` prop.",
-  "Timeline/NoEvents": "A feature: the `empty` prop.",
 };
 
 const story = (render: string) =>
@@ -323,7 +322,10 @@ describe("/ui/llms.txt", () => {
 
   test("has no extension recipe or styling escape hatch", () => {
     expect(text).toContain("do not restyle a component");
-    expect(text).not.toMatch(/\bclassName\b/);
+    // Two classNames are not a way in: the library's own class, handed to the app's router link to
+    // spread, and the scheme class the app puts on its own `<html>`.
+    const rest = text.replace(/^- LinkAdapterProps: .*$/m, "").replaceAll("<html className=", "");
+    expect(rest).not.toMatch(/\bclassName\b/);
     expect(site.ui.intro.join(" ")).toContain("strict on purpose");
   });
 });

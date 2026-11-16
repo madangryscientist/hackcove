@@ -182,3 +182,17 @@ export const DoStretch: S = {
     </Card>
   ),
 };
+
+/** Two stretched links in one card both claim the whole card, so a click lands on whichever is last. Stretch the one link; the other sits above it. */
+export const DontStretch: S = {
+  render: () => (
+    <Card title="Quote 12">
+      <TextLink href="#quote-12" stretch>
+        Open the quote
+      </TextLink>
+      <TextLink href="#client-4" stretch>
+        Open the client
+      </TextLink>
+    </Card>
+  ),
+};

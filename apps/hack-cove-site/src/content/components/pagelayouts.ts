@@ -65,6 +65,20 @@ export const pagelayouts: ComponentSection = {
       name: "FormLayout",
       summary: "A page that is one form: header, fields, then the actions.",
       whenToUse: "Creating or editing a record on a page of its own.",
+      siblings: [
+        {
+          slug: "form-row",
+          when: "Fields sit side by side inside the form: a `FormGrid`, or a `FormRow` to edit one record on a line.",
+        },
+        {
+          slug: "stack",
+          when: 'The form sits in a `Card` on a page that is not the form: `Stack as="form"`.',
+        },
+        {
+          slug: "field-dialog",
+          when: "One text value is asked for over the page, such as a new name.",
+        },
+      ],
       pairs: ["FormLayout/Form"],
       fullPage: "FormLayout/FullPage",
       usage: {
@@ -167,6 +181,7 @@ export const pagelayouts: ComponentSection = {
         'Previous and next are one `<nav>` named from `previousLabel` and `nextLabel`; each link\'s name is the word and the page ("Previous: Install").',
       ],
       api: ["DocsLayout"],
+      types: ["DocsHeading", "DocsNavGroup", "DocsNeighbour"],
     },
     {
       slug: "full-bleed-layout",
@@ -206,6 +221,7 @@ export const pagelayouts: ComponentSection = {
           "It is the one layout that does not share the left edge: it is centred, at a fixed offset from the top.",
           "A form inside the app is `FormLayout`, not this.",
           "The ready-made status pages (not found, forbidden, offline, error, maintenance) are already built on it.",
+          "`mark` is drawn first in the card, above the title: a large status numeral, as the status pages draw. It is not a heading.",
         ],
       },
       accessibility: [

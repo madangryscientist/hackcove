@@ -131,6 +131,24 @@ describe("slopRules: no em or en dash, in any file", () => {
   });
 });
 
+describe("slopRules: docs prose calls the purple the accent", () => {
+  const word = w("vio", "let");
+  const hit = (path: string) => `${path}:1: "${word}" in prose; the palette calls it accent`;
+
+  it("fails the word in the site's component docs and in a README", () => {
+    const page = "src/content/components/card.ts";
+    expect(slopRules(page, `"outlines it in ${word}"`, "hack-cove-site")).toEqual([hit(page)]);
+    expect(slopRules("README.md", `a ${word} fill`, "x")).toEqual([hit("README.md")]);
+  });
+
+  it("passes it as a value in backticks, in a utility, and in a component file", () => {
+    const page = "src/content/components/card.ts";
+    expect(slopRules(page, `"the \`${word}\` tone"`, "hack-cove-site")).toEqual([]);
+    expect(slopRules("README.md", `\`bg-${word}-600\` is remapped`, "x")).toEqual([]);
+    expect(slopRules("src/Card.tsx", `// a ${word} ring`, ui)).toEqual([]);
+  });
+});
+
 describe("slopRules: a component uses only the palette's colour utilities", () => {
   const palette = new Set(["bg-white", "text-slate-900", "hover:bg-slate-50"]);
 

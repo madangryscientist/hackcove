@@ -9,6 +9,7 @@ import type { Passthrough, Unstyled } from "./props.js";
 import { useStackGap } from "./stackGap.js";
 import { EmptySlot, hasNoChildren } from "./emptySlot.js";
 
+/** The space between a `Stack`'s blocks, on the gap scale: `xs` 8px, `sm` 16px, `md` 24px, `lg` 32px, `xl` 48px (64px from `sm`). */
 export type StackGap = "xs" | "sm" | "md" | "lg" | "xl";
 
 export const STACK_GAP: Record<StackGap, string> = {
@@ -19,6 +20,7 @@ export const STACK_GAP: Record<StackGap, string> = {
   xl: "gap-12 sm:gap-16",
 };
 
+/** The breakpoint from which a `Stack` turns from a column into a row: `sm`, `md` or `lg`. */
 export type StackRowFrom = "sm" | "md" | "lg";
 
 /** The breakpoint where a `rowFrom` Stack turns from a column into a row. */
@@ -28,6 +30,7 @@ export const STACK_ROW_FROM: Record<StackRowFrom, string> = {
   lg: "lg:flex-row",
 };
 
+/** A `Stack`'s width cap at the start edge: `compact`, `narrow` (a reading measure), `default`, `wide` or `full`. */
 export type StackWidth = "compact" | "narrow" | "default" | "wide" | "full";
 
 /** `default` adds nothing: the Stack is as wide as its parent. */
@@ -145,7 +148,10 @@ type StackSpaced = {
    * @default xs inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow`, else md
    */
   gap?: StackGap | undefined;
-  /** A line between each pair of children, which then touch (no gap). */
+  /**
+   * A line between each pair of children, which then touch (no gap): rows that carry their own
+   * padding. Space and a line between blocks is a `Divider` in the Stack instead.
+   */
   divided?: false | undefined;
   /**
    * Turns the column into a row from this breakpoint (`sm`, `md` or `lg`), a column below it: a main

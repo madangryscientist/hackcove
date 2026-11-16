@@ -3,11 +3,16 @@
  * made from the same sources as the pages (`content/components/`, the stories and
  * `generated/props.json`), so the two cannot drift.
  */
-import { componentPages, sectionOfPage, type ComponentPage } from "../content/components/index.js";
+import {
+  componentPageOf,
+  componentPages,
+  sectionOfPage,
+  type ComponentPage,
+} from "../content/components/index.js";
 import { site } from "../content/site.js";
 import { themes } from "../content/themes.js";
 import { pairOf } from "./pairs.js";
-import { docOf } from "./Props.js";
+import { docOf, typeOf } from "./Props.js";
 import { findStory } from "./stories.js";
 
 const fence = (code: string) => `\`\`\`tsx\n${code}\n\`\`\``;
@@ -38,10 +43,21 @@ function dontsOf(page: ComponentPage): string {
 function propsOf(name: string): string {
   const { description, props } = docOf(name);
   const lines = props.map((prop) => {
-    const flags = `${prop.required ? " (required)" : ""}${prop.default === undefined ? "" : ` (default ${prop.default})`}`;
+    const flags = `${prop.required ? " (required)" : ""}${prop.native ? " (native)" : ""}${prop.default === undefined ? "" : ` (default ${prop.default})`}`;
     return `- ${prop.name}: ${prop.type}${flags}${prop.description === "" ? "" : `. ${prop.description}`}`;
   });
   return [`### ${name}`, description.replace(/\s*\n\s*/g, " "), ...lines].join("\n");
+}
+
+/** One type: its name, its definition and what it is. */
+function typeLine(name: string): string {
+  const { description, definition } = typeOf(name);
+  return `- ${name}: \`${definition}\`. ${description.replace(/\s*\n\s*/g, " ")}`;
+}
+
+function typesOf(page: ComponentPage): string[] {
+  const { types = [] } = page;
+  return types.length === 0 ? [] : [`### Types\n${types.map(typeLine).join("\n")}`];
 }
 
 function functionsOf(page: ComponentPage): string[] {
@@ -49,7 +65,7 @@ function functionsOf(page: ComponentPage): string[] {
   return functions.length === 0
     ? []
     : [
-        `### Functions\n${functions.map((fn) => `- ${fn.name}: \`${docOf(fn.name).signature ?? fn.name}\`. ${fn.text}`).join("\n")}`,
+        `### Functions\n${functions.map((fn) => `- ${fn.name}: \`${docOf(fn.name).signature ?? fn.name}\`. ${fn.text}${fn.example === undefined ? "" : `\n${fence(fn.example)}`}`).join("\n")}`,
       ];
 }
 
@@ -60,6 +76,16 @@ function fullPageOf(page: ComponentPage): string[] {
   return [`### Full page\n${captioned(story)}`];
 }
 
+/** The "Use instead" list: each sibling page with when to use it instead of this one. */
+function siblingsOf(page: ComponentPage): string[] {
+  const { siblings = [] } = page;
+  return siblings.length === 0
+    ? []
+    : [
+        `### Use instead\n${siblings.map(({ slug, when }) => `- ${componentPageOf(slug).name} (/ui/${slug}/): ${when}`).join("\n")}`,
+      ];
+}
+
 function sectionOf(page: ComponentPage): string {
   const [lead] = page.pairs;
   const right = lead === undefined ? undefined : pairOf(lead).do;
@@ -68,12 +94,14 @@ function sectionOf(page: ComponentPage): string {
     `## ${page.name}`,
     `Group: ${sectionOfPage(page.slug).title}`,
     `When to use: ${page.whenToUse}`,
+    ...siblingsOf(page),
     `### The one right way\n${captioned(right)}`,
     ...fullPageOf(page),
     `### Do\n${bullets(page.usage.do)}`,
     `### Don't\n${dontSectionOf(page)}`,
     `### Accessibility\n${bullets(page.accessibility)}`,
     `### Props\n${page.api.map(propsOf).join("\n\n")}`,
+    ...typesOf(page),
     ...functionsOf(page),
   ].join("\n\n");
 }

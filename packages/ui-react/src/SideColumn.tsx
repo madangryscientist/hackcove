@@ -6,6 +6,7 @@ import { useScrollEdges } from "./scrollEdges.js";
 import { scrollStopProps, useScrollStop } from "./scrollStop.js";
 import { STICKY_ASIDE_LG, STICKY_FADE_LG, STICKY_SCROLL_LG } from "./stickyColumn.js";
 
+/** How wide a `SideColumn`'s aside is from `lg`: `sm` 18rem, `md` 24rem, or `third` a third of the row. */
 export type SideColumnWidth = "sm" | "md" | "third";
 
 /**

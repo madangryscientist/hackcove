@@ -20,8 +20,9 @@ export const text: ComponentSection = {
           "Name what is inside a part with `SubsectionHeading`: `size` `sm` is a form-group caption, `md` (default) a card title in a header bar, `lg` a drawer title. `truncate` cuts one that is too long for its column to a single line.",
           "Put a `Lead` under a `Display`, and a `Text` under any other heading. `Dialog` and `Drawer` draw their own title from their `title`.",
           "Pick the heading for its place in the outline, never for its size. `Display` is not a big `SectionHeading`.",
-          "`color` takes `default`, `secondary`, `tertiary`, `muted` or `brand` for the hierarchy of the text. A heading's meaning is carried by its words, not a colour.",
+          "Each heading has its own fixed ink and takes no colour. A heading's meaning is carried by its words, not a colour.",
           "`as` changes the element, only to keep the outline in order, and never the look.",
+          "`description` on a `SectionHeading` is a muted line under it that says more; it is not part of the heading's name.",
         ],
       },
       accessibility: [
@@ -31,6 +32,7 @@ export const text: ComponentSection = {
         "`Dialog` and `Drawer` draw their title as a `SectionHeading` and name themselves by it; an `EmptyState` does the same.",
       ],
       api: ["Display", "PageHeading", "SectionHeading", "SubsectionHeading"],
+      types: ["SubsectionHeadingSize"],
     },
     {
       slug: "prose",
@@ -80,7 +82,7 @@ export const text: ComponentSection = {
           'Emphasise a run with `Text strong` inside the `Text`: font-medium in the primary ink. Use `Caption` for fine print and metadata, `Caption as="span"` inside a row.',
           "Put a `Text` under a heading and `Lead` under a `Display`. `Overline` is the small all-caps label above a group, not a title.",
           "A Card, a table or a list with nothing in it yet takes an `EmptyState` in its `empty` slot, which draws it as one muted line there; a muted `Text` is not an empty state.",
-          "`tone` says what a run means: `positive`, `warn`, `danger`, `info` or `muted`. It beats `color`, and the words still say it, so colour is never the only signal. `color` is only the hierarchy of the text.",
+          "`tone` is the one ink prop: `neutral`, the default, the role's own ink; `muted` and `accent` for the hierarchy of the text; and `positive`, `warn`, `danger` or `info` for what a run means. The words still say it, so colour is never the only signal.",
           '`numeric` sets tabular figures so a column of amounts lines up and `mono` the monospace face for an id or a path. `lines` (1 to 4) on `Text` or `Caption` shows at most that many lines and ends in an ellipsis: `lines={1}` cuts a run where its box ends, `lines={3}` clamps a long description. A "Show all" is your own state: `lines={open ? undefined : 3}` beside a `Button`.',
           '`align` sets a run at `start`, `center` or `end` of its block, for a table header or a right-hand column. `minWidth="amount"` on `Text` fixes a width and right-aligns a money figure in it, so a column of amounts lines up.',
           "`italic` on `Text` or `Caption` sets a muted hint or a caption in italic. `breakWords` breaks a long unbroken string, such as a URL or a token, at the edge of its box.",
@@ -97,6 +99,7 @@ export const text: ComponentSection = {
         "A `tone` changes only the colour. The wording has to carry the meaning.",
       ],
       api: ["Text", "Caption", "Overline", "Lead"],
+      types: ["TextAlign", "TextLines", "TextMinWidth", "TextTone"],
     },
     {
       slug: "code",
@@ -104,6 +107,13 @@ export const text: ComponentSection = {
       summary: "Inline code in a sentence, and a block of code to read or copy.",
       whenToUse:
         "A command, name or path inside a sentence is `Code`; several lines of code are a `CodeBlock`.",
+      siblings: [
+        {
+          slug: "copy-button",
+          when: "Neither a `CopyLine` nor `copy` on a `CodeBlock` or `CodeExample` fits.",
+        },
+        { slug: "copy-line", when: "The text to copy is one line, such as an install command." },
+      ],
       pairs: ["Code/Inline", "CodeBlock/Snippet"],
       usage: {
         do: [
@@ -123,6 +133,7 @@ export const text: ComponentSection = {
         "`CodeBlock` takes `aria-*` and `data-*` on its figure.",
       ],
       api: ["Code", "CodeBlock"],
+      types: ["CodeLanguage"],
     },
     {
       slug: "code-example",
@@ -190,7 +201,11 @@ export const text: ComponentSection = {
       slug: "text-link",
       name: "TextLink",
       summary: "A link in the accent colour, inside a sentence or on its own.",
-      whenToUse: "A link that sits in text. A link that is an action is a `Button` with `href`.",
+      whenToUse:
+        "A link that sits in text. A link that must look like a button is a `Button` with `href`.",
+      siblings: [
+        { slug: "button", when: "The link must look like a button: a `Button` with `href`." },
+      ],
       pairs: ["TextLink/InSentence", "TextLink/External", "TextLink/Router", "TextLink/Stretch"],
       usage: {
         do: [
@@ -216,6 +231,7 @@ export const text: ComponentSection = {
         "Every anchor prop (`aria-*`, `download`, `title`, a handler) goes on the `<a>`; the app's `LinkProvider` adapter receives them as well.",
       ],
       api: ["TextLink", "LinkProvider"],
+      types: ["LinkAdapter", "LinkAdapterProps", "TextLinkSize"],
     },
     {
       slug: "bullet-list",
@@ -223,6 +239,10 @@ export const text: ComponentSection = {
       summary:
         "A bulleted list with the discs, indent and gap built in; each item is a `BulletItem`.",
       whenToUse: "Items that read as a list of points: what changed, what to bring.",
+      siblings: [
+        { slug: "steps", when: "The items are a sequence the reader follows in order." },
+        { slug: "timeline", when: "The items are a history, each with when it happened." },
+      ],
       pairs: ["BulletList/Items"],
       usage: {
         do: [
@@ -244,6 +264,14 @@ export const text: ComponentSection = {
       summary: "A wrapping row of facts or links in muted small text, joined by a dot.",
       whenToUse:
         "The facts about a record under its title (branch, SHA, date), or a footer's row of links (Privacy, Terms, Contact).",
+      siblings: [
+        { slug: "table", when: "Many records with the same columns, to read across and compare." },
+        {
+          slug: "key-value-list",
+          when: "One record's fields, one per line, each label beside its value.",
+        },
+        { slug: "list-row", when: "Each item is a thing to open, on a row of its own." },
+      ],
       pairs: ["MetaList/Facts", "MetaList/Footer"],
       usage: {
         do: [
@@ -264,6 +292,7 @@ export const text: ComponentSection = {
         "`aria-*` and `data-*` go on the list.",
       ],
       api: ["MetaList"],
+      types: ["MetaListSeparator"],
     },
   ],
 };

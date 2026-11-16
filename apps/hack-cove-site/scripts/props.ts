@@ -1,7 +1,4 @@
-/** Writes `src/generated/props.json`. Run by the `props` moon task before build, typecheck, lint and test. */
-import { mkdirSync, writeFileSync } from "node:fs";
-import { dirname } from "node:path";
-import { generateProps, PROPS_JSON } from "./generate-props.js";
+/** Writes `src/generated/props.json` and `types.json`. Run by the `props` moon task before build, typecheck, lint and test. */
+import { writeProps } from "./generate-props.js";
 
-mkdirSync(dirname(PROPS_JSON), { recursive: true });
-writeFileSync(PROPS_JSON, `${JSON.stringify(generateProps(), null, 2)}\n`);
+writeProps();

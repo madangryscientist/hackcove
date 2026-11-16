@@ -83,6 +83,11 @@ export const DoRow: S = {
   render: () => <Checkbox size="sm" aria-label="Select row" />,
 };
 
+/** Words beside a box in a table cell crowd the row and repeat the row's own name. Leave the `label` out and name the box with `aria-label`. */
+export const DontRow: S = {
+  render: () => <Checkbox label="Select row" />,
+};
+
 /** A ticked box inside a Card or a table row draws its tick above the lifted field, not under it. */
 export const InCard: S = {
   render: () => (

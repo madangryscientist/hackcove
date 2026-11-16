@@ -56,11 +56,19 @@ export type FieldProps = {
   disabled?: boolean | undefined;
   /** Marks a date required: the field is `aria-required`, and an empty one is invalid. */
   required?: boolean | undefined;
-} & Passthrough &
-  Pick<
-    AriaDateFieldProps<CalendarDate>,
-    "value" | "defaultValue" | "onChange" | "minValue" | "maxValue" | "name"
-  >;
+  /** The date shown, controlled, with `onChange`; `null` is an empty field. */
+  value?: AriaDateFieldProps<CalendarDate>["value"];
+  /** The date it starts with, uncontrolled. */
+  defaultValue?: AriaDateFieldProps<CalendarDate>["defaultValue"];
+  /** Called with the new date, or `null` when the field is cleared or the date is incomplete. */
+  onChange?: AriaDateFieldProps<CalendarDate>["onChange"];
+  /** The earliest date allowed: an earlier one marks the field invalid with its own message. */
+  minValue?: AriaDateFieldProps<CalendarDate>["minValue"];
+  /** The latest date allowed: a later one marks the field invalid with its own message. */
+  maxValue?: AriaDateFieldProps<CalendarDate>["maxValue"];
+  /** Posts the date in a form as `YYYY-MM-DD` under this key, or an empty string. */
+  name?: AriaDateFieldProps<CalendarDate>["name"];
+} & Passthrough;
 
 /** The calendar's dropdown names, with their English defaults. */
 type CalendarNames = {

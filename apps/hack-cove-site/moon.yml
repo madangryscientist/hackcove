@@ -29,7 +29,7 @@ tasks:
       - "scripts/**/*"
       - "/packages/ui-react/src/**/*"
       - "/packages/ui-react/tsconfig*.json"
-    outputs: ["src/generated/props.json"]
+    outputs: ["src/generated/props.json", "src/generated/types.json"]
     options:
       cache: false
   build:

@@ -10,6 +10,13 @@ export const actions: ComponentSection = {
       name: "Button",
       summary: "The action a person takes on a view.",
       whenToUse: "An action that changes something in place: save, cancel, delete, retry.",
+      siblings: [
+        {
+          slug: "fieldset",
+          when: "Toggles that filter a list: a `Fieldset` round a `ButtonGroup` of pressed `Button`s, one per facet.",
+        },
+        { slug: "text-link", when: "The link is a destination in running text." },
+      ],
       pairs: [
         "Button/OnePrimary",
         "Button/DisabledReason",
@@ -28,6 +35,7 @@ export const actions: ComponentSection = {
           '`pressed` makes a toggle. `busy` disables it while the work is in flight, and `busy="Saving"` also shows that label: one prop, `busy={saving && "Saving"}`.',
           '`count` puts a number chip after the label, for how many are behind the button (the splits of a row, the comments on a thread): `<Button variant="ghost" size="sm" count={3}>Splits</Button>`. A button that opens something also takes `aria-expanded`, and `aria-controls` for what it opens; the caller owns that state.',
           "An icon-only action is an `IconButton`, not a Button holding a glyph.",
+          '`variant="link"` is only for a `<button>`, an action, that sits in running text. A destination in text is a `TextLink`, and one that must look like a button is a `Button` with `href`.',
         ],
       },
       accessibility: [
@@ -38,6 +46,7 @@ export const actions: ComponentSection = {
         "The `count` chip is part of the button's name: `Splits, 3` (a `count` of 0 is shown as `Splits, 0`). Pass `aria-expanded` on a button that opens something, so a screen reader hears whether it is open.",
       ],
       api: ["Button", "ButtonGroup"],
+      types: ["ButtonSize", "ButtonTone", "ButtonVariant", "Size"],
     },
     {
       slug: "icon-button",
@@ -70,6 +79,7 @@ export const actions: ComponentSection = {
         "It has the component's focus ring.",
       ],
       api: ["IconButton"],
+      types: ["IconButtonTone", "IconButtonVariant"],
     },
     {
       slug: "menu",
@@ -98,6 +108,7 @@ export const actions: ComponentSection = {
         "Inside a `Dialog` the menu opens in the dialog, so it is not inert, and Escape closes only the menu.",
       ],
       api: ["Menu"],
+      types: ["MenuAction"],
     },
     {
       slug: "icon",
@@ -111,7 +122,7 @@ export const actions: ComponentSection = {
           "`name` picks one of the library's icons, all on one grid and one stroke: `diff`, `baseline`, `review`, `ci`, `self-host`, `privacy`, `capture`, `branch`, `theme`, `speed`, `search`, `chevron-right`, `chevron-down`, `close`, `external-link`, `settings`, `bell`, `check`, `plus`, `more`, `grid`, `window`, `type`, `card`, `pointer`, `field`, `table`, `compass`, `page` and `briefcase`. Each is named for its idea or action, not a product. Prefer one to drawing your own.",
           "For a glyph the set lacks, put a bare `<svg>` (with a `viewBox`, no size or colour classes) in an `Icon`; it fills the box.",
           "`size` is `sm` (14px), `md` (16px, the default), `lg` (20px) or `feature` (32px), for an icon that stands for an idea on its own. A feature card takes its icon through `Card`'s `icon`.",
-          "`tone` is a text tone (`muted`, `accent`, `info`, `positive`, `warn`, `danger`); left out, the icon takes the colour of the text around it, so draw the glyph with `currentColor`.",
+          "`tone` is a text tone: `neutral`, `muted`, `accent`, `info`, `positive`, `warn` or `danger`. Left out, the icon takes the colour of the text around it, so draw the glyph with `currentColor`.",
           "An icon that is a button is an `IconButton`.",
         ],
       },
@@ -120,18 +131,27 @@ export const actions: ComponentSection = {
         'An icon that carries meaning on its own takes a `label`, which makes it `role="img"` with that name.',
       ],
       api: ["Icon"],
+      types: ["IconName"],
     },
     {
       slug: "copy-button",
       name: "CopyButton",
       summary: "Copies a string to the clipboard.",
       whenToUse: "A value the page already shows that a reader will paste elsewhere.",
+      siblings: [
+        { slug: "copy-line", when: "The text to copy is one line, such as a command." },
+        {
+          slug: "code",
+          when: "The text to copy is a block of code: `CodeBlock copy`, or `CodeExample copy` in docs.",
+        },
+      ],
       pairs: ["CopyButton/Clipboard"],
       usage: {
         do: [
           "`text` is what is copied; `copiedLabel` shows in place of the label for two seconds once it is on the clipboard.",
           'Name what is copied in `label` and `copiedLabel` (`"Copy token"`, `"Token copied"`) when the page has more than one.',
           "A command or token in its own box is a `CopyLine`, which carries this button.",
+          "Place a `CopyButton` yourself only when neither a `CopyLine` nor `copy` on a `CodeBlock` or `CodeExample` fits.",
           "On a page rendered to static HTML and never hydrated, inline `copyScript` once, as `colourSchemeScript` is: every `CopyButton`, `CopyLine`, and `CodeBlock` or `CodeExample` with `copy` then works. A hydrated button copies for itself and the script stays out of its way.",
         ],
         dont: ["Do not write the clipboard call by hand in a `Button`."],
@@ -146,6 +166,7 @@ export const actions: ComponentSection = {
         {
           name: "copyScript",
           text: "A string of JavaScript to inline once on a page rendered to static HTML: one click listener on `document` that makes every copy button work without hydration.",
+          example: "<script is:inline set:html={copyScript} />",
         },
       ],
     },
@@ -154,6 +175,13 @@ export const actions: ComponentSection = {
       name: "CopyLine",
       summary: "One line of mono text with a copy button.",
       whenToUse: "A command or token a reader pastes elsewhere.",
+      siblings: [
+        {
+          slug: "copy-button",
+          when: "Neither a line nor a code block fits, so the button is placed by hand.",
+        },
+        { slug: "code", when: "The text is a block of several lines: `CodeBlock copy`." },
+      ],
       pairs: ["CopyLine/Command", "CopyLine/Block"],
       usage: {
         do: [
@@ -193,26 +221,35 @@ export const actions: ComponentSection = {
         "`applyColourScheme` also sets `color-scheme` on `<html>`, so native controls and scrollbars follow.",
       ],
       api: ["ColourSchemeToggle"],
+      types: ["ColourScheme", "ColourSchemeClasses"],
       functions: [
         {
           name: "applyColourScheme",
           text: "Puts a scheme on `<html>`: its class, the other scheme's class taken off, and `color-scheme`.",
+          example:
+            'button.addEventListener("click", () => {\n  const next = readColourScheme() === "dark" ? "light" : "dark";\n  applyColourScheme(next);\n  storeColourScheme(next);\n});',
         },
         {
           name: "schemeClass",
           text: "The class a scheme puts on `<html>`, for the server to render so the first paint is right; empty for the default light scheme.",
+          example: '<html className={schemeClass(scheme, { light: "my-light", dark: "dark" })}>',
         },
         {
           name: "colourSchemeScript",
           text: "A string of JavaScript to inline in `<head>` before first paint: applies the stored scheme, else the system one.",
+          example:
+            "<head>\n  <script dangerouslySetInnerHTML={{ __html: colourSchemeScript }} />\n</head>",
         },
         {
           name: "readColourScheme",
           text: "The stored choice, else the system preference, with a fallback (default light) when neither is available, as on the server.",
+          example:
+            "const scheme = readColourScheme(); // the stored choice, else the system's, else light",
         },
         {
           name: "storeColourScheme",
           text: "Remembers a scheme in `localStorage` for the next visit; a storage error is swallowed.",
+          example: "storeColourScheme(next); // read back on the next visit",
         },
       ],
     },

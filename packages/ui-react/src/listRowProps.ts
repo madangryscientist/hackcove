@@ -26,7 +26,7 @@ type Shared = LoadingProps & {
   /** Content at the far end of the row: a value, a count, a Pill. */
   trailing?: ReactNode | undefined;
   /**
-   * Marks the row in view, the one whose detail is open: a violet fill and `aria-current="true"`.
+   * Marks the row in view, the one whose detail is open: an accent fill and `aria-current="true"`.
    * Set it on one row of a list.
    */
   selected?: boolean | undefined;
@@ -65,9 +65,9 @@ export type ListRowButtonProps = Shared &
     /** Why the row cannot be pressed: it fades, `aria-disabled` and focusable, the reason its tooltip. */
     disabledReason?: string | undefined;
     href?: undefined;
-    /** On the row, not its button, so a link or button in `trailing` does not count as entering it. */
+    /** On the row, not its link or button, so a link or button in the row does not count as entering it. */
     onPointerEnter?: PointerEventHandler<HTMLDivElement> | undefined;
-    /** On the row, not its button, so a link or button in `trailing` does not count as leaving it. */
+    /** On the row, not its link or button, so a link or button in the row does not count as leaving it. */
     onPointerLeave?: PointerEventHandler<HTMLDivElement> | undefined;
   } & Unstyled<
     Omit<
@@ -82,8 +82,9 @@ export type ListRowLinkProps = Shared &
     external?: boolean | undefined;
     expanded?: undefined;
     disabledReason?: undefined;
-    /** On the row, not the link, so a link or button in the row does not count as leaving it. */
+    /** On the row, not its link or button, so a link or button in the row does not count as entering it. */
     onPointerEnter?: PointerEventHandler<HTMLDivElement> | undefined;
+    /** On the row, not its link or button, so a link or button in the row does not count as leaving it. */
     onPointerLeave?: PointerEventHandler<HTMLDivElement> | undefined;
   } & Unstyled<
     Omit<ComponentPropsWithoutRef<"a">, "href" | "children" | "onPointerEnter" | "onPointerLeave">

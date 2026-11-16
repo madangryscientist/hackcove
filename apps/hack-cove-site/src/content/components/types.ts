@@ -17,6 +17,12 @@ export type ComponentPage = {
   summary: string;
   /** One sentence for llms.txt and the page: when this component is the right one. */
   whenToUse: string;
+  /**
+   * The pages a reader weighs this one against, each with when to use it instead. Shown at the top
+   * of Overview as the "Use instead" table and in llms.txt. The relation is symmetric: if A lists B,
+   * B lists A, each saying it from its own side.
+   */
+  siblings?: { slug: string; when: string }[];
   /** Do/Don't pairs, `<File>/<Topic>`: the stories `Do<Topic>` and `Dont<Topic>`. The first is the one right way. */
   pairs: string[];
   /** A page layout's whole page, in its shell: the story `<File>/<Topic>`, shown under Overview. */
@@ -36,12 +42,19 @@ export type ComponentPage = {
   accessibility: string[];
   /** The components whose props the API table lists. */
   api: string[];
+  /** The types it exports that its components take (`Crumb`, `Tone`), each on one page, printed after the props. */
+  types?: string[];
   /**
    * Exports that are functions, not components (`fromISODate`, `schemeClass`), each with a line on
-   * what it is for. A page lists a component under `api` or a function here; every export of
-   * `@hackcove/ui-react` is on exactly one page.
+   * what it is for. A page lists a component under `api`, a function here or a type under `types`;
+   * every export of `@hackcove/ui-react`, value or type, is on exactly one page.
    */
-  functions?: { name: string; text: string }[];
+  functions?: {
+    name: string;
+    text: string;
+    /** A few lines of TSX that show it in use, under its line and fenced in llms.txt. */
+    example?: string;
+  }[];
 };
 
 /** A group in the rail and on the Getting started page. */

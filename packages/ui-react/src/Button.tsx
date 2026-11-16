@@ -9,7 +9,9 @@ import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 import type { Tone } from "./tone.js";
 
+/** A Button's look: `primary` the one main action, `outline` and `ghost` the others, `link` text in running text, `dashed` the add-another row. */
 export type ButtonVariant = "primary" | "outline" | "ghost" | "link" | "dashed";
+/** A Button's height and text, on the library's one `Size` scale. */
 export type ButtonSize = Size;
 /** A Button's tones: `neutral` (the accent fill, the default), `positive` and `danger`. */
 export type ButtonTone = Extract<Tone, "neutral" | "positive" | "danger">;
@@ -203,7 +205,7 @@ type ButtonAsButton = ButtonLook & {
   count?: number | undefined;
   href?: undefined;
   external?: undefined;
-  /** Reaches the `<button>`, to focus it or measure it. */
+  /** Reaches the `<button>`, or the `<a>` of a link button, to focus it or measure it. */
   ref?: Ref<HTMLButtonElement> | undefined;
 } & Unstyled<ComponentPropsWithoutRef<"button">>;
 
@@ -221,7 +223,7 @@ type ButtonAsLink = ButtonLook & {
   count?: number | undefined;
   /** Makes the button a link to this URL; an in-app path goes through the app's `LinkProvider`. */
   href: string;
-  /** Reaches the `<a>`, to focus it or measure it. */
+  /** Reaches the `<button>`, or the `<a>` of a link button, to focus it or measure it. */
   ref?: Ref<HTMLAnchorElement> | undefined;
 } & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href">>;
 

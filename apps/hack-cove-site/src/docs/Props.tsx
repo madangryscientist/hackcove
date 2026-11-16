@@ -9,10 +9,44 @@ import {
   Text,
 } from "@hackcove/ui-react";
 import propsJson from "../generated/props.json";
+import typesJson from "../generated/types.json";
 import { InlineCode } from "./InlineCode.js";
-import type { ComponentDoc, PropDoc, PropsJson } from "./types.js";
+import type { ComponentDoc, PropDoc, PropsJson, TypeDoc, TypesJson } from "./types.js";
 
 const all: PropsJson = propsJson;
+const allTypes: TypesJson = typesJson;
+
+/** One type export, from `src/generated/types.json`; an unknown name fails the build. */
+export function typeOf(name: string): TypeDoc {
+  const doc = allTypes[name];
+  if (doc === undefined) throw new Error(`type ${name}: not in types.json`);
+  return doc;
+}
+
+/** The types a page lists: each one's name, what it is, and its definition. */
+export function Types({ names }: { names: string[] }) {
+  return (
+    <Stack gap="sm">
+      <SubsectionHeading>Types</SubsectionHeading>
+      {names.map(typeOf).map((type) => (
+        <Stack key={type.name} gap="sm">
+          <Divider />
+          <Stack gap="xs">
+            <Text strong>
+              <Code>{type.name}</Code>
+            </Text>
+            <Text breakWords>
+              <InlineCode text={type.description.replace(/\s*\n\s*/g, " ")} />
+            </Text>
+            <Text breakWords>
+              <Code>{type.definition}</Code>
+            </Text>
+          </Stack>
+        </Stack>
+      ))}
+    </Stack>
+  );
+}
 
 /** The doc of one component, from `src/generated/props.json`; an unknown name fails the build. */
 export function docOf(name: string): ComponentDoc {
@@ -29,7 +63,8 @@ function PropEntry({ prop }: { prop: PropDoc }) {
         <Text strong>
           <Code>{prop.name}</Code>
         </Text>
-        {prop.required && <Caption> required</Caption>}
+        {prop.required && <Caption as="span"> required</Caption>}
+        {prop.native && <Caption as="span"> native</Caption>}
       </div>
       {prop.description && (
         <Text breakWords>

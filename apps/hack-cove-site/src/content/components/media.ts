@@ -7,6 +7,12 @@ export const mediaPages: ComponentPage[] = [
     name: "Video",
     summary: "A video with controls, full width.",
     whenToUse: "Showing a recording or a walkthrough that your app serves.",
+    siblings: [
+      {
+        slug: "media-tile",
+        when: "The video is one of a set of things to open: a tile with `video`.",
+      },
+    ],
     pairs: ["Video/Captions"],
     usage: {
       do: [
@@ -27,11 +33,19 @@ export const mediaPages: ComponentPage[] = [
     name: "Image",
     summary: "A picture in a fixed shape, with a placeholder if it is missing.",
     whenToUse: "Showing a picture that your app serves: a screenshot, a QR code, a product shot.",
+    siblings: [
+      {
+        slug: "media-tile",
+        when: "The picture is a thing: it has a label, opens, or can be removed.",
+      },
+      { slug: "avatar", when: "The picture is a person." },
+      { slug: "outline-region", when: "Areas of the picture are marked: a `RegionFrame`." },
+    ],
     pairs: ["Image/Fit"],
     usage: {
       do: [
         "`src` is your own picture, a local path or a data URL, and `alt` says what it shows. The corners are rounded and a hairline frames it on the inset surface.",
-        "`aspect` is the shape it is cropped to: `square`, `4:3` (the default), `3:2`, `16:9`, or the portrait `3:4` and `9:16`. The shape is reserved before the picture loads, so the page does not jump. `natural` is the exception: the picture keeps its own proportions, with nothing cropped, and the space is not reserved until it loads.",
+        "`aspect` is the shape it is cropped to: `square`, `4:3` (the default), `3:2`, `16:9`, the portrait `3:4` and `9:16`, or `natural`. The shape is reserved before the picture loads, so the page does not jump. `natural` is the exception: the picture keeps its own proportions, with nothing cropped, and the space is not reserved until it loads.",
         '`fit="cover"` (the default) fills the shape and crops what overflows. `fit="contain"` shows the whole picture, for a QR code or a logo that must not lose its edges.',
         "`framed` sets the picture on a white mat with padding and shows all of it. The mat is white in every theme, dark ones included, so a QR code scans off a dark page. Use it for a code, not for a photo.",
         "`width` is `sm` (96px), `md` (160px) or `lg` (256px), each a cap that a narrower parent still wins over, or `full` (the default) for the parent's width.",
@@ -44,6 +58,7 @@ export const mediaPages: ComponentPage[] = [
       "An empty `alt` marks the picture as decoration: it is hidden from a screen reader, placeholder included. Do that only when the text beside it says the same thing.",
     ],
     api: ["Image"],
+    types: ["ImageAspect", "ImageWidth"],
   },
   {
     slug: "media-tile",
@@ -51,6 +66,11 @@ export const mediaPages: ComponentPage[] = [
     summary: "A thumbnail with a label and a caption, that can open a Lightbox.",
     whenToUse:
       "A photo or video in a grid or a strip, that opens full size when it is picked: a status, a gallery, an attachment.",
+    siblings: [
+      { slug: "image", when: "The picture is only shown, with no label, click or remove." },
+      { slug: "video", when: "The video plays in the page: the player." },
+      { slug: "lightbox", when: "One photo or video opens over the page, at full size." },
+    ],
     pairs: ["MediaTile/Viewer"],
     usage: {
       do: [
@@ -61,6 +81,7 @@ export const mediaPages: ComponentPage[] = [
         "`onClick` makes the whole tile one button. Open a `Lightbox` from it, and keep the open item in your own state. Without `onClick` the tile is a plain block.",
         'With no `src`, the tile shows the `Image` placeholder, so a tile that is only a label ("Earlier") needs no picture.',
         "A row of tiles that runs past the page is a `ScrollStrip`; a wrapping grid is a `CardGrid`.",
+        "A picture that is only shown, with no label, click or remove, is an `Image`.",
       ],
     },
     accessibility: [
@@ -80,7 +101,7 @@ export const mediaPages: ComponentPage[] = [
     usage: {
       do: [
         "Put `MediaTile`s or `Avatar`s as the children and name the strip with `label`. They keep their own width and never shrink or wrap.",
-        "`gap` is a `Cluster`'s: `xs`, `sm` (the default) or `md`.",
+        "`gap` is a `Cluster`'s: `xs`, `sm` (the default) or `md`; the `Size` type lists every default that is not `md`.",
         "It scrolls only when the items run past its width, with a thin themed scrollbar, and the items snap to the start edge.",
       ],
       dont: [

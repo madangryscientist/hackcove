@@ -40,7 +40,7 @@ const ITEM: Record<
  * A numbered list of things to do, in order: a `title` and, under it, a line of `children`. The
  * numbers are counted by CSS, so `Step`s can sit in a fragment or behind a condition and still run
  * 1, 2, 3. For the way into a product ("install, log in, run"), not for progress: nothing here is
- * done or current. A wizard's progress indicator is a different part (HC-108, `Stepper`).
+ * done or current. A wizard's progress indicator is a different part.
  *
  * `size="lg"` is the steps across a landing page: from `md` they sit side by side in equal columns,
  * each number at feature size over a large title; below `md` they stack. Use it for two to four

@@ -2,20 +2,28 @@ import {
   BulletItem,
   BulletList,
   Code,
+  CodeBlock,
   type DocsHeading,
   type DocsNeighbour,
   Prose,
   Section,
   Stack,
   SubsectionHeading,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
   Text,
+  TextLink,
 } from "@hackcove/ui-react";
 import { useId } from "react";
 import type { ComponentPage as Page } from "../content/components/index";
-import { neighboursOf } from "../content/components/index";
+import { componentPageOf, neighboursOf } from "../content/components/index";
 import { DoDont } from "../docs/DoDont";
 import { Example } from "../docs/Example";
-import { docOf, Props } from "../docs/Props";
+import { docOf, Props, Types } from "../docs/Props";
 import { InlineCode } from "../docs/InlineCode";
 
 /** The page's top-level sections, in page order: the "On this page" list and the anchors it jumps to. */
@@ -59,6 +67,35 @@ function Rules({ items, labelledBy }: { items: string[]; labelledBy?: string | u
   );
 }
 
+/** The "Use instead" table: each sibling page, linked, with when to use it instead of this one. */
+function UseInstead({ siblings }: { siblings: { slug: string; when: string }[] }) {
+  return (
+    <Stack gap="sm">
+      <SubsectionHeading>Use instead</SubsectionHeading>
+      <Table label="Use instead">
+        <TableHead>
+          <TableRow>
+            <TableHeaderCell>Component</TableHeaderCell>
+            <TableHeaderCell>When</TableHeaderCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {siblings.map(({ slug, when }) => (
+            <TableRow key={slug}>
+              <TableCell tone="strong">
+                <TextLink href={`/ui/${slug}/`}>{componentPageOf(slug).name}</TextLink>
+              </TableCell>
+              <TableCell>
+                <InlineCode text={when} />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </Stack>
+  );
+}
+
 /**
  * A component's page, from its entry in `content/components.ts`: the one right way and its Do/Don'ts
  * first, then a layout's full page, Usage, Accessibility and the API. Its title, contents and
@@ -75,6 +112,9 @@ export function ComponentPage({ page }: { page: Page }) {
           <Text>
             <InlineCode text={page.whenToUse} />
           </Text>
+          {page.siblings !== undefined && page.siblings.length > 0 && (
+            <UseInstead siblings={page.siblings} />
+          )}
           {page.pairs.map((topic) => (
             <Stack key={topic} gap="sm">
               <SubsectionHeading>{topicTitle(topic)}</SubsectionHeading>
@@ -106,13 +146,22 @@ export function ComponentPage({ page }: { page: Page }) {
           {page.api.map((name) => (
             <Props key={name} of={name} />
           ))}
+          {page.types !== undefined && page.types.length > 0 && <Types names={page.types} />}
           {page.functions !== undefined && page.functions.length > 0 && (
             <Stack gap="sm">
               <SubsectionHeading>Functions</SubsectionHeading>
               <BulletList>
                 {page.functions.map((fn) => (
                   <BulletItem key={fn.name}>
-                    <Code>{docOf(fn.name).signature ?? fn.name}</Code> <InlineCode text={fn.text} />
+                    <Stack gap="xs">
+                      <Text as="span">
+                        <Code>{docOf(fn.name).signature ?? fn.name}</Code>{" "}
+                        <InlineCode text={fn.text} />
+                      </Text>
+                      {fn.example !== undefined && (
+                        <CodeBlock language="tsx">{fn.example}</CodeBlock>
+                      )}
+                    </Stack>
                   </BulletItem>
                 ))}
               </BulletList>

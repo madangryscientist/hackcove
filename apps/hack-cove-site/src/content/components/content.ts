@@ -12,6 +12,12 @@ export const content: ComponentSection = {
       name: "Card",
       summary: "A bordered panel that groups one thing on a page.",
       whenToUse: "A titled block of related content: a record, a status, a list, an empty state.",
+      siblings: [
+        {
+          slug: "callout",
+          when: "The status is a message of a line or two, with at most one action.",
+        },
+      ],
       pairs: ["Card/Status", "Card/Spacing"],
       stories: ["CardBadge", "CardFill", "CardIcon", "CardInset", "CardTitle"],
       usage: {
@@ -30,7 +36,7 @@ export const content: ComponentSection = {
           '`attention` draws the strong warn edge round a card that needs a look (a flaky shot, a failing check); add `tone="warn"` for the warn surface too.',
           "`icon` puts one of the library's icons above the title at feature size, in the accent colour: the mark of a feature card. Pick it by the idea it stands for; it is ignored on a `bar` or `flush` card.",
           "`size` sets the padding: `sm` for a dense dashboard, `md` (default), `lg` for a card that stands alone. In a `sm` card a `Button`, `IconButton` or `Pill` with no `size` is `sm` too, and a `Stack` inside any card is `xs` apart.",
-          "A Card with an `id` is an anchor target: a link to `#id` scrolls it clear of the sticky header and outlines it in violet while it is the target.",
+          "A Card with an `id` is an anchor target: a link to `#id` scrolls it clear of the sticky header and outlines it in the accent colour while it is the target.",
           "`fill` makes a card take its parent's full height, for a panel in a fixed-height layout such as a sheet over a map; the title or bar stays put and the body scrolls. Give the parent a height. Put links or controls in the body, so a keyboard can reach and scroll it.",
         ],
       },
@@ -49,6 +55,12 @@ export const content: ComponentSection = {
       summary:
         "A person as a round badge of initials, or their photo; an org or team as a square one.",
       whenToUse: "Marking who did something or who owns something, next to their name.",
+      siblings: [
+        {
+          slug: "image",
+          when: "The picture is not a person: a photo, a screenshot or an illustration.",
+        },
+      ],
       pairs: ["Avatar/Identity", "Avatar/Beside"],
       usage: {
         do: [
@@ -68,6 +80,7 @@ export const content: ComponentSection = {
         "`aria-*` and `data-*` props go on the root element.",
       ],
       api: ["Avatar"],
+      types: ["AvatarShape", "AvatarSize"],
     },
     {
       slug: "avatar-stack",
@@ -90,12 +103,14 @@ export const content: ComponentSection = {
         "`aria-*` and `data-*` props go on the root element.",
       ],
       api: ["AvatarStack"],
+      types: ["AvatarStackPerson"],
     },
     {
       slug: "badge",
       name: "Badge",
       summary: "A small red count.",
       whenToUse: "A count of unread or pending things that sits on an icon button.",
+      siblings: [{ slug: "pill", when: "The label is words, such as a status." }],
       pairs: ["Badge/OnIcon", "Badge/Count"],
       usage: {
         do: [
@@ -117,6 +132,7 @@ export const content: ComponentSection = {
       name: "Pill",
       summary: "A small tinted label for a status or a category.",
       whenToUse: "A short word that says what state or kind something is: paid, draft, flaky.",
+      siblings: [{ slug: "badge", when: "A count sits on an icon." }],
       pairs: ["Pill/Status", "Pill/Link"],
       usage: {
         do: [
@@ -130,6 +146,9 @@ export const content: ComponentSection = {
           "A Pill beside a card's title is the Card's `status`, not a hand-built row.",
           "A message to read is a `Callout`, and an action is a `Button`.",
         ],
+        dont: [
+          "Never make a row of clickable `Pill`s a filter: a filter is pressed `Button`s in a `Fieldset`.",
+        ],
       },
       accessibility: [
         'A two-tone Pill reads "Weight: 72 kg" to a screen reader (a visually hidden colon follows the label). The x of `onRemove` is a `<button type="button">` with `removeLabel` as its `aria-label` and its tooltip, with the icon `aria-hidden`.',
@@ -138,12 +157,17 @@ export const content: ComponentSection = {
         '`external` adds `target="_blank"` and `rel="noreferrer"`.',
       ],
       api: ["Pill"],
+      types: ["PillTone"],
     },
     {
       slug: "steps",
       name: "Steps",
       summary: "A numbered list of things to do, in order.",
       whenToUse: "The way into a product: install, log in, run.",
+      siblings: [
+        { slug: "bullet-list", when: "The items have no order." },
+        { slug: "timeline", when: "The items already happened: a history, each with its time." },
+      ],
       pairs: ["Steps/Numbers", "Steps/Order"],
       usage: {
         do: [
@@ -163,12 +187,17 @@ export const content: ComponentSection = {
         "Name the list with `aria-label`.",
       ],
       api: ["Steps", "Step"],
+      types: ["StepsSize"],
     },
     {
       slug: "timeline",
       name: "Timeline",
       summary: "A vertical list of events on a rail.",
       whenToUse: "A history of what happened and when: status changes, a record's activity.",
+      siblings: [
+        { slug: "bullet-list", when: "The items have no order and no time." },
+        { slug: "steps", when: "The items are a sequence the reader still has to follow." },
+      ],
       pairs: ["Timeline/Events", "Timeline/NoEvents"],
       usage: {
         do: [
@@ -217,6 +246,11 @@ export const content: ComponentSection = {
       name: "KeyValueList",
       summary: "Labelled facts, one per row.",
       whenToUse: "A set of facts about one thing: size, status, dates, shortcut keys.",
+      siblings: [
+        { slug: "table", when: "Many records with the same columns, to read across and compare." },
+        { slug: "list-row", when: "The items are things to open, not the fields of one record." },
+        { slug: "meta-list", when: "A few short facts inline, with no labels to line up." },
+      ],
       pairs: ["KeyValueList/FactsList", "KeyValueList/AlignStart"],
       usage: {
         do: [
@@ -241,6 +275,7 @@ export const content: ComponentSection = {
       summary: "An accent outline over one area of a picture, with an optional tag.",
       whenToUse:
         "Marking an area of a screenshot or an image: one that is ignored, flagged or picked.",
+      siblings: [{ slug: "image", when: "The picture is shown with nothing marked on it." }],
       pairs: ["OutlineRegion/Label"],
       usage: {
         do: [
@@ -256,6 +291,7 @@ export const content: ComponentSection = {
         "A `label` is plain text and is read out; a region with no label says nothing to a screen reader, so name the areas in text as well when they matter.",
       ],
       api: ["RegionFrame", "OutlineRegion"],
+      types: ["RegionRect"],
     },
   ],
 };

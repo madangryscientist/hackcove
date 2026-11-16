@@ -58,8 +58,9 @@ type SectionProps = SectionBase &
   (
     | ({
         /**
-         * `sm` a small titled group inside a page, a card or a panel; `md` a page's section; `lg` a
-         * landing page's section, its title at display size.
+         * `sm` a small titled group inside a page, a card or a panel, its title small and all-caps
+         * and its blocks `xs` apart; `md` a page's section; `lg` a landing page's section, a display
+         * title under a mono kicker, a `Lead`, then its calls to action.
          * @default md
          */
         size?: "md" | undefined;
@@ -71,15 +72,16 @@ type SectionProps = SectionBase &
         rule?: boolean | undefined;
       } & Opening)
     | {
-        /** A small titled group: its title small and all-caps, its blocks `xs` apart. */
         size: "sm";
-        /** A hairline under the title row, `actions` included. */
+        /**
+         * A hairline under the title row across the section's width, `actions` included. Needs a
+         * `title` or `actions`.
+         */
         rule?: boolean | undefined;
         overline?: never;
         description?: never;
       }
     | ({
-        /** A landing page's section: a display title under a mono kicker, a `Lead`, then its calls to action. */
         size: "lg";
         rule?: never;
       } & Opening)
