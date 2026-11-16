@@ -3,6 +3,7 @@ import { applyEdits, moved } from "./edits.js";
 import { tagRules as actions } from "./rules/actions.js";
 import { tagRules as containers } from "./rules/containers.js";
 import { tagRules as controls } from "./rules/controls.js";
+import { tagRules as forms } from "./rules/forms.js";
 import { imports, pruneImports } from "./rules/imports.js";
 import { tagRules as layouts } from "./rules/layouts.js";
 import { tagRules as links } from "./rules/links.js";
@@ -27,6 +28,7 @@ const TAG_RULES: readonly TagRule[] = [
   ...actions,
   ...layouts,
   ...controls,
+  ...forms,
   ...containers,
   ...tables,
 ];

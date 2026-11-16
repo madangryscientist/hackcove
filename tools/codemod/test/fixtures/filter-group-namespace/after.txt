@@ -1,0 +1,7 @@
+import * as ui from "@hackcove/ui-react";
+
+export const view = (
+  <ui.Fieldset label="Open"><ui.ButtonGroup>
+    <ui.Button pressed>Now</ui.Button>
+  </ui.ButtonGroup></ui.Fieldset>
+);

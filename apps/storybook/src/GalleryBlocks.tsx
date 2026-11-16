@@ -9,8 +9,9 @@ import {
   Display,
   Drawer,
   Lightbox,
+  ButtonGroup,
   FieldDialog,
-  FilterGroup,
+  Fieldset,
   Hero,
   Image,
   KeyValue,
@@ -59,23 +60,25 @@ export function GalleryHeader() {
   );
 }
 
-/** The filter chips block of the Gallery: four pressable outline Buttons, one pressed, in a FilterGroup. */
+/** The filter chips block of the Gallery: four pressable outline Buttons, one pressed, in a Fieldset. */
 export function GalleryChips() {
   return (
-    <FilterGroup label="Type of shop">
-      <Button variant="outline" size="sm" pressed={false}>
-        Charity
-      </Button>
-      <Button variant="outline" size="sm" pressed>
-        Vintage
-      </Button>
-      <Button variant="outline" size="sm" pressed={false}>
-        Books
-      </Button>
-      <Button variant="outline" size="sm" pressed={false}>
-        Furniture
-      </Button>
-    </FilterGroup>
+    <Fieldset label="Type of shop">
+      <ButtonGroup>
+        <Button variant="outline" size="sm" pressed={false}>
+          Charity
+        </Button>
+        <Button variant="outline" size="sm" pressed>
+          Vintage
+        </Button>
+        <Button variant="outline" size="sm" pressed={false}>
+          Books
+        </Button>
+        <Button variant="outline" size="sm" pressed={false}>
+          Furniture
+        </Button>
+      </ButtonGroup>
+    </Fieldset>
   );
 }
 

@@ -50,11 +50,11 @@ export const FullPage: S = {
       >
         <Card title="Client">
           <Stack>
-            <Field label="Full name" htmlFor="full-page-name">
-              <Input id="full-page-name" placeholder="Naledi Mokoena" />
+            <Field label="Full name">
+              <Input placeholder="Naledi Mokoena" />
             </Field>
-            <Field label="Email" htmlFor="full-page-email">
-              <Input id="full-page-email" type="email" />
+            <Field label="Email">
+              <Input type="email" />
             </Field>
           </Stack>
         </Card>
@@ -68,6 +68,35 @@ export const NewQuote: S = {
     <DemoShell>
       <FormPage />
     </DemoShell>
+  ),
+};
+
+/** A failed save is the layout's `error`: an alert directly above Save and Cancel. */
+export const WithError: S = {
+  render: () => (
+    <FormLayout
+      title="New client"
+      description="Who is the quote for?"
+      onSubmit={(event) => event.preventDefault()}
+      error="Could not save the client: you are offline."
+      actions={
+        <>
+          <Button type="submit">Save client</Button>
+          <Button variant="ghost">Cancel</Button>
+        </>
+      }
+    >
+      <Card title="Client">
+        <Stack>
+          <Field label="Full name">
+            <Input placeholder="Naledi Mokoena" />
+          </Field>
+          <Field label="Email">
+            <Input type="email" placeholder="naledi@example.com" />
+          </Field>
+        </Stack>
+      </Card>
+    </FormLayout>
   ),
 };
 
@@ -87,11 +116,11 @@ export const DoForm: S = {
     >
       <Card title="Client">
         <Stack>
-          <Field label="Full name" htmlFor="do-form-name">
-            <Input id="do-form-name" placeholder="Naledi Mokoena" />
+          <Field label="Full name">
+            <Input placeholder="Naledi Mokoena" />
           </Field>
-          <Field label="Email" htmlFor="do-form-email">
-            <Input id="do-form-email" type="email" placeholder="naledi@example.com" />
+          <Field label="Email">
+            <Input type="email" placeholder="naledi@example.com" />
           </Field>
         </Stack>
       </Card>
@@ -109,11 +138,11 @@ export const DontForm: S = {
     >
       <Card title="Client">
         <Stack>
-          <Field label="Full name" htmlFor="dont-form-name">
-            <Input id="dont-form-name" placeholder="Naledi Mokoena" />
+          <Field label="Full name">
+            <Input placeholder="Naledi Mokoena" />
           </Field>
-          <Field label="Email" htmlFor="dont-form-email">
-            <Input id="dont-form-email" type="email" placeholder="naledi@example.com" />
+          <Field label="Email">
+            <Input type="email" placeholder="naledi@example.com" />
           </Field>
         </Stack>
       </Card>

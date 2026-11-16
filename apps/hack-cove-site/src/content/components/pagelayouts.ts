@@ -18,7 +18,7 @@ export const pagelayouts: ComponentSection = {
       usage: {
         do: [
           "Put the page's title, `description` and primary `actions` in the header props; `breadcrumbs` and `tabs` go there too.",
-          "`filters` sit between the header and the list: a `FilterGroup` of pressed-toggle `Button`s.",
+          "`filters` sit between the header and the list: a `Fieldset` of pressed-toggle `Button`s in a `ButtonGroup`.",
           "The items are the `children`, one `Card` per item, or a `Table`; the layout spaces them.",
           "Give `empty` an `EmptyState` that says what is missing and what to do next: it shows when there are no children, and with no `empty` an empty list is a blank page.",
         ],
@@ -72,6 +72,7 @@ export const pagelayouts: ComponentSection = {
           "The fields are the `children`, grouped in `Card`s; the layout spaces them in a reading-width column.",
           'Save and Cancel go in `actions`, at the end of the form: a `type="submit"` Button first, then a ghost Cancel. The header has no `actions` here.',
           "Handle the submit with `onSubmit`: other props go on the `<form>` itself.",
+          "A failed submit (the server refused it, no connection) is `error`: an alert directly above the `actions`. An error about one field is that `Field`'s `error`.",
           "A form in a small panel is a `Dialog` or `FieldDialog`; a sign-in is `CenteredLayout`.",
         ],
         dont: ["Do not put Save in the header of a `ListLayout`: that is not a form."],

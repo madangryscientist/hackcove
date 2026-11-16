@@ -1,0 +1,3 @@
+import { Input } from "@hackcove/ui-react";
+
+export const name = <Input aria-label="Name" />;

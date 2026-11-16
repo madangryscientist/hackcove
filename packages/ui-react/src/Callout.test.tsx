@@ -37,4 +37,21 @@ describe("Callout", () => {
     expect(screen.getByText("Saved.")).not.toBeNull();
     expect(screen.getByRole("link", { name: "Open" }).getAttribute("href")).toBe("#a");
   });
+
+  it("announces a danger notice as an alert and a warning as a status", () => {
+    render(
+      <>
+        <Callout tone="danger">Could not save.</Callout>
+        <Callout tone="warn">Unsaved changes.</Callout>
+      </>,
+    );
+    expect(screen.getByRole("alert").textContent).toBe("Could not save.");
+    expect(screen.getByRole("status").textContent).toBe("Unsaved changes.");
+  });
+
+  it.each(["neutral", "info", "positive"] as const)("gives a %s notice no role", (tone) => {
+    render(<Callout tone={tone}>A note.</Callout>);
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect(screen.queryByRole("status")).toBeNull();
+  });
 });

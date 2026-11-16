@@ -1,0 +1,5 @@
+import type { Tone } from "@hackcove/ui-react";
+import { Fieldset, ButtonGroup } from "@hackcove/ui-react";
+
+export const tone: Tone = "neutral";
+export const view = <Fieldset label="Open"><ButtonGroup>x</ButtonGroup></Fieldset>;

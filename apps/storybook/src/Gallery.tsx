@@ -6,6 +6,7 @@ import {
   Card,
   Checkbox,
   DateField,
+  Fieldset,
   fromISODate,
   Markdown,
   Overline,
@@ -163,6 +164,10 @@ export const gallerySections: GallerySection[] = [
           <Checkbox label="Open now" defaultChecked />
           <DateField calendar label="Date of birth" defaultValue={fromISODate("1990-05-17")} />
           <DateField label="Visited on" hint="DD/MM/YYYY" />
+          <Fieldset label="What is wrong?" error="Pick at least one.">
+            <Checkbox label="Wrong hours" />
+            <Checkbox label="Closed for good" />
+          </Fieldset>
         </div>
 
         <GalleryForm />

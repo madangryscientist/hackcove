@@ -1,0 +1,4 @@
+import { Input } from "@hackcove/ui-react";
+
+export const amount = <Input prefix="R" align="end" inputMode="decimal" defaultValue="0.00" />;
+export const count = <Input align="end" inputMode="numeric" />;

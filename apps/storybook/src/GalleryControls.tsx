@@ -63,11 +63,11 @@ export function GalleryControls() {
             { value: "weekly", label: "Weekly" },
           ]}
         />
-        <Input align="end" width="md" aria-label="Right-aligned" defaultValue="1 250" />
+        <Input numeric width="md" aria-label="Quantity" defaultValue="1 250" />
         <Button>Save</Button>
       </div>
       <Textarea size="sm" rows={2} aria-label="Small textarea" placeholder="Small note" />
-      <Input prefix="R" placeholder="0.00" aria-label="Amount" width="lg" />
+      <Input prefix="R" numeric placeholder="0.00" aria-label="Amount" width="lg" />
       <FileDrop accept=".csv" aria-label="Statement">
         Drop a statement here or click to choose
       </FileDrop>

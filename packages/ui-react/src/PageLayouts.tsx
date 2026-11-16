@@ -5,6 +5,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react";
+import { Callout } from "./Callout.js";
 import { Card } from "./Card.js";
 import { cx } from "./cx.js";
 import { PageHeader, PageHeaderContent, type PageHeaderProps } from "./PageHeader.js";
@@ -30,7 +31,7 @@ export function ListLayout({
   tabs,
   ...rest
 }: PageHeaderProps & {
-  /** A row between the header and the list, e.g. a `FilterGroup` or a `SearchInput`. */
+  /** A row between the header and the list, e.g. a `Fieldset` of chips or a `SearchInput`. */
   filters?: ReactNode;
   /** Shown in place of `children` when there are none: no rows, an empty array, `null`. */
   empty?: ReactNode;
@@ -114,9 +115,10 @@ export function DetailLayout({
   );
 }
 
-/** A form page: header (no header `actions`), then a `max-w-3xl` column that starts at the Container's left edge (it is not re-centred), with an `actions` row at the end. Other props go on the `<form>`. */
+/** A form page: header (no header `actions`), then a `max-w-3xl` column that starts at the Container's left edge (it is not re-centred), with an `actions` row at the end. `error` is the submit's failure, a danger `Callout` (an alert) directly above that row. Other props go on the `<form>`. */
 export function FormLayout({
   actions,
+  error,
   children,
   breadcrumbs,
   title,
@@ -126,6 +128,11 @@ export function FormLayout({
 }: Omit<PageHeaderProps, "actions"> & {
   /** The row at the end of the form: its submit and cancel buttons. */
   actions?: ReactNode;
+  /**
+   * What went wrong with the whole submit (the server refused it, no connection), announced as an
+   * alert directly above the `actions`. An error about one field is that `Field`'s `error`.
+   */
+  error?: ReactNode;
   children: ReactNode;
 } & Unstyled<Omit<ComponentPropsWithoutRef<"form">, "title">>): ReactElement {
   return (
@@ -134,6 +141,7 @@ export function FormLayout({
       <form {...form} className="max-w-3xl">
         <Stack>
           {children}
+          {error && <Callout tone="danger">{error}</Callout>}
           {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
         </Stack>
       </form>

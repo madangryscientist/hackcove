@@ -139,8 +139,15 @@ export const removed = {
   r50: () => <ui.AppShell hideChromeInPrint>x</ui.AppShell>,
   // @ts-expect-error action is actions
   r51: () => <ui.NotFound action="x" />,
-  // @ts-expect-error legend is label
-  r52: () => <ui.FilterGroup legend="x">y</ui.FilterGroup>,
+  r52: () => (
+    <ui.Fieldset
+      label="x"
+      // @ts-expect-error legend is label, on the Fieldset that replaces FilterGroup
+      legend="x"
+    >
+      y
+    </ui.Fieldset>
+  ),
   // @ts-expect-error crumbs is items
   r53: () => <ui.Breadcrumbs crumbs={["x"]} />,
   // @ts-expect-error people is items
@@ -265,6 +272,14 @@ export const removed = {
   r92: () => <ui.TableHeaderCell srLabel="Actions" />,
   // @ts-expect-error a cell's tone="default" is neutral, the default
   r93: () => <ui.TableCell tone="default">x</ui.TableCell>,
+
+  // Forms
+  // @ts-expect-error FilterGroup is gone: a Fieldset round a ButtonGroup of the chips
+  r94: (t: typeof import("./index.js").FilterGroup) => t,
+  // @ts-expect-error Input align is gone: a figure is numeric
+  r95: () => <ui.Input align="end" />,
+  // @ts-expect-error ControlAlign is gone with Input align
+  r96: () => ((t: import("./index.js").ControlAlign) => t)("end"),
 };
 
 describe("removed API", () => {

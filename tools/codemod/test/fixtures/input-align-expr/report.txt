@@ -1,0 +1,1 @@
+3: Input align is gone: a figure is numeric, any other field drops it

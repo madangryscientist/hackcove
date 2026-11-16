@@ -39,14 +39,8 @@ export const CONTROL_WIDTH: Record<ControlWidth, string | undefined> = {
   lg: "w-48",
 };
 
-/** Which edge an `Input`'s text sits on: `start` (default), or `end` for a numeric field. */
-export type ControlAlign = "start" | "end";
-
-/** The text alignment class of an `Input` with `align="end"`; `start` is the browser default and has none. */
-export const CONTROL_ALIGN: Record<ControlAlign, string | undefined> = {
-  start: undefined,
-  end: "text-right",
-};
+/** A `numeric` `Input`'s figures: right-aligned and tabular, as a `numeric` table cell's. */
+export const NUMERIC_VALUE = "text-right tabular-nums";
 
 /** The horizontal padding of a control, and of an `Input`'s icon gutter. */
 export const CONTROL_PAD: Record<ControlSize, { x: string; icon: string }> = {

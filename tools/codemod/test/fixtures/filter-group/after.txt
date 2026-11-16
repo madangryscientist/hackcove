@@ -1,0 +1,9 @@
+import { Button, Fieldset, ButtonGroup } from "@hackcove/ui-react";
+
+export const view = (
+  <Fieldset label="Type of shop"><ButtonGroup>
+    <Button variant="outline" size="sm" pressed>
+      Vintage
+    </Button>
+  </ButtonGroup></Fieldset>
+);

@@ -47,12 +47,19 @@ for (const size of sizes) {
   });
 }
 
-for (const id of ["feedback-dialog--tall-form", "feedback-dialog--focus-at-the-bottom"]) {
+for (const id of [
+  "feedback-dialog--tall-form",
+  "feedback-dialog--tall-form-error",
+  "feedback-dialog--focus-at-the-bottom",
+]) {
   for (const size of sizes) {
     test(`${id}, ${size.name}: the footer stays on screen`, async ({ page }) => {
       const modal = await open(page, id, size);
       await expect(modal.getByRole("button", { name: "Accept" })).toBeInViewport({ ratio: 1 });
       await expect(modal.getByRole("button", { name: "Cancel" })).toBeInViewport({ ratio: 1 });
+      if (id.endsWith("-error")) {
+        await expect(modal.getByRole("alert")).toBeInViewport({ ratio: 1 });
+      }
     });
   }
 }

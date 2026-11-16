@@ -8,13 +8,7 @@ import {
   type ReactNode,
   type Ref,
 } from "react";
-import {
-  CONTROL_ALIGN,
-  controlClass,
-  type ControlAlign,
-  type ControlProps,
-  type ControlSize,
-} from "./control.js";
+import { controlClass, type ControlProps, type ControlSize } from "./control.js";
 import { cx, focusRing } from "./cx.js";
 import { useTypeStep } from "./density.js";
 import { InputShell } from "./InputShell.js";
@@ -99,14 +93,12 @@ export function SearchInput({
   icon,
   size = "md",
   width = "full",
-  align = "start",
   clearLabel,
   onChange,
   ref,
   ...rest
 }: {
   icon?: ReactNode;
-  align?: ControlAlign | undefined;
   clearLabel: string;
   ref?: Ref<HTMLInputElement> | undefined;
 } & ControlProps &
@@ -130,7 +122,6 @@ export function SearchInput({
           controlClass(size, width === "auto" ? "auto" : "full", step),
           SEARCH_PAD[size][icon === undefined ? "plain" : "icon"],
           SEARCH_RESET,
-          CONTROL_ALIGN[align],
         )}
       />
       {filled && !rest.disabled && !rest.readOnly && (

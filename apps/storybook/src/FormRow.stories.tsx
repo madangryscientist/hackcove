@@ -33,7 +33,7 @@ export const InlineEdit: S = {
         />
       </FormRowField>
       <FormRowField label="Amount" htmlFor="row-amount">
-        <Input id="row-amount" defaultValue="12,400.00" align="end" />
+        <Input id="row-amount" defaultValue="12,400.00" numeric />
       </FormRowField>
     </FormRow>
   ),
@@ -48,7 +48,7 @@ export const NoteUnderTheRow: S = {
           <Input id="hint-desc" defaultValue="Kitchen renovation" />
         </FormRowField>
         <FormRowField label="Amount" htmlFor="hint-amount">
-          <Input id="hint-amount" defaultValue="12,400.00" align="end" />
+          <Input id="hint-amount" defaultValue="12,400.00" numeric />
         </FormRowField>
       </FormRow>
       <FormRow error="Amount is required." actions={<Button>Save</Button>}>
@@ -99,7 +99,7 @@ export const TwoColumnForm: S = {
           <Input id="grid-item" />
         </FormRowField>
         <FormRowField label="Qty" htmlFor="grid-qty">
-          <Input id="grid-qty" align="end" />
+          <Input id="grid-qty" numeric />
         </FormRowField>
       </FormRow>
     </FormGrid>
@@ -114,7 +114,7 @@ export const DoInlineEdit: S = {
         <Input id="do-row-desc" defaultValue="Kitchen renovation" />
       </FormRowField>
       <FormRowField label="Amount" htmlFor="do-row-amount">
-        <Input id="do-row-amount" defaultValue="12,400.00" align="end" />
+        <Input id="do-row-amount" defaultValue="12,400.00" numeric />
       </FormRowField>
     </FormRow>
   ),
@@ -128,7 +128,7 @@ export const DontInlineEdit: S = {
         <Input id="dont-row-desc" defaultValue="Kitchen renovation" />
       </Field>
       <Field label="Amount" htmlFor="dont-row-amount">
-        <Input id="dont-row-amount" defaultValue="12,400.00" align="end" />
+        <Input id="dont-row-amount" defaultValue="12,400.00" numeric />
       </Field>
     </FormRow>
   ),

@@ -1,4 +1,4 @@
-import { type FormEvent, type ReactElement, useId, useState } from "react";
+import { type FormEvent, type ReactElement, useState } from "react";
 import { Button } from "./Button.js";
 import { Dialog } from "./Dialog.js";
 import { Field } from "./Field.js";
@@ -35,7 +35,6 @@ function useFieldSubmit(onSubmit: (value: string) => Promise<unknown>) {
   const [error, setError] = useState<string | null>(null);
   const empty = value.trim().length === 0;
   const send = (event: FormEvent) => {
-    event.preventDefault();
     if (empty || busy) return;
     // Close the <dialog> itself, so it animates out before `onClose` unmounts it.
     const dialog = event.currentTarget.closest("dialog");
@@ -66,8 +65,6 @@ export function FieldDialog({
   onClose,
   ...rest
 }: FieldDialogProps): ReactElement {
-  const id = useId();
-  const formId = `${id}-form`;
   const { value, setValue, busy, error, empty, send } = useFieldSubmit(onSubmit);
 
   return (
@@ -76,6 +73,7 @@ export function FieldDialog({
       title={title}
       description={description}
       onClose={onClose}
+      onSubmit={send}
       footer={
         <>
           <Button
@@ -86,7 +84,6 @@ export function FieldDialog({
           </Button>
           <Button
             type="submit"
-            form={formId}
             disabledReason={empty ? emptyReason : undefined}
             busy={busy && (busyLabel || true)}
           >
@@ -95,23 +92,15 @@ export function FieldDialog({
         </>
       }
     >
-      <form id={formId} onSubmit={send}>
-        <Field
-          label={label}
-          htmlFor={id}
-          hint={empty ? emptyReason : hint}
-          error={error ?? undefined}
-        >
-          <Input
-            autoFocus
-            id={id}
-            placeholder={placeholder}
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            autoComplete="off"
-          />
-        </Field>
-      </form>
+      <Field label={label} hint={empty ? emptyReason : hint} error={error ?? undefined}>
+        <Input
+          autoFocus
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          autoComplete="off"
+        />
+      </Field>
     </Dialog>
   );
 }

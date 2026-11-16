@@ -106,7 +106,7 @@ export {
 } from "./colourScheme.js";
 export { Tabs, type Tab } from "./Tabs.js";
 export { SegmentedControl, type Segment } from "./SegmentedControl.js";
-export { FilterGroup } from "./FilterGroup.js";
+export { Fieldset } from "./Fieldset.js";
 export { Checkbox } from "./Checkbox.js";
 export { Switch } from "./Switch.js";
 export { Radio, RadioGroup } from "./RadioGroup.js";
@@ -118,7 +118,7 @@ export { Field } from "./Field.js";
 export { FormGrid, FormRow, FormRowField, type FormRowSpan } from "./FormRow.js";
 export { FieldDialog } from "./FieldDialog.js";
 export { Input } from "./Input.js";
-export type { ControlAlign, ControlSize, ControlWidth } from "./control.js";
+export type { ControlSize, ControlWidth } from "./control.js";
 export type { Size } from "./size.js";
 export type { Tone } from "./tone.js";
 export { MetaList, type MetaListSeparator } from "./MetaList.js";
