@@ -197,22 +197,27 @@ export function DocsLayout({
   children,
   ...rest
 }: DocsLayoutProps): ReactElement {
+  const listed = contents.length >= 2;
   return (
     <SidebarLayout
       {...rest}
       asideLabel={navLabel}
       aside={<DocsNav nav={nav} navLabel={navLabel} />}
     >
-      <div className="flex flex-col gap-12 sm:gap-16 xl:grid xl:grid-cols-[minmax(0,1fr)_12rem] xl:gap-x-10">
+      <div
+        className={cx(
+          "flex flex-col gap-12 sm:gap-16",
+          // The contents column only when there is a list, so a page without one keeps the width.
+          listed && "xl:grid xl:grid-cols-[minmax(0,1fr)_12rem] xl:gap-x-10",
+        )}
+      >
         <PageHeaderContent
           breadcrumbs={breadcrumbs}
           title={title}
           description={description}
           className="xl:col-start-1"
         />
-        {contents.length >= 2 && (
-          <DocsContents contents={contents} current={current} label={contentsLabel} />
-        )}
+        {listed && <DocsContents contents={contents} current={current} label={contentsLabel} />}
         <div className="min-w-0 xl:col-start-1">
           <Stack gap="xl">
             {children}

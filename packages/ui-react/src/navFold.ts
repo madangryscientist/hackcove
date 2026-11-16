@@ -12,6 +12,10 @@ const WIDE = "(width >= 48rem)";
  * full width is remembered; while folded, it unfolds once the row is at least that wide. Remembering
  * the width is what stops it flipping back and forth. A browser with no `ResizeObserver` (jsdom)
  * never folds.
+ *
+ * The effect runs after every render on purpose (as `useScrollEdges` does): a slot that mounts
+ * later (a control shown once the viewer is known) is observed too. The fold state lives in a ref,
+ * so a rerun keeps it.
  */
 export function useNavFold(row: HTMLElement | null, enabled: boolean): boolean {
   const [folded, setFolded] = useState(false);
@@ -35,6 +39,6 @@ export function useNavFold(row: HTMLElement | null, enabled: boolean): boolean {
     observer.observe(row);
     for (const slot of row.children) observer.observe(slot);
     return () => observer.disconnect();
-  }, [row, enabled]);
+  });
   return enabled && folded;
 }
