@@ -1,5 +1,5 @@
 import ts from "typescript";
-import { applyEdits, type Edit } from "../edits.js";
+import { type Edit } from "../edits.js";
 import { type Context, packageImports, parse, report } from "../source.js";
 
 /** Exported names that were renamed: the file's own uses of them are renamed too. */
@@ -107,18 +107,36 @@ const COMMENTS_ONLY = new RegExp(String.raw`^(?:${BLOCK}[ \t]*)*(?:\/\/.*)?$`);
 /** The block comments right before a specifier on its line, which go with it when it dies. */
 const BLOCKS_BEFORE = new RegExp(String.raw`(?:${BLOCK}[ \t]*)+$`);
 
+/** The comma token the parser put after `element`, if any. */
+function commaToken(element: ts.ImportSpecifier, file: ts.SourceFile): ts.Node | undefined {
+  const siblings = element.parent
+    .getChildren(file)
+    .find((child) => child.kind === ts.SyntaxKind.SyntaxList);
+  const tokens = siblings?.getChildren(file) ?? [];
+  const next = tokens[tokens.indexOf(element) + 1];
+  return next?.kind === ts.SyntaxKind.CommaToken ? next : undefined;
+}
+
 /**
- * A dead specifier with any block comment right before it on its line, and with the comma after
- * it, or the one before it on its line (comma-first).
+ * A dead specifier with any block comment right before it on its line, and its comma: the one
+ * after it on its line, else the one before it on its line (comma-first), else the parser's.
+ * A comment on a line of its own between the name and that comma stays.
  */
-function deadSpan(element: ts.ImportSpecifier, file: ts.SourceFile): Span {
+function deadSpan(element: ts.ImportSpecifier, file: ts.SourceFile): Span[] {
+  const text = file.text;
   const named = element.getStart(file);
-  const line = file.text.slice(file.text.lastIndexOf("\n", named - 1) + 1, named);
+  const line = text.slice(text.lastIndexOf("\n", named - 1) + 1, named);
   const start = named - (BLOCKS_BEFORE.exec(line)?.[0].length ?? 0);
-  const after = commaAfter(file.text, element.end);
-  if (after !== undefined) return { start, end: after.end };
-  const before = /,[ \t]*$/.exec(file.text.slice(0, start));
-  return { start: start - (before?.[0].length ?? 0), end: element.end };
+  const after = commaAfter(text, element.end);
+  if (after !== undefined) return [{ start, end: after.end }];
+  const before = /,[ \t]*$/.exec(text.slice(0, start));
+  if (before !== null) return [{ start: start - before[0].length, end: element.end }];
+  const token = commaToken(element, file);
+  const comma = token === undefined ? undefined : commaAfter(text, token.getStart(file));
+  if (comma === undefined) return [{ start, end: element.end }];
+  if (/\n[ \t]*\/[/*]/.test(text.slice(element.end, comma.start)))
+    return [{ start, end: element.end }, comma];
+  return [{ start, end: comma.end }];
 }
 
 /**
@@ -131,7 +149,7 @@ function deadSpans(
   file: ts.SourceFile,
 ): Span[] {
   const elements = bindings.elements;
-  const spans = dead.map((element) => deadSpan(element, file));
+  const spans = dead.flatMap((element) => deadSpan(element, file));
   const last = elements.at(-1);
   const lastKept = elements.findLast((element) => !dead.includes(element));
   if (last !== undefined && dead.includes(last) && !elements.hasTrailingComma && lastKept) {
@@ -180,31 +198,7 @@ function specifiersRemoval(
   file: ts.SourceFile,
 ): Edit[] {
   const spans = merged(deadSpans(bindings, dead, file)).map((span) => onItsLine(file.text, span));
-  const edits = merged(spans).map((span) => ({ ...span, text: "" }));
-  if (stillParses(bindings.parent.parent, edits, file)) return edits;
-  const kept = bindings.elements.filter((element) => !dead.includes(element));
-  const text = `{ ${kept.map((element) => element.getText(file)).join(", ")} }`;
-  return [{ start: bindings.getStart(file), end: bindings.end, text }];
-}
-
-/**
- * Whether the import, edited, is still free of syntax errors. A layout the in-place removal does
- * not know (a comment that runs over lines between a name and its comma, say) fails it, and the
- * import is rebuilt on one line instead: plain, but never broken.
- */
-function stillParses(declaration: ts.Node, edits: readonly Edit[], file: ts.SourceFile): boolean {
-  const start = declaration.getStart(file);
-  const local = edits.map((edit) => ({
-    ...edit,
-    start: edit.start - start,
-    end: edit.end - start,
-  }));
-  const text = applyEdits(declaration.getText(file), local);
-  const { diagnostics } = ts.transpileModule(text, {
-    fileName: file.fileName,
-    reportDiagnostics: true,
-  });
-  return diagnostics?.length === 0;
+  return merged(spans).map((span) => ({ ...span, text: "" }));
 }
 
 function renameImport(element: ts.ImportSpecifier, context: Context): void {
