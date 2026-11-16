@@ -27,6 +27,33 @@ const css = (n: string): string =>
 ::view-transition-group(${n}),::view-transition-old(${n}),::view-transition-new(${n}){animation-duration:450ms;animation-timing-function:cubic-bezier(0.2,0,0,1)}
 @media (prefers-reduced-motion:reduce){::view-transition-group(${n}),::view-transition-old(${n}),::view-transition-new(${n}){animation:none}}`;
 
+// Every mounted Morph's re-measure, for refreshMorphs. A Morph registers only where it measures at
+// all (in the browser, with an IntersectionObserver), so on the server or without one the set is
+// empty and refreshMorphs does nothing.
+const remeasures = new Set<() => void>();
+
+/**
+ * Measures every mounted Morph again, at once, so a card a router has just scrolled on screen
+ * carries its transition name before the browser captures the new page. Call it right after the
+ * router restores scroll, when that happens after the render: TanStack Router restores scroll on
+ * `onRendered`, a few microtasks after the commit, which is too late for Morph to see on its own.
+ *
+ * ```ts
+ * const router = createRouter({ routeTree, defaultViewTransition: true, scrollRestoration: true });
+ * router.subscribe("onRendered", () => refreshMorphs());
+ * ```
+ *
+ * Subscribe after the router is created, so its own scroll restore runs first. A restore in a
+ * layout effect, during the commit, needs no call. It takes no arguments and does nothing on the
+ * server or where there is no IntersectionObserver.
+ */
+export function refreshMorphs(): void {
+  if (remeasures.size === 0) return;
+  flushSync(() => {
+    for (const remeasure of remeasures) remeasure();
+  });
+}
+
 /**
  * An element that grows into its counterpart on the next page, and shrinks back on Back, through
  * the View Transitions API. Wrap the card in the list and the element on the detail page, each with
@@ -62,9 +89,10 @@ export function Morph({
   // update the new page's far cards are already unnamed when the browser captures it. A parent's
   // layout effect runs after this one and may scroll this element on screen (a router restoring
   // the list's scroll on Back), so a microtask measures again once the whole commit is done and
-  // flushes the result. A microtask always runs before the browser's next rendering step, where it
-  // captures a transition's new state; a frame callback or the observer's first callback comes
-  // only after that capture in Chromium.
+  // flushes the result, before the browser's next rendering step, where it captures the new state.
+  // A restore later than that microtask (TanStack Router's, several awaits after the commit) is
+  // not seen here: neither `updateCallbackDone` nor a scroll event reliably comes before the
+  // capture in Chromium, so the router calls `refreshMorphs` after it restores.
   const [near, setNear] = useState(true);
   useLayoutEffect(() => {
     const el = ref.current;
@@ -79,6 +107,8 @@ export function Morph({
     queueMicrotask(() => {
       if (live) flushSync(() => setNear(measure()));
     });
+    const remeasure = () => setNear(measure());
+    remeasures.add(remeasure);
     const observer = new IntersectionObserver(
       (entries) => {
         const last = entries.at(-1);
@@ -89,6 +119,7 @@ export function Morph({
     observer.observe(el);
     return () => {
       live = false;
+      remeasures.delete(remeasure);
       observer.disconnect();
     };
   }, []);

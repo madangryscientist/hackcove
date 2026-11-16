@@ -158,23 +158,28 @@ test.describe("a long list", () => {
   });
 });
 
-test("Back after the list's scroll is restored shrinks into the card that was opened", async ({
-  page,
-}) => {
-  await page.addInitScript(RECORD_CAPTURE);
-  await page.goto(
-    `/iframe.html?id=feedback-morph--back-restores-scroll&viewMode=story&globals=theme:${theme?.id}`,
-  );
-  const stall = page.getByRole("button", { name: "Open Stall 30", exact: true });
-  await stall.scrollIntoViewIfNeeded();
-  await expect.poll(() => transitionName(page, "restore-30")).toBe("hc-morph-restore-30");
-  await stall.click();
-  await expect(page.getByRole("heading", { name: "Stall 30", exact: true })).toBeVisible();
-  expect(await captured(page)).toContain("hc-morph-restore-30");
+for (const [story, name, when] of [
+  ["back-restores-scroll", "restore", "in a layout effect"],
+  ["back-restores-scroll-async", "restoreasync", "a few microtasks after the commit"],
+] as const) {
+  test(`Back after the list's scroll is restored ${when} shrinks into the card that was opened`, async ({
+    page,
+  }) => {
+    await page.addInitScript(RECORD_CAPTURE);
+    await page.goto(
+      `/iframe.html?id=feedback-morph--${story}&viewMode=story&globals=theme:${theme?.id}`,
+    );
+    const stall = page.getByRole("button", { name: "Open Stall 30", exact: true });
+    await stall.scrollIntoViewIfNeeded();
+    await expect.poll(() => transitionName(page, `${name}-30`)).toBe(`hc-morph-${name}-30`);
+    await stall.click();
+    await expect(page.getByRole("heading", { name: "Stall 30", exact: true })).toBeVisible();
+    expect(await captured(page)).toContain(`hc-morph-${name}-30`);
 
-  await page.getByRole("button", { name: "Back" }).click();
-  await expect(stall).toBeInViewport();
-  // The card mounted far down and was scrolled on screen after its own layout effect, yet the
-  // browser captured it under its name, so the detail shrinks into it.
-  expect(await captured(page)).toContain("hc-morph-restore-30");
-});
+    await page.getByRole("button", { name: "Back" }).click();
+    await expect(stall).toBeInViewport();
+    // The card mounted far down and was scrolled on screen after its own layout effect, yet the
+    // browser captured it under its name, so the detail shrinks into it.
+    expect(await captured(page)).toContain(`hc-morph-${name}-30`);
+  });
+}

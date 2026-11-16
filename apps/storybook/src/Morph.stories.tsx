@@ -7,6 +7,7 @@ import {
   CardGrid,
   Morph,
   PageFade,
+  refreshMorphs,
   Stack,
   startPageTransition,
   Text,
@@ -146,41 +147,46 @@ const restoreShops = Array.from({ length: 40 }, (_, i) => ({
 
 type RestoreShop = (typeof restoreShops)[number];
 
-// A router's view transition: the update is async, as a router awaits the route before it renders.
-const routerTransition = (update: () => void) => {
-  if (typeof document.startViewTransition !== "function") {
-    update();
-    return;
-  }
-  document
-    .startViewTransition(async () => {
-      await Promise.resolve();
-      flushSync(update);
-    })
-    .ready.catch(() => {});
+// A router's view transition: the update awaits the route, then renders. `after` runs three
+// microtasks later, inside the update, as TanStack Router restores scroll on `onRendered`, and calls
+// `refreshMorphs` there, as a consumer does.
+const routerTransition = (update: () => void, after = () => {}) => {
+  const run = async () => {
+    await Promise.resolve();
+    flushSync(update);
+    await Promise.resolve().then().then();
+    after();
+  };
+  if (typeof document.startViewTransition !== "function") void run();
+  else document.startViewTransition(run).ready.catch(() => {});
 };
 
 /**
- * Forty stalls in their own scroller, and one stall's page. Back remounts the list at the top, and
- * the parent's layout effect, which runs after the cards' own, then restores the scroll to the stall
- * that was opened, as a router's scroll restoration does. That card is far down when it mounts and
- * on screen when the browser captures the page, so it must carry its name by then to shrink back.
+ * Forty stalls in their own scroller, and one stall's page. Back remounts the list at the top and
+ * restores the scroll to the stall that was opened, as a router does: in the parent's layout effect
+ * (`layout`), or a few microtasks after the commit (`async`, as TanStack Router does). That card is
+ * far down when it mounts and on screen at capture, so it must be named by then to shrink back.
  */
-function RestoreShops() {
+function RestoreShops({ name, restore }: { name: string; restore: "layout" | "async" }) {
   const [open, setOpen] = useState<RestoreShop | undefined>(undefined);
   const scroller = useRef<HTMLDivElement>(null);
   const saved = useRef(0);
   useLayoutEffect(() => {
-    if (!open && scroller.current) scroller.current.scrollTop = saved.current;
-  }, [open]);
+    if (restore === "layout" && !open && scroller.current)
+      scroller.current.scrollTop = saved.current;
+  }, [open, restore]);
   const go = (next: RestoreShop | undefined) => {
     if (next) saved.current = scroller.current?.scrollTop ?? 0;
-    routerTransition(() => setOpen(next));
+    const restoreAfter = () => {
+      if (!next && scroller.current) scroller.current.scrollTop = saved.current;
+      refreshMorphs();
+    };
+    routerTransition(() => setOpen(next), restore === "async" ? restoreAfter : () => {});
   };
   return (
     <div ref={scroller} className="h-96 overflow-y-auto">
       {open ? (
-        <Morph name="restore" item={open.id}>
+        <Morph name={name} item={open.id}>
           <Card
             title={open.name}
             size="lg"
@@ -196,7 +202,7 @@ function RestoreShops() {
       ) : (
         <Stack gap="md">
           {restoreShops.map((shop) => (
-            <Morph key={shop.id} name="restore" item={shop.id} data-testid={`restore-${shop.id}`}>
+            <Morph key={shop.id} name={name} item={shop.id} data-testid={`${name}-${shop.id}`}>
               <Card
                 title={shop.name}
                 footer={
@@ -215,8 +221,14 @@ function RestoreShops() {
   );
 }
 
-/** Back restores the list's scroll after it mounts, and the stall that was opened still shrinks into its place. */
-export const BackRestoresScroll: S = { render: () => <RestoreShops /> };
+export const BackRestoresScroll: S = {
+  render: () => <RestoreShops name="restore" restore="layout" />,
+};
+
+/** Back restores the list's scroll a few microtasks after the commit, as TanStack Router does, and the stall still shrinks into its place. */
+export const BackRestoresScrollAsync: S = {
+  render: () => <RestoreShops name="restoreasync" restore="async" />,
+};
 
 /** Each card's `item` is its shop's id, so only the pressed card has a partner on the next page and it morphs. */
 export const DoUniqueName: S = {

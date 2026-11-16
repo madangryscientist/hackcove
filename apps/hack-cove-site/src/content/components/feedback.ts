@@ -146,6 +146,7 @@ export const feedback: ComponentSection = {
           "Inside a `PageFade` the rest of the page cross-fades while the card morphs over it.",
           "Portal an overlay such as a dropdown to the body: the morphing element is a stacking context, so an overlay inside it cannot rise above a sticky header outside it.",
           "A Morph far below the fold carries no transition name until it scrolls near, so a long list costs only what is on screen.",
+          'With TanStack Router, call `refreshMorphs()` after it restores scroll: `router.subscribe("onRendered", () => refreshMorphs())`, after `createRouter`. Its restore lands after the render, so without the call the card scrolled back on screen is not named and Back does not shrink into it.',
         ],
       },
       accessibility: [
@@ -154,6 +155,12 @@ export const feedback: ComponentSection = {
         "Where the browser has no View Transitions it is a plain `<div>` and the content swaps.",
       ],
       api: ["Morph"],
+      functions: [
+        {
+          name: "refreshMorphs",
+          text: "measures every Morph again, so a card a router scrolled on screen after the render is named before the capture; call it from the router's `onRendered`.",
+        },
+      ],
     },
     {
       slug: "navigation-progress",
