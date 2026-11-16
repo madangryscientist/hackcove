@@ -266,6 +266,9 @@ export const CASES: Record<string, () => ReactElement> = {
       x
     </ui.TableEditCell>
   ),
+  TableExpandCell: () => (
+    <ui.TableExpandCell expanded={false} label="Details" onClick={noop} {...A} />
+  ),
   TableFoot: () => <ui.TableFoot {...A}>{null}</ui.TableFoot>,
   TableGroupRow: () => <ui.TableGroupRow colSpan={2} label="G" {...A} />,
   TableHead: () => <ui.TableHead {...A}>{null}</ui.TableHead>,

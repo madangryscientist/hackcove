@@ -3,6 +3,7 @@ import { cx } from "./cx.js";
 import type { Size } from "./size.js";
 import { TableContext, useNumericColumn } from "./tableColumns.js";
 import { ALIGN, type Align, PAD, type Rest, SectionContext } from "./tableRow.js";
+import { SortButton, type SortProps } from "./tableSort.js";
 import type { Tone } from "./tone.js";
 import { TEXT_TONE } from "./typography.js";
 
@@ -21,17 +22,26 @@ const TONE: Record<CellTone, string> = {
   ...TEXT_TONE,
 };
 
+/** A plain column title, or the hidden `label` of a column with none. */
+function HeadTitle({ label, children }: { label: string | undefined; children: ReactNode }) {
+  return label === undefined ? children : <span className="sr-only">{label}</span>;
+}
+
 /**
  * A column title, `<th scope="col">`. `numeric` declares a column of figures, once: the title and
  * every cell under it take end alignment and tabular figures. A column with nothing to show in its
  * head (a row's actions) takes `label` instead of `children`: the name a screen reader hears
- * ("Actions"), visually hidden so the head keeps its column.
+ * ("Actions"), visually hidden so the head keeps its column. `sort` and `onSort` make the column
+ * sortable: the title becomes a button that asks for the next direction, and the column says where
+ * it stands with `aria-sort`. The app sorts its rows; the table never does.
  */
 export function TableHeaderCell({
   numeric = false,
   align = numeric ? "end" : "start",
   children,
   label,
+  sort,
+  onSort,
   ...rest
 }: {
   /** A column of figures: this title and the cells under it are end aligned, the cells in tabular figures. */
@@ -49,15 +59,27 @@ export function TableHeaderCell({
       label: string;
     }
 ) &
-  Rest<"th", "align" | "scope">): ReactElement {
+  (
+    | { sort?: undefined; onSort?: undefined }
+    | (SortProps & { children: ReactNode; label?: undefined })
+  ) &
+  Rest<"th", "align" | "scope" | "aria-sort">): ReactElement {
   const { size } = useContext(TableContext);
+  const sorted = sort === "ascending" || sort === "descending";
   return (
     <th
       {...rest}
       scope="col"
+      {...(sorted ? { "aria-sort": sort } : {})}
       className={cx("whitespace-nowrap font-medium", PAD[size].head, ALIGN[align])}
     >
-      {label === undefined ? children : <span className="sr-only">{label}</span>}
+      {sort !== undefined && onSort !== undefined ? (
+        <SortButton sort={sort} onSort={onSort} align={align}>
+          {children}
+        </SortButton>
+      ) : (
+        <HeadTitle label={label}>{children}</HeadTitle>
+      )}
     </th>
   );
 }
@@ -101,9 +123,12 @@ const INDENT: Record<Size, Record<Indent, string>> = {
  * an ellipsis on one line and puts the full text in a `title`; the content is then plain text (strings and
  * numbers), since that is what the title shows. `colSpan` passes through: a cell that
  * spans the row is a full-width panel (a note under a group), and `align="center"` centres it. A
- * table with no rows takes `TableBody empty`, not a cell built by hand. `indent` sets a start-aligned cell in by 1 to 3 levels, for a line under a parent row.
+ * table with no rows takes `TableBody empty`, not a cell built by hand. `span="full"` spans every
+ * column the head declares, so a panel under a row needs no count. `indent` sets a start-aligned cell in by 1 to 3 levels, for a line under a parent row.
  */
 export function TableCell({
+  span,
+  colSpan,
   align,
   tone,
   numeric,
@@ -135,15 +160,28 @@ export function TableCell({
   /** A second, muted line under the content. */
   secondary?: ReactNode;
   children?: ReactNode;
-} & Rest<"td", "align">): ReactElement {
+} & (
+  | {
+      span?: undefined;
+      /** How many columns the cell spans; `span="full"` spans them all without a count. */
+      colSpan?: number | undefined;
+    }
+  | {
+      /** `full` spans every column the head declares: a panel under a row, an open row's detail. */
+      span: "full";
+      colSpan?: undefined;
+    }
+) &
+  Rest<"td", "align" | "colSpan">): ReactElement {
   const foot = useContext(SectionContext) === "foot";
-  const { size } = useContext(TableContext);
+  const { size, columns } = useContext(TableContext);
   const column = useNumericColumn();
   const figure = numeric ?? column;
   const side = align ?? (figure ? "end" : "start");
   return (
     <td
       {...rest}
+      colSpan={span === "full" ? columns : colSpan}
       className={cellClass({
         align: side,
         size,

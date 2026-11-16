@@ -16,6 +16,8 @@ import {
   PAD,
 } from "./tableRow.js";
 export { TableCell, TableHeaderCell, type CellTone } from "./TableCells.js";
+export { TableExpandCell } from "./TableExpandCell.js";
+export type { TableSort } from "./tableSort.js";
 import { EmptyRow } from "./tableEmpty.js";
 
 /**
@@ -127,7 +129,7 @@ export function TableFoot({
  * on its own, with no class from the caller. Use it in the head and the
  * body. In the body it also draws the line above the row and, unless the table is in a card, the hover
  * fill. `selected` marks the current row (the one open beside the table, the one being edited): the
- * `ListRow` selected fill and `aria-selected`; it wins over `tone` and `stripe`. `tone` marks the row's status (see `RowTone`): a stripe on the leading edge and a soft fill,
+ * `ListRow` selected fill and `aria-current`, the row whose detail is open, not a multi-select; it wins over `tone` and `stripe`. `tone` marks the row's status (see `RowTone`): a stripe on the leading edge and a soft fill,
  * or `muted` to fade it. A toned row keeps its fill on hover (the status stays readable), so a
  * linked row's link, not a hover fill, says it is clickable. `stripe` is the stripe alone, in the
  * `TextTone` colours (the first five names of a `StackedBar` segment's `VizTone`), with no fill: the row keeps its hover
@@ -143,7 +145,7 @@ export function TableRow({
   children,
   ...rest
 }: RowMark & {
-  /** The current row: the selected fill and `aria-selected`. Body rows only. */
+  /** The row in view (its detail open beside the table): the selected fill and `aria-current`. Body rows only. */
   selected?: boolean | undefined;
   children: ReactNode;
 } & Rest<"tr">): ReactElement {
@@ -155,7 +157,7 @@ export function TableRow({
     <SectionContext.Provider value={section}>
       <tr
         {...rest}
-        {...(current ? { "aria-selected": true } : {})}
+        {...(current ? { "aria-current": true } : {})}
         className={current ? cx(BODY_LINE, SELECTED) : rowClass(section, plain, tone, stripe)}
       >
         {withColumns(children)}
@@ -165,10 +167,10 @@ export function TableRow({
 }
 
 /**
- * A full-width group header in the body: a tinted row with a `label` that spans the table's
- * `colSpan` columns (its real column count), and optional `trailing` content at the far end (a
- * count, a subtotal, a small button). The group's rows follow it. For a panel of other content across the whole row, use a `TableCell` with
- * `colSpan` instead.
+ * A full-width group header in the body: a tinted row with a `label` that spans every column the
+ * head declares (or `colSpan` columns), and optional `trailing` content at the far end (a count, a
+ * subtotal, a small button). The group's rows follow it. For a panel of other content across the
+ * whole row, use a `TableCell span="full"` instead.
  */
 export function TableGroupRow({
   label,
@@ -180,13 +182,20 @@ export function TableGroupRow({
   label: ReactNode;
   /** Content at the far end of the row: a count, a subtotal, a small button. */
   trailing?: ReactNode;
-  /** The table's real column count, so the header spans the whole row. */
-  colSpan: number;
+  /**
+   * How many columns the header spans.
+   * @default every column the `TableHead` declares
+   */
+  colSpan?: number | undefined;
 } & Rest<"tr">): ReactElement {
-  const { size } = useContext(TableContext);
+  const { size, columns } = useContext(TableContext);
   return (
     <tr {...rest} className="relative border-t border-slate-200/70 bg-slate-50">
-      <th scope="rowgroup" colSpan={colSpan} className={cx(PAD[size].group, "text-left text-sm")}>
+      <th
+        scope="rowgroup"
+        colSpan={colSpan ?? columns}
+        className={cx(PAD[size].group, "text-left text-sm")}
+      >
         <div className="flex items-center justify-between gap-3">
           <span className="font-medium text-slate-900">{label}</span>
           {trailing != null && trailing !== false && (
