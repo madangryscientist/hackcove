@@ -296,6 +296,10 @@ export const removed = {
   r102: () => <ui.CardGrid columns="2:1">x</ui.CardGrid>,
   // @ts-expect-error CardGrid columns="1:2" is a SideColumn asideWidth="third"
   r103: () => <ui.CardGrid columns="1:2">x</ui.CardGrid>,
+  // @ts-expect-error RegionFrame width is the frame's, not the picture's pixels
+  r104: () => <ui.RegionFrame src="/x.png" alt="" width={1600} />,
+  // @ts-expect-error RegionFrame takes no height
+  r105: () => <ui.RegionFrame src="/x.png" alt="" height={920} />,
 };
 
 describe("removed API", () => {

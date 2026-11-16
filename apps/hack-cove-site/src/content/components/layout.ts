@@ -204,6 +204,31 @@ export const layout: ComponentSection = {
       api: ["SideColumn"],
     },
     {
+      slug: "card-grid",
+      name: "CardGrid",
+      summary: "A responsive grid of cards or tiles.",
+      whenToUse:
+        "Several cards or `StatTile`s of the same weight that should sit side by side on a wide screen.",
+      pairs: ["CardGrid/Tiles", "CardGrid/Auto"],
+      fullPage: "CardGrid/FullPage",
+      usage: {
+        do: [
+          "Use `columns` 2, 3 or 4 when you know how many; it is one column on a phone, two from `sm` and `columns` from `lg`.",
+          'Use `columns="auto"` when the count varies: it fits as many per row as the width allows, none narrower than `minWidth` (`md`, the default, or `sm`).',
+          'Every tile in a `CardGrid` is one width. A main card beside a narrower one is a `SideColumn` (`asideWidth="third"` for two thirds and one third), not a grid.',
+          '`align="start"` keeps each card its own height; by default every card stretches to the tallest in its row.',
+          "`CardGrid` goes inside a page layout; it sets no page width of its own.",
+          "A single column of blocks is a `Stack`, not a one-column `CardGrid`.",
+          '`as="ul"` makes the grid a list and wraps each child in a list item, for a set of like tiles a screen reader should count. The look is the same.',
+        ],
+      },
+      accessibility: [
+        'The grid is a plain `div` with no role: the cards keep their own order and semantics. With `as="ul"` it is a list, and each child is a list item.',
+        "The order is the DOM order, so the tab order follows the reading order.",
+      ],
+      api: ["CardGrid"],
+    },
+    {
       slug: "show",
       name: "Show",
       summary: "Shows its content only from a width up, or only below it.",

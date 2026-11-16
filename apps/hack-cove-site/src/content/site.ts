@@ -119,8 +119,6 @@ const pixelslash = {
   },
   report: {
     src: "/pixelslash/report.webp",
-    width: 1600,
-    height: 920,
     alt: "A PixelSlash report for a pricing page: the Main, Branch and Diff shots side by side, cropped to the four changed regions (a new price, a new button and a fuller storage bar), with the changes marked in magenta on the Diff.",
     caption:
       "A real report.html. Four regions changed, so the report shows Main, Branch and the diff cropped to them, lists each region, and leaves the rest of the page out.",

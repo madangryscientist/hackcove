@@ -1,0 +1,5 @@
+import { RegionFrame } from "@hackcove/ui-react";
+
+export const view = (
+  <RegionFrame src="/shot.png" alt="A shot" width={1600} height={920} />
+);

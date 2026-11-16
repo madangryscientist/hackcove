@@ -48,6 +48,40 @@ export const Scales: S = {
   ),
 };
 
+/** `width`: the frame at 96, 160 and 256px, and `full`, the parent's width; the region keeps its spot at each. */
+export const Widths: S = {
+  render: () => (
+    <div className="flex max-w-xl flex-col gap-4">
+      {(["sm", "md", "lg", "full"] as const).map((width) => (
+        <RegionFrame key={width} src={sampleShot} alt="" width={width}>
+          <OutlineRegion
+            rect={{ x: 168, y: 112, width: 136, height: 72 }}
+            within={sampleShotSize}
+            label={width}
+          />
+        </RegionFrame>
+      ))}
+    </div>
+  ),
+};
+
+/** `aspect`: `natural` keeps the picture's own shape; each other shape letterboxes it on the inset surface, with no crop, and the region stays on the picture. */
+export const Aspects: S = {
+  render: () => (
+    <div className="grid max-w-3xl grid-cols-2 items-start gap-4 sm:grid-cols-4">
+      {(["natural", "square", "4:3", "3:2", "16:9", "3:4", "9:16"] as const).map((aspect) => (
+        <RegionFrame key={aspect} src={sampleShot} alt="" aspect={aspect}>
+          <OutlineRegion
+            rect={{ x: 168, y: 112, width: 136, height: 72 }}
+            within={sampleShotSize}
+            label={aspect}
+          />
+        </RegionFrame>
+      ))}
+    </div>
+  ),
+};
+
 /** A `label` says why the area is marked, so a reader can tell an ignored area from a flagged one. */
 export const DoLabel: S = {
   render: () => (

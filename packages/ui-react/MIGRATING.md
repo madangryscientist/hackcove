@@ -327,6 +327,7 @@ TypeScript does not flag these:
 | `AppShellHideBelow` with more than one child | `Show` draws no row: put a `Cluster gap="xs"` inside it | codemod renames it, and reports it |
 | `AppShellBreakpoint` | `Breakpoint` | codemod |
 | `CardGrid columns="2:1"` or `"1:2"` | `SideColumn asideWidth="third"`: the main area two thirds, the aside one | by hand (reported) |
+| `RegionFrame width={1600} height={920}` (the picture's own size on its `<img>`) | drop both: `width` is now the frame's (`sm`, `md`, `lg`, `full`) and `aspect` its shape | by hand (reported) |
 
 `AppShellHideBelow` drew its children in a `gap-2` row. `Show` draws no box at all (it is
 `display: contents` when shown), so in `controls`, which is a `gap-2` row itself, nothing moves; inside a
@@ -337,7 +338,12 @@ side; a `CardGrid columns="1:2"` that had it first reorders its two children.
 New, nothing to change: `Show` (with `below`, and `as="span"`), `SideColumn asideWidth="third"`
 and `sticky`, `Stack width="compact"` (28rem, one card's width), `Stack align="start"`
 (children keep their own width), `Stack divided` (a line between rows, no gap), and the `StackAlign`
-and `TextLines` types.
+and `TextLines` types. Also new: `Section size="sm"` (a small titled group) and `size="lg"` (a
+landing page's section), `Cluster as="ul"` and `as="ol"`, `Steps size="lg"`, `SiteFooter`,
+`DocsLayout` (with the `DocsNavGroup`, `DocsHeading` and `DocsNeighbour` types), `BulletList
+ordered`, and `RegionFrame aspect` and `width`. `AppShell` now clears the safe-area insets, lands
+every `id` inside it below the header, and folds a `nav` that does not fit its row into the Menu
+from `md`: drop any `env(safe-area-inset-*)` padding and `scroll-margin-top` rule of your own.
 
 ### Running the codemod
 

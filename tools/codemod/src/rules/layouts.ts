@@ -77,10 +77,29 @@ export function cardGridRatio(tag: Tag, component: string, context: Context): vo
   }
 }
 
+const FRAME_WIDTHS = new Set(["sm", "md", "lg", "full"]);
+
+/** `RegionFrame` no longer passes `width` and `height` to its `<img>`: `width` is the frame's own. */
+export function regionFrameSize(tag: Tag, component: string, context: Context): void {
+  if (component !== "RegionFrame") return;
+  const width = attributeOf(tag, "width");
+  const named = literalOf(width);
+  if (width && (named === undefined || !FRAME_WIDTHS.has(named))) {
+    report(
+      context,
+      tag,
+      "RegionFrame width is the frame's sm, md, lg or full: drop the picture's pixel width",
+    );
+  } else if (attributeOf(tag, "height")) {
+    report(context, tag, "RegionFrame takes no height: drop it, or pick an aspect");
+  }
+}
+
 export const tagRules: readonly TagRule[] = [
   listEmpty,
   appShell,
   tabsVariant,
   hideBelow,
   cardGridRatio,
+  regionFrameSize,
 ];

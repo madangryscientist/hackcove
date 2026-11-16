@@ -246,6 +246,7 @@ export const content: ComponentSection = {
         do: [
           "Put the picture in a `RegionFrame` (`src`, `alt`, and any `<img>` prop such as `onLoad`) and the `OutlineRegion`s inside it; each region places itself over the picture.",
           "`rect` is the area and `within` the picture's full size, both in the picture's own pixels (its natural size), so the box stays on its area at any width.",
+          "Size the frame as an `Image`: `width` (`full`, or `sm`, `md`, `lg`) and `aspect` (`natural`, its own proportions, or a shape that letterboxes the picture, never cropping it). The regions stay on the picture, not the box.",
           "`label` is a short tag in the top-left corner that says what the area is or where it came from. `hatched` stripes the inside, for an area that is left out.",
           "The outline is the accent colour in every theme; do not draw a box of your own with a raw colour.",
         ],
