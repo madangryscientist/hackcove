@@ -102,6 +102,8 @@ function commaAfter(text: string, end: number): Span | undefined {
   return { start: end + match[0].lastIndexOf(","), end: end + match[0].length };
 }
 
+/** What is left of a line when nothing but comments (or nothing) is. */
+const COMMENTS_ONLY = new RegExp(String.raw`^(?:${BLOCK}[ \t]*)*(?:\/\/.*)?$`);
 /** The block comments right before a specifier on its line, which go with it when it dies. */
 const BLOCKS_BEFORE = new RegExp(String.raw`(?:${BLOCK}[ \t]*)+$`);
 
@@ -121,7 +123,7 @@ function deadSpan(element: ts.ImportSpecifier, file: ts.SourceFile): Span {
 
 /**
  * Each dead specifier with its comma. When the last one dies and the app wrote no trailing
- * comma, the new last specifier's comma goes too (only the comma), so the style stays.
+ * comma, the new last specifier's comma goes too, so the style stays.
  */
 function deadSpans(
   bindings: ts.NamedImports,
@@ -134,16 +136,20 @@ function deadSpans(
   const lastKept = elements.findLast((element) => !dead.includes(element));
   if (last !== undefined && dead.includes(last) && !elements.hasTrailingComma && lastKept) {
     const comma = commaAfter(file.text, lastKept.end);
-    if (comma !== undefined) spans.push(comma);
+    // A block comment after it keeps its space: only the comma goes.
+    if (comma !== undefined)
+      spans.push(
+        file.text.startsWith("/*", comma.end) ? { ...comma, end: comma.start + 1 } : comma,
+      );
   }
   return spans;
 }
 
 /**
  * The span widened to its whole line, newline included, when the line is left with nothing but
- * whitespace or the comment that sat beside the dead specifier. Otherwise it takes the spaces
- * before it when only the line's end or a kept comment follows, or the spaces after it when it
- * began the line.
+ * whitespace or comments. Otherwise, when only comments follow it, it takes the spaces before
+ * it and leaves the ones after it, so a kept comment keeps one space; when it began the line, it
+ * takes the spaces after it.
  */
 function onItsLine(text: string, span: Span): Span {
   const start = text.lastIndexOf("\n", span.start - 1) + 1;
@@ -152,10 +158,13 @@ function onItsLine(text: string, span: Span): Span {
   const before = text.slice(start, span.start);
   const after = text.slice(span.end, end);
   const opens = before.trim() === "";
-  const rest = after.trim();
-  if (opens && (rest === "" || rest.startsWith("//"))) return { start, end: end + 1 };
-  if (rest === "" || rest.startsWith("//"))
-    return { start: start + before.trimEnd().length, end: span.end };
+  const commentsOnly = COMMENTS_ONLY.test(after.trim());
+  if (opens && commentsOnly) return { start, end: end + 1 };
+  if (commentsOnly)
+    return {
+      start: start + before.trimEnd().length,
+      end: span.start + text.slice(span.start, span.end).trimEnd().length,
+    };
   if (opens) return { start: span.start, end: span.end + after.length - after.trimStart().length };
   return span;
 }
