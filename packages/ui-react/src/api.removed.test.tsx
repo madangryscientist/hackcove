@@ -276,6 +276,10 @@ export const removed = {
   // Forms
   // @ts-expect-error FilterGroup is gone: a Fieldset round a ButtonGroup of the chips
   r94: (t: typeof import("./index.js").FilterGroup) => t,
+  // @ts-expect-error Input align is gone: a figure is numeric
+  r95: () => <ui.Input align="end" />,
+  // @ts-expect-error ControlAlign is gone with Input align
+  r96: () => ((t: import("./index.js").ControlAlign) => t)("end"),
 };
 
 describe("removed API", () => {

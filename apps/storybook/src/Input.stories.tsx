@@ -115,46 +115,42 @@ export const FillWidth: S = {
     </div>
   ),
 };
-/** `align="end"` right-aligns the value, for a numeric field. */
-export const AlignEnd: S = {
+/** `numeric` is a field for a figure: right-aligned tabular digits and the phone's number keypad. A count passes `inputMode="numeric"`; an amount takes a `prefix`. */
+export const Numeric: S = {
   render: () => (
     <div className="flex max-w-lg flex-wrap items-center gap-2">
-      <Input
-        align="end"
-        inputMode="numeric"
-        aria-label="Quantity"
-        defaultValue="1 250"
-        width="md"
-      />
-      <Input
-        align="end"
-        prefix="R"
-        inputMode="decimal"
-        aria-label="Amount"
-        defaultValue="49.90"
-        width="fill"
-      />
+      <Input numeric inputMode="numeric" aria-label="Quantity" defaultValue="1 250" width="md" />
+      <Input numeric prefix="R" aria-label="Amount" defaultValue="49.90" width="fill" />
     </div>
   ),
 };
 
-/** An amount takes a `prefix` for the currency, `inputMode="decimal"` for the phone keypad and `align="end"` so the digits line up. */
+/** An amount is a `prefix` for the currency and `numeric`, which lines the digits up and brings up the number keypad. */
 export const DoAmount: S = {
-  render: () => (
-    <Input
-      prefix="R"
-      inputMode="decimal"
-      align="end"
-      width="md"
-      aria-label="Amount"
-      defaultValue="49.90"
-    />
-  ),
+  render: () => <Input prefix="R" numeric width="md" aria-label="Amount" defaultValue="49.90" />,
 };
 
 /** A currency typed into the placeholder is gone as soon as the person types, and nothing keeps the digits aligned. */
 export const DontAmount: S = {
   render: () => <Input placeholder="R 0.00" width="md" aria-label="Amount" />,
+};
+
+/** A count a person types is `numeric` with the whole-number keypad: a text field that keeps what was typed. */
+export const DoNumber: S = {
+  render: () => (
+    <Field label="Quantity">
+      <Input numeric inputMode="numeric" width="xs" defaultValue="12" />
+    </Field>
+  ),
+};
+
+/** `type="number"` drops "1 250", puts spinner arrows where the figure should end, and lets the mouse wheel change the value as the page scrolls. */
+export const DontNumber: S = {
+  render: () => (
+    <Field label="Quantity">
+      <Input type="number" width="xs" defaultValue="12" />
+    </Field>
+  ),
 };
 
 /** A search box is `type="search"` with an `icon`: the browser's own look is dropped and a clear button appears once there is a value. */
@@ -216,7 +212,7 @@ export const Invalid: S = {
         <Input icon="search" />
       </Field>
       <Field label="Price" error="Enter a price above zero.">
-        <Input prefix="R" align="end" inputMode="decimal" defaultValue="0.00" />
+        <Input prefix="R" numeric defaultValue="0.00" />
       </Field>
       <Field label="Search shops" error="Type at least two letters.">
         <Input type="search" icon="search" defaultValue="a" />

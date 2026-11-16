@@ -76,7 +76,7 @@ export function GalleryForm() {
             <Input id="gallery-item" size="sm" defaultValue="Kitchen renovation" />
           </FormRowField>
           <FormRowField label="Amount" htmlFor="gallery-amount">
-            <Input id="gallery-amount" size="sm" align="end" defaultValue="12,400.00" />
+            <Input id="gallery-amount" size="sm" numeric defaultValue="12,400.00" />
           </FormRowField>
         </FormRow>
       </FormGrid>

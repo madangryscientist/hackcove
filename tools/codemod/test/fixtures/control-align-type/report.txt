@@ -1,0 +1,1 @@
+1: ControlAlign is gone: an Input for a figure is numeric

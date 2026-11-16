@@ -295,10 +295,17 @@ New, nothing to change: `Dialog onSubmit` (one form round the body, the error an
 | Old | New | |
 | --- | --- | --- |
 | `<FilterGroup label={x}>{chips}</FilterGroup>` | `<Fieldset label={x}><ButtonGroup>{chips}</ButtonGroup></Fieldset>` | codemod |
+| `Input align="end"` | `Input numeric`: right-aligned tabular figures and `inputMode="decimal"` unless you pass your own | codemod, and drops an `inputMode="decimal"` beside it |
+| `Input align="start"` | leave it out | codemod drops it |
+| `Input align` with any other value | `numeric` on a field for a figure, nothing on any other | by hand, and reported |
+| `ControlAlign` | no replacement | by hand, and reported |
 
 `Fieldset` is the one labelled group: checkboxes that answer one question, a set of fields, or the
 chips of one facet. It takes `hint` and `error` as a `Field` does. A `RadioGroup` is its own group
 and goes in no `Fieldset`.
+
+An amount is `<Input prefix="R" numeric />` and a count `<Input numeric inputMode="numeric" />`.
+Never `type="number"` for a figure a person types.
 
 TypeScript does not flag these:
 
@@ -307,6 +314,7 @@ TypeScript does not flag these:
   a region.
 - A `Fieldset` legend has the `Field` label's look, where a `FilterGroup` legend was small
   uppercase, and its chips sit 2px further apart (a `ButtonGroup`'s gap).
+- A `numeric` field sets its digits in tabular figures, where `align="end"` did not.
 
 ### Running the codemod
 

@@ -35,6 +35,7 @@ const REMOVED: Readonly<Record<string, string>> = {
   EpicHeader: "EpicHeader is gone: a SubsectionHeading over the group",
   groupByEpic: "groupByEpic is gone: Object.groupBy in the app",
   ToolCallCard: "ToolCallCard is gone: a bordered Disclosure",
+  ControlAlign: "ControlAlign is gone: an Input for a figure is numeric",
   avatarColourClass: "avatarColourClass is no longer exported: Avatar picks the colour from name",
   initialsOf: "initialsOf is no longer exported: Avatar draws the initials from name",
   ...Object.fromEntries(

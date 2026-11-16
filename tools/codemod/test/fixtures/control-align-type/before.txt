@@ -1,0 +1,3 @@
+import type { ControlAlign } from "@hackcove/ui-react";
+
+export const edge: ControlAlign = "end";

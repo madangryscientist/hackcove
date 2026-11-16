@@ -1,5 +1,6 @@
 import ts from "typescript";
-import { type Context, type Tag, type TagRule } from "../source.js";
+import { attributeOf, literalOf, remove, replace } from "../attributes.js";
+import { type Context, report, type Tag, type TagRule } from "../source.js";
 
 /**
  * How the file names a package export it may not import yet: its local name when it is imported,
@@ -49,4 +50,26 @@ export function filterGroup(tag: Tag, component: string, context: Context): void
   context.edits.push({ start: closing, end: closing, text: `</${group}>` });
 }
 
-export const tagRules: readonly TagRule[] = [filterGroup];
+/**
+ * `Input align="end"` was always a figure: it is `numeric`, which also sets `inputMode="decimal"`,
+ * so that line goes. `align="start"` was the default. Any other value is a person's call.
+ */
+export function inputAlign(tag: Tag, component: string, context: Context): void {
+  if (component !== "Input") return;
+  const align = attributeOf(tag, "align");
+  if (align === undefined) return;
+  const value = literalOf(align);
+  if (value === "start") {
+    remove(context, align);
+    return;
+  }
+  if (value !== "end") {
+    report(context, align, "Input align is gone: a figure is numeric, any other field drops it");
+    return;
+  }
+  replace(context, align, "numeric");
+  const mode = attributeOf(tag, "inputMode");
+  if (mode !== undefined && literalOf(mode) === "decimal") remove(context, mode);
+}
+
+export const tagRules: readonly TagRule[] = [filterGroup, inputAlign];

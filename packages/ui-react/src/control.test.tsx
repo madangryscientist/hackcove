@@ -88,26 +88,6 @@ describe("Input with an icon", () => {
   });
 });
 
-describe("Input align", () => {
-  const icon = "search";
-
-  it("start is the default and adds no alignment class", () => {
-    expect(classOf(renderToStaticMarkup(<Input />))).not.toContain("text-right");
-  });
-
-  it("end right-aligns a plain field, an icon field, a search field and a prefixed field", () => {
-    for (const markup of [
-      renderToStaticMarkup(<Input align="end" />),
-      renderToStaticMarkup(<Input align="end" icon={icon} />),
-      renderToStaticMarkup(<Input align="end" type="search" />),
-    ]) {
-      expect(classOf(markup.slice(markup.indexOf("<input")))).toContain("text-right");
-    }
-    const prefixed = renderToStaticMarkup(<Input align="end" prefix="R" />);
-    expect(classOf(prefixed.slice(prefixed.indexOf("<input")))).toContain("text-right");
-  });
-});
-
 describe("native size and width are replaced", () => {
   it("passes the rest through", () => {
     const out = renderToStaticMarkup(
