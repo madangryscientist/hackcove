@@ -56,7 +56,7 @@ the status pages.
 | `to="/stores/$storeId" params={{ storeId: id }}` | ``href={`/stores/${encodeURIComponent(id)}`}`` | by hand |
 | `search={{ project, env }}`, `hash="for-shops"` | `href={"/?" + new URLSearchParams({ project, env })}`, `href="/about#for-shops"` | by hand |
 | `{ label, render }` crumbs and items | `{ label, href }` | codemod for a literal `to`, else by hand |
-| `LinkRenderProps`, `LinkRender` | `LinkAdapterProps`, `LinkAdapter` | codemod |
+| `LinkRenderProps`, `LinkRender` | `LinkAdapterProps`, `LinkAdapter`; the props carry `href`, so an adapter spreads them and sets no `href` of its own | codemod, and reported |
 | `viewTransition` on one `Link` | `defaultViewTransition` on `createRouter` | by hand |
 
 New, nothing to change: `MediaTile` and `Avatar` take `href` and `external` beside `onClick`, and
@@ -95,6 +95,7 @@ TypeScript does not flag these:
 | `Pill tone="amber"`, `"emerald"`, `"blue"`, `"red"`, `"violet"` | `"warn"`, `"positive"`, `"info"`, `"danger"`, `"accent"` | codemod |
 | `Pill tone="sky"` | `tone="info"` (the blue tint) | codemod, and reported |
 | `Pill label="Weight"` (the name half) | `Pill name="Weight"` | codemod |
+| a tone kept in code, `const tones: PillTone[] = ["amber", "slate"]` | the new values, `["warn", "neutral"]` | codemod for a value or list typed `PillTone`, `BarTone`, `ButtonTone`, `IconButtonTone` or `CellTone`; any other `tone={…}` whose old values are gone is reported |
 | any `div` attribute on `ButtonGroup` | only `id`, `data-*` and `aria-*` | by hand |
 
 New, nothing to change: `Button` takes `ref`; `Pill` takes `size`. A `Button`, `IconButton` or
@@ -176,7 +177,7 @@ else sets the step, and no component takes a type size of its own.
 TypeScript does not flag these, since no name changes:
 
 - Every page reads one step larger unless its `AppShell` sets `density="compact"`. The codemod
-  reports every `AppShell` so a person chooses; it writes nothing.
+  reports every `AppShell` with no `density` so a person chooses; it writes nothing.
 - A text field is never under 16px on a touch screen, at any size or step, so iOS Safari does not
   zoom the page when it takes the focus.
 - `Prose` now sets only its line height: `Text` inside it is 16px, as it is outside.
@@ -199,7 +200,7 @@ Every labelled control takes the same words: `hint` for the muted line, `error` 
 | `ColourSchemeToggle initial` | `defaultValue` | codemod |
 | `Input icon={<Icon name="search" />}` | `icon="search"` | codemod for an `<Icon name>`, else by hand |
 | `<Select><option value="a">A</option></Select>` | `<Select items={[{ value: "a", label: "A" }]} />` | codemod for literal options, else by hand |
-| `Select width="auto"` | leave it out outside a `Field`: `auto` is the default there | codemod drops it |
+| `Select width="auto"` | leave it out outside a `Field`: `auto` is the default there | codemod drops it, and reports a `Select` outside a `Field` with no `width` |
 | `Field hideLabel` | `labelHidden` | codemod |
 | `FieldDialog label="…" inputLabel="…"` | `label` alone, which names the input | codemod drops `inputLabel` |
 | `FormRow action` | `actions` | codemod |
@@ -282,6 +283,25 @@ TypeScript does not flag these:
 - A `Button`, `IconButton`, `Input`, `Select`, `Pill` or `Checkbox` with no `size` in a `Table` is
   now `sm`. The codemod reports every `Table` so a person checks what is inside.
 - A cell that was `tone="neutral"` is one step darker.
+
+### Running the codemod
+
+The codemod lives in this repository at `tools/codemod` and is not published. From a checkout of
+it, after `bun install` once, point it at the app's source folder:
+
+```bash
+bun <checkout>/tools/codemod/src/run.ts src           # a dry run: lists what it would change
+bun <checkout>/tools/codemod/src/run.ts src --write   # rewrites the files
+```
+
+It reads every `.ts`, `.tsx`, `.js` and `.jsx` file under the folder (not `node_modules`, `dist` or
+a `.d.ts`), and changes only elements and types imported from `@hackcove/ui-react`, an aliased or
+namespace import included. It edits the attributes in place and leaves the rest of the file as it
+was, so run the app's formatter after it.
+
+Each `file:line` it prints is a **by hand** row above, on a line of the rewritten file. Work through
+them, then typecheck: what TypeScript still flags sits on or next to a line the codemod printed. The
+lists under "TypeScript does not flag these" are what is left to check by eye.
 
 ## 0.9 → 0.10: Avatar `2xl` is 64px, the old 96px is `3xl`
 
