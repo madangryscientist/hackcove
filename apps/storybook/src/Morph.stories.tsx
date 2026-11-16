@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import {
   Button,
   Card,
@@ -142,6 +143,88 @@ function LongShops() {
 
 /** A long list of cards: only those near the screen are named, so the transition stays quick. */
 export const LongList: S = { render: () => <LongShops /> };
+
+const restoreShops = Array.from({ length: 40 }, (_, i) => ({
+  id: String(i + 1),
+  name: `Stall ${i + 1}`,
+  text: "Second-hand goods, open on Saturdays.",
+}));
+
+type RestoreShop = (typeof restoreShops)[number];
+
+// A router's view transition: the update is async, as a router awaits the route before it renders.
+const routerTransition = (update: () => void) => {
+  if (typeof document.startViewTransition !== "function") {
+    update();
+    return;
+  }
+  document
+    .startViewTransition(async () => {
+      await Promise.resolve();
+      flushSync(update);
+    })
+    .ready.catch(() => {});
+};
+
+/**
+ * Forty stalls in their own scroller, and one stall's page. Back remounts the list at the top, and
+ * the parent's layout effect, which runs after the cards' own, then restores the scroll to the stall
+ * that was opened, as a router's scroll restoration does. That card is far down when it mounts and
+ * on screen when the browser captures the page, so it must carry its name by then to shrink back.
+ */
+function RestoreShops() {
+  const [open, setOpen] = useState<RestoreShop | undefined>(undefined);
+  const scroller = useRef<HTMLDivElement>(null);
+  const saved = useRef(0);
+  useLayoutEffect(() => {
+    if (!open && scroller.current) scroller.current.scrollTop = saved.current;
+  }, [open]);
+  const go = (next: RestoreShop | undefined) => {
+    if (next) saved.current = scroller.current?.scrollTop ?? 0;
+    routerTransition(() => setOpen(next));
+  };
+  return (
+    <div ref={scroller} className="h-96 overflow-y-auto">
+      {open ? (
+        <Morph name="restore" item={open.id}>
+          <Card
+            title={open.name}
+            size="lg"
+            footer={
+              <Button variant="outline" onClick={() => go(undefined)}>
+                Back
+              </Button>
+            }
+          >
+            <Text as="p">{open.text}</Text>
+          </Card>
+        </Morph>
+      ) : (
+        <Stack gap="md">
+          {restoreShops.map((shop) => (
+            <Morph key={shop.id} name="restore" item={shop.id} data-testid={`restore-${shop.id}`}>
+              <Card
+                title={shop.name}
+                footer={
+                  <Button variant="outline" onClick={() => go(shop)}>
+                    Open {shop.name}
+                  </Button>
+                }
+              >
+                <Text as="p" color="muted">
+                  {shop.text}
+                </Text>
+              </Card>
+            </Morph>
+          ))}
+        </Stack>
+      )}
+    </div>
+  );
+}
+
+/** Back restores the list's scroll after it mounts, and the stall that was opened still shrinks into its place. */
+export const BackRestoresScroll: S = { render: () => <RestoreShops /> };
 
 /** Each card's `item` is its shop's id, so only the pressed card has a partner on the next page and it morphs. */
 export const DoUniqueName: S = {
