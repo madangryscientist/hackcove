@@ -52,3 +52,20 @@ for (const [id, text] of [
     await expect(tip).toBeInViewport({ ratio: 1 });
   });
 }
+
+test("the arrow keys reach a Tabs option with a disabledReason, choose nothing and show the reason", async ({
+  page,
+}) => {
+  await page.goto(story("navigation-tabs--do-disabled-reason"));
+  const overview = page.getByRole("tab", { name: "Overview" });
+  const billing = page.getByRole("tab", { name: "Billing" });
+  await overview.focus();
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("ArrowRight");
+  await expect(billing).toBeFocused();
+  await expect(billing).toHaveAttribute("aria-disabled", "true");
+  await expect(billing).toHaveAccessibleDescription("Only an owner sees billing");
+  await expect(page.getByRole("tooltip")).toHaveText("Only an owner sees billing");
+  await expect(overview).toHaveAttribute("aria-selected", "false");
+  await expect(page.getByRole("tab", { name: "Builds" })).toHaveAttribute("aria-selected", "true");
+});

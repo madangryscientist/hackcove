@@ -198,3 +198,22 @@ export const DoRow: S = {
     );
   },
 };
+
+/** `disabledReason` says why it cannot flip: it washes out, keeps its focus and shows the reason as its tooltip. */
+export const DoDisabledReason: S = {
+  render: () => (
+    <Switch
+      label="Live in production"
+      checked={false}
+      onChange={() => undefined}
+      disabledReason="Pass the staging check first"
+    />
+  ),
+};
+
+/** A bare `disabled` switch drops out of the tab order and never says why. */
+export const DontDisabledReason: S = {
+  render: () => (
+    <Switch label="Live in production" checked={false} onChange={() => undefined} disabled />
+  ),
+};

@@ -5,6 +5,7 @@ import { useDensity } from "./density.js";
 import { Icon } from "./Icon.js";
 import type { IconName } from "./icons.js";
 import { renderLink } from "./link.js";
+import { blockedProps } from "./blocked.js";
 import { Tipped } from "./Tooltip.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
@@ -14,7 +15,7 @@ export type IconButtonVariant = "outline" | "ghost";
 /** An IconButton's tones: `neutral` (the default) and `danger`. */
 export type IconButtonTone = Extract<Tone, "neutral" | "danger">;
 
-const BASE = `relative inline-flex items-center justify-center rounded-lg border transition disabled:pointer-events-none disabled:opacity-50 ${focusRing}`;
+const BASE = `relative inline-flex items-center justify-center rounded-lg border transition disabled:pointer-events-none disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:opacity-50 ${focusRing}`;
 
 /** The same heights as a `Button` of the size: 26px, 38px and 46px. */
 const SIZE: Record<Size, string> = { sm: "size-6.5", md: "size-9.5", lg: "size-11.5" };
@@ -57,11 +58,18 @@ type IconButtonProps = {
 
 type IconButtonAsButton = IconButtonProps &
   Unstyled<Omit<ComponentPropsWithoutRef<"button">, "children">> & {
+    /**
+     * Why the button cannot be pressed: it dims and is blocked (`aria-disabled`; a click, Enter and
+     * Space do nothing) while it stays in the tab order, and the reason is its tooltip on hover,
+     * keyboard focus and a tap, read out as its description. The name stays `label`.
+     */
+    disabledReason?: string | undefined;
     href?: undefined;
     external?: undefined;
   };
 
 type IconButtonAsLink = IconButtonProps & {
+  disabledReason?: undefined;
   /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
   external?: boolean | undefined;
   /** Makes the button a link to this URL; an in-app path goes through the app's `LinkProvider`. */
@@ -86,7 +94,7 @@ function isLink(props: IconButtonAsButton | IconButtonAsLink): props is IconButt
  * and tooltip. `variant="ghost"` drops the border for a quiet action in a row or a toolbar; `size`
  * matches the height of a `Button` of the same size (`sm` 26px, `md` 38px, `lg` 46px) and with no
  * `size` it takes its container's; `tone="danger"` is red, for delete and clear; `count` pins a
- * red count to the corner. Defaults to `type="button"`. `href` makes it a link instead (the app's
+ * red count to the corner; `disabledReason` blocks it and shows why. Defaults to `type="button"`. `href` makes it a link instead (the app's
  * router link through `LinkProvider` for an in-app path, else a plain `<a>`; `external` opens a
  * new tab), with the same look.
  */
@@ -99,7 +107,7 @@ export function IconButton(props: IconButtonAsButton | IconButtonAsLink): ReactE
     </>
   );
   if (isLink(props)) {
-    const { label, variant, tone, size: _size, count, icon, ...link } = props;
+    const { label, variant, tone, size: _size, count, icon, disabledReason: _r, ...link } = props;
     return (
       // The text is the name, already `aria-label`, so it describes nothing; no tap: a tap is the action.
       <Tipped text={named(label, count)} describes={false} own={link}>
@@ -116,14 +124,22 @@ export function IconButton(props: IconButtonAsButton | IconButtonAsLink): ReactE
       </Tipped>
     );
   }
-  const { label, variant, tone, size: _size, count, icon, ...rest } = props;
+  const { label, variant, tone, size: _size, count, icon, disabledReason, ...rest } = props;
+  const blocked = disabledReason !== undefined;
   return (
-    <Tipped text={named(label, count)} describes={false} own={rest}>
+    // Blocked, the tooltip is the reason, a description and shown on a tap; else it is the name.
+    <Tipped
+      text={blocked ? disabledReason : named(label, count)}
+      describes={blocked}
+      tap={blocked}
+      own={rest}
+    >
       {(tip) => (
         <button
           type="button"
           {...rest}
           {...tip}
+          {...(blocked ? blockedProps() : {})}
           aria-label={named(label, count)}
           className={look({ variant, tone, size: drawn })}
         >

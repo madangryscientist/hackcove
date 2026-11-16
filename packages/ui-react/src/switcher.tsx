@@ -25,6 +25,12 @@ export type SwitchButton = Option & {
    * `title` still shows as its tooltip and is read out.
    */
   disabled?: boolean;
+  /**
+   * Why this option cannot be chosen: it is disabled as `disabled` is, but the arrow keys still
+   * reach it (focus lands on it and chooses nothing), and the reason is its tooltip on hover,
+   * keyboard focus and a tap, read out as its description.
+   */
+  disabledReason?: string;
   /** The id of the element this option controls (a tab's panel). */
   controls?: string;
   href?: undefined;
@@ -42,6 +48,7 @@ export type SwitchLink = Option & {
   /** This link is the current page. */
   selected?: boolean;
   disabled?: undefined;
+  disabledReason?: undefined;
   controls?: undefined;
   external?: boolean;
   /** Where the option links. */
@@ -136,6 +143,25 @@ function SwitchLinkItem({
 }
 
 /**
+ * The arrow keys, Home and End on a button group: focus the next option and choose it. An option
+ * with a reason is reached but not chosen, so the keyboard finds out why.
+ */
+function moveByArrows(event: KeyboardEvent<HTMLDivElement>, vertical: boolean): void {
+  const buttons = [
+    ...event.currentTarget.querySelectorAll(
+      "button:not([aria-disabled=true]), button[data-hc-reason]",
+    ),
+  ];
+  const at = buttons.findIndex((button) => button === event.target);
+  if (at < 0) return;
+  const button = buttons[target(event.key, at, buttons.length, vertical)];
+  if (!(button instanceof HTMLButtonElement)) return;
+  event.preventDefault();
+  button.focus();
+  if (!button.hasAttribute("data-hc-reason")) button.click();
+}
+
+/**
  * The shared body of Tabs and SegmentedControl: a row of options with one current. Buttons form a
  * `tablist` or `radiogroup` with a single tab stop and arrow-key movement (the arrow focuses and
  * chooses); links form a `<nav>` with `aria-current="page"` on the current one.
@@ -165,21 +191,13 @@ export function Switcher({
     );
   }
 
-  const off = (item: SwitchButton): boolean => groupDisabled === true || item.disabled === true;
+  const off = (item: SwitchButton): boolean =>
+    groupDisabled === true || item.disabled === true || item.disabledReason !== undefined;
+  // An option with a reason stays reachable by the arrow keys, so the keyboard finds out why.
+  const reasoned = (item: SwitchButton): boolean =>
+    groupDisabled !== true && item.disabledReason !== undefined;
   const enabled = items.filter((item) => !off(item));
   const stop = enabled.some((item) => item.value === value) ? value : enabled[0]?.value;
-  function onKeyDown(event: KeyboardEvent<HTMLDivElement>): void {
-    const buttons = [...event.currentTarget.querySelectorAll("button:not([aria-disabled=true])")];
-    const at = buttons.findIndex((button) => button === event.target);
-    if (at < 0) return;
-    const to = target(event.key, at, buttons.length, parts.vertical);
-    const button = buttons[to];
-    if (!(button instanceof HTMLButtonElement)) return;
-    event.preventDefault();
-    button.focus();
-    button.click();
-  }
-
   return (
     <div
       {...rest}
@@ -187,13 +205,19 @@ export function Switcher({
       aria-label={label}
       {...(parts.stacked ? { "aria-orientation": "vertical" as const } : {})}
       {...(groupDisabled ? { "aria-disabled": true } : {})}
-      onKeyDown={onKeyDown}
+      onKeyDown={(event) => moveByArrows(event, parts.vertical)}
       className={root}
     >
       {items.map((item) => (
         // A title is the option's description, shown on hover and keyboard focus; on a disabled
         // option it is the reason, and a tap shows it too.
-        <Tipped key={item.value} text={item.title} describes tap={off(item)} own={{}}>
+        <Tipped
+          key={item.value}
+          text={item.disabledReason ?? item.title}
+          describes
+          tap={off(item)}
+          own={{}}
+        >
           {(tip) => (
             <button
               {...dataAttributes(item)}
@@ -205,6 +229,7 @@ export function Switcher({
               {...(item.controls === undefined ? {} : { "aria-controls": item.controls })}
               tabIndex={item.value === stop ? 0 : -1}
               {...(off(item) ? { "aria-disabled": true } : {})}
+              {...(reasoned(item) ? { "data-hc-reason": "" } : {})}
               {...tip}
               onClick={() => {
                 if (!off(item)) onChange?.(item.value);

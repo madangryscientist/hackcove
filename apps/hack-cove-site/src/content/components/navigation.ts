@@ -11,7 +11,13 @@ export const navigation: ComponentSection = {
       summary: "Switch a view in place, or move between pages.",
       whenToUse:
         "Tabs switch a panel on the same page. A row of links to other pages is `Tabs` with link items.",
-      pairs: ["Tabs/SwitchView", "Tabs/SwitchPage", "Tabs/Count", "TabsLinks/Rail"],
+      pairs: [
+        "Tabs/SwitchView",
+        "Tabs/SwitchPage",
+        "Tabs/Count",
+        "TabsReason/DisabledReason",
+        "TabsLinks/Rail",
+      ],
       usage: {
         do: [
           "`Tabs` switches a view in place; the caller owns `value` and `onChange`, and the panel sits right under the row.",
@@ -19,12 +25,13 @@ export const navigation: ComponentSection = {
           "A `count` sits muted after the label and is read as part of the tab's name.",
           'Across, tabs are always underline, under a `PageHeader` too. `orientation="vertical"` is the pill rail, the current tab filled, for a `SidebarLayout` aside, and only the rail takes `size`.',
           "`size` (`sm`, `md` the default, `lg`) sets the vertical rail on the control scale, so it lines up with a `Button` of the same size; the underline row has one size.",
-          "A disabled tab keeps a `title` as the reason.",
+          "A tab that cannot be chosen yet takes a `disabledReason` that says why.",
           'Pill links with `orientation="vertical"` are the rail of a `SidebarLayout`: one link per line.',
         ],
       },
       accessibility: [
-        "The row is a tab list named by `label`; the arrow keys, Home and End move between the tabs, and a disabled tab is skipped.",
+        "The row is a tab list named by `label`; the arrow keys, Home and End move between the tabs, and a `disabled` tab is skipped.",
+        "A tab with `disabledReason` is `aria-disabled`: the arrow keys reach it and choose nothing, and the reason shows as a tooltip on hover, keyboard focus and a tap, read out as its description (the native `title` without CSS anchor positioning).",
         'Give the panel `role="tabpanel"` and a tab `controls` that points at its `id`.',
         'A tab is a `button` with `role="tab"` and `aria-selected`; only the current tab is in the tab order, and the arrow keys move and choose.',
         'Link items form a `<nav>` named by `label`; the current link gets `aria-current="page"`.',

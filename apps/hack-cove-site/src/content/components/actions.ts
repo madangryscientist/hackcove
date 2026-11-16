@@ -44,7 +44,12 @@ export const actions: ComponentSection = {
       name: "IconButton",
       summary: "A square button for one icon.",
       whenToUse: "An action with a familiar icon and no room for a word: delete, settings, alerts.",
-      pairs: ["IconButton/Label", "IconButton/Badge", "IconButton/Navigate"],
+      pairs: [
+        "IconButton/Label",
+        "IconButton/Badge",
+        "IconButton/Navigate",
+        "IconButton/DisabledReason",
+      ],
       usage: {
         do: [
           "Always give the `label`: it is the accessible name and the tooltip, and the icon is only decoration.",
@@ -52,6 +57,7 @@ export const actions: ComponentSection = {
           "`size` is `sm` (26px) inside a row or a chip, `md` (default, 38px, the height of a `Button`) or `lg` beside a large `Button`.",
           "An unread count is `count`, never part of the label; it is not shown at 0. The icon is `icon`, a name from the `Icon` set, never a child.",
           "Going to another page is `href` (through the app's `LinkProvider`), which draws the same button as a link.",
+          "Say why it cannot be pressed with `disabledReason`: the reason becomes its tooltip in place of the label.",
           "An action that needs a word is a `Button`.",
           "A row of several icon buttons is a `Menu`: one main action in view, the rest behind it.",
         ],
@@ -60,6 +66,7 @@ export const actions: ComponentSection = {
         "`label` is set as `aria-label`, and shows as a tooltip above the button on hover and on keyboard focus (the native `title` in a browser without CSS anchor positioning); with a `count` it reads `Alerts, 3`. The tooltip repeats the name, so it is hidden from a screen reader.",
         "The badge itself is `aria-hidden`, so the count is read once, through the name.",
         'As a button it defaults to `type="button"`; with `href` it is a real link, and `external` opens a new tab with `rel="noreferrer"`.',
+        "`disabledReason` sets `aria-disabled` and keeps the button in the tab order; a click, Enter and Space do nothing, and the reason shows as a tooltip on hover, keyboard focus and a tap, read out as its description (the native `title` without CSS anchor positioning).",
         "It has the component's focus ring.",
       ],
       api: ["IconButton"],

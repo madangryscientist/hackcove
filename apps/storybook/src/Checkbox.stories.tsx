@@ -130,3 +130,13 @@ export const Sizes: S = {
     </div>
   ),
 };
+
+/** `disabledReason` says why the box cannot change: it dims, keeps its focus and shows the reason as its tooltip. */
+export const DoDisabledReason: S = {
+  render: () => <Checkbox label="Email the team" disabledReason="Add an email address first" />,
+};
+
+/** A bare `disabled` box drops out of the tab order and never says why. */
+export const DontDisabledReason: S = {
+  render: () => <Checkbox label="Email the team" disabled />,
+};

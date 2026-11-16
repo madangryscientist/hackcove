@@ -28,7 +28,7 @@ const OFF_LIVE = "hover:bg-violet-50 hover:text-violet-700";
  * `{ value, label }` buttons (`value` and `onChange` are the caller's state; the arrow keys, Home
  * and End move the choice) or links (`href`, an in-app one drawn by the app's router `<Link>` through `LinkProvider`;
  * `value` marks the current one, which gets `aria-current`). An item may carry a `count`, and a
- * button one `disabled` (with a `title` for the reason); `disabled` on the group disables every
+ * button one `disabledReason` (it stays reachable by the arrows and its reason is a tooltip) or a bare `disabled`; `disabled` on the group disables every
  * option. `label` names the group. `size` matches the height of a `Button` of the same size.
  */
 export function SegmentedControl({

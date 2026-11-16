@@ -112,3 +112,20 @@ export const Tooltip: S = {
     canvasElement.querySelector("button")?.focus();
   },
 };
+
+/** `disabledReason` says why it cannot be pressed: the button dims, stays in the tab order and shows the reason as its tooltip. */
+export const DoDisabledReason: S = {
+  render: () => (
+    <IconButton
+      label="Delete quote"
+      tone="danger"
+      icon="close"
+      disabledReason="Only the owner can delete it"
+    />
+  ),
+};
+
+/** A bare `disabled` drops it from the tab order and gives no reason. */
+export const DontDisabledReason: S = {
+  render: () => <IconButton label="Delete quote" tone="danger" icon="close" disabled />,
+};

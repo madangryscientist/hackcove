@@ -68,8 +68,8 @@ export type TabsProps = SwitchProps &
  * `size`. `items` are `{ value, label }` buttons (`value` and `onChange` are the caller's state;
  * the arrow keys, Home and End move between tabs) or links (`href`, an in-app one through
  * `LinkProvider`; `selected` on an item, or `value`, marks the current one, which gets
- * `aria-current`). An item may carry a `count`, and a button one `disabled` (with a `title` for
- * the reason); `disabled` on the row disables every tab. `label` names the tab list. The panel is
+ * `aria-current`). An item may carry a `count`, and a button one `disabledReason` (it stays
+ * reachable by the arrows and its reason is a tooltip) or a bare `disabled`; `disabled` on the row disables every tab. `label` names the tab list. The panel is
  * the caller's: give it `role="tabpanel"`, and a tab `controls` to point at it.
  */
 export function Tabs({

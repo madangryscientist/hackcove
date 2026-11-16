@@ -3,9 +3,8 @@ import { cx, focusRing } from "./cx.js";
 import { controlText, type TypeStep, useDensity, useTypeStep } from "./density.js";
 import { Icon } from "./Icon.js";
 import type { IconName } from "./icons.js";
-import { blockedProps } from "./blocked.js";
+import { useBlocked } from "./blocked.js";
 import { renderLink } from "./link.js";
-import { Tipped } from "./Tooltip.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 import type { Tone } from "./tone.js";
@@ -316,22 +315,24 @@ function PlainButton({
   const state = stateOf(working, disabledReason);
   const blocked = state === "blocked";
   const label = working && typeof busy === "string" ? busy : withCount(children, count);
+  const { props: guard, tooltip } = useBlocked(blocked ? disabledReason : undefined, {
+    ...rest,
+    title,
+  });
   return (
-    <Tipped text={blocked ? disabledReason : undefined} describes tap own={{ ...rest, title }}>
-      {(tip) => (
-        <button
-          type="button"
-          className={stateClass({ variant, size: drawn, tone }, state, pressed, step)}
-          disabled={disabled || working}
-          aria-busy={working || undefined}
-          aria-pressed={pressed}
-          {...rest}
-          {...tip}
-          {...(blocked ? blockedProps() : {})}
-        >
-          {content(icon, drawn, label)}
-        </button>
-      )}
-    </Tipped>
+    <>
+      <button
+        type="button"
+        className={stateClass({ variant, size: drawn, tone }, state, pressed, step)}
+        disabled={disabled || working}
+        aria-busy={working || undefined}
+        aria-pressed={pressed}
+        {...rest}
+        {...guard}
+      >
+        {content(icon, drawn, label)}
+      </button>
+      {tooltip}
+    </>
   );
 }

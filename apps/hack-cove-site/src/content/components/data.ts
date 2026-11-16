@@ -64,7 +64,7 @@ export const data: ComponentSection = {
       summary: "A full-width row in a list: a label, content before it and a value at the far end.",
       whenToUse:
         "A short list where each row opens something, toggles a section or holds its own buttons.",
-      pairs: ["ListRow/List", "ListRow/RowActions"],
+      pairs: ["ListRow/List", "ListRow/RowActions", "ListRowReason/DisabledReason"],
       stories: ["ListRowPanel", "LinkedControls"],
       usage: {
         do: [
@@ -78,6 +78,7 @@ export const data: ComponentSection = {
           "`highlighted` marks the row the pointer or the keyboard is on in a list that follows both, such as a preview beside the list: drive it from the row's `onPointerEnter`, `onPointerLeave` and `onFocus`. It fills the row one step deeper than hover, so it shows on a white card and on a tinted panel (a `FullBleedLayout` panel) alike, and shows the `revealOnHover` actions.",
           'A compact bordered list for read-only data, such as the lines of a split, is a `Card flush` around rows with no action at `size="sm"`, `divided` after the first, with the amount in `trailing`. There is no separate part: a row with no action has no hover fill and no click target.',
           "A row that opens in place, such as a chat that shows its conversation under it, is a row with no action and a `panel`: the content sits under the row's line, starting where the label does (past `leading`), and the row's `divided` line, fill and `revealOnHover` cover it. A button or link row takes no `panel`.",
+          "A button row that cannot act yet takes a `disabledReason` that says why.",
           "Records with several columns to compare are a `Table`, not rows.",
         ],
         dont: ["Do not add your own indent or a wrapper around the row."],
@@ -87,6 +88,7 @@ export const data: ComponentSection = {
         '`selected` sets `aria-current="true"` on the row.',
         "`expanded` sets `aria-expanded` and draws a chevron, which is hidden from assistive tech.",
         "A button or link row has a focus ring from the component; a button row's `disabled` fades the row and disables its button, so a tap on the row itself does nothing; a link or button in `trailing` still works.",
+        "A button row with `disabledReason` fades and its button is `aria-disabled`, still in the tab order; a click, Enter and Space do nothing, and the reason shows as a tooltip on hover, keyboard focus and a tap, read out as its description (the native `title` without CSS anchor positioning).",
         "`revealOnHover` actions appear when the row is hovered or has focus inside it, so a keyboard user can reach them, and they are always shown on a touch screen.",
       ],
       api: ["ListRow"],

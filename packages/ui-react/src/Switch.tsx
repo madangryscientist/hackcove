@@ -3,6 +3,7 @@ import { cx, focusRing } from "./cx.js";
 import { useNote, Words } from "./labelWords.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
+import { useBlocked } from "./blocked.js";
 
 /**
  * The label's gap and text, the track, its thumb and the thumb's slide, by `size`. The track is a
@@ -53,6 +54,12 @@ type SwitchProps = Naming & {
    * and its focus, which a native `disabled` would lose when the save starts.
    */
   busy?: boolean | undefined;
+  /**
+   * Why the switch cannot be flipped: it washes out and is blocked (`aria-disabled`; a click,
+   * Enter and Space do nothing) while it keeps its focus, and the reason is its tooltip on hover,
+   * keyboard focus and a tap, read out as its description.
+   */
+  disabledReason?: string | undefined;
 } & Unstyled<
     Omit<
       ComponentPropsWithoutRef<"button">,
@@ -146,46 +153,24 @@ function useChecked(
   ];
 }
 
-/**
- * An on/off switch for a setting that takes effect at once, usually by saving it to a server: a
- * native `<button role="switch" aria-checked>`. The caller owns `checked` and flips it in
- * `onChange`, or gives `defaultChecked` and the switch keeps its own state. A value sent with a
- * form is a `Checkbox`, not a Switch. Give it a `label`
- * (the whole label is the click target), or in a table cell leave the label out and name it with
- * `aria-label`. `hint` is a muted line under the label; `error` replaces it with a red line
- * (`role="alert"`) and makes the switch `aria-invalid`. The note is the switch's
- * `aria-describedby`. `size` is `sm`, `md` (the default) or `lg`. `busy` is for the save in
- * flight: clicks and keys do nothing, and the switch keeps its colour and its focus. `disabled` is
- * the native one, washed out.
- */
-export function Switch({
+/** The switch inside its label, the note under the words. */
+function Labelled({
   label,
   hint,
   error,
-  checked,
-  defaultChecked = false,
-  onChange,
-  size = "md",
-  busy = false,
-  "aria-describedby": describedBy,
-  ...rest
-}: SwitchProps): ReactElement {
-  const { noteId, describedIds, invalid } = useNote(hint, error, describedBy);
-  const [on, flip] = useChecked(checked, defaultChecked, onChange);
-  const wash = washOf(rest.disabled, busy);
-  const track = (
-    <Track
-      {...rest}
-      checked={on}
-      onChange={flip}
-      size={size}
-      busy={busy}
-      className={label === undefined ? wash : cursorOf(rest.disabled, busy)}
-      {...(describedIds ? { "aria-describedby": describedIds } : {})}
-      {...(invalid ? { "aria-invalid": true } : {})}
-    />
-  );
-  if (label === undefined) return track;
+  noteId,
+  size,
+  wash,
+  children,
+}: {
+  label: ReactNode;
+  hint: ReactNode;
+  error: ReactNode;
+  noteId: string | undefined;
+  size: Size;
+  wash: string;
+  children: ReactNode;
+}): ReactElement {
   const start = noteId !== undefined;
   return (
     <label
@@ -196,10 +181,74 @@ export function Switch({
         wash,
       )}
     >
-      {track}
+      {children}
       <span className={cx(start && "mt-0.5")}>
         <Words label={label} hint={hint} error={error} id={noteId} />
       </span>
     </label>
+  );
+}
+
+/**
+ * An on/off switch for a setting that takes effect at once, usually by saving it to a server: a
+ * native `<button role="switch" aria-checked>`. The caller owns `checked` and flips it in
+ * `onChange`, or gives `defaultChecked` and the switch keeps its own state. A value sent with a
+ * form is a `Checkbox`, not a Switch. Give it a `label`
+ * (the whole label is the click target), or in a table cell leave the label out and name it with
+ * `aria-label`. `hint` is a muted line under the label; `error` replaces it with a red line
+ * (`role="alert"`) and makes the switch `aria-invalid`. The note is the switch's
+ * `aria-describedby`. `size` is `sm`, `md` (the default) or `lg`. `busy` is for the save in
+ * flight: clicks and keys do nothing, and the switch keeps its colour and its focus.
+ * `disabledReason` blocks it, focusable, with the reason as its tooltip. `disabled` is the native
+ * one, washed out.
+ */
+export function Switch({
+  label,
+  hint,
+  error,
+  checked,
+  defaultChecked = false,
+  onChange,
+  size = "md",
+  busy = false,
+  disabledReason,
+  "aria-describedby": describedBy,
+  ...rest
+}: SwitchProps): ReactElement {
+  const { noteId, describedIds, invalid } = useNote(hint, error, describedBy);
+  const [on, flip] = useChecked(checked, defaultChecked, onChange);
+  const {
+    props: guard,
+    tooltip,
+    blocked,
+  } = useBlocked(disabledReason, {
+    ...rest,
+    "aria-describedby": describedIds || undefined,
+  });
+  const off = rest.disabled === true || blocked;
+  const wash = washOf(off, busy);
+  const track = (
+    <Track
+      {...rest}
+      checked={on}
+      onChange={flip}
+      size={size}
+      busy={busy}
+      className={label === undefined ? wash : cursorOf(off, busy)}
+      {...(invalid ? { "aria-invalid": true } : {})}
+      {...guard}
+    />
+  );
+  return (
+    <>
+      {label === undefined ? (
+        track
+      ) : (
+        <Labelled label={label} hint={hint} error={error} noteId={noteId} size={size} wash={wash}>
+          {track}
+        </Labelled>
+      )}
+      {tooltip}
+    </>
   );
 }
