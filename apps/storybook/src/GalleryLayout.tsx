@@ -13,6 +13,7 @@ import {
   ListRow,
   Tabs,
   PageHeader,
+  Pill,
   Section,
   Stack,
   SubsectionHeading,
@@ -33,7 +34,7 @@ const galleryControls = (
   </>
 );
 
-/** Cluster and ClusterGrow (also with `minWidth`), and Show `from` and `below`, and Stack `rowFrom`, `width="compact"`, `align="start"` and `divided`. */
+/** Cluster and ClusterGrow (also with `minWidth`), Cluster as ul, and Show `from` and `below`, and Stack `rowFrom`, `width="compact"`, `align="start"` and `divided`. */
 function ClusterAndStackOptions() {
   return (
     <>
@@ -68,6 +69,17 @@ function ClusterAndStackOptions() {
         <Input aria-label="Stack align start" placeholder="Stack align start" />
         <Button>Keeps its width</Button>
       </Stack>
+      <Cluster as="ul" aria-label="Cluster as ul">
+        <li>
+          <Pill>Cluster as ul</Pill>
+        </li>
+        <li>
+          <Pill>One li</Pill>
+        </li>
+        <li>
+          <Pill>Per item</Pill>
+        </li>
+      </Cluster>
       <Cluster gap="sm">
         <Show below="sm">
           <Text>Show below sm: only on a phone.</Text>

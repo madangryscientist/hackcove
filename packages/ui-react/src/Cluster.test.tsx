@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { Cluster, ClusterGrow } from "./Cluster.js";
-import { render, screen } from "./render.harness.js";
+import { render, screen, within } from "./render.harness.js";
 
 describe("Cluster", () => {
   it("is a div by default and a span with as=span, for phrasing content", () => {
@@ -35,4 +35,25 @@ describe("Cluster", () => {
       Node.DOCUMENT_POSITION_FOLLOWING,
     );
   });
+});
+
+describe("Cluster as a list", () => {
+  it.each(["ul", "ol"] as const)(
+    "as=%s is a list named by aria-label, one item per child",
+    (as) => {
+      render(
+        <Cluster as={as} aria-label="Tags">
+          <li>Vintage</li>
+          <li>Books</li>
+          <li>Vinyl</li>
+        </Cluster>,
+      );
+      const list = screen.getByRole("list", { name: "Tags" });
+      expect(
+        within(list)
+          .getAllByRole("listitem")
+          .map((item) => item.textContent),
+      ).toEqual(["Vintage", "Books", "Vinyl"]);
+    },
+  );
 });

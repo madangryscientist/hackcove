@@ -32,7 +32,9 @@ const JUSTIFY: Record<ClusterJustify, string> = {
  * buttons, say. An empty `ClusterGrow` is a spacer that pushes what follows it to the end.
  * `ButtonGroup` is the row for buttons; use `Cluster` for any other row. `as="span"` is for a row
  * inside phrasing content, such as a `PageHeader` description (a `<p>`): its items must be phrasing
- * content too, so no `ClusterGrow`.
+ * content too, so no `ClusterGrow`. `as="ul"` or `as="ol"` is a wrapping list with no markers
+ * (tags, chips): as in a `Stack` list the Cluster does not wrap its children, so each child is an
+ * `<li>` the caller writes, and a `ClusterGrow` (a `div`) does not belong in it.
  */
 export function Cluster({
   as: Tag = "div",
@@ -43,8 +45,12 @@ export function Cluster({
   children,
   ...rest
 }: {
-  /** The element. `span` for a row inside a `<p>` or other phrasing content; default `div`. */
-  as?: "div" | "span" | undefined;
+  /**
+   * The element: `div`, `span` for a row inside a `<p>` or other phrasing content, or `ul` or `ol`
+   * for a list (no markers; each child is an `<li>`).
+   * @default div
+   */
+  as?: "div" | "span" | "ul" | "ol" | undefined;
   /**
    * The space between items. Defaults to `sm`, not `md`: the items of a row sit closer than the
    * blocks of a column.
@@ -71,7 +77,14 @@ export function Cluster({
   return (
     <Tag
       {...rest}
-      className={cx("flex", STACK_GAP[gap], ALIGN[align], JUSTIFY[justify], wrap && "flex-wrap")}
+      className={cx(
+        "flex",
+        (Tag === "ul" || Tag === "ol") && "list-none",
+        STACK_GAP[gap],
+        ALIGN[align],
+        JUSTIFY[justify],
+        wrap && "flex-wrap",
+      )}
     >
       {children}
     </Tag>

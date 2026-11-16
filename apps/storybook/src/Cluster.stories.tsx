@@ -221,3 +221,31 @@ export const DontSpacer: S = {
     </Cluster>
   ),
 };
+
+/** A wrapping row of like things (a store's tags) is `Cluster as="ul"` with an `li` per item: a list a screen reader counts. */
+export const DoList: S = {
+  render: () => (
+    <Cluster as="ul" aria-label="Tags">
+      <li>
+        <Pill>Vintage</Pill>
+      </li>
+      <li>
+        <Pill>Books</Pill>
+      </li>
+      <li>
+        <Pill>Vinyl</Pill>
+      </li>
+    </Cluster>
+  ),
+};
+
+/** The same pills in a plain Cluster are three loose items: no list, no count. */
+export const DontList: S = {
+  render: () => (
+    <Cluster>
+      <Pill>Vintage</Pill>
+      <Pill>Books</Pill>
+      <Pill>Vinyl</Pill>
+    </Cluster>
+  ),
+};

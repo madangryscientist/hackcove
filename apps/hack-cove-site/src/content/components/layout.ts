@@ -192,7 +192,7 @@ export const layout: ComponentSection = {
         "A horizontal row a fixed gap apart, and ClusterGrow for the item that takes the room left.",
       whenToUse:
         "Items in a line that are not buttons: a label beside a value, an input beside its actions, a row of pills.",
-      pairs: ["Cluster/FillRow", "Cluster/Buttons", "Cluster/Spacer"],
+      pairs: ["Cluster/FillRow", "Cluster/Buttons", "Cluster/Spacer", "Cluster/List"],
       usage: {
         do: [
           "`gap` is `xs`, `sm` (default) or `md`, the first steps of the `Stack` scale. Cluster is the one row whose default is not `md`: the items of a row sit closer than the blocks of a column.",
@@ -204,10 +204,12 @@ export const layout: ComponentSection = {
           "A row of buttons is a `ButtonGroup`, which wraps on a phone and can pin an item to the end. Use `Cluster` for every other row.",
           '`justify="between"` is for two items; with more, the middle one floats, so use a spacer.',
           '`as="span"` makes the row a `span`, for inside a paragraph where a `div` is not allowed; its items must then be phrasing content, so no `ClusterGrow`.',
+          '`as="ul"` or `as="ol"` makes a wrapping row of like things (tags, chips) a list. Write each item as an `<li>`, as in a `Stack` list; the Cluster does not wrap them, and a `ClusterGrow` does not belong in a list.',
         ],
       },
       accessibility: [
         'A `Cluster` is a `div` (or a `span` with `as="span"`) and adds no role; the reading and tab order is the source order of its children.',
+        "A `ul` or `ol` Cluster is a list a screen reader counts; give it an `aria-label` when more than one list is on the page.",
         "`ClusterGrow` is a `div` too: put the labelled control inside it, with its own `aria-label` or `Field`.",
       ],
       api: ["Cluster", "ClusterGrow"],
