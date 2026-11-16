@@ -228,10 +228,7 @@ export function SortableList({
   onReorder: (move: SortableMove) => void;
   /** `SortableSection`s, or `SortableItem`s for a list with no sections. */
   children: ReactNode;
-} & Through & {
-    /** The list's `id`. */
-    id?: string | undefined;
-  }): ReactElement {
+} & Through): ReactElement {
   const ownId = useId();
   const { id, ...through } = rest;
   const listId = id ?? ownId;

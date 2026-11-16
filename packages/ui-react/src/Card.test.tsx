@@ -56,6 +56,18 @@ describe("Card title names its section", () => {
     expect(within(screen.getByRole("region", { name: "Two" })).getByText("b")).not.toBeNull();
   });
 
+  it("is a region named by an aria-label with no title, and a plain div with neither", () => {
+    render(
+      <>
+        <Card aria-label="Usage">a</Card>
+        <Card>b</Card>
+      </>,
+    );
+    expect(within(screen.getByRole("region", { name: "Usage" })).getByText("a")).not.toBeNull();
+    expect(screen.getByText("b").tagName).toBe("DIV");
+    expect(screen.getAllByRole("region")).toHaveLength(1);
+  });
+
   it("lets a caller's aria-label win", () => {
     render(
       <Card title="Billing" aria-label="Invoices">

@@ -26,21 +26,22 @@ type Density = { size: Size | undefined; type: TypeStep | undefined };
 const DensityContext = createContext<Density>({ size: undefined, type: undefined });
 
 /**
- * Sets the density for its children: what it leaves out, it keeps from the nearest one above.
- * Internal: not exported from the package.
+ * Sets the density for its children: what it leaves out, it keeps from the nearest one above, and
+ * `size={null}` clears the size, for a container of the default size or a modal that opens inside a
+ * compact one. Internal: not exported from the package.
  */
 export function DensityProvider({
   size,
   type,
   children,
 }: {
-  size?: Size | undefined;
+  size?: Size | null | undefined;
   type?: TypeStep | undefined;
   children: ReactNode;
 }): ReactElement {
   const outer = useContext(DensityContext);
   const value = useMemo(
-    () => ({ size: size ?? outer.size, type: type ?? outer.type }),
+    () => ({ size: size === null ? undefined : (size ?? outer.size), type: type ?? outer.type }),
     [size, type, outer],
   );
   return createElement(DensityContext.Provider, { value }, children);

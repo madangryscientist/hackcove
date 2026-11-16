@@ -39,11 +39,13 @@ export function ContainerFrame({
   children,
   ...rest
 }: ContainerProps & { className?: string }): ReactElement {
-  // The tag varies, so the element is handed over by a callback that takes any HTMLElement.
+  // The tag varies, so the element is handed over by a callback that takes any HTMLElement; a
+  // callback ref's cleanup is handed back to React.
   const attach = useCallback(
     (element: HTMLElement | null) => {
-      if (typeof ref === "function") ref(element);
-      else if (ref) ref.current = element;
+      if (typeof ref === "function") return ref(element);
+      if (ref) ref.current = element;
+      return undefined;
     },
     [ref],
   );

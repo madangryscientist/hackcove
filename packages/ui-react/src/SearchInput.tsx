@@ -1,4 +1,5 @@
 import {
+  useMemo,
   useRef,
   useState,
   type ChangeEvent,
@@ -112,13 +113,15 @@ export function SearchInput({
   Unstyled<Omit<ComponentPropsWithoutRef<"input">, "size" | "width">>): ReactElement {
   const step = useTypeStep();
   const inputRef = useRef<HTMLInputElement>(null);
+  // One callback for the life of the ref, so a caller's function ref is not called on every keystroke.
+  const attach = useMemo(() => bothRefs(inputRef, ref), [ref]);
   const [typed, setTyped] = useState(() => String(rest.value ?? rest.defaultValue ?? "") !== "");
   const filled = rest.value !== undefined ? String(rest.value) !== "" : typed;
   return (
     <InputShell icon={icon} size={size} width={width}>
       <input
         {...rest}
-        ref={bothRefs(inputRef, ref)}
+        ref={attach}
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
           setTyped(event.currentTarget.value !== "");
           onChange?.(event);

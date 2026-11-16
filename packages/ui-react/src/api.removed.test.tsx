@@ -165,6 +165,11 @@ export const removed = {
   // ToolCallCard
   // @ts-expect-error ToolCallCard is gone: a bordered Disclosure with a Pill
   r61: (t: typeof import("./index.js").ToolCallCard) => t,
+  // The Avatar helpers (D21)
+  // @ts-expect-error avatarColourClass is not exported: Avatar picks the colour from name
+  d21a: (t: typeof import("./index.js").avatarColourClass) => t,
+  // @ts-expect-error initialsOf is not exported: Avatar draws the initials from name
+  d21b: (t: typeof import("./index.js").initialsOf) => t,
   // Controls
   // @ts-expect-error a Checkbox's description is hint
   r63: () => <ui.Checkbox label="x" description="y" />,

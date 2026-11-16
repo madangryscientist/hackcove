@@ -20,7 +20,7 @@ type PillBase = {
   /**
    * `sm` is smaller text, for a dense row; `lg` larger, beside a heading. Left out, a Pill takes
    * the size of the `Card`, `ListRow` or `Table` it sits in, else `md`.
-   * @default md
+   * @default the container's, else md
    */
   size?: Size | undefined;
   /** A leading dot in the pill's own text colour. */
@@ -181,7 +181,6 @@ function PillBody({
 }
 
 type MainParts = {
-  isLink: boolean;
   interactive: boolean;
   look: Look;
   rest: object;
@@ -192,11 +191,11 @@ type MainParts = {
 };
 
 /** The pill itself, or the text half of a removable one: a link, a button or a span. */
-function renderMain({ isLink, interactive, look, rest, href, external, onClick, body }: MainParts) {
+function renderMain({ interactive, look, rest, href, external, onClick, body }: MainParts) {
   const className = look.removable ? mainClass(look, interactive) : pillClass(look, interactive);
   // A removable pill's attributes go on its link or button; on a plain one, the shell is the pill.
   const own = look.removable && !interactive ? {} : rest;
-  if (isLink && href !== undefined) {
+  if (href !== undefined) {
     return renderLink({ ...own, href, external, className, children: body });
   }
   if (onClick) {
@@ -268,8 +267,7 @@ export function Pill({
   removeLabel,
   ...rest
 }: PillProps): ReactElement {
-  const isLink = href !== undefined;
-  const interactive = isLink || onClick !== undefined;
+  const interactive = href !== undefined || onClick !== undefined;
   const look: Look = {
     tone,
     size: useDensity(size),
@@ -284,7 +282,6 @@ export function Pill({
     </PillBody>
   );
   const main = renderMain({
-    isLink,
     interactive,
     look,
     rest,

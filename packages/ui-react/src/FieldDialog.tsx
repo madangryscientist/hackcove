@@ -88,7 +88,7 @@ export function FieldDialog({
             type="submit"
             form={formId}
             disabledReason={empty ? emptyReason : undefined}
-            busy={busy && busyLabel}
+            busy={busy && (busyLabel || true)}
           >
             {submit}
           </Button>

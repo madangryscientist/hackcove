@@ -128,8 +128,8 @@ type CardPanelProps = CardBase & {
   fill?: boolean;
   /**
    * `article` for a card that stands alone as a piece of content (a post, a listing). Left out, a
-   * titled card is a `section` named by its title and an untitled one a `div`. Not on a card that
-   * is a link.
+   * titled card is a `section` named by its title, one with only an `aria-label` a `section` named
+   * by that, and any other a `div`. Not on a card that is a link.
    */
   as?: "article" | undefined;
   href?: undefined;
@@ -156,7 +156,7 @@ function isCardLink(props: CardPanelProps | CardLinkProps): props is CardLinkPro
 
 /**
  * A bordered panel with an optional title, count and status. A titled card is a `section` named by
- * its title, an untitled one a `div`, and `as="article"` makes it an `article`. Two opt-in forms
+ * its title, one with only an `aria-label` a `section` too, any other a `div`, and `as="article"` makes it an `article`. Two opt-in forms
  * for data views: `flush` drops the padding and clips the corners, for a table that runs edge to
  * edge; `bar` puts the title, count and `actions` in a tinted strip across the top, over the body.
  * A flush card has no padding for a `title`, so give it a `bar`. An empty state is an `EmptyState`,
@@ -195,7 +195,7 @@ export function Card(props: CardPanelProps | CardLinkProps): ReactElement {
   return (
     <InCard>
       <GapProvider gap="xs">
-        <DensityProvider size={props.size === "sm" ? "sm" : undefined}>
+        <DensityProvider size={props.size === "sm" ? "sm" : null}>
           {props.title ? (
             <HeadingLevelProvider level={level}>{cardOf(props, level)}</HeadingLevelProvider>
           ) : (
@@ -205,6 +205,14 @@ export function Card(props: CardPanelProps | CardLinkProps): ReactElement {
       </GapProvider>
     </InCard>
   );
+}
+
+/** Whether a caller named the card: a card with a name is a section, as a plain div may carry no `aria-label`. */
+function hasOwnName(rest: {
+  "aria-label"?: string | undefined;
+  "aria-labelledby"?: string | undefined;
+}) {
+  return rest["aria-label"] !== undefined || rest["aria-labelledby"] !== undefined;
 }
 
 /** The card in its form, its title at `level`. An untitled card adds no heading, so what is inside keeps the level of what holds it. */
@@ -239,14 +247,15 @@ function PanelCard(props: CardPanelProps & { level: HeadingLevel }): ReactElemen
     ...panel
   } = props;
   const { as, ...rest } = panel;
-  const Tag = as ?? (title ? "section" : "div");
+  const labelled = hasOwnName(rest);
+  const Tag = as ?? (title || labelled ? "section" : "div");
   const headingId = useId();
   const form = withFooter(
     cardForm({ flush, bar, tone, attention, icon, fill, size }, Boolean(title || actions)),
     footer,
   );
   // The title names the card; a caller's own name wins.
-  const named = title && rest["aria-label"] === undefined && rest["aria-labelledby"] === undefined;
+  const named = title && !labelled;
   return (
     <Tag {...(named ? { "aria-labelledby": headingId } : {})} {...rest} className={cardClass(form)}>
       {cardBody(form, {

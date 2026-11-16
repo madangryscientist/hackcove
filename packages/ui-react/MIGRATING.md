@@ -127,6 +127,7 @@ TypeScript does not flag these:
 | `Container elementRef` | `ref` | codemod |
 | `NavigationProgress active` | `loading`, the one name for a pending state | codemod |
 | any other HTML attribute on `Avatar` or `AppShell` (`onError`, a `div` handler) | only `id`, `data-*` and `aria-*` | by hand |
+| `avatarColourClass`, `initialsOf` | not exported: `Avatar` draws both from `name` | by hand |
 
 New, nothing to change: `Breadcrumbs label` (default `Breadcrumb`), `Lightbox closeLabel`,
 `previousLabel` and `nextLabel`, `MediaTile removeLabel` (default `Remove`) and
@@ -200,7 +201,7 @@ Every labelled control takes the same words: `hint` for the muted line, `error` 
 | `ColourSchemeToggle initial` | `defaultValue` | codemod |
 | `Input icon={<Icon name="search" />}` | `icon="search"` | codemod for an `<Icon name>`, else by hand |
 | `<Select><option value="a">A</option></Select>` | `<Select items={[{ value: "a", label: "A" }]} />` | codemod for literal options, else by hand |
-| `Select width="auto"` | leave it out outside a `Field`: `auto` is the default there | codemod drops it, and reports a `Select` outside a `Field` with no `width` |
+| `Select width="auto"` | nothing: `auto` is the default outside a `Field` and still right inside one | nothing to change; codemod reports a `Select` with no `width` and no `Field` round it in the file |
 | `Field hideLabel` | `labelHidden` | codemod |
 | `FieldDialog label="…" inputLabel="…"` | `label` alone, which names the input | codemod drops `inputLabel` |
 | `FormRow action` | `actions` | codemod |
@@ -233,8 +234,8 @@ row, the size of the buttons in it. An explicit prop on the child always wins.
 | `ListRow active` | `highlighted` | codemod |
 | `ListRow detail` | `panel` | codemod |
 | `ListRow static` | leave it out: a row with no `href` and no `onClick` is static by itself, and a button row needs `onClick` | codemod drops it |
-| `Card as="section"`, `Card as="div"` | leave `as` out: a titled card is a `section`, an untitled one a `div` | codemod drops it |
-| `Card dashed` whose only child is an `EmptyState` | the `EmptyState` alone: it draws its own dashed frame | codemod for that shape, else by hand |
+| `Card as="section"`, `Card as="div"` | leave `as` out: a card with a `title` or an `aria-label` is a `section`, any other a `div` | codemod drops it |
+| `Card dashed` whose only child is an `EmptyState` | the `EmptyState` alone: it draws its own dashed frame | codemod for a `Card` with no prop but `dashed`, else by hand |
 | `Card dashed` or `dashed="filled"` round anything else | an `EmptyState` with a `title` | by hand, and reported |
 | `Dialog size` | `width` | codemod |
 | `Drawer size` | `width` | codemod |
@@ -247,8 +248,8 @@ TypeScript does not flag these:
 - A `Card` title is an `h3` inside a `Section`, and an `EmptyState` title one below the heading
   that holds it, where both were always an `h2`. A test that finds one by `level: 2` needs the new
   level, or a `level` prop to pin it.
-- An untitled `Card` is a `div`, so it is no landmark even with an `aria-label`; give it a `title`
-  to keep the `section`.
+- A `Card` with neither a `title` nor an `aria-label` (or `aria-labelledby`) is a `div`, so it is
+  no landmark; one with a name stays a `section`.
 - A `Button`, `IconButton` or `Pill` with no `size` in a `Card size="sm"` or a `ListRow size="sm"`
   is now `sm`. The codemod reports every `Card size="sm"` and `ListRow size="sm"` so a person
   checks what is inside.
@@ -280,8 +281,7 @@ TypeScript does not flag these:
   and no row hover.
 - A `numeric` cell with no `align` is now end aligned. The codemod writes `align="start"` on one,
   so nothing moves until you drop it.
-- A `Button`, `IconButton`, `Input`, `Select`, `Pill` or `Checkbox` with no `size` in a `Table` is
-  now `sm`. The codemod reports every `Table` so a person checks what is inside.
+- A `Button`, `IconButton` or `Pill` with no `size` in a `Table` is now `sm`; a field keeps `md`. The codemod reports every `Table` so a person checks what is inside.
 - A cell that was `tone="neutral"` is one step darker.
 
 ### Running the codemod

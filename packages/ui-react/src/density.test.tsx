@@ -1,6 +1,11 @@
 // @vitest-environment jsdom
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { AppShell } from "./AppShell.js";
+import { useInCard } from "./cardContext.js";
+import { Card } from "./Card.js";
+import { Dialog } from "./Dialog.js";
+import { stubDialog } from "./dom.harness.js";
+import { Drawer } from "./Drawer.js";
 import { DensityProvider, useDensity, useTypeStep } from "./density.js";
 import { Input } from "./Input.js";
 import type { Size } from "./size.js";
@@ -15,7 +20,14 @@ function Probe({ own }: { own?: Size }) {
   );
 }
 
+/** Prints whether it sits in a card. */
+function CardProbe() {
+  return <p>{useInCard() ? "in a card" : "on its own"}</p>;
+}
+
 describe("density", () => {
+  beforeEach(stubDialog);
+
   it("is md and the default step with no provider", () => {
     render(<Probe />);
     expect(screen.getByText("md default")).not.toBeNull();
@@ -39,6 +51,32 @@ describe("density", () => {
       </DensityProvider>,
     );
     expect(screen.getByText("sm compact")).not.toBeNull();
+  });
+
+  it("a container of the default size clears the size of a compact one around it", () => {
+    render(
+      <Card size="sm">
+        <Card>
+          <Probe />
+        </Card>
+      </Card>,
+    );
+    expect(screen.getByText("md default")).not.toBeNull();
+  });
+
+  it("a Dialog or Drawer opened in a compact card starts over: md, and out of the card", () => {
+    render(
+      <Card size="sm">
+        <Dialog title="Delete" onClose={() => undefined} footer={<Probe />}>
+          <CardProbe />
+        </Dialog>
+        <Drawer title="Edit" onClose={() => undefined}>
+          <Probe />
+        </Drawer>
+      </Card>,
+    );
+    expect(screen.getAllByText("md default")).toHaveLength(2);
+    expect(screen.getByText("on its own")).not.toBeNull();
   });
 
   it("AppShell density sets the compact step for everything inside, and nothing else does", () => {

@@ -49,13 +49,7 @@ export { Section, Stack, type StackGap, type StackRowFrom, type StackWidth } fro
 export { Button, type ButtonSize, type ButtonTone, type ButtonVariant } from "./Button.js";
 export { ButtonGroup } from "./ButtonGroup.js";
 export { type LinkAdapter, type LinkAdapterProps, LinkProvider } from "./link.js";
-export {
-  Avatar,
-  avatarColourClass,
-  initialsOf,
-  type AvatarShape,
-  type AvatarSize,
-} from "./Avatar.js";
+export { Avatar, type AvatarShape, type AvatarSize } from "./Avatar.js";
 export { AvatarStack, type AvatarStackPerson } from "./AvatarStack.js";
 export { Breadcrumbs, type Crumb } from "./Breadcrumbs.js";
 export { BulletItem, BulletList } from "./BulletList.js";

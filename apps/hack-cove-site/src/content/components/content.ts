@@ -35,7 +35,7 @@ export const content: ComponentSection = {
         ],
       },
       accessibility: [
-        'A titled Card is a `<section>` named by its `title` (`aria-labelledby` points at the heading), and an untitled one a `<div>`; `as="article"` makes it an `article`. Your own `aria-label` or `aria-labelledby` wins. The title is an `h2` on the page and an `h3` in a `Section`; `level` sets it by hand.',
+        'A titled Card is a `<section>` named by its `title` (`aria-labelledby` points at the heading), a card with only an `aria-label` a `<section>` named by it, and any other a `<div>`; `as="article"` makes it an `article`. Your own `aria-label` or `aria-labelledby` wins. The title is an `h2` on the page and an `h3` in a `Section`; `level` sets it by hand.',
         "`id`, `data-*` and `aria-*` go on the root element. On a link card too: the link inside it keeps only its own `aria-label`, `aria-labelledby` and `aria-current`, and is named by the card's text.",
         "On a link card the `badge` is inside the link, so it is part of the link's name; on a panel it is read after the content.",
         "`attention` is colour only: say why in the card's title or text.",
@@ -68,16 +68,6 @@ export const content: ComponentSection = {
         "`aria-*` and `data-*` props go on the root element.",
       ],
       api: ["Avatar"],
-      functions: [
-        {
-          name: "initialsOf",
-          text: "The up to two letters or digits of a name, upper-cased, or `?` when it has none: the same initials `Avatar` draws, for where you need them as text.",
-        },
-        {
-          name: "avatarColourClass",
-          text: "The background class `Avatar` picks for a name, so the same name always gets the same colour. `Avatar` applies it for you; pass `name` to `Avatar` instead of using it.",
-        },
-      ],
     },
     {
       slug: "avatar-stack",

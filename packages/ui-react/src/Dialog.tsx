@@ -7,7 +7,9 @@ import {
   useRef,
   type RefObject,
 } from "react";
+import { InCard } from "./cardContext.js";
 import { cx } from "./cx.js";
+import { DensityProvider } from "./density.js";
 import { HeadingLevelProvider } from "./headingLevel.js";
 import { useModal } from "./modal.js";
 import type { Passthrough } from "./props.js";
@@ -96,6 +98,20 @@ export type DialogProps = {
   onClose: () => void;
 } & Passthrough;
 
+/**
+ * What a modal resets, since the browser's `<dialog>` renders where it is written: it is back on the
+ * app scale, out of any card, and its controls are `md` whatever row, card or table opened it.
+ */
+export function ModalScope({ children }: { children: ReactNode }): ReactElement {
+  return (
+    <AppScale>
+      <DensityProvider size={null}>
+        <InCard value={false}>{children}</InCard>
+      </DensityProvider>
+    </AppScale>
+  );
+}
+
 /** What a dialog or drawer sets for its body: a `Stack` in it is `xs` apart, and a heading in it is one below the title. */
 export function BodyContext({ children }: { children: ReactNode }): ReactElement {
   return (
@@ -133,7 +149,7 @@ export function Dialog({
   } = useScrollingBody(dialog, titleId, full);
 
   return (
-    <AppScale>
+    <ModalScope>
       <dialog
         {...rest}
         ref={dialog}
@@ -157,6 +173,6 @@ export function Dialog({
           {footer && <div className="mt-5 flex shrink-0 justify-end gap-2">{footer}</div>}
         </div>
       </dialog>
-    </AppScale>
+    </ModalScope>
   );
 }

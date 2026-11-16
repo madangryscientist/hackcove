@@ -6,9 +6,15 @@ import { createContext, createElement, type ReactElement, type ReactNode, useCon
  */
 const CardContext = createContext(false);
 
-/** Marks `children` as inside a card. */
-export function InCard({ children }: { children: ReactNode }): ReactElement {
-  return createElement(CardContext.Provider, { value: true }, children);
+/** Marks `children` as inside a card, or, with `value={false}`, as out of one: a modal opened from a card. */
+export function InCard({
+  value = true,
+  children,
+}: {
+  value?: boolean;
+  children: ReactNode;
+}): ReactElement {
+  return createElement(CardContext.Provider, { value }, children);
 }
 
 /** `true` inside a `Card`. */

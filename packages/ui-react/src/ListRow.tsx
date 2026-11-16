@@ -13,6 +13,7 @@ import { renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 import { GapProvider } from "./stackGap.js";
+import { SELECTED } from "./tableRow.js";
 
 const ROW_LOOK = "flex w-full items-center gap-3 text-left text-sm text-slate-900";
 
@@ -42,7 +43,6 @@ const PANEL_COLUMNS = {
 };
 
 const FILL = "hover:bg-slate-50";
-const SELECTED = "bg-violet-50 hover:bg-violet-50";
 /**
  * The row a pointer or keyboard cursor is on: the inset fill, one step deeper than hover, so it
  * still shows on a `bg-slate-50` surface (a `FullBleedLayout` panel, a toned card).
@@ -393,7 +393,7 @@ export function ListRow(props: ListRowProps): ReactElement {
   const labelId = useId();
   return (
     <GapProvider gap="xs">
-      <DensityProvider size={props.size === "sm" ? "sm" : undefined}>
+      <DensityProvider size={props.size === "sm" ? "sm" : null}>
         {rowOf(props, labelId)}
       </DensityProvider>
     </GapProvider>
