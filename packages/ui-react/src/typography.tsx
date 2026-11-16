@@ -296,7 +296,7 @@ function useScale(scale: Scale): string {
 }
 
 /** The offset an anchored heading keeps from the top, so the sticky header does not cover it. */
-const SCROLL_TARGET = "scroll-mt-28";
+const SCROLL_TARGET = "scroll-mt-[calc(var(--app-header,0px)+1rem)]";
 
 /**
  * Top-level section header. `h2`, text-xl/7 semibold, primary text (text-base/6 under an

@@ -17,7 +17,9 @@ describe("Card href", () => {
       </Card>,
     );
     expect(out.startsWith('<div id="')).toBe(true);
-    expect(out).toContain("relative scroll-mt-28 rounded-xl border");
+    expect(out).toContain(
+      "relative scroll-mt-[calc(var(--app-header,0px)+1rem)] rounded-xl border",
+    );
     expect(out).toContain("hover:border-violet-400");
     expect(out).toMatch(/<a [^>]*href="\/shots\/1"[^>]*class="link-stretch absolute inset-0 /);
     expect(out).toContain('aria-labelledby="');

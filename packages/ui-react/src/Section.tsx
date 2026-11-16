@@ -19,7 +19,8 @@ function useHeadingId(id: string | undefined): string {
 type SectionBase = {
   /**
    * Makes the section a link target: `#<id>` scrolls to its heading, which stops below the sticky
-   * AppShell header. Needs a `title`: with no title the heading that carries it is not rendered.
+   * AppShell header, as every `id` inside the shell does; write no `scroll-margin`. Needs a `title`:
+   * with no title the heading that carries it is not rendered.
    */
   id?: string | undefined;
   /** The heading at the top, which names the section. */

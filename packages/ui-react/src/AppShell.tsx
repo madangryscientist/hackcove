@@ -1,10 +1,11 @@
-import { type ReactElement, type ReactNode, useState } from "react";
+import { type ReactElement, type ReactNode, useCallback, useState } from "react";
 import { AppShellMenu } from "./AppShellMenu.js";
 import { ContainerFrame } from "./Container.js";
 import { schemeClass, type ColourScheme, type ColourSchemeClasses } from "./colourScheme.js";
 import { cx, focusRing } from "./cx.js";
 import { DensityProvider } from "./density.js";
 import { renderLink } from "./link.js";
+import { useNavFold } from "./navFold.js";
 import type { Passthrough } from "./props.js";
 import { useScrollEdges } from "./scrollEdges.js";
 import type { Size } from "./size.js";
@@ -91,12 +92,27 @@ const ROW = "items-center gap-4 overflow-x-clip whitespace-nowrap md:overflow-x-
 const FADE =
   "md:data-more-start:[--fade-start:2rem] md:data-more-end:[--fade-end:2rem] md:data-more:[mask-image:linear-gradient(to_right,transparent,#000_var(--fade-start,0px),#000_calc(100%_-_var(--fade-end,0px)),transparent)]";
 
-/** A row in a Container, with the fade on whichever side still has content to scroll to. */
-function ScrollRow({ className, children }: { className: string; children: ReactNode }) {
+/** A row in a Container, with the fade on whichever side still has content to scroll to. `onRow` is also handed the row. */
+function ScrollRow({
+  className,
+  onRow,
+  children,
+}: {
+  className: string;
+  onRow?: (row: HTMLElement | null) => void;
+  children: ReactNode;
+}) {
   const [row, setRow] = useState<HTMLElement | null>(null);
   useScrollEdges(row, "x");
+  const attach = useCallback(
+    (element: HTMLElement | null) => {
+      setRow(element);
+      onRow?.(element);
+    },
+    [onRow],
+  );
   return (
-    <ContainerFrame ref={setRow} className={cx(ROW, FADE, className)}>
+    <ContainerFrame ref={attach} className={cx(ROW, FADE, className)}>
       {children}
     </ContainerFrame>
   );
@@ -106,7 +122,8 @@ function ScrollRow({ className, children }: { className: string; children: React
  * The header row's slots in order: brand, nav (from `md`), the free `children`, then `controls` and
  * the menu at the end. `controls` have a wrapper of their own that shrinks and clips, and the menu
  * sits beside it, so a crowded `controls` never pushes the Menu off a phone screen. From `md` the
- * menu is the inline row of `menuControls` after `controls`.
+ * menu is the inline row of `menuControls` after `controls`. `folded` hides the nav from `md` too:
+ * it is in the menu.
  */
 function HeaderSlots({
   brand,
@@ -114,6 +131,7 @@ function HeaderSlots({
   controls,
   menu,
   menuInline,
+  folded,
   children,
 }: {
   brand: ReactNode;
@@ -122,6 +140,8 @@ function HeaderSlots({
   menu: ReactNode;
   /** The menu shows `menuControls` in the row from `md`, so its wrapper stays from `md`. */
   menuInline: boolean;
+  /** The nav did not fit the row from `md`, so it is in the menu there too. */
+  folded: boolean;
   children: ReactNode;
 }): ReactElement {
   return (
@@ -131,7 +151,11 @@ function HeaderSlots({
           {brand}
         </div>
       )}
-      {nav && <div className="hidden items-center gap-4 *:shrink-0 md:flex">{nav}</div>}
+      {nav && (
+        <div className={cx("hidden items-center gap-4 *:shrink-0", !folded && "md:flex")}>
+          {nav}
+        </div>
+      )}
       {children}
       {(controls || menu) && (
         <div
@@ -139,7 +163,7 @@ function HeaderSlots({
             // Below `md` this wrapper may shrink (the row's `*:shrink-0` is overridden), so a crowded
             // `controls` clips inside its own box; from `md` it keeps its width and the row scrolls.
             "ml-auto flex min-w-0 items-center gap-2 max-md:shrink!",
-            !controls && !menuInline && "md:hidden",
+            !controls && !menuInline && !folded && "md:hidden",
           )}
         >
           {controls && (
@@ -155,7 +179,11 @@ function HeaderSlots({
   );
 }
 
-/** The sticky header: the one-row slots, and from `md` the `subnav` row under them. */
+/**
+ * The sticky header: the one-row slots, and from `md` the `subnav` row under them. It pads by the
+ * top safe-area inset. From `md` it measures its row: a nav that does not fit folds into the Menu
+ * (`data-nav-folded`) and comes back when the row is wide enough again (`useNavFold`).
+ */
 function AppShellHeader({
   brand,
   nav,
@@ -175,25 +203,32 @@ function AppShellHeader({
   hideChromeInPrint: boolean;
   children: ReactNode;
 }): ReactElement {
+  const [row, setRow] = useState<HTMLElement | null>(null);
+  const folded = useNavFold(row, !!nav);
   return (
     <header
+      data-nav-folded={folded ? "" : undefined}
       className={cx(
-        "sticky top-0 z-10 border-b border-slate-200 bg-white",
+        "sticky top-0 z-10 border-b border-slate-200 bg-white pt-[env(safe-area-inset-top)]",
         hideChromeInPrint && "print:hidden",
       )}
     >
-      <ScrollRow className="flex h-14">
+      <ScrollRow className="flex h-14" onRow={setRow}>
         <HeaderSlots
           brand={brand}
           nav={nav}
           controls={controls}
           menuInline={!!menuControls}
+          folded={folded}
           menu={
             (nav || subnav || menuControls) && (
-              <AppShellMenu label={menuLabel} controls={menuControls}>
-                {nav}
-                {subnav}
-              </AppShellMenu>
+              <AppShellMenu
+                label={menuLabel}
+                controls={menuControls}
+                nav={nav}
+                subnav={subnav}
+                folded={folded}
+              />
             )
           }
         >
@@ -226,7 +261,14 @@ export type AppShellDensity = "compact";
  * and a "Menu" button (`menuLabel`), and `nav` and `subnav` move into that menu, so every link is
  * reachable and nothing scrolls sideways. The menu is a native `<details>`, so it works with the
  * keyboard, with a screen reader and on a page that never hydrates. From `md` the header is the
- * row, and the `subnav` row, as they are.
+ * row, and the `subnav` row, as they are, except that a `nav` too wide for the row folds into the
+ * Menu and comes back when the screen is wide enough (measured, with script; a `subnav` never
+ * folds, it scrolls sideways with a fade).
+ *
+ * The edges need nothing from the app: with `viewport-fit=cover` every Container clears the
+ * safe-area insets at the sides, the header the top one and the shell the bottom one; and an
+ * element with an `id` anywhere inside lands below the sticky header when a link or focus scrolls
+ * to it.
  *
  * `controls` stay in the row at every width, so keep them few (a theme toggle, the viewer's avatar);
  * on a phone a crowded `controls` clips, and the Menu button is never the part cut off. Pickers and
@@ -294,11 +336,13 @@ export function AppShell({
       <div
         {...rest}
         className={cx(
-          "flex min-h-dvh flex-col bg-gray-50 font-sans text-slate-900 antialiased",
-          // The sticky header's height (its rows and the bottom border), for a bar that sticks under it.
-          // Below `md` it is one row whatever the slots are: the subnav is in the menu.
-          "[--app-header:calc(3.5rem+1px)]",
-          subnav ? "md:[--app-header:calc(6.5rem+1px)]" : undefined,
+          "flex min-h-dvh flex-col bg-gray-50 pb-[env(safe-area-inset-bottom)] font-sans text-slate-900 antialiased",
+          // The sticky header's height (its rows, the top inset and the bottom border), for a bar
+          // that sticks under it. Below `md` it is one row whatever the slots are: the subnav is in the menu.
+          "[--app-header:calc(3.5rem+1px+env(safe-area-inset-top))]",
+          subnav ? "md:[--app-header:calc(6.5rem+1px+env(safe-area-inset-top))]" : undefined,
+          // A link or focus that scrolls to any element with an id stops below the sticky header.
+          "[&_[id]]:scroll-mt-[calc(var(--app-header,0px)+1rem)]",
         )}
       >
         <AppShellHeader

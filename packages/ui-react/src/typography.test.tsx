@@ -25,25 +25,25 @@ describe("typography", () => {
 
   it("forwards element props", () => {
     const out = renderToStaticMarkup(<SectionHeading id="s1">x</SectionHeading>);
-    expect(out).toContain('class="text-xl/7 font-semibold scroll-mt-28 text-slate-900"');
+    expect(out).toContain(
+      'class="text-xl/7 font-semibold scroll-mt-[calc(var(--app-header,0px)+1rem)] text-slate-900"',
+    );
     expect(out).toContain('id="s1"');
   });
 
   it("gives a heading with an id the scroll margin that clears the sticky header, and no other one it", () => {
-    expect(renderToStaticMarkup(<SectionHeading id="s1">x</SectionHeading>)).toContain(
-      "scroll-mt-28",
-    );
-    expect(renderToStaticMarkup(<SectionHeading>x</SectionHeading>)).not.toContain("scroll-mt-28");
+    const margin = "scroll-mt-[calc(var(--app-header,0px)+1rem)]";
+    expect(
+      renderToStaticMarkup(<SectionHeading id="s1">x</SectionHeading>).split(margin),
+    ).toHaveLength(2);
+    expect(renderToStaticMarkup(<SectionHeading>x</SectionHeading>)).not.toContain(margin);
     expect(
       renderToStaticMarkup(
         <SectionHeading id="s1" description="More">
           x
         </SectionHeading>,
       ),
-    ).toContain("scroll-mt-28");
-    expect(
-      renderToStaticMarkup(<SectionHeading id="s1">x</SectionHeading>).match(/scroll-mt-28/g),
-    ).toHaveLength(1);
+    ).toContain(margin);
   });
 
   it("SectionHeading `rule` builds in the hairline and its spacing, and is not forwarded", () => {
@@ -298,7 +298,7 @@ describe("SectionHeading description", () => {
       </SectionHeading>,
     );
     expect(out).toContain(
-      '<h2 id="s1" class="text-xl/7 font-semibold scroll-mt-28 text-slate-900">Plan</h2>',
+      '<h2 id="s1" class="text-xl/7 font-semibold scroll-mt-[calc(var(--app-header,0px)+1rem)] text-slate-900">Plan</h2>',
     );
     expect(out).toContain("<p ");
     expect(out).toContain(">What you owe each month.</p>");

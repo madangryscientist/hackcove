@@ -15,6 +15,38 @@ const ICON = {
   className: "shrink-0 text-slate-500",
 } as const;
 
+// A folded nav from `md`: the phone panel's dropdown, shown while the menu is open. The surface
+// colours are unprefixed (below `md` the panel already draws them), so no palette utility takes a variant.
+const FOLDED_NAV =
+  "border-slate-200 bg-white md:absolute md:inset-x-0 md:top-full md:hidden md:max-h-[calc(100dvh-var(--app-header))] md:overflow-y-auto md:overscroll-contain md:border-y md:shadow-lg md:group-open:block";
+
+/**
+ * The menu's copies of the links. From `md` the links render in their own rows, so these copies are
+ * hidden there, except a folded nav's, which hangs under the header while the menu is open.
+ */
+function MenuLinks({
+  nav,
+  subnav,
+  folded,
+}: {
+  nav: ReactNode;
+  subnav: ReactNode;
+  folded: boolean;
+}) {
+  return (
+    <>
+      {nav && (
+        <div className={folded ? FOLDED_NAV : "md:hidden"}>
+          <ContainerFrame className="flex flex-col gap-3 max-md:contents md:py-3">
+            {nav}
+          </ContainerFrame>
+        </div>
+      )}
+      {subnav && <div className="flex flex-col gap-3 md:hidden">{subnav}</div>}
+    </>
+  );
+}
+
 /**
  * The header's phone menu (below `md`): a native `<details>` whose `<summary>` is the button, so it
  * opens and closes by pointer, Enter and Space, and is announced as a disclosure with its expanded
@@ -27,16 +59,24 @@ const ICON = {
  * the `<details>` drops its own box and shows only them, inline at the row's end, whether it is
  * open or not: the summary and the link copies are hidden (the links render in their own rows from
  * `md`) and the panel is a plain row. They are rendered once, so a field keeps its state.
+ *
+ * `folded` (the nav did not fit the row from `md`) keeps the summary from `md` too, and its nav copy
+ * then hangs under the header as the panel does on a phone. The `subnav` copy stays phone only.
  */
 export function AppShellMenu({
   label,
   controls,
-  children,
+  nav,
+  subnav,
+  folded,
 }: {
   label: string;
   /** Rendered once: at the top of the panel below `md`, inline in the row from `md`. */
   controls?: ReactNode;
-  children: ReactNode;
+  nav: ReactNode;
+  subnav: ReactNode;
+  /** From `md` the nav is in the menu too: it did not fit the row. */
+  folded: boolean;
 }): ReactElement {
   const details = useRef<HTMLDetailsElement>(null);
   const close = (focusButton: boolean) => {
@@ -50,7 +90,7 @@ export function AppShellMenu({
       ref={details}
       className={cx(
         "group shrink-0",
-        controls
+        controls || folded
           ? "md:contents md:[&::details-content]:contents md:[&::details-content]:[content-visibility:visible]"
           : "md:hidden",
       )}
@@ -65,8 +105,9 @@ export function AppShellMenu({
     >
       <summary
         className={cx(
-          "flex cursor-pointer list-none md:hidden items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-900 select-none hover:bg-slate-50 [&::-webkit-details-marker]:hidden",
+          "flex cursor-pointer list-none items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-900 select-none hover:bg-slate-50 [&::-webkit-details-marker]:hidden",
           focusRing,
+          !folded && "md:hidden",
         )}
       >
         <svg {...ICON} className={cx(ICON.className, "group-open:hidden")}>
@@ -92,8 +133,7 @@ export function AppShellMenu({
               {controls}
             </div>
           )}
-          {/* From `md` the links render in their own rows, so these copies are hidden there. */}
-          <div className="flex flex-col gap-3 md:hidden">{children}</div>
+          <MenuLinks nav={nav} subnav={subnav} folded={folded} />
         </ContainerFrame>
       </div>
     </details>
