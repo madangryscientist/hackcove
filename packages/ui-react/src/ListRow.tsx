@@ -5,6 +5,8 @@ import { DensityProvider } from "./density.js";
 import { renderLink } from "./link.js";
 import type { Size } from "./size.js";
 import { GapProvider } from "./stackGap.js";
+import { LoadingScope, useLoading } from "./skeleton.js";
+import { waitingRow } from "./listRowWait.js";
 import { SELECTED } from "./tableRow.js";
 import { hasReason, useBlocked } from "./blocked.js";
 import type {
@@ -292,14 +294,18 @@ function ButtonRow(props: ListRowButtonProps & Pieces & { labelId: string }): Re
  * also takes a `panel`, content under the row that starts where the label does (a conversation
  * that opens under its chat); `divided` draws the line above the whole row, panel included, so a
  * list of them is `divided={index > 0}` on each. Inside a row a `Stack` is `xs` apart, and a `sm`
- * row makes the buttons in it `sm`.
+ * row makes the buttons in it `sm`. While `loading` an empty label is a bone, and what the row holds
+ * waits with it.
  */
 export function ListRow(props: ListRowProps): ReactElement {
   const labelId = useId();
+  const { loading, owner } = useLoading(props.loading);
   return (
     <GapProvider gap="xs">
       <DensityProvider size={props.size === "sm" ? "sm" : null}>
-        {rowOf(props, labelId)}
+        <LoadingScope loading={loading}>
+          {rowOf(waitingRow(props, loading, owner), labelId)}
+        </LoadingScope>
       </DensityProvider>
     </GapProvider>
   );

@@ -171,7 +171,7 @@ describe.each(files)("%s", (file) => {
   it("meets the distinction contract: the tones a page must tell apart, told apart", () => {
     // packages/themes-shared/src/distinction.ts says which pairs two colours must read apart as, and
     // by how much in OKLab; a failure names the pair, both colours, the distance and the bar.
-    expect(distinctionFailures(css)).toEqual([]);
+    expect(distinctionFailures(css, palette)).toEqual([]);
   });
 
   it("owns the page canvas and the type faces", () => {
@@ -193,7 +193,7 @@ describe.each(files)("%s", (file) => {
     expect(luminance(painted("bg-black/90", "background-color", canvas))).toBeLessThan(0.05);
   });
 
-  it("exposes the six colours of chrome the kit cannot draw, each the value its utility paints", () => {
+  it("exposes the fourteen colours of chrome the kit cannot draw, each the value its utility paints", () => {
     // A map popup or marker reads these with var(--hc-…) (README, "Colours for chrome the kit cannot
     // draw"). Each must equal the hex its utility's rule sets under this scope, so a palette edit
     // that forgets one fails here. The utilities are read by selector; no value or theme is listed.
@@ -212,6 +212,14 @@ describe.each(files)("%s", (file) => {
       ink: ["text-slate-900", "color"],
       mute: ["text-slate-500", "color"],
       accent: ["text-violet-600", "color"],
+      "cat-1": ["text-indigo-600", "color"],
+      "cat-2": ["text-orange-600", "color"],
+      "cat-3": ["text-teal-600", "color"],
+      "cat-4": ["text-pink-600", "color"],
+      "cat-5": ["text-lime-600", "color"],
+      "cat-6": ["text-fuchsia-600", "color"],
+      "cat-7": ["text-rose-600", "color"],
+      "cat-8": ["text-yellow-600", "color"],
     };
     expect([...exposed.keys()].toSorted()).toEqual(Object.keys(chrome).toSorted());
     for (const [name, [utility, property]] of Object.entries(chrome)) {

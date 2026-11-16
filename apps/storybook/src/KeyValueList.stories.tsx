@@ -151,3 +151,30 @@ export const Tones: S = {
     </div>
   ),
 };
+
+type Loading = StoryObj<{ loading: boolean }>;
+
+/** A list with no rows yet draws three rows of bones; one whose labels are known keeps them. */
+export const Loading: Loading = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <div className="grid max-w-xl gap-6 sm:grid-cols-2">
+      <KeyValueList loading={loading}>
+        {loading
+          ? null
+          : [
+              <KeyValue key="size" label="Size">
+                1280×720
+              </KeyValue>,
+              <KeyValue key="captured" label="Captured">
+                2 min ago
+              </KeyValue>,
+            ]}
+      </KeyValueList>
+      <KeyValueList loading={loading}>
+        <KeyValue label="Size">{loading ? undefined : "1280×720"}</KeyValue>
+        <KeyValue label="Changed pixels">{loading ? undefined : "0.4%"}</KeyValue>
+      </KeyValueList>
+    </div>
+  ),
+};

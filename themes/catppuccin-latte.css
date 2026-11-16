@@ -47,6 +47,14 @@
   --hc-ink: #4c4f69; /* text-slate-900 */
   --hc-mute: #616277; /* text-slate-500 */
   --hc-accent: #8035e1; /* text-violet-600 */
+  --hc-cat-1: #1a60f8; /* text-indigo-600 */
+  --hc-cat-2: #e94e05; /* text-orange-600 */
+  --hc-cat-3: #2a8c98; /* text-teal-600 */
+  --hc-cat-4: #c959a3; /* text-pink-600 */
+  --hc-cat-5: #429305; /* text-lime-600 */
+  --hc-cat-6: #892bef; /* text-fuchsia-600 */
+  --hc-cat-7: #cb023e; /* text-rose-600 */
+  --hc-cat-8: #b07704; /* text-yellow-600 */
 }
 
 /* The page canvas: AppShell paints it; white cards lift off the base. */
@@ -69,6 +77,12 @@
 }
 .latte .bg-slate-100 {
   background-color: #dce0e8; /* crust: one step deeper than mantle */
+}
+/* A loading bone (the skeleton role): opaque, held apart from the canvas, a card and the subtle
+   strip by the distinction contract.
+   Surface0: the line colour, a shape on mantle, base and crust. */
+.latte .bg-slate-200 {
+  background-color: #ccd0da;
 }
 .latte .bg-slate-900 {
   background-color: #4c4f69; /* text: e.g. the brand badge */
@@ -346,6 +360,33 @@
 }
 .latte .text-purple-700 {
   color: #8839ef; /* mauve */
+}
+/* The categorical scale (cat1 to cat8): one colour per category where the colour carries no
+   meaning, for a chart and its key. Each starts from this theme's own hue and moved only as far as
+   3:1 on every surface and 0.12 apart in OKLab need. */
+.latte .text-indigo-600 {
+  color: #1a60f8; /* cat1: blue */
+}
+.latte .text-orange-600 {
+  color: #e94e05; /* cat2: peach */
+}
+.latte .text-teal-600 {
+  color: #2a8c98; /* cat3: teal */
+}
+.latte .text-pink-600 {
+  color: #c959a3; /* cat4: pink */
+}
+.latte .text-lime-600 {
+  color: #429305; /* cat5: green */
+}
+.latte .text-fuchsia-600 {
+  color: #892bef; /* cat6: mauve */
+}
+.latte .text-rose-600 {
+  color: #cb023e; /* cat7: red */
+}
+.latte .text-yellow-600 {
+  color: #b07704; /* cat8: yellow */
 }
 .latte .border-emerald-200,
 .latte .border-emerald-300 {

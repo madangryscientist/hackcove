@@ -145,3 +145,16 @@ export const DontViewer: S = {
     </button>
   ),
 };
+
+/** While `loading`, a tile with no `src` yet is a bone of its shape; its caption is drawn. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <MediaTile
+      loading={loading}
+      src={loading ? undefined : samplePortrait.src}
+      alt={samplePortrait.alt}
+      caption="Today"
+    />
+  ),
+};

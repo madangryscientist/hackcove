@@ -16,8 +16,17 @@ export const data: ComponentSection = {
         "TableRecords/RowStatus",
         "TableRowStripe/Stripe",
         "TableActions/ActionsColumn",
+        "TableSort/Sort",
+        "TableEmpty/Empty",
       ],
-      stories: ["Table", "TableCellOptions", "TableEditCell", "TableFields", "TableInlineEdit"],
+      stories: [
+        "Table",
+        "TableCellOptions",
+        "TableEditCell",
+        "TableFields",
+        "TableInlineEdit",
+        "TableStates",
+      ],
       usage: {
         do: [
           "Compose a `Table` from `TableHead`, `TableBody` and, for totals, `TableFoot`. A `TableHead` holds one `TableRow` of `TableHeaderCell`s; give the `Table` a `label` that names it.",
@@ -25,10 +34,15 @@ export const data: ComponentSection = {
           "A cell's `tone` is `neutral` (the default), `strong` for the name of the row, `muted` for the secondary column, or a Callout tone for an amount that carries a meaning; pair the tone with a sign or a word. `secondary` is a muted second line under a cell.",
           "The total of the whole table is a `TableFoot` row. A subtotal among the body's rows is a `TableRow` with `emphasis`, the same look; a bold subtotal is not a `tone`. Neither row takes a `tone`.",
           "Mark a row's status with `tone` (a stripe and a soft fill, or `muted` to fade the row) or with `stripe` (the stripe alone, in the `muted`, `info`, `positive`, `warn` or `danger` tone, which keeps the row's hover). Give one of them, never both, and name the status in a cell as well (a `Pill`), or draw a `Legend` for the colours.",
-          'Group rows with a `TableGroupRow` and give it `colSpan` equal to the table\'s column count; `trailing` is a count or a subtotal at the far end. A full-width note or empty state is a `TableCell` with `colSpan`; `align="center"` centres it. `indent` (1 to 3) sets a start-aligned cell in, for the lines under a parent row.',
+          'A table with no rows takes `TableBody empty={<EmptyState title="No quotes yet." />}`: one muted line in a cell that spans every column the head declares, with the head still drawn. Write `TableHead` and its cells inline, so the table can count them.',
+          'Group rows with a `TableGroupRow`: it spans every column the head declares, and `trailing` is a count or a subtotal at the far end. A full-width note or panel is a `TableCell span="full"`; `align="center"` centres it. `indent` (1 to 3) sets a start-aligned cell in, for the lines under a parent row.',
           'A column with nothing to say in its head (its actions) takes a `TableHeaderCell` with `label="Actions"`. Inside a `Card` a table is plain: no card of its own, only the row dividers.',
           "A grid of fields, one row per period or item (a plan by month, say), is a `Table` in a `Card` with an `Input` in each cell, not a custom grid: the first column takes the room left, the others fit their content, and there is no column-template option.",
-          "A prose cell wraps; a `numeric` or `mono` cell never breaks. `truncate` cuts a long value to one line and keeps its full text as a `title`; its content is plain text.",
+          "A prose cell (plain text) wraps, down to a floor so it never becomes a sliver; a cell that holds a control or a link (a `Pill`, a `Switch`, a `Button`, a `TextLink`) takes its content's width; a `numeric` or `mono` cell never breaks. `truncate` cuts a long value to one line and keeps its full text as a `title`; its content is plain text.",
+          "A sortable column takes `sort` (`ascending`, `descending` or `none`) and `onSort` on its `TableHeaderCell`: the title becomes a button that asks for the next direction. Sort the rows yourself and pass the direction back; one column is sorted at a time, and the table never sorts, filters or pages.",
+          "`selected` on a `TableRow` marks the row whose detail is open beside the table, as on a `ListRow`; it is not a multi-select, and a selected row takes no `tone`.",
+          'A row that opens takes a `TableExpandCell` (`expanded`, `label`, `onClick`, and a `count` of what it holds) in a column headed `<TableHeaderCell label="Details" />`. Hold `expanded` yourself and render what opens under the row: a `TableRow` with one `TableCell span="full"`, or indented child rows.',
+          "`size` is the row padding: `sm` (the default), `md` or `lg`, and the buttons and fields in the rows follow it.",
           "To make a whole row clickable, put one `TextLink` with `stretch` in its first cell. Keep an action that is not navigation a `Button` in an actions column.",
           "A value edited in place is a `TableEditCell` in place of the `TableCell`: `renderEditor` draws the control in the cell, and calls its `close` once it has saved. A press outside it, Tab out of it and Esc all close it without a save, so save on the control's own change or submit. The control sits in the cell, not in a popover of its own.",
           "A cell that holds more than the value (a second line, a `Pill`) is a `TableCell` with an `InlineEdit` in it, which is the edit trigger without the cell. `TableEditCell` is a `TableCell` around one `InlineEdit`; the keyboard and focus behaviour is the same.",
@@ -44,6 +58,9 @@ export const data: ComponentSection = {
         "A stretched `TextLink` is a real link and the only tab stop in its row; the row's whole area is its click target.",
         "A `TableEditCell` or `InlineEdit` is a native `<button>` named by its value and its `label`. Opening moves the focus to the editor, a group named by `label`; Esc and `close` move it back to the value.",
         "On a narrow screen the card scrolls sideways instead of squeezing its columns.",
+        "A sorted column's header has `aria-sort` (`ascending` or `descending`); a sortable column it is not sorted by has none, and its title is a native button named by the title.",
+        "A `selected` row has `aria-current`, not `aria-selected`, which a plain table row does not support.",
+        'A `TableExpandCell` is a native button named by its `label` and `count` ("Details, 3"), with `aria-expanded` and the `aria-controls` you give it.',
       ],
       api: [
         "Table",
@@ -56,6 +73,7 @@ export const data: ComponentSection = {
         "TableEditCell",
         "InlineEdit",
         "TableGroupRow",
+        "TableExpandCell",
       ],
     },
     {
@@ -194,10 +212,11 @@ export const data: ComponentSection = {
       summary: "A bar of any number of parts, each sized by its share of the sum.",
       whenToUse:
         "The make-up of one whole in three or more parts: results by status, spend by group.",
-      pairs: ["StackedBar/Legend"],
+      pairs: ["StackedBar/Legend", "StackedBar/Categories"],
       usage: {
         do: [
           "`items` are `{ label, value, tone }` in the order to draw; `tone` is `muted`, `positive`, `warn`, `danger`, `info`, `neutral` (a grey apart from `muted`) or `accent`, and you map your own roles onto them. Five distinguishable parts are `warn`, `info`, `danger`, `neutral` and `muted`.",
+          "Categories with no meaning (shops by kind, spend by group) take the categorical scale, `cat1` to `cat8`, from `cat1` upwards in order; good and bad take the meaning tones; never both in one chart. Each theme publishes the same eight as `--hc-cat-1` to `--hc-cat-8`, so a map pin can match its `Legend`.",
           "Set `legend` so every colour is named in words under the bar, with its value.",
           '`Legend` alone is the key for colours drawn elsewhere, such as a `TableRow` `stripe`. An item with `swatch: "dashed"` is a dashed ring with no fill, the key for an outline drawn over the chart.',
           "`size` is `sm`, `md` (default) or `lg`. A part with no value is zero wide.",
@@ -219,7 +238,7 @@ export const data: ComponentSection = {
       usage: {
         do: [
           "`buckets` are the x-axis labels in order (`W12`, `Mar`); each series' `values` has one value per bucket, in the same order. `label` names the chart.",
-          "`series` is one or two `{ label, tone, values }`, never more; `tone` is a `VizTone`. Two series draw a `Legend` under the chart; one is named by `label`.",
+          "`series` is one or two `{ label, tone, values }`, never more; `tone` is a `VizTone`: a meaning tone, or `cat1` upwards for series that are only categories, never both in one chart. Two series draw a `Legend` under the chart; one is named by `label`.",
           "`kind` is `bar` (default) for a count in each bucket, or `line` for a level over time.",
           "Values are counts or amounts from 0 up. A negative value is drawn as 0. A missing value, a `null` or a `values` list shorter than `buckets`, draws nothing for that bucket: no bar, and the line breaks there. Values past the last bucket are ignored.",
           "The y-axis runs from 0 to a rounded maximum (2, 4 or 10 times a power of ten) and is labelled at 0, half and the top. With more than 8 buckets, every k-th x label is drawn, starting with the first.",

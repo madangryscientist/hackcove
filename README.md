@@ -150,9 +150,12 @@ A theme is one CSS file in the `themes/` package, and its file name is its id:
    `.<scope> { color-scheme: …; }` (Storybook and the e2e read the scope from that rule), remap the
    utilities `@hackcove/ui-react` uses under `.<scope>`, and do not import Tailwind (the consumer does).
    A dark theme also declares `@custom-variant dark (&:where(.<scope>, .<scope> *));`. The scope
-   also sets the six `--hc-*` colour properties for chrome the kit cannot draw (`--hc-surface`,
-   `--hc-subtle`, `--hc-line`, `--hc-ink`, `--hc-mute`, `--hc-accent`), each equal to the value its
-   named utility paints (`themes/README.md`). The colours must also clear WCAG AA: `themes/themes.test.ts` runs a contrast check
+   also sets the fourteen `--hc-*` colour properties for chrome the kit cannot draw (`--hc-surface`,
+   `--hc-subtle`, `--hc-line`, `--hc-ink`, `--hc-mute`, `--hc-accent`, and `--hc-cat-1` to
+   `--hc-cat-8`), each equal to the value its named utility paints (`themes/README.md`). A new theme
+   sets the eight categorical colours (`cat1` to `cat8` in `palette.json`) from its own hues, each at
+   3:1 on every surface and every two at least 0.12 apart in OKLab (the distinction contract,
+   `packages/themes-shared/src/distinction.ts`). The colours must also clear WCAG AA: `themes/themes.test.ts` runs a contrast check
    (`packages/themes-shared/src/contrastRules.ts`) that measures every ink, link, accent and tone
    pairing in `palette.json` on every surface it sits on (4.5:1 for text, 3:1 for the edge of a
    control, a focus ring or a chart mark). A failure names the pair, both colours, the ratio and the

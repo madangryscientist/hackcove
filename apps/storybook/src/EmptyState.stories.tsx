@@ -1,5 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Card, Code, EmptyState, Section, Step, Steps, Text } from "@hackcove/ui-react";
+import {
+  Button,
+  Card,
+  Code,
+  EmptyState,
+  Section,
+  Stack,
+  Step,
+  Steps,
+  Text,
+} from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Feedback/EmptyState" };
 export default meta;
@@ -77,8 +87,19 @@ export const DontNextStep: S = {
   render: () => <EmptyState title="Nothing here" />,
 };
 
-/** An empty list inside a card is one muted line: `Text tone="muted"`. */
+/** An empty list inside a card gives its `empty` slot an `EmptyState`, which the list draws as one muted line. */
 export const DoInline: S = {
+  render: () => (
+    <Card title="Builds">
+      <Stack as="ul" empty={<EmptyState title="No builds yet." />}>
+        {[]}
+      </Stack>
+    </Card>
+  ),
+};
+
+/** A muted `Text` written by hand is a second empty look, and it stays on screen when the list fills. */
+export const DontInline: S = {
   render: () => (
     <Card title="Builds">
       <Text tone="muted">No builds yet.</Text>
@@ -86,14 +107,20 @@ export const DoInline: S = {
   ),
 };
 
-/** `EmptyState` is for a whole page or list; inside a small card it is a block that dwarfs the card. */
-export const DontInline: S = {
+/** `size="sm"` is one centred muted line with no heading: the form a table, a timeline or a list draws. */
+export const Small: S = {
   render: () => (
-    <Card title="Builds">
-      <EmptyState title="No builds yet">
-        <Text>Builds appear here once a project has uploaded its first capture.</Text>
-      </EmptyState>
-    </Card>
+    <div className="max-w-md">
+      <Card>
+        <EmptyState
+          size="sm"
+          title="No builds yet."
+          actions={<Button size="sm">Upload a capture</Button>}
+        >
+          Builds appear here once a project has uploaded one.
+        </EmptyState>
+      </Card>
+    </div>
   ),
 };
 

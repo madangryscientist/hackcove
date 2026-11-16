@@ -7,13 +7,16 @@ import {
   sharePercent,
   type BarSize,
   type BarTone,
+  WaitingBar,
 } from "./ProgressBar.js";
+import { type LoadingProps, useLoading } from "./skeleton.js";
 import type { Passthrough } from "./props.js";
 
 /**
  * A bar split between two parties, `a` on the left and `b` on the right, each sized by its share of
  * `a + b`. `label` names the split for a screen reader, which hears both percentages; give `names`
  * (left, right) so it hears whose is whose. Put the parties' names under the bar yourself.
+ * While `loading` it is one bone the bar's size, since 0 is a real value.
  */
 export function SplitBar({
   a,
@@ -23,6 +26,8 @@ export function SplitBar({
   toneA = "danger",
   toneB = "positive",
   size = "md",
+  loading,
+  loadingLabel,
   ...rest
 }: {
   /** The left party's amount; its share is `a` over `a + b`. */
@@ -42,7 +47,13 @@ export function SplitBar({
    * @default md
    */
   size?: BarSize;
-} & Passthrough): ReactElement {
+} & LoadingProps &
+  Passthrough): ReactElement {
+  const waiting = useLoading(loading).loading;
+  if (waiting) {
+    const attrs = { ...rest, role: "img", "aria-label": label };
+    return <WaitingBar own={loading} label={loadingLabel} size={size} attrs={attrs} />;
+  }
   const shareA = sharePercent(a, a + b);
   const shareB = a + b > 0 ? 100 - shareA : 0;
   const percentA = announcedPercent(a, a + b);

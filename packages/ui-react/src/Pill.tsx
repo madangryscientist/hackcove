@@ -3,6 +3,14 @@ import { cx, focusRing } from "./cx.js";
 import { useDensity } from "./density.js";
 import { renderLink } from "./link.js";
 import type { Passthrough } from "./props.js";
+import {
+  isEmptySlot,
+  type LoadingProps,
+  passthroughOf,
+  useLoading,
+  WaitingBone,
+} from "./skeleton.js";
+import { splitTip } from "./pillTip.js";
 import { Tipped } from "./Tooltip.js";
 import type { Size } from "./size.js";
 import type { Tone } from "./tone.js";
@@ -10,8 +18,9 @@ import type { Tone } from "./tone.js";
 /** A Pill's tones: the five meanings, and `accent` for a category that is none of them. */
 export type PillTone = Tone | "accent";
 
-type PillBase = {
-  children: ReactNode;
+type PillBase = LoadingProps & {
+  /** The pill's text; while `loading`, none yet draws the pill as a bone of its size. */
+  children?: ReactNode;
   /**
    * What the pill means: `neutral`, `info`, `positive`, `warn` or `danger`, or `accent` for a
    * category that is none of those.
@@ -81,6 +90,9 @@ const PILL_TONES: Record<PillTone, string> = {
 
 /** The text size of each step: `md` is the pill as it has always been. */
 const TEXT: Record<Size, string> = { sm: "text-[11px]", md: "text-xs", lg: "text-sm" };
+
+/** A loading pill's height at each step: the pill's own line box. */
+const BONE_HEIGHT: Record<Size, string> = { sm: "h-4", md: "h-5", lg: "h-6" };
 
 const INTERACTIVE = cx("transition hover:opacity-80", focusRing);
 
@@ -225,35 +237,6 @@ function renderMain(parts: MainParts) {
   );
 }
 
-/** The keys the tooltip owns on its trigger, with the tab stop it needs. */
-const TIP_KEYS = new Set([
-  "title",
-  "aria-describedby",
-  "style",
-  "tabIndex",
-  "onPointerEnter",
-  "onPointerLeave",
-  "onPointerDown",
-  "onFocus",
-  "onBlur",
-  "onKeyDown",
-]);
-
-/**
- * A removable plain pill's attributes, split: the tooltip's wiring goes on its text, so the x's own
- * focus and hover never reach it, and the rest stays on the shell, once.
- */
-function splitTip(attrs: Record<string, unknown>): {
-  wiring: Record<string, unknown>;
-  rest: Record<string, unknown>;
-} {
-  const entries = Object.entries(attrs);
-  return {
-    wiring: Object.fromEntries(entries.filter(([key]) => TIP_KEYS.has(key))),
-    rest: Object.fromEntries(entries.filter(([key]) => !TIP_KEYS.has(key))),
-  };
-}
-
 /** The shell round a removable pill: the text half and the x button beside it. */
 function RemoveShell({
   look,
@@ -297,9 +280,28 @@ function RemoveShell({
  * `external` opens a new tab) and `onClick` makes it
  * a button, each with a hover dim and the focus ring. `onRemove` adds an x button after the text
  * (named by `removeLabel`), a separate button beside a link or button pill rather than nested in
- * it. `title` is its tooltip and description; a plain pill with one takes a tab stop.
+ * it. `title` is its tooltip and description; a plain pill with one takes a tab stop. While
+ * `loading` with no text yet it is a bone of its size.
  */
-export function Pill({
+export function Pill(props: PillProps): ReactElement {
+  const size = useDensity(props.size);
+  if (useLoading(props.loading).loading && isEmptySlot(props.children)) {
+    const corners = props.round ? "rounded-full" : "rounded-md";
+    return (
+      <WaitingBone
+        own={props.loading}
+        label={props.loadingLabel}
+        attrs={passthroughOf(props)}
+        root="inline-flex align-middle"
+        shape={cx("inline-block w-14", BONE_HEIGHT[size], corners)}
+      />
+    );
+  }
+  return <ShownPill {...props} size={size} />;
+}
+
+/** A pill with its text. */
+function ShownPill({
   children,
   tone = "neutral",
   size,
@@ -311,12 +313,14 @@ export function Pill({
   onClick,
   onRemove,
   removeLabel,
+  loading: _loading,
+  loadingLabel: _loadingLabel,
   ...rest
-}: PillProps): ReactElement {
+}: PillProps & { size: Size }): ReactElement {
   const interactive = href !== undefined || onClick !== undefined;
   const look: Look = {
     tone,
-    size: useDensity(size),
+    size,
     round,
     dot,
     labelled: name !== undefined,

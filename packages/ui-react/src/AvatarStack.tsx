@@ -8,6 +8,7 @@ import {
 } from "./Avatar.js";
 import { cx } from "./cx.js";
 import type { Passthrough } from "./props.js";
+import { Bone, BusyLabel, busy, type LoadingProps, useLoading } from "./skeleton.js";
 
 // Each avatar after the first overlaps the one before it by about a quarter of its width.
 const OVERLAP: Record<AvatarSize, string> = {
@@ -29,13 +30,16 @@ export type AvatarStackPerson = { name: string; src?: string | undefined };
 /**
  * Members as a row of overlapping avatars, each in a ring in the page colour that separates it from
  * the next. With `max`, the first `max` show and a "+N" chip of the same size and shape stands for
- * the rest. The row is one image to assistive tech, named by the people in it.
+ * the rest. The row is one image to assistive tech, named by the people in it. While `loading`
+ * with no `items` yet it draws three avatar bones.
  */
 export function AvatarStack({
   items,
   max,
   size = "md",
   shape = "round",
+  loading,
+  loadingLabel,
   ...rest
 }: {
   /** Who is in the stack, in order. Give each person's full name, as for `Avatar`. */
@@ -52,7 +56,28 @@ export function AvatarStack({
    * @default round
    */
   shape?: AvatarShape;
-} & Passthrough): ReactElement {
+} & LoadingProps &
+  Passthrough): ReactElement {
+  const { loading: waiting, owner } = useLoading(loading);
+  if (waiting && items.length === 0) {
+    return (
+      <span {...rest} {...busy(owner, waiting)} className="inline-flex items-center">
+        {[0, 1, 2].map((i) => (
+          <Bone
+            key={i}
+            shape={cx(
+              "inline-block shrink-0",
+              RING,
+              avatarSizeClass(size),
+              avatarShapeClass(shape, size),
+              i > 0 && OVERLAP[size],
+            )}
+          />
+        ))}
+        <BusyLabel owner={owner} loading={waiting} label={loadingLabel} />
+      </span>
+    );
+  }
   const shown = max === undefined ? items : items.slice(0, Math.max(max, 0));
   const hidden = items.slice(shown.length);
   const overlap = OVERLAP[size];

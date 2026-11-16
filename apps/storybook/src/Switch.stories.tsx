@@ -217,3 +217,9 @@ export const DontDisabledReason: S = {
     <Switch label="Live in production" checked={false} onChange={() => undefined} disabled />
   ),
 };
+
+/** While `loading` the label is drawn and the track is a bone of its size. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => <Switch loading={loading} label="Weekly summary" defaultChecked />,
+};

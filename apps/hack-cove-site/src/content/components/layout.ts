@@ -127,7 +127,7 @@ export const layout: ComponentSection = {
           "`width` caps the column at the left edge: `compact` (one card or one picture's column), `narrow` (a reading measure), `wide`, `full`, or `default` for the parent's width. It is never re-centred. A width cap on any one block is a `Stack` around it: `<Stack width=\"compact\"><Card>...</Card></Stack>`.",
           '`align="start"` keeps each child at its own width: a `Button` under a form\'s fields. Left out, every child spans the column.',
           "`divided` draws a line between each pair of children and sets them touching, with no gap: rows that carry their own padding, such as `ListRow`s in a `Card flush`. For space and a line between blocks, put a `Divider` in the Stack.",
-          '`as` is `div` (default), `section`, `form`, `ul` or `ol`. `as="form"` takes the form props and spaces its fields; `as="ul"` and `as="ol"` draw no markers and their children are `<li>`s.',
+          '`as` is `div` (default), `section`, `form`, `ul` or `ol`. `as="form"` takes the form props and spaces its fields; `as="ul"` and `as="ol"` draw no markers and their children are `<li>`s, and take `empty`, an `EmptyState` drawn as one muted line when the list has no children.',
           "A titled group is a `Section`: `title`, `actions` beside it, then the blocks, spaced as a `Stack`. It takes `gap` and `width` as `Stack` does. `rule` draws a hairline under the title row, `actions` included. Its title is an `h2` on the page, one level below the section that holds it, and a `Card` or `EmptyState` inside it is one below that; `level` sets it by hand.",
           'A small titled group (a panel\'s "Flaky" block, a card\'s "Ignore areas") is `Section size="sm"`: a small all-caps title, its blocks `xs` apart, `actions` at the end of the title row.',
           "`rowFrom` (`sm`, `md` or `lg`) turns the column into a row from that breakpoint and leaves it a column below: a main block beside a side column on a wide screen, stacked on a phone. Put the block that takes the width left in a `ClusterGrow`.",
@@ -220,6 +220,7 @@ export const layout: ComponentSection = {
           "`CardGrid` goes inside a page layout; it sets no page width of its own.",
           "A single column of blocks is a `Stack`, not a one-column `CardGrid`.",
           '`as="ul"` makes the grid a list and wraps each child in a list item, for a set of like tiles a screen reader should count. The look is the same.',
+          "`empty` is an `EmptyState`, drawn in place of the grid when it has no children.",
         ],
       },
       accessibility: [

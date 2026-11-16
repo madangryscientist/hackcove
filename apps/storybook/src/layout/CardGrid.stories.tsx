@@ -3,6 +3,7 @@ import {
   AppShell,
   Card,
   CardGrid,
+  EmptyState,
   Tabs,
   PageHeader,
   Stack,
@@ -45,6 +46,15 @@ export const FullPage: S = {
         </CardGrid>
       </Stack>
     </AppShell>
+  ),
+};
+
+/** With no children the grid draws its `empty`, an `EmptyState` at its full size. */
+export const Empty: S = {
+  render: () => (
+    <DemoShell>
+      <CardGrid empty={<EmptyState title="No projects yet." />}>{[]}</CardGrid>
+    </DemoShell>
   ),
 };
 
@@ -159,6 +169,16 @@ export const DoAuto: S = {
       <Card title="Members">
         <Text>Who can sign in.</Text>
       </Card>
+    </CardGrid>
+  ),
+};
+
+/** While `loading` it owns the wait, and every part inside waits with it. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <CardGrid loading={loading} empty={<EmptyState title="No shops yet" />}>
+      {loading ? null : <Card title="Cove Hardware">Harbour Road</Card>}
     </CardGrid>
   ),
 };

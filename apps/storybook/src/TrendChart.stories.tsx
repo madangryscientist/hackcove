@@ -99,3 +99,21 @@ export const DontKind: S = {
     />
   ),
 };
+
+/** While `loading` the frame, the bucket names and the key are drawn and the plot is one bone. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <div className="max-w-xl">
+      <TrendChart
+        loading={loading}
+        label="Tickets opened and closed per week"
+        buckets={["W1", "W2", "W3", "W4", "W5", "W6"]}
+        series={[
+          { label: "Opened", tone: "warn", values: loading ? [] : [6, 5, 8, 7, 9, 10] },
+          { label: "Closed", tone: "info", values: loading ? [] : [4, 7, 3, 9, 12, 8] },
+        ]}
+      />
+    </div>
+  ),
+};

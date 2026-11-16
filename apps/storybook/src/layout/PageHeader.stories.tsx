@@ -51,3 +51,11 @@ export const TitleOnly: S = {
     </DemoShell>
   ),
 };
+
+/** While `loading` it owns the wait: what it has is drawn, and an empty title is a bone. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <PageHeader loading={loading} title={loading ? null : "Q-1043"} description="Cove Hardware" />
+  ),
+};

@@ -13,6 +13,7 @@ import { useStackGap } from "./stackGap.js";
 import { useTypeStep } from "./density.js";
 import { layoutClass, type TextAlign, type TextLines } from "./textBox.js";
 import type { Passthrough } from "./props.js";
+import { type LoadingProps, useTextWait } from "./skeleton.js";
 import type { Size } from "./size.js";
 import type { Tone } from "./tone.js";
 
@@ -73,10 +74,14 @@ export function textToneClass(tone: TextTone | undefined): string | undefined {
   return tone === undefined || tone === "neutral" ? undefined : TEXT_TONE[tone];
 }
 
-/** Own props shared by every typography component; the rest follow the rendered element. */
+/**
+ * Own props shared by every typography component; the rest follow the rendered element. While
+ * `loading` with no `children`, a heading draws one bone at its line height, a paragraph three
+ * lines of bones and an inline run one word-sized bone.
+ */
 type OwnProps = {
   children?: ReactNode;
-};
+} & LoadingProps;
 
 /** The opt-in props of the inline roles (`Text`, `Caption`, `Overline`). */
 type InlineOwnProps = {
@@ -172,6 +177,8 @@ function pinned(
     mono,
     lines,
     align,
+    loading,
+    loadingLabel,
     children,
     ...rest
   }: Own & {
@@ -181,10 +188,12 @@ function pinned(
   },
 ): ReactElement {
   const Tag: ElementType = as ?? defaultAs;
+  const wait = useTextWait(Tag, { loading, loadingLabel, children });
   return (
     <Tag
       {...rest}
-      {...(lines ? { title: rest.title ?? plainText(children) } : {})}
+      {...wait.attrs}
+      {...(lines && !wait.bones ? { title: rest.title ?? plainText(children) } : {})}
       className={cx(
         variantClass,
         textToneClass(tone) ?? INK[ink],
@@ -193,7 +202,7 @@ function pinned(
         layoutClass(align, lines),
       )}
     >
-      {children}
+      {wait.body}
     </Tag>
   );
 }

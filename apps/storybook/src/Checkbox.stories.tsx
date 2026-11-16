@@ -140,3 +140,11 @@ export const DoDisabledReason: S = {
 export const DontDisabledReason: S = {
   render: () => <Checkbox label="Email the team" disabled />,
 };
+
+/** While `loading` the label is drawn and the box is a bone of its size. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <Checkbox loading={loading} label="Email me when a quote is accepted" defaultChecked />
+  ),
+};

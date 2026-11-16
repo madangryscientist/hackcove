@@ -67,6 +67,11 @@ export const EXEMPTIONS: readonly Exemption[] = [
     why: "the tinted edge of a callout or an outline button: its words and fill carry the meaning (the invalid field's edge, border-red-200, is held to 3:1 below)",
   },
   {
+    role: "skeleton",
+    match: /^/,
+    why: "a loading bone: aria-hidden decoration with no text or control edge, so WCAG 1.4.3 and 1.4.11 do not bind it; the distinction contract holds it apart from what it sits on",
+  },
+  {
     role: "identity",
     match: /^bg-/,
     why: "an avatar's fill is identified by its initials, which are held to AA on it; the fill itself needs no edge contrast",
@@ -219,7 +224,7 @@ export function rulesFor(palette: Palette): Rule[] {
     {
       name: "chart colour",
       bar: UI_BAR,
-      fg: roleOf(palette, "viz"),
+      fg: roleOf(palette, "viz", "categorical"),
       on: stacks(narrow),
       base: narrow,
     },

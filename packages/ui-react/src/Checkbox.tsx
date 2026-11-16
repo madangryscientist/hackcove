@@ -3,6 +3,8 @@ import { cx, focusRing } from "./cx.js";
 import { useNote, Words } from "./labelWords.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
+import { WaitingChoice } from "./fieldWait.js";
+import { type LoadingProps, useLoading } from "./skeleton.js";
 import { useBlocked } from "./blocked.js";
 
 /** The label's gap and text, the box, and the box's drop onto the label's first line, by `size`. */
@@ -42,27 +44,8 @@ function Tick({ size, onFirstLine }: { size: Size; onFirstLine: boolean }): Reac
   );
 }
 
-/**
- * A checkbox with its label. It is a real `<input type="checkbox">`, drawn by the library (an
- * empty outlined box, then a filled violet one with a check mark) so it reads the same in every
- * theme and browser. Every prop but the label goes on the input, and `ref` reaches it.
- * `size="sm"` is `text-xs` and a smaller box, for a dense row; `size="lg"` is `text-base` and a
- * larger box. Leave `label` out for a bare box in a table cell, and name it with `aria-label`. The
- * box sits on the label's first line, so a label that wraps reads from the box. `hint` is a muted
- * line under the label that says more, like a `Field`'s; `error` replaces it with a red line
- * (`role="alert"`) and makes the box `aria-invalid`. The note is the box's `aria-describedby`.
- * `onChange` gets the new checked state; take `checked` with it, or `defaultChecked` alone.
- */
-export function Checkbox({
-  label,
-  hint,
-  error,
-  size = "md",
-  onChange,
-  disabledReason,
-  "aria-describedby": describedBy,
-  ...rest
-}: {
+/** The props of a `Checkbox`. */
+type CheckboxProps = {
   /** The text beside the box. Leave it out for a bare box (a table cell) and name it with `aria-label`. */
   label?: ReactNode;
   /** A muted line under the label that says more. It is the box's `aria-describedby`. */
@@ -84,9 +67,52 @@ export function Checkbox({
   disabledReason?: string | undefined;
   /** The `<input>`, for focus control. */
   ref?: Ref<HTMLInputElement> | undefined;
-} & Unstyled<
-  Omit<ComponentPropsWithoutRef<"input">, "type" | "size" | "width" | "onChange">
->): ReactElement {
+} & Unstyled<Omit<ComponentPropsWithoutRef<"input">, "type" | "size" | "width" | "onChange">>;
+
+/**
+ * A checkbox with its label. It is a real `<input type="checkbox">`, drawn by the library (an
+ * empty outlined box, then a filled violet one with a check mark) so it reads the same in every
+ * theme and browser. Every prop but the label goes on the input, and `ref` reaches it.
+ * `size="sm"` is `text-xs` and a smaller box, for a dense row; `size="lg"` is `text-base` and a
+ * larger box. Leave `label` out for a bare box in a table cell, and name it with `aria-label`. The
+ * box sits on the label's first line, so a label that wraps reads from the box. `hint` is a muted
+ * line under the label that says more, like a `Field`'s; `error` replaces it with a red line
+ * (`role="alert"`) and makes the box `aria-invalid`. The note is the box's `aria-describedby`.
+ * `onChange` gets the new checked state; take `checked` with it, or `defaultChecked` alone.
+ * While `loading` the label is drawn and the box is a bone of its size.
+ */
+export function Checkbox({
+  loading,
+  loadingLabel,
+  ...props
+}: CheckboxProps & LoadingProps): ReactElement {
+  if (useLoading(loading).loading) {
+    const size = props.size ?? "md";
+    return (
+      <WaitingChoice
+        own={loading}
+        loadingLabel={loadingLabel}
+        label={props.label}
+        look={SIZE[size].label}
+        shape={cx(SIZE[size].box, props.label != null && SIZE[size].start, "rounded")}
+        attrs={props}
+      />
+    );
+  }
+  return <ShownCheckbox {...props} />;
+}
+
+/** A checkbox with its box drawn. */
+function ShownCheckbox({
+  label,
+  hint,
+  error,
+  size = "md",
+  onChange,
+  disabledReason,
+  "aria-describedby": describedBy,
+  ...rest
+}: CheckboxProps): ReactElement {
   const { noteId, describedIds, invalid } = useNote(hint, error, describedBy);
   const {
     props: guard,

@@ -33,7 +33,7 @@ describe("a Table", () => {
     expect(screen.getByRole("table", { name: "Budget" })).not.toBeNull();
   });
 
-  it("marks a selected row aria-selected, and no other", () => {
+  it("marks a selected row aria-current, and no other", () => {
     render(
       <Table label="Budget">
         <TableBody>
@@ -45,8 +45,8 @@ describe("a Table", () => {
         </TableBody>
       </Table>,
     );
-    expect(screen.getByRole("row", { name: "Food", selected: true })).not.toBeNull();
-    expect(screen.queryByRole("row", { name: "Rent", selected: true })).toBeNull();
+    expect(screen.getByRole("row", { name: "Food", current: true })).not.toBeNull();
+    expect(screen.queryByRole("row", { name: "Rent", current: true })).toBeNull();
   });
 
   it("finds a figure under the numeric column's header, the head declared once and mapped", () => {

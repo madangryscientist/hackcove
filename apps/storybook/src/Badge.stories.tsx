@@ -67,3 +67,11 @@ export const DontCount: S = {
     </Cluster>
   ),
 };
+
+type Loading = StoryObj<{ loading: boolean }>;
+
+/** A count is a number, so 0 is a value: while `loading` the badge is a bone of its size. */
+export const Loading: Loading = {
+  args: { loading: true },
+  render: ({ loading }) => <Badge loading={loading} count={12} />,
+};

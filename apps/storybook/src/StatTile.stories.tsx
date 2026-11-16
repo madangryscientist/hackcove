@@ -124,3 +124,22 @@ export const WithTrend: S = {
     </div>
   ),
 };
+
+type Loading = StoryObj<{ loading: boolean }>;
+
+/** While `loading`, the caption it knows is drawn and a bone stands where the figure will land. */
+export const Loading: Loading = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <div className="grid max-w-xl gap-4 sm:grid-cols-2">
+      <StatTile loading={loading} label="Left over" value={loading ? undefined : "R 4 250"} />
+      <StatTile
+        loading={loading}
+        label="Total interest"
+        value={loading ? undefined : "R 12 400"}
+        tone="danger"
+        accent
+      />
+    </div>
+  ),
+};

@@ -236,3 +236,11 @@ export const Sizes: S = {
     </>
   ),
 };
+
+/** While `loading` the label is drawn and the field is a bone of its height. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <DateField loading={loading} label="Delivery date" defaultValue={fromISODate("2026-11-20")} />
+  ),
+};

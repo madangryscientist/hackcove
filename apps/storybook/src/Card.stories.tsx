@@ -292,3 +292,24 @@ export const Sizes: S = {
     </div>
   ),
 };
+
+/** While `loading`, the title it knows is drawn and an empty body is three lines of bones; a `flush` card holds three row bones. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
+      <Card title="Notes" loading={loading}>
+        {loading ? null : "Cove Hardware asked for a second quote before Friday."}
+      </Card>
+      <Card title="Recent quotes" bar flush loading={loading}>
+        {loading
+          ? null
+          : ["Q-1043", "Q-1042", "Q-1041"].map((ref, i) => (
+              <ListRow key={ref} divided={i > 0}>
+                {ref}
+              </ListRow>
+            ))}
+      </Card>
+    </div>
+  ),
+};

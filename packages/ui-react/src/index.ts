@@ -75,8 +75,10 @@ export {
   TableFoot,
   TableGroupRow,
   TableHead,
+  TableExpandCell,
   TableHeaderCell,
   TableRow,
+  type TableSort,
 } from "./Table.js";
 export type { RowTone } from "./tableRow.js";
 export { InlineEdit } from "./InlineEdit.js";

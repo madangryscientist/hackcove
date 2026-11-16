@@ -2,6 +2,7 @@ import type { MouseEventHandler, ReactElement } from "react";
 import { cx, focusRing } from "./cx.js";
 import { renderLink } from "./link.js";
 import type { Passthrough } from "./props.js";
+import { type LoadingProps, passthroughOf, useLoading, WaitingBone } from "./skeleton.js";
 import { useImageFailed } from "./useImageFailed.js";
 
 /** The identity colours, in hash order. Each is a stock background utility; a theme remaps them. */
@@ -86,7 +87,8 @@ type AvatarProps = {
    * @default round
    */
   shape?: AvatarShape;
-} & Passthrough &
+} & LoadingProps &
+  Passthrough &
   (
     | { onClick?: undefined; href?: undefined; external?: undefined }
     | {
@@ -112,9 +114,21 @@ type AvatarProps = {
  * marks an org or a team instead. It never loads a remote image on its own: that is a request to
  * another server for decoration, and it makes a screenshot depend on the network. `src` is the
  * app's own local path. With `onClick` the whole Avatar is one button, with `href` one link. A row of overlapping avatars
- * is an `AvatarStack`.
+ * is an `AvatarStack`. While `loading` with an empty `name` it is a bone of its size and shape.
  */
-export function Avatar(props: AvatarProps): ReactElement {
+export function Avatar({ loading, loadingLabel, ...props }: AvatarProps): ReactElement {
+  if (useLoading(loading).loading && props.name === "") {
+    const { size = "md", shape = "round" } = props;
+    return (
+      <WaitingBone
+        own={loading}
+        label={loadingLabel}
+        shape={cx("inline-block shrink-0", avatarShapeClass(shape, size), SIZE_CLASSES[size])}
+        root="inline-flex"
+        attrs={passthroughOf(props)}
+      />
+    );
+  }
   return <AvatarMark {...props} />;
 }
 
@@ -128,6 +142,8 @@ export function AvatarMark({
   onClick,
   href,
   external = false,
+  loading: _loading,
+  loadingLabel: _loadingLabel,
   ...rest
 }: AvatarProps & { ring?: string | false }): ReactElement {
   const { ref, failed, markFailed } = useImageFailed(src);

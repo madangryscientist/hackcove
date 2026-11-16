@@ -2,6 +2,7 @@ import type { ReactElement, ReactNode } from "react";
 import type { Passthrough } from "./props.js";
 import { cx } from "./cx.js";
 import { BAR_FILL } from "./ProgressBar.js";
+import { Bone, BusyLabel, busy, isEmptySlot, type LoadingProps, useLoading } from "./skeleton.js";
 import { drawn, largest, plotY, runs, scaleMax } from "./trend.js";
 import { Overline } from "./typography.js";
 
@@ -22,11 +23,20 @@ const BAR: Record<StatTileTone, string> = {
   danger: BAR_FILL.danger,
 };
 
+const LABEL_BONE = "inline-block h-[0.6lh] w-20 rounded align-middle";
+const VALUE_BONE = "inline-block h-[0.7lh] w-28 rounded-md align-middle";
+
+/** A slot's content, or a bone of `shape` while loading with nothing in it. */
+function slot(loading: boolean, content: ReactNode, shape: string): ReactNode {
+  return loading && isEmptySlot(content) ? <Bone shape={shape} /> : content;
+}
+
 /**
  * One headline figure: an uppercase caption over a large tabular-nums value, with an optional
  * hint line beneath. `tone` colours the value; `accent` adds a bar across the top edge in the same
  * tone. `trend` draws a small line under the value in the same colour. Pass the value already
- * formatted.
+ * formatted. While `loading`, a `label` or `value` not here yet is a bone; the hint and the trend
+ * are drawn only once given.
  */
 export function StatTile({
   label,
@@ -35,6 +45,8 @@ export function StatTile({
   tone = "neutral",
   accent = false,
   trend,
+  loading: ownLoading,
+  loadingLabel,
   ...rest
 }: {
   /** The small uppercase caption over the value. */
@@ -52,17 +64,25 @@ export function StatTile({
    * from 0. It is decoration, so say the trend in `hint` as well.
    */
   trend?: readonly number[];
-} & Passthrough): ReactElement {
+} & LoadingProps &
+  Passthrough): ReactElement {
+  const { loading, owner } = useLoading(ownLoading);
   return (
     <div
       {...rest}
+      {...busy(owner, loading)}
       className="relative overflow-hidden rounded-xl border border-slate-200/70 bg-white p-5 shadow-sm"
     >
       {accent && (
         <span aria-hidden="true" className={cx("absolute inset-x-0 top-0 h-1", BAR[tone])} />
       )}
-      <Overline as="p">{label}</Overline>
-      <p className={cx("mt-2 text-3xl font-bold tabular-nums", VALUE[tone])}>{value}</p>
+      <Overline as="p" loading={false}>
+        {slot(loading, label, LABEL_BONE)}
+      </Overline>
+      <p className={cx("mt-2 text-3xl font-bold tabular-nums", VALUE[tone])}>
+        {slot(loading, value, VALUE_BONE)}
+      </p>
+      <BusyLabel owner={owner} loading={loading} label={loadingLabel} />
       {trend !== undefined && trend.length > 0 && <Sparkline values={trend} tone={tone} />}
       {hint != null && <p className="mt-1 text-xs text-slate-500">{hint}</p>}
     </div>

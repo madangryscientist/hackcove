@@ -11,6 +11,7 @@ import {
   Tabs,
   Overline,
   Text,
+  StatTile,
 } from "@hackcove/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 
@@ -169,5 +170,17 @@ export const DontViewer: S = {
         <Text>Every quote you have sent.</Text>
       </Card>
     </FullBleedLayout>
+  ),
+};
+
+/** While `loading` the layout owns the wait: the header draws as itself and every part inside waits with it. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <DemoShell bleed>
+      <FullBleedLayout padded loading={loading}>
+        <StatTile label="Changed" value={loading ? undefined : "24"} />
+      </FullBleedLayout>
+    </DemoShell>
   ),
 };

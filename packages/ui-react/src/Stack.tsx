@@ -7,6 +7,7 @@ import {
 import { cx } from "./cx.js";
 import type { Passthrough, Unstyled } from "./props.js";
 import { useStackGap } from "./stackGap.js";
+import { EmptySlot, hasNoChildren } from "./emptySlot.js";
 
 export type StackGap = "xs" | "sm" | "md" | "lg" | "xl";
 
@@ -65,9 +66,20 @@ export const STACK_WIDTH: Record<StackWidth, string | undefined> = {
  * `as` is a closed set: `div` (default), `section`, `form`, `ul` or `ol`. A `form` takes the form
  * props (`onSubmit`, `action`, `method`, `noValidate`, ...). A `ul` or `ol` is drawn with no
  * markers and its children are `<li>`s, as in `BulletList` and `Timeline`: the Stack does not wrap
- * them, so a child is one list item and `Text as="li"` or a bare `<li>` both work.
+ * them, so a child is one list item and `Text as="li"` or a bare `<li>` both work. A `ul` or `ol`
+ * takes `empty` (an `EmptyState`, one muted line here), drawn in place of the list when it has no
+ * children.
  */
-export function Stack({
+export function Stack(props: StackProps): ReactElement {
+  const { empty, ...rest } = { empty: undefined, ...props };
+  if ((rest.as === "ul" || rest.as === "ol") && empty != null && hasNoChildren(rest.children)) {
+    return <EmptySlot size="sm">{empty}</EmptySlot>;
+  }
+  return <StackList {...rest} />;
+}
+
+/** The Stack itself, once its empty slot is settled. */
+function StackList({
   gap,
   width = "default",
   rowFrom,
@@ -76,7 +88,7 @@ export function Stack({
   as = "div",
   children,
   ...rest
-}: StackProps): ReactElement {
+}: Omit<StackProps, "empty">): ReactElement {
   const spacing = STACK_GAP[useStackGap(gap)];
   return (
     <Box
@@ -168,9 +180,13 @@ type StackProps = StackBase &
     | ({
         /** The element: `div`, `section`, `form` (takes the form's props), `ul` or `ol` (no markers; each child is an `<li>`). */
         as: "ul";
+        /** Drawn in place of the list when it has no children: an `EmptyState`. */
+        empty?: ReactNode;
       } & Unstyled<Omit<ComponentPropsWithoutRef<"ul">, "children">>)
     | ({
         /** The element: `div`, `section`, `form` (takes the form's props), `ul` or `ol` (no markers; each child is an `<li>`). */
         as: "ol";
+        /** Drawn in place of the list when it has no children: an `EmptyState`. */
+        empty?: ReactNode;
       } & Unstyled<Omit<ComponentPropsWithoutRef<"ol">, "children">>)
   );

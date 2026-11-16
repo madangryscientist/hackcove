@@ -2,6 +2,8 @@ import { type ReactElement, type ReactNode, useId } from "react";
 import { cx } from "./cx.js";
 import { FieldContext, type FieldControlContext } from "./fieldControl.js";
 import type { Passthrough } from "./props.js";
+import { ControlBone } from "./fieldWait.js";
+import { BusyLabel, busy, type LoadingProps, useLoading } from "./skeleton.js";
 
 /** The line under a control or a row: an error (`role="alert"`) replaces the hint; neither draws nothing. */
 export function fieldNote(
@@ -44,11 +46,20 @@ function useFieldNote(
   };
 }
 
+/** A field's label: hidden, or drawn, and free to wrap anywhere beside a control in a row. */
+function labelLook(hidden: boolean, row: boolean): string {
+  return hidden
+    ? "sr-only"
+    : cx("text-sm font-medium text-slate-700", row && "min-w-0 wrap-anywhere");
+}
+
 /**
  * A label above a control, with a hint or an error line under it. An error replaces the hint.
  * Inside a `FormGrid`, `span="full"` runs the field across both columns. The `Input`, `Select`,
  * `Textarea` or `FileDrop` inside takes the label, the note (`aria-describedby`) and, with an error,
- * `aria-invalid` and a red edge by itself: give it no `id` and the Field no `htmlFor`.
+ * `aria-invalid` and a red edge by itself: give it no `id` and the Field no `htmlFor`. While
+ * `loading` the label is drawn and the control is a bone of its height, read from the density
+ * around it (`sm` in a `sm` card or table).
  */
 export function Field({
   label,
@@ -58,6 +69,8 @@ export function Field({
   span,
   layout = "column",
   labelHidden = false,
+  loading,
+  loadingLabel,
   children,
   ...rest
 }: {
@@ -87,29 +100,28 @@ export function Field({
    */
   labelHidden?: boolean | undefined;
   children: ReactNode;
-} & Passthrough): ReactElement {
+} & LoadingProps &
+  Passthrough): ReactElement {
   const row = layout === "row" && !labelHidden;
   const { control, note } = useFieldNote(htmlFor, hint, error);
+  const { loading: waiting, owner } = useLoading(loading);
   return (
     <div
       {...rest}
+      {...busy(owner, waiting)}
       className={cx(
         row ? "grid grid-cols-[8rem_1fr] items-center gap-x-3 gap-y-1.5" : "flex flex-col gap-1.5",
         span === "full" && "col-span-full",
       )}
     >
-      <label
-        htmlFor={control.id}
-        className={
-          labelHidden
-            ? "sr-only"
-            : cx("text-sm font-medium text-slate-700", row && "min-w-0 wrap-anywhere")
-        }
-      >
+      <label htmlFor={control.id} className={labelLook(labelHidden, row)}>
         {label}
       </label>
-      <FieldContext.Provider value={control}>{children}</FieldContext.Provider>
+      <FieldContext.Provider value={control}>
+        {waiting ? <ControlBone /> : children}
+      </FieldContext.Provider>
       {note && row ? <div className="col-start-2">{note}</div> : note}
+      <BusyLabel owner={owner} loading={waiting} label={loadingLabel} />
     </div>
   );
 }

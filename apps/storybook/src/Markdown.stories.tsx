@@ -28,3 +28,15 @@ export const DontSummary: S = {
     />
   ),
 };
+
+type Loading = StoryObj<{ loading: boolean }>;
+
+/** A note with no source yet is a paragraph of bones. */
+export const Loading: Loading = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <div className="max-w-md">
+      <Markdown loading={loading} md={loading ? undefined : "## Notes\n- **HC-42** shipped"} />
+    </div>
+  ),
+};

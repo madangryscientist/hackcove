@@ -7,7 +7,10 @@ import {
   TrendChart,
   type BarTone,
   type StackedSegment,
+  type VizTone,
 } from "@hackcove/ui-react";
+
+const CATS: VizTone[] = ["cat1", "cat2", "cat3", "cat4", "cat5", "cat6", "cat7", "cat8"];
 
 const tones: BarTone[] = ["accent", "positive", "warn", "danger"];
 
@@ -27,6 +30,17 @@ const snapshot: StackedSegment[] = [
 ];
 
 const weeks = Array.from({ length: 12 }, (_, i) => `W${i + 1}`);
+
+const categories = [
+  "Vintage",
+  "Books",
+  "Furniture",
+  "Clothing",
+  "Records",
+  "Toys",
+  "Art",
+  "Kitchen",
+];
 
 /** The StatTile, ProgressBar, SplitBar, StackedBar, Legend and TrendChart rows of the Gallery. */
 export function GalleryBars() {
@@ -61,6 +75,15 @@ export function GalleryBars() {
         <StackedBar items={snapshot} size="sm" label="Thin screenshots by status" />
         <Legend items={snapshot.map(({ label, tone }) => ({ label, tone }))} />
         <StackedBar items={buildMix} label="Build by status" legend />
+        <StackedBar
+          items={categories.map((label, i) => ({
+            label,
+            value: 8 - i,
+            tone: CATS[i] ?? "cat1",
+          }))}
+          label="Shops by category"
+          legend
+        />
         <Legend
           items={[
             { label: "Current", tone: "accent" },

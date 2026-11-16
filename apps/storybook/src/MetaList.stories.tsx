@@ -117,3 +117,13 @@ export const DontFooter: S = {
     </Prose>
   ),
 };
+
+type Loading = StoryObj<{ loading: boolean }>;
+
+/** A row with no facts yet draws three word-sized bones. */
+export const Loading: Loading = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <MetaList loading={loading}>{loading ? [] : ["chromium", "desktop", "2 min ago"]}</MetaList>
+  ),
+};

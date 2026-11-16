@@ -79,7 +79,7 @@ export const text: ComponentSection = {
           'Set a paragraph in `Text`, a `<p>`. Inside a row, a cell or a sentence it is `Text as="span"`. A block of it stops at a readable line length.',
           'Emphasise a run with `Text strong` inside the `Text`: font-medium in the primary ink. Use `Caption` for fine print and metadata, `Caption as="span"` inside a row.',
           "Put a `Text` under a heading and `Lead` under a `Display`. `Overline` is the small all-caps label above a group, not a title.",
-          'A Card or a list with nothing in it yet gets one muted line, `Text tone="muted"`: "Nothing finished yet." A whole empty view, with a way forward, is an `EmptyState` with its `actions`.',
+          "A Card, a table or a list with nothing in it yet takes an `EmptyState` in its `empty` slot, which draws it as one muted line there; a muted `Text` is not an empty state.",
           "`tone` says what a run means: `positive`, `warn`, `danger`, `info` or `muted`. It beats `color`, and the words still say it, so colour is never the only signal. `color` is only the hierarchy of the text.",
           '`numeric` sets tabular figures so a column of amounts lines up and `mono` the monospace face for an id or a path. `lines` (1 to 4) on `Text` or `Caption` shows at most that many lines and ends in an ellipsis: `lines={1}` cuts a run where its box ends, `lines={3}` clamps a long description. A "Show all" is your own state: `lines={open ? undefined : 3}` beside a `Button`.',
           '`align` sets a run at `start`, `center` or `end` of its block, for a table header or a right-hand column. `minWidth="amount"` on `Text` fixes a width and right-aligns a money figure in it, so a column of amounts lines up.',

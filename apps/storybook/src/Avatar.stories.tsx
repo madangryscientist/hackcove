@@ -122,3 +122,14 @@ export const DoBeside: S = {
 export const DontBeside: S = {
   render: () => <Avatar name="Ada Lovelace" />,
 };
+
+/** While `loading`, an avatar with no name yet is a bone of its size and shape. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <Cluster>
+      <Avatar loading={loading} name={loading ? "" : "Mia Botha"} size="lg" />
+      <Avatar loading={loading} name={loading ? "" : "Cove Hardware"} size="lg" shape="square" />
+    </Cluster>
+  ),
+};

@@ -3,6 +3,7 @@
   "surface": ["bg-white"],
   "subtle": ["bg-slate-50", "hover:bg-slate-50", "border-slate-50"],
   "inset": ["bg-slate-100", "hover:bg-slate-100"],
+  "skeleton": ["bg-slate-200"],
   "scrim": ["backdrop:bg-slate-900/35"],
   "media-scrim": [
     "bg-black/90",
@@ -83,5 +84,15 @@
   "info": ["bg-blue-50", "text-blue-700", "text-blue-800", "border-blue-200"],
   "sky": ["bg-sky-50", "text-sky-700"],
   "viz": ["text-neutral-500", "text-purple-700"],
+  "categorical": [
+    "text-indigo-600",
+    "text-orange-600",
+    "text-teal-600",
+    "text-pink-600",
+    "text-lime-600",
+    "text-fuchsia-600",
+    "text-rose-600",
+    "text-yellow-600"
+  ],
   "glow": ["bg-indigo-400/25", "bg-teal-400/25", "bg-rose-400/25"]
 }

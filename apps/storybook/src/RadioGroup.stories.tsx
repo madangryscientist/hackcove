@@ -120,3 +120,14 @@ export const Sizes: S = {
     </div>
   ),
 };
+
+/** While `loading` the labels are drawn and each circle is a bone. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <RadioGroup label="Delivery" defaultValue="fri" loading={loading}>
+      <Radio label="Friday" value="fri" />
+      <Radio label="Monday" value="mon" />
+    </RadioGroup>
+  ),
+};

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Pill, Timeline, TimelineItem } from "@hackcove/ui-react";
+import { Pill, Timeline, TimelineItem, EmptyState } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Content/Timeline" };
 export default meta;
@@ -41,10 +41,7 @@ export const Tones: S = {
 export const Empty: S = {
   render: () => (
     <div className="max-w-md">
-      <Timeline
-        label="Status history"
-        empty={<p className="text-sm text-slate-500">No history yet.</p>}
-      />
+      <Timeline label="Status history" empty={<EmptyState title="No history yet." />} />
     </div>
   ),
 };
@@ -79,5 +76,19 @@ export const DontEvents: S = {
 
 /** With no items, `empty` is drawn in place of the list. */
 export const DoNoEvents: S = {
-  render: () => <Timeline label="Status history" empty="No history yet." />,
+  render: () => <Timeline label="Status history" empty={<EmptyState title="No history yet." />} />,
+};
+
+/** While `loading`, a timeline with no items is three items of bones, never its empty state. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <Timeline
+      label="Status history"
+      loading={loading}
+      empty={<EmptyState title="No history yet" />}
+    >
+      {loading ? null : <TimelineItem title="Quote sent" time="Today" tone="info" />}
+    </Timeline>
+  ),
 };
