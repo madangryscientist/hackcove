@@ -77,12 +77,16 @@ export function skyPill(tag: Tag, component: string, context: Context): void {
 /** The parts that take their container's size; a field keeps `md` wherever it sits. */
 const SIZED = ["Button", "IconButton", "Pill"];
 
-/** The size the nearest density container in the file sets, if one does. */
+/** The parts that start the size over: a modal, and a card or row of the default size. */
+const RESETS = ["Dialog", "Drawer", "Card", "ListRow"];
+
+/** The size the nearest density container in the file sets, if one does: the first one decides. */
 function containerSize(tag: Tag, context: Context): string | undefined {
   for (const outer of enclosing(tag, context.imports)) {
     const size = literalOf(attributeOf(outer.tag, "size"));
     if (outer.name === "Table") return size ?? "sm";
     if ((outer.name === "Card" || outer.name === "ListRow") && size === "sm") return "sm";
+    if (RESETS.includes(outer.name)) return undefined;
   }
   return undefined;
 }

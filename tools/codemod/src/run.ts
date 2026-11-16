@@ -17,12 +17,12 @@ function filesUnder(dir: string): string[] {
   });
 }
 
-/** One file's rewrite, or undefined when a rule trips on it, so one odd file does not stop the run. */
-function attempt(source: string, path: string): ReturnType<typeof transform> | undefined {
+/** One file's rewrite, or why a rule tripped on it, so one odd file does not stop the run. */
+function attempt(source: string, path: string): ReturnType<typeof transform> | string {
   try {
     return transform(source, path);
-  } catch {
-    return undefined;
+  } catch (error) {
+    return error instanceof Error ? error.message : String(error);
   }
 }
 
@@ -39,8 +39,10 @@ function main(args: readonly string[]): number {
     const source = readFileSync(path, "utf8");
     const name = relative(process.cwd(), path);
     const result = attempt(source, path);
-    if (result === undefined) {
-      process.stdout.write(`${name}:1: the codemod could not rewrite this file: do it by hand\n`);
+    if (typeof result === "string") {
+      process.stdout.write(
+        `${name}:1: the codemod could not rewrite this file (${result}): do it by hand\n`,
+      );
       reported += 1;
       continue;
     }

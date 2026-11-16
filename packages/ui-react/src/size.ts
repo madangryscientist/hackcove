@@ -4,7 +4,8 @@
  * skips `md`.
  *
  * `md` is the default of every `size` prop but one: `Table`'s, its row padding, is `sm`, and the
- * controls in a table take that size. The closed list of components with no `size` at all, because they take the size of the text
- * or the control they sit on: `Callout`, `CopyButton`, `Kbd`, `Badge` and `Breadcrumbs`.
+ * buttons and pills in a table take that size; a field keeps `md`. The closed list of components
+ * with no `size` at all, because they take the size of the text or the control they sit on:
+ * `Callout`, `CopyButton`, `Kbd`, `Badge` and `Breadcrumbs`.
  */
 export type Size = "sm" | "md" | "lg";
