@@ -59,7 +59,14 @@ export function KeyValueList({
       <AlignContext.Provider value={align}>
         <LoadingScope loading={loading}>{rows}</LoadingScope>
       </AlignContext.Provider>
-      <BusyLabel owner={owner} loading={loading} label={loadingLabel} />
+      {owner && loading && (
+        // A `dl` holds only `dt` and `dd` groups, so the hidden label is a group of its own.
+        <div className="sr-only">
+          <dd>
+            <BusyLabel owner={owner} loading={loading} label={loadingLabel} />
+          </dd>
+        </div>
+      )}
     </dl>
   );
 }

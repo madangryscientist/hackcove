@@ -79,7 +79,11 @@ export function Legend({
       className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600"
     >
       {waiting && items.length === 0 && <LegendBones />}
-      {owner && waiting && <li className="sr-only">{loadingLabel ?? "Loading"}</li>}
+      {owner && waiting && (
+        <li className="sr-only">
+          <BusyLabel owner={owner} loading={waiting} label={loadingLabel} />
+        </li>
+      )}
       {items.map((item) => (
         <li key={item.label} className="flex items-center gap-1.5">
           <span aria-hidden="true" className={cx("size-2.5 shrink-0 rounded-full", SWATCH(item))} />
@@ -112,11 +116,13 @@ function WaitingStack({
   items,
   legend,
   size,
+  name,
   own,
   label,
   attrs,
 }: {
   items: readonly StackedSegment[];
+  name: string;
   legend: boolean;
   size: BarSize;
   own: boolean | undefined;
@@ -126,7 +132,9 @@ function WaitingStack({
   const { loading, owner } = useLoading(own);
   return (
     <div {...attrs} {...busy(owner, loading)} className="flex flex-col gap-2">
-      <Bone shape={cx("block w-full rounded-full", BAR_TRACK[size])} />
+      <span role="img" aria-label={name} className="block">
+        <Bone shape={cx("block w-full rounded-full", BAR_TRACK[size])} />
+      </span>
       {legend && (
         <LoadingScope loading>
           <Legend items={items.map((s) => ({ label: s.label, tone: s.tone }))} />
@@ -172,6 +180,7 @@ export function StackedBar({
         items={items}
         legend={legend}
         size={size}
+        name={label}
         own={loading}
         label={loadingLabel}
         attrs={rest}

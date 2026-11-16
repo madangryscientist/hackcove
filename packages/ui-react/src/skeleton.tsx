@@ -94,7 +94,7 @@ export function Bone({ shape }: { shape: string }): ReactElement {
 }
 
 /** How wide a line of text bones is. */
-export type LineWidth = "full" | "3/4" | "3/5" | "1/2" | "1/3";
+type LineWidth = "full" | "3/4" | "3/5" | "1/2" | "1/3";
 
 const WIDTH: Record<LineWidth, string> = {
   full: "w-full",
@@ -131,7 +131,7 @@ export function BoneLines({
 }
 
 /** One word-sized bone inside a line of text: a figure, a name, a label not here yet. */
-export function InlineBone({ wide = false }: { wide?: boolean }): ReactElement {
+function InlineBone({ wide = false }: { wide?: boolean }): ReactElement {
   return <Bone shape={cx("inline-block h-[0.6lh] rounded align-middle", wide ? "w-28" : "w-16")} />;
 }
 

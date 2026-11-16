@@ -98,7 +98,7 @@ export function CardGrid({
           align === "start" && "items-start",
         )}
       >
-        <GridItems list={Tag === "ul"} owner={wait.attrs["aria-busy"] === true} label={wait.label}>
+        <GridItems list={Tag === "ul"} owner={wait.owner} label={wait.label}>
           {cards}
         </GridItems>
       </Tag>

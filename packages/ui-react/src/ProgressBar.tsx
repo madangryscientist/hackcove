@@ -35,7 +35,10 @@ export function announcedPercent(part: number, whole: number): number {
   return share <= 0 || share >= 100 ? share : Math.min(99, Math.max(1, Math.round(share)));
 }
 
-/** A bar with no figures yet: one bone the track's height across the full width. */
+/**
+ * A bar with no figures yet: one bone the track's height across the full width. `attrs` keeps the
+ * bar's role and name, so it is still its progressbar or picture while it waits.
+ */
 export function WaitingBar({
   own,
   label,
@@ -89,7 +92,11 @@ export function ProgressBar({
 } & LoadingProps &
   Passthrough): ReactElement {
   const waiting = useLoading(loading).loading;
-  if (waiting) return <WaitingBar own={loading} label={loadingLabel} size={size} attrs={rest} />;
+  if (waiting) {
+    // No `aria-valuenow`: a progressbar with no value is indeterminate.
+    const attrs = { ...rest, role: "progressbar", "aria-label": label };
+    return <WaitingBar own={loading} label={loadingLabel} size={size} attrs={attrs} />;
+  }
   const share = sharePercent(value, max);
   return (
     <div

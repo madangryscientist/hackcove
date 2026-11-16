@@ -183,12 +183,27 @@ describe("parts whose value is a number are all bone while loading", () => {
     it(`${name}: no figure is drawn or spoken, the owner busy with one label`, () => {
       render(figure);
       expect(bones().length).toBeGreaterThan(0);
-      expect(screen.queryByRole("progressbar")).toBeNull();
+      expect(document.querySelector("[aria-valuenow]")).toBeNull();
       expect(screen.queryByText(/40|33|67|%/)).toBeNull();
       expect(busyRoots()).toHaveLength(1);
       expect(screen.getAllByText("Loading")).toHaveLength(1);
     });
   }
+
+  it("a waiting bar keeps its role and its name, with no figure", () => {
+    const progress = render(<ProgressBar loading value={40} label="Upload" />);
+    expect(
+      screen.getByRole("progressbar", { name: "Upload" }).getAttribute("aria-valuenow"),
+    ).toBeNull();
+    progress.unmount();
+    const split = render(<SplitBar loading a={1} b={2} label="Pot split" />);
+    expect(screen.getByRole("img", { name: "Pot split" })).toBeTruthy();
+    split.unmount();
+    render(
+      <StackedBar loading items={[{ label: "Open", value: 3, tone: "warn" }]} label="Tickets" />,
+    );
+    expect(screen.getByRole("img", { name: "Tickets" })).toBeTruthy();
+  });
 
   it("a loading TrendChart keeps its frame, bucket names and name", () => {
     render(
@@ -210,10 +225,11 @@ describe("parts whose value is a number are all bone while loading", () => {
 });
 
 describe("pictures while loading", () => {
-  it("an Image with no src is a bone, not the placeholder", () => {
+  it("an Image with no src is a bone, not the placeholder, and keeps its name", () => {
     render(<Image loading alt="The shop front" />);
     expect(bones()).toHaveLength(1);
-    expect(screen.queryByRole("img", { name: "The shop front" })).toBeNull();
+    expect(screen.getByRole("img", { name: "The shop front" })).toBeTruthy();
+    expect(document.querySelector("svg")).toBeNull();
   });
 
   it("an Image with a src draws it", () => {

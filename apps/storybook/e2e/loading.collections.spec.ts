@@ -25,9 +25,10 @@ const stories: Record<string, (page: Page) => Locator> = {
   "content-timeline--loading": (page) => page.getByText("Quote sent"),
   "content-avatarstack--loading": (page) =>
     page.getByRole("img", { name: "Mia Botha, Sipho Dube, Ana Lima" }),
-  "data-progressbar--loading": (page) => page.getByRole("progressbar", { name: "Upload" }),
-  "data-splitbar--loading": (page) => page.getByRole("img", { name: /^Pot split/ }),
-  "data-stackedbar--loading": (page) => page.getByRole("img", { name: /^Screenshots by status/ }),
+  "data-progressbar--loading": (page) =>
+    page.getByRole("progressbar", { name: "Upload" }).and(page.locator("[aria-valuenow]")),
+  "data-splitbar--loading": (page) => page.getByRole("img", { name: /^Pot split: / }),
+  "data-stackedbar--loading": (page) => page.getByRole("img", { name: /^Screenshots by status: / }),
   "data-trendchart--loading": (page) =>
     page.getByRole("table", { name: "Tickets opened and closed per week" }),
   "forms-field--loading": (page) => page.getByRole("textbox", { name: "Display name" }),

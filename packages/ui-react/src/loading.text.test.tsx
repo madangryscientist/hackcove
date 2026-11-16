@@ -99,6 +99,13 @@ describe("loading figures", () => {
     expect(bones()).toHaveLength(0);
   });
 
+  it("a loading KeyValueList holds only groups of dt and dd, its hidden label in a dd", () => {
+    render(<KeyValueList loading />);
+    const list = document.querySelector("dl");
+    for (const child of list?.children ?? []) expect(["DIV", "DT", "DD"]).toContain(child.tagName);
+    expect(screen.getByText("Loading").closest("dd")).not.toBeNull();
+  });
+
   it("an empty KeyValueList draws three rows of bones, busy with one label", () => {
     render(<KeyValueList loading />);
     expect(document.querySelectorAll("[aria-busy='true']")).toHaveLength(1);

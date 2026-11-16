@@ -81,6 +81,7 @@ export function RadioGroup({
       className="flex flex-col gap-2"
     >
       <Label className="text-sm font-medium text-slate-700">{label}</Label>
+      {/* react-aria's group drops `aria-busy` from its root's props, so the options carry the wait. */}
       <div {...busy(owner, waiting)} className="flex flex-col gap-2.5">
         <RadioSize.Provider value={size}>
           <LoadingScope loading={waiting}>{children}</LoadingScope>

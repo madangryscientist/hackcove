@@ -10,10 +10,12 @@ import { BusyLabel, busy, useLoading } from "./skeleton.js";
 export function useWait(
   own: boolean | undefined,
   label: string | undefined,
-): { loading: boolean; attrs: { "aria-busy"?: true }; label: ReactElement } {
+): { loading: boolean; owner: boolean; attrs: { "aria-busy"?: true }; label: ReactElement } {
   const { loading, owner } = useLoading(own);
   return {
     loading,
+    // Owning a wait that is under way: what draws the owner's label.
+    owner: owner && loading,
     attrs: busy(owner, loading),
     label: <BusyLabel owner={owner} loading={loading} label={label} />,
   };

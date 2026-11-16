@@ -199,7 +199,7 @@ export function TableCell({
         foot,
         numeric: figure,
         mono,
-        prose: Children.toArray(children).every(isText),
+        prose: isProse(children),
       })}
     >
       <CellBody align={side} truncate={truncate} secondary={secondary}>
@@ -243,6 +243,12 @@ function cellClass({
 
 const isText = (node: unknown): node is string | number =>
   typeof node === "string" || typeof node === "number";
+
+/** Prose: at least one part, every one text. An empty cell (a bone) is not prose and keeps no width. */
+function isProse(children: ReactNode): boolean {
+  const parts = Children.toArray(children);
+  return parts.length > 0 && parts.every(isText);
+}
 
 /** What a cell holds: the content, cut to one line with its full text in a `title` when `truncate`, then the `secondary` line. */
 function CellBody({

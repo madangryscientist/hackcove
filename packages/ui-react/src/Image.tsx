@@ -104,10 +104,13 @@ function ImageBone({
   label,
   aspect,
   width,
+  alt,
   attrs,
 }: {
   own: boolean | undefined;
   label: string | undefined;
+  /** Names the bone as the picture it stands for; an empty `alt` leaves it decoration. */
+  alt: string;
   aspect: ImageAspect;
   width: ImageWidth;
   attrs: object;
@@ -118,7 +121,7 @@ function ImageBone({
       label={label}
       shape={cx("block w-full rounded-lg", reservedAspect(aspect))}
       root={cx("block", IMAGE_WIDTH[width])}
-      attrs={attrs}
+      attrs={alt ? { ...attrs, role: "img", "aria-label": alt } : attrs}
     />
   );
 }
@@ -146,7 +149,14 @@ export function Image({
   const waiting = useLoading(loading).loading;
   if (waiting && !src) {
     return (
-      <ImageBone own={loading} label={loadingLabel} aspect={aspect} width={width} attrs={rest} />
+      <ImageBone
+        own={loading}
+        label={loadingLabel}
+        aspect={aspect}
+        width={width}
+        alt={alt}
+        attrs={rest}
+      />
     );
   }
   const box = cx(FRAME, IMAGE_WIDTH[width]);

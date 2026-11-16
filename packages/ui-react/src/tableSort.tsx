@@ -17,7 +17,7 @@ export type SortProps = {
 };
 
 /** The direction a click asks for: `ascending` first, then it flips. */
-export function nextSort(sort: TableSort): "ascending" | "descending" {
+function nextSort(sort: TableSort): "ascending" | "descending" {
   return sort === "ascending" ? "descending" : "ascending";
 }
 

@@ -54,7 +54,11 @@ export function Timeline({
       <LoadingScope loading={waiting}>
         {none ? [0, 1, 2].map((i) => <TimelineItem key={i} title="" />) : children}
       </LoadingScope>
-      {owner && waiting && <li className="sr-only">{loadingLabel ?? "Loading"}</li>}
+      {owner && waiting && (
+        <li className="sr-only">
+          <BusyLabel owner={owner} loading={waiting} label={loadingLabel} />
+        </li>
+      )}
     </ol>
   );
 }

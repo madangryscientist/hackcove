@@ -50,7 +50,10 @@ export function SplitBar({
 } & LoadingProps &
   Passthrough): ReactElement {
   const waiting = useLoading(loading).loading;
-  if (waiting) return <WaitingBar own={loading} label={loadingLabel} size={size} attrs={rest} />;
+  if (waiting) {
+    const attrs = { ...rest, role: "img", "aria-label": label };
+    return <WaitingBar own={loading} label={loadingLabel} size={size} attrs={attrs} />;
+  }
   const shareA = sharePercent(a, a + b);
   const shareB = a + b > 0 ? 100 - shareA : 0;
   const percentA = announcedPercent(a, a + b);
