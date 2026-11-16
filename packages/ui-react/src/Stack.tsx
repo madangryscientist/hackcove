@@ -145,7 +145,10 @@ type StackSpaced = {
    * @default xs inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow`, else md
    */
   gap?: StackGap | undefined;
-  /** A line between each pair of children, which then touch (no gap). */
+  /**
+   * A line between each pair of children, which then touch (no gap): rows that carry their own
+   * padding. Space and a line between blocks is a `Divider` in the Stack instead.
+   */
   divided?: false | undefined;
   /**
    * Turns the column into a row from this breakpoint (`sm`, `md` or `lg`), a column below it: a main

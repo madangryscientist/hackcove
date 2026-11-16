@@ -6,6 +6,8 @@ export type PropDoc = {
   /** The default value as source text, when the component sets one. */
   default?: string | undefined;
   description: string;
+  /** A DOM prop the component passes through (`disabled`, `placeholder`), listed for what it means here. */
+  native: boolean;
 };
 
 /** One export: a component and its props, or a helper (`fromISODate`) and its signature. */

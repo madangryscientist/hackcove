@@ -67,9 +67,9 @@ type Shared = {
 export type SwitchProps = Shared &
   (
     | {
-        /** The options in order: `{ value, label }` buttons, or links (`href`) with `value` marking the current one. Either may carry a `count`; a button may be `disabled`. */
+        /** The options in order: `{ value, label }` buttons, or links (`href`), the current link marked by its `selected` or by a `value` equal to the group's. Either may carry a `count`; a button may be `disabled`. */
         items: SwitchButton[];
-        /** The `value` of the current option. */
+        /** The `value` of the current option; for links, an alternative to `selected` on the item. */
         value: string;
         /** Called with the option's `value` when one is chosen, by click or arrow key. */
         onChange: (value: string) => void;
@@ -77,9 +77,9 @@ export type SwitchProps = Shared &
         disabled?: boolean;
       }
     | {
-        /** The options in order: links (`href`), the current one marked by its `selected` or by a `value` equal to the group's. A link may carry a `count`. */
+        /** The options in order: `{ value, label }` buttons, or links (`href`), the current link marked by its `selected` or by a `value` equal to the group's. Either may carry a `count`; a button may be `disabled`. */
         items: SwitchLink[];
-        /** The `value` of the current link, as an alternative to `selected` on the item. */
+        /** The `value` of the current option; for links, an alternative to `selected` on the item. */
         value?: string;
         onChange?: undefined;
         disabled?: undefined;

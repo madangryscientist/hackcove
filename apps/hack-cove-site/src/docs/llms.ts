@@ -43,7 +43,7 @@ function dontsOf(page: ComponentPage): string {
 function propsOf(name: string): string {
   const { description, props } = docOf(name);
   const lines = props.map((prop) => {
-    const flags = `${prop.required ? " (required)" : ""}${prop.default === undefined ? "" : ` (default ${prop.default})`}`;
+    const flags = `${prop.required ? " (required)" : ""}${prop.native ? " (native)" : ""}${prop.default === undefined ? "" : ` (default ${prop.default})`}`;
     return `- ${prop.name}: ${prop.type}${flags}${prop.description === "" ? "" : `. ${prop.description}`}`;
   });
   return [`### ${name}`, description.replace(/\s*\n\s*/g, " "), ...lines].join("\n");

@@ -3,13 +3,16 @@
  * the TypeScript checker: the props of every component, and the signature of every helper.
  * `className` and `style` are left out: the library has no styling escape hatch to document. Props
  * that only come from React's DOM types (`onClick`) and the `aria-*` props are described once, in
- * prose; the react-aria props a component picks (`DateField`'s `value`) are its own and stay.
+ * prose, except the few in `NATIVE`, listed as native; the react-aria props a component picks
+ * (`DateField`'s `value`) are its own and stay. A prop of a union props type takes its JSDoc arm
+ * by arm (`armDocs.ts`), so a text two arms share prints once.
  */
-import { globSync } from "node:fs";
+import { globSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { withCustomConfig, type PropItem } from "react-docgen-typescript";
 import ts from "typescript";
 import type { ComponentDoc, PropDoc, PropsJson } from "../src/docs/types.js";
+import { armDocsOf } from "./armDocs.js";
 
 const UI = join(import.meta.dirname, "..", "..", "..", "packages", "ui-react");
 const TSCONFIG = join(UI, "tsconfig.json");
@@ -17,6 +20,41 @@ const INDEX = join(UI, "src", "index.ts");
 /** Where `scripts/props.ts` writes the result and the docs read it. */
 export const PROPS_JSON = join(import.meta.dirname, "..", "src", "generated", "props.json");
 const LEFT_OUT = new Set(["className", "style"]);
+
+/**
+ * The DOM props that matter on a component, which its table lists though they come from React's
+ * types: each with the one line the table prints for it, since React's types describe none.
+ */
+export const NATIVE: Record<string, Record<string, string>> = {
+  Button: {
+    disabled: "Disables the button; say why with `disabledReason` instead where there is a reason.",
+    type: '`"button"` by default; `"submit"` submits the form the button is in.',
+  },
+  Input: {
+    type: 'The kind of value: `"text"`, `"email"`, `"search"`, `"password"` and the rest.',
+    placeholder: "A hint shown while the field is empty; never the label.",
+    name: "The key the value posts under in a form.",
+    required: "The form will not submit while the field is empty.",
+    disabled: "Disables the field; say why in its `Field` hint.",
+  },
+  Textarea: {
+    rows: "How many lines tall it starts.",
+    placeholder: "A hint shown while the field is empty; never the label.",
+    name: "The key the value posts under in a form.",
+    disabled: "Disables the field; say why in its `Field` hint.",
+  },
+  Select: {
+    name: "The key the value posts under in a form.",
+    disabled: "Disables the select; say why in its `Field` hint.",
+  },
+  Video: { poster: "The image shown before play; use a local one." },
+  FileDrop: {
+    accept: 'The file types it takes, as on `<input type="file">`: `"image/*"`, `".pdf"`.',
+    multiple: "Takes several files at once.",
+    name: "The key the files post under in a form.",
+    disabled: "Disables the drop zone; say why in its `Field` hint.",
+  },
+};
 
 const fromDom = (prop: PropItem): boolean =>
   prop.name.startsWith("aria-") ||
@@ -31,14 +69,20 @@ function typeOf(prop: PropItem): string {
   return name;
 }
 
-function propDoc(prop: PropItem): PropDoc {
+const nativeOf = (component: string, prop: string): string | undefined => NATIVE[component]?.[prop];
+
+function propDoc(component: string, prop: PropItem, arms: Map<string, string>): PropDoc {
   const fallback = prop.defaultValue?.value;
+  const native = fromDom(prop) ? nativeOf(component, prop.name) : undefined;
+  const fromArms = arms.get(prop.name);
   return {
     name: prop.name,
     type: typeOf(prop),
     required: prop.required,
     default: fallback === undefined ? undefined : String(fallback),
-    description: prop.description,
+    description:
+      native ?? (fromArms === undefined || fromArms === "" ? prop.description : fromArms),
+    native: native !== undefined,
   };
 }
 
@@ -99,7 +143,9 @@ export function generateProps(): PropsJson {
     shouldExtractLiteralValuesFromEnum: true,
     shouldRemoveUndefinedFromOptional: true,
     savePropValueAsString: true,
-    propFilter: (prop) => !LEFT_OUT.has(prop.name) && !fromDom(prop),
+    propFilter: (prop, component) =>
+      !LEFT_OUT.has(prop.name) &&
+      (!fromDom(prop) || nativeOf(component.name, prop.name) !== undefined),
   });
   const files = [
     ...new Set([...exported.values()].map((s) => s.declarations?.[0]?.getSourceFile())),
@@ -120,11 +166,17 @@ export function generateProps(): PropsJson {
       name,
       description: doc.description,
       props: Object.values(doc.props)
-        .map(propDoc)
+        .map((prop) => propDoc(name, prop, armDocsOf(name, checker, symbol)))
         .toSorted((a, b) => a.name.localeCompare(b.name)),
     };
   });
   return Object.fromEntries(
     docs.toSorted((a, b) => a.name.localeCompare(b.name)).map((doc) => [doc.name, doc]),
   );
+}
+
+/** Writes `props.json` from the source as it is now: the `props` task, and `astro dev` on a change. */
+export function writeProps(): void {
+  mkdirSync(dirname(PROPS_JSON), { recursive: true });
+  writeFileSync(PROPS_JSON, `${JSON.stringify(generateProps(), null, 2)}\n`);
 }

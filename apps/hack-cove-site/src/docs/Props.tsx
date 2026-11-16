@@ -29,7 +29,8 @@ function PropEntry({ prop }: { prop: PropDoc }) {
         <Text strong>
           <Code>{prop.name}</Code>
         </Text>
-        {prop.required && <Caption> required</Caption>}
+        {prop.required && <Caption as="span"> required</Caption>}
+        {prop.native && <Caption as="span"> native</Caption>}
       </div>
       {prop.description && (
         <Text breakWords>
