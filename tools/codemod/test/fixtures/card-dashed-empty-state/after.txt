@@ -1,0 +1,5 @@
+import { EmptyState } from "@hackcove/ui-react";
+
+export const view = (
+  <EmptyState title="No invoices yet" />
+);

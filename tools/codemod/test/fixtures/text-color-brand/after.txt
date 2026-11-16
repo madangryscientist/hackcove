@@ -1,0 +1,3 @@
+import { Caption } from "@hackcove/ui-react";
+
+export const view = <Caption as="span" tone="accent">New</Caption>;

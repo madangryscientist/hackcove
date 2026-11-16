@@ -1,0 +1,3 @@
+import { ListLayout } from "@hackcove/ui-react";
+
+export const view = <ListLayout empty={none} isEmpty={rows.length === 0}>{rows}</ListLayout>;

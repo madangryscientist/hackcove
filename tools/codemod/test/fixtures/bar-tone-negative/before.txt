@@ -1,0 +1,3 @@
+import { ProgressBar } from "@hackcove/ui-react";
+
+export const view = <ProgressBar value={80} tone="negative" />;

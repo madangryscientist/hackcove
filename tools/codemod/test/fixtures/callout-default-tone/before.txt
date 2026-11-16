@@ -1,0 +1,3 @@
+import { Callout } from "@hackcove/ui-react";
+
+export const view = <Callout>Saved</Callout>;

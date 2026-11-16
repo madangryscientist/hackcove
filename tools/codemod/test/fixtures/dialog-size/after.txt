@@ -1,0 +1,3 @@
+import { Dialog } from "@hackcove/ui-react";
+
+export const view = <Dialog title="Edit" width="lg" onClose={close}>x</Dialog>;

@@ -1,0 +1,3 @@
+import { Stack } from "@hackcove/ui-react";
+
+export const view = <Stack gap="md">x</Stack>;

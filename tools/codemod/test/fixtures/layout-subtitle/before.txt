@@ -1,0 +1,3 @@
+import { PageHeader } from "@hackcove/ui-react";
+
+export const view = <PageHeader title="Builds" subtitle="Every build." />;

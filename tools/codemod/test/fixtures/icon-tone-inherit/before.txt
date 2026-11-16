@@ -1,0 +1,3 @@
+import { Icon } from "@hackcove/ui-react";
+
+export const view = <Icon name="close" tone="inherit" />;

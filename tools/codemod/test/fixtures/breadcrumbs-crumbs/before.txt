@@ -1,0 +1,3 @@
+import { Breadcrumbs } from "@hackcove/ui-react";
+
+export const view = <Breadcrumbs crumbs={trail} />;

@@ -1,0 +1,3 @@
+import { Tabs } from "@hackcove/ui-react";
+
+export const view = <Tabs label="Project" items={[{ label: "Latest", href: "#a", selected: true }]} />;

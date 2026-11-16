@@ -1,0 +1,3 @@
+import { Button } from "@hackcove/ui-react";
+
+export const view = <Button render={(p) => <Link to="/quotes" {...p} />}>Quotes</Button>;

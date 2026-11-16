@@ -1,0 +1,4 @@
+import { type Tone } from "@hackcove/ui-react";
+
+export const a: Tone = "warn";
+export const b: Tone = "info";

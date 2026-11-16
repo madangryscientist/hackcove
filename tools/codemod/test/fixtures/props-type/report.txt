@@ -1,0 +1,1 @@
+1: DialogProps is not exported: use ComponentProps<typeof …>

@@ -1,0 +1,3 @@
+import { NavigationProgress } from "@hackcove/ui-react";
+
+export const view = <NavigationProgress active={pending} />;

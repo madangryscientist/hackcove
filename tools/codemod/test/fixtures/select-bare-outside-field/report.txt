@@ -1,0 +1,1 @@
+3: a Select outside a Field fits its choices now: width="full" keeps the row

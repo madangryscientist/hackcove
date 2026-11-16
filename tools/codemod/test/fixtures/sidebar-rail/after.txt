@@ -1,0 +1,3 @@
+import { SidebarLayout } from "@hackcove/ui-react";
+
+export const view = <SidebarLayout aside={nav} asideLabel="Sections">x</SidebarLayout>;

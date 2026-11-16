@@ -1,0 +1,7 @@
+import { Card, Button } from "@hackcove/ui-react";
+
+export const view = (
+  <Card size="sm">
+    <Button>Save</Button>
+  </Card>
+);

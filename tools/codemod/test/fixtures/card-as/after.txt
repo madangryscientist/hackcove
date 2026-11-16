@@ -1,0 +1,3 @@
+import { Card } from "@hackcove/ui-react";
+
+export const view = [<Card>a</Card>, <Card title="B">b</Card>];

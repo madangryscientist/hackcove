@@ -1,0 +1,3 @@
+import { type TypographyColor } from "@hackcove/ui-react";
+
+export const ink: TypographyColor = "muted";

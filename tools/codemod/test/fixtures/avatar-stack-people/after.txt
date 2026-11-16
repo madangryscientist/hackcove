@@ -1,0 +1,3 @@
+import { AvatarStack } from "@hackcove/ui-react";
+
+export const view = <AvatarStack items={team} />;

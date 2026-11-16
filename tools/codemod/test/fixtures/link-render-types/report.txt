@@ -1,0 +1,2 @@
+1: a link adapter's props carry href now: spread them and set no href of its own
+1: a link adapter is set once on LinkProvider: a render prop it fed is gone

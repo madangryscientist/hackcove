@@ -1,0 +1,3 @@
+import { Avatar } from "@hackcove/ui-react";
+
+export const view = <Avatar name="Ada" onError={retry} />;

@@ -1,0 +1,3 @@
+import { Text } from "@hackcove/ui-react";
+
+export const view = <Text as="span">Inline words</Text>;

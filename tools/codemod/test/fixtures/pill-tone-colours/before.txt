@@ -1,0 +1,9 @@
+import { Pill } from "@hackcove/ui-react";
+
+export const view = [
+  <Pill tone="amber">a</Pill>,
+  <Pill tone="emerald">b</Pill>,
+  <Pill tone="blue">c</Pill>,
+  <Pill tone="red">d</Pill>,
+  <Pill tone="violet">e</Pill>,
+];

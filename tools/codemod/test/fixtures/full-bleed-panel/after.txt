@@ -1,0 +1,3 @@
+import { FullBleedLayout } from "@hackcove/ui-react";
+
+export const view = <FullBleedLayout aside={info} asideLabel="Details">x</FullBleedLayout>;

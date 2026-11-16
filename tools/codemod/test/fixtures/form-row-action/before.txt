@@ -1,0 +1,3 @@
+import { FormRow } from "@hackcove/ui-react";
+
+export const view = <FormRow action={save}>x</FormRow>;

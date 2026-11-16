@@ -1,0 +1,3 @@
+import { Pill } from "@hackcove/ui-react";
+
+export const view = <Pill label="Weight">12 kg</Pill>;

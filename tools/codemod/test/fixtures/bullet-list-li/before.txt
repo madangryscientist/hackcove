@@ -1,0 +1,7 @@
+import { BulletList } from "@hackcove/ui-react";
+
+export const view = (
+  <BulletList>
+    <li>One</li>
+  </BulletList>
+);

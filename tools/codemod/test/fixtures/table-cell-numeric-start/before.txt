@@ -1,0 +1,3 @@
+import { TableCell } from "@hackcove/ui-react";
+
+export const view = <TableCell numeric>2026-11</TableCell>;

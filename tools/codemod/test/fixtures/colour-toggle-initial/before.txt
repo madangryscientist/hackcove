@@ -1,0 +1,3 @@
+import { ColourSchemeToggle } from "@hackcove/ui-react";
+
+export const view = <ColourSchemeToggle initial="dark" />;

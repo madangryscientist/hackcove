@@ -1,0 +1,3 @@
+import { FieldDialog } from "@hackcove/ui-react";
+
+export const view = <FieldDialog label="Rename" onSubmit={rename} />;

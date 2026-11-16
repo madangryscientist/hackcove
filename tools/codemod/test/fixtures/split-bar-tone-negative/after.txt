@@ -1,0 +1,3 @@
+import { SplitBar } from "@hackcove/ui-react";
+
+export const view = <SplitBar a={3} b={1} toneA="positive" toneB="danger" />;

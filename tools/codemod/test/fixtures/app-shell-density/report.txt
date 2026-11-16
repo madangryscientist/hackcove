@@ -1,0 +1,1 @@
+3: text is 1rem now: set density="compact" to keep the old size

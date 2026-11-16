@@ -1,0 +1,1 @@
+3: Avatar takes only id, data-* and aria-*: onError is gone

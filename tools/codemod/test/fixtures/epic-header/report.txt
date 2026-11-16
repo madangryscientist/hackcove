@@ -1,0 +1,1 @@
+1: EpicHeader is gone: a SubsectionHeading over the group

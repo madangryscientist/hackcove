@@ -1,0 +1,8 @@
+import { Select } from "@hackcove/ui-react";
+
+export const view = (
+  <Select aria-label="Rating" width="full">
+    <option value={5}>Five</option>
+    <option value={rating}>Mine</option>
+  </Select>
+);

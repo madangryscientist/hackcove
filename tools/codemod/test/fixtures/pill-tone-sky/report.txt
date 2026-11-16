@@ -1,0 +1,1 @@
+3: Pill tone="sky" is now "info", the blue tint: check it

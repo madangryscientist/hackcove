@@ -1,0 +1,12 @@
+import { Field, Select } from "@hackcove/ui-react";
+
+export const view = (
+  <Field label="Plan">
+    <Select>
+      <option value="free">Free</option>
+      <option value="team" disabled>
+        Team
+      </option>
+    </Select>
+  </Field>
+);

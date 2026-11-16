@@ -1,0 +1,7 @@
+import { Field, Select } from "@hackcove/ui-react";
+
+export const view = (
+  <Field label="Plan">
+    <Select>{plans.map((p) => <option key={p}>{p}</option>)}</Select>
+  </Field>
+);

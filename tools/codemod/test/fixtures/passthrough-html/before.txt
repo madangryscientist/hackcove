@@ -1,0 +1,3 @@
+import { Badge } from "@hackcove/ui-react";
+
+export const view = <Badge title="Unread" onClick={() => undefined}>3</Badge>;

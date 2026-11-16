@@ -1,0 +1,5 @@
+import { Select } from "@hackcove/ui-react";
+
+export const view = (
+  <Select aria-label="Rating" width="full" items={[{ value: "5", label: "Five" }, { value: String(rating), label: "Mine" }]} />
+);

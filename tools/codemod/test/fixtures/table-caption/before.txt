@@ -1,0 +1,3 @@
+import { Table, TableBody } from "@hackcove/ui-react";
+
+export const view = <Table caption="Quotes"><TableBody>{rows}</TableBody></Table>;
