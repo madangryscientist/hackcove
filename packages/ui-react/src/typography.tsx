@@ -8,6 +8,8 @@ import {
   useContext,
 } from "react";
 import { cx } from "./cx.js";
+import type { StackGap } from "./Stack.js";
+import { useStackGap } from "./stackGap.js";
 import { useTypeStep } from "./density.js";
 import { layoutClass, type TextAlign, type TextLines } from "./textBox.js";
 import type { Passthrough } from "./props.js";
@@ -257,6 +259,19 @@ export function AppScale({ children }: { children?: ReactNode }): ReactElement {
 }
 
 /**
+ * The space between a `Prose`'s blocks: a `Stack`'s gap where it sits (`md` on a page, `xs` in a
+ * `Card`), as a top margin on every block after the first. A margin and not a flex gap, so text and
+ * links written straight into a `Prose` stay one line.
+ */
+const PROSE_FLOW: Record<StackGap, string> = {
+  xs: "*:not-first:mt-2",
+  sm: "*:not-first:mt-4",
+  md: "*:not-first:mt-6",
+  lg: "*:not-first:mt-8",
+  xl: "*:not-first:mt-12 sm:*:not-first:mt-16",
+};
+
+/**
  * Long-form content, for a docs page or an article. A block (`div`) that sets the long line height
  * (leading-7) on itself and puts the text roles inside it on the prose scale: `Text` text-base/7
  * (the size it is outside, on a longer line), `SectionHeading` text-2xl/8, `SubsectionHeading` `lg` text-2xl/8,
@@ -264,11 +279,13 @@ export function AppScale({ children }: { children?: ReactNode }): ReactElement {
  * text-base/7. Every other role keeps its size. Nothing outside a `Prose` changes, and a `Dialog`,
  * `Drawer` or `EmptyState` inside one is back on the app scale. An app screen never uses it: wrap the
  * body of a docs page or an article, inside a `ProseLayout`, a `SidebarLayout` or anywhere else.
+ * Its blocks (`Section`s, paragraphs) are a `Stack`'s gap apart, as they would be in a `Stack`.
  */
 export function Prose({ children, ...rest }: { children?: ReactNode } & Passthrough): ReactElement {
+  const flow = PROSE_FLOW[useStackGap(undefined)];
   return (
     <ProseContext.Provider value={true}>
-      <div {...rest} className="leading-7">
+      <div {...rest} className={cx("leading-7", flow)}>
         {children}
       </div>
     </ProseContext.Provider>
