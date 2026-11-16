@@ -22,6 +22,37 @@ const COUNT_TRANSITIONS = () => {
   };
 };
 
+// Keeps, for the last view transition, a promise of the names the browser captured in the new
+// state: once `ready` settles the pseudo-elements exist, and each `::view-transition-new(<name>)`
+// is one element the browser captured under that name.
+const RECORD_CAPTURE = () => {
+  if (typeof document.startViewTransition !== "function") return;
+  const own = document.startViewTransition.bind(document);
+  document.startViewTransition = (...args: Parameters<typeof own>) => {
+    const transition = own(...args);
+    Reflect.set(
+      window,
+      "__captured",
+      transition.ready.then(
+        () =>
+          document.documentElement
+            .getAnimations({ subtree: true })
+            .map((a) => (a.effect instanceof KeyframeEffect ? a.effect.pseudoElement : null))
+            .filter((p): p is string => p?.startsWith("::view-transition-new(") ?? false)
+            .map((p) => p.slice("::view-transition-new(".length, -1)),
+        () => [],
+      ),
+    );
+    return transition;
+  };
+};
+
+const captured = (page: Page) =>
+  page.evaluate(async (): Promise<string[]> => {
+    const names: unknown = await Reflect.get(window, "__captured");
+    return Array.isArray(names) ? names.filter((n): n is string => typeof n === "string") : [];
+  });
+
 const open = async (page: Page) => {
   await page.goto(`/iframe.html?id=${STORY}&viewMode=story&globals=theme:${theme?.id}`);
   await expect(page.getByRole("button", { name: "Open Shop B" })).toBeVisible();
@@ -88,6 +119,7 @@ test.describe("a long list", () => {
 
   test("names only the cards near the screen, and the page fade names no box", async ({ page }) => {
     await page.addInitScript(COUNT_TRANSITIONS);
+    await page.addInitScript(RECORD_CAPTURE);
     await page.goto(
       `/iframe.html?id=feedback-morph--long-list&viewMode=story&globals=theme:${theme?.id}`,
     );
@@ -119,5 +151,30 @@ test.describe("a long list", () => {
     await expect(first).toBeVisible();
     expect(await transitions(page)).toBe(2);
     expect(await transitionName(page, "long-1")).toBe("hc-morph-long-1");
+    // The list remounted inside the transition, and only its near cards were captured named.
+    const back = await captured(page);
+    expect(back).toContain("hc-morph-long-1");
+    expect(back).not.toContain("hc-morph-long-30");
   });
+});
+
+test("Back after the list's scroll is restored shrinks into the card that was opened", async ({
+  page,
+}) => {
+  await page.addInitScript(RECORD_CAPTURE);
+  await page.goto(
+    `/iframe.html?id=feedback-morph--back-restores-scroll&viewMode=story&globals=theme:${theme?.id}`,
+  );
+  const stall = page.getByRole("button", { name: "Open Stall 30", exact: true });
+  await stall.scrollIntoViewIfNeeded();
+  await expect.poll(() => transitionName(page, "restore-30")).toBe("hc-morph-restore-30");
+  await stall.click();
+  await expect(page.getByRole("heading", { name: "Stall 30", exact: true })).toBeVisible();
+  expect(await captured(page)).toContain("hc-morph-restore-30");
+
+  await page.getByRole("button", { name: "Back" }).click();
+  await expect(stall).toBeInViewport();
+  // The card mounted far down and was scrolled on screen after its own layout effect, yet the
+  // browser captured it under its name, so the detail shrinks into it.
+  expect(await captured(page)).toContain("hc-morph-restore-30");
 });

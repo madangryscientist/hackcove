@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { flushSync } from "react-dom";
 import type { Unstyled } from "./props.js";
 
 // Keeps letters and digits and writes every other character, `-` and `_` included, as
@@ -65,14 +66,26 @@ export function Morph({
   const ref = useRef<HTMLDivElement>(null);
   // Named until measured, so the server render and an engine with no IntersectionObserver keep the
   // name. The layout effect's update is flushed with the render, so inside a view transition's
-  // update the new page's far cards are already unnamed when the browser captures it.
+  // update the new page's far cards are already unnamed when the browser captures it. A parent's
+  // layout effect runs after this one and may scroll this element on screen (a router restoring
+  // the list's scroll on Back), so a microtask measures again once the whole commit is done and
+  // flushes the result. A microtask always runs before the browser's next rendering step, where it
+  // captures a transition's new state; a frame callback or the observer's first callback comes
+  // only after that capture in Chromium.
   const [near, setNear] = useState(true);
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el || typeof IntersectionObserver !== "function") return undefined;
-    const rect = el.getBoundingClientRect();
-    const h = window.innerHeight;
-    setNear(rect.bottom >= -h && rect.top <= 2 * h);
+    const measure = () => {
+      const rect = el.getBoundingClientRect();
+      const h = window.innerHeight;
+      return rect.bottom >= -h && rect.top <= 2 * h;
+    };
+    setNear(measure());
+    let live = true;
+    queueMicrotask(() => {
+      if (live) flushSync(() => setNear(measure()));
+    });
     const observer = new IntersectionObserver(
       (entries) => {
         const last = entries.at(-1);
@@ -81,7 +94,10 @@ export function Morph({
       { rootMargin: "100% 0px" },
     );
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      live = false;
+      observer.disconnect();
+    };
   }, []);
   return (
     <>
