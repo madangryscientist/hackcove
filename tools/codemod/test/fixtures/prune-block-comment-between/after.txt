@@ -1,0 +1,9 @@
+import { EmptyState, IconButton, Text } from "@hackcove/ui-react";
+
+export const a = (
+  <EmptyState title="x" />
+);
+export const t = [Text];
+export const b = (
+  <IconButton icon="close" label="Close" />
+);

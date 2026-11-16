@@ -88,11 +88,11 @@ function merged(spans: readonly Span[]): Span[] {
 const BLOCK = String.raw`\/\*[^\n*]*(?:\*(?!\/)[^\n*]*)*\*\/`;
 /**
  * Spaces, block comments and a line comment on the same line, then the comma (`A // x` then
- * `, B` is comma-first), with the spaces after it unless a comment follows them. A comment on a
+ * `, B` is comma-first), with the spaces after it unless a line comment follows them. A comment on a
  * line of its own stops it. No part can match the same text two ways, so it never backtracks far.
  */
 const COMMA_AFTER = new RegExp(
-  String.raw`^[ \t]*(?:${BLOCK}[ \t]*)*(?:\/\/[^\n]*(?=\n))?\s*,(?:(?![ \t]*\/[/*])[ \t]*)?`,
+  String.raw`^[ \t]*(?:${BLOCK}[ \t]*)*(?:\/\/[^\n]*(?=\n))?\s*,(?:(?![ \t]*\/\/)[ \t]*)?`,
 );
 
 /** The comma that follows `end`, as `COMMA_AFTER` finds it. */

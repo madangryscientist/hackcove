@@ -1,0 +1,13 @@
+import { EmptyState, Card, /* c */ Icon, IconButton, Text } from "@hackcove/ui-react";
+
+export const a = (
+  <Card dashed>
+    <EmptyState title="x" />
+  </Card>
+);
+export const t = [Text];
+export const b = (
+  <IconButton label="Close">
+    <Icon name="close" />
+  </IconButton>
+);
