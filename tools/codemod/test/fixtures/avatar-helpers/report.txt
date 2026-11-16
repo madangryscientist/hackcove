@@ -1,0 +1,2 @@
+1: avatarColourClass is no longer exported: Avatar picks the colour from name
+1: initialsOf is no longer exported: Avatar draws the initials from name

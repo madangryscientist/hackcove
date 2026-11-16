@@ -1,1 +1,1 @@
-4: a control with no size in this Card is now sm
+4: a Button, IconButton or Pill with no size in this Card is now sm

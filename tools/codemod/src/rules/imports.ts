@@ -34,6 +34,8 @@ const REMOVED: Readonly<Record<string, string>> = {
   EpicHeader: "EpicHeader is gone: a SubsectionHeading over the group",
   groupByEpic: "groupByEpic is gone: Object.groupBy in the app",
   ToolCallCard: "ToolCallCard is gone: a bordered Disclosure",
+  avatarColourClass: "avatarColourClass is no longer exported: Avatar picks the colour from name",
+  initialsOf: "initialsOf is no longer exported: Avatar draws the initials from name",
   ...Object.fromEntries(
     PROPS_TYPES.map((name) => [name, `${name} is not exported: use ComponentProps<typeof …>`]),
   ),
@@ -123,7 +125,11 @@ export function pruneImports(before: ts.SourceFile, output: string, fileName: st
     const whole = dead.length === bindings.elements.length && !declaration.importClause?.name;
     if (whole && dead.length > 0) {
       edits.push({ start: declaration.getStart(file), end: declaration.end + 1, text: "" });
-    } else for (const element of dead) edits.push(specifierRemoval(element, file));
+    } else if (dead.length > 0) {
+      const kept = bindings.elements.filter((element) => !dead.includes(element));
+      const text = `{ ${kept.map((element) => element.getText(file)).join(", ")} }`;
+      edits.push({ start: bindings.getStart(file), end: bindings.end, text });
+    }
   }
   return edits;
 }

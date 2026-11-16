@@ -1,0 +1,3 @@
+import { DateField } from "@hackcove/ui-react";
+
+export const view = <DateField label="Due" error={late ? t("late") : undefined} />;

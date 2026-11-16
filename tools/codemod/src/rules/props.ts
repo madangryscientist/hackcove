@@ -150,9 +150,4 @@ export function clusterWrap(tag: Tag, component: string, context: Context): void
   if (component === "Cluster" && wrap !== undefined && isOn(wrap)) remove(context, wrap);
 }
 
-/** The attributes of a tag by name, for rules that read several. */
-export function attributeNames(tag: Tag): Set<string> {
-  return new Set(attributesOf(tag).map(nameOf));
-}
-
 export const tagRules: readonly TagRule[] = [renames, drops, values, heldTones, clusterWrap];

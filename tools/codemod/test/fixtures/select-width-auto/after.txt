@@ -1,3 +1,0 @@
-import { Select } from "@hackcove/ui-react";
-
-export const view = <Select aria-label="Plan" items={plans} />;

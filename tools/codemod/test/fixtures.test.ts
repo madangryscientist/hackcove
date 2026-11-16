@@ -24,6 +24,14 @@ describe("the codemod", () => {
     expect(lines).toEqual((read(dir, "report.txt") ?? "").split("\n").filter(Boolean));
   });
 
+  it("reads a .ts file as TypeScript, so a generic arrow is not a tag", () => {
+    const source =
+      'import type { PillTone } from "@hackcove/ui-react";\nconst id = <T>(x: T) => x;\nexport const t: PillTone[] = id(["amber"]);\nexport const u: PillTone = "amber";\n';
+    expect(transform(source, "tones.ts").output).toBe(
+      source.replace('u: PillTone = "amber"', 'u: PillTone = "warn"'),
+    );
+  });
+
   it("leaves a file that imports nothing from the package as it is", () => {
     const source = 'import { Card } from "./Card";\nexport const x = <Card dashed />;\n';
     expect(transform(source, "local.tsx")).toEqual({ output: source, reports: [] });

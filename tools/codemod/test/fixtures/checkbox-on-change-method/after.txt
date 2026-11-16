@@ -1,0 +1,3 @@
+import { Checkbox } from "@hackcove/ui-react";
+
+export const view = <Checkbox label="Weekly" onChange={(checked) => store.setWeekly(checked)} />;

@@ -1,5 +1,6 @@
 import ts from "typescript";
 import { attributeOf, literalOf, remove, replace, valueOf } from "../attributes.js";
+import { condition } from "./actions.js";
 import {
   componentOf,
   type Context,
@@ -19,16 +20,21 @@ export function dateErrors(tag: Tag, component: string, context: Context): void 
   const message = attributeOf(tag, "errorMessage");
   if (invalid !== undefined && message !== undefined) {
     remove(context, invalid);
-    context.edits.push({
-      start: message.name.getStart(context.file),
-      end: message.name.end,
-      text: "error",
-    });
+    replace(context, message, errorFrom(invalid, message, context));
   } else if (invalid !== undefined) {
     report(context, invalid, "isInvalid is gone: give error the reason the field is wrong");
   } else if (message !== undefined) {
     report(context, message, "errorMessage is gone: error is the message, and marks it invalid");
   }
+}
+
+/** `error` with the message, shown only while `isInvalid` holds when that is a condition. */
+function errorFrom(invalid: ts.JsxAttribute, message: ts.JsxAttribute, context: Context): string {
+  const when = condition(invalid, context);
+  const text = valueOf(message)?.getText(context.file) ?? '""';
+  return when === undefined
+    ? `error=${message.initializer?.getText(context.file) ?? '""'}`
+    : `error={${when} ? ${text} : undefined}`;
 }
 
 /** The uses of a parameter, and whether each one reads its `target.checked`. */
@@ -65,7 +71,7 @@ export function checkboxChange(tag: Tag, component: string, context: Context): v
   }
   const { arrow, param, uses } = handler;
   const callee = passedOn(arrow, uses);
-  if (callee !== undefined) {
+  if (callee !== undefined && ts.isIdentifier(callee)) {
     replace(context, arrow, callee.getText(context.file));
     return;
   }
@@ -77,7 +83,7 @@ export function checkboxChange(tag: Tag, component: string, context: Context): v
 function eventHandler(value: ts.Expression | undefined, context: Context) {
   if (value === undefined || !ts.isArrowFunction(value)) return undefined;
   const param = value.parameters[0];
-  if (param === undefined) return undefined;
+  if (param === undefined || !ts.isIdentifier(param.name)) return undefined;
   const uses = checkedUses(value, param.name.getText(context.file));
   return uses === undefined ? undefined : { arrow: value, param, uses };
 }
@@ -150,19 +156,21 @@ export function selectOptions(tag: Tag, component: string, context: Context): vo
   });
 }
 
-/** Outside a `Field` a `Select` is `auto` now: `width="auto"` goes, and one with no width is reported. */
+/**
+ * Outside a `Field` a `Select` is `auto` now, so one with no width outside a `Field` in this file is
+ * reported. A `width="auto"` stays: it is right in a `Field` and outside one, and a `Field` in
+ * another file is out of sight.
+ */
 export function selectWidth(tag: Tag, component: string, context: Context): void {
-  if (component !== "Select") return;
+  if (component !== "Select" || attributeOf(tag, "width") !== undefined) return;
   const inField = enclosing(tag, context.imports).some((outer) => outer.name === "Field");
-  if (inField) return;
-  const width = attributeOf(tag, "width");
-  if (width === undefined) {
+  if (!inField) {
     report(
       context,
       tag,
       'a Select outside a Field fits its choices now: width="full" keeps the row',
     );
-  } else if (literalOf(width) === "auto") remove(context, width);
+  }
 }
 
 export const tagRules: readonly TagRule[] = [

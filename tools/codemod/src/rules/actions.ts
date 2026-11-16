@@ -54,8 +54,16 @@ export function busyLabel(tag: Tag, component: string, context: Context): void {
   const words = valueOf(label)?.getText(context.file);
   remove(context, label);
   if (busy === undefined || words === undefined) return;
-  const when = isOn(busy) ? undefined : valueOf(busy)?.getText(context.file);
+  const when = condition(busy, context);
   replace(context, busy, when === undefined ? `busy={${words}}` : `busy={${when} && ${words}}`);
+}
+
+/** A boolean attribute's condition, bracketed unless it is a name; undefined when it is just on. */
+export function condition(attribute: ts.JsxAttribute, context: Context): string | undefined {
+  const value = isOn(attribute) ? undefined : valueOf(attribute);
+  if (value === undefined) return undefined;
+  const text = value.getText(context.file);
+  return ts.isIdentifier(value) || ts.isPropertyAccessExpression(value) ? text : `(${text})`;
 }
 
 /** `Pill tone="sky"` became the blue `info` tint; a person checks it reads right. */
@@ -66,7 +74,8 @@ export function skyPill(tag: Tag, component: string, context: Context): void {
   }
 }
 
-const SIZED = ["Button", "IconButton", "Input", "Select", "Pill", "Checkbox"];
+/** The parts that take their container's size; a field keeps `md` wherever it sits. */
+const SIZED = ["Button", "IconButton", "Pill"];
 
 /** The size the nearest density container in the file sets, if one does. */
 function containerSize(tag: Tag, context: Context): string | undefined {
@@ -93,7 +102,11 @@ export function densityContainers(tag: Tag, component: string, context: Context)
   const sets =
     component === "Table" || ((component === "Card" || component === "ListRow") && size === "sm");
   if (sets) {
-    report(context, tag, `a control with no size in this ${component} is now ${size ?? "sm"}`);
+    report(
+      context,
+      tag,
+      `a Button, IconButton or Pill with no size in this ${component} is now ${size ?? "sm"}`,
+    );
   }
 }
 

@@ -1,5 +1,5 @@
 import ts from "typescript";
-import { attributeOf, insert } from "../attributes.js";
+import { attributeOf, insert, isOn } from "../attributes.js";
 import {
   componentOf,
   type Context,
@@ -33,12 +33,13 @@ function loneEmptyState(tag: Tag, context: Context): ts.JsxChild | undefined {
   return componentOf(inner, context.imports) === "EmptyState" ? only : undefined;
 }
 
-/** `Card dashed` round a lone `EmptyState` is the `EmptyState`: it draws the dashed frame itself. */
+/** A bare `Card dashed` round a lone `EmptyState` is the `EmptyState`: it draws the dashed frame itself. */
 export function dashedCard(tag: Tag, component: string, context: Context): void {
   const dashed = attributeOf(tag, "dashed");
   if (component !== "Card" || dashed === undefined) return;
   const only = loneEmptyState(tag, context);
-  if (!ts.isJsxOpeningElement(tag) || only === undefined) {
+  const bare = tag.attributes.properties.length === 1 && isOn(dashed);
+  if (!ts.isJsxOpeningElement(tag) || only === undefined || !bare) {
     report(context, dashed, "Card dashed is gone: an EmptyState draws the dashed frame");
     return;
   }

@@ -35,7 +35,14 @@ export type Context = {
 };
 
 export function parse(source: string, fileName: string): ts.SourceFile {
-  return ts.createSourceFile(fileName, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  return ts.createSourceFile(fileName, source, ts.ScriptTarget.Latest, true, scriptKind(fileName));
+}
+
+/** A `.ts` file is no JSX, so `<T>(x: T) => x` there is a generic and not a tag. */
+function scriptKind(fileName: string): ts.ScriptKind {
+  if (fileName.endsWith(".ts") || fileName.endsWith(".mts")) return ts.ScriptKind.TS;
+  if (fileName.endsWith(".js") || fileName.endsWith(".jsx")) return ts.ScriptKind.JSX;
+  return ts.ScriptKind.TSX;
 }
 
 /** The bindings of every import from the package in the file. */

@@ -17,6 +17,15 @@ function filesUnder(dir: string): string[] {
   });
 }
 
+/** One file's rewrite, or undefined when a rule trips on it, so one odd file does not stop the run. */
+function attempt(source: string, path: string): ReturnType<typeof transform> | undefined {
+  try {
+    return transform(source, path);
+  } catch {
+    return undefined;
+  }
+}
+
 function main(args: readonly string[]): number {
   const dir = args.find((arg) => !arg.startsWith("--"));
   if (dir === undefined) {
@@ -28,8 +37,14 @@ function main(args: readonly string[]): number {
   let reported = 0;
   for (const path of filesUnder(dir)) {
     const source = readFileSync(path, "utf8");
-    const { output, reports } = transform(source, path);
     const name = relative(process.cwd(), path);
+    const result = attempt(source, path);
+    if (result === undefined) {
+      process.stdout.write(`${name}:1: the codemod could not rewrite this file: do it by hand\n`);
+      reported += 1;
+      continue;
+    }
+    const { output, reports } = result;
     if (output !== source) {
       changed += 1;
       if (write) writeFileSync(path, output);

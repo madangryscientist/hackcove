@@ -1,0 +1,13 @@
+import { Table, TableBody, TableRow, TableCell, Input } from "@hackcove/ui-react";
+
+export const view = (
+  <Table label="Lines">
+    <TableBody>
+      <TableRow>
+        <TableCell>
+          <Input aria-label="Qty" size="sm" />
+        </TableCell>
+      </TableRow>
+    </TableBody>
+  </Table>
+);
