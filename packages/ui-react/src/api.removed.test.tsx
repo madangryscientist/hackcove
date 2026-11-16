@@ -243,6 +243,23 @@ export const removed = {
   r88: () => <ui.Dialog title="x" size="lg" onClose={() => undefined} />,
   // @ts-expect-error a Drawer's size is width
   r89: () => <ui.Drawer title="x" size="lg" onClose={() => undefined} />,
+
+  // Tables
+  // @ts-expect-error caption is label, and a table needs one
+  r90: () => <ui.Table caption="x">{null}</ui.Table>,
+  r91: () => (
+    <ui.Table
+      label="x"
+      // @ts-expect-error variant is gone: a table inside a Card is plain by itself
+      variant="plain"
+    >
+      {null}
+    </ui.Table>
+  ),
+  // @ts-expect-error srLabel is label
+  r92: () => <ui.TableHeaderCell srLabel="Actions" />,
+  // @ts-expect-error a cell's tone="default" is neutral, the default
+  r93: () => <ui.TableCell tone="default">x</ui.TableCell>,
 };
 
 describe("removed API", () => {

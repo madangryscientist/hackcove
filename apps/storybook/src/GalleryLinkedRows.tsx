@@ -36,12 +36,12 @@ export function GalleryLinkedRows() {
           Active row
         </ListRow>
       </Card>
-      <Table caption="Linked rows">
+      <Table label="Linked rows">
         <TableHead>
           <TableRow>
             <TableHeaderCell>Reference</TableHeaderCell>
             <TableHeaderCell>Client</TableHeaderCell>
-            <TableHeaderCell align="end" srLabel="Actions" />
+            <TableHeaderCell align="end" label="Actions" />
           </TableRow>
         </TableHead>
         <TableBody>

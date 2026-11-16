@@ -53,7 +53,7 @@ const forms = {
     ),
   TableRow: () =>
     mount(
-      <Table caption="Rows">
+      <Table label="Rows">
         <TableBody>
           <TableRow>
             <TableCell>

@@ -18,7 +18,7 @@ type S = StoryObj;
 export const CentredCells: S = {
   render: () => (
     <Stack gap="md">
-      <Table caption="Transactions">
+      <Table label="Transactions">
         <TableHead>
           <TableRow>
             <TableHeaderCell>Date</TableHeaderCell>
@@ -34,7 +34,7 @@ export const CentredCells: S = {
           </TableRow>
         </TableBody>
       </Table>
-      <Table caption="Equipment">
+      <Table label="Equipment">
         <TableHead>
           <TableRow>
             <TableHeaderCell>Item</TableHeaderCell>
@@ -69,43 +69,33 @@ export const CentredCells: S = {
 /** `indent` sets a start-aligned cell in by 1, 2 or 3 levels, for the lines under a parent row. */
 export const Indent: S = {
   render: () => (
-    <Table caption="Forecast">
+    <Table label="Forecast">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Line</TableHeaderCell>
-          <TableHeaderCell align="end">November</TableHeaderCell>
+          <TableHeaderCell numeric>November</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
         <TableRow>
           <TableCell tone="strong">Expenses</TableCell>
-          <TableCell align="end" numeric>
-            R 9 450.00
-          </TableCell>
+          <TableCell numeric>R 9 450.00</TableCell>
         </TableRow>
         <TableRow>
           <TableCell indent={1}>Home</TableCell>
-          <TableCell align="end" numeric>
-            R 7 100.00
-          </TableCell>
+          <TableCell numeric>R 7 100.00</TableCell>
         </TableRow>
         <TableRow>
           <TableCell indent={2}>Groceries</TableCell>
-          <TableCell align="end" numeric>
-            R 4 120.00
-          </TableCell>
+          <TableCell numeric>R 4 120.00</TableCell>
         </TableRow>
         <TableRow>
           <TableCell indent={3}>Delivery fees</TableCell>
-          <TableCell align="end" numeric>
-            R 180.00
-          </TableCell>
+          <TableCell numeric>R 180.00</TableCell>
         </TableRow>
         <TableRow>
           <TableCell indent={1}>Fun</TableCell>
-          <TableCell align="end" numeric>
-            R 2 350.00
-          </TableCell>
+          <TableCell numeric>R 2 350.00</TableCell>
         </TableRow>
       </TableBody>
     </Table>
@@ -115,41 +105,33 @@ export const Indent: S = {
 /** `emphasis` is a subtotal among a body's rows, in a `TableFoot` row's look: strong cells, a firmer line above and no hover. The total of the whole table stays in `TableFoot`. */
 export const EmphasisRow: S = {
   render: () => (
-    <Table caption="Forecast">
+    <Table label="Forecast">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Line</TableHeaderCell>
-          <TableHeaderCell align="end">November</TableHeaderCell>
+          <TableHeaderCell numeric>November</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
         <TableRow>
           <TableCell>Salary</TableCell>
-          <TableCell align="end" numeric>
-            R 38 000.00
-          </TableCell>
+          <TableCell numeric>R 38 000.00</TableCell>
         </TableRow>
         <TableRow emphasis>
           <TableCell>Total income</TableCell>
-          <TableCell align="end" numeric>
-            R 38 000.00
-          </TableCell>
+          <TableCell numeric>R 38 000.00</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Groceries</TableCell>
-          <TableCell align="end" numeric>
-            R 4 120.00
-          </TableCell>
+          <TableCell numeric>R 4 120.00</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Eating out</TableCell>
-          <TableCell align="end" numeric>
-            R 2 980.00
-          </TableCell>
+          <TableCell numeric>R 2 980.00</TableCell>
         </TableRow>
         <TableRow emphasis>
           <TableCell>Total expenses</TableCell>
-          <TableCell align="end" numeric tone="danger">
+          <TableCell numeric tone="danger">
             R 7 100.00
           </TableCell>
         </TableRow>
@@ -157,11 +139,39 @@ export const EmphasisRow: S = {
       <TableFoot>
         <TableRow>
           <TableCell>Left over</TableCell>
-          <TableCell align="end" numeric>
-            R 30 900.00
-          </TableCell>
+          <TableCell numeric>R 30 900.00</TableCell>
         </TableRow>
       </TableFoot>
+    </Table>
+  ),
+};
+
+const invoices = [
+  { ref: "INV-207", client: "Naledi Dlamini", total: "R 1 249.00" },
+  { ref: "INV-208", client: "Pieter van Wyk", total: "R 880.50" },
+  { ref: "INV-209", client: "Thandi Mokoena", total: "R 2 310.00" },
+];
+
+/** `selected` marks the current row, the one open beside the table: the `ListRow` selected fill and `aria-selected`. The total column says `numeric` once, in its head. */
+export const SelectedRow: S = {
+  render: () => (
+    <Table label="Invoices">
+      <TableHead>
+        <TableRow>
+          <TableHeaderCell>Invoice</TableHeaderCell>
+          <TableHeaderCell>Client</TableHeaderCell>
+          <TableHeaderCell numeric>Total</TableHeaderCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {invoices.map((invoice) => (
+          <TableRow key={invoice.ref} selected={invoice.ref === "INV-208"}>
+            <TableCell mono>{invoice.ref}</TableCell>
+            <TableCell tone="strong">{invoice.client}</TableCell>
+            <TableCell>{invoice.total}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
     </Table>
   ),
 };

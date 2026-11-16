@@ -26,12 +26,12 @@ const quotes = [
 
 function QuotesTable() {
   return (
-    <Table caption="Quotes">
+    <Table label="Quotes">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Reference</TableHeaderCell>
           <TableHeaderCell>Client</TableHeaderCell>
-          <TableHeaderCell align="end">Premium</TableHeaderCell>
+          <TableHeaderCell numeric>Premium</TableHeaderCell>
           <TableHeaderCell>Status</TableHeaderCell>
         </TableRow>
       </TableHead>
@@ -44,9 +44,7 @@ function QuotesTable() {
               </TextLink>
             </TableCell>
             <TableCell tone="strong">{q.client}</TableCell>
-            <TableCell align="end" numeric>
-              {q.premium}
-            </TableCell>
+            <TableCell numeric>{q.premium}</TableCell>
             <TableCell tone="muted">
               <Pill tone={q.status === "accepted" ? "positive" : "warn"}>{q.status}</Pill>
             </TableCell>
@@ -69,24 +67,22 @@ export const Narrow: S = {
   ),
 };
 
-/** `variant="plain"`: no card, no header strip, no row hover; only the row dividers. For a table inside a card. */
+/** Inside a `Card` a Table is plain: no card, no header strip, no row hover; only the row dividers. */
 export const Plain: S = {
   render: () => (
     <Card title="Quotes">
-      <Table variant="plain" caption="Quotes">
+      <Table label="Quotes">
         <TableHead>
           <TableRow>
             <TableHeaderCell>Client</TableHeaderCell>
-            <TableHeaderCell align="end">Premium</TableHeaderCell>
+            <TableHeaderCell numeric>Premium</TableHeaderCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {quotes.map((q) => (
             <TableRow key={q.ref}>
               <TableCell tone="strong">{q.client}</TableCell>
-              <TableCell align="end" numeric>
-                {q.premium}
-              </TableCell>
+              <TableCell numeric>{q.premium}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -98,11 +94,11 @@ export const Plain: S = {
 /** `secondary` is a second, muted line under the main content of a cell. */
 export const SecondLine: S = {
   render: () => (
-    <Table caption="Clients">
+    <Table label="Clients">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Client</TableHeaderCell>
-          <TableHeaderCell align="end">Premium</TableHeaderCell>
+          <TableHeaderCell numeric>Premium</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -111,7 +107,7 @@ export const SecondLine: S = {
             <TableCell tone="strong" secondary={q.ref}>
               {q.client}
             </TableCell>
-            <TableCell align="end" numeric secondary="per month">
+            <TableCell numeric secondary="per month">
               {q.premium}
             </TableCell>
           </TableRow>
@@ -134,20 +130,18 @@ const lines = [
 /** `tone` on a row marks its state with a stripe on the leading edge and a soft fill: the Callout tones, plus `muted` to fade a row that is not the point (a transfer). No class, no style. */
 export const RowTones: S = {
   render: () => (
-    <Table caption="Budget">
+    <Table label="Budget">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Line</TableHeaderCell>
-          <TableHeaderCell align="end">Spent</TableHeaderCell>
+          <TableHeaderCell numeric>Spent</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {lines.map((l) => (
           <TableRow key={l.name} tone={l.tone}>
             <TableCell tone="strong">{l.name}</TableCell>
-            <TableCell align="end" numeric>
-              {l.spent}
-            </TableCell>
+            <TableCell numeric>{l.spent}</TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -155,68 +149,58 @@ export const RowTones: S = {
   ),
 };
 
-/** `TableFoot` is the `<tfoot>` for totals: strong cells and a firmer line above each row, in a card and in a `plain` table alike. */
+/** `TableFoot` is the `<tfoot>` for totals: strong cells and a firmer line above each row, alone and in a card alike. */
 export const Totals: S = {
   render: () => (
     <div className="flex flex-col gap-6">
-      <Table caption="Budget">
+      <Table label="Budget">
         <TableHead>
           <TableRow>
             <TableHeaderCell>Line</TableHeaderCell>
-            <TableHeaderCell align="end">Spent</TableHeaderCell>
+            <TableHeaderCell numeric>Spent</TableHeaderCell>
           </TableRow>
         </TableHead>
         <TableBody>
           <TableRow>
             <TableCell>Groceries</TableCell>
-            <TableCell align="end" numeric>
-              R 4 120.00
-            </TableCell>
+            <TableCell numeric>R 4 120.00</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Eating out</TableCell>
-            <TableCell align="end" numeric>
-              R 2 980.00
-            </TableCell>
+            <TableCell numeric>R 2 980.00</TableCell>
           </TableRow>
         </TableBody>
         <TableFoot>
           <TableRow>
             <TableCell>Subtotal</TableCell>
-            <TableCell align="end" numeric>
-              R 7 100.00
-            </TableCell>
+            <TableCell numeric>R 7 100.00</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Total</TableCell>
-            <TableCell align="end" numeric tone="danger">
+            <TableCell numeric tone="danger">
               R 7 100.00
             </TableCell>
           </TableRow>
         </TableFoot>
       </Table>
       <Card title="Budget">
-        <Table variant="plain" caption="Budget">
+        <Table label="Budget">
           <TableHead>
             <TableRow>
               <TableHeaderCell>Line</TableHeaderCell>
-              <TableHeaderCell align="end">Spent</TableHeaderCell>
+              <TableHeaderCell numeric>Spent</TableHeaderCell>
             </TableRow>
           </TableHead>
           <TableBody>
             <TableRow>
               <TableCell>Groceries</TableCell>
-              <TableCell align="end" numeric>
-                R 4 120.00
-              </TableCell>
+              <TableCell numeric>R 4 120.00</TableCell>
             </TableRow>
           </TableBody>
           <TableFoot>
             <TableRow>
               <TableCell>Total</TableCell>
-              <TableCell align="end" numeric>
-                R 4 120.00
-              </TableCell>
+              <TableCell numeric>R 4 120.00</TableCell>
             </TableRow>
           </TableFoot>
         </Table>
@@ -228,12 +212,12 @@ export const Totals: S = {
 /** `TableGroupRow` is a full-width group header: its `label` spans the `colSpan` columns you give it (the table's column count), `trailing` sits at the far end. A full-width panel (an empty state, a note) is a `TableCell` with `colSpan`. */
 export const GroupRows: S = {
   render: () => (
-    <Table caption="Budget by group">
+    <Table label="Budget by group">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Line</TableHeaderCell>
           <TableHeaderCell>Account</TableHeaderCell>
-          <TableHeaderCell align="end">Spent</TableHeaderCell>
+          <TableHeaderCell numeric>Spent</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -241,9 +225,7 @@ export const GroupRows: S = {
         <TableRow>
           <TableCell>Groceries</TableCell>
           <TableCell tone="muted">Cheque</TableCell>
-          <TableCell align="end" numeric>
-            R 4 120.00
-          </TableCell>
+          <TableCell numeric>R 4 120.00</TableCell>
         </TableRow>
         <TableGroupRow label="Fun" trailing="R 0.00" colSpan={3} />
         <TableRow>
@@ -258,27 +240,27 @@ export const GroupRows: S = {
 
 const SIGN: Partial<Record<CellTone, string>> = { positive: "+ ", danger: "- " };
 
-/** `tone` on a cell takes the Callout tones as well as `default`, `strong` and `muted`, for an amount that means something. Colour alone does not say it: pair it with a sign or a word. */
+/** `tone` on a cell takes the shared tones (`neutral` is the default) as well as `strong` and `muted`, for an amount that means something. Colour alone does not say it: pair it with a sign or a word. */
 export const CellTones: S = {
   render: () => (
-    <Table caption="Amounts">
+    <Table label="Amounts">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Tone</TableHeaderCell>
-          <TableHeaderCell align="end">Amount</TableHeaderCell>
+          <TableHeaderCell numeric>Amount</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
-        {(
-          ["default", "strong", "muted", "neutral", "info", "positive", "warn", "danger"] as const
-        ).map((tone) => (
-          <TableRow key={tone}>
-            <TableCell mono>{tone}</TableCell>
-            <TableCell align="end" numeric tone={tone}>
-              {`${SIGN[tone] ?? ""}R 349.00`}
-            </TableCell>
-          </TableRow>
-        ))}
+        {(["neutral", "strong", "muted", "info", "positive", "warn", "danger"] as const).map(
+          (tone) => (
+            <TableRow key={tone}>
+              <TableCell mono>{tone}</TableCell>
+              <TableCell numeric tone={tone}>
+                {`${SIGN[tone] ?? ""}R 349.00`}
+              </TableCell>
+            </TableRow>
+          ),
+        )}
       </TableBody>
     </Table>
   ),
@@ -287,11 +269,11 @@ export const CellTones: S = {
 /** `truncate` caps a long value's width, ellipsises it on one line and puts the full text in a `title`. One width, no prop. */
 export const Truncate: S = {
   render: () => (
-    <Table caption="Branches">
+    <Table label="Branches">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Branch</TableHeaderCell>
-          <TableHeaderCell align="end">Commits</TableHeaderCell>
+          <TableHeaderCell numeric>Commits</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -299,17 +281,13 @@ export const Truncate: S = {
           <TableCell mono truncate>
             feature/omnibus-planner-rework-the-whole-budget-import-flow-end-to-end
           </TableCell>
-          <TableCell align="end" numeric>
-            14
-          </TableCell>
+          <TableCell numeric>14</TableCell>
         </TableRow>
         <TableRow>
           <TableCell mono truncate>
             main
           </TableCell>
-          <TableCell align="end" numeric>
-            212
-          </TableCell>
+          <TableCell numeric>212</TableCell>
         </TableRow>
       </TableBody>
     </Table>

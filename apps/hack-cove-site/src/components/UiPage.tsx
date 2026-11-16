@@ -45,7 +45,7 @@ function Themes() {
   return (
     <Section title={ui.themes.title} gap="md">
       <Text>{ui.themes.intro}</Text>
-      <Table caption={ui.themes.title}>
+      <Table label={ui.themes.title}>
         <TableHead>
           <TableRow>
             <TableHeaderCell>{ui.themes.themeLabel}</TableHeaderCell>

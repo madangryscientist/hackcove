@@ -255,6 +255,34 @@ TypeScript does not flag these:
 - A `Stack` with no `gap` inside a card, dialog, drawer, sheet, callout or row is now `xs` apart.
 - A standalone `EmptyState` now draws a dashed frame round itself.
 
+### Tables
+
+A table is named by `label`, says a column of figures once in its head, and is plain inside a
+`Card` with no prop.
+
+| Old | New | |
+| --- | --- | --- |
+| `Table caption` | `label`, now required | codemod renames; reports a `Table` with none |
+| `Table variant="plain"` | leave it out: a table inside a `Card` is plain | codemod drops it |
+| `TableHeaderCell srLabel` | `label` | codemod |
+| `TableHeaderCell align="end"` over a column of `numeric` cells | `TableHeaderCell numeric`: the title and every cell under it are end aligned in tabular figures | codemod, where the first body row's cell in that column is `numeric` |
+| `TableCell numeric align="end"` | `numeric` alone: it implies `end` | codemod drops `align="end"` |
+| `TableCell tone="default"` | leave it out: `neutral` is the default | codemod drops it |
+| `TableCell tone="neutral"` (`text-slate-600`) | `neutral`, now `text-slate-700`, the one plain cell ink | nothing to change |
+
+New, nothing to change: `TableRow selected` (the `ListRow` selected fill and `aria-selected`) and
+`Table size` (the row padding, `sm` by default).
+
+TypeScript does not flag these:
+
+- A `Table` inside a `Card` that was not `plain` now draws plain: no card of its own, no head strip
+  and no row hover.
+- A `numeric` cell with no `align` is now end aligned. The codemod writes `align="start"` on one,
+  so nothing moves until you drop it.
+- A `Button`, `IconButton`, `Input`, `Select`, `Pill` or `Checkbox` with no `size` in a `Table` is
+  now `sm`. The codemod reports every `Table` so a person checks what is inside.
+- A cell that was `tone="neutral"` is one step darker.
+
 ## 0.9 → 0.10: Avatar `2xl` is 64px, the old 96px is `3xl`
 
 `Avatar` gained a 64px size. The sizes keep their order (`xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`),

@@ -68,7 +68,7 @@ function CategoryInCell() {
 /** A Table's indented lines, a `TableEditCell`, an `InlineEdit` in a cell with other content, an `emphasis` subtotal and a centred `colSpan` note. */
 export function GalleryTableOptions() {
   return (
-    <Table caption="Forecast">
+    <Table label="Forecast">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Line</TableHeaderCell>
@@ -80,23 +80,17 @@ export function GalleryTableOptions() {
         <TableRow>
           <TableCell indent={1}>Woolworths</TableCell>
           <CategoryCell />
-          <TableCell align="end" numeric>
-            R 349.00
-          </TableCell>
+          <TableCell numeric>R 349.00</TableCell>
         </TableRow>
         <TableRow>
           <TableCell indent={1}>Engen</TableCell>
           <CategoryInCell />
-          <TableCell align="end" numeric>
-            R 880.00
-          </TableCell>
+          <TableCell numeric>R 880.00</TableCell>
         </TableRow>
         <TableRow emphasis>
           <TableCell>Subtotal</TableCell>
           <TableCell>Home</TableCell>
-          <TableCell align="end" numeric>
-            R 1 229.00
-          </TableCell>
+          <TableCell numeric>R 1 229.00</TableCell>
         </TableRow>
         <TableRow>
           <TableCell colSpan={3} align="center" tone="muted">

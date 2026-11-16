@@ -127,7 +127,7 @@ export const Bare: S = {
   render: () => {
     const [on, setOn] = useState<Record<string, boolean>>({ "dark-mode": true });
     return (
-      <Table caption="Flags">
+      <Table label="Flags">
         <TableHead>
           <TableRow>
             <TableHeaderCell>Flag</TableHeaderCell>
@@ -180,7 +180,7 @@ export const DoRow: S = {
   render: () => {
     const [checked, setChecked] = useState(true);
     return (
-      <Table caption="Flags">
+      <Table label="Flags">
         <TableBody>
           <TableRow>
             <TableCell mono>checkout-v2</TableCell>

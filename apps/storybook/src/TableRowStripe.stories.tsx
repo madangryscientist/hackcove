@@ -17,7 +17,7 @@ type S = StoryObj;
 /** `stripe` is the stripe alone, in the same tones as a `StackedBar` segment, with no fill: the row keeps its hover and its look. Name the status in a cell too. */
 export const RowStripes: S = {
   render: () => (
-    <Table caption="Pages">
+    <Table label="Pages">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Page</TableHeaderCell>
@@ -60,7 +60,7 @@ export const DoStripe: S = {
           { label: "Removed", tone: "danger" },
         ]}
       />
-      <Table caption="Pages">
+      <Table label="Pages">
         <TableHead>
           <TableRow>
             <TableHeaderCell>Page</TableHeaderCell>
@@ -85,7 +85,7 @@ export const DoStripe: S = {
 /** Stripes with no key and no status word in the row: the colour is the only signal, and it means nothing to anyone who cannot tell the colours apart. */
 export const DontStripe: S = {
   render: () => (
-    <Table caption="Pages">
+    <Table label="Pages">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Page</TableHeaderCell>

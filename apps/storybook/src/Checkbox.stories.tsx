@@ -94,7 +94,7 @@ export const InCard: S = {
         </div>
       </Card>
       <Card title="Shops">
-        <Table variant="plain" caption="Shops">
+        <Table label="Shops">
           <TableHead>
             <TableRow>
               <TableHeaderCell>

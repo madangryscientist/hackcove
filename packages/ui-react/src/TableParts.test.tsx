@@ -26,7 +26,7 @@ const cell = (props: Parameters<typeof TableCell>[0]) =>
 describe("TableFoot", () => {
   it("is the table's foot: a row group after the body, holding its rows", () => {
     render(
-      <Table caption="Costs">
+      <Table label="Costs">
         <TableBody>
           <TableRow>
             <TableCell>Rent</TableCell>
@@ -139,13 +139,13 @@ describe("TableCell truncate", () => {
   });
 });
 
-describe("TableHeaderCell srLabel", () => {
+describe("TableHeaderCell label", () => {
   it("names the column in place of the children", () => {
     render(
       <table>
         <thead>
           <tr>
-            <TableHeaderCell align="end" srLabel="Actions" />
+            <TableHeaderCell align="end" label="Actions" />
           </tr>
         </thead>
       </table>,
@@ -157,7 +157,7 @@ describe("TableHeaderCell srLabel", () => {
 describe("TableRow emphasis", () => {
   it("keeps the row in the body, with no foot", () => {
     render(
-      <Table caption="Costs">
+      <Table label="Costs">
         <TableBody>
           <TableRow emphasis>
             <TableCell>Subtotal</TableCell>

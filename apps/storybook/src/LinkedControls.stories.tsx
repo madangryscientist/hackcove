@@ -91,12 +91,12 @@ const quotes = [
 /** A link and a button in a linked table row sit above the row's stretched `TextLink` and take their own click; the rest of the row still follows it. */
 export const TableRowWithControls: S = {
   render: () => (
-    <Table caption="Quotes">
+    <Table label="Quotes">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Reference</TableHeaderCell>
           <TableHeaderCell>Client</TableHeaderCell>
-          <TableHeaderCell align="end" srLabel="Actions" />
+          <TableHeaderCell align="end" label="Actions" />
         </TableRow>
       </TableHead>
       <TableBody>

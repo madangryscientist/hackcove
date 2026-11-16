@@ -65,7 +65,6 @@ export { SortableItem, SortableList, type SortableMove, SortableSection } from "
 export { OutlineRegion, RegionFrame, type RegionRect } from "./OutlineRegion.js";
 export {
   type CellTone,
-  type RowTone,
   Table,
   TableBody,
   TableCell,
@@ -75,6 +74,7 @@ export {
   TableHeaderCell,
   TableRow,
 } from "./Table.js";
+export type { RowTone } from "./tableRow.js";
 export { InlineEdit } from "./InlineEdit.js";
 export { TableEditCell } from "./TableEditCell.js";
 export { EmptyState } from "./EmptyState.js";

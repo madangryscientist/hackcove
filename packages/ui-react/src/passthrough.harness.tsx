@@ -250,7 +250,7 @@ export const CASES: Record<string, () => ReactElement> = {
   Switch: () => <ui.Switch aria-label="Flag" checked onChange={noop} {...A} />,
   SubsectionHeading: () => <ui.SubsectionHeading {...A}>x</ui.SubsectionHeading>,
   Table: () => (
-    <ui.Table {...A}>
+    <ui.Table label="Rows" {...A}>
       <ui.TableBody>{null}</ui.TableBody>
     </ui.Table>
   ),
