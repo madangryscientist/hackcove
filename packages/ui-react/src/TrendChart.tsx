@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import type { Passthrough } from "./props.js";
+import { Bone, BusyLabel, busy, type LoadingProps, LoadingScope, useLoading } from "./skeleton.js";
 import { Legend, VIZ_TONE, type VizTone } from "./StackedBar.js";
 import { drawn, largest, plotY, round, runs, scaleMax } from "./trend.js";
 
@@ -32,13 +33,16 @@ const spoken = (value: number | null | undefined): string | null =>
 /**
  * A chart of one or two series over ordered buckets (weeks, months), as bars or a line, on a
  * y-axis from 0. The y-axis is labelled 0, half and a rounded maximum; the x-axis names the
- * buckets. A screen reader gets the same figures as a table.
+ * buckets. A screen reader gets the same figures as a table. While `loading` the frame, the bucket
+ * names and the key stay drawn and the plot is one bone, since 0 is a real value.
  */
 export function TrendChart({
   label,
   buckets,
   series,
   kind = "bar",
+  loading,
+  loadingLabel,
   ...rest
 }: {
   /** What the chart shows: its accessible name and the caption of its table. */
@@ -55,43 +59,68 @@ export function TrendChart({
    * @default bar
    */
   kind?: "bar" | "line";
-} & Passthrough): ReactElement {
+} & LoadingProps &
+  Passthrough): ReactElement {
+  const { loading: waiting, owner } = useLoading(loading);
   const values = series.map((s) => buckets.map((_, i) => drawn(s.values[i])));
   const max = scaleMax(largest(values));
   const ticks = [max, max / 2, 0];
   return (
-    <figure {...rest} aria-label={label} className="flex flex-col gap-3">
+    <figure {...rest} {...busy(owner, waiting)} aria-label={label} className="flex flex-col gap-3">
       <div aria-hidden="true" className="flex gap-2 pt-2 text-xs tabular-nums text-slate-500">
-        <YAxis ticks={ticks} max={max} />
+        <YAxis ticks={waiting ? [] : ticks} max={max} />
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-          <div className="relative h-48">
-            {ticks.map((tick) => (
-              <span
-                key={tick}
-                className="absolute inset-x-0 border-t border-slate-200"
-                style={{ top: `${plotY(tick, max)}%` }}
-              />
-            ))}
-            <svg
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-              className="absolute inset-0 size-full overflow-visible"
-            >
-              {kind === "bar" ? (
-                <Bars series={series} values={values} max={max} />
-              ) : (
-                <Lines series={series} values={values} max={max} />
-              )}
-            </svg>
-          </div>
+          {waiting ? (
+            <Bone shape="block h-48 rounded-lg" />
+          ) : (
+            <Plot ticks={ticks} max={max} kind={kind} series={series} values={values} />
+          )}
           <XAxis buckets={buckets} />
         </div>
       </div>
       {series.length === 2 && (
-        <Legend items={series.map((s) => ({ label: s.label, tone: s.tone }))} />
+        <LoadingScope loading={false}>
+          <Legend items={series.map((s) => ({ label: s.label, tone: s.tone }))} />
+        </LoadingScope>
       )}
-      <FigureTable label={label} buckets={buckets} series={series} />
+      {waiting ? (
+        <BusyLabel owner={owner} loading={waiting} label={loadingLabel} />
+      ) : (
+        <FigureTable label={label} buckets={buckets} series={series} />
+      )}
     </figure>
+  );
+}
+
+/** The plot: a gridline per tick, and the series' bars or lines over them. */
+function Plot({
+  ticks,
+  max,
+  kind,
+  series,
+  values,
+}: MarksProps & { ticks: readonly number[]; kind: "bar" | "line" }): ReactElement {
+  return (
+    <div className="relative h-48">
+      {ticks.map((tick) => (
+        <span
+          key={tick}
+          className="absolute inset-x-0 border-t border-slate-200"
+          style={{ top: `${plotY(tick, max)}%` }}
+        />
+      ))}
+      <svg
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        className="absolute inset-0 size-full overflow-visible"
+      >
+        {kind === "bar" ? (
+          <Bars series={series} values={values} max={max} />
+        ) : (
+          <Lines series={series} values={values} max={max} />
+        )}
+      </svg>
+    </div>
   );
 }
 

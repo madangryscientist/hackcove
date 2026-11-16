@@ -4,6 +4,8 @@ import type { Size } from "./size.js";
 import { TableContext, useNumericColumn } from "./tableColumns.js";
 import { ALIGN, type Align, PAD, type Rest, SectionContext } from "./tableRow.js";
 import { SortButton, type SortProps } from "./tableSort.js";
+import { Bone, BusyLabel, busy, isEmptySlot, type LoadingProps, useLoading } from "./skeleton.js";
+import { CELL_BONE } from "./tableEmpty.js";
 import type { Tone } from "./tone.js";
 import { TEXT_TONE } from "./typography.js";
 
@@ -125,6 +127,7 @@ const INDENT: Record<Size, Record<Indent, string>> = {
  * spans the row is a full-width panel (a note under a group), and `align="center"` centres it. A
  * table with no rows takes `TableBody empty`, not a cell built by hand. `span="full"` spans every
  * column the head declares, so a panel under a row needs no count. `indent` sets a start-aligned cell in by 1 to 3 levels, for a line under a parent row.
+ * While `loading` an empty cell draws one bone, the width of a short value.
  */
 export function TableCell({
   span,
@@ -136,6 +139,8 @@ export function TableCell({
   truncate = false,
   indent,
   secondary,
+  loading,
+  loadingLabel,
   children,
   ...rest
 }: {
@@ -172,7 +177,10 @@ export function TableCell({
       colSpan?: undefined;
     }
 ) &
+  LoadingProps &
   Rest<"td", "align" | "colSpan">): ReactElement {
+  const { loading: waiting, owner } = useLoading(loading);
+  const bone = waiting && isEmptySlot(children);
   const foot = useContext(SectionContext) === "foot";
   const { size, columns } = useContext(TableContext);
   const column = useNumericColumn();
@@ -181,6 +189,7 @@ export function TableCell({
   return (
     <td
       {...rest}
+      {...busy(owner, waiting)}
       colSpan={span === "full" ? columns : colSpan}
       className={cellClass({
         align: side,
@@ -194,8 +203,9 @@ export function TableCell({
       })}
     >
       <CellBody align={side} truncate={truncate} secondary={secondary}>
-        {children}
+        {bone ? <Bone shape={CELL_BONE} /> : children}
       </CellBody>
+      <BusyLabel owner={owner} loading={waiting} label={loadingLabel} />
     </td>
   );
 }

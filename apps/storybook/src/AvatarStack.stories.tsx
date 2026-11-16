@@ -79,3 +79,14 @@ export const DontMax: S = {
     </Cluster>
   ),
 };
+
+/** While `loading`, a stack with no members yet is three avatar bones. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <AvatarStack
+      loading={loading}
+      items={loading ? [] : [{ name: "Mia Botha" }, { name: "Sipho Dube" }, { name: "Ana Lima" }]}
+    />
+  ),
+};

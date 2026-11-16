@@ -5,6 +5,7 @@ import { IMAGE_WIDTH, Image, type ImageAspect, type ImageWidth } from "./Image.j
 import { CLOSE } from "./Lightbox.js";
 import { renderLink } from "./link.js";
 import type { Passthrough } from "./props.js";
+import { BusyLabel, busy, type LoadingProps, LoadingScope, useLoading } from "./skeleton.js";
 import { Tipped } from "./Tooltip.js";
 
 const PLAY =
@@ -43,7 +44,8 @@ export type MediaTileProps = {
    * @default Remove
    */
   removeLabel?: string | undefined;
-} & Passthrough &
+} & LoadingProps &
+  Passthrough &
   (
     | { onClick?: undefined; href?: undefined; external?: undefined }
     | {
@@ -71,6 +73,7 @@ export type MediaTileProps = {
  * media scrim as the Lightbox, in every theme. The thumbnail is cropped to fill its shape, or with
  * `aspect="natural"` shown whole. With `href` the whole tile is one link instead. `onRemove` adds a
  * remove button for a tile that can be taken back out.
+ * While `loading` with no `src` yet the picture is a bone of its shape.
  */
 export function MediaTile({
   src,
@@ -85,10 +88,13 @@ export function MediaTile({
   external = false,
   onRemove,
   removeLabel,
+  loading,
+  loadingLabel,
   ...rest
 }: MediaTileProps): ReactElement {
+  const { loading: waiting, owner } = useLoading(loading);
   const body = (
-    <>
+    <LoadingScope loading={waiting}>
       <span className="relative block overflow-hidden rounded-lg">
         <Image src={src} alt={alt} aspect={aspect} />
         {video && (
@@ -109,11 +115,19 @@ export function MediaTile({
         )}
       </span>
       {caption && <span className="mt-1 block truncate text-xs text-slate-600">{caption}</span>}
-    </>
+      <BusyLabel owner={owner} loading={waiting} label={loadingLabel} />
+    </LoadingScope>
   );
   // With a remove button the tile fills a wrapper that carries the width and the button's anchor.
   const box = cx("block min-w-0 text-left", onRemove ? "w-full" : IMAGE_WIDTH[width]);
-  const tile = tileOf({ rest, onClick, href, external, className: box, body });
+  const tile = tileOf({
+    rest: { ...rest, ...busy(owner, waiting) },
+    onClick,
+    href,
+    external,
+    className: box,
+    body,
+  });
   if (!onRemove) return tile;
   return (
     <div className={cx("relative min-w-0", IMAGE_WIDTH[width])}>

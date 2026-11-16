@@ -2,6 +2,7 @@ import type { ReactElement } from "react";
 import { cx } from "./cx.js";
 import type { Passthrough } from "./props.js";
 import type { Size } from "./size.js";
+import { type LoadingProps, useLoading, WaitingBone } from "./skeleton.js";
 
 /** The colour of a bar's fill. */
 export type BarTone = "accent" | "positive" | "warn" | "danger";
@@ -34,9 +35,33 @@ export function announcedPercent(part: number, whole: number): number {
   return share <= 0 || share >= 100 ? share : Math.min(99, Math.max(1, Math.round(share)));
 }
 
+/** A bar with no figures yet: one bone the track's height across the full width. */
+export function WaitingBar({
+  own,
+  label,
+  size,
+  attrs,
+}: {
+  own: boolean | undefined;
+  label: string | undefined;
+  size: BarSize;
+  attrs: object;
+}): ReactElement {
+  return (
+    <WaitingBone
+      own={own}
+      label={label}
+      shape={cx("block w-full rounded-full", BAR_TRACK[size])}
+      root="block"
+      attrs={attrs}
+    />
+  );
+}
+
 /**
  * A thin horizontal bar with a filled share, for progress toward a total. `value` is held
  * between 0 and `max`. `label` names what it measures, for a screen reader, which also hears the percentage.
+ * While `loading` it is one bone the bar's size, since 0 is a real value.
  */
 export function ProgressBar({
   value,
@@ -44,6 +69,8 @@ export function ProgressBar({
   label,
   tone = "accent",
   size = "md",
+  loading,
+  loadingLabel,
   ...rest
 }: {
   /** How far along, held between 0 and `max`. */
@@ -59,7 +86,10 @@ export function ProgressBar({
    * @default md
    */
   size?: BarSize;
-} & Passthrough): ReactElement {
+} & LoadingProps &
+  Passthrough): ReactElement {
+  const waiting = useLoading(loading).loading;
+  if (waiting) return <WaitingBar own={loading} label={loadingLabel} size={size} attrs={rest} />;
   const share = sharePercent(value, max);
   return (
     <div

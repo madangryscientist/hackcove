@@ -72,3 +72,13 @@ export const DoScale: S = {
 export const DontScale: S = {
   render: () => <ProgressBar value={0.25} label="Months saved" />,
 };
+
+/** While `loading` the bar is one bone, since 0 is a real value. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <div className="max-w-md">
+      <ProgressBar loading={loading} value={60} label="Upload" />
+    </div>
+  ),
+};

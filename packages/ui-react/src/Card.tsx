@@ -12,6 +12,8 @@ import type { IconName } from "./icons.js";
 import { renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
 import { GapProvider } from "./stackGap.js";
+import { busy, type LoadingProps, LoadingScope, useLoading } from "./skeleton.js";
+import { CardWait } from "./cardWait.js";
 import type { Size } from "./size.js";
 
 /** A card with a `footer`. */
@@ -77,7 +79,7 @@ function cardClass(form: ReturnType<typeof cardForm>): string {
   );
 }
 
-type CardBase = {
+type CardBase = LoadingProps & {
   /** The card's heading (a small uppercase label unless `titleStyle` says otherwise). It names the card, which is then a `section`. */
   title?: string;
   /**
@@ -189,18 +191,33 @@ function isCardLink(props: CardPanelProps | CardLinkProps): props is CardLinkPro
  * root, not the link; the link's own `aria-label`, `aria-labelledby` and `aria-current` stay on the
  * link. The link is named by the card's text (title, body, `badge`) through the root's id, which is
  * generated when the caller gives none.
+ *
+ * While `loading` a card with no children draws three lines of text bones, a `flush` one three
+ * `ListRow` bones; what it has (its title, its children) draws as usual.
  */
 export function Card(props: CardPanelProps | CardLinkProps): ReactElement {
   const level = useHeadingLevel(props.level);
+  const { loading, owner } = useLoading(props.loading);
+  const shown = {
+    ...props,
+    ...busy(owner, loading),
+    children: (
+      <CardWait loading={loading} owner={owner} label={props.loadingLabel} flush={props.flush}>
+        {props.children}
+      </CardWait>
+    ),
+  };
   return (
     <InCard>
       <GapProvider gap="xs">
         <DensityProvider size={props.size === "sm" ? "sm" : null}>
-          {props.title ? (
-            <HeadingLevelProvider level={level}>{cardOf(props, level)}</HeadingLevelProvider>
-          ) : (
-            cardOf(props, level)
-          )}
+          <LoadingScope loading={loading}>
+            {props.title ? (
+              <HeadingLevelProvider level={level}>{cardOf(shown, level)}</HeadingLevelProvider>
+            ) : (
+              cardOf(shown, level)
+            )}
+          </LoadingScope>
         </DensityProvider>
       </GapProvider>
     </InCard>
@@ -244,6 +261,8 @@ function PanelCard(props: CardPanelProps & { level: HeadingLevel }): ReactElemen
     size = "md",
     level,
     children,
+    loading: _loading,
+    loadingLabel: _loadingLabel,
     ...panel
   } = props;
   const { as, ...rest } = panel;
@@ -310,6 +329,8 @@ function LinkCard(props: CardLinkProps & { level: HeadingLevel }): ReactElement 
     children,
     external = false,
     href,
+    loading: _loading,
+    loadingLabel: _loadingLabel,
     ...rest
   } = props;
   const form = cardForm({ flush, bar, tone, attention, icon, size }, Boolean(title));

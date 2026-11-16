@@ -183,3 +183,22 @@ export const DontCategories: S = {
     />
   ),
 };
+
+/** While `loading` the bar is one bone and the key keeps its names; a key with no entries is bones. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <div className="flex max-w-md flex-col gap-4">
+      <StackedBar
+        loading={loading}
+        legend
+        label="Screenshots by status"
+        items={[
+          { label: "Changed", value: 24, tone: "warn" },
+          { label: "Same", value: 163, tone: "muted" },
+        ]}
+      />
+      <Legend loading={loading} items={loading ? [] : [{ label: "Current", tone: "accent" }]} />
+    </div>
+  ),
+};

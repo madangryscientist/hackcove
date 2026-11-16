@@ -94,3 +94,17 @@ export const DoFit: S = {
 export const DontFit: S = {
   render: () => <Image src={sampleCode} alt="Pairing code" aspect="16:9" width="md" fit="cover" />,
 };
+
+/** While `loading`, a picture with no `src` yet is a bone of its shape, not the placeholder. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <Image
+      loading={loading}
+      src={loading ? undefined : samplePortrait.src}
+      alt={samplePortrait.alt}
+      aspect="3:4"
+      width="md"
+    />
+  ),
+};

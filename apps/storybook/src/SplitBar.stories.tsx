@@ -63,3 +63,13 @@ export const DoParties: S = {
 export const DontParties: S = {
   render: () => <SplitBar a={35} b={65} label="Pot split" />,
 };
+
+/** While `loading` the bar is one bone, since 0 is a real value. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <div className="max-w-md">
+      <SplitBar loading={loading} a={35} b={65} label="Pot split" />
+    </div>
+  ),
+};

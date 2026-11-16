@@ -18,7 +18,8 @@ import {
 export { TableCell, TableHeaderCell, type CellTone } from "./TableCells.js";
 export { TableExpandCell } from "./TableExpandCell.js";
 export type { TableSort } from "./tableSort.js";
-import { EmptyRow } from "./tableEmpty.js";
+import { BoneRows, EmptyRow } from "./tableEmpty.js";
+import { BusyLabel, busy, type LoadingProps, LoadingScope, useLoading } from "./skeleton.js";
 
 /**
  * A list of records in a rounded, bordered card that scrolls sideways on a narrow screen. Compose it
@@ -27,11 +28,15 @@ import { EmptyRow } from "./tableEmpty.js";
  * own (border, fill and shadow), no tinted head strip and no row hover, only the row dividers. A
  * column of figures says so once, with `numeric` on its `TableHeaderCell`: its cells then take end
  * alignment and tabular figures. `size` is the row padding, and the controls in the rows follow it
- * (`sm` by default). Other props (`id`, `data-*`, `aria-*`) go on the `<table>`.
+ * (`sm` by default). Other props (`id`, `data-*`, `aria-*`) go on the `<table>`. While `loading`, a
+ * body with no rows draws five rows of bones, one per column, and an empty cell draws a bone; the
+ * table keeps its role and its name.
  */
 export function Table({
   label,
   size = "sm",
+  loading,
+  loadingLabel,
   children,
   ...rest
 }: {
@@ -43,8 +48,10 @@ export function Table({
    */
   size?: Size | undefined;
   children: ReactNode;
-} & Rest<"table">): ReactElement {
+} & LoadingProps &
+  Rest<"table">): ReactElement {
   const plain = useInCard();
+  const { loading: waiting, owner } = useLoading(loading);
   const numeric = numericColumns(children, TableHead, TableRow);
   const columns = columnCount(children, TableHead, TableRow);
   return (
@@ -56,10 +63,11 @@ export function Table({
             !plain && "rounded-xl border border-slate-200/70 bg-white shadow-sm",
           )}
         >
-          <table {...rest} className="w-full text-left text-sm">
+          <table {...rest} {...busy(owner, waiting)} className="w-full text-left text-sm">
             <caption className="sr-only">{label}</caption>
-            {children}
+            <LoadingScope loading={waiting}>{children}</LoadingScope>
           </table>
+          <BusyLabel owner={owner} loading={waiting} label={loadingLabel} />
         </div>
       </DensityProvider>
     </TableContext.Provider>
@@ -86,6 +94,7 @@ export function TableHead({
  * The `<tbody>`: the rows, each with a line above it and, unless the table is in a card, a fill on
  * hover. With no rows it draws `empty` (an `EmptyState`, one muted line here) in one cell that spans
  * every column the head declares; the head stays drawn, so the reader sees what the table holds.
+ * In a loading `Table` a body with no rows draws five rows of bones instead, never `empty`.
  */
 export function TableBody({
   empty,
@@ -96,15 +105,31 @@ export function TableBody({
   empty?: ReactNode;
   children?: ReactNode;
 } & Rest<"tbody">): ReactElement {
+  const waiting = useLoading(undefined).loading;
   return (
     <tbody {...rest}>
-      {hasNoChildren(children) && empty != null ? (
-        <EmptyRow>{empty}</EmptyRow>
-      ) : (
-        <SectionContext.Provider value="body">{children}</SectionContext.Provider>
-      )}
+      <SectionContext.Provider value="body">
+        <BodyRows waiting={waiting} empty={empty}>
+          {children}
+        </BodyRows>
+      </SectionContext.Provider>
     </tbody>
   );
+}
+
+/** What a body holds: its rows; with none, bones while loading (loading beats empty), else `empty`. */
+function BodyRows({
+  waiting,
+  empty,
+  children,
+}: {
+  waiting: boolean;
+  empty: ReactNode;
+  children: ReactNode;
+}): ReactNode {
+  if (!hasNoChildren(children)) return children;
+  if (waiting) return <BoneRows />;
+  return empty != null && <EmptyRow>{empty}</EmptyRow>;
 }
 
 /**

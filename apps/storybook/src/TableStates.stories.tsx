@@ -14,6 +14,7 @@ import {
   TableHeaderCell,
   TableRow,
   TextLink,
+  EmptyState,
 } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Data/Table" };
@@ -171,5 +172,30 @@ export const ShortControls: S = {
         </Table>
       </Card>
     </div>
+  ),
+};
+
+/** While `loading`, the head is drawn and a body with no rows is five rows of bones, one per column. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <Table label="Quotes" loading={loading}>
+      <TableHead>
+        <TableRow>
+          <TableHeaderCell>Quote</TableHeaderCell>
+          <TableHeaderCell>Customer</TableHeaderCell>
+          <TableHeaderCell numeric>Total</TableHeaderCell>
+        </TableRow>
+      </TableHead>
+      <TableBody empty={<EmptyState title="No quotes yet" />}>
+        {loading ? null : (
+          <TableRow>
+            <TableCell>Q-1043</TableCell>
+            <TableCell>Cove Hardware</TableCell>
+            <TableCell>R 18 400</TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
   ),
 };

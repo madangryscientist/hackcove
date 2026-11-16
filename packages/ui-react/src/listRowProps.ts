@@ -6,10 +6,11 @@ import type {
 } from "react";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
+import type { LoadingProps } from "./skeleton.js";
 
 // The props of `ListRow`, one type per form: a button row, a link row and a static row.
 
-type Shared = {
+type Shared = LoadingProps & {
   /**
    * `sm` is dense padding, `lg` one step roomier than `md`. A `Button`, `IconButton` or `Pill` in a
    * `sm` row with no `size` of its own is `sm` too.

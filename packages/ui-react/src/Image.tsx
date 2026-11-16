@@ -2,6 +2,7 @@ import type { ReactElement } from "react";
 import { cx } from "./cx.js";
 import { Icon } from "./Icon.js";
 import type { Passthrough } from "./props.js";
+import { type LoadingProps, useLoading, WaitingBone } from "./skeleton.js";
 import type { Size } from "./size.js";
 import { useImageFailed } from "./useImageFailed.js";
 
@@ -84,7 +85,8 @@ export type ImageProps = {
    * scanned off a dark page. It shows the whole picture, as `fit="contain"`, whatever `fit` says.
    */
   framed?: boolean | undefined;
-} & Passthrough;
+} & LoadingProps &
+  Passthrough;
 
 /** The fill and the fit of a picture: `framed` is a white mat around all of it. */
 function pictureLook(fit: "cover" | "contain", framed: boolean): string {
@@ -92,12 +94,42 @@ function pictureLook(fit: "cover" | "contain", framed: boolean): string {
   return cx(INSET, fit === "cover" ? "object-cover" : "object-contain");
 }
 
+/** The shape a picture's stand-in reserves: its aspect, or 4:3 for a `natural` one. */
+const reservedAspect = (aspect: ImageAspect): string =>
+  aspect === "natural" ? PLACEHOLDER_ASPECT : ASPECT[aspect];
+
+/** A picture not here yet: a bone of the shape and width it will take. */
+function ImageBone({
+  own,
+  label,
+  aspect,
+  width,
+  attrs,
+}: {
+  own: boolean | undefined;
+  label: string | undefined;
+  aspect: ImageAspect;
+  width: ImageWidth;
+  attrs: object;
+}): ReactElement {
+  return (
+    <WaitingBone
+      own={own}
+      label={label}
+      shape={cx("block w-full rounded-lg", reservedAspect(aspect))}
+      root={cx("block", IMAGE_WIDTH[width])}
+      attrs={attrs}
+    />
+  );
+}
+
 /**
  * A picture in a fixed shape: `aspect` reserves the space before it loads, so the page does not
  * jump, and `fit` crops it to the shape or shows all of it. The corners are rounded and the frame
  * has a hairline. If the picture is missing or fails to load, a same-sized placeholder with a
  * picture mark stands in, still named by `alt`. `framed` mats a code or a logo in white. A user's photo is an `Avatar`; a clickable
- * thumbnail with a label is a `MediaTile`.
+ * thumbnail with a label is a `MediaTile`. While `loading` with no `src` yet it is a bone of the same
+ * shape, not the placeholder, which means there is no picture.
  */
 export function Image({
   src,
@@ -106,9 +138,17 @@ export function Image({
   fit = "cover",
   width = "full",
   framed = false,
+  loading,
+  loadingLabel,
   ...rest
 }: ImageProps): ReactElement {
   const { ref, failed, markFailed } = useImageFailed(src);
+  const waiting = useLoading(loading).loading;
+  if (waiting && !src) {
+    return (
+      <ImageBone own={loading} label={loadingLabel} aspect={aspect} width={width} attrs={rest} />
+    );
+  }
   const box = cx(FRAME, IMAGE_WIDTH[width]);
   if (src && !failed) {
     return (
@@ -126,12 +166,7 @@ export function Image({
     <span
       {...rest}
       {...(alt ? { role: "img", "aria-label": alt } : { "aria-hidden": true })}
-      className={cx(
-        box,
-        aspect === "natural" ? PLACEHOLDER_ASPECT : ASPECT[aspect],
-        INSET,
-        "grid place-items-center text-slate-400",
-      )}
+      className={cx(box, reservedAspect(aspect), INSET, "grid place-items-center text-slate-400")}
     >
       <Icon size="lg">
         <svg viewBox="0 0 20 20" fill="currentColor">
