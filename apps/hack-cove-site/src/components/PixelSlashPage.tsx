@@ -73,7 +73,7 @@ function Report() {
   return (
     <figure>
       <Stack gap="xs">
-        <RegionFrame src={report.src} alt={report.alt} />
+        <RegionFrame src={report.src} alt={report.alt} aspect="16:9" />
         <Caption as="figcaption">{report.caption}</Caption>
       </Stack>
     </figure>

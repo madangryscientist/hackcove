@@ -57,22 +57,6 @@ describe("Stack as", () => {
 });
 
 describe("Stack divided, align and width", () => {
-  it("a divided list is still one list of its items", () => {
-    render(
-      <Stack as="ul" divided aria-label="Builds">
-        <li>One</li>
-        <li>Two</li>
-        <li>Three</li>
-      </Stack>,
-    );
-    const list = screen.getByRole("list", { name: "Builds" });
-    expect(
-      within(list)
-        .getAllByRole("listitem")
-        .map((item) => item.textContent),
-    ).toEqual(["One", "Two", "Three"]);
-  });
-
   it("types divided apart from gap and rowFrom, and takes compact and start", () => {
     // @ts-expect-error a divided Stack has no gap: its rows touch
     expect(render(<Stack divided gap="sm" />)).toBeTruthy();

@@ -8,7 +8,7 @@ const WIDE = "(width >= 48rem)";
  * in it is wider than its box. `row` is the header row once mounted (null before, and before
  * hydration, so the header is then as it is with no script).
  *
- * Driven by the row's size alone, with no timer: while unfolded, a row that overflows folds and its
+ * Driven by the row's and its slots' sizes alone, with no timer: while unfolded, a row that overflows folds and its
  * full width is remembered; while folded, it unfolds once the row is at least that wide. Remembering
  * the width is what stops it flipping back and forth. A browser with no `ResizeObserver` (jsdom)
  * never folds.
@@ -30,7 +30,10 @@ export function useNavFold(row: HTMLElement | null, enabled: boolean): boolean {
       setFolded(state.current.folded);
     };
     const observer = new ResizeObserver(check);
+    // The row is the header's width, so it resizes only with the screen; its slots resize with
+    // their content (a font swap, a label that changes), so they are watched too.
     observer.observe(row);
+    for (const slot of row.children) observer.observe(slot);
     return () => observer.disconnect();
   }, [row, enabled]);
   return enabled && folded;

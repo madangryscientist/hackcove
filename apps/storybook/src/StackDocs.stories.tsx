@@ -171,8 +171,8 @@ export const DoAlign: S = {
 export const DontAlign: S = {
   render: () => (
     <Stack width="narrow" gap="sm">
-      <Field label="Shop name" htmlFor="stack-align-name">
-        <Input id="stack-align-name" placeholder="Corner Books" />
+      <Field label="Shop name" htmlFor="stack-align-name-dont">
+        <Input id="stack-align-name-dont" placeholder="Corner Books" />
       </Field>
       <Button>Save shop</Button>
     </Stack>

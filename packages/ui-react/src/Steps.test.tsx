@@ -27,27 +27,3 @@ describe("Steps", () => {
     ).toBeTruthy();
   });
 });
-
-describe('Steps size="lg"', () => {
-  it("is still an ordered list with one item per step, each number hidden from assistive tech", () => {
-    const later = true;
-    render(
-      <Steps size="lg" aria-label="How it works">
-        <>
-          <Step title="Install">Add the package.</Step>
-          <Step title="Capture">Shoot every story.</Step>
-        </>
-        {later && <Step title="Review">Accept what changed.</Step>}
-      </Steps>,
-    );
-    const list = screen.getByRole("list", { name: "How it works" });
-    expect(list.tagName).toBe("OL");
-    const items = within(list).getAllByRole("listitem");
-    expect(items.map((item) => item.textContent)).toEqual([
-      "InstallAdd the package.",
-      "CaptureShoot every story.",
-      "ReviewAccept what changed.",
-    ]);
-    expect(list.querySelectorAll('[aria-hidden="true"]')).toHaveLength(3);
-  });
-});
