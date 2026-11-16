@@ -330,13 +330,14 @@ export function Pill({
   // The title is the pill's detail: a description, shown on hover, keyboard focus and (on a plain
   // pill, whose tap does nothing else) a tap. A plain titled pill takes a tab stop for it.
   const { title, ...own } = rest;
-  const focusable = title !== undefined && !interactive;
+  // An empty title shows nothing, so it takes no tab stop either.
+  const titled = title !== undefined && title !== "";
+  const focusable = titled && !interactive;
   return (
     <Tipped text={title} describes tap={!interactive} own={{ ...own, title }}>
       {(tip) => {
         const attrs = { ...own, ...tip, ...(focusable ? { tabIndex: 0 } : {}) };
-        const { wiring, rest: shell } =
-          title === undefined ? { wiring: {}, rest: attrs } : splitTip(attrs);
+        const { wiring, rest: shell } = titled ? splitTip(attrs) : { wiring: {}, rest: attrs };
         const main = renderMain({
           interactive,
           look,

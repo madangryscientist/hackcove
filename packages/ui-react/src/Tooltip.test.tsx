@@ -224,4 +224,15 @@ describe("tooltip, with anchor positioning", () => {
     // The x's focus is its own: it does not open the pill's tooltip.
     expect(shown().map((tip) => tip.textContent)).not.toContain("Paid on 3 May");
   });
+
+  it("gives a Pill with an empty title no tab stop", async () => {
+    render(
+      <>
+        <Pill title="">Paid</Pill>
+        <button type="button">Next</button>
+      </>,
+    );
+    await user().tab();
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Next" }));
+  });
 });
