@@ -16,6 +16,9 @@ export const TONE_SURFACE: Record<Tone, string> = {
   danger: "border-red-200 bg-red-50",
 };
 
+/** A danger notice interrupts (an alert), a warning is announced politely; the rest are read in place. */
+const ROLE: Partial<Record<Tone, "alert" | "status">> = { danger: "alert", warn: "status" };
+
 const TONE_TEXT: Record<Tone, string> = {
   neutral: "text-slate-700",
   info: "text-blue-800",
@@ -31,7 +34,9 @@ const TONE_TEXT: Record<Tone, string> = {
  * top of a `Card flush` and nowhere else: a padded card or a padded `FullBleedLayout` column
  * would inset it. `align="center"` centres the text. In a page's column the notice is a plain Callout, first in the column's `Stack`. With `actions` the box is `relative`, so a `TextLink
  * stretch` there makes the whole callout its click target, like a link in a table row. `icon`
- * sets one of the library's icons at the start of the box, in the tone's ink.
+ * sets one of the library's icons at the start of the box, in the tone's ink. `danger` is
+ * `role="alert"` and `warn` is `role="status"`, so a screen reader announces them when they
+ * appear; the other tones have no role.
  */
 export function Callout({
   tone = "neutral",
@@ -78,6 +83,7 @@ export function Callout({
   );
   return (
     <div
+      role={ROLE[tone]}
       className={cx(
         Boolean(actions) && "relative",
         banner ? "border-b px-5 py-3" : "rounded-xl border p-4",

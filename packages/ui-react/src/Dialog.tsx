@@ -1,4 +1,5 @@
 import {
+  type FormEvent,
   type HTMLAttributes,
   type ReactElement,
   type ReactNode,
@@ -7,6 +8,7 @@ import {
   useRef,
   type RefObject,
 } from "react";
+import { Callout } from "./Callout.js";
 import { InCard } from "./cardContext.js";
 import { cx } from "./cx.js";
 import { DensityProvider } from "./density.js";
@@ -84,8 +86,22 @@ export type DialogProps = {
   /** A muted line under the title. */
   description?: ReactNode;
   children?: ReactNode;
-  /** Actions under the body, right-aligned. A submit button here can reach a form in the body with its `form` attribute. */
+  /** Actions under the body, right-aligned: Cancel (`variant="ghost"`), then the one main action. */
   footer?: ReactNode;
+  /**
+   * Makes the dialog a form: one `<form noValidate>` holds the body, the `error` and the footer,
+   * so a `Button type="submit"` in the footer or Enter in a field submits it, with no `form`
+   * attribute or id. The default is prevented before this runs, and a rejection is yours to
+   * catch and show as `error`. Put no `<form method="dialog">` in the footer of a form dialog:
+   * it would nest a form.
+   */
+  onSubmit?: ((event: FormEvent<HTMLFormElement>) => void | Promise<unknown>) | undefined;
+  /**
+   * What went wrong with the whole submit (the server refused it, no connection): a danger
+   * `Callout`, announced as an alert, between the body and the footer, so it stays beside the
+   * buttons however tall the body is. An error about one field is that `Field`'s `error`.
+   */
+  error?: ReactNode;
   /**
    * The panel's width: `sm` (320px) is a list, `md` (440px) holds a form, `lg` (640px) a wider
    * form or a table. `full` fills the whole screen, for media or a player: the body takes the
@@ -132,6 +148,8 @@ export function Dialog({
   description,
   children,
   footer,
+  onSubmit,
+  error,
   width = "md",
   onClose,
   ...rest
@@ -165,14 +183,47 @@ export function Dialog({
               <HeaderText>{description}</HeaderText>
             </div>
           )}
-          {children && (
-            <div ref={attach} {...bodyProps} className={bodyClass}>
-              <BodyContext>{children}</BodyContext>
-            </div>
-          )}
-          {footer && <div className="mt-5 flex shrink-0 justify-end gap-2">{footer}</div>}
+          <FormColumn onSubmit={onSubmit}>
+            {children && (
+              <div ref={attach} {...bodyProps} className={bodyClass}>
+                <BodyContext>{children}</BodyContext>
+              </div>
+            )}
+            {error && (
+              <div className="mt-5 shrink-0">
+                <Callout tone="danger">{error}</Callout>
+              </div>
+            )}
+            {footer && <div className="mt-5 flex shrink-0 justify-end gap-2">{footer}</div>}
+          </FormColumn>
         </div>
       </dialog>
     </ModalScope>
+  );
+}
+
+/**
+ * With `onSubmit`, the body, error and footer in one `<form>` that keeps the panel's column, so the
+ * body still scrolls under the cap; without it they sit in the panel as they are.
+ */
+function FormColumn({
+  onSubmit,
+  children,
+}: {
+  onSubmit: DialogProps["onSubmit"];
+  children: ReactNode;
+}): ReactElement {
+  if (!onSubmit) return <>{children}</>;
+  return (
+    <form
+      noValidate
+      className="flex min-h-0 flex-1 flex-col"
+      onSubmit={(event) => {
+        event.preventDefault();
+        void onSubmit(event);
+      }}
+    >
+      {children}
+    </form>
   );
 }

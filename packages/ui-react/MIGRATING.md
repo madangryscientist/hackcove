@@ -284,6 +284,20 @@ TypeScript does not flag these:
 - A `Button`, `IconButton` or `Pill` with no `size` in a `Table` is now `sm`; a field keeps `md`. The codemod reports every `Table` so a person checks what is inside.
 - A cell that was `tone="neutral"` is one step darker.
 
+### Forms
+
+A form's error is drawn and announced by the library, and a form inside a `Dialog` is wired by it.
+
+New, nothing to change: `Dialog onSubmit` (one form round the body, the error and the footer, so a
+`Button type="submit"` in the footer needs no `form` attribute and the body no form id) and
+`Dialog error`; `FormLayout error`, directly above its `actions`.
+
+TypeScript does not flag these:
+
+- A `Callout tone="danger"` is `role="alert"` and a `Callout tone="warn"` is `role="status"`, so a
+  test that asks for the only `alert` on a page can now find two. Find it by its text or scope it to
+  a region.
+
 ### Running the codemod
 
 The codemod lives in this repository at `tools/codemod` and is not published. From a checkout of

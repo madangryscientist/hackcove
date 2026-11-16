@@ -64,31 +64,78 @@ export const Tall: S = {
   ),
 };
 
-/** A tall form: the first field still has focus on open, and the body scrolls to the rest. */
-export const TallForm: S = {
+/** A form dialog after a failed submit: its `error` sits between the fields and the buttons. */
+export const FormError: S = {
   render: () => (
     <Opened>
       {(close) => (
         <Dialog
-          title="New segment"
-          description="A segment is a saved filter over your users."
+          title="New flag"
+          description="A flag turns a feature on for some of your users."
           onClose={close}
-          footer={cancelAndAccept}
+          onSubmit={() => {}}
+          error="Could not create the flag: the key is taken."
+          footer={
+            <>
+              <Button variant="ghost" onClick={closeDialog}>
+                Cancel
+              </Button>
+              <Button type="submit">Create</Button>
+            </>
+          }
         >
-          <Stack gap="sm">
-            {["Name", "Owner", "Country", "Plan", "Source", "Campaign", "Medium", "Notes"].map(
-              (label) => (
-                <Field key={label} label={label} htmlFor={`segment-${label}`}>
-                  <Input id={`segment-${label}`} />
-                </Field>
-              ),
-            )}
+          <Stack>
+            <Field label="Key" hint="Letters, digits and dashes.">
+              <Input defaultValue="new-checkout" />
+            </Field>
+            <Field label="Name">
+              <Input defaultValue="New checkout" />
+            </Field>
           </Stack>
         </Dialog>
       )}
     </Opened>
   ),
 };
+
+/** A tall form: the first field still has focus on open, and the body scrolls to the rest. */
+export const TallForm: S = {
+  render: () => <Opened>{(close) => <SegmentForm close={close} />}</Opened>,
+};
+
+/** A tall form after a failed submit: the error stays on screen above the buttons while the body scrolls. */
+export const TallFormError: S = {
+  render: () => (
+    <Opened>
+      {(close) => (
+        <SegmentForm close={close} error="Could not save the segment: you are offline." />
+      )}
+    </Opened>
+  ),
+};
+
+function SegmentForm({ close, error }: { close: () => void; error?: string }) {
+  return (
+    <Dialog
+      title="New segment"
+      description="A segment is a saved filter over your users."
+      onClose={close}
+      onSubmit={() => {}}
+      error={error}
+      footer={cancelAndAccept}
+    >
+      <Stack gap="sm">
+        {["Name", "Owner", "Country", "Plan", "Source", "Campaign", "Medium", "Notes"].map(
+          (label) => (
+            <Field key={label} label={label}>
+              <Input />
+            </Field>
+          ),
+        )}
+      </Stack>
+    </Dialog>
+  );
+}
 
 /**
  * Focus a field once the dialog is open and the fonts have settled: `autoFocus` runs before

@@ -4,6 +4,8 @@ import {
   Button,
   Callout,
   Dialog,
+  Field,
+  Input,
   Kbd,
   KeyValue,
   KeyValueList,
@@ -177,6 +179,80 @@ export const DontNotice: S = {
             onClose={() => setOpen(false)}
             footer={<Button onClick={() => setOpen(false)}>OK</Button>}
           />
+        )}
+      </>
+    );
+  },
+};
+
+/** The fields and buttons in one form, from the Dialog's `onSubmit`, Cancel then Create: Create or Enter in a field submits, and a failed submit is the Dialog's `error`, above the buttons. */
+export const DoForm: S = {
+  render: () => {
+    const [open, setOpen] = useState(false);
+    const [error, setError] = useState<string | undefined>();
+    return (
+      <>
+        <Button variant="outline" onClick={() => setOpen(true)}>
+          New flag
+        </Button>
+        {open && (
+          <Dialog
+            title="New flag"
+            onClose={() => setOpen(false)}
+            onSubmit={() => setError("Could not create the flag: the key is taken.")}
+            error={error}
+            footer={
+              <>
+                <Button variant="ghost" onClick={() => setOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">Create</Button>
+              </>
+            }
+          >
+            <Stack>
+              <Field label="Key">
+                <Input defaultValue="new-checkout" />
+              </Field>
+              <Field label="Name">
+                <Input defaultValue="New checkout" />
+              </Field>
+            </Stack>
+          </Dialog>
+        )}
+      </>
+    );
+  },
+};
+
+/** A form id in the body, a `form` attribute on the button, and a hand-made error line under the fields, away from the button that was pressed. */
+export const DontForm: S = {
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button variant="outline" onClick={() => setOpen(true)}>
+          New flag
+        </Button>
+        {open && (
+          <Dialog
+            title="New flag"
+            onClose={() => setOpen(false)}
+            footer={
+              <Button type="submit" form="new-flag-form">
+                Create
+              </Button>
+            }
+          >
+            <form id="new-flag-form" onSubmit={(event) => event.preventDefault()}>
+              <Stack>
+                <Field label="Key">
+                  <Input defaultValue="new-checkout" />
+                </Field>
+                <Text tone="danger">Could not create the flag: the key is taken.</Text>
+              </Stack>
+            </form>
+          </Dialog>
         )}
       </>
     );
