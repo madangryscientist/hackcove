@@ -1,3 +1,4 @@
+import { type ComponentPropsWithoutRef, createContext } from "react";
 import type { Size } from "./size.js";
 import { cx, liftInteractive } from "./cx.js";
 import { TEXT_TONE, type TextTone } from "./typography.js";
@@ -77,3 +78,23 @@ export const PAD: Record<Size, { head: string; cell: string; group: string }> = 
   md: { head: "px-5 py-3", cell: "px-5 py-4", group: "px-5 py-2.5" },
   lg: { head: "px-6 py-3.5", cell: "px-6 py-5", group: "px-6 py-3" },
 };
+
+export type Align = "start" | "center" | "end";
+
+export const ALIGN: Record<Align, string> = {
+  start: "text-left",
+  center: "text-center",
+  end: "text-right",
+};
+
+/**
+ * Whether a `TableRow` sits in the body (a line above, a hover fill), the foot (a firmer line above,
+ * strong cells) or the head or nowhere (neither).
+ */
+export const SectionContext = createContext<"head" | "body" | "foot" | undefined>(undefined);
+
+/** What an element passes through (`data-*`, `aria-*`, `id`, …): the layout and the children stay the component's. */
+export type Rest<
+  Tag extends "table" | "thead" | "tbody" | "tfoot" | "tr" | "th" | "td",
+  Own extends string = never,
+> = Omit<ComponentPropsWithoutRef<Tag>, "className" | "style" | "children" | Own>;
