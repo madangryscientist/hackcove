@@ -5,6 +5,7 @@ import { IMAGE_WIDTH, Image, type ImageAspect, type ImageWidth } from "./Image.j
 import { CLOSE } from "./Lightbox.js";
 import { renderLink } from "./link.js";
 import type { Passthrough } from "./props.js";
+import { Tipped } from "./Tooltip.js";
 
 const PLAY =
   "M6.3 2.84A1.5 1.5 0 0 0 4 4.11v11.78a1.5 1.5 0 0 0 2.3 1.27l9.34-5.89a1.5 1.5 0 0 0 0-2.54L6.3 2.84Z";
@@ -133,19 +134,23 @@ function RemoveButton({
   onRemove: () => void;
 }): ReactElement {
   return (
-    <button
-      type="button"
-      aria-label={`${label} ${alt}`}
-      title={label}
-      onClick={onRemove}
-      className="absolute top-1 right-1 inline-flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/90 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-    >
-      <Icon>
-        <svg viewBox="0 0 20 20" fill="currentColor">
-          <path d={CLOSE} />
-        </svg>
-      </Icon>
-    </button>
+    <Tipped text={label} describes={false} own={{}}>
+      {(tip) => (
+        <button
+          type="button"
+          aria-label={`${label} ${alt}`}
+          {...tip}
+          onClick={onRemove}
+          className="absolute top-1 right-1 inline-flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/90 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        >
+          <Icon>
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path d={CLOSE} />
+            </svg>
+          </Icon>
+        </button>
+      )}
+    </Tipped>
   );
 }
 

@@ -24,7 +24,7 @@ describe("Button pressed", () => {
     expect(screen.getByRole("button", { name: "Off", pressed: false })).not.toBeNull();
   });
 
-  it("a blocked or busy toggle is disabled and keeps its pressed state", () => {
+  it("a blocked or busy toggle is blocked and keeps its pressed state", () => {
     render(
       <>
         <Button variant="outline" pressed disabledReason="No">
@@ -35,9 +35,11 @@ describe("Button pressed", () => {
         </Button>
       </>,
     );
-    for (const name of ["Blocked", "Busy"]) {
-      const button = screen.getByRole("button", { name, pressed: true });
-      expect(button.hasAttribute("disabled")).toBe(true);
-    }
+    expect(
+      screen.getByRole("button", { name: "Blocked", pressed: true }).getAttribute("aria-disabled"),
+    ).toBe("true");
+    expect(
+      screen.getByRole("button", { name: "Busy", pressed: true }).hasAttribute("disabled"),
+    ).toBe(true);
   });
 });

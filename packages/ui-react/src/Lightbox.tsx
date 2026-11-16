@@ -8,6 +8,7 @@ import {
 import { Icon } from "./Icon.js";
 import { useModal } from "./modal.js";
 import type { Passthrough } from "./props.js";
+import { Tipped } from "./Tooltip.js";
 
 /**
  * The full-screen viewer, painted with its own scrim: `bg-black/90` and the light text on it are the
@@ -39,13 +40,17 @@ function ScrimButton({
   onClick: () => void;
 }): ReactElement {
   return (
-    <button type="button" aria-label={label} title={label} onClick={onClick} className={CONTROL}>
-      <Icon>
-        <svg viewBox="0 0 20 20" fill="currentColor">
-          <path d={path} />
-        </svg>
-      </Icon>
-    </button>
+    <Tipped text={label} describes={false} own={{}}>
+      {(tip) => (
+        <button type="button" aria-label={label} {...tip} onClick={onClick} className={CONTROL}>
+          <Icon>
+            <svg viewBox="0 0 20 20" fill="currentColor">
+              <path d={path} />
+            </svg>
+          </Icon>
+        </button>
+      )}
+    </Tipped>
   );
 }
 

@@ -3,6 +3,7 @@ import { cx, focusRing } from "./cx.js";
 import { useDensity } from "./density.js";
 import { renderLink } from "./link.js";
 import type { Passthrough } from "./props.js";
+import { Tipped } from "./Tooltip.js";
 import type { Size } from "./size.js";
 import type { Tone } from "./tone.js";
 
@@ -27,7 +28,10 @@ type PillBase = {
   dot?: boolean;
   /** A full pill shape in place of the rounded-md corners. */
   round?: boolean;
-  /** The tooltip on hover, for a pill whose text is short or cut off: the full status, a date. */
+  /**
+   * The detail behind a pill whose text is short or cut off (the full status, a date): its tooltip
+   * on hover, keyboard focus and a tap, and its description. A plain pill with a title is focusable.
+   */
   title?: string | undefined;
   /**
    * The name half of a two-tone `name: value` pill: `children` is the value. The name keeps the
@@ -229,15 +233,19 @@ function RemoveShell({
   return (
     <span {...(interactive ? {} : attrs)} className={shellClass(look)}>
       {children}
-      <button
-        type="button"
-        aria-label={removeLabel}
-        title={removeLabel}
-        onClick={onRemove}
-        className={removeClass(look)}
-      >
-        {REMOVE_MARK}
-      </button>
+      <Tipped text={removeLabel} describes={false} own={{}}>
+        {(tip) => (
+          <button
+            type="button"
+            aria-label={removeLabel}
+            {...tip}
+            onClick={onRemove}
+            className={removeClass(look)}
+          >
+            {REMOVE_MARK}
+          </button>
+        )}
+      </Tipped>
     </span>
   );
 }
@@ -251,7 +259,7 @@ function RemoveShell({
  * `external` opens a new tab) and `onClick` makes it
  * a button, each with a hover dim and the focus ring. `onRemove` adds an x button after the text
  * (named by `removeLabel`), a separate button beside a link or button pill rather than nested in
- * it. `title` is the native tooltip.
+ * it. `title` is its tooltip and description; a plain pill with one takes a tab stop.
  */
 export function Pill({
   children,
@@ -281,25 +289,28 @@ export function Pill({
       {children}
     </PillBody>
   );
-  const main = renderMain({
-    interactive,
-    look,
-    rest,
-    href,
-    external,
-    onClick,
-    body,
-  });
-  return onRemove === undefined ? (
-    main
-  ) : (
-    <RemoveShell
-      look={look}
-      remove={{ onRemove, removeLabel }}
-      attrs={rest}
-      interactive={interactive}
-    >
-      {main}
-    </RemoveShell>
+  // The title is the pill's detail: a description, shown on hover, keyboard focus and (on a plain
+  // pill, whose tap does nothing else) a tap. A plain titled pill takes a tab stop for it.
+  const { title, ...own } = rest;
+  const focusable = title !== undefined && !interactive;
+  return (
+    <Tipped text={title} describes tap={!interactive} own={{ ...own, title }}>
+      {(tip) => {
+        const attrs = { ...own, ...tip, ...(focusable ? { tabIndex: 0 } : {}) };
+        const main = renderMain({ interactive, look, rest: attrs, href, external, onClick, body });
+        return onRemove === undefined ? (
+          main
+        ) : (
+          <RemoveShell
+            look={look}
+            remove={{ onRemove, removeLabel }}
+            attrs={attrs}
+            interactive={interactive}
+          >
+            {main}
+          </RemoveShell>
+        );
+      }}
+    </Tipped>
   );
 }

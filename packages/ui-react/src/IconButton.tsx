@@ -5,6 +5,7 @@ import { useDensity } from "./density.js";
 import { Icon } from "./Icon.js";
 import type { IconName } from "./icons.js";
 import { renderLink } from "./link.js";
+import { Tipped } from "./Tooltip.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 import type { Tone } from "./tone.js";
@@ -30,7 +31,7 @@ const LOOK: Record<IconButtonTone, Record<IconButtonVariant, string>> = {
 };
 
 type IconButtonProps = {
-  /** The button's accessible name and its tooltip. */
+  /** The button's accessible name and its tooltip, shown on hover and on keyboard focus. */
   label: string;
   /**
    * `outline` has a border; `ghost` has none, until the hover fill.
@@ -99,26 +100,37 @@ export function IconButton(props: IconButtonAsButton | IconButtonAsLink): ReactE
   );
   if (isLink(props)) {
     const { label, variant, tone, size: _size, count, icon, ...link } = props;
-    return renderLink({
-      ...link,
-      external: link.external ?? false,
-      "aria-label": named(label, count),
-      title: named(label, count),
-      className: look({ variant, tone, size: drawn }),
-      children: inside(count, icon),
-    });
+    return (
+      // The text is the name, already `aria-label`, so it describes nothing; no tap: a tap is the action.
+      <Tipped text={named(label, count)} describes={false} own={link}>
+        {(tip) =>
+          renderLink({
+            ...link,
+            ...tip,
+            external: link.external ?? false,
+            "aria-label": named(label, count),
+            className: look({ variant, tone, size: drawn }),
+            children: inside(count, icon),
+          })
+        }
+      </Tipped>
+    );
   }
   const { label, variant, tone, size: _size, count, icon, ...rest } = props;
   return (
-    <button
-      type="button"
-      {...rest}
-      aria-label={named(label, count)}
-      title={named(label, count)}
-      className={look({ variant, tone, size: drawn })}
-    >
-      {inside(count, icon)}
-    </button>
+    <Tipped text={named(label, count)} describes={false} own={rest}>
+      {(tip) => (
+        <button
+          type="button"
+          {...rest}
+          {...tip}
+          aria-label={named(label, count)}
+          className={look({ variant, tone, size: drawn })}
+        >
+          {inside(count, icon)}
+        </button>
+      )}
+    </Tipped>
   );
 }
 

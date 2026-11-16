@@ -9,6 +9,7 @@ import {
 import { look } from "./IconButton.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
+import { Tipped } from "./Tooltip.js";
 
 const sun = (
   <svg
@@ -132,26 +133,30 @@ export function ColourSchemeToggle({
   );
   const next: ColourScheme = scheme === "dark" ? "light" : "dark";
   return (
-    <button
-      type="button"
-      {...rest}
-      title={hydrated ? `Switch to ${next} theme` : undefined}
-      className={look({ size })}
-      onClick={() => {
-        applyColourScheme(next, document.documentElement, schemes);
-        if (store) storeColourScheme(next);
-        onChange?.(next);
-      }}
-    >
-      <style>{schemeRules(schemes)}</style>
-      {sun}
-      {moon}
-      <span className="sr-only" data-scheme-name="dark">
-        Switch to dark theme
-      </span>
-      <span className="sr-only" data-scheme-name="light">
-        Switch to light theme
-      </span>
-    </button>
+    <Tipped text={hydrated ? `Switch to ${next} theme` : undefined} describes={false} own={rest}>
+      {(tip) => (
+        <button
+          type="button"
+          {...rest}
+          {...tip}
+          className={look({ size })}
+          onClick={() => {
+            applyColourScheme(next, document.documentElement, schemes);
+            if (store) storeColourScheme(next);
+            onChange?.(next);
+          }}
+        >
+          <style>{schemeRules(schemes)}</style>
+          {sun}
+          {moon}
+          <span className="sr-only" data-scheme-name="dark">
+            Switch to dark theme
+          </span>
+          <span className="sr-only" data-scheme-name="light">
+            Switch to light theme
+          </span>
+        </button>
+      )}
+    </Tipped>
   );
 }

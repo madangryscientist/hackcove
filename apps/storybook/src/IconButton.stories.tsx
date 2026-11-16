@@ -100,3 +100,15 @@ export const Sizes: S = {
     </div>
   ),
 };
+
+/** The tooltip: `label` shows above the button on hover and on keyboard focus. Held open by focusing it. */
+export const Tooltip: S = {
+  render: () => (
+    <div className="px-6 pt-14 pb-6">
+      <IconButton label="Settings" variant="ghost" icon="settings" />
+    </div>
+  ),
+  play: ({ canvasElement }) => {
+    canvasElement.querySelector("button")?.focus();
+  },
+};

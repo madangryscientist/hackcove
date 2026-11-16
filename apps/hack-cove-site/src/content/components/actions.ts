@@ -17,7 +17,7 @@ export const actions: ComponentSection = {
         "Button/Destructive",
         "ButtonGroup/Row",
       ],
-      stories: ["ButtonCount"],
+      stories: ["ButtonCount", "ButtonTooltip"],
       usage: {
         do: [
           'Put one primary Button in a view. The other actions use `variant="outline"`, `"ghost"` or `"link"`; `variant="dashed"` is the full-width "add another" row at the foot of a list.',
@@ -32,7 +32,7 @@ export const actions: ComponentSection = {
       },
       accessibility: [
         'A Button is a native `<button>` and defaults to `type="button"`, so it never submits a form by accident.',
-        "`disabledReason` disables the button and sets the reason as its `title`, so a pointer user sees why.",
+        "`disabledReason` blocks the button with `aria-disabled` and keeps it in the tab order, so a keyboard reaches it; a click, Enter and Space do nothing, and the reason shows as a tooltip on hover, keyboard focus and a tap, read out as the button's description. In a browser without CSS anchor positioning the reason is its native `title`.",
         "`busy` sets `aria-busy` and disables the button until the work is done.",
         "Every Button has a focus ring from the component, so the keyboard focus is always visible.",
         "The `count` chip is part of the button's name: `Splits, 3` (a `count` of 0 is shown as `Splits, 0`). Pass `aria-expanded` on a button that opens something, so a screen reader hears whether it is open.",
@@ -57,7 +57,7 @@ export const actions: ComponentSection = {
         ],
       },
       accessibility: [
-        "`label` is set as `aria-label` and `title`; with a `count` it reads `Alerts, 3`.",
+        "`label` is set as `aria-label`, and shows as a tooltip above the button on hover and on keyboard focus (the native `title` in a browser without CSS anchor positioning); with a `count` it reads `Alerts, 3`. The tooltip repeats the name, so it is hidden from a screen reader.",
         "The badge itself is `aria-hidden`, so the count is read once, through the name.",
         'As a button it defaults to `type="button"`; with `href` it is a real link, and `external` opens a new tab with `rel="noreferrer"`.',
         "It has the component's focus ring.",

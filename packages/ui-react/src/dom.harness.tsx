@@ -73,3 +73,35 @@ export function dialogOf(container: HTMLElement): HTMLDialogElement {
   if (!dialog) throw new Error("no <dialog> rendered");
   return dialog;
 }
+
+function showPopoverStub(this: HTMLElement): void {
+  this.style.display = "block";
+}
+
+function hidePopoverStub(this: HTMLElement): void {
+  this.style.removeProperty("display");
+}
+
+/**
+ * Stub the popover API jsdom lacks, as a browser draws it: a popover is not shown (`display: none`,
+ * so it is out of the accessibility tree) until `showPopover()`. Call from `beforeEach`; with it,
+ * the internal tooltip takes its enhanced path (jsdom's `CSS.supports` says yes to anything).
+ */
+export function stubPopover(): void {
+  // jsdom's selector matching skips a rule on `[popover]` with a second attribute, so the shown
+  // state is an inline display, which it does apply.
+  HTMLElement.prototype.showPopover = showPopoverStub;
+  HTMLElement.prototype.hidePopover = hidePopoverStub;
+  if (!document.querySelector("style[data-popover-stub]")) {
+    const style = document.createElement("style");
+    style.dataset["popoverStub"] = "";
+    style.textContent = "[popover]{display:none}";
+    document.head.append(style);
+  }
+}
+
+/** Undo `stubPopover`. Call from `afterEach`. */
+export function unstubPopover(): void {
+  Reflect.deleteProperty(HTMLElement.prototype, "showPopover");
+  Reflect.deleteProperty(HTMLElement.prototype, "hidePopover");
+}

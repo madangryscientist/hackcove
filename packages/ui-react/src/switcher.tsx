@@ -2,12 +2,16 @@ import { type KeyboardEvent, type ReactElement, type ReactNode } from "react";
 import { cx } from "./cx.js";
 import type { Passthrough } from "./props.js";
 import { type DataAttributes, dataAttributes, renderLink } from "./link.js";
+import { Tipped } from "./Tooltip.js";
 
 type Option = DataAttributes & {
   label: ReactNode;
   /** A small muted count after the label, part of the accessible name ("Shots 12"). */
   count?: number;
-  /** A native tooltip; on a disabled option it is the reason. */
+  /**
+   * A tooltip on hover and keyboard focus, read out as the option's description; on a disabled
+   * option it is the reason. A native `title` on a link option.
+   */
   title?: string;
   // Any `data-*` key (`"data-testid": "tab-shots"`) is put on the option's button or link.
 };
@@ -18,7 +22,7 @@ export type SwitchButton = Option & {
   value: string;
   /**
    * Not chosen by click or arrow key. The button stays in the page as `aria-disabled`, so its
-   * `title` still shows on hover and is read out.
+   * `title` still shows as its tooltip and is read out.
    */
   disabled?: boolean;
   /** The id of the element this option controls (a tab's panel). */
@@ -187,28 +191,33 @@ export function Switcher({
       className={root}
     >
       {items.map((item) => (
-        <button
-          {...dataAttributes(item)}
-          key={item.value}
-          type="button"
-          role={parts.item}
-          {...(parts.item === "tab"
-            ? { "aria-selected": item.value === value }
-            : { "aria-checked": item.value === value })}
-          {...(item.controls === undefined ? {} : { "aria-controls": item.controls })}
-          tabIndex={item.value === stop ? 0 : -1}
-          {...(off(item) ? { "aria-disabled": true } : {})}
-          {...(item.title === undefined ? {} : { title: item.title })}
-          onClick={() => {
-            if (!off(item)) onChange?.(item.value);
-          }}
-          className={cx(
-            parts.option(item.value === value, off(item)),
-            off(item) && "cursor-not-allowed opacity-50",
+        // A title is the option's description, shown on hover and keyboard focus; on a disabled
+        // option it is the reason, and a tap shows it too.
+        <Tipped key={item.value} text={item.title} describes tap={off(item)} own={{}}>
+          {(tip) => (
+            <button
+              {...dataAttributes(item)}
+              type="button"
+              role={parts.item}
+              {...(parts.item === "tab"
+                ? { "aria-selected": item.value === value }
+                : { "aria-checked": item.value === value })}
+              {...(item.controls === undefined ? {} : { "aria-controls": item.controls })}
+              tabIndex={item.value === stop ? 0 : -1}
+              {...(off(item) ? { "aria-disabled": true } : {})}
+              {...tip}
+              onClick={() => {
+                if (!off(item)) onChange?.(item.value);
+              }}
+              className={cx(
+                parts.option(item.value === value, off(item)),
+                off(item) && "cursor-not-allowed opacity-50",
+              )}
+            >
+              <Label item={item} />
+            </button>
           )}
-        >
-          <Label item={item} />
-        </button>
+        </Tipped>
       ))}
     </div>
   );
