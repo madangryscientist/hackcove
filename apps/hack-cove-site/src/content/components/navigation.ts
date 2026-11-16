@@ -11,6 +11,16 @@ export const navigation: ComponentSection = {
       summary: "Switch a view in place, or move between pages.",
       whenToUse:
         "Tabs switch a panel on the same page. A row of links to other pages is `Tabs` with link items.",
+      siblings: [
+        {
+          slug: "segmented-control",
+          when: "One value is picked from two to five, and no panel switches under the row.",
+        },
+        {
+          slug: "fieldset",
+          when: "Toggles that can be on together narrow a list: pressed `Button`s in a `Fieldset`, one per facet.",
+        },
+      ],
       pairs: [
         "Tabs/SwitchView",
         "Tabs/SwitchPage",

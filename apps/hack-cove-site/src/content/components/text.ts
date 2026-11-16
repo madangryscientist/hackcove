@@ -104,6 +104,13 @@ export const text: ComponentSection = {
       summary: "Inline code in a sentence, and a block of code to read or copy.",
       whenToUse:
         "A command, name or path inside a sentence is `Code`; several lines of code are a `CodeBlock`.",
+      siblings: [
+        {
+          slug: "copy-button",
+          when: "Neither a `CopyLine` nor `copy` on a `CodeBlock` or `CodeExample` fits.",
+        },
+        { slug: "copy-line", when: "The text to copy is one line, such as an install command." },
+      ],
       pairs: ["Code/Inline", "CodeBlock/Snippet"],
       usage: {
         do: [
@@ -190,7 +197,11 @@ export const text: ComponentSection = {
       slug: "text-link",
       name: "TextLink",
       summary: "A link in the accent colour, inside a sentence or on its own.",
-      whenToUse: "A link that sits in text. A link that is an action is a `Button` with `href`.",
+      whenToUse:
+        "A link that sits in text. A link that must look like a button is a `Button` with `href`.",
+      siblings: [
+        { slug: "button", when: "The link must look like a button: a `Button` with `href`." },
+      ],
       pairs: ["TextLink/InSentence", "TextLink/External", "TextLink/Router", "TextLink/Stretch"],
       usage: {
         do: [
@@ -223,6 +234,10 @@ export const text: ComponentSection = {
       summary:
         "A bulleted list with the discs, indent and gap built in; each item is a `BulletItem`.",
       whenToUse: "Items that read as a list of points: what changed, what to bring.",
+      siblings: [
+        { slug: "steps", when: "The items are a sequence the reader follows in order." },
+        { slug: "timeline", when: "The items are a history, each with when it happened." },
+      ],
       pairs: ["BulletList/Items"],
       usage: {
         do: [
@@ -244,6 +259,14 @@ export const text: ComponentSection = {
       summary: "A wrapping row of facts or links in muted small text, joined by a dot.",
       whenToUse:
         "The facts about a record under its title (branch, SHA, date), or a footer's row of links (Privacy, Terms, Contact).",
+      siblings: [
+        { slug: "table", when: "Many records with the same columns, to read across and compare." },
+        {
+          slug: "key-value-list",
+          when: "One record's fields, one per line, each label beside its value.",
+        },
+        { slug: "list-row", when: "Each item is a thing to open, on a row of its own." },
+      ],
       pairs: ["MetaList/Facts", "MetaList/Footer"],
       usage: {
         do: [

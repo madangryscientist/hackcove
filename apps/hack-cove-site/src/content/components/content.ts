@@ -12,6 +12,12 @@ export const content: ComponentSection = {
       name: "Card",
       summary: "A bordered panel that groups one thing on a page.",
       whenToUse: "A titled block of related content: a record, a status, a list, an empty state.",
+      siblings: [
+        {
+          slug: "callout",
+          when: "The status is a message of a line or two, with at most one action.",
+        },
+      ],
       pairs: ["Card/Status", "Card/Spacing"],
       stories: ["CardBadge", "CardFill", "CardIcon", "CardInset", "CardTitle"],
       usage: {
@@ -49,6 +55,12 @@ export const content: ComponentSection = {
       summary:
         "A person as a round badge of initials, or their photo; an org or team as a square one.",
       whenToUse: "Marking who did something or who owns something, next to their name.",
+      siblings: [
+        {
+          slug: "image",
+          when: "The picture is not a person: a photo, a screenshot or an illustration.",
+        },
+      ],
       pairs: ["Avatar/Identity", "Avatar/Beside"],
       usage: {
         do: [
@@ -96,6 +108,7 @@ export const content: ComponentSection = {
       name: "Badge",
       summary: "A small red count.",
       whenToUse: "A count of unread or pending things that sits on an icon button.",
+      siblings: [{ slug: "pill", when: "The label is words, such as a status." }],
       pairs: ["Badge/OnIcon", "Badge/Count"],
       usage: {
         do: [
@@ -117,6 +130,7 @@ export const content: ComponentSection = {
       name: "Pill",
       summary: "A small tinted label for a status or a category.",
       whenToUse: "A short word that says what state or kind something is: paid, draft, flaky.",
+      siblings: [{ slug: "badge", when: "A count sits on an icon." }],
       pairs: ["Pill/Status", "Pill/Link"],
       usage: {
         do: [
@@ -129,6 +143,9 @@ export const content: ComponentSection = {
           "`title` is the tooltip for detail the short label leaves out: it shows on hover, keyboard focus and (on a plain pill) a tap, and is read out as the pill's description; a plain pill with a `title` takes a tab stop for it. Keep anything a reader needs on the pill itself.",
           "A Pill beside a card's title is the Card's `status`, not a hand-built row.",
           "A message to read is a `Callout`, and an action is a `Button`.",
+        ],
+        dont: [
+          "Never make a row of clickable `Pill`s a filter: a filter is pressed `Button`s in a `Fieldset`.",
         ],
       },
       accessibility: [
@@ -144,6 +161,10 @@ export const content: ComponentSection = {
       name: "Steps",
       summary: "A numbered list of things to do, in order.",
       whenToUse: "The way into a product: install, log in, run.",
+      siblings: [
+        { slug: "bullet-list", when: "The items have no order." },
+        { slug: "timeline", when: "The items already happened: a history, each with its time." },
+      ],
       pairs: ["Steps/Numbers", "Steps/Order"],
       usage: {
         do: [
@@ -169,6 +190,10 @@ export const content: ComponentSection = {
       name: "Timeline",
       summary: "A vertical list of events on a rail.",
       whenToUse: "A history of what happened and when: status changes, a record's activity.",
+      siblings: [
+        { slug: "bullet-list", when: "The items have no order and no time." },
+        { slug: "steps", when: "The items are a sequence the reader still has to follow." },
+      ],
       pairs: ["Timeline/Events", "Timeline/NoEvents"],
       usage: {
         do: [
@@ -217,6 +242,11 @@ export const content: ComponentSection = {
       name: "KeyValueList",
       summary: "Labelled facts, one per row.",
       whenToUse: "A set of facts about one thing: size, status, dates, shortcut keys.",
+      siblings: [
+        { slug: "table", when: "Many records with the same columns, to read across and compare." },
+        { slug: "list-row", when: "The items are things to open, not the fields of one record." },
+        { slug: "meta-list", when: "A few short facts inline, with no labels to line up." },
+      ],
       pairs: ["KeyValueList/FactsList", "KeyValueList/AlignStart"],
       usage: {
         do: [
@@ -241,6 +271,7 @@ export const content: ComponentSection = {
       summary: "An accent outline over one area of a picture, with an optional tag.",
       whenToUse:
         "Marking an area of a screenshot or an image: one that is ignored, flagged or picked.",
+      siblings: [{ slug: "image", when: "The picture is shown with nothing marked on it." }],
       pairs: ["OutlineRegion/Label"],
       usage: {
         do: [

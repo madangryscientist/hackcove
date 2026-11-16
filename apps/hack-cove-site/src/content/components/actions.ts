@@ -10,6 +10,13 @@ export const actions: ComponentSection = {
       name: "Button",
       summary: "The action a person takes on a view.",
       whenToUse: "An action that changes something in place: save, cancel, delete, retry.",
+      siblings: [
+        {
+          slug: "fieldset",
+          when: "Toggles that filter a list: a `Fieldset` round a `ButtonGroup` of pressed `Button`s, one per facet.",
+        },
+        { slug: "text-link", when: "The link is a destination in running text." },
+      ],
       pairs: [
         "Button/OnePrimary",
         "Button/DisabledReason",
@@ -28,6 +35,7 @@ export const actions: ComponentSection = {
           '`pressed` makes a toggle. `busy` disables it while the work is in flight, and `busy="Saving"` also shows that label: one prop, `busy={saving && "Saving"}`.',
           '`count` puts a number chip after the label, for how many are behind the button (the splits of a row, the comments on a thread): `<Button variant="ghost" size="sm" count={3}>Splits</Button>`. A button that opens something also takes `aria-expanded`, and `aria-controls` for what it opens; the caller owns that state.',
           "An icon-only action is an `IconButton`, not a Button holding a glyph.",
+          '`variant="link"` is only for a `<button>`, an action, that sits in running text. A destination in text is a `TextLink`, and one that must look like a button is a `Button` with `href`.',
         ],
       },
       accessibility: [
@@ -126,12 +134,20 @@ export const actions: ComponentSection = {
       name: "CopyButton",
       summary: "Copies a string to the clipboard.",
       whenToUse: "A value the page already shows that a reader will paste elsewhere.",
+      siblings: [
+        { slug: "copy-line", when: "The text to copy is one line, such as a command." },
+        {
+          slug: "code",
+          when: "The text to copy is a block of code: `CodeBlock copy`, or `CodeExample copy` in docs.",
+        },
+      ],
       pairs: ["CopyButton/Clipboard"],
       usage: {
         do: [
           "`text` is what is copied; `copiedLabel` shows in place of the label for two seconds once it is on the clipboard.",
           'Name what is copied in `label` and `copiedLabel` (`"Copy token"`, `"Token copied"`) when the page has more than one.',
           "A command or token in its own box is a `CopyLine`, which carries this button.",
+          "Place a `CopyButton` yourself only when neither a `CopyLine` nor `copy` on a `CodeBlock` or `CodeExample` fits.",
           "On a page rendered to static HTML and never hydrated, inline `copyScript` once, as `colourSchemeScript` is: every `CopyButton`, `CopyLine`, and `CodeBlock` or `CodeExample` with `copy` then works. A hydrated button copies for itself and the script stays out of its way.",
         ],
         dont: ["Do not write the clipboard call by hand in a `Button`."],
@@ -154,6 +170,13 @@ export const actions: ComponentSection = {
       name: "CopyLine",
       summary: "One line of mono text with a copy button.",
       whenToUse: "A command or token a reader pastes elsewhere.",
+      siblings: [
+        {
+          slug: "copy-button",
+          when: "Neither a line nor a code block fits, so the button is placed by hand.",
+        },
+        { slug: "code", when: "The text is a block of several lines: `CodeBlock copy`." },
+      ],
       pairs: ["CopyLine/Command", "CopyLine/Block"],
       usage: {
         do: [

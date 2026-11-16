@@ -17,7 +17,7 @@ export const framePages: ComponentPage[] = [
     stories: ["AppShell", "AppShellNav"],
     usage: {
       do: [
-        "Fill the slots and write no wrapper: `brand`, `nav` (pill `Tabs` of links), `controls` (a picker, a `ColourSchemeToggle`), then an optional `subnav` row and `footer`.",
+        "Fill the slots and write no wrapper: `brand`, `nav` (`Tabs` of links), `controls` (a picker, a `ColourSchemeToggle`), then an optional `subnav` row and `footer`.",
         '`brand` is an `AppShellBrand`: logo and label in one link. `collapse` leaves only the logo below `sm`. `logoSize` is `sm` (20px), `md` (24px, the default, an `Avatar size="sm"`) or `lg` (32px); an `<img>` or `<svg>` logo fills it.',
         'A header control that only matters on a wide screen, such as the viewer\'s name, goes in a `Show from="sm"` (or `md`, `lg`) in `controls`; put a `Cluster` inside it to keep an avatar and a name together.',
         "A bar that sticks under the header at the top of a `bleed` page is a `StickyBar`.",
@@ -42,7 +42,7 @@ export const framePages: ComponentPage[] = [
       "On a phone `nav` and `subnav` sit behind one Menu button, a native disclosure: it opens with no JavaScript, from the keyboard (Enter or Space) and for a screen reader, Escape closes it and returns to the button, and following a link closes it. The panel is not in the header's flow, so the header is the same height on every page.",
       "`menuControls` render once, in the Menu below `md` and in the row from `md`, so a field keeps its value and its label names one control. A crowded `controls` clips beside the Menu button, never over it, so the nav stays reachable.",
       "From `md` a `nav` too wide for the header row folds into the Menu instead of scrolling, and comes back when the screen is wide enough. A `subnav` row that is wider than the screen scrolls sideways and never wraps; a link that takes focus scrolls into view, and the side with more to reach fades out.",
-      "Give `nav` and `subnav` pill `Tabs` of links, so each is a labelled `<nav>`.",
+      "Give `nav` and `subnav` `Tabs` of links, so each is a labelled `<nav>`.",
     ],
     api: ["AppShell", "AppShellBrand"],
     functions: [

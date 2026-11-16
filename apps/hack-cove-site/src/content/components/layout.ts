@@ -64,7 +64,7 @@ export const layout: ComponentSection = {
         do: [
           "Pass `title`, and `description`, `breadcrumbs`, `actions` and `tabs` as needed; never build a title row from a heading and a `Cluster`.",
           "`actions` sit beside the title from `sm` up and under it on a phone: a `Button` or two, one primary.",
-          "`breadcrumbs` take a `Breadcrumbs`; `tabs` take pill `Tabs` of links to pages.",
+          "`breadcrumbs` take a `Breadcrumbs`; `tabs` take `Tabs` of links to pages.",
           "Its fixed bottom margin gives every page the same first-block position. As a direct child of a `Stack` it has none and the Stack's `gap` is the only space, so do not wrap it in another element.",
           "One `PageHeader` per page: it holds the page's `<h1>`. A landing page has a `Hero` in its place.",
         ],
@@ -110,6 +110,16 @@ export const layout: ComponentSection = {
         "A vertical column of blocks a fixed gap apart, and Section for a titled group, large or small.",
       whenToUse:
         "Any blocks that follow each other: space is a Stack's `gap`, never a margin on a block.",
+      siblings: [
+        {
+          slug: "form-layout",
+          when: "The whole page is one form: header, fields, then Save and Cancel.",
+        },
+        {
+          slug: "form-row",
+          when: "Fields sit side by side: a `FormGrid` of `Field`s, or a `FormRow` to edit one record on a line.",
+        },
+      ],
       pairs: [
         "StackDocs/Gap",
         "StackDocs/SectionTitle",

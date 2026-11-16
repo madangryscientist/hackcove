@@ -55,6 +55,19 @@ export const DoFooter: S = {
   ),
 };
 
+/** A `Divider` and a footer placed by hand inside a `Card`: the card's own `footer` draws that strip, its line and its spacing. */
+export const DontFooter: S = {
+  render: () => (
+    <Card title="Quote 12">
+      <Stack gap="lg">
+        <Text>Two lines, R 1 200.</Text>
+        <Divider />
+        <Caption>Total R 1 200</Caption>
+      </Stack>
+    </Card>
+  ),
+};
+
 /** A line between two `Section`s of one page is a `Divider` in the `Stack` that holds them: the Stack's gap is the space on both sides. */
 export const BetweenSections: S = {
   render: () => (

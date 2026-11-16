@@ -1,6 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { Breadcrumbs, Button, Tabs, PageHeader, Stack, Text } from "@hackcove/ui-react";
+import {
+  Breadcrumbs,
+  Button,
+  Tabs,
+  PageHeader,
+  SegmentedControl,
+  Stack,
+  Text,
+} from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Navigation/Tabs" };
 export default meta;
@@ -31,6 +39,28 @@ export const DoSwitchView: S = {
         <Text id="panel" role="tabpanel">
           Showing {value}.
         </Text>
+      </Stack>
+    );
+  },
+};
+
+/** A `SegmentedControl` that swaps the panel under it picks a value, not a view: no tab list, no panel tied to it. Switching the panel is `Tabs`. */
+export const DontSwitchView: S = {
+  render: () => {
+    const [value, setValue] = useState("overview");
+    return (
+      <Stack>
+        <SegmentedControl
+          label="Project views"
+          value={value}
+          onChange={setValue}
+          items={[
+            { value: "overview", label: "Overview" },
+            { value: "activity", label: "Activity" },
+            { value: "settings", label: "Settings" },
+          ]}
+        />
+        <Text>Showing {value}.</Text>
       </Stack>
     );
   },

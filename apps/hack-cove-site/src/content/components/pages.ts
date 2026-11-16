@@ -11,6 +11,10 @@ export const pages: ComponentSection = {
       summary:
         "Whole pages for the states every site has: not found, failed, offline, down, not allowed.",
       whenToUse: "A route that cannot show its content: use the status page that names the state.",
+      siblings: [
+        { slug: "callout", when: "Only a part of the page failed, and the rest of it shows." },
+        { slug: "empty-state", when: "The page works and has nothing in it yet." },
+      ],
       pairs: ["StatusPages/PickPage", "StatusPages/ErrorDetail"],
       usage: {
         do: [

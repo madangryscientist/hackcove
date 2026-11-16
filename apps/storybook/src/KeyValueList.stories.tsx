@@ -86,6 +86,17 @@ export const DoAlignStart: S = {
   ),
 };
 
+/** Long values at the default `align="end"` push against the right edge in a ragged column. Long values take `align="start"`. */
+export const DontAlignStart: S = {
+  render: () => (
+    <KeyValueList>
+      <KeyValue label="Branch">hc-145-docs-for-every-export</KeyValue>
+      <KeyValue label="Commit">83422a6</KeyValue>
+      <KeyValue label="Captured">2 min ago</KeyValue>
+    </KeyValueList>
+  ),
+};
+
 /** `total` closes a column of amounts: a firm rule above it and strong text, for the sum the rows add up to. */
 export const Total: S = {
   render: () => (

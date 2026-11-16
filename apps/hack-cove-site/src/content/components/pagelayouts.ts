@@ -65,6 +65,20 @@ export const pagelayouts: ComponentSection = {
       name: "FormLayout",
       summary: "A page that is one form: header, fields, then the actions.",
       whenToUse: "Creating or editing a record on a page of its own.",
+      siblings: [
+        {
+          slug: "form-row",
+          when: "Fields sit side by side inside the form: a `FormGrid`, or a `FormRow` to edit one record on a line.",
+        },
+        {
+          slug: "stack",
+          when: 'The form sits in a `Card` on a page that is not the form: `Stack as="form"`.',
+        },
+        {
+          slug: "field-dialog",
+          when: "One text value is asked for over the page, such as a new name.",
+        },
+      ],
       pairs: ["FormLayout/Form"],
       fullPage: "FormLayout/FullPage",
       usage: {

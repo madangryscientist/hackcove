@@ -7,6 +7,12 @@ export const mediaPages: ComponentPage[] = [
     name: "Video",
     summary: "A video with controls, full width.",
     whenToUse: "Showing a recording or a walkthrough that your app serves.",
+    siblings: [
+      {
+        slug: "media-tile",
+        when: "The video is one of a set of things to open: a tile with `video`.",
+      },
+    ],
     pairs: ["Video/Captions"],
     usage: {
       do: [
@@ -27,6 +33,14 @@ export const mediaPages: ComponentPage[] = [
     name: "Image",
     summary: "A picture in a fixed shape, with a placeholder if it is missing.",
     whenToUse: "Showing a picture that your app serves: a screenshot, a QR code, a product shot.",
+    siblings: [
+      {
+        slug: "media-tile",
+        when: "The picture is a thing: it has a label, opens, or can be removed.",
+      },
+      { slug: "avatar", when: "The picture is a person." },
+      { slug: "outline-region", when: "Areas of the picture are marked: a `RegionFrame`." },
+    ],
     pairs: ["Image/Fit"],
     usage: {
       do: [
@@ -51,6 +65,11 @@ export const mediaPages: ComponentPage[] = [
     summary: "A thumbnail with a label and a caption, that can open a Lightbox.",
     whenToUse:
       "A photo or video in a grid or a strip, that opens full size when it is picked: a status, a gallery, an attachment.",
+    siblings: [
+      { slug: "image", when: "The picture is only shown, with no label, click or remove." },
+      { slug: "video", when: "The video plays in the page: the player." },
+      { slug: "lightbox", when: "One photo or video opens over the page, at full size." },
+    ],
     pairs: ["MediaTile/Viewer"],
     usage: {
       do: [
@@ -61,6 +80,7 @@ export const mediaPages: ComponentPage[] = [
         "`onClick` makes the whole tile one button. Open a `Lightbox` from it, and keep the open item in your own state. Without `onClick` the tile is a plain block.",
         'With no `src`, the tile shows the `Image` placeholder, so a tile that is only a label ("Earlier") needs no picture.',
         "A row of tiles that runs past the page is a `ScrollStrip`; a wrapping grid is a `CardGrid`.",
+        "A picture that is only shown, with no label, click or remove, is an `Image`.",
       ],
     },
     accessibility: [

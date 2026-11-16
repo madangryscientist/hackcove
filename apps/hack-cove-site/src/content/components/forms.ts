@@ -1,3 +1,4 @@
+import { groupPages } from "./groups";
 import { datePages } from "./dates";
 import type { ComponentSection } from "./types";
 
@@ -216,6 +217,16 @@ export const forms: ComponentSection = {
       summary: "How a form is laid out: a two-column grid, and an inline-edit row.",
       whenToUse:
         "`FormGrid` lays Fields out in two columns; `FormRow` puts several controls and a save button on one line.",
+      siblings: [
+        {
+          slug: "form-layout",
+          when: "The whole page is one form, with Save and Cancel at its end.",
+        },
+        {
+          slug: "stack",
+          when: 'The fields run one under another in a `Card`: a `Stack as="form"` of `Field`s.',
+        },
+      ],
       pairs: ["FormRow/InlineEdit", "FormRow/TwoColumns"],
       usage: {
         do: [
@@ -234,37 +245,23 @@ export const forms: ComponentSection = {
       api: ["FormRow", "FormRowField", "FormGrid"],
     },
     ...datePages,
-    {
-      slug: "segmented-control",
-      name: "SegmentedControl",
-      summary: "A joined group of options where one is filled.",
-      whenToUse: "A mode or a range chosen in place: daily or weekly, split or even.",
-      pairs: ["SegmentedControl/Mode", "SegmentedControl/DisabledReason", "SegmentedControl/Links"],
-      usage: {
-        do: [
-          "Two to five short options. The caller owns `value` and `onChange`; `label` names the group.",
-          "`size` is `sm`, `md` (default) or `lg`, the heights of a `Button`.",
-          "An on/off setting is a `Checkbox` or a `Switch`; a long list is a `Select`.",
-          "Switching the panel under a row of headings is `Tabs`.",
-          "A `count` sits muted after the label.",
-          "An option that cannot be chosen yet takes a `disabledReason` that says why; `disabled` on the group disables every option.",
-          "Options that go to another page are links: `href` on each, drawn by the app's router link through `LinkProvider`. `value` marks the current page.",
-        ],
-      },
-      accessibility: [
-        "Buttons form a `radiogroup` named by `label`; each option is a `radio` with `aria-checked`.",
-        "The group is one tab stop. The arrow keys (all four), Home and End move to the next enabled option and choose it.",
-        "An option with `disabledReason` is `aria-disabled`: the arrow keys reach it and choose nothing, and the reason shows as a tooltip on hover, keyboard focus and a tap, read out as its description (the native `title` without CSS anchor positioning). A `disabled` option is skipped.",
-        'Links form a `<nav>` named by `label`, and the current one has `aria-current="page"`.',
-        "The focus ring comes from the component.",
-      ],
-      api: ["SegmentedControl"],
-    },
+    ...groupPages,
     {
       slug: "fieldset",
       name: "Fieldset",
       summary: "A named group of controls: checkboxes, a set of fields, or filter chips.",
       whenToUse: "Several controls that answer one question or belong together, under one name.",
+      siblings: [
+        { slug: "tabs", when: "One choice switches the panel right under the row." },
+        {
+          slug: "segmented-control",
+          when: "Exactly one of two to five options is on: a mode or a range.",
+        },
+        {
+          slug: "button",
+          when: "One toggle on its own, not a named group: a `Button` with `pressed`.",
+        },
+      ],
       pairs: ["Fieldset/Group", "Fieldset/Facets", "Fieldset/Radio"],
       usage: {
         do: [

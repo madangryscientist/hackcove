@@ -10,6 +10,11 @@ export const data: ComponentSection = {
       name: "Table",
       summary: "A list of records in a bordered card, one row per record.",
       whenToUse: "Records that share columns, where a person compares values down a column.",
+      siblings: [
+        { slug: "key-value-list", when: "One record's fields, each label beside its value." },
+        { slug: "list-row", when: "Each record is a thing to open, with a line or two of detail." },
+        { slug: "meta-list", when: "A few short facts inline, on one line under a title." },
+      ],
       pairs: [
         "TableRecords/Records",
         "TableRecords/Totals",
@@ -82,6 +87,11 @@ export const data: ComponentSection = {
       summary: "A full-width row in a list: a label, content before it and a value at the far end.",
       whenToUse:
         "A short list where each row opens something, toggles a section or holds its own buttons.",
+      siblings: [
+        { slug: "table", when: "The records are read and compared across columns." },
+        { slug: "key-value-list", when: "One record's fields, each label beside its value." },
+        { slug: "meta-list", when: "A few facts inline on one line, not rows to open." },
+      ],
       pairs: ["ListRow/List", "ListRow/RowActions", "ListRowReason/DisabledReason"],
       stories: ["ListRowPanel", "LinkedControls"],
       usage: {

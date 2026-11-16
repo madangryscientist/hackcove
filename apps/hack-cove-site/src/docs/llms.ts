@@ -3,7 +3,12 @@
  * made from the same sources as the pages (`content/components/`, the stories and
  * `generated/props.json`), so the two cannot drift.
  */
-import { componentPages, sectionOfPage, type ComponentPage } from "../content/components/index.js";
+import {
+  componentPageOf,
+  componentPages,
+  sectionOfPage,
+  type ComponentPage,
+} from "../content/components/index.js";
 import { site } from "../content/site.js";
 import { themes } from "../content/themes.js";
 import { pairOf } from "./pairs.js";
@@ -60,6 +65,16 @@ function fullPageOf(page: ComponentPage): string[] {
   return [`### Full page\n${captioned(story)}`];
 }
 
+/** The "Use instead" list: each sibling page with when to use it instead of this one. */
+function siblingsOf(page: ComponentPage): string[] {
+  const { siblings = [] } = page;
+  return siblings.length === 0
+    ? []
+    : [
+        `### Use instead\n${siblings.map(({ slug, when }) => `- ${componentPageOf(slug).name} (/ui/${slug}/): ${when}`).join("\n")}`,
+      ];
+}
+
 function sectionOf(page: ComponentPage): string {
   const [lead] = page.pairs;
   const right = lead === undefined ? undefined : pairOf(lead).do;
@@ -68,6 +83,7 @@ function sectionOf(page: ComponentPage): string {
     `## ${page.name}`,
     `Group: ${sectionOfPage(page.slug).title}`,
     `When to use: ${page.whenToUse}`,
+    ...siblingsOf(page),
     `### The one right way\n${captioned(right)}`,
     ...fullPageOf(page),
     `### Do\n${bullets(page.usage.do)}`,
