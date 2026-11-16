@@ -1,5 +1,5 @@
 import ts from "typescript";
-import { type Edit } from "../edits.js";
+import { applyEdits, type Edit } from "../edits.js";
 import { type Context, packageImports, parse, report } from "../source.js";
 
 /** Exported names that were renamed: the file's own uses of them are renamed too. */
@@ -180,7 +180,31 @@ function specifiersRemoval(
   file: ts.SourceFile,
 ): Edit[] {
   const spans = merged(deadSpans(bindings, dead, file)).map((span) => onItsLine(file.text, span));
-  return merged(spans).map((span) => ({ ...span, text: "" }));
+  const edits = merged(spans).map((span) => ({ ...span, text: "" }));
+  if (stillParses(bindings.parent.parent, edits, file)) return edits;
+  const kept = bindings.elements.filter((element) => !dead.includes(element));
+  const text = `{ ${kept.map((element) => element.getText(file)).join(", ")} }`;
+  return [{ start: bindings.getStart(file), end: bindings.end, text }];
+}
+
+/**
+ * Whether the import, edited, is still free of syntax errors. A layout the in-place removal does
+ * not know (a comment that runs over lines between a name and its comma, say) fails it, and the
+ * import is rebuilt on one line instead: plain, but never broken.
+ */
+function stillParses(declaration: ts.Node, edits: readonly Edit[], file: ts.SourceFile): boolean {
+  const start = declaration.getStart(file);
+  const local = edits.map((edit) => ({
+    ...edit,
+    start: edit.start - start,
+    end: edit.end - start,
+  }));
+  const text = applyEdits(declaration.getText(file), local);
+  const { diagnostics } = ts.transpileModule(text, {
+    fileName: file.fileName,
+    reportDiagnostics: true,
+  });
+  return diagnostics?.length === 0;
 }
 
 function renameImport(element: ts.ImportSpecifier, context: Context): void {
