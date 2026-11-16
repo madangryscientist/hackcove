@@ -299,3 +299,24 @@ export const DontSections: S = {
     </SidebarLayout>
   ),
 };
+
+/** While `loading` the layout owns the wait: the header draws as itself and every part inside waits with it. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <DemoShell>
+      <SidebarLayout
+        loading={loading}
+        aside={
+          <Tabs
+            orientation="vertical"
+            label="Settings"
+            items={[{ label: "Profile", href: "#profile", selected: true }]}
+          />
+        }
+      >
+        <PageHeader title={loading ? null : "Profile"} />
+      </SidebarLayout>
+    </DemoShell>
+  ),
+};

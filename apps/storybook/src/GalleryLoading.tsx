@@ -5,11 +5,13 @@ import {
   Card,
   Checkbox,
   DateField,
+  DetailLayout,
   Field,
   FormRow,
   FormRowField,
   Image,
   Input,
+  ListLayout,
   ListRow,
   MediaTile,
   ProgressBar,
@@ -60,6 +62,7 @@ export function GalleryLoading() {
       <Markdown loading md={undefined} />
       <GalleryLoadingCollections />
       <GalleryLoadingForms />
+      <GalleryLoadingPages />
     </>
   );
 }
@@ -153,5 +156,34 @@ function GalleryLoadingForms() {
         </RadioGroup>
       </div>
     </div>
+  );
+}
+
+/** Two whole pages while they wait: one `loading` on the layout, the same tree as with data. */
+function GalleryLoadingPages() {
+  return (
+    <>
+      <ListLayout title="Quotes" loading>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <StatTile label="Open" value={undefined} />
+          <StatTile label="Total" value={undefined} />
+          <StatTile label="Accepted" value={undefined} />
+        </div>
+      </ListLayout>
+      <DetailLayout
+        title={null}
+        loading
+        aside={
+          <Card title="Customer">
+            <KeyValueList>
+              <KeyValue label="Name">{undefined}</KeyValue>
+              <KeyValue label="Phone">{undefined}</KeyValue>
+            </KeyValueList>
+          </Card>
+        }
+      >
+        <Card title="Notes">{null}</Card>
+      </DetailLayout>
+    </>
   );
 }

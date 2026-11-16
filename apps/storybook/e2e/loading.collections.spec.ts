@@ -2,10 +2,10 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 import { themeFiles } from "@hackcove/themes-shared/files";
 
 /**
- * The `Loading` story of each collection, picture, figure and form part, in the reference theme (the
- * Gallery's Loading block covers the rest): while `loading` an owner is busy, its label is in the
- * accessibility tree and no data shows; flipping the arg lands the data, by role, and drops
- * `aria-busy`.
+ * The `Loading` story of each collection, picture, figure and form part and each page layout, in
+ * the reference theme (the Gallery's Loading block covers the rest): while `loading` an owner is
+ * busy, its label is in the accessibility tree and no data shows; flipping the arg lands the data,
+ * by role, and drops `aria-busy`.
  */
 const reference = themeFiles(`${import.meta.dirname}/../../../themes`)[0]?.id ?? "";
 
@@ -37,6 +37,15 @@ const stories: Record<string, (page: Page) => Locator> = {
   "forms-switch--loading": (page) => page.getByRole("switch", { name: "Weekly summary" }),
   "forms-radiogroup--loading": (page) => page.getByRole("radio", { name: "Friday" }),
   "forms-datefield--loading": (page) => page.getByRole("group", { name: "Delivery date" }),
+  "layout-pageheader--loading": (page) => page.getByRole("heading", { name: "Q-1043" }),
+  "layout-cardgrid--loading": (page) => page.getByRole("heading", { name: "Cove Hardware" }),
+  "page-layouts-listlayout--loading": (page) => page.getByText("Q-1043"),
+  "page-layouts-detaillayout--loading": (page) => page.getByText("R 18 400"),
+  "page-layouts-formlayout--loading": (page) => page.getByRole("textbox", { name: "Customer" }),
+  "page-layouts-proselayout--loading": (page) => page.getByText("Quotes now carry their VAT"),
+  "page-layouts-sidebarlayout--loading": (page) => page.getByRole("heading", { name: "Profile" }),
+  "page-layouts-fullbleedlayout--loading": (page) => page.getByText("24", { exact: true }),
+  "page-layouts-centeredlayout--loading": (page) => page.getByText("Mia Botha asked you"),
 };
 
 test("the themes folder has a reference theme", () => {

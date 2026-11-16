@@ -9,6 +9,7 @@ import {
   ListLayout,
   Tabs,
   Text,
+  StatTile,
 } from "@hackcove/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { DetailPage } from "./pages";
@@ -169,5 +170,21 @@ export const DontRecord: S = {
         </KeyValueList>
       </Card>
     </ListLayout>
+  ),
+};
+
+/** While `loading` the layout owns the wait: the header draws as itself and every part inside waits with it. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <DemoShell>
+      <DetailLayout
+        title="Q-1043"
+        loading={loading}
+        aside={<StatTile label="Total" value={loading ? undefined : "R 18 400"} />}
+      >
+        <Card title="Notes">{loading ? null : "Cove Hardware asked for a second quote."}</Card>
+      </DetailLayout>
+    </DemoShell>
   ),
 };

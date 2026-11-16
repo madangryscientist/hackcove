@@ -157,3 +157,15 @@ export const DontNothingYet: S = {
     />
   ),
 };
+
+/** While `loading` the layout owns the wait: the header draws as itself and every part inside waits with it. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <DemoShell>
+      <ListLayout title="Quotes" loading={loading} empty={<EmptyState title="No quotes yet" />}>
+        {loading ? null : <Card>Q-1043</Card>}
+      </ListLayout>
+    </DemoShell>
+  ),
+};

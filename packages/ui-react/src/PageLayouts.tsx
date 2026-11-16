@@ -1,10 +1,4 @@
-import {
-  Children,
-  type ComponentPropsWithoutRef,
-  isValidElement,
-  type ReactElement,
-  type ReactNode,
-} from "react";
+import { Children, type ComponentPropsWithoutRef, type ReactElement, type ReactNode } from "react";
 import { Callout } from "./Callout.js";
 import { Card } from "./Card.js";
 import { cx } from "./cx.js";
@@ -13,12 +7,15 @@ import { STACK_WIDTH, Stack, type StackGap } from "./Stack.js";
 import { SplitColumns } from "./SideColumn.js";
 import { StickyBar } from "./StickyBar.js";
 import type { Passthrough, Unstyled } from "./props.js";
-import { EmptySlot, hasNoChildren } from "./emptySlot.js";
+import { EmptySlot } from "./emptySlot.js";
+import { useWait } from "./layoutWait.js";
+export { CardGrid } from "./CardGrid.js";
+import { type LoadingProps, LoadingScope } from "./skeleton.js";
 
 // Compositions of the layout foundation. None sets a page width or outer padding of its own; the
 // ones that narrow their content do it inside the Container they are rendered in.
 
-/** A list page: header, an optional `filters` slot, then the list, or `empty` when there are no children. */
+/** A list page: header, an optional `filters` slot, then the list, or `empty` when there are no children. While `loading` it owns the wait and passes it to everything inside, the header too. With no children yet it draws a card of row bones, never `empty`. */
 export function ListLayout({
   filters,
   empty,
@@ -28,6 +25,8 @@ export function ListLayout({
   description,
   actions,
   tabs,
+  loading,
+  loadingLabel,
   ...rest
 }: PageHeaderProps & {
   /** A row between the header and the list, e.g. a `Fieldset` of chips or a `SearchInput`. */
@@ -36,8 +35,9 @@ export function ListLayout({
   empty?: ReactNode;
   children?: ReactNode;
 } & Passthrough): ReactElement {
+  const wait = useWait(loading, loadingLabel);
   return (
-    <>
+    <LoadingScope loading={wait.loading}>
       <PageHeader
         breadcrumbs={breadcrumbs}
         title={title}
@@ -45,23 +45,37 @@ export function ListLayout({
         actions={actions}
         tabs={tabs}
       />
-      <Stack {...rest}>
+      <Stack {...rest} {...wait.attrs}>
         {filters}
-        {Children.toArray(children).length === 0 ? (
-          <EmptySlot size="md">{empty}</EmptySlot>
-        ) : (
-          children
-        )}
+        <ListBody loading={wait.loading} empty={empty}>
+          {children}
+        </ListBody>
+        {wait.label}
       </Stack>
-    </>
+    </LoadingScope>
   );
+}
+
+/** A list page's records; with none, a card of row bones while loading (loading beats empty), else `empty`. */
+function ListBody({
+  loading,
+  empty,
+  children,
+}: {
+  loading: boolean;
+  empty: ReactNode;
+  children: ReactNode;
+}): ReactNode {
+  if (Children.toArray(children).length > 0) return children;
+  if (loading) return <Card flush>{null}</Card>;
+  return <EmptySlot size="md">{empty}</EmptySlot>;
 }
 
 /**
  * A detail page: header, then `children` (two thirds from `lg`) beside `aside` (one third), which
  * stacks below on a smaller screen: a `SideColumn asideWidth="third"` under a `PageHeader`. `sticky` keeps the aside in view from `lg` as a long page
  * scrolls: it sticks under AppShell's header and, if it is taller than the room left, scrolls
- * itself so its end stays reachable.
+ * itself so its end stays reachable. While `loading` it owns the wait and passes it to everything inside, the header too.
  */
 export function DetailLayout({
   aside,
@@ -73,6 +87,8 @@ export function DetailLayout({
   description,
   actions,
   tabs,
+  loading,
+  loadingLabel,
   ...rest
 }: PageHeaderProps & {
   /** The side column: one third from `lg`, below `children` on a smaller screen. */
@@ -88,8 +104,9 @@ export function DetailLayout({
   sticky?: boolean | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {
+  const wait = useWait(loading, loadingLabel);
   return (
-    <>
+    <LoadingScope loading={wait.loading}>
       <PageHeader
         breadcrumbs={breadcrumbs}
         title={title}
@@ -99,19 +116,23 @@ export function DetailLayout({
       />
       <SplitColumns
         {...rest}
+        {...wait.attrs}
         asideWidth="third"
         label={asideLabel}
         fold={false}
         sticky={sticky}
         aside={<Stack>{aside}</Stack>}
       >
-        <Stack>{children}</Stack>
+        <Stack>
+          {children}
+          {wait.label}
+        </Stack>
       </SplitColumns>
-    </>
+    </LoadingScope>
   );
 }
 
-/** A form page: header (no header `actions`), then a `max-w-3xl` column that starts at the Container's left edge (it is not re-centred), with an `actions` row at the end. `error` is the submit's failure, a danger `Callout` (an alert) directly above that row. Other props go on the `<form>`. */
+/** A form page: header (no header `actions`), then a `max-w-3xl` column that starts at the Container's left edge (it is not re-centred), with an `actions` row at the end. `error` is the submit's failure, a danger `Callout` (an alert) directly above that row. Other props go on the `<form>`. While `loading` it owns the wait and passes it to everything inside, the header too. */
 export function FormLayout({
   actions,
   error,
@@ -120,6 +141,8 @@ export function FormLayout({
   title,
   description,
   tabs,
+  loading,
+  loadingLabel,
   ...form
 }: Omit<PageHeaderProps, "actions"> & {
   /** The row at the end of the form: its submit and cancel buttons. */
@@ -131,17 +154,19 @@ export function FormLayout({
   error?: ReactNode;
   children: ReactNode;
 } & Unstyled<Omit<ComponentPropsWithoutRef<"form">, "title">>): ReactElement {
+  const wait = useWait(loading, loadingLabel);
   return (
-    <>
+    <LoadingScope loading={wait.loading}>
       <PageHeader breadcrumbs={breadcrumbs} title={title} description={description} tabs={tabs} />
-      <form {...form} className="max-w-3xl">
+      <form {...form} {...wait.attrs} className="max-w-3xl">
         <Stack>
           {children}
           {error && <Callout tone="danger">{error}</Callout>}
           {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
         </Stack>
+        {wait.label}
       </form>
-    </>
+    </LoadingScope>
   );
 }
 
@@ -152,7 +177,7 @@ export function FormLayout({
  * `full` (the Container's whole width) suit a page that is not long prose, such as a pricing page.
  * Paragraphs (`Text`) and the header's lede keep their own reading measure whatever the width.
  * Unlike `FormLayout` the header sits inside the column, so its `actions` stay beside the text
- * instead of at the Container's far edge.
+ * instead of at the Container's far edge. While `loading` it owns the wait and passes it to everything inside, the header too.
  */
 export function ProseLayout({
   width = "narrow",
@@ -163,6 +188,8 @@ export function ProseLayout({
   description,
   actions,
   tabs,
+  loading,
+  loadingLabel,
   ...rest
 }: PageHeaderProps & {
   /**
@@ -177,112 +204,21 @@ export function ProseLayout({
   width?: "narrow" | "wide" | "full" | undefined;
   children?: ReactNode;
 } & Passthrough): ReactElement {
+  const wait = useWait(loading, loadingLabel);
   return (
-    <div {...rest} className={STACK_WIDTH[width]}>
-      <PageHeader
-        breadcrumbs={breadcrumbs}
-        title={title}
-        description={description}
-        actions={actions}
-        tabs={tabs}
-      />
-      <Stack gap={gap}>{children}</Stack>
-    </div>
-  );
-}
-
-const COLUMNS = {
-  2: "lg:grid-cols-2",
-  3: "lg:grid-cols-3",
-  4: "lg:grid-cols-4",
-} as const;
-
-/** `columns="auto"` fits as many cards per row as the width allows, none narrower than this. */
-const AUTO_MIN_WIDTH = {
-  sm: "grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]",
-  md: "grid-cols-[repeat(auto-fill,minmax(17rem,1fr))]",
-} as const;
-
-type CardGridProps = (
-  | {
-      /**
-       * Cards per row from `lg` (one on a phone, two from `sm`), or `auto` for as many as fit.
-       * @default 3
-       */
-      columns?: keyof typeof COLUMNS | undefined;
-      /** With `columns="auto"`, the narrowest a card gets: `md` 17rem or `sm` 12rem. */
-      minWidth?: undefined;
-    }
-  | {
-      /**
-       * Cards per row from `lg` (one on a phone, two from `sm`), or `auto` for as many as fit.
-       * @default 3
-       */
-      columns: "auto";
-      /**
-       * With `columns="auto"`, the narrowest a card gets: `md` 17rem or `sm` 12rem.
-       * @default md
-       */
-      minWidth?: keyof typeof AUTO_MIN_WIDTH | undefined;
-    }
-) & {
-  /** `start` keeps each card its own height; the default stretches every card to the tallest in its row. */
-  align?: "stretch" | "start" | undefined;
-  /** `ul` makes the grid a list: each child is wrapped in an `<li>`. Default `div`. */
-  as?: "div" | "ul" | undefined;
-  /** Drawn in place of the grid when there are no children: an `EmptyState`. */
-  empty?: ReactNode;
-  children?: ReactNode;
-} & Passthrough;
-
-function gridColumns(
-  columns: keyof typeof COLUMNS | "auto",
-  minWidth: keyof typeof AUTO_MIN_WIDTH,
-): string {
-  if (columns === "auto") return AUTO_MIN_WIDTH[minWidth];
-  return cx("grid-cols-1 sm:grid-cols-2", COLUMNS[columns]);
-}
-
-/**
- * A responsive grid of tiles of one width: one column on a phone, two from `sm`, `columns` from `lg`.
- * A main area beside a narrower one is not a grid of tiles: it is `SideColumn` (`asideWidth="third"`
- * for two thirds and one). `columns="auto"` instead fits as many per row as the width allows, each at least `minWidth` wide:
- * `md` (17rem, the default) or `sm` (12rem). `align="start"` keeps each card its own height
- * instead of stretching it to the tallest in its row. `as="ul"` makes it a list of cards for a
- * screen reader: the grid is a `<ul>` and each child is wrapped in an `<li>`, still stretched.
- * With no children it draws `empty` (an `EmptyState`) in place of the grid.
- */
-export function CardGrid({
-  columns = 3,
-  minWidth = "md",
-  align = "stretch",
-  as: Tag = "div",
-  empty,
-  children,
-  ...rest
-}: CardGridProps): ReactElement {
-  if (hasNoChildren(children)) {
-    return <EmptySlot size="md">{empty}</EmptySlot>;
-  }
-  return (
-    <Tag
-      {...rest}
-      {...(Tag === "ul" ? { role: "list" } : {})}
-      className={cx(
-        "grid gap-4",
-        gridColumns(columns, minWidth),
-        align === "start" && "items-start",
-      )}
-    >
-      {Tag === "ul"
-        ? Children.toArray(children).map((child, index) => (
-            // A grid, so the one child (a Card) fills the item's height as it does in a plain grid.
-            <li key={isValidElement(child) ? child.key : index} className="grid">
-              {child}
-            </li>
-          ))
-        : children}
-    </Tag>
+    <LoadingScope loading={wait.loading}>
+      <div {...rest} {...wait.attrs} className={STACK_WIDTH[width]}>
+        <PageHeader
+          breadcrumbs={breadcrumbs}
+          title={title}
+          description={description}
+          actions={actions}
+          tabs={tabs}
+        />
+        <Stack gap={gap}>{children}</Stack>
+        {wait.label}
+      </div>
+    </LoadingScope>
   );
 }
 
@@ -293,6 +229,7 @@ export function CardGrid({
  * left edge. `padded` gives them the Container's padding instead (`px-4`, `sm:px-6`, `py-8`), for
  * a page of ordinary content beside a full-height `aside`. A `bar` is a `StickyBar` above both: the
  * full width, on the surface with a bottom line, sticking under AppShell's header as the page scrolls.
+ * While `loading` it owns the wait and passes it to everything inside, the header too.
  */
 export function FullBleedLayout({
   bar,
@@ -300,6 +237,8 @@ export function FullBleedLayout({
   asideLabel,
   padded = false,
   children,
+  loading,
+  loadingLabel,
   ...rest
 }: {
   /** A full-width row above `children` and `aside` that sticks under the header, e.g. a viewer's title and actions. `padded` does not pad it. */
@@ -314,7 +253,9 @@ export function FullBleedLayout({
    */
   padded?: boolean | undefined;
   children: ReactNode;
-} & Passthrough): ReactElement {
+} & LoadingProps &
+  Passthrough): ReactElement {
+  const wait = useWait(loading, loadingLabel);
   const row = (
     <>
       <div className={cx("min-w-0 flex-1", padded && "px-4 py-8 sm:px-6")}>{children}</div>
@@ -330,25 +271,31 @@ export function FullBleedLayout({
   );
   if (!bar) {
     return (
-      <div {...rest} className="flex min-h-0 flex-1 flex-col lg:flex-row">
-        {row}
+      <div {...rest} {...wait.attrs} className="flex min-h-0 flex-1 flex-col lg:flex-row">
+        <LoadingScope loading={wait.loading}>{row}</LoadingScope>
+        {wait.label}
       </div>
     );
   }
   return (
-    <div {...rest} className="flex min-h-0 flex-1 flex-col">
-      <StickyBar>{bar}</StickyBar>
-      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">{row}</div>
+    <div {...rest} {...wait.attrs} className="flex min-h-0 flex-1 flex-col">
+      <LoadingScope loading={wait.loading}>
+        <StickyBar>{bar}</StickyBar>
+        <div className="flex min-h-0 flex-1 flex-col lg:flex-row">{row}</div>
+      </LoadingScope>
+      {wait.label}
     </div>
   );
 }
 
-/** A narrow card (`max-w-md`) centred in the Container at a fixed offset from the top, for sign-in, landing, not-found and error pages. The one layout that does not share the left edge. */
+/** A narrow card (`max-w-md`) centred in the Container at a fixed offset from the top, for sign-in, landing, not-found and error pages. The one layout that does not share the left edge. While `loading` it owns the wait and passes it to everything inside, the header too. */
 export function CenteredLayout({
   mark,
   title,
   description,
   children,
+  loading,
+  loadingLabel,
   ...rest
 }: {
   /** Drawn first in the card, above the title, e.g. a large status numeral. Not a heading. */
@@ -358,16 +305,21 @@ export function CenteredLayout({
   /** A muted line under the title. */
   description?: ReactNode;
   children?: ReactNode;
-} & Passthrough): ReactElement {
+} & LoadingProps &
+  Passthrough): ReactElement {
+  const wait = useWait(loading, loadingLabel);
   return (
-    <div {...rest} className="mx-auto w-full max-w-md pt-16">
-      <Card>
-        <Stack gap="md">
-          {mark}
-          <PageHeaderContent title={title} description={description} />
-          {children}
-        </Stack>
-      </Card>
-    </div>
+    <LoadingScope loading={wait.loading}>
+      <div {...rest} {...wait.attrs} className="mx-auto w-full max-w-md pt-16">
+        <Card>
+          <Stack gap="md">
+            {mark}
+            <PageHeaderContent title={title} description={description} />
+            {children}
+          </Stack>
+        </Card>
+        {wait.label}
+      </div>
+    </LoadingScope>
   );
 }

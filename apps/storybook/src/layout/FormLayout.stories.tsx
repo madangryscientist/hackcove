@@ -149,3 +149,17 @@ export const DontForm: S = {
     </ListLayout>
   ),
 };
+
+/** While `loading` the layout owns the wait: the header draws as itself and every part inside waits with it. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <DemoShell>
+      <FormLayout title="Edit quote" loading={loading}>
+        <Field label="Customer">
+          <Input defaultValue="Cove Hardware" />
+        </Field>
+      </FormLayout>
+    </DemoShell>
+  ),
+};

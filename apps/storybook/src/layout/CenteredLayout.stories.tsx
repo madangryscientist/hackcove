@@ -7,6 +7,7 @@ import {
   FormLayout,
   Input,
   Tabs,
+  Text,
 } from "@hackcove/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 
@@ -91,5 +92,17 @@ export const DontPage: S = {
         <Input id="dont-page-email" type="email" placeholder="you@example.com" />
       </Field>
     </FormLayout>
+  ),
+};
+
+/** While `loading` the layout owns the wait: the header draws as itself and every part inside waits with it. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <DemoShell>
+      <CenteredLayout title="Your invite" loading={loading}>
+        <Text>{loading ? null : "Mia Botha asked you to join Cove Hardware."}</Text>
+      </CenteredLayout>
+    </DemoShell>
   ),
 };

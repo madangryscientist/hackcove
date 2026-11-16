@@ -4,6 +4,7 @@ import {
   Badge,
   Button,
   Card,
+  CardGrid,
   KeyValue,
   KeyValueList,
   Markdown,
@@ -12,6 +13,8 @@ import {
   Stack,
   StatTile,
   Text,
+  ListLayout,
+  ListRow,
 } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Feedback/Loading" };
@@ -88,4 +91,47 @@ export const Parts: S = {
       </div>
     );
   },
+};
+
+/**
+ * Set `loading` once, on the page layout, and render the page you render with data: the header,
+ * the actions and the filters draw as themselves, and every part inside waits with the layout.
+ */
+export const DoPage: S = {
+  render: () => {
+    const [rows, setRows] = useState<string[] | undefined>(undefined);
+    return (
+      <ListLayout
+        title="Quotes"
+        loading={rows === undefined}
+        loadingLabel="Loading quotes"
+        actions={
+          <Button
+            variant="outline"
+            onClick={() => setRows(rows === undefined ? ["Q-1043", "Q-1042", "Q-1041"] : undefined)}
+          >
+            {rows === undefined ? "Land the data" : "Wait again"}
+          </Button>
+        }
+      >
+        <CardGrid>
+          <StatTile label="Open" value={rows && "3"} />
+          <StatTile label="Total" value={rows && "R 41 200"} />
+          <StatTile label="Accepted" value={rows && "1"} />
+        </CardGrid>
+        <Card flush>
+          {rows?.map((ref, i) => (
+            <ListRow key={ref} divided={i > 0}>
+              {ref}
+            </ListRow>
+          ))}
+        </Card>
+      </ListLayout>
+    );
+  },
+};
+
+/** A page swapped for a "Loading..." line loses its header and actions, and jumps when the data lands. */
+export const DontPage: S = {
+  render: () => <Text tone="muted">Loading quotes...</Text>,
 };

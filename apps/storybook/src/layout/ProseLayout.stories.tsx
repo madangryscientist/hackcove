@@ -102,3 +102,15 @@ export const DontArticle: S = {
     </ListLayout>
   ),
 };
+
+/** While `loading` the layout owns the wait: the header draws as itself and every part inside waits with it. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <DemoShell>
+      <ProseLayout title="Release notes" loading={loading}>
+        <Text>{loading ? null : "Quotes now carry their VAT on their own line."}</Text>
+      </ProseLayout>
+    </DemoShell>
+  ),
+};

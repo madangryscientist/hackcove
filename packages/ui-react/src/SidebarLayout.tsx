@@ -2,6 +2,8 @@ import { type ReactElement, type ReactNode, useEffect, useRef, useState } from "
 import { cx } from "./cx.js";
 import { FoldedColumn } from "./foldedColumn.js";
 import type { Passthrough } from "./props.js";
+import { useWait } from "./layoutWait.js";
+import { type LoadingProps, LoadingScope } from "./skeleton.js";
 import { useScrollEdges } from "./scrollEdges.js";
 import { scrollStopProps, useScrollStop } from "./scrollStop.js";
 import {
@@ -45,10 +47,14 @@ function scrollToCentre(scroller: HTMLElement, item: HTMLElement): void {
  * loaded, a rail that scrolls shows its current link (the one with `aria-current`) in view, and the
  * folded disclosure reads `asideLabel` and the current link's name ("All components: Button"); both
  * need the layout to hydrate.
+ * While `loading` the canvas waits (the rail is navigation, drawn as itself) and the layout owns
+ * the wait.
  */
 export function SidebarLayout({
   aside,
   asideLabel,
+  loading,
+  loadingLabel,
   children,
   ...rest
 }: {
@@ -60,7 +66,9 @@ export function SidebarLayout({
    */
   asideLabel?: string | undefined;
   children: ReactNode;
-} & Passthrough): ReactElement {
+} & LoadingProps &
+  Passthrough): ReactElement {
+  const wait = useWait(loading, loadingLabel);
   const { element, attach, stop } = useScrollStop();
   useScrollEdges(element, "y");
   const [current, setCurrent] = useState<string | undefined>(undefined);
@@ -90,7 +98,7 @@ export function SidebarLayout({
   }, [element]);
   const { props, ring } = scrollStopProps(stop, { label: asideLabel });
   return (
-    <div {...rest} className="flex flex-col gap-8 md:flex-row md:gap-10">
+    <div {...rest} {...wait.attrs} className="flex flex-col gap-8 md:flex-row md:gap-10">
       <aside className={cx("w-full shrink-0 md:w-56", STICKY_ASIDE_MD)} aria-label={asideLabel}>
         <div
           ref={attach}
@@ -111,7 +119,10 @@ export function SidebarLayout({
           </div>
         </div>
       </aside>
-      <div className="min-w-0 flex-1">{children}</div>
+      <div className="min-w-0 flex-1">
+        <LoadingScope loading={wait.loading}>{children}</LoadingScope>
+        {wait.label}
+      </div>
     </div>
   );
 }

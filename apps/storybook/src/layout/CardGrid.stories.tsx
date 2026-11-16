@@ -172,3 +172,13 @@ export const DoAuto: S = {
     </CardGrid>
   ),
 };
+
+/** While `loading` it owns the wait, and every part inside waits with it. */
+export const Loading: StoryObj<{ loading: boolean }> = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <CardGrid loading={loading} empty={<EmptyState title="No shops yet" />}>
+      {loading ? null : <Card title="Cove Hardware">Harbour Road</Card>}
+    </CardGrid>
+  ),
+};
