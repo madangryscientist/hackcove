@@ -1,7 +1,6 @@
 import {
   AppShell,
   AppShellBrand,
-  AppShellHideBelow,
   Avatar,
   Button,
   Card,
@@ -18,20 +17,23 @@ import {
   Stack,
   SubsectionHeading,
   Text,
+  Show,
 } from "@hackcove/ui-react";
 
 /** The header's controls: a viewer chip that hides below `sm`, then the scheme toggle. */
 const galleryControls = (
   <>
-    <AppShellHideBelow>
-      <Avatar name="Ada Lovelace" size="sm" />
-      <Text>Ada Lovelace</Text>
-    </AppShellHideBelow>
+    <Show from="sm">
+      <Cluster gap="xs">
+        <Avatar name="Ada Lovelace" size="sm" />
+        <Text as="span">Ada Lovelace</Text>
+      </Cluster>
+    </Show>
     <ColourSchemeToggle />
   </>
 );
 
-/** Cluster and ClusterGrow (also with `minWidth`), and Stack `rowFrom`, `width="compact"`, `align="start"` and `divided`. */
+/** Cluster and ClusterGrow (also with `minWidth`), and Show `from` and `below`, and Stack `rowFrom`, `width="compact"`, `align="start"` and `divided`. */
 function ClusterAndStackOptions() {
   return (
     <>
@@ -66,6 +68,14 @@ function ClusterAndStackOptions() {
         <Input aria-label="Stack align start" placeholder="Stack align start" />
         <Button>Keeps its width</Button>
       </Stack>
+      <Cluster gap="sm">
+        <Show below="sm">
+          <Text>Show below sm: only on a phone.</Text>
+        </Show>
+        <Show from="sm">
+          <Text>Show from sm: gone on a phone.</Text>
+        </Show>
+      </Cluster>
       <Card flush>
         <Stack as="ul" divided aria-label="Stack divided">
           {["Stack divided", "Rows touch", "A line between"].map((label) => (
@@ -79,7 +89,7 @@ function ClusterAndStackOptions() {
   );
 }
 
-/** AppShell (its brand, nav and controls slots, an AppShellHideBelow viewer chip, and the Container inside it), PageHeader, Section, Stack and Cluster, in a box that scrolls under the sticky header. */
+/** AppShell (its brand, nav and controls slots, a Show viewer chip, and the Container inside it), PageHeader, Section, Stack and Cluster, in a box that scrolls under the sticky header. */
 export function GalleryLayout() {
   return (
     <div className="h-80 overflow-y-auto rounded-xl border border-slate-200">

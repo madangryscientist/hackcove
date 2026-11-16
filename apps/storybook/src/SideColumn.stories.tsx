@@ -79,6 +79,30 @@ export const FoldedAside: S = {
   ),
 };
 
+/** `asideWidth="third"`: from `lg` the aside is one third of the row and the main area two thirds, the split `DetailLayout` draws. */
+export const Third: S = {
+  render: () => (
+    <SideColumn asideWidth="third" aside={agent}>
+      {thread}
+    </SideColumn>
+  ),
+};
+
+/** `sticky`: from `lg` the aside stays under the header as the long main area scrolls. Scroll the canvas at a wide viewport. */
+export const Sticky: S = {
+  render: () => (
+    <SideColumn asideWidth="third" sticky aside={agent}>
+      <Stack>
+        {Array.from({ length: 8 }, (_, i) => (
+          <Card key={i} title={`Message ${i + 1}`}>
+            <Text>A long thread, so the page scrolls past the aside.</Text>
+          </Card>
+        ))}
+      </Stack>
+    </SideColumn>
+  ),
+};
+
 /** A main area and a side column of a known width are a `SideColumn`: the aside is exactly as wide as `asideWidth`, whatever it holds. */
 export const DoFixedColumn: S = {
   render: () => (

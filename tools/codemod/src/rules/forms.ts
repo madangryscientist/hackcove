@@ -27,7 +27,7 @@ function valueImports(context: Context): ts.NamedImports[] {
 }
 
 /** Renames a namespaced tag, `<ui.Old>` and its closing tag; a named import is renamed with its uses. */
-function renameNamespaced(tag: Tag, to: string, context: Context): void {
+export function renameNamespaced(tag: Tag, to: string, context: Context): void {
   const names = [tag.tagName];
   if (ts.isJsxOpeningElement(tag) && ts.isJsxElement(tag.parent)) {
     names.push(tag.parent.closingElement.tagName);

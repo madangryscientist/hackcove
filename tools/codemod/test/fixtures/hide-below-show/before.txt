@@ -1,0 +1,7 @@
+import { AppShellHideBelow, Avatar } from "@hackcove/ui-react";
+
+export const chip = (
+  <AppShellHideBelow>
+    <Avatar name="Ada" size="sm" />
+  </AppShellHideBelow>
+);

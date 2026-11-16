@@ -10,9 +10,7 @@ import { Card } from "./Card.js";
 import { cx } from "./cx.js";
 import { PageHeader, PageHeaderContent, type PageHeaderProps } from "./PageHeader.js";
 import { STACK_WIDTH, Stack, type StackGap } from "./Stack.js";
-import { useScrollEdges } from "./scrollEdges.js";
-import { scrollStopProps, useScrollStop } from "./scrollStop.js";
-import { STICKY_ASIDE_LG, STICKY_FADE_LG, STICKY_SCROLL_LG } from "./stickyColumn.js";
+import { SplitColumns } from "./SideColumn.js";
 import { StickyBar } from "./StickyBar.js";
 import type { Passthrough, Unstyled } from "./props.js";
 
@@ -56,7 +54,7 @@ export function ListLayout({
 
 /**
  * A detail page: header, then `children` (two thirds from `lg`) beside `aside` (one third), which
- * stacks below on a smaller screen. `sticky` keeps the aside in view from `lg` as a long page
+ * stacks below on a smaller screen: a `SideColumn asideWidth="third"` under a `PageHeader`. `sticky` keeps the aside in view from `lg` as a long page
  * scrolls: it sticks under AppShell's header and, if it is taller than the room left, scrolls
  * itself so its end stays reachable.
  */
@@ -85,9 +83,6 @@ export function DetailLayout({
   sticky?: boolean | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {
-  const { element, attach, stop } = useScrollStop();
-  useScrollEdges(element, "y");
-  const { props, ring } = scrollStopProps(sticky && stop, { label: asideLabel });
   return (
     <>
       <PageHeader
@@ -97,20 +92,16 @@ export function DetailLayout({
         actions={actions}
         tabs={tabs}
       />
-      <div {...rest} className="grid gap-6 lg:grid-cols-3">
-        <div className="min-w-0 lg:col-span-2">
-          <Stack>{children}</Stack>
-        </div>
-        <aside className={cx("min-w-0", sticky && STICKY_ASIDE_LG)} aria-label={asideLabel}>
-          <div
-            ref={sticky ? attach : undefined}
-            {...props}
-            className={sticky ? cx(STICKY_SCROLL_LG, STICKY_FADE_LG, ring) : undefined}
-          >
-            <Stack>{aside}</Stack>
-          </div>
-        </aside>
-      </div>
+      <SplitColumns
+        {...rest}
+        asideWidth="third"
+        label={asideLabel}
+        fold={false}
+        sticky={sticky}
+        aside={<Stack>{aside}</Stack>}
+      >
+        <Stack>{children}</Stack>
+      </SplitColumns>
     </>
   );
 }
@@ -201,12 +192,6 @@ const COLUMNS = {
   4: "lg:grid-cols-4",
 } as const;
 
-/** Two unequal columns, one on a phone, the ratio from `md`; `minmax(0,…)` lets a long value shrink instead of widening its column. */
-const RATIOS = {
-  "2:1": "md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]",
-  "1:2": "md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]",
-} as const;
-
 /** `columns="auto"` fits as many cards per row as the width allows, none narrower than this. */
 const AUTO_MIN_WIDTH = {
   sm: "grid-cols-[repeat(auto-fill,minmax(12rem,1fr))]",
@@ -216,11 +201,10 @@ const AUTO_MIN_WIDTH = {
 type CardGridProps = (
   | {
       /**
-       * Cards per row from `lg` (one on a phone, two from `sm`), `auto` for as many as fit, or a ratio:
-       * `2:1` or `1:2` is two columns, the first or the second twice as wide, from `md` (one on a phone).
+       * Cards per row from `lg` (one on a phone, two from `sm`), or `auto` for as many as fit.
        * @default 3
        */
-      columns?: keyof typeof COLUMNS | keyof typeof RATIOS | undefined;
+      columns?: keyof typeof COLUMNS | undefined;
       /** With `columns="auto"`, the narrowest a card gets: `md` 17rem or `sm` 12rem. */
       minWidth?: undefined;
     }
@@ -245,18 +229,17 @@ type CardGridProps = (
 } & Passthrough;
 
 function gridColumns(
-  columns: keyof typeof COLUMNS | keyof typeof RATIOS | "auto",
+  columns: keyof typeof COLUMNS | "auto",
   minWidth: keyof typeof AUTO_MIN_WIDTH,
 ): string {
   if (columns === "auto") return AUTO_MIN_WIDTH[minWidth];
-  if (typeof columns === "string") return cx("grid-cols-1", RATIOS[columns]);
   return cx("grid-cols-1 sm:grid-cols-2", COLUMNS[columns]);
 }
 
 /**
- * A responsive grid of tiles: one column on a phone, two from `sm`, `columns` from `lg`.
- * `columns="2:1"` or `"1:2"` is instead two unequal columns from `md`, one on a phone: a main card beside a
- * narrow one (a record's detail and its side panel). `columns="auto"` instead fits as many per row as the width allows, each at least `minWidth` wide:
+ * A responsive grid of tiles of one width: one column on a phone, two from `sm`, `columns` from `lg`.
+ * A main area beside a narrower one is not a grid of tiles: it is `SideColumn` (`asideWidth="third"`
+ * for two thirds and one). `columns="auto"` instead fits as many per row as the width allows, each at least `minWidth` wide:
  * `md` (17rem, the default) or `sm` (12rem). `align="start"` keeps each card its own height
  * instead of stretching it to the tallest in its row. `as="ul"` makes it a list of cards for a
  * screen reader: the grid is a `<ul>` and each child is wrapped in an `<li>`, still stretched.

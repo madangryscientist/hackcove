@@ -3,10 +3,10 @@ import {
   Avatar,
   AppShellBrand,
   LinkProvider,
-  AppShellHideBelow,
   Cluster,
   Text,
   TextLink,
+  Show,
 } from "@hackcove/ui-react";
 
 /**
@@ -46,13 +46,15 @@ export const DoRouterBrand: S = {
   ),
 };
 
-/** A header control that only matters on a wide screen (who is signed in) goes in `AppShellHideBelow`: hidden below `sm`, a row from `sm` up. Narrow the viewport to see it go. */
+/** A header control that only matters on a wide screen (who is signed in) goes in a `Show from="sm"`, with a `Cluster` inside to keep the avatar and the name together. Narrow the viewport to see it go. */
 export const DoHideBelow: S = {
   render: () => (
-    <AppShellHideBelow>
-      <Avatar name="Ada Lovelace" size="sm" />
-      <Text>Ada Lovelace</Text>
-    </AppShellHideBelow>
+    <Show from="sm">
+      <Cluster gap="xs">
+        <Avatar name="Ada Lovelace" size="sm" />
+        <Text as="span">Ada Lovelace</Text>
+      </Cluster>
+    </Show>
   ),
 };
 

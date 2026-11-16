@@ -13,14 +13,7 @@ export {
 } from "./StackedBar.js";
 export { TrendChart, type TrendSeries } from "./TrendChart.js";
 export { Markdown } from "./Markdown.js";
-export {
-  AppShell,
-  AppShellBrand,
-  type AppShellBreakpoint,
-  type AppShellDensity,
-  AppShellHideBelow,
-  appShellRootClassFor,
-} from "./AppShell.js";
+export { AppShell, AppShellBrand, type AppShellDensity, appShellRootClassFor } from "./AppShell.js";
 export { Container } from "./Container.js";
 export { PageHeader } from "./PageHeader.js";
 export { Hero } from "./Hero.js";
@@ -53,6 +46,7 @@ export {
   type StackRowFrom,
   type StackWidth,
 } from "./Stack.js";
+export { Show, type Breakpoint } from "./Show.js";
 export { Button, type ButtonSize, type ButtonTone, type ButtonVariant } from "./Button.js";
 export { ButtonGroup } from "./ButtonGroup.js";
 export { type LinkAdapter, type LinkAdapterProps, LinkProvider } from "./link.js";

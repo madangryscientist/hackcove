@@ -81,39 +81,6 @@ export function AppShellBrand({
   });
 }
 
-/** The breakpoint below which an `AppShellHideBelow` item is hidden. */
-export type AppShellBreakpoint = "sm" | "md" | "lg";
-
-const SHOWN_FROM: Record<AppShellBreakpoint, string> = {
-  sm: "hidden sm:flex",
-  md: "hidden md:flex",
-  lg: "hidden lg:flex",
-};
-
-/**
- * An inline header item that only shows from a breakpoint up, such as the viewer's avatar and name
- * in `controls`: below `breakpoint` it is gone (`display: none`, so assistive tech skips it too).
- * Its children sit in a row with the header's gap.
- */
-export function AppShellHideBelow({
-  breakpoint = "sm",
-  children,
-  ...rest
-}: Passthrough & {
-  /**
-   * Hidden below `sm` (640px), `md` (768px) or `lg` (1024px).
-   * @default sm
-   */
-  breakpoint?: AppShellBreakpoint;
-  children: ReactNode;
-}): ReactElement {
-  return (
-    <span {...rest} className={cx(SHOWN_FROM[breakpoint], "items-center gap-2")}>
-      {children}
-    </span>
-  );
-}
-
 // One fixed-height row that never wraps; its children keep their width. From `md` it scrolls sideways
 // if it must; below `md` nothing in the header scrolls (the nav is in the menu), so it only clips.
 const ROW = "items-center gap-4 overflow-x-clip whitespace-nowrap md:overflow-x-auto *:shrink-0";
@@ -252,7 +219,7 @@ export type AppShellDensity = "compact";
  *
  * The header row is laid out by its slots, left to right: `brand`, `nav`, then `header` (anything
  * the slots do not cover), then `controls`, pushed to the end. An app writes no wrapper or
- * styling for any of them: an item that only fits a wide screen goes in `AppShellHideBelow`. A bar
+ * styling for any of them: an item that only fits a wide screen goes in a `Show from`. A bar
  * that sticks under the header as the page scrolls is a `StickyBar`.
  *
  * On a phone (below `md`) the header is one 56px row at every page: `brand`, `header`, `controls`

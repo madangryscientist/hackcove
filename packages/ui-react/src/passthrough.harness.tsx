@@ -15,7 +15,6 @@ const ITEMS = [<li key="x">x</li>];
 export const CASES: Record<string, () => ReactElement> = {
   AppShell: () => <ui.AppShell {...A}>x</ui.AppShell>,
   AppShellBrand: () => <ui.AppShellBrand label="Brand" href="/" {...A} />,
-  AppShellHideBelow: () => <ui.AppShellHideBelow {...A}>x</ui.AppShellHideBelow>,
   Avatar: () => <ui.Avatar name="Ada Lovelace" {...A} />,
   AvatarStack: () => <ui.AvatarStack items={[{ name: "Ada Lovelace" }]} {...A} />,
   Badge: () => <ui.Badge count={3} {...A} />,
@@ -242,6 +241,11 @@ export const CASES: Record<string, () => ReactElement> = {
   Legend: () => <ui.Legend items={[{ label: "a", tone: "info" }]} {...A} />,
   SplitBar: () => <ui.SplitBar a={1} b={2} label="L" names={["a", "b"]} {...A} />,
   Stack: () => <ui.Stack {...A}>x</ui.Stack>,
+  Show: () => (
+    <ui.Show from="sm" {...A}>
+      x
+    </ui.Show>
+  ),
   StickyBar: () => <ui.StickyBar {...A}>x</ui.StickyBar>,
   StackedBar: () => (
     <ui.StackedBar items={[{ label: "a", value: 1, tone: "info" }]} label="L" {...A} />

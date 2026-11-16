@@ -17,7 +17,7 @@ export const layout: ComponentSection = {
         do: [
           "Fill the slots and write no wrapper: `brand`, `nav` (pill `Tabs` of links), `controls` (a picker, a `ColourSchemeToggle`), then an optional `subnav` row and `footer`.",
           '`brand` is an `AppShellBrand`: logo and label in one link. `collapse` leaves only the logo below `sm`. `logoSize` is `sm` (20px), `md` (24px, the default, an `Avatar size="sm"`) or `lg` (32px); an `<img>` or `<svg>` logo fills it.',
-          "`AppShellHideBelow` wraps a header control that only matters on a wide screen, such as the viewer's name: hidden below `breakpoint` (`sm`, the default, `md` or `lg`), a centred row from there up.",
+          'A header control that only matters on a wide screen, such as the viewer\'s name, goes in a `Show from="sm"` (or `md`, `lg`) in `controls`; put a `Cluster` inside it to keep an avatar and a name together.',
           "A bar that sticks under the header at the top of a `bleed` page is a `StickyBar`.",
           "With a router, `AppShellBrand`'s `href` goes through the app's `LinkProvider`, like every link.",
           "Header, main and footer each sit in a `Container`, so a page never sets its own width or padding.",
@@ -40,7 +40,7 @@ export const layout: ComponentSection = {
         "From `md` a header row that is wider than the screen (a long nav) scrolls sideways and never wraps; a link that takes focus scrolls into view, and the side with more to reach fades out.",
         "Give `nav` and `subnav` pill `Tabs` of links, so each is a labelled `<nav>`.",
       ],
-      api: ["AppShell", "AppShellBrand", "AppShellHideBelow"],
+      api: ["AppShell", "AppShellBrand"],
       functions: [
         {
           name: "appShellRootClassFor",
@@ -209,26 +209,55 @@ export const layout: ComponentSection = {
     {
       slug: "side-column",
       name: "SideColumn",
-      summary: "A main area beside a side column of a fixed width.",
+      summary: "A main area beside a side column: the one two-column split.",
       whenToUse:
-        "Part of a page that is a main area and a side panel of a known width, such as a thread beside its assistant; a whole page with a header is `DetailLayout`.",
+        "Any main area beside a side panel, such as a thread beside its assistant or a record beside its facts; a whole page with a header is `DetailLayout`, which is this split under a `PageHeader`.",
       pairs: ["SideColumn/FixedColumn"],
       stories: ["SideColumn"],
       usage: {
         do: [
           "`children` are the main area and `aside` is the side column. From `lg` the aside is `asideWidth` wide on the right and the main area takes the room left; below `lg` the aside stacks under the main area.",
-          "`asideWidth` is `sm` (18rem) or `md` (24rem, the default). The width is exact, whatever the aside holds; there is no other width.",
+          "`asideWidth` is `sm` (18rem), `md` (24rem, the default) or `third` (one third of the row, the main area two thirds). `sm` and `md` are exact, whatever the aside holds; there is no other width.",
+          "`sticky` keeps the aside in view from `lg` as a long page scrolls: it sticks under the header and, when it is taller than the screen, scrolls itself.",
           "`asideLabel` is for an aside that should not take a phone's screen: below `lg` it folds, closed, behind a disclosure of that name, and from `lg` it is the same column, always shown, with no toggle. The aside stays mounted while folded, so state inside it is kept. Left out, the aside is always shown. It also names the aside's landmark.",
-          "It sets no page width, padding, header or stickiness of its own: put it inside a layout, a `Card` or a panel. Space inside each column with a `Stack`.",
-          "A side column that is a share of a page under a `PageHeader` (two thirds and one third) is `DetailLayout`'s `aside`; a rail of links on the left is `SidebarLayout`. A `Stack` with `rowFrom` and a `ClusterGrow` sizes the side by its content, so it is not a fixed column.",
+          "It sets no page width, padding or header of its own: put it inside a layout, a `Card` or a panel. Space inside each column with a `Stack`.",
+          '`DetailLayout`\'s aside is a `SideColumn asideWidth="third"`, so a split inside a page that wants the thirds is `SideColumn asideWidth="third"`, never a `CardGrid`. A rail of links on the left is `SidebarLayout`. A `Stack` with `rowFrom` and a `ClusterGrow` sizes the side by its content, so it is not a fixed column.',
         ],
       },
       accessibility: [
         "The side column is an `<aside>`, a complementary landmark; the main area is a plain `div`. Give the aside a heading, or set `asideLabel`, which also names it, when it needs a name.",
         "In the DOM the main area comes first and the aside second, so that is the reading and tab order on every screen.",
+        "A `sticky` aside that is taller than the screen and holds no link or field takes a tab stop of its own, named by `asideLabel`, so the keyboard can scroll it.",
         "With `asideLabel` the aside is a native `<details>` disclosure below `lg`: its `<summary>` is the toggle, on the keyboard like any button. From `lg` the summary is gone and, once the page has loaded, the `<details>` is open for real, so the aside is in the accessibility tree.",
       ],
       api: ["SideColumn"],
+    },
+    {
+      slug: "show",
+      name: "Show",
+      summary: "Shows its content only from a width up, or only below it.",
+      whenToUse:
+        "Content that only fits a wide screen, and its narrow-screen form: a table from `sm`, a stack of cards below it.",
+      pairs: ["Show/Swap"],
+      stories: ["Show"],
+      usage: {
+        do: [
+          'Content that only fits a wide screen is in a `Show from`; its narrow-screen form is in a `Show below` at the same breakpoint: `<Show below="sm">{cards}</Show><Show from="sm">{table}</Show>`.',
+          "Give exactly one of `from` or `below`, each `sm`, `md` or `lg`. There is no default: the reader sees the rule.",
+          '`as="span"` inside phrasing content: a run in a `<p>`, a `Kbd` hint in a button row.',
+          "The wrapper adds no box, so its children sit in the parent's row, grid or `Stack` and the parent's gap spaces them. To keep two items together, put a `Cluster` inside the `Show`.",
+          "Hidden content stays mounted, so two `Show`s of one stateful panel mount it twice. A panel shown at every width that folds on a phone is a `SideColumn asideLabel`, not two `Show`s.",
+        ],
+        dont: [
+          "Never write `hidden sm:block` or `sm:hidden` in an app: the breakpoint is a `Show`.",
+        ],
+      },
+      accessibility: [
+        "Hidden is `display: none`: the content is out of the accessibility tree and the tab order, so a table hidden on a phone is not read out there.",
+        "The reading order is the source order; `Show` moves nothing.",
+        "It is CSS only, the same markup on the server and the client, so it works before the page hydrates and with no script.",
+      ],
+      api: ["Show"],
     },
     {
       slug: "divider",

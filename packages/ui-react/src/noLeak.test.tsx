@@ -136,6 +136,20 @@ const CASES: Record<string, Case[]> = {
     { prop: "align", node: () => <ui.Stack align="start">x</ui.Stack> },
     { prop: "divided", node: () => <ui.Stack divided>x</ui.Stack> },
   ],
+  Show: [
+    { prop: "from", node: () => <ui.Show from="sm">x</ui.Show> },
+    { prop: "below", node: () => <ui.Show below="lg">x</ui.Show> },
+  ],
+  SideColumn: [
+    {
+      prop: "sticky",
+      node: () => (
+        <ui.SideColumn sticky aside="a">
+          x
+        </ui.SideColumn>
+      ),
+    },
+  ],
   Text: [{ prop: "lines", node: () => <ui.Text lines={2}>x</ui.Text> }],
   Caption: [{ prop: "lines", node: () => <ui.Caption lines={3}>x</ui.Caption> }],
 };

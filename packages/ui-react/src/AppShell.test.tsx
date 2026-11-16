@@ -1,13 +1,8 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
-import {
-  AppShell,
-  AppShellBrand,
-  AppShellHideBelow,
-  appShellRootClass,
-  appShellRootClassFor,
-} from "./AppShell.js";
+import { AppShell, AppShellBrand, appShellRootClass, appShellRootClassFor } from "./AppShell.js";
 import { schemeClass } from "./colourScheme.js";
+import { Show } from "./Show.js";
 import { render, screen, within } from "./render.harness.js";
 
 const follows = (a: Node, b: Node) =>
@@ -114,9 +109,19 @@ describe("AppShellBrand", () => {
   });
 });
 
-describe("AppShellHideBelow", () => {
-  it("renders its children in the header's controls", () => {
-    render(<AppShell controls={<AppShellHideBelow>ada</AppShellHideBelow>}>x</AppShell>);
+describe("Show in the header", () => {
+  it("a Show in controls renders its children in the banner", () => {
+    render(
+      <AppShell
+        controls={
+          <Show from="sm" as="span">
+            ada
+          </Show>
+        }
+      >
+        x
+      </AppShell>,
+    );
     expect(within(screen.getByRole("banner")).getByText("ada")).not.toBeNull();
   });
 });

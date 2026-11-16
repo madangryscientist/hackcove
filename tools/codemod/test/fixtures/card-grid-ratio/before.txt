@@ -1,0 +1,7 @@
+import { CardGrid } from "@hackcove/ui-react";
+
+export const view = (
+  <CardGrid columns="2:1" align="start">
+    x
+  </CardGrid>
+);

@@ -1,0 +1,10 @@
+import { AppShellHideBelow, type AppShellBreakpoint, Avatar, Text } from "@hackcove/ui-react";
+
+export const at: AppShellBreakpoint = "lg";
+
+export const chip = (
+  <AppShellHideBelow breakpoint="lg">
+    <Avatar name="Ada" size="sm" />
+    <Text as="span">Ada</Text>
+  </AppShellHideBelow>
+);

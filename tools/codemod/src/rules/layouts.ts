@@ -1,5 +1,16 @@
-import { attributeOf, isOn, literalOf, remove, replace, valueOf } from "../attributes.js";
-import { type Context, report, type Tag, type TagRule } from "../source.js";
+import ts from "typescript";
+import {
+  attributeOf,
+  insert,
+  isOn,
+  literalOf,
+  remove,
+  rename,
+  replace,
+  valueOf,
+} from "../attributes.js";
+import { type Context, meaningfulChildren, report, type Tag, type TagRule } from "../source.js";
+import { renameNamespaced } from "./forms.js";
 
 /** `ListLayout isEmpty` goes: `empty` shows when there are no children. */
 export function listEmpty(tag: Tag, component: string, context: Context): void {
@@ -41,4 +52,35 @@ export function tabsVariant(tag: Tag, component: string, context: Context): void
   if (!vertical && size !== undefined) remove(context, size);
 }
 
-export const tagRules: readonly TagRule[] = [listEmpty, appShell, tabsVariant];
+/** `AppShellHideBelow breakpoint` is `Show from`; it drew its children as a row, which `Show` does not. */
+export function hideBelow(tag: Tag, component: string, context: Context): void {
+  if (component !== "AppShellHideBelow") return;
+  renameNamespaced(tag, "Show", context);
+  const breakpoint = attributeOf(tag, "breakpoint");
+  if (breakpoint === undefined) insert(context, tag, 'from="sm"');
+  else rename(context, breakpoint, "from");
+  if (ts.isJsxOpeningElement(tag) && meaningfulChildren(tag).length > 1) {
+    report(
+      context,
+      tag,
+      'Show draws no row: put a Cluster gap="xs" inside it to keep these together',
+    );
+  }
+}
+
+/** `CardGrid columns="2:1"` and `"1:2"` are gone: a main area beside a narrower one is a `SideColumn`. */
+export function cardGridRatio(tag: Tag, component: string, context: Context): void {
+  if (component !== "CardGrid") return;
+  const columns = literalOf(attributeOf(tag, "columns"));
+  if (columns === "2:1" || columns === "1:2") {
+    report(context, tag, `CardGrid columns="${columns}" is gone: a SideColumn asideWidth="third"`);
+  }
+}
+
+export const tagRules: readonly TagRule[] = [
+  listEmpty,
+  appShell,
+  tabsVariant,
+  hideBelow,
+  cardGridRatio,
+];

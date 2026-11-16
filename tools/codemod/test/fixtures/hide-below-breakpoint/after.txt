@@ -1,0 +1,10 @@
+import { Show, type Breakpoint, Avatar, Text } from "@hackcove/ui-react";
+
+export const at: Breakpoint = "lg";
+
+export const chip = (
+  <Show from="lg">
+    <Avatar name="Ada" size="sm" />
+    <Text as="span">Ada</Text>
+  </Show>
+);

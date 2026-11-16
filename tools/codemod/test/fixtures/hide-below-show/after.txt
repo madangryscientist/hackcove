@@ -1,0 +1,7 @@
+import { Show, Avatar } from "@hackcove/ui-react";
+
+export const chip = (
+  <Show from="sm">
+    <Avatar name="Ada" size="sm" />
+  </Show>
+);

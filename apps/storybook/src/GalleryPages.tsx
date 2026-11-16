@@ -21,24 +21,6 @@ import {
 import { DemoShell } from "./layout/DemoShell";
 import { DetailPage, FormPage, ListPage, ProsePage, StatTiles } from "./layout/pages";
 
-/** CardGrid `columns` as a ratio: 2:1 and 1:2, each a card beside a narrower one. */
-function RatioGrids() {
-  return (
-    <div className="flex flex-col gap-4">
-      {(["2:1", "1:2"] as const).map((columns) => (
-        <CardGrid key={columns} columns={columns}>
-          <Card title={`Wide ${columns}`}>
-            <Text>First column.</Text>
-          </Card>
-          <Card title="Narrow">
-            <Text>Second column.</Text>
-          </Card>
-        </CardGrid>
-      ))}
-    </div>
-  );
-}
-
 /** An AppShell in a box that scrolls under its sticky header; `bleed` is for the full-height layouts. */
 function PageBox({
   label,
@@ -128,15 +110,48 @@ export function GalleryPages() {
   );
 }
 
+/** SideColumn at its default width with a folded aside, and at `asideWidth="third"`. */
+function SideColumnBoxes() {
+  return (
+    <>
+      <PageBox label="SideColumn">
+        <SideColumn
+          aside={
+            <Card title="Reply agent">
+              <Text>A 24rem column from lg.</Text>
+            </Card>
+          }
+          asideLabel="Ask the reply agent"
+        >
+          <Card title="Thread">
+            <Text>The main area takes the room left.</Text>
+          </Card>
+        </SideColumn>
+      </PageBox>
+      <PageBox label="SideColumn third">
+        <SideColumn
+          asideWidth="third"
+          aside={
+            <Card title="Facts">
+              <Text>One third from lg.</Text>
+            </Card>
+          }
+        >
+          <Card title="Record">
+            <Text>Two thirds from lg.</Text>
+          </Card>
+        </SideColumn>
+      </PageBox>
+    </>
+  );
+}
+
 /** The CardGrid layouts and SidebarLayout, each in a shell box. */
 export function GalleryGridPages() {
   return (
     <div className="flex flex-col gap-6">
       <PageBox label="CardGrid">
         <StatTiles columns={4} />
-      </PageBox>
-      <PageBox label="CardGrid columns 2:1 and 1:2">
-        <RatioGrids />
       </PageBox>
       <PageBox label="CardGrid columns auto, align start">
         <CardGrid columns="auto" minWidth="sm" align="start">
@@ -187,20 +202,7 @@ export function GalleryGridPages() {
           <Text>Section 45, scrolled into view in the rail.</Text>
         </SidebarLayout>
       </PageBox>
-      <PageBox label="SideColumn">
-        <SideColumn
-          aside={
-            <Card title="Reply agent">
-              <Text>A 24rem column from lg.</Text>
-            </Card>
-          }
-          asideLabel="Ask the reply agent"
-        >
-          <Card title="Thread">
-            <Text>The main area takes the room left.</Text>
-          </Card>
-        </SideColumn>
-      </PageBox>
+      <SideColumnBoxes />
     </div>
   );
 }

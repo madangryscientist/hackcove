@@ -288,6 +288,14 @@ export const removed = {
   r98: () => <ui.Caption truncate>x</ui.Caption>,
   // @ts-expect-error an Overline takes no truncate
   r99: () => <ui.Overline truncate>x</ui.Overline>,
+  // @ts-expect-error AppShellHideBelow is Show from
+  r100: (t: typeof import("./index.js").AppShellHideBelow) => t,
+  // @ts-expect-error AppShellBreakpoint is Breakpoint
+  r101: () => ((t: import("./index.js").AppShellBreakpoint) => t)("sm"),
+  // @ts-expect-error CardGrid columns="2:1" is a SideColumn asideWidth="third"
+  r102: () => <ui.CardGrid columns="2:1">x</ui.CardGrid>,
+  // @ts-expect-error CardGrid columns="1:2" is a SideColumn asideWidth="third"
+  r103: () => <ui.CardGrid columns="1:2">x</ui.CardGrid>,
 };
 
 describe("removed API", () => {
