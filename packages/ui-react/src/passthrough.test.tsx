@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { CalendarDate } from "@internationalized/date";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { mount, stubDialog, unmount } from "./dom.harness.js";
+import { mount, stubDialog, stubPopover, unmount, unstubPopover } from "./dom.harness.js";
 import * as ui from "./index.js";
 import { A, CASES } from "./passthrough.harness.js";
 
@@ -68,6 +68,21 @@ describe("every exported component passes id, data-* and aria-* through", () => 
     expect(found).toHaveLength(1);
     expect(found[0]?.tagName).toBe("A");
     expect(found[0]?.getAttribute("aria-describedby")).toBe("described");
+  });
+
+  it("a blocked Button keeps the caller's aria-describedby and adds its tooltip to it", () => {
+    stubPopover();
+    mount(
+      <ui.Button disabledReason="Pick a shop first" {...A}>
+        Save
+      </ui.Button>,
+    );
+    const ids = probes()[0]?.getAttribute("aria-describedby")?.split(" ") ?? [];
+    expect(ids[0]).toBe("described");
+    expect(ids.slice(1).map((id) => document.getElementById(id)?.textContent)).toEqual([
+      "Pick a shop first",
+    ]);
+    unstubPopover();
   });
 
   it("an Avatar with onClick puts both on its <button>, not on the mark inside it", () => {

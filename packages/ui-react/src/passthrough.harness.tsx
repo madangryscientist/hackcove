@@ -168,6 +168,7 @@ export const CASES: Record<string, () => ReactElement> = {
   Maintenance: () => <ui.Maintenance {...A} />,
   Markdown: () => <ui.Markdown md="x" {...A} />,
   MediaTile: () => <ui.MediaTile src="/x.jpg" alt="X" onClick={noop} {...A} />,
+  Menu: () => <ui.Menu label="L" items={[{ label: "a", onSelect: noop }]} {...A} />,
   MetaList: () => <ui.MetaList {...A}>{ITEMS}</ui.MetaList>,
   Morph: () => (
     <ui.Morph name="m" item="x" {...A}>
@@ -198,6 +199,9 @@ export const CASES: Record<string, () => ReactElement> = {
     <ui.RadioGroup label="L" {...A}>
       <ui.Radio value="a" label="A" />
     </ui.RadioGroup>
+  ),
+  Pagination: () => (
+    <ui.Pagination label="L" page={1} pageCount={2} pageHref={(p) => `/${p}`} {...A} />
   ),
   Pill: () => <ui.Pill {...A}>x</ui.Pill>,
   ProgressBar: () => <ui.ProgressBar value={1} label="L" {...A} />,
@@ -289,5 +293,6 @@ export const CASES: Record<string, () => ReactElement> = {
     </ui.Timeline>
   ),
   TimelineItem: () => <ui.TimelineItem title="T" {...A} />,
+  ToastRegion: () => <ui.ToastRegion toasts={[]} onDismiss={noop} {...A} />,
   Video: () => <ui.Video src="/x.mp4" {...A} />,
 };

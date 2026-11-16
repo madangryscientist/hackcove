@@ -43,7 +43,7 @@ export const WithDisabledOption: S = {
   },
 };
 
-/** A disabled option keeps its `title` on hover as the reason; the arrow keys skip it. */
+/** An option with `disabledReason` shows the reason as its tooltip; the arrow keys reach it and choose nothing. */
 export const WithDisabledReason: S = {
   render: () => {
     const [value, setValue] = useState("split");
@@ -53,7 +53,7 @@ export const WithDisabledReason: S = {
         items={[
           { value: "split", label: "Split" },
           { value: "even", label: "Even" },
-          { value: "custom", label: "Custom", disabled: true, title: "Needs two or more people" },
+          { value: "custom", label: "Custom", disabledReason: "Needs two or more people" },
         ]}
         value={value}
         onChange={setValue}
@@ -148,7 +148,7 @@ export const DontMode: S = {
   },
 };
 
-/** An option that cannot be chosen yet stays in the group with a `title` that says why. */
+/** An option that cannot be chosen yet stays in the group with a `disabledReason` that says why. */
 export const DoDisabledReason: S = {
   render: () => {
     const [value, setValue] = useState("split");
@@ -158,7 +158,7 @@ export const DoDisabledReason: S = {
         items={[
           { value: "split", label: "Split" },
           { value: "even", label: "Even" },
-          { value: "custom", label: "Custom", disabled: true, title: "Needs two or more people" },
+          { value: "custom", label: "Custom", disabledReason: "Needs two or more people" },
         ]}
         value={value}
         onChange={setValue}
@@ -167,7 +167,7 @@ export const DoDisabledReason: S = {
   },
 };
 
-/** A disabled option with no `title` leaves the person guessing why it is greyed out. */
+/** A bare `disabled` option leaves the person guessing why it is greyed out. */
 export const DontDisabledReason: S = {
   render: () => {
     const [value, setValue] = useState("split");

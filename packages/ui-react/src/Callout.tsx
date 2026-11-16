@@ -19,7 +19,8 @@ export const TONE_SURFACE: Record<Tone, string> = {
 /** A danger notice interrupts (an alert), a warning is announced politely; the rest are read in place. */
 const ROLE: Partial<Record<Tone, "alert" | "status">> = { danger: "alert", warn: "status" };
 
-const TONE_TEXT: Record<Tone, string> = {
+/** The ink of each tone on its surface; a `ToastRegion` toast uses the same. */
+export const TONE_TEXT: Record<Tone, string> = {
   neutral: "text-slate-700",
   info: "text-blue-800",
   positive: "text-emerald-800",

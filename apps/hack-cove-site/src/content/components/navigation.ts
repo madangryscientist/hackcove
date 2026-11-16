@@ -11,7 +11,13 @@ export const navigation: ComponentSection = {
       summary: "Switch a view in place, or move between pages.",
       whenToUse:
         "Tabs switch a panel on the same page. A row of links to other pages is `Tabs` with link items.",
-      pairs: ["Tabs/SwitchView", "Tabs/SwitchPage", "Tabs/Count", "TabsLinks/Rail"],
+      pairs: [
+        "Tabs/SwitchView",
+        "Tabs/SwitchPage",
+        "Tabs/Count",
+        "TabsReason/DisabledReason",
+        "TabsLinks/Rail",
+      ],
       usage: {
         do: [
           "`Tabs` switches a view in place; the caller owns `value` and `onChange`, and the panel sits right under the row.",
@@ -19,12 +25,13 @@ export const navigation: ComponentSection = {
           "A `count` sits muted after the label and is read as part of the tab's name.",
           'Across, tabs are always underline, under a `PageHeader` too. `orientation="vertical"` is the pill rail, the current tab filled, for a `SidebarLayout` aside, and only the rail takes `size`.',
           "`size` (`sm`, `md` the default, `lg`) sets the vertical rail on the control scale, so it lines up with a `Button` of the same size; the underline row has one size.",
-          "A disabled tab keeps a `title` as the reason.",
+          "A tab that cannot be chosen yet takes a `disabledReason` that says why.",
           'Pill links with `orientation="vertical"` are the rail of a `SidebarLayout`: one link per line.',
         ],
       },
       accessibility: [
-        "The row is a tab list named by `label`; the arrow keys, Home and End move between the tabs, and a disabled tab is skipped.",
+        "The row is a tab list named by `label`; the arrow keys, Home and End move between the tabs, and a `disabled` tab is skipped.",
+        "A tab with `disabledReason` is `aria-disabled`: the arrow keys reach it and choose nothing, and the reason shows as a tooltip on hover, keyboard focus and a tap, read out as its description (the native `title` without CSS anchor positioning).",
         'Give the panel `role="tabpanel"` and a tab `controls` that points at its `id`.',
         'A tab is a `button` with `role="tab"` and `aria-selected`; only the current tab is in the tab order, and the arrow keys move and choose.',
         'Link items form a `<nav>` named by `label`; the current link gets `aria-current="page"`.',
@@ -52,6 +59,30 @@ export const navigation: ComponentSection = {
         "The `/` separators are `aria-hidden`.",
       ],
       api: ["Breadcrumbs"],
+    },
+    {
+      slug: "pagination",
+      name: "Pagination",
+      summary: "Page links for a long list.",
+      whenToUse:
+        "A list split into pages that the reader moves through: a directory, search results, an archive.",
+      pairs: ["Pagination/Links"],
+      stories: ["PaginationStates"],
+      usage: {
+        do: [
+          "Give `pageHref` the URL of a page; the page lives in the URL, so back, a new tab and a shared link work. Each link goes through the app's `LinkProvider`.",
+          "`page` is the page shown, from 1, and `pageCount` how many there are; a stale page past the end draws the last one, and a single page draws nothing.",
+          "One Pagination under the list; a long list may add one above it too, each with its own `label`.",
+          'The count line ("21 to 40 of 312") is a `Caption` beside it, not part of it.',
+          "`previousLabel`, `nextLabel` and `pageLabel` carry the words for another language.",
+        ],
+      },
+      accessibility: [
+        'A `<nav>` named by `label`. Every page is a link, and the current one has `aria-current="page"`.',
+        "Previous on the first page and Next on the last are plain text, not links, so there is no dead stop in the tab order.",
+        'The gaps (`…`) are `aria-hidden`. Below `sm` the numbers give way to `pageLabel` ("Page 4 of 12") between Previous and Next.',
+      ],
+      api: ["Pagination"],
     },
     {
       slug: "site-search",

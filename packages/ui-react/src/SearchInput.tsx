@@ -13,6 +13,7 @@ import { cx, focusRing } from "./cx.js";
 import { useTypeStep } from "./density.js";
 import { InputShell } from "./InputShell.js";
 import type { Unstyled } from "./props.js";
+import { Tipped } from "./Tooltip.js";
 
 /** The browser's own search look is reset: no `searchfield` appearance, no cancel button or decoration. The clear button below replaces them. */
 const SEARCH_RESET =
@@ -57,22 +58,26 @@ function ClearButton({
   onClear: () => void;
 }): ReactElement {
   return (
-    <button
-      type="button"
-      aria-label={label}
-      title={label}
-      onClick={onClear}
-      className={cx(CLEAR_BUTTON, CLEAR_SIZE[size].box)}
-    >
-      <svg
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        aria-hidden="true"
-        className={CLEAR_SIZE[size].icon}
-      >
-        <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L8.94 10l-4.72 4.72a.75.75 0 1 0 1.06 1.06L10 11.06l4.72 4.72a.75.75 0 1 0 1.06-1.06L11.06 10l4.72-4.72a.75.75 0 0 0-1.06-1.06L10 8.94 5.28 4.22Z" />
-      </svg>
-    </button>
+    <Tipped text={label} describes={false} own={{}}>
+      {(tip) => (
+        <button
+          type="button"
+          aria-label={label}
+          {...tip}
+          onClick={onClear}
+          className={cx(CLEAR_BUTTON, CLEAR_SIZE[size].box)}
+        >
+          <svg
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            aria-hidden="true"
+            className={CLEAR_SIZE[size].icon}
+          >
+            <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L8.94 10l-4.72 4.72a.75.75 0 1 0 1.06 1.06L10 11.06l4.72 4.72a.75.75 0 1 0 1.06-1.06L11.06 10l4.72-4.72a.75.75 0 0 0-1.06-1.06L10 8.94 5.28 4.22Z" />
+          </svg>
+        </button>
+      )}
+    </Tipped>
   );
 }
 

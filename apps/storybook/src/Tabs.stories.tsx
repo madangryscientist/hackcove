@@ -187,13 +187,13 @@ export const WithCounts: S = {
   },
 };
 
-/** A disabled tab keeps its `title` on hover as the reason; the arrow keys skip it. */
+/** A tab with `disabledReason` shows the reason as its tooltip; the arrow keys reach it and choose nothing. */
 export const WithDisabledReason: S = {
   render: () => {
     const [value, setValue] = useState("overview");
     const items = [
       { value: "overview", label: "Overview" },
-      { value: "activity", label: "Activity", disabled: true, title: "No activity yet" },
+      { value: "activity", label: "Activity", disabledReason: "No activity yet" },
       { value: "settings", label: "Settings" },
     ];
     return (

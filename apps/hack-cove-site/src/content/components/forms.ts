@@ -109,7 +109,7 @@ export const forms: ComponentSection = {
       name: "Checkbox",
       summary: "A yes or no, with its label.",
       whenToUse: "An on/off option the person ticks: a setting, a filter, a row to select.",
-      pairs: ["Checkbox/Label", "Checkbox/Row"],
+      pairs: ["Checkbox/Label", "Checkbox/Row", "Checkbox/DisabledReason"],
       usage: {
         do: [
           "Give a `Checkbox` a `label`; the whole label is the click target.",
@@ -118,6 +118,7 @@ export const forms: ComponentSection = {
           "A setting that takes effect the moment it is flipped, usually by saving it, is a `Switch`. A `Checkbox` is ticked and then submitted with the form.",
           "Choosing one of several is a `RadioGroup`, a `Select` or a `SegmentedControl`, not a row of checkboxes.",
           "Several checkboxes for one question go in a `Fieldset`.",
+          "Say why the box cannot change with `disabledReason`.",
         ],
         dont: ["Do not wrap a `Checkbox` in a `Field`; it is its own label."],
       },
@@ -125,6 +126,7 @@ export const forms: ComponentSection = {
         'A native `<input type="checkbox">` inside a `<label>`, so clicking the text toggles it and the label is its name.',
         "A bare box has no name of its own: `aria-label` is required.",
         'A `hint` or an `error` is the box\'s `aria-describedby`, added to any you pass; an `error` is `role="alert"` and marks the box `aria-invalid`.',
+        "`disabledReason` sets `aria-disabled` and keeps the box in the tab order; a click and Space do nothing, and the reason shows as a tooltip on hover, keyboard focus and a tap, read out as its description (the native `title` without CSS anchor positioning).",
         "The focus ring comes from the component.",
       ],
       api: ["Checkbox"],
@@ -135,7 +137,7 @@ export const forms: ComponentSection = {
       summary: "An on/off setting that takes effect at once.",
       whenToUse:
         "A setting that acts the moment it is flipped, usually by saving it to a server: a flag per environment, notifications on or off.",
-      pairs: ["Switch/Label", "Switch/Row"],
+      pairs: ["Switch/Label", "Switch/Row", "Switch/DisabledReason"],
       usage: {
         do: [
           "Control it: you own `checked`, and `onChange` gets the next value. There is no uncontrolled mode.",
@@ -143,6 +145,7 @@ export const forms: ComponentSection = {
           "Keep `checked` as it was while the change saves and pass `busy`: a click or a key does nothing, and it keeps its colour and its focus. Flip `checked` when the save lands.",
           "A `hint` is a muted line under the label for a setting that needs a sentence, and an `error` replaces it in red; the switch sits on the label's first line.",
           "`size` is `sm`, `md` (default) or `lg`, the same scale as a `Checkbox`.",
+          "Say why it cannot flip with `disabledReason`.",
           "A value sent with a form, ticked and then submitted, is a `Checkbox`. One of several is a `RadioGroup`, a `Select` or a `SegmentedControl`.",
         ],
         dont: ["Do not wrap a `Switch` in a `Field`; it is its own label."],
@@ -151,6 +154,7 @@ export const forms: ComponentSection = {
         'A native `<button type="button" role="switch">` with `aria-checked`, inside a `<label>`, so clicking the text flips it and the label is its name. Space and Enter flip it.',
         "A bare switch has no name of its own: `aria-label` is required.",
         "`busy` sets `aria-busy` and `aria-disabled` and keeps focus on the switch; `disabled` is the native one and takes it out of the tab order.",
+        "`disabledReason` sets `aria-disabled` and keeps the switch in the tab order; a click, Space and Enter do nothing, and the reason shows as a tooltip on hover, keyboard focus and a tap, read out as its description (the native `title` without CSS anchor positioning).",
         'A `hint` or an `error` is the switch\'s `aria-describedby`, added to any you pass; an `error` is `role="alert"` and marks the switch `aria-invalid`.',
         "The thumb's slide stops under `prefers-reduced-motion`. The focus ring comes from the component.",
       ],
@@ -243,14 +247,14 @@ export const forms: ComponentSection = {
           "An on/off setting is a `Checkbox` or a `Switch`; a long list is a `Select`.",
           "Switching the panel under a row of headings is `Tabs`.",
           "A `count` sits muted after the label.",
-          "A disabled option keeps a `title` as the reason; `disabled` on the group disables every option.",
+          "An option that cannot be chosen yet takes a `disabledReason` that says why; `disabled` on the group disables every option.",
           "Options that go to another page are links: `href` on each, drawn by the app's router link through `LinkProvider`. `value` marks the current page.",
         ],
       },
       accessibility: [
         "Buttons form a `radiogroup` named by `label`; each option is a `radio` with `aria-checked`.",
         "The group is one tab stop. The arrow keys (all four), Home and End move to the next enabled option and choose it.",
-        "A disabled option stays in the page as `aria-disabled`, so its `title` is read out; the arrow keys skip it.",
+        "An option with `disabledReason` is `aria-disabled`: the arrow keys reach it and choose nothing, and the reason shows as a tooltip on hover, keyboard focus and a tap, read out as its description (the native `title` without CSS anchor positioning). A `disabled` option is skipped.",
         'Links form a `<nav>` named by `label`, and the current one has `aria-current="page"`.',
         "The focus ring comes from the component.",
       ],

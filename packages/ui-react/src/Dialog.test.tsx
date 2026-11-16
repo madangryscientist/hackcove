@@ -97,6 +97,23 @@ describe("Dialog", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it("stays open when a press began inside and its click lands on the <dialog>", async () => {
+    // A Menu opens on the press and makes the dialog's content inert, so the browser hands the
+    // click to the <dialog> element: that is not a backdrop click.
+    const onClose = vi.fn<() => void>();
+    render(
+      <Dialog title="t" onClose={onClose}>
+        <button type="button">Inside</button>
+      </Dialog>,
+    );
+    const dialog = screen.getByRole<HTMLDialogElement>("dialog", { name: "t" });
+    await user().pointer([
+      { keys: "[MouseLeft>]", target: screen.getByRole("button", { name: "Inside" }) },
+      { keys: "[/MouseLeft]", target: dialog },
+    ]);
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
   it("calls onClose only after the exit transition has ended, so an unmount does not cut it short", async () => {
     const onClose = vi.fn<() => void>();
     render(<Dialog title="t" onClose={onClose} />);

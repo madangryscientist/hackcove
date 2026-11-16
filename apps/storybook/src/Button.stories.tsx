@@ -36,7 +36,7 @@ export const DontOnePrimary: S = {
   ),
 };
 
-/** `disabledReason` greys the button and shows the reason on hover. */
+/** `disabledReason` greys the button and shows the reason as a tooltip on hover, keyboard focus and a tap; the button stays in the tab order. */
 export const DoDisabledReason: S = {
   render: () => <Button disabledReason="Pick a shop first">Save</Button>,
 };

@@ -13,7 +13,7 @@ import { InCard } from "./cardContext.js";
 import { cx } from "./cx.js";
 import { DensityProvider } from "./density.js";
 import { HeadingLevelProvider } from "./headingLevel.js";
-import { useModal } from "./modal.js";
+import { useBackdropClose, useModal } from "./modal.js";
 import type { Passthrough } from "./props.js";
 import { scrollStopProps, TABBABLE, useScrollStop } from "./scrollStop.js";
 import { GapProvider } from "./stackGap.js";
@@ -158,6 +158,7 @@ export function Dialog({
   const titleId = useId();
 
   const closed = useModal(dialog, onClose);
+  const backdrop = useBackdropClose(dialog);
   const full = width === "full";
 
   const {
@@ -173,7 +174,7 @@ export function Dialog({
         ref={dialog}
         aria-labelledby={titleId}
         onClose={closed}
-        onClick={(event) => event.target === dialog.current && dialog.current?.close()}
+        {...backdrop}
         className={cx(BASE, width === "full" ? FULL : `${WINDOW} ${WIDTH[width]}`)}
       >
         <div className={cx("flex flex-col p-5.5", full ? "min-h-0 flex-1" : CAP)}>

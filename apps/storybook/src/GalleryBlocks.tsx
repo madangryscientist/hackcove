@@ -26,6 +26,8 @@ import {
   SegmentedControl,
   startPageTransition,
   Text,
+  type Toast,
+  ToastRegion,
 } from "@hackcove/ui-react";
 import { samplePhoto } from "./samplePhoto";
 import { sampleCode } from "./sampleCode";
@@ -108,6 +110,42 @@ export function GalleryPageFade() {
 /** The NavigationProgress block of the Gallery: the bar in its shown state, fixed over the top edge of the page that shows it. */
 export function GalleryNavigationProgress() {
   return <NavigationProgress loading />;
+}
+
+/** Two toasts that stay: an `info` one with an action and a `danger` one. */
+const GALLERY_TOASTS: Toast[] = [
+  {
+    id: "update",
+    tone: "info",
+    title: "Update available",
+    actions: <Button size="sm">Reload</Button>,
+  },
+  {
+    id: "failed",
+    tone: "danger",
+    title: "Not saved",
+    body: "The server did not answer.",
+  },
+];
+
+/**
+ * The Toast block of the Gallery: a button raises two toasts that stay (an `info` one with an action
+ * and a `danger` one). Shut, so the region fixed to the bottom of the viewport covers nothing in the
+ * shot; `Feedback/Toast` `Tones` is the shot of the toasts themselves.
+ */
+export function GalleryToast() {
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  return (
+    <div className="flex flex-wrap gap-2">
+      <Button variant="outline" onClick={() => setToasts(GALLERY_TOASTS)}>
+        Show toasts
+      </Button>
+      <ToastRegion
+        toasts={toasts}
+        onDismiss={(id) => setToasts((all) => all.filter((toast) => toast.id !== id))}
+      />
+    </div>
+  );
 }
 
 /** The two dialogs, the Drawer and the Lightbox, shut: each button opens one over the page (open, they make the page inert). */

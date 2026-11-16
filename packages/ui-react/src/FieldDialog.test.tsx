@@ -49,10 +49,10 @@ describe("FieldDialog", () => {
     expect(field().placeholder).toBe("my-project");
     expect(screen.getByText("Type a name first.")).not.toBeNull();
     const create = button("Create");
-    expect(create.disabled).toBe(true);
+    expect(create.getAttribute("aria-disabled")).toBe("true");
     expect(create.title).toBe("Type a name first.");
-    await user().type(field(), "   ");
-    expect(button("Create").disabled).toBe(true);
+    await user().type(field(), "   {Enter}");
+    expect(button("Create").getAttribute("aria-disabled")).toBe("true");
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
@@ -66,7 +66,7 @@ describe("FieldDialog", () => {
   it("enables submit once there is text and shows the hint", async () => {
     open(() => Promise.resolve());
     await user().type(field(), "alpha");
-    expect(button("Create").disabled).toBe(false);
+    expect(button("Create").getAttribute("aria-disabled")).toBeNull();
     expect(screen.getByText("Letters and dashes.")).not.toBeNull();
     expect(screen.queryByText("Type a name first.")).toBeNull();
   });
@@ -113,7 +113,7 @@ describe("FieldDialog", () => {
     await user().click(button("Create"));
     expect(screen.getByRole("alert").textContent).toBe("Name taken");
     expect(onClose).not.toHaveBeenCalled();
-    expect(button("Create").disabled).toBe(false);
+    expect(button("Create").getAttribute("aria-disabled")).toBeNull();
     await user().click(button("Create"));
     expect(onSubmit).toHaveBeenCalledTimes(2);
     expect(onClose).toHaveBeenCalledTimes(1);

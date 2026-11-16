@@ -3,6 +3,7 @@ import { cx, focusRing } from "./cx.js";
 import { controlText, type TypeStep, useDensity, useTypeStep } from "./density.js";
 import { Icon } from "./Icon.js";
 import type { IconName } from "./icons.js";
+import { hasReason, useBlocked } from "./blocked.js";
 import { renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
@@ -21,8 +22,8 @@ const BOX: Record<ButtonSize, string> = {
   md: "gap-2 px-4 py-2",
   lg: "gap-2 px-5 py-2.5",
 };
-// A plain `disabled` washes out and ignores the pointer. Blocked and busy buttons are disabled too,
-// but they keep pointer events (the title shows, the cursor says why) and do not take this.
+// A plain `disabled` washes out and ignores the pointer. A busy button is disabled too, but keeps
+// pointer events (the cursor says why) and does not take this; a blocked one is `aria-disabled`.
 const DISABLED_PLAIN = "disabled:pointer-events-none disabled:opacity-50";
 
 type Look = { color: string; hover: string };
@@ -154,6 +155,18 @@ export function buttonClass(
   return idleClass(variant, size, tone, { step });
 }
 
+/**
+ * The classes of a blocked Button, for an element that is not a button: a pager's Previous on the
+ * first page, drawn as text in the same box so the row does not jump.
+ */
+export function blockedButtonClass(
+  variant: ButtonVariant = "primary",
+  { size = "md" }: Pick<ButtonLook, "size"> = {},
+  step?: TypeStep,
+): string {
+  return stateClass({ variant, size }, "blocked", undefined, step);
+}
+
 function idleClass(
   variant: ButtonVariant,
   size: ButtonSize,
@@ -165,7 +178,11 @@ function idleClass(
 }
 
 type ButtonAsButton = ButtonLook & {
-  /** Why the button cannot be pressed: disables it, sets it as the `title`, and greys it flat. */
+  /**
+   * Why the button cannot be pressed: greys it flat and blocks it (`aria-disabled`, its click,
+   * Enter and Space do nothing) while it stays in the tab order, and shows the reason as its
+   * tooltip on hover, keyboard focus and a tap, read out as its description.
+   */
   disabledReason?: string | undefined;
   /**
    * The work is in flight: disabled, `aria-busy`, keeps its colour. Wins over `disabledReason`. A
@@ -219,7 +236,7 @@ type State = "blocked" | "busy" | "idle";
 /** Busy wins over blocked. */
 function stateOf(busy: boolean, disabledReason: string | undefined): State {
   if (busy) return "busy";
-  return disabledReason === undefined ? "idle" : "blocked";
+  return hasReason(disabledReason) ? "blocked" : "idle";
 }
 
 /** The classes of a Button in a given state: blocked swaps the colour out, busy keeps it. */
@@ -310,17 +327,24 @@ function PlainButton({
   const state = stateOf(working, disabledReason);
   const blocked = state === "blocked";
   const label = working && typeof busy === "string" ? busy : withCount(children, count);
+  const { props: guard, tooltip } = useBlocked(blocked ? disabledReason : undefined, {
+    ...rest,
+    title,
+  });
   return (
-    <button
-      type="button"
-      className={stateClass({ variant, size: drawn, tone }, state, pressed, step)}
-      disabled={disabled || working || blocked}
-      aria-busy={working || undefined}
-      aria-pressed={pressed}
-      title={blocked ? disabledReason : title}
-      {...rest}
-    >
-      {content(icon, drawn, label)}
-    </button>
+    <>
+      <button
+        type="button"
+        className={stateClass({ variant, size: drawn, tone }, state, pressed, step)}
+        disabled={disabled || working}
+        aria-busy={working || undefined}
+        aria-pressed={pressed}
+        {...rest}
+        {...guard}
+      >
+        {content(icon, drawn, label)}
+      </button>
+      {tooltip}
+    </>
   );
 }

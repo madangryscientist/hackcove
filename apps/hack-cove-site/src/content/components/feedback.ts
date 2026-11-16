@@ -17,7 +17,7 @@ export const feedback: ComponentSection = {
           "Add a `title` for a short bold lead-in; the body carries the detail.",
           'Put the one action in `actions`, at the end of the row: a `Button size="sm"` or a `TextLink stretch`, which makes the whole callout the click target.',
           "`banner` is the flat strip at the top of a `Card flush`; do not use it anywhere else. In a page's column (a `FullBleedLayout`, padded or not) the notice is a plain Callout, first in the column's `Stack`.",
-          "A message that must be answered before the reader goes on is a `Dialog`; a field's own error is the `error` of its `Field`; a submit's failure in a `Dialog` or `FormLayout` is its `error`.",
+          'A short confirmation that should not move the page ("Saved", "Copied") is a `Toast`. A message that must be answered before the reader goes on is a `Dialog`; a field\'s own error is the `error` of its `Field`; a submit\'s failure in a `Dialog` or `FormLayout` is its `error`.',
         ],
       },
       accessibility: [
@@ -26,6 +26,29 @@ export const feedback: ComponentSection = {
         "Buttons and links in `actions` keep their own focus ring and keyboard behaviour.",
       ],
       api: ["Callout"],
+    },
+    {
+      slug: "toast",
+      name: "Toast",
+      summary: "A short notice over the bottom of the page, from a list the app holds.",
+      whenToUse:
+        "A confirmation or an offer that should not move the page: Saved, Copied, Update available.",
+      pairs: ["Toast/Saved", "Toast/Action"],
+      usage: {
+        do: [
+          "Mount one `ToastRegion` at the root of the app, beside `AppShell`, and hold the list in state: add a `Toast` to show it, and drop it by `id` in `onDismiss`.",
+          "Each toast is a `title`, an optional `body` line and a `tone` (`neutral`, the default, `info`, `positive`, `warn` or `danger`), on the same surfaces as a `Callout`.",
+          'A `neutral`, `info` or `positive` toast with no `actions` leaves on its own after five seconds, paused while the pointer is over it or focus is in it. One action goes in `actions` as a `Button size="sm"`; a toast with `actions`, or a `warn` or `danger` one, stays until it is dismissed.',
+          "A toast raised while a `Dialog` or `Drawer` is open sits under it, and can be read and dismissed once it closes.",
+          "Anything the reader must keep, such as a token shown once, is a `Callout` in the page. A failure that must be answered is a `Dialog`, and a field's error is its `Field`'s.",
+        ],
+      },
+      accessibility: [
+        'The region is a landmark named by `label` ("Notifications") with a polite `role="status"` inside, in the page before the first toast, so each new toast is read once and the focus does not move.',
+        'Each toast\'s close button is named by `dismissLabel` ("Dismiss").',
+        "The hide pauses on hover and on focus, and under `prefers-reduced-motion` it still leaves at the same moment, with no fade.",
+      ],
+      api: ["ToastRegion"],
     },
     {
       slug: "empty-state",
@@ -68,7 +91,7 @@ export const feedback: ComponentSection = {
           "An error about one field is that `Field`'s `error`. An error about the whole submit (the server refused it, a conflict, no connection) is the Dialog's `error`: an alert between the body and the footer, beside the button that was pressed however tall the body is.",
           "A tall body scrolls inside the dialog, which is never taller than the screen: the title, the description and the footer stay on screen, so the actions are always in reach. There is nothing to set.",
           '`width="full"` fills the whole screen, for a player or media that needs the room. The body takes the height between the title and the footer and scrolls if it is taller. A full-screen Dialog has no backdrop to click, so put a close button on a `<form method="dialog">` in the `footer`. A single photo or video is a `Lightbox`.',
-          "One text field is a `FieldDialog`. A record or a long form is a `Drawer`. A message that needs no answer is a `Callout`.",
+          "One text field is a `FieldDialog`. A record or a long form is a `Drawer`. A message that needs no answer is a `Callout` in the page, or a `Toast` when it should not move the page.",
           'It fades and slides in, and out again on close, but a `<dialog>` only animates out while it is still in the DOM. So `onClose` is called once the exit has finished: put `setOpen(false)` there and nowhere else. Esc, the backdrop and a `<form method="dialog">` close it that way already. Your own Cancel or action button closes it by calling `.close()` on its `<dialog>`, which a click handler finds with `event.currentTarget.closest("dialog")`. A button that calls `setOpen(false)` itself unmounts the dialog at once, and it vanishes with no exit animation.',
           'After async work (a save), keep the `<dialog>` from the event before the `await` (`const dialog = event.currentTarget.closest("dialog")`) and call `dialog?.close()` when it resolves.',
         ],

@@ -40,7 +40,7 @@ export const DontStatus: S = {
   ),
 };
 
-/** `title` is the native tooltip, for the detail a short label leaves out. It is not a place for anything a reader must see: touch screens and keyboards do not show it. */
+/** `title` is the tooltip, for the detail a short label leaves out, shown on hover, keyboard focus and a tap. It is not a place for anything a reader must see. */
 export const WithTitle: S = {
   render: () => (
     <Cluster>
@@ -134,4 +134,18 @@ export const Sizes: S = {
       </Pill>
     </Cluster>
   ),
+};
+
+/** A titled Pill takes a tab stop, and its title shows as a tooltip on focus, hover and a tap. Held open by focusing it. */
+export const TitleTooltip: S = {
+  render: () => (
+    <div className="px-6 pt-14 pb-6">
+      <Pill tone="positive" dot title="Accepted on 12 Oct by Ada Lovelace">
+        Accepted
+      </Pill>
+    </div>
+  ),
+  play: ({ canvasElement }) => {
+    canvasElement.querySelector<HTMLElement>("[tabindex]")?.focus();
+  },
 };

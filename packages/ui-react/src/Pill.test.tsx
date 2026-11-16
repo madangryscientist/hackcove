@@ -90,15 +90,19 @@ describe("Pill onRemove", () => {
     expect(follows(link, screen.getByRole("button", { name: "Remove" }))).toBeTruthy();
   });
 
-  it("puts the title on a plain pill, around its text and its x", () => {
+  it("puts the title on a plain pill's text, with its x beside it and not inside", () => {
     render(
-      <Pill onRemove={() => undefined} removeLabel="Remove" title="T">
+      <Pill onRemove={() => undefined} removeLabel="Remove" title="T" data-testid="pill">
         x
       </Pill>,
     );
-    const pill = screen.getByTitle("T");
-    expect(within(pill).getByText("x")).not.toBeNull();
+    const text = screen.getByTitle("T");
+    expect(text.textContent).toBe("x");
+    expect(within(text).queryByRole("button")).toBeNull();
+    // The passthrough stays on the pill as a whole, once.
+    const pill = screen.getByTestId("pill");
     expect(within(pill).getByRole("button", { name: "Remove" })).not.toBeNull();
+    expect(text.hasAttribute("data-testid")).toBe(false);
   });
 
   it("combines with label: the x reads after the value", () => {

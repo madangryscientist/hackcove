@@ -27,16 +27,21 @@ describe("Button", () => {
 });
 
 describe("Button states", () => {
-  it("blocked: disabled, titled with the reason, and a click does nothing", async () => {
+  it("blocked: aria-disabled, focusable, titled with the reason, and a click does nothing", async () => {
     const onClick = vi.fn<() => void>();
     render(
       <Button variant="outline" disabledReason="Pick a shop first" onClick={onClick}>
         Save
       </Button>,
     );
-    expect(save().hasAttribute("disabled")).toBe(true);
+    expect(save().getAttribute("aria-disabled")).toBe("true");
+    expect(save().hasAttribute("disabled")).toBe(false);
     expect(save().getAttribute("title")).toBe("Pick a shop first");
-    await user().click(save());
+    const u = user();
+    await u.tab();
+    expect(document.activeElement).toBe(save());
+    await u.keyboard("{Enter} ");
+    await u.click(save());
     expect(onClick).not.toHaveBeenCalled();
   });
 

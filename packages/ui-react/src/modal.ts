@@ -43,3 +43,26 @@ export function useModal(
     });
   };
 }
+
+/**
+ * The backdrop press that closes a modal: a click whose press both began and ended on the
+ * `<dialog>` element itself (its backdrop), not on its contents. A press that began on a control
+ * inside does not count when its click lands on the `<dialog>`: a `Menu` opens on the press and
+ * makes the rest of the dialog inert under it, so the browser hands that click to the `<dialog>`.
+ */
+export function useBackdropClose(dialog: RefObject<HTMLDialogElement | null>): {
+  onPointerDown: (event: { target: EventTarget }) => void;
+  onClick: (event: { target: EventTarget }) => void;
+} {
+  const pressedBackdrop = useRef(false);
+  return {
+    onPointerDown: (event) => {
+      pressedBackdrop.current = event.target === dialog.current;
+    },
+    onClick: (event) => {
+      const began = pressedBackdrop.current;
+      pressedBackdrop.current = false;
+      if (began && event.target === dialog.current) dialog.current?.close();
+    },
+  };
+}

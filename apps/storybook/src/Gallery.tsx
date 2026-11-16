@@ -10,6 +10,7 @@ import {
   fromISODate,
   Markdown,
   Overline,
+  Pagination,
   PageHeading,
   SectionHeading,
   SiteSearch,
@@ -49,6 +50,7 @@ import {
   GalleryHeader,
   GalleryNavigationProgress,
   GalleryPageFade,
+  GalleryToast,
 } from "./GalleryBlocks";
 import { CompactApp, TypeSpecimen } from "./typeSteps";
 
@@ -199,6 +201,8 @@ export const gallerySections: GallerySection[] = [
           ]}
         />
 
+        <Pagination label="Pages" page={3} pageCount={10} pageHref={(page) => `#page-${page}`} />
+
         <SiteSearch
           label="Search components"
           items={[
@@ -235,6 +239,8 @@ export const gallerySections: GallerySection[] = [
         <GalleryMorph />
 
         <GalleryNavigationProgress />
+
+        <GalleryToast />
 
         <GalleryDialogs />
 

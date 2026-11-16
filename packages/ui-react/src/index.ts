@@ -52,8 +52,10 @@ export { type LinkAdapter, type LinkAdapterProps, LinkProvider } from "./link.js
 export { Avatar, type AvatarShape, type AvatarSize } from "./Avatar.js";
 export { AvatarStack, type AvatarStackPerson } from "./AvatarStack.js";
 export { Breadcrumbs, type Crumb } from "./Breadcrumbs.js";
+export { Pagination } from "./Pagination.js";
 export { BulletItem, BulletList } from "./BulletList.js";
 export { Callout } from "./Callout.js";
+export { ToastRegion, type Toast } from "./ToastRegion.js";
 export { ListRow } from "./ListRow.js";
 export { SortableItem, SortableList, type SortableMove, SortableSection } from "./SortableList.js";
 export { OutlineRegion, RegionFrame, type RegionRect } from "./OutlineRegion.js";
@@ -94,6 +96,7 @@ export { Lightbox } from "./Lightbox.js";
 export { Icon } from "./Icon.js";
 export type { IconName } from "./icons.js";
 export { IconButton, type IconButtonTone, type IconButtonVariant } from "./IconButton.js";
+export { Menu, type MenuAction } from "./Menu.js";
 export { ColourSchemeToggle } from "./ColourSchemeToggle.js";
 export {
   applyColourScheme,

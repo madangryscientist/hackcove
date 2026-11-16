@@ -17,7 +17,7 @@ export const actions: ComponentSection = {
         "Button/Destructive",
         "ButtonGroup/Row",
       ],
-      stories: ["ButtonCount"],
+      stories: ["ButtonCount", "ButtonTooltip"],
       usage: {
         do: [
           'Put one primary Button in a view. The other actions use `variant="outline"`, `"ghost"` or `"link"`; `variant="dashed"` is the full-width "add another" row at the foot of a list.',
@@ -32,7 +32,7 @@ export const actions: ComponentSection = {
       },
       accessibility: [
         'A Button is a native `<button>` and defaults to `type="button"`, so it never submits a form by accident.',
-        "`disabledReason` disables the button and sets the reason as its `title`, so a pointer user sees why.",
+        "`disabledReason` blocks the button with `aria-disabled` and keeps it in the tab order, so a keyboard reaches it; a click, Enter and Space do nothing, and the reason shows as a tooltip on hover, keyboard focus and a tap, read out as the button's description. In a browser without CSS anchor positioning the reason is its native `title`.",
         "`busy` sets `aria-busy` and disables the button until the work is done.",
         "Every Button has a focus ring from the component, so the keyboard focus is always visible.",
         "The `count` chip is part of the button's name: `Splits, 3` (a `count` of 0 is shown as `Splits, 0`). Pass `aria-expanded` on a button that opens something, so a screen reader hears whether it is open.",
@@ -44,7 +44,12 @@ export const actions: ComponentSection = {
       name: "IconButton",
       summary: "A square button for one icon.",
       whenToUse: "An action with a familiar icon and no room for a word: delete, settings, alerts.",
-      pairs: ["IconButton/Label", "IconButton/Badge", "IconButton/Navigate"],
+      pairs: [
+        "IconButton/Label",
+        "IconButton/Badge",
+        "IconButton/Navigate",
+        "IconButton/DisabledReason",
+      ],
       usage: {
         do: [
           "Always give the `label`: it is the accessible name and the tooltip, and the icon is only decoration.",
@@ -52,16 +57,47 @@ export const actions: ComponentSection = {
           "`size` is `sm` (26px) inside a row or a chip, `md` (default, 38px, the height of a `Button`) or `lg` beside a large `Button`.",
           "An unread count is `count`, never part of the label; it is not shown at 0. The icon is `icon`, a name from the `Icon` set, never a child.",
           "Going to another page is `href` (through the app's `LinkProvider`), which draws the same button as a link.",
+          "Say why it cannot be pressed with `disabledReason`: the reason becomes its tooltip in place of the label.",
           "An action that needs a word is a `Button`.",
+          "A row of several icon buttons is a `Menu`: one main action in view, the rest behind it.",
         ],
       },
       accessibility: [
-        "`label` is set as `aria-label` and `title`; with a `count` it reads `Alerts, 3`.",
+        "`label` is set as `aria-label`, and shows as a tooltip above the button on hover and on keyboard focus (the native `title` in a browser without CSS anchor positioning); with a `count` it reads `Alerts, 3`. The tooltip repeats the name, so it is hidden from a screen reader.",
         "The badge itself is `aria-hidden`, so the count is read once, through the name.",
         'As a button it defaults to `type="button"`; with `href` it is a real link, and `external` opens a new tab with `rel="noreferrer"`.',
+        "`disabledReason` sets `aria-disabled` and keeps the button in the tab order; a click, Enter and Space do nothing, and the reason shows as a tooltip on hover, keyboard focus and a tap, read out as its description (the native `title` without CSS anchor positioning).",
         "It has the component's focus ring.",
       ],
       api: ["IconButton"],
+    },
+    {
+      slug: "menu",
+      name: "Menu",
+      summary: "A button that opens a short list of actions.",
+      whenToUse:
+        "A row, card or header with more actions than fit: put the one main action in view and the rest in a Menu.",
+      pairs: ["Menu/Overflow", "Menu/Destructive"],
+      usage: {
+        do: [
+          "Keep the one main action in view as a `Button` and put the rest in one `Menu` beside it; a row of several icon buttons is a `Menu`.",
+          "`items` is data: each a `label` with `onSelect`, or a link with `href` (through the app's `LinkProvider`; `external` opens a new tab). `icon` adds a leading glyph from the `Icon` set and `disabled` dims one.",
+          'A destructive item is `tone="danger"` and goes last, so it is never the first thing the arrows reach.',
+          'The default trigger is a ghost three-dot button named by `label`; `trigger="button"` is an outline button reading `label`, for a menu whose name is worth a word ("Export"). `size="sm"` inside a row or a card header.',
+          "In a `ListRow` with `revealOnHover`, the row keeps its actions shown while the menu is open.",
+        ],
+        dont: [
+          "Never put the only action of a row in a `Menu`: one action is a `Button` or an `IconButton`.",
+          "Do not hide a reason in the menu: an item that cannot be chosen says why in its label or on the page.",
+        ],
+      },
+      accessibility: [
+        "The trigger is a button with `aria-haspopup` and `aria-expanded`, named by `label`; the menu takes the same name.",
+        "Enter, Space or ArrowDown open it on the first item, ArrowUp on the last; the arrows, Home, End and a typed letter move; Enter chooses; Escape closes it, and focus goes back to the trigger.",
+        'A link item is a real link with `role="menuitem"`; a disabled item is skipped by the arrows.',
+        "Inside a `Dialog` the menu opens in the dialog, so it is not inert, and Escape closes only the menu.",
+      ],
+      api: ["Menu"],
     },
     {
       slug: "icon",
@@ -72,7 +108,7 @@ export const actions: ComponentSection = {
       pairs: ["Icon/Icon"],
       usage: {
         do: [
-          "`name` picks one of the library's icons, all on one grid and one stroke: `diff`, `baseline`, `review`, `ci`, `self-host`, `privacy`, `capture`, `branch`, `theme`, `speed`, `search`, `chevron-right`, `chevron-down`, `close`, `external-link`, `settings`, `bell`, `check`, `plus`, `grid`, `window`, `type`, `card`, `pointer`, `field`, `table`, `compass`, `page` and `briefcase`. Each is named for its idea or action, not a product. Prefer one to drawing your own.",
+          "`name` picks one of the library's icons, all on one grid and one stroke: `diff`, `baseline`, `review`, `ci`, `self-host`, `privacy`, `capture`, `branch`, `theme`, `speed`, `search`, `chevron-right`, `chevron-down`, `close`, `external-link`, `settings`, `bell`, `check`, `plus`, `more`, `grid`, `window`, `type`, `card`, `pointer`, `field`, `table`, `compass`, `page` and `briefcase`. Each is named for its idea or action, not a product. Prefer one to drawing your own.",
           "For a glyph the set lacks, put a bare `<svg>` (with a `viewBox`, no size or colour classes) in an `Icon`; it fills the box.",
           "`size` is `sm` (14px), `md` (16px, the default), `lg` (20px) or `feature` (32px), for an icon that stands for an idea on its own. A feature card takes its icon through `Card`'s `icon`.",
           "`tone` is a text tone (`muted`, `accent`, `info`, `positive`, `warn`, `danger`); left out, the icon takes the colour of the text around it, so draw the glyph with `currentColor`.",
