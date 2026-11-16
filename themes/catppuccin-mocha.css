@@ -41,6 +41,14 @@
   --hc-ink: #cdd6f4; /* text-slate-900 */
   --hc-mute: #a6adc8; /* text-slate-500 */
   --hc-accent: #cba6f7; /* text-violet-600 */
+  --hc-cat-1: #72b6f5; /* text-indigo-600 */
+  --hc-cat-2: #ebb589; /* text-orange-600 */
+  --hc-cat-3: #8be0e7; /* text-teal-600 */
+  --hc-cat-4: #f8caf6; /* text-pink-600 */
+  --hc-cat-5: #ace188; /* text-lime-600 */
+  --hc-cat-6: #d09cfb; /* text-fuchsia-600 */
+  --hc-cat-7: #f080a3; /* text-rose-600 */
+  --hc-cat-8: #ffebb9; /* text-yellow-600 */
 }
 
 /* The page canvas: AppShell paints it, so cards (base) lift off it. */
@@ -348,6 +356,33 @@
 }
 .dark .text-purple-700 {
   color: #cba6f7; /* mauve */
+}
+/* The categorical scale (cat1 to cat8): one colour per category where the colour carries no
+   meaning, for a chart and its key. Each starts from this theme's own hue and moved only as far as
+   3:1 on every surface and 0.12 apart in OKLab need. */
+.dark .text-indigo-600 {
+  color: #72b6f5; /* cat1: blue */
+}
+.dark .text-orange-600 {
+  color: #ebb589; /* cat2: peach */
+}
+.dark .text-teal-600 {
+  color: #8be0e7; /* cat3: teal */
+}
+.dark .text-pink-600 {
+  color: #f8caf6; /* cat4: pink */
+}
+.dark .text-lime-600 {
+  color: #ace188; /* cat5: green */
+}
+.dark .text-fuchsia-600 {
+  color: #d09cfb; /* cat6: mauve */
+}
+.dark .text-rose-600 {
+  color: #f080a3; /* cat7: red */
+}
+.dark .text-yellow-600 {
+  color: #ffebb9; /* cat8: yellow */
 }
 .dark .border-emerald-200,
 .dark .border-emerald-300 {

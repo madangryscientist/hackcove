@@ -55,7 +55,7 @@ file here. Run it with `bunx moon run themes:test`. The repo's
 ## Colours for chrome the kit cannot draw
 
 Some third-party DOM is not made of `@hackcove/ui-react` parts, so it cannot take a utility: a
-MapLibre popup or control, a map marker. Each theme therefore sets six custom properties on its scope,
+MapLibre popup or control, a map marker. Each theme therefore sets fourteen custom properties on its scope,
 each equal to the value that theme's remap gives the utility named beside it:
 
 | Property | Same value as |
@@ -66,6 +66,7 @@ each equal to the value that theme's remap gives the utility named beside it:
 | `--hc-ink` | `.text-slate-900` colour |
 | `--hc-mute` | `.text-slate-500` colour |
 | `--hc-accent` | `.text-violet-600` colour |
+| `--hc-cat-1` to `--hc-cat-8` | `.text-indigo-600`, `.text-orange-600`, `.text-teal-600`, `.text-pink-600`, `.text-lime-600`, `.text-fuchsia-600`, `.text-rose-600`, `.text-yellow-600` colour: the categorical scale, so a map pin matches the `Legend` beside it |
 
 Read them in your own CSS, with a fallback for the page that has no theme:
 

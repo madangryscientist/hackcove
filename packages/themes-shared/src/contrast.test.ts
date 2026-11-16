@@ -104,6 +104,15 @@ describe("contrastFailures", () => {
     const joined = [head, ...rest.slice(0, half)].join("\n") + "\n" + rest.slice(half).join("\n");
     expect(contrastFailures(joined, palette)).toEqual([]);
   });
+  it("measures a categorical colour at 3:1 on every narrow surface, named", () => {
+    const withScale: Palette = { ...palette, categorical: ["text-indigo-600"] };
+    expect(contrastFailures(theme({ "text-indigo-600": "#89b4fa" }), withScale)).toEqual([]);
+    const failures = contrastFailures(theme({ "text-indigo-600": "#45475a" }), withScale);
+    expect(failures).toHaveLength(3);
+    expect(
+      failures.every((line) => line.startsWith("chart colour: text-indigo-600 #45475a on ")),
+    ).toBe(true);
+  });
 });
 
 describe("propertyOf", () => {

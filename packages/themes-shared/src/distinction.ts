@@ -1,5 +1,6 @@
 import { distance, toHex, type Rgb } from "./colour.js";
 import { colourOf } from "./contrast.js";
+import type { Palette } from "./contrastRules.js";
 import { utilitiesOf, type Declarations } from "./utilities.js";
 
 /**
@@ -55,6 +56,23 @@ const DISTINCTIONS: readonly Distinction[] = [
   })),
 ];
 
+/**
+ * Every pair of the palette's `categorical` role, at the fill bar: a chart's categories have no
+ * meaning but their colour, so any two of them must read as two. Read from the role, never listed.
+ */
+function categoricalPairs(palette: Palette): Distinction[] {
+  const scale = palette["categorical"] ?? [];
+  return scale.flatMap((from, i) =>
+    scale.slice(i + 1).map((to) => ({
+      name: `categories cat${i + 1} and cat${scale.indexOf(to) + 1}`,
+      from,
+      to,
+      bar: 0.12,
+      why: "two categories of a chart must read as two colours",
+    })),
+  );
+}
+
 /** The colour a theme gives a utility, which a pair of tones must set opaque to be measured. */
 function opaqueColourOf(utilities: Map<string, Declarations>, utility: string): Rgb {
   const colour = colourOf(utilities, utility);
@@ -75,12 +93,13 @@ export function distanceOf(css: string, from: string, to: string): number {
  * Every pair of the distinction contract the theme CSS fails, one readable line each: the pair, both
  * utilities and colours, the distance and the bar. Empty when the theme tells its tones apart.
  * `css` is the theme's text, not a path, so a theme split over several files is checked from their
- * concatenation.
+ * concatenation. `palette` is `packages/ui-react/palette.json`, whose `categorical` role adds a
+ * pair for every two of its colours.
  */
-export function distinctionFailures(css: string): string[] {
+export function distinctionFailures(css: string, palette: Palette): string[] {
   const utilities = utilitiesOf(css);
   const failures: string[] = [];
-  for (const pair of DISTINCTIONS) {
+  for (const pair of [...DISTINCTIONS, ...categoricalPairs(palette)]) {
     try {
       const from = opaqueColourOf(utilities, pair.from);
       const to = opaqueColourOf(utilities, pair.to);

@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Legend, StackedBar, type StackedSegment } from "@hackcove/ui-react";
+import { Legend, StackedBar, type StackedSegment, type VizTone } from "@hackcove/ui-react";
+
+const CATS: VizTone[] = ["cat1", "cat2", "cat3", "cat4", "cat5", "cat6", "cat7", "cat8"];
 
 const meta: Meta = { title: "Data/StackedBar", parameters: { layout: "padded" } };
 export default meta;
@@ -126,6 +128,58 @@ export const DontLegend: S = {
         { label: "Same", value: 163, tone: "muted" },
       ]}
       label="Screenshots by status"
+    />
+  ),
+};
+
+const shops = [
+  { label: "Vintage", value: 14 },
+  { label: "Books", value: 9 },
+  { label: "Furniture", value: 7 },
+  { label: "Clothing", value: 12 },
+  { label: "Records", value: 4 },
+  { label: "Toys", value: 5 },
+  { label: "Art", value: 3 },
+  { label: "Kitchen", value: 6 },
+];
+
+/** Eight categories in the categorical scale, `cat1` to `cat8` in order, named by the legend. */
+export const Categories: S = {
+  render: () => (
+    <StackedBar
+      items={shops.map((shop, i) => ({ ...shop, tone: CATS[i] ?? "cat1" }))}
+      label="Shops by category"
+      legend
+    />
+  ),
+};
+
+/** Categories with no meaning take the categorical scale, `cat1` upwards in order, so no colour says good or bad. */
+export const DoCategories: S = {
+  render: () => (
+    <StackedBar
+      items={[
+        { label: "Vintage", value: 14, tone: "cat1" },
+        { label: "Books", value: 9, tone: "cat2" },
+        { label: "Furniture", value: 7, tone: "cat3" },
+      ]}
+      label="Shops by category"
+      legend
+    />
+  ),
+};
+
+/** The meaning tones on categories make one read as a warning and another as a failure, which they are not. */
+export const DontCategories: S = {
+  render: () => (
+    <StackedBar
+      items={[
+        { label: "Vintage", value: 14, tone: "warn" },
+        { label: "Books", value: 9, tone: "danger" },
+        { label: "Furniture", value: 7, tone: "positive" },
+      ]}
+      label="Shops by category"
+      legend
     />
   ),
 };

@@ -4,17 +4,30 @@ import { announcedPercent, BAR_TRACK, type BarSize, sharePercent } from "./Progr
 import type { Passthrough } from "./props.js";
 import { TEXT_TONE, type TextTone } from "./typography.js";
 
-/**
- * The colour of a `StackedBar` segment or a `Legend` swatch: the `TextTone` names, painted as a
- * fill. On a chart `neutral` is a grey of its own that sits apart from `muted` (for "unmeasured"
- * next to "same"), and `accent` is the theme's accent, apart from `info`.
- */
-export type VizTone = TextTone;
+/** The categorical scale: eight colours that say only "this category", never good or bad. */
+export type CategoryTone = "cat1" | "cat2" | "cat3" | "cat4" | "cat5" | "cat6" | "cat7" | "cat8";
 
-/** Tone → text utility, painted as a fill. The `TextTone` colours are shared; `neutral` is the chart's own grey, remapped by every theme. */
+/**
+ * The colour of a `StackedBar` segment, a `Legend` swatch or a `TrendChart` series: the `TextTone`
+ * names, painted as a fill, or a category colour, `cat1` to `cat8`. On a chart `neutral` is a grey
+ * of its own that sits apart from `muted` (for "unmeasured" next to "same"), and `accent` is the
+ * theme's accent, apart from `info`. Categories with no meaning take `cat1` upwards in order; good
+ * and bad take the meaning tones; one chart never mixes the two.
+ */
+export type VizTone = TextTone | CategoryTone;
+
+/** Tone → text utility, painted as a fill. The `TextTone` colours are shared; `neutral` is the chart's own grey and `cat1` to `cat8` the categorical scale, each remapped by every theme. */
 export const VIZ_TONE: Record<VizTone, string> = {
   ...TEXT_TONE,
   neutral: "text-neutral-500",
+  cat1: "text-indigo-600",
+  cat2: "text-orange-600",
+  cat3: "text-teal-600",
+  cat4: "text-pink-600",
+  cat5: "text-lime-600",
+  cat6: "text-fuchsia-600",
+  cat7: "text-rose-600",
+  cat8: "text-yellow-600",
 };
 
 /** One part of a `StackedBar`: its `label`, its `value` (its share is `value` over the sum) and its colour. */

@@ -18,6 +18,14 @@
   --hc-ink: #352d13;
   --hc-mute: #6d5f33;
   --hc-accent: #be3d04;
+  --hc-cat-1: #1b6096; /* text-indigo-600 */
+  --hc-cat-2: #d2391a; /* text-orange-600 */
+  --hc-cat-3: #1b8177; /* text-teal-600 */
+  --hc-cat-4: #c4096e; /* text-pink-600 */
+  --hc-cat-5: #438700; /* text-lime-600 */
+  --hc-cat-6: #7633b9; /* text-fuchsia-600 */
+  --hc-cat-7: #910922; /* text-rose-600 */
+  --hc-cat-8: #946231; /* text-yellow-600 */
 }
 
 .thriftloop :is(h1, h2, h3, .font-heading) {
@@ -321,6 +329,33 @@
 
 .thriftloop .text-purple-700 {
   color: #7e3fb0;
+}
+/* The categorical scale (cat1 to cat8): one colour per category where the colour carries no
+   meaning, for a chart and its key. Each starts from this theme's own hue and moved only as far as
+   3:1 on every surface and 0.12 apart in OKLab need. */
+.thriftloop .text-indigo-600 {
+  color: #1b6096; /* cat1: steel */
+}
+.thriftloop .text-orange-600 {
+  color: #d2391a; /* cat2: brick */
+}
+.thriftloop .text-teal-600 {
+  color: #1b8177; /* cat3: teal */
+}
+.thriftloop .text-pink-600 {
+  color: #c4096e; /* cat4: berry */
+}
+.thriftloop .text-lime-600 {
+  color: #438700; /* cat5: olive */
+}
+.thriftloop .text-fuchsia-600 {
+  color: #7633b9; /* cat6: plum */
+}
+.thriftloop .text-rose-600 {
+  color: #910922; /* cat7: oxblood */
+}
+.thriftloop .text-yellow-600 {
+  color: #946231; /* cat8: ochre */
 }
 
 .thriftloop .text-red-700,

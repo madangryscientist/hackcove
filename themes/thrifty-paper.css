@@ -47,6 +47,14 @@
   --hc-ink: #1c1917; /* text-slate-900 */
   --hc-mute: #6b6259; /* text-slate-500 */
   --hc-accent: #9a3412; /* text-violet-600 */
+  --hc-cat-1: #1b6096; /* text-indigo-600 */
+  --hc-cat-2: #d2391a; /* text-orange-600 */
+  --hc-cat-3: #1b8177; /* text-teal-600 */
+  --hc-cat-4: #c4096e; /* text-pink-600 */
+  --hc-cat-5: #438700; /* text-lime-600 */
+  --hc-cat-6: #7633b9; /* text-fuchsia-600 */
+  --hc-cat-7: #910922; /* text-rose-600 */
+  --hc-cat-8: #946231; /* text-yellow-600 */
 }
 
 /* The page canvas: AppShell paints it; white cards lift off the cream. */
@@ -309,6 +317,33 @@
 }
 .thrifty-paper .text-purple-700 {
   color: #7e3fb0; /* plum, 6.51:1 on white */
+}
+/* The categorical scale (cat1 to cat8): one colour per category where the colour carries no
+   meaning, for a chart and its key. Each starts from this theme's own hue and moved only as far as
+   3:1 on every surface and 0.12 apart in OKLab need. */
+.thrifty-paper .text-indigo-600 {
+  color: #1b6096; /* cat1: steel */
+}
+.thrifty-paper .text-orange-600 {
+  color: #d2391a; /* cat2: brick */
+}
+.thrifty-paper .text-teal-600 {
+  color: #1b8177; /* cat3: teal */
+}
+.thrifty-paper .text-pink-600 {
+  color: #c4096e; /* cat4: berry */
+}
+.thrifty-paper .text-lime-600 {
+  color: #438700; /* cat5: olive */
+}
+.thrifty-paper .text-fuchsia-600 {
+  color: #7633b9; /* cat6: plum */
+}
+.thrifty-paper .text-rose-600 {
+  color: #910922; /* cat7: oxblood */
+}
+.thrifty-paper .text-yellow-600 {
+  color: #946231; /* cat8: ochre */
 }
 .thrifty-paper .text-red-700,
 .thrifty-paper .text-red-800,

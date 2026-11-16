@@ -224,7 +224,7 @@ export function rulesFor(palette: Palette): Rule[] {
     {
       name: "chart colour",
       bar: UI_BAR,
-      fg: roleOf(palette, "viz"),
+      fg: roleOf(palette, "viz", "categorical"),
       on: stacks(narrow),
       base: narrow,
     },

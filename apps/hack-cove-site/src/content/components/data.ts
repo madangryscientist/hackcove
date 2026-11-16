@@ -194,10 +194,11 @@ export const data: ComponentSection = {
       summary: "A bar of any number of parts, each sized by its share of the sum.",
       whenToUse:
         "The make-up of one whole in three or more parts: results by status, spend by group.",
-      pairs: ["StackedBar/Legend"],
+      pairs: ["StackedBar/Legend", "StackedBar/Categories"],
       usage: {
         do: [
           "`items` are `{ label, value, tone }` in the order to draw; `tone` is `muted`, `positive`, `warn`, `danger`, `info`, `neutral` (a grey apart from `muted`) or `accent`, and you map your own roles onto them. Five distinguishable parts are `warn`, `info`, `danger`, `neutral` and `muted`.",
+          "Categories with no meaning (shops by kind, spend by group) take the categorical scale, `cat1` to `cat8`, from `cat1` upwards in order; good and bad take the meaning tones; never both in one chart. Each theme publishes the same eight as `--hc-cat-1` to `--hc-cat-8`, so a map pin can match its `Legend`.",
           "Set `legend` so every colour is named in words under the bar, with its value.",
           '`Legend` alone is the key for colours drawn elsewhere, such as a `TableRow` `stripe`. An item with `swatch: "dashed"` is a dashed ring with no fill, the key for an outline drawn over the chart.',
           "`size` is `sm`, `md` (default) or `lg`. A part with no value is zero wide.",
@@ -219,7 +220,7 @@ export const data: ComponentSection = {
       usage: {
         do: [
           "`buckets` are the x-axis labels in order (`W12`, `Mar`); each series' `values` has one value per bucket, in the same order. `label` names the chart.",
-          "`series` is one or two `{ label, tone, values }`, never more; `tone` is a `VizTone`. Two series draw a `Legend` under the chart; one is named by `label`.",
+          "`series` is one or two `{ label, tone, values }`, never more; `tone` is a `VizTone`: a meaning tone, or `cat1` upwards for series that are only categories, never both in one chart. Two series draw a `Legend` under the chart; one is named by `label`.",
           "`kind` is `bar` (default) for a count in each bucket, or `line` for a level over time.",
           "Values are counts or amounts from 0 up. A negative value is drawn as 0. A missing value, a `null` or a `values` list shorter than `buckets`, draws nothing for that bucket: no bar, and the line breaks there. Values past the last bucket are ignored.",
           "The y-axis runs from 0 to a rounded maximum (2, 4 or 10 times a power of ten) and is labelled at 0, half and the top. With more than 8 buckets, every k-th x label is drawn, starting with the first.",
