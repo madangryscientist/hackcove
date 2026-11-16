@@ -1,0 +1,7 @@
+import Ui from "@hackcove/ui-react";
+import { EmptyState } from "@hackcove/ui-react";
+
+export const a = (
+  <EmptyState title="x" />
+);
+export const u = Ui;

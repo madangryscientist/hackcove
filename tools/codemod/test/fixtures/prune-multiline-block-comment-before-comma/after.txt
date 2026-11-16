@@ -1,0 +1,9 @@
+import {
+  EmptyState, // keep me
+  Text,
+} from "@hackcove/ui-react";
+
+export const a = (
+  <EmptyState title="x" />
+);
+export const t = [Text];

@@ -1,0 +1,11 @@
+import {
+  EmptyState,
+  IconButton,
+} from "@hackcove/ui-react";
+
+export const a = (
+  <EmptyState title="x" />
+);
+export const b = (
+  <IconButton icon="close" label="Close" />
+);
