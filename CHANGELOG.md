@@ -1,3 +1,13 @@
+## 0.10.16 (2026-11-16)
+
+### 🩹 Fixes
+
+- **ui-react:** keep a Morph's name when a parent restores the scroll on Back ([#152](https://github.com/madangryscientist/hackcove/pull/152))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.10.15 (2026-11-15)
 
 ### 🩹 Fixes
