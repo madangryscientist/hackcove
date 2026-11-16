@@ -15,27 +15,27 @@ const css = `@keyframes hc-navigation-progress-in{from{opacity:0}to{opacity:1}}
 
 /**
  * A thin indeterminate bar along the top edge of the viewport, in the accent tone, for a route
- * change that is under way and has no known length. Pass `active` from the router's pending state
- * and render it once per app, beside the page frame. It draws exactly what `active` says: the bar
+ * change that is under way and has no known length. Pass `loading` from the router's pending state
+ * and render it once per app, beside the page frame. It draws exactly what `loading` says: the bar
  * while it is true and nothing while it is false. The stylesheet holds it invisible for the first
  * 150ms, so a fast navigation shows nothing. It is fixed to the viewport and overlays the top of
  * the header, so nothing on the page moves. Under `prefers-reduced-motion: reduce` it is a still
  * bar.
  */
 export function NavigationProgress({
-  active,
+  loading,
   label = "Loading page",
   ...rest
 }: {
   /** True while a navigation is pending, e.g. from the router's state. */
-  active: boolean;
+  loading: boolean;
   /**
    * The bar's accessible name.
    * @default Loading page
    */
   label?: string;
 } & Passthrough): ReactElement | null {
-  if (!active) return null;
+  if (!loading) return null;
   return (
     <>
       <style>{css}</style>

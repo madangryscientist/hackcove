@@ -1,0 +1,3 @@
+import { Container } from "@hackcove/ui-react";
+
+export const view = <Container ref={box}>x</Container>;

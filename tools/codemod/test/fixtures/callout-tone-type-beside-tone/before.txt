@@ -1,0 +1,4 @@
+import { type CalloutTone, type Tone } from "@hackcove/ui-react";
+
+export const a: CalloutTone = "warn";
+export const b: Tone = "info";

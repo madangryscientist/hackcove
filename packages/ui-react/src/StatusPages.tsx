@@ -1,7 +1,7 @@
 import type { ReactElement, ReactNode } from "react";
 import { Button } from "./Button.js";
 import { CodeBlock } from "./CodeBlock.js";
-import { type LinkRender } from "./link.js";
+import { useHome } from "./link.js";
 import { CenteredLayout } from "./PageLayouts.js";
 import type { Passthrough } from "./props.js";
 
@@ -15,36 +15,26 @@ type StatusPageProps = {
   /** Replaces the default body copy. */
   children?: ReactNode;
   /**
-   * The primary action; the home link turns outline beside it. This is the one way to a button
-   * worded differently: pass `action` and leave out `homeHref`, so there is no "Back to home" link.
-   * There is no label prop.
+   * The page's own buttons, before "Back to home", which turns outline beside them. This is the one
+   * way to a button worded differently; there is no label prop.
    */
-  action?: ReactNode;
-  /** Adds a "Back to home" button linking here. With neither this nor `renderHome` there is no home link. */
-  homeHref?: string;
-  /** Draws the home link with the app's own router `<Link>`, as on `Button`. */
-  renderHome?: LinkRender;
+  actions?: ReactNode;
 } & Passthrough;
 
 type Copy = { title: string; body: string };
 
-type StatusPageInner = StatusPageProps & { copy: Copy; extra?: ReactNode; mark?: ReactNode };
+type StatusPageInner = StatusPageProps & {
+  copy: Copy;
+  extra?: ReactNode;
+  mark?: ReactNode;
+  /** Whether the page links home. Fixed per page: only `Maintenance` does not. */
+  homeward?: boolean;
+};
 
-function homeLink(
-  variant: "primary" | "outline",
-  href: string | undefined,
-  render: LinkRender | undefined,
-): ReactNode {
-  if (render) {
-    return (
-      <Button render={render} variant={variant}>
-        Back to home
-      </Button>
-    );
-  }
-  if (href === undefined) return null;
+/** "Back to home", to the `LinkProvider`'s `home`: the primary button alone, outline after the page's actions. */
+function HomeLink({ outline }: { outline: boolean }): ReactElement {
   return (
-    <Button href={href} variant={variant}>
+    <Button href={useHome()} variant={outline ? "outline" : "primary"}>
       Back to home
     </Button>
   );
@@ -54,25 +44,24 @@ function StatusPage({
   copy,
   title,
   children,
-  action,
-  homeHref,
-  renderHome,
+  actions,
   extra,
   mark,
+  homeward = true,
   ...rest
 }: StatusPageInner): ReactElement {
-  const home = homeLink(action === undefined ? "primary" : "outline", homeHref, renderHome);
+  const home = homeward && <HomeLink outline={Boolean(actions)} />;
   return (
     <CenteredLayout
       {...rest}
       mark={mark}
       title={title ?? copy.title}
-      subtitle={children ?? copy.body}
+      description={children ?? copy.body}
     >
       {extra}
-      {(action || home) && (
+      {(actions || home) && (
         <div className="flex flex-wrap items-center gap-2">
-          {action}
+          {actions}
           {home}
         </div>
       )}
@@ -113,17 +102,17 @@ export function NotFound({
 /**
  * 500 or any failure. `detail` is the error text, shown in a `CodeBlock` under the copy; pass it
  * only where a reader may see it (a request id, a message), never a stack trace. `onRetry` adds a
- * "Try again" button, unless `action` replaces it.
+ * "Try again" button, unless `actions` replaces it.
  */
 export function ErrorPage({
   detail,
   onRetry,
-  action,
+  actions,
   ...props
 }: StatusPageProps & {
   /** The error text, in a `CodeBlock` under the copy: a request id or a message a reader may see, never a stack trace. */
   detail?: string;
-  /** Adds a "Try again" button that calls it, unless `action` replaces the button. */
+  /** Adds a "Try again" button that calls it, unless `actions` replaces the button. */
   onRetry?: () => void;
 }): ReactElement {
   return (
@@ -132,20 +121,20 @@ export function ErrorPage({
         title: "Something went wrong",
         body: "An error stopped this page from loading. You can try again.",
       }}
-      action={action ?? retry(onRetry)}
+      actions={actions ?? retry(onRetry)}
       extra={detail && <CodeBlock label="Error">{detail}</CodeBlock>}
       {...props}
     />
   );
 }
 
-/** The device has no connection. `onRetry` adds a "Try again" button, unless `action` replaces it. */
+/** The device has no connection. `onRetry` adds a "Try again" button, unless `actions` replaces it. */
 export function Offline({
   onRetry,
-  action,
+  actions,
   ...props
 }: StatusPageProps & {
-  /** Adds a "Try again" button that calls it, unless `action` replaces the button. */
+  /** Adds a "Try again" button that calls it, unless `actions` replaces the button. */
   onRetry?: () => void;
 }): ReactElement {
   return (
@@ -154,16 +143,20 @@ export function Offline({
         title: "You are offline",
         body: "Check your connection and try again.",
       }}
-      action={action ?? retry(onRetry)}
+      actions={actions ?? retry(onRetry)}
       {...props}
     />
   );
 }
 
-/** The site is down on purpose and will be back. */
+/**
+ * The site is down on purpose and will be back. It has no "Back to home": home is the site that
+ * is down.
+ */
 export function Maintenance(props: StatusPageProps): ReactElement {
   return (
     <StatusPage
+      homeward={false}
       copy={{
         title: "Down for maintenance",
         body: "We are making improvements and will be back shortly.",

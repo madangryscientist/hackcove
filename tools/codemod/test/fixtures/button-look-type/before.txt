@@ -1,0 +1,3 @@
+import { type ButtonLook } from "@hackcove/ui-react";
+
+export const look: ButtonLook = "primary";

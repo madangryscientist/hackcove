@@ -28,7 +28,7 @@ describe("CodeExample", () => {
         PREVIEW
       </CodeExample>,
     );
-    expect(screen.getByRole("button", { name: "copy" }).getAttribute("type")).toBe("button");
+    expect(screen.getByRole("button", { name: "Copy" }).getAttribute("type")).toBe("button");
   });
 
   it("puts a caption last, after the code, and none without one", () => {

@@ -55,25 +55,21 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
   [
     "Input",
     (size) => <Input aria-label="x" {...at(size)} />,
-    { sm: "py-1 text-xs", md: "py-2 text-sm", lg: "py-2.5 text-base" },
+    { sm: "py-1 text-sm", md: "py-2 text-base", lg: "py-2.5 text-lg" },
   ],
   [
     "Select",
-    (size) => (
-      <Select aria-label="x" {...at(size)}>
-        <option>a</option>
-      </Select>
-    ),
-    { sm: "py-1 text-xs", md: "py-2 text-sm", lg: "py-2.5 text-base" },
+    (size) => <Select aria-label="x" items={[]} {...at(size)} />,
+    { sm: "py-1 text-sm", md: "py-2 text-base", lg: "py-2.5 text-lg" },
   ],
   [
     "Textarea",
     (size) => <Textarea aria-label="x" {...at(size)} />,
-    { sm: "py-1 text-xs", md: "py-2 text-sm", lg: "py-2.5 text-base" },
+    { sm: "py-1 text-sm", md: "py-2 text-base", lg: "py-2.5 text-lg" },
   ],
   [
     "SearchInput",
-    (size) => <SearchInput aria-label="x" {...at(size)} />,
+    (size) => <SearchInput aria-label="x" clearLabel="Clear" {...at(size)} />,
     { sm: "pl-2 pr-7", md: "pl-3 pr-9", lg: "pl-4 pr-11" },
   ],
   [
@@ -83,11 +79,7 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
   ],
   [
     "IconButton",
-    (size) => (
-      <IconButton label="x" {...at(size)}>
-        x
-      </IconButton>
-    ),
+    (size) => <IconButton label="x" {...at(size)} icon="close" />,
     { sm: "size-6.5", md: "size-9.5", lg: "size-11.5" },
   ],
   [
@@ -100,19 +92,28 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
     (size) => (
       <SegmentedControl items={items} value="a" label="x" onChange={() => {}} {...at(size)} />
     ),
-    { sm: "px-2.5 py-1 text-xs", md: "px-3 py-2 text-sm", lg: "px-4 py-2.5 text-base" },
+    { sm: "px-2.5 py-1 text-sm", md: "px-3 py-2 text-base", lg: "px-4 py-2.5 text-lg" },
   ],
   [
-    "Tabs pill",
+    "Tabs rail",
     (size) => (
-      <Tabs variant="pill" items={items} value="a" label="x" onChange={() => {}} {...at(size)} />
+      <Tabs
+        items={items}
+        value="a"
+        label="x"
+        onChange={() => {}}
+        orientation="vertical"
+        {...at(size)}
+      />
     ),
-    { sm: "px-2.5 py-1 text-xs", md: "px-3 py-2 text-sm", lg: "px-4 py-2.5 text-base" },
+    { sm: "px-2.5 py-1 text-sm", md: "px-3 py-2 text-base", lg: "px-4 py-2.5 text-lg" },
   ],
   [
-    "Tabs pill links",
-    (size) => <Tabs variant="pill" items={[{ label: "A", href: "/a" }]} label="x" {...at(size)} />,
-    { sm: "px-2.5 py-1 text-xs", md: "px-3 py-2 text-sm", lg: "px-4 py-2.5 text-base" },
+    "Tabs rail links",
+    (size) => (
+      <Tabs items={[{ label: "A", href: "/a" }]} label="x" orientation="vertical" {...at(size)} />
+    ),
+    { sm: "px-2.5 py-1 text-sm", md: "px-3 py-2 text-base", lg: "px-4 py-2.5 text-lg" },
   ],
   [
     "Card",
@@ -141,7 +142,7 @@ const sized: [string, (size?: Size) => ReactElement, Record<Size, string>][] = [
   [
     "SubsectionHeading",
     (size) => <SubsectionHeading {...at(size)}>x</SubsectionHeading>,
-    { sm: "text-sm/5", md: "text-base/6", lg: "text-lg/7" },
+    { sm: "text-base/6", md: "text-lg/7", lg: "text-xl/7" },
   ],
   [
     "Section gap",
@@ -155,7 +156,7 @@ const SIZES = ["sm", "md", "lg"] as const;
 // The Dialog panel's own classes.
 const panel = (size?: Size) => {
   const out = renderToStaticMarkup(
-    <Dialog title="x" {...at(size)} onClose={() => {}}>
+    <Dialog title="x" {...(size ? { width: size } : {})} onClose={() => {}}>
       body
     </Dialog>,
   );
@@ -177,9 +178,9 @@ describe("one size scale: sm, md and lg, md the default", () => {
     expect(renderToStaticMarkup(<Stack gap="xl">x</Stack>)).toContain("gap-12 sm:gap-16");
   });
 
-  it("Cluster's gap defaults to xs, its documented exception", () => {
+  it("Cluster's gap defaults to sm, its documented exception", () => {
     expect(renderToStaticMarkup(<Cluster>x</Cluster>)).toBe(
-      renderToStaticMarkup(<Cluster gap="xs">x</Cluster>),
+      renderToStaticMarkup(<Cluster gap="sm">x</Cluster>),
     );
   });
 
@@ -226,17 +227,17 @@ describe("sized react-aria controls", () => {
   });
 
   it.each([
-    [undefined, "py-2 pl-2.5 pr-2.5 text-sm"],
-    ["sm", "py-1 pl-2 pr-2 text-xs"],
-    ["lg", "py-2.5 pl-3 pr-3 text-base"],
+    [undefined, "py-2 pl-2.5 pr-2.5 text-base"],
+    ["sm", "py-1 pl-2 pr-2 text-sm"],
+    ["lg", "py-2.5 pl-3 pr-3 text-lg"],
   ] as const)("DateField size %s is %s", (size, cls) => {
     expect(mount(<DateField aria-label="x" {...at(size)} />).innerHTML).toContain(cls);
   });
 
   it.each([
-    [undefined, "py-1 pl-2.5 pr-1 text-sm", "h-7 w-7"],
-    ["sm", "py-0.5 pl-2 pr-0.5 text-xs", "h-5 w-5"],
-    ["lg", "py-1.5 pl-3 pr-1.5 text-base", "h-8 w-8"],
+    [undefined, "py-1 pl-2.5 pr-1 text-base", "h-7 w-7"],
+    ["sm", "py-0.5 pl-2 pr-0.5 text-sm", "h-5 w-5"],
+    ["lg", "py-1.5 pl-3 pr-1.5 text-lg", "h-8 w-8"],
   ] as const)("DateField calendar size %s is %s with a %s button", (size, frame, button) => {
     const html = mount(<DateField calendar aria-label="x" {...at(size)} />).innerHTML;
     expect(html).toContain(frame);

@@ -1,0 +1,3 @@
+import { Card as Box } from "@hackcove/ui-react";
+
+export const view = <Box as="div">x</Box>;

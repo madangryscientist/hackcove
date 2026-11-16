@@ -26,16 +26,15 @@ export const FullPage: S = {
       brand={<a href="#">Hack Cove</a>}
       nav={
         <Tabs
-          variant="pill"
           label="Main"
           items={[
-            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Quotes", href: "#quotes", selected: true },
             { label: "Clients", href: "#clients" },
           ]}
         />
       }
     >
-      <CenteredLayout title="Sign in" subtitle="Use your Hack Cove account.">
+      <CenteredLayout title="Sign in" description="Use your Hack Cove account.">
         <Field label="Email" htmlFor="full-page-email">
           <Input id="full-page-email" type="email" placeholder="you@example.com" />
         </Field>
@@ -48,7 +47,7 @@ export const FullPage: S = {
 export const SignIn: S = {
   render: () => (
     <DemoShell>
-      <CenteredLayout title="Sign in" subtitle="Use your Hack Cove account.">
+      <CenteredLayout title="Sign in" description="Use your Hack Cove account.">
         <Field label="Email" htmlFor="sign-in-email">
           <Input id="sign-in-email" type="email" placeholder="you@example.com" />
         </Field>
@@ -61,7 +60,7 @@ export const SignIn: S = {
 export const NotFound: S = {
   render: () => (
     <DemoShell>
-      <CenteredLayout title="Page not found" subtitle="It may have moved.">
+      <CenteredLayout title="Page not found" description="It may have moved.">
         <Button variant="outline">Back to builds</Button>
       </CenteredLayout>
     </DemoShell>
@@ -71,7 +70,7 @@ export const NotFound: S = {
 /** Sign-in, landing, not-found and error pages are one narrow card, centred. */
 export const DoPage: S = {
   render: () => (
-    <CenteredLayout title="Sign in" subtitle="Use your Hack Cove account.">
+    <CenteredLayout title="Sign in" description="Use your Hack Cove account.">
       <Field label="Email" htmlFor="do-page-email">
         <Input id="do-page-email" type="email" placeholder="you@example.com" />
       </Field>
@@ -85,7 +84,7 @@ export const DontPage: S = {
   render: () => (
     <FormLayout
       title="Sign in"
-      subtitle="Use your Hack Cove account."
+      description="Use your Hack Cove account."
       actions={<Button type="submit">Continue</Button>}
     >
       <Field label="Email" htmlFor="dont-page-email">

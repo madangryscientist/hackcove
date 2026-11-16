@@ -28,10 +28,10 @@ function RatioGrids() {
       {(["2:1", "1:2"] as const).map((columns) => (
         <CardGrid key={columns} columns={columns}>
           <Card title={`Wide ${columns}`}>
-            <Text as="p">First column.</Text>
+            <Text>First column.</Text>
           </Card>
           <Card title="Narrow">
-            <Text as="p">Second column.</Text>
+            <Text>Second column.</Text>
           </Card>
         </CardGrid>
       ))}
@@ -81,16 +81,16 @@ export function GalleryBleedPages() {
   return (
     <div className="flex flex-col gap-6">
       <PageBox label="FullBleedLayout" bleed>
-        <FullBleedLayout panel={<Text as="p">Panel</Text>}>
+        <FullBleedLayout aside={<Text>Panel</Text>}>
           <div className="flex h-full min-h-48 items-center justify-center bg-slate-100">
-            <Text as="p">Fills the width</Text>
+            <Text>Fills the width</Text>
           </div>
         </FullBleedLayout>
       </PageBox>
       <PageBox label="FullBleedLayout padded" bleed>
-        <FullBleedLayout padded panel={<Text as="p">Panel</Text>}>
+        <FullBleedLayout padded aside={<Text>Panel</Text>}>
           <Card title="Padded canvas">
-            <Text as="p">Given the other layouts' page padding.</Text>
+            <Text>Given the other layouts' page padding.</Text>
           </Card>
         </FullBleedLayout>
       </PageBox>
@@ -99,11 +99,11 @@ export function GalleryBleedPages() {
           <Text strong>Sticks under the header</Text>
         </StickyBar>
         <div className="p-4">
-          <Text as="p">The page scrolls under the bar.</Text>
+          <Text>The page scrolls under the bar.</Text>
         </div>
       </PageBox>
       <PageBox label="CenteredLayout">
-        <CenteredLayout title="Sign in" subtitle="Use your Hack Cove account.">
+        <CenteredLayout title="Sign in" description="Use your Hack Cove account.">
           <Button>Continue</Button>
         </CenteredLayout>
       </PageBox>
@@ -120,7 +120,7 @@ export function GalleryPages() {
         <ProsePage />
       </PageBox>
       <PageBox label="ProseLayout width wide">
-        <ProseLayout width="wide" title="Pricing" subtitle="Pay for what you review.">
+        <ProseLayout width="wide" title="Pricing" description="Pay for what you review.">
           <StatTiles columns={3} />
         </ProseLayout>
       </PageBox>
@@ -141,65 +141,63 @@ export function GalleryGridPages() {
       <PageBox label="CardGrid columns auto, align start">
         <CardGrid columns="auto" minWidth="sm" align="start">
           <Card title="Dashboard">
-            <Text as="p">One line.</Text>
+            <Text>One line.</Text>
           </Card>
           <Card title="Settings">
-            <Text as="p">
+            <Text>
               A longer note that wraps onto a few lines, so this card is taller than its neighbours.
             </Text>
           </Card>
-          <Card title="Billing" footer={<Text as="p">Footer</Text>}>
-            <Text as="p">One line.</Text>
+          <Card title="Billing" footer={<Text>Footer</Text>}>
+            <Text>One line.</Text>
           </Card>
         </CardGrid>
       </PageBox>
       <PageBox label="SidebarLayout">
         <SidebarLayout
-          rail={
+          aside={
             <Tabs
-              variant="pill"
               orientation="vertical"
               label="Organisations"
               items={[
-                { label: "Hack Cove", href: "#hc", active: true },
+                { label: "Hack Cove", href: "#hc", selected: true },
                 { label: "Acme", href: "#acme" },
               ]}
             />
           }
         >
-          <Text as="p">The canvas.</Text>
+          <Text>The canvas.</Text>
         </SidebarLayout>
       </PageBox>
       <PageBox label="SidebarLayout, current link low in a long rail">
         <SidebarLayout
-          railLabel="All sections"
-          rail={
+          asideLabel="All sections"
+          aside={
             <Tabs
-              variant="pill"
               orientation="vertical"
               label="Sections"
               items={Array.from({ length: 60 }, (_, i) => ({
                 label: `Section ${i + 1}`,
                 href: `#section-${i + 1}`,
-                active: i === 44,
+                selected: i === 44,
               }))}
             />
           }
         >
-          <Text as="p">Section 45, scrolled into view in the rail.</Text>
+          <Text>Section 45, scrolled into view in the rail.</Text>
         </SidebarLayout>
       </PageBox>
       <PageBox label="SideColumn">
         <SideColumn
           aside={
             <Card title="Reply agent">
-              <Text as="p">A 24rem column from lg.</Text>
+              <Text>A 24rem column from lg.</Text>
             </Card>
           }
           asideLabel="Ask the reply agent"
         >
           <Card title="Thread">
-            <Text as="p">The main area takes the room left.</Text>
+            <Text>The main area takes the room left.</Text>
           </Card>
         </SideColumn>
       </PageBox>
@@ -212,10 +210,10 @@ export function GalleryStatusPages() {
   return (
     <div className="flex flex-col gap-6">
       <PageBox label="NotFound">
-        <NotFound homeHref="#" />
+        <NotFound />
       </PageBox>
       <PageBox label="ErrorPage">
-        <ErrorPage detail="Request 4f2a91 failed" onRetry={() => {}} homeHref="#" />
+        <ErrorPage detail="Request 4f2a91 failed" onRetry={() => {}} />
       </PageBox>
       <PageBox label="Offline">
         <Offline onRetry={() => {}} />
@@ -224,7 +222,7 @@ export function GalleryStatusPages() {
         <Maintenance />
       </PageBox>
       <PageBox label="Forbidden">
-        <Forbidden homeHref="#" />
+        <Forbidden />
       </PageBox>
     </div>
   );

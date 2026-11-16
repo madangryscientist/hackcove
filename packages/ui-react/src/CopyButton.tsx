@@ -23,8 +23,8 @@ const css = `[data-copied] [data-copy-idle]{animation:hc-copy-idle 2s}[data-copi
 /** Writes `text` to the clipboard and shows `copiedLabel` for two seconds, then `label` again. Defaults to `type="button"`. Its accessible name stays `label`; a polite status region beside it announces `copiedLabel` on each copy. A refused or missing clipboard leaves it on `label`. Every other button prop, `disabled` included, goes on the `<button>`. On a page rendered to static HTML without hydration, inline `copyScript` and the button works there too. */
 export function CopyButton({
   text,
-  label = "copy",
-  copiedLabel = "copied",
+  label = "Copy",
+  copiedLabel = "Copied",
   onClick,
   ...rest
 }: {
@@ -32,12 +32,12 @@ export function CopyButton({
   text: string;
   /**
    * The button's text, and its accessible name.
-   * @default copy
+   * @default Copy
    */
   label?: string;
   /**
    * The text shown for two seconds once the copy has gone through, and announced.
-   * @default copied
+   * @default Copied
    */
   copiedLabel?: string;
 } & Unstyled<Omit<ComponentPropsWithoutRef<"button">, "children">>): ReactElement {

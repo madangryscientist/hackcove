@@ -1,0 +1,3 @@
+import { ListRow } from "@hackcove/ui-react";
+
+export const view = <ListRow active detail={thread} onClick={open}>Chat</ListRow>;

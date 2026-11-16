@@ -13,7 +13,8 @@ const PANEL = "border-t border-slate-200/70 p-4";
 /**
  * A summary line with a chevron over a body that opens and closes under it. The summary is a
  * button with `aria-expanded`, and Enter and Space toggle it; the body is hidden while closed.
- * It starts closed; `defaultOpen` starts it open. It keeps its own state.
+ * It starts closed and keeps its own state; `defaultOpen` starts it open. To drive it from the
+ * app, pass `open` with `onOpenChange`.
  *
  * `bordered` draws it as a panel: a bordered box with the summary as a roomy row across the top
  * (the hover fill of a `ListRow`) and the body padded under a hairline, for a section that opens in
@@ -22,6 +23,8 @@ const PANEL = "border-t border-slate-200/70 p-4";
 export function Disclosure({
   summary,
   defaultOpen = false,
+  open,
+  onOpenChange,
   bordered = false,
   children,
   ...rest
@@ -30,6 +33,10 @@ export function Disclosure({
   summary: ReactNode;
   /** Starts with the body showing. */
   defaultOpen?: boolean | undefined;
+  /** Whether the body shows, for an app that holds the state; pass `onOpenChange` with it. */
+  open?: boolean | undefined;
+  /** Called with the new state when the summary is pressed. */
+  onOpenChange?: ((open: boolean) => void) | undefined;
   /**
    * Draws it as a bordered panel: the summary a full-width row, the body padded under a hairline.
    * @default false
@@ -40,7 +47,11 @@ export function Disclosure({
 } & Passthrough): ReactElement {
   return (
     <div {...rest} className={bordered ? FRAME : undefined}>
-      <AriaDisclosure defaultExpanded={defaultOpen}>
+      <AriaDisclosure
+        defaultExpanded={defaultOpen}
+        {...(open === undefined ? {} : { isExpanded: open })}
+        {...(onOpenChange ? { onExpandedChange: onOpenChange } : {})}
+      >
         {({ isExpanded }) => (
           <>
             <Button

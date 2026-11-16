@@ -9,7 +9,7 @@ import {
   type StackedSegment,
 } from "@hackcove/ui-react";
 
-const tones: BarTone[] = ["accent", "positive", "warn", "negative"];
+const tones: BarTone[] = ["accent", "positive", "warn", "danger"];
 
 const buildMix: StackedSegment[] = [
   { label: "Changed", value: 24, tone: "warn" },
@@ -35,7 +35,7 @@ export function GalleryBars() {
       <div className="grid gap-4 sm:grid-cols-3">
         <StatTile label="Debt-free" value="Mar 2029" />
         <StatTile label="Left over" value="R 4 250" hint="after all bills" tone="positive" accent />
-        <StatTile label="Total interest" value="R 12 400" tone="negative" accent />
+        <StatTile label="Total interest" value="R 12 400" tone="danger" accent />
       </div>
       <div className="grid gap-4 sm:grid-cols-3">
         <StatTile label="Pending" value="R 3 200" hint="2 not cleared" tone="warn" accent />
@@ -57,14 +57,14 @@ export function GalleryBars() {
         <SplitBar a={50} b={50} toneA="accent" toneB="warn" size="sm" label="Accent and warn" />
       </div>
       <div className="flex flex-col gap-2">
-        <StackedBar segments={snapshot} label="Screenshots by status" legend />
-        <StackedBar segments={snapshot} size="sm" label="Thin screenshots by status" />
+        <StackedBar items={snapshot} label="Screenshots by status" legend />
+        <StackedBar items={snapshot} size="sm" label="Thin screenshots by status" />
         <Legend items={snapshot.map(({ label, tone }) => ({ label, tone }))} />
-        <StackedBar segments={buildMix} label="Build by status" legend />
+        <StackedBar items={buildMix} label="Build by status" legend />
         <Legend
           items={[
-            { label: "Current", tone: "violet" },
-            { label: "Snapshot", tone: "violet", swatch: "dashed" },
+            { label: "Current", tone: "accent" },
+            { label: "Snapshot", tone: "accent", swatch: "dashed" },
             { label: "Unmeasured", tone: "neutral", swatch: "dashed" },
           ]}
         />
@@ -85,7 +85,7 @@ export function GalleryBars() {
           series={[
             {
               label: "Open",
-              tone: "violet",
+              tone: "accent",
               values: [32, 30, 35, 33, 30, 32, 33, 31, 25, 27, 24, 17],
             },
           ]}

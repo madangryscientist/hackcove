@@ -8,71 +8,68 @@ import {
   useContext,
 } from "react";
 import { cx } from "./cx.js";
+import { useTypeStep } from "./density.js";
 import type { Passthrough } from "./props.js";
 import type { Size } from "./size.js";
+import type { Tone } from "./tone.js";
 
 /* ---------------------------------------------------------------------------
    Typography system
    ---------------------------------------------------------------------------
-   Semantic text components that each PIN a size + weight + a default colour, so
-   text can never accidentally inherit the wrong weight/scale. Written against
-   Tailwind v4 utilities.
+   Semantic text components that each PIN a size + weight + an ink, so text can never
+   accidentally inherit the wrong weight/scale. Written against Tailwind v4 utilities.
 
-   Colour axis: the `color` prop maps to Tailwind's slate and violet utilities,
-   which a theme remaps to its own ink and accent (so these stay consistent with
-   the rest of the system rather than inventing a parallel palette):
-     default   → text-slate-900  (primary ink)
-     secondary → text-slate-600
-     tertiary  → text-slate-500
-     muted     → text-slate-400
-     brand     → text-violet-600 (the accent)
-
-   Meaning axis: the inline roles (Text, Caption, Overline) also take `tone`
-   (muted | positive | warn | danger | info), which wins over `color`, and the closed switches
-   `numeric`, `mono`, `truncate` and `align`. Text and Caption add the face switches `italic` and
-   `breakWords`; Text alone takes `strong`, `preserveNewlines` and `minWidth`.
+   Ink: each role has its own fixed ink (a heading the primary ink, `Text` the secondary, `Caption`
+   and `Overline` the tertiary), which a theme remaps. The inline roles (Text, Caption, Overline)
+   take `tone` to colour a run by meaning (`TextTone`: the library's `Tone` plus `muted` and
+   `accent`), and the closed switches `numeric`, `mono`, `truncate` and `align`. Text and Caption
+   add the face switches `italic` and `breakWords`; Text alone takes `strong`, `preserveNewlines`
+   and `minWidth`. A heading takes no ink of its own.
 
    Element axis: every component has a semantic default element; the `as` prop
    overrides it (type-safe: the extra props follow the element you pass).
 
-   Inline vs block: the inline-role components (Text, Overline, Caption)
-   default to `<span>` so they compose inside a sentence/flex row (inline by
-   default for inline roles). The structural roles (Display, Lead, PageHeading,
-   SectionHeading, SubsectionHeading) default to block elements (h1/h2/h3/p).
-   Pass `as="p"` (etc.) to turn an inline role into a block.
+   Block vs inline: `Text` and `Caption` are a paragraph (`<p>`); `as="span"` is the inline form,
+   for a run inside a row, a cell, a button or a sentence. `Overline` is a `<span>`. The structural
+   roles (Display, Lead, PageHeading, SectionHeading, SubsectionHeading) are block elements
+   (h1/h2/h3/p).
    --------------------------------------------------------------------------- */
 
-export type TypographyColor = "default" | "secondary" | "tertiary" | "muted" | "brand";
+/** A role's own ink, fixed per role. Internal: a consumer colours text by `tone`. */
+type Ink = "default" | "secondary" | "tertiary" | "faint";
 
-/** Colour token → slate/violet utility, which a theme remaps. */
-const COLOR: Record<TypographyColor, string> = {
+/** Ink → slate utility, which a theme remaps. `faint` is the quietest, for a card's bare overline. */
+const INK: Record<Ink, string> = {
   default: "text-slate-900",
   secondary: "text-slate-600",
   tertiary: "text-slate-500",
-  muted: "text-slate-400",
-  brand: "text-violet-600",
+  faint: "text-slate-400",
 };
 
 /**
- * The meaning of a run of inline text: the muted tone plus the Callout's, for "Saved." or an error
- * message. Colour alone does not say it, so the words do too. Same names and text colours as a
- * `Table` cell's `tone`.
+ * The meaning of a run of inline text: the library's `Tone`, plus `muted` for a quieter line and
+ * `accent` for the theme's accent ink. `neutral` (the default) is the role's own ink. Colour alone
+ * does not say a meaning, so the words do too.
  */
-export type TextTone = "muted" | "positive" | "warn" | "danger" | "info";
+export type TextTone = Tone | "muted" | "accent";
 
-/** Tone → text utility. Shared with `Table`'s cell tones, so the two never drift. */
-export const TEXT_TONE: Record<TextTone, string> = {
+/** Tone → text utility, for every tone that is not the role's own ink. Shared with `Table`'s cells. */
+export const TEXT_TONE: Record<Exclude<TextTone, "neutral">, string> = {
   muted: "text-slate-500",
+  accent: "text-violet-600",
   info: "text-blue-700",
   positive: "text-emerald-700",
   warn: "text-amber-700",
   danger: "text-red-700",
 };
 
+/** The utility of a tone, or none for `neutral` (and no tone), which keeps the role's own ink. */
+export function textToneClass(tone: TextTone | undefined): string | undefined {
+  return tone === undefined || tone === "neutral" ? undefined : TEXT_TONE[tone];
+}
+
 /** Own props shared by every typography component; the rest follow the rendered element. */
 type OwnProps = {
-  /** Colour token; each component sets a sensible default. */
-  color?: TypographyColor;
   children?: ReactNode;
 };
 
@@ -87,7 +84,7 @@ const ALIGN: Record<TextAlign, string> = {
 
 /** The opt-in props of the inline roles (`Text`, `Caption`, `Overline`). */
 type InlineOwnProps = {
-  /** A meaning's colour (see `TextTone`). Wins over `color`. */
+  /** A meaning's colour (see `TextTone`); `neutral`, the default, is the role's own ink. */
   tone?: TextTone | undefined;
   /** Tabular figures, so a column of amounts lines up. */
   numeric?: boolean | undefined;
@@ -113,10 +110,10 @@ type RunOwnProps = {
 type Own = OwnProps & InlineOwnProps;
 
 /** Polymorphic props: own props + `as` + the intrinsic props of whichever element `as` selects. */
-export type TypographyProps<E extends ElementType> = OwnProps & {
+type TypographyProps<E extends ElementType> = OwnProps & {
   /** The element to render (each role has a semantic default); the other props follow it. */
   as?: E;
-} & Omit<ComponentPropsWithoutRef<E>, keyof OwnProps | "as" | "className" | "style">;
+} & Omit<ComponentPropsWithoutRef<E>, keyof OwnProps | "as" | "className" | "style" | "color">;
 
 /**
  * The props of an inline role: `TypographyProps` plus `tone`, `numeric`, `mono` and `truncate`.
@@ -125,22 +122,22 @@ export type TypographyProps<E extends ElementType> = OwnProps & {
 export type InlineTypographyProps<E extends ElementType> = Own & {
   /** The element to render (each role has a semantic default); the other props follow it. */
   as?: E;
-} & Omit<ComponentPropsWithoutRef<E>, keyof Own | "as" | "className" | "style">;
+} & Omit<ComponentPropsWithoutRef<E>, keyof Own | "as" | "className" | "style" | "color">;
 
 /**
  * Build a semantic component that pins `variantClass` (size + weight + tracking)
- * and a default colour. The scale/weight for each role therefore lives in exactly
- * one place (the call below), and callers can only vary the colour and the element,
- * never the pinned size/weight, and never with a class.
+ * and an ink. The scale/weight for each role therefore lives in exactly
+ * one place (the call below), and callers can only vary the element (and, on an inline role, the
+ * tone), never the pinned size, weight or ink, and never with a class.
  */
 function typography<D extends ElementType>(
   displayName: string,
   defaultAs: D,
   variantClass: string,
-  defaultColor: TypographyColor,
+  ink: Ink,
 ) {
   function Typography<E extends ElementType = D>(props: TypographyProps<E>) {
-    return pinned(defaultAs, variantClass, defaultColor, props);
+    return pinned(defaultAs, variantClass, ink, props);
   }
   Typography.displayName = displayName;
   return Typography;
@@ -151,10 +148,10 @@ function inlineRole<D extends ElementType>(
   displayName: string,
   defaultAs: D,
   variantClass: string,
-  defaultColor: TypographyColor,
+  ink: Ink,
 ) {
   function Inline<E extends ElementType = D>(props: InlineTypographyProps<E>) {
-    return pinned(defaultAs, variantClass, defaultColor, props);
+    return pinned(defaultAs, variantClass, ink, props);
   }
   Inline.displayName = displayName;
   return Inline;
@@ -167,10 +164,9 @@ function inlineRole<D extends ElementType>(
 function pinned(
   defaultAs: ElementType,
   variantClass: string,
-  defaultColor: TypographyColor,
+  ink: Ink,
   {
     as,
-    color,
     tone,
     numeric,
     mono,
@@ -187,7 +183,7 @@ function pinned(
       {...(truncate ? { title: rest.title ?? plainText(children) } : {})}
       className={cx(
         variantClass,
-        tone ? TEXT_TONE[tone] : COLOR[color ?? defaultColor],
+        textToneClass(tone) ?? INK[ink],
         numeric && "tabular-nums",
         mono && "font-mono",
         layoutClass(align, truncate),
@@ -270,9 +266,9 @@ export function AppScale({ children }: { children?: ReactNode }): ReactElement {
 }
 
 /**
- * Long-form content, for a docs page or an article. A block (`div`) that sets text-base/7 on itself,
- * so a bare `<li>` or text node inside reads at 16px, and puts the text roles inside it on the
- * prose scale: `Text` text-base/7, `SectionHeading` text-2xl/8, `SubsectionHeading` `lg` text-2xl/8,
+ * Long-form content, for a docs page or an article. A block (`div`) that sets the long line height
+ * (leading-7) on itself and puts the text roles inside it on the prose scale: `Text` text-base/7
+ * (the size it is outside, on a longer line), `SectionHeading` text-2xl/8, `SubsectionHeading` `lg` text-2xl/8,
  * `md` text-xl/7 and `sm` text-base/7 (a semibold line at body size), and the box of a `Callout`
  * text-base/7. Every other role keeps its size. Nothing outside a `Prose` changes, and a `Dialog`,
  * `Drawer` or `EmptyState` inside one is back on the app scale. An app screen never uses it: wrap the
@@ -281,27 +277,39 @@ export function AppScale({ children }: { children?: ReactNode }): ReactElement {
 export function Prose({ children, ...rest }: { children?: ReactNode } & Passthrough): ReactElement {
   return (
     <ProseContext.Provider value={true}>
-      <div {...rest} className="text-base/7">
+      <div {...rest} className="leading-7">
         {children}
       </div>
     </ProseContext.Provider>
   );
 }
 
-/** A role's classes on each scale: the app's dense one, and the long-form one inside a `Prose`. */
-type Scale = { app: string; prose: string };
+/**
+ * A role's classes on each scale: the default one, the one under an `AppShell density="compact"`
+ * (one step down), and the long-form one inside a `Prose`.
+ */
+type Scale = { app: string; compact: string; prose: string };
 
 const SECTION: Scale = {
-  app: "text-base/6 font-semibold",
+  app: "text-xl/7 font-semibold",
+  compact: "text-base/6 font-semibold",
   prose: "text-2xl/8 font-semibold tracking-tight",
 };
+
+/** The class of a role on the scale in force: the Prose one inside a `Prose`, else the type step's. */
+function useScale(scale: Scale): string {
+  const prose = useProse();
+  const step = useTypeStep();
+  if (prose) return scale.prose;
+  return step === "compact" ? scale.compact : scale.app;
+}
 
 /** The offset an anchored heading keeps from the top, so the sticky header does not cover it. */
 const SCROLL_TARGET = "scroll-mt-28";
 
 /**
- * Top-level section header. `h2`, text-base/6 semibold, primary text (text-2xl/8 semibold tight
- * inside a `Prose`). `rule` sets
+ * Top-level section header. `h2`, text-xl/7 semibold, primary text (text-base/6 under an
+ * `AppShell density="compact"`, text-2xl/8 semibold tight inside a `Prose`). `rule` sets
  * a hairline under it (the `Divider` line colour) with the space either side of
  * the line built in. `description` is a muted line under the heading, outside the `<h2>`, so the
  * heading's name stays the title; the rule then sits under the description.
@@ -317,7 +325,7 @@ export function SectionHeading<E extends ElementType = "h2">({
   description?: ReactNode;
 }): ReactElement {
   const hairline = "mb-4 border-b border-slate-200/70 pb-2";
-  const size = useProse() ? SECTION.prose : SECTION.app;
+  const size = useScale(SECTION);
   const hasDescription = description != null && description !== false;
   // An `id` makes the heading a link target, so an anchor jump leaves it clear of the sticky header.
   const scroll = props.id === undefined ? undefined : SCROLL_TARGET;
@@ -327,9 +335,7 @@ export function SectionHeading<E extends ElementType = "h2">({
   return (
     <div className={cx("flex flex-col gap-1", rule && hairline)}>
       {pinned("h2", cx(size, scroll), "default", props)}
-      <Text as="p" color="tertiary">
-        {description}
-      </Text>
+      <Text tone="muted">{description}</Text>
     </div>
   );
 }
@@ -337,14 +343,27 @@ export function SectionHeading<E extends ElementType = "h2">({
 export type SubsectionHeadingSize = Size;
 
 const SUBSECTION_SIZE: Record<SubsectionHeadingSize, Scale> = {
-  sm: { app: "text-sm/5 font-semibold", prose: "text-base/7 font-semibold" },
-  md: { app: "text-base/6 font-semibold", prose: "text-xl/7 font-semibold" },
-  lg: { app: "text-lg/7 font-semibold", prose: "text-2xl/8 font-semibold tracking-tight" },
+  sm: {
+    app: "text-base/6 font-semibold",
+    compact: "text-sm/5 font-semibold",
+    prose: "text-base/7 font-semibold",
+  },
+  md: {
+    app: "text-lg/7 font-semibold",
+    compact: "text-base/6 font-semibold",
+    prose: "text-xl/7 font-semibold",
+  },
+  lg: {
+    app: "text-xl/7 font-semibold",
+    compact: "text-lg/7 font-semibold",
+    prose: "text-2xl/8 font-semibold tracking-tight",
+  },
 };
 
 /**
- * Nested header. `h3`, text-base/6 semibold, primary text. `size` steps it down for a dense card
- * or up for a drawer or form-group title: `sm` (text-sm), `md` (default) or `lg`. Inside a `Prose`
+ * Nested header. `h3`, text-lg/7 semibold, primary text. `size` steps it down for a dense card
+ * or up for a drawer or form-group title: `sm` (text-base, body size set apart by its weight), `md`
+ * (default) or `lg` (text-xl). Under an `AppShell density="compact"` each is one step down. Inside a `Prose`
  * `md` is text-xl/7 (the h3 of a doc), `sm` text-base/7 (the h4: body size, set apart by its weight)
  * and `lg` text-2xl/8, the size of a `SectionHeading` there. `truncate` keeps it on
  * one line and cuts it with an ellipsis where its container ends, the full text as the `title`.
@@ -354,46 +373,61 @@ export function SubsectionHeading<E extends ElementType = "h3">({
   ...props
 }: TypographyProps<E> & {
   /**
-   * The heading's type size: `sm` is text-sm/5, `md` text-base/6 and `lg` text-lg/7.
+   * The heading's type size: `sm` is text-base/6, `md` text-lg/7 and `lg` text-xl/7 (one step down
+   * each under an `AppShell density="compact"`).
    * @default md
    */
   size?: SubsectionHeadingSize;
   /** One line, cut with an ellipsis where the container ends; the full text becomes the `title`. */
   truncate?: boolean | undefined;
 }): ReactElement {
-  const scale = SUBSECTION_SIZE[size];
-  return pinned("h3", useProse() ? scale.prose : scale.app, "default", props);
+  return pinned("h3", useScale(SUBSECTION_SIZE[size]), "default", props);
 }
 
-// --- Inline roles (inline by default) --------------------------------------
+// --- Inline roles -------------------------------------------------------------
+
+const OVERLINE = "text-xs font-semibold uppercase tracking-wide";
 
 /**
  * Small all-caps label above a group. `span`, text-xs semibold uppercase, tertiary. `tone`,
  * `numeric`, `mono`, `truncate` and `align` are opt-in, as on `Text`.
  */
-export const Overline = inlineRole(
-  "Overline",
-  "span",
-  "text-xs font-semibold uppercase tracking-wide",
-  "tertiary",
-);
+export const Overline = inlineRole("Overline", "span", OVERLINE, "tertiary");
+
+/**
+ * A card title drawn as an `Overline`, in the tertiary ink or, bare, the faint one. Internal: the
+ * inks are the card's, never a consumer's.
+ */
+export function CardOverline({
+  faint,
+  level,
+  ...props
+}: {
+  faint: boolean;
+  level: 2 | 3 | 4 | 5 | 6;
+  id?: string | undefined;
+  children?: ReactNode;
+}): ReactElement {
+  return pinned(`h${level}`, OVERLINE, faint ? "faint" : "tertiary", props);
+}
 
 /** A fixed width for a run of text: `amount` is a money figure, right-aligned, at a width that lines a column up. */
 export type TextMinWidth = "amount";
 
 /**
- * Running text. `span` (inline; `as="p"` for a paragraph), text-sm/5 normal, secondary (text-base/7
- * inside a `Prose`). A block of it
+ * Running text. A paragraph (`p`; `as="span"` for a run inside a row, a cell or a sentence),
+ * text-base/6 normal, secondary (text-sm/5 under an `AppShell density="compact"`, text-base/7 inside
+ * a `Prose`). A block of it
  * stops at a readable line length (`max-w-[72ch]`), wherever it sits. `strong` emphasises it:
- * font-medium in the primary ink, unless `color` or `tone` says otherwise.
+ * font-medium in the primary ink, unless `tone` says otherwise.
  * `preserveNewlines` keeps the line breaks in the text (a user-typed note); runs of spaces still collapse.
- * `tone` colours it by meaning (`positive` for "Saved.", `danger` for an error; it wins over `color`),
+ * `tone` colours it by meaning (`positive` for "Saved.", `danger` for an error, `muted` for a quieter line),
  * `numeric` sets tabular figures, `mono` the monospace face, and `truncate` cuts it to one line with an
  * ellipsis (the full text becomes its `title`). `align` sets it at `start`, `center` or `end`.
  * `italic` slants it, `breakWords` breaks a long unbroken string at the edge of its box, and `minWidth="amount"`
  * fixes a width and right-aligns the figure in it (a column of amounts lines up); it does not take `align`.
  */
-export function Text<E extends ElementType = "span">({
+export function Text<E extends ElementType = "p">({
   strong,
   preserveNewlines,
   minWidth,
@@ -402,18 +436,18 @@ export function Text<E extends ElementType = "span">({
   ...props
 }: InlineTypographyProps<E> &
   RunOwnProps & {
-    /** Emphasis: font-medium in the primary ink (`color` and `tone` still win). */
+    /** Emphasis: font-medium in the primary ink (`tone` still wins). */
     strong?: boolean | undefined;
     /** Keep the line breaks in the text (a user-typed note); runs of spaces still collapse. */
     preserveNewlines?: boolean;
     /** A fixed width: `amount` is a right-aligned money figure, min-w-24, in tabular figures. */
     minWidth?: TextMinWidth | undefined;
   }): ReactElement {
-  const prose = useProse();
+  const scale = useScale(TEXT);
   return pinned(
-    "span",
+    "p",
     cx(
-      textVariant(strong, preserveNewlines, true, prose),
+      textVariant(strong, preserveNewlines, true, scale),
       italic && "italic",
       breakWords && "break-words",
       minWidth === "amount" && "inline-block min-w-24 text-end",
@@ -425,40 +459,44 @@ export function Text<E extends ElementType = "span">({
 }
 
 /**
- * The supporting line under a `Dialog` title: `Text as="p"` without the measure, so
+ * The supporting line under a `Dialog` title: `Text` without the measure, so
  * it runs the width of its dialog. Internal; not exported from the package.
  */
 export function HeaderText({ children }: { children: ReactNode }): ReactElement {
-  return pinned("p", textVariant(false, false, false, useProse()), "secondary", { children });
+  return pinned("p", textVariant(false, false, false, useScale(TEXT)), "secondary", { children });
 }
+
+const TEXT: Scale = { app: "text-base/6", compact: "text-sm/5", prose: "text-base/7" };
 
 function textVariant(
   strong: boolean | undefined,
   preserveNewlines: boolean | undefined,
   measure: boolean,
-  prose: boolean,
+  size: string,
 ): string {
   return cx(
     preserveNewlines && "whitespace-pre-line",
     measure && "max-w-[72ch]",
-    prose ? "text-base/7" : "text-sm/5",
+    size,
     strong ? "font-medium" : "font-normal",
   );
 }
 
 /**
- * Fine print / metadata. `span` (inline; `as="p"` for a block), text-xs/4 normal, tertiary. Takes `tone`,
+ * Fine print / metadata. A paragraph (`p`; `as="span"` inline), text-sm/5 normal, tertiary
+ * (text-xs/4 under an `AppShell density="compact"`). Takes `tone`,
  * `numeric`, `mono`, `truncate` and `align` like `Text`, and `italic` for a muted hint and `breakWords`
  * for a long unbroken string such as a URL.
  */
-export function Caption<E extends ElementType = "span">({
+export function Caption<E extends ElementType = "p">({
   italic,
   breakWords,
   ...props
 }: InlineTypographyProps<E> & RunOwnProps): ReactElement {
+  const size = useTypeStep() === "compact" ? "text-xs/4" : "text-sm/5";
   return pinned(
-    "span",
-    cx("text-xs/4 font-normal", italic && "italic", breakWords && "break-words"),
+    "p",
+    cx(size, "font-normal", italic && "italic", breakWords && "break-words"),
     "tertiary",
     props,
   );

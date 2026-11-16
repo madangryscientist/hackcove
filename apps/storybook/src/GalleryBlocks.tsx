@@ -43,14 +43,13 @@ export function GalleryHeader() {
         <Lead>A landing page's top block, over the theme's glow.</Lead>
       </Hero>
 
-      <PageHeader title="Status" subtitle="what's happening now" />
+      <PageHeader title="Status" description="what's happening now" />
 
       <Tabs
-        variant="pill"
         label="Main"
         items={[
           { label: "Map", href: "/" },
-          { label: "Directory", href: "/stores", active: true },
+          { label: "Directory", href: "/stores", selected: true },
           { label: "Events", href: "/events" },
           { label: "About", href: "/about" },
           { label: "Traces", href: "https://example.com/traces", external: true },
@@ -63,7 +62,7 @@ export function GalleryHeader() {
 /** The filter chips block of the Gallery: four pressable outline Buttons, one pressed, in a FilterGroup. */
 export function GalleryChips() {
   return (
-    <FilterGroup legend="Type of shop">
+    <FilterGroup label="Type of shop">
       <Button variant="outline" size="sm" pressed={false}>
         Charity
       </Button>
@@ -105,7 +104,7 @@ export function GalleryPageFade() {
 
 /** The NavigationProgress block of the Gallery: the bar in its shown state, fixed over the top edge of the page that shows it. */
 export function GalleryNavigationProgress() {
-  return <NavigationProgress active />;
+  return <NavigationProgress loading />;
 }
 
 /** The two dialogs, the Drawer and the Lightbox, shut: each button opens one over the page (open, they make the page inert). */
@@ -144,7 +143,7 @@ export function GalleryDialogs() {
       {open === "full" && (
         <Dialog
           title="Harbour at dusk"
-          size="full"
+          width="full"
           onClose={close}
           footer={<Button onClick={close}>Close</Button>}
         >
@@ -173,7 +172,6 @@ export function GalleryDialogs() {
         <FieldDialog
           title="New project"
           label="Name"
-          inputLabel="Project name"
           placeholder="my-project"
           hint="Letters, numbers and dashes."
           emptyReason="Type a name first."
@@ -211,7 +209,7 @@ export function GalleryAvatars() {
         ))}
       </div>
       <AvatarStack
-        people={["ada", "grace", "linus", "margaret", "dennis"].map((name) => ({ name }))}
+        items={["ada", "grace", "linus", "margaret", "dennis"].map((name) => ({ name }))}
         max={3}
         size="lg"
       />

@@ -34,14 +34,9 @@ describe("ListLayout", () => {
     expect(inOrder(["Quotes", "NEW", "FILTERS", "ROWS"])).toBe(true);
   });
 
-  it("shows `empty` instead of the list when isEmpty", () => {
-    render(
-      <ListLayout title="Quotes" isEmpty empty="NOTHING">
-        ROWS
-      </ListLayout>,
-    );
+  it("shows `empty` instead of the list when there are no rows", () => {
+    render(<ListLayout title="Quotes" empty="NOTHING" />);
     expect(screen.getByText("NOTHING")).not.toBeNull();
-    expect(screen.queryByText("ROWS")).toBeNull();
   });
 
   it("shows the list, not `empty`, when it has rows", () => {
@@ -67,9 +62,9 @@ describe("DetailLayout", () => {
     expect(inOrder(["Quote 7", "MAIN", "SIDE"])).toBe(true);
   });
 
-  it("still reads the aside after main with stickyAside", () => {
+  it("still reads the aside after main with sticky", () => {
     render(
-      <DetailLayout title="Quote 7" aside="SIDE" stickyAside>
+      <DetailLayout title="Quote 7" aside="SIDE" sticky>
         MAIN
       </DetailLayout>,
     );
@@ -95,7 +90,7 @@ describe("FormLayout", () => {
 describe("ProseLayout", () => {
   it("reads the header, then the blocks", () => {
     render(
-      <ProseLayout title="Privacy" subtitle="Last updated" actions="PHOTO">
+      <ProseLayout title="Privacy" description="Last updated" actions="PHOTO">
         <p>ONE</p>
         <p>TWO</p>
       </ProseLayout>,
@@ -141,7 +136,7 @@ describe("CardGrid as=ul", () => {
 
 describe("FullBleedLayout", () => {
   it("reads the panel after the children, in its own landmark", () => {
-    render(<FullBleedLayout panel="PANEL">VIEW</FullBleedLayout>);
+    render(<FullBleedLayout aside="PANEL">VIEW</FullBleedLayout>);
     expect(screen.getByRole("complementary").textContent).toBe("PANEL");
     expect(inOrder(["VIEW", "PANEL"])).toBe(true);
   });
@@ -153,7 +148,7 @@ describe("FullBleedLayout", () => {
 
   it("reads a `bar` before the children and the panel", () => {
     render(
-      <FullBleedLayout bar="BAR" panel="PANEL">
+      <FullBleedLayout bar="BAR" aside="PANEL">
         VIEW
       </FullBleedLayout>,
     );
@@ -164,7 +159,7 @@ describe("FullBleedLayout", () => {
 describe("CenteredLayout", () => {
   it("reads the title, subtitle and body in order, the title the page's h1", () => {
     render(
-      <CenteredLayout title="Sign in" subtitle="to continue">
+      <CenteredLayout title="Sign in" description="to continue">
         <p>FORM</p>
       </CenteredLayout>,
     );

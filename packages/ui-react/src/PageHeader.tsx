@@ -8,10 +8,10 @@ export type PageHeaderProps = {
   /** The page's `h1`. */
   title: ReactNode;
   /** The lede under the title: a `Lead`, so it outranks the body text after it. */
-  subtitle?: ReactNode;
+  description?: ReactNode;
   /** Right of the title on `sm` and up, below it on a phone. */
   actions?: ReactNode;
-  /** A `Tabs variant="pill"` (or similar) under the title. */
+  /** A `Tabs` (or similar) under the title. */
   tabs?: ReactNode;
 };
 
@@ -19,7 +19,7 @@ export type PageHeaderProps = {
 export function PageHeaderContent({
   breadcrumbs,
   title,
-  subtitle,
+  description,
   actions,
   tabs,
   className,
@@ -31,9 +31,9 @@ export function PageHeaderContent({
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <PageHeading>{title}</PageHeading>
-          {subtitle && (
+          {description && (
             <div className="mt-2 max-w-[60ch]">
-              <Lead>{subtitle}</Lead>
+              <Lead>{description}</Lead>
             </div>
           )}
         </div>
@@ -45,7 +45,7 @@ export function PageHeaderContent({
 }
 
 /**
- * The top of a page: breadcrumbs, title, subtitle, actions and tabs. Its fixed bottom margin puts
+ * The top of a page: breadcrumbs, title, description, actions and tabs. Its fixed bottom margin puts
  * every page's first block at the same y; as a direct child of a `Stack` it has none, so the Stack's
  * gap is the only space under it.
  */

@@ -1,0 +1,2 @@
+3: Badge takes only id, data-* and aria-*: title is gone
+3: Badge takes only id, data-* and aria-*: onClick is gone

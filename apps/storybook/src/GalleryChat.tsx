@@ -1,6 +1,6 @@
 import { SampleChat } from "./sampleChat";
 
-/** The chat block of the Gallery: a ChatThread of ChatMessages (one streaming) and ToolCallCards, an approval and a ChatComposer. */
+/** The chat block of the Gallery: a ChatThread of ChatMessages (one streaming) and two tool calls, an approval and a ChatComposer. */
 export function GalleryChat() {
   return (
     <div className="max-w-xl">

@@ -91,7 +91,7 @@ function Queue({ label, start }: { label: string; start: Band[] }) {
           </SortableSection>
         ))}
       </SortableList>
-      <Caption as="p" data-moves={JSON.stringify(moves)}>
+      <Caption data-moves={JSON.stringify(moves)}>
         {moves.length === 0 ? "No moves yet." : `${moves.length} moved.`}
       </Caption>
     </Stack>
@@ -167,7 +167,6 @@ export const DontReorder: S = {
         (task, index) => (
           <ListRow
             key={task}
-            static
             divided={index > 0}
             actions={
               <>

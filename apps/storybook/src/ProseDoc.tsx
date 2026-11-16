@@ -1,4 +1,5 @@
 import {
+  BulletItem,
   BulletList,
   Callout,
   Code,
@@ -19,18 +20,18 @@ export function ProseDoc() {
   return (
     <Stack gap="md">
       <SectionHeading>Install the kit</SectionHeading>
-      <Text as="p">
+      <Text>
         Add the package, import its parts and build a page from them. The themes are a separate
         package, so a new theme never changes a component.
       </Text>
       <SubsectionHeading>What you need</SubsectionHeading>
       <BulletList>
-        <Text as="li">
+        <BulletItem>
           React 19 and Tailwind v4, as in the <TextLink href="/ui/">component docs</TextLink>.
-        </Text>
-        <Text as="li">
+        </BulletItem>
+        <BulletItem>
           Run <Code>bun add @hackcove/ui-react</Code> in your app.
-        </Text>
+        </BulletItem>
       </BulletList>
       <SubsectionHeading as="h4" size="sm">
         Check the install

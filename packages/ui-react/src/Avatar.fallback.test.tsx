@@ -29,15 +29,6 @@ describe("Avatar when its photo fails to load", () => {
     expect(initials.getAttribute("aria-hidden")).toBe("true");
   });
 
-  it("still calls the consumer's onError, so the fallback does not hide the failure", () => {
-    const onError = vi.fn<() => void>();
-    render(<Avatar name="Ada Lovelace" src="/missing.jpg" onError={onError} />);
-    // A failed load is the browser's event; no person makes it.
-    fireEvent.error(screen.getByRole("img", { name: "Ada Lovelace" }));
-    expect(onError).toHaveBeenCalledTimes(1);
-    expect(screen.getByText("AD")).not.toBeNull();
-  });
-
   it("gives a new src its own try, and shows the photo when it loads", async () => {
     render(<Swap />);
     // A failed load is the browser's event; no person makes it.
@@ -64,16 +55,6 @@ describe("Avatar whose photo failed before it hydrated", () => {
     await hydrate(avatar, { complete: true, naturalWidth: 0 });
     expect(screen.queryByRole("img")).toBeNull();
     expect(screen.getByText("SA")).not.toBeNull();
-  });
-
-  it("does not call the consumer's onError, as there is no event to pass", async () => {
-    const onError = vi.fn<() => void>();
-    await hydrate(<Avatar name="Sam Cole" src="/missing.jpg" onError={onError} />, {
-      complete: true,
-      naturalWidth: 0,
-    });
-    expect(screen.getByText("SA")).not.toBeNull();
-    expect(onError).not.toHaveBeenCalled();
   });
 
   it("keeps the photo when it loaded", async () => {
@@ -118,14 +99,10 @@ describe("Avatar with onClick", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
-  it("still falls back to the initials, and reports the failure, inside the button", () => {
-    const onError = vi.fn<() => void>();
-    render(
-      <Avatar name="Ada Lovelace" src="/missing.jpg" onClick={() => undefined} onError={onError} />,
-    );
+  it("still falls back to the initials inside the button", () => {
+    render(<Avatar name="Ada Lovelace" src="/missing.jpg" onClick={() => undefined} />);
     // A failed load is the browser's event; no person makes it.
     fireEvent.error(screen.getByRole("img", { name: "Ada Lovelace" }));
-    expect(onError).toHaveBeenCalledTimes(1);
     const button = screen.getByRole("button", { name: "Ada Lovelace" });
     expect(within(button).queryByRole("img")).toBeNull();
     expect(within(button).getByText("AD")).not.toBeNull();

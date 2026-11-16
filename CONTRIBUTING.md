@@ -101,7 +101,7 @@ classic compiler API for it to parse them with.
    react-dom and tailwindcss v4, plus `@types/react` and `@types/react-dom` as optional peers (types only, so a consumer's
    tsc resolves `react` under strict linkers). `@hackcove/themes` has only the tailwindcss peer. A new dependency needs a
    maintainer's agreement first.
-4. **Source imports in `packages/ui-react` use `.js` specifiers** (`./ui.js`, resolved to the `.tsx`),
+4. **Source imports in `packages/ui-react` use `.js` specifiers** (`./Card.js`, resolved to `Card.tsx`),
    because a `.tsx` specifier is emitted into the `.d.ts` and breaks consumers' types.
 5. **A new component** is exported from `packages/ui-react/src/index.ts`, has its own story, and appears
    in `apps/storybook/src/Gallery.tsx`. Its docs page names Do/Don't topics, the stories

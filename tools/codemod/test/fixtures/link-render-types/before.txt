@@ -1,0 +1,4 @@
+import { type LinkRenderProps, type LinkRender } from "@hackcove/ui-react";
+
+export type A = LinkRenderProps;
+export type B = LinkRender;

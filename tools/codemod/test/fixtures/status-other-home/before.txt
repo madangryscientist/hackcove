@@ -1,0 +1,3 @@
+import { ErrorPage } from "@hackcove/ui-react";
+
+export const view = <ErrorPage homeHref={SITE} />;

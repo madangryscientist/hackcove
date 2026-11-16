@@ -1,0 +1,4 @@
+import { Legend } from "@hackcove/ui-react";
+
+const parts = [{ label: "Rent", tone: "violet" }];
+export const view = <Legend items={parts} />;

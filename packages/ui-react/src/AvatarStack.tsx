@@ -32,14 +32,14 @@ export type AvatarStackPerson = { name: string; src?: string | undefined };
  * the rest. The row is one image to assistive tech, named by the people in it.
  */
 export function AvatarStack({
-  people,
+  items,
   max,
   size = "md",
   shape = "round",
   ...rest
 }: {
   /** Who is in the stack, in order. Give each person's full name, as for `Avatar`. */
-  people: readonly AvatarStackPerson[];
+  items: readonly AvatarStackPerson[];
   /** How many avatars show before a "+N" chip takes the rest. Without it every person shows. */
   max?: number | undefined;
   /**
@@ -53,8 +53,8 @@ export function AvatarStack({
    */
   shape?: AvatarShape;
 } & Passthrough): ReactElement {
-  const shown = max === undefined ? people : people.slice(0, Math.max(max, 0));
-  const hidden = people.slice(shown.length);
+  const shown = max === undefined ? items : items.slice(0, Math.max(max, 0));
+  const hidden = items.slice(shown.length);
   const overlap = OVERLAP[size];
   const names = shown.map((person) => person.name);
   const label =

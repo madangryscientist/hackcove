@@ -1,5 +1,308 @@
 # Migrating @hackcove/ui-react
 
+## 0.10 to 0.11: one API pass
+
+Each idea has one name, one value set and one default. Every old name below is gone in 0.11, with no
+alias. A codemod rewrites the mechanical swaps (marked **codemod** below) and prints a `file:line`
+for each one a person has to decide (marked **by hand**); how to run it is at the end of this section.
+
+### Tone, text and passthrough
+
+There is one tone vocabulary, `Tone` (`neutral`, `info`, `positive`, `warn`, `danger`), exported
+from the package. `neutral` is every default. `tone` is the one ink prop on `Text`, `Caption` and
+`Overline`; their `TextTone` adds `muted` and `accent`.
+
+| Old | New | |
+| --- | --- | --- |
+| `import type { CalloutTone }` | `import type { Tone }` | codemod |
+| `Callout` with no `tone` (was `info`) | `neutral`; write `tone="info"` to keep the blue box | codemod pins `tone="info"` |
+| `Text color="muted"` (and `Caption`, `Overline`) | `tone="muted"`, one step darker (`text-slate-500`) | codemod |
+| `color="tertiary"` | `tone="muted"` (the same ink) | codemod |
+| `color="brand"` | `tone="accent"` | codemod |
+| `Text color="secondary"` | nothing: it is the default | codemod |
+| `Caption color="secondary"`, `Overline color="secondary"` | no swap: pick `tone` or leave the role's ink | by hand |
+| `color="default"` on an inline role | no exact swap: `Text strong` adds the weight in the primary ink | by hand |
+| `color` on `Display`, `Lead`, `PageHeading`, `SectionHeading`, `SubsectionHeading` | removed: each heading has its fixed ink | by hand |
+| `TypographyColor` | removed | by hand |
+| `Text` and `Caption` are a `<span>` | a `<p>`; `as="span"` is the inline form, inside a row, a cell, a button or a sentence | codemod drops `as="p"` and pins `as="span"` where there is no `as` |
+| `Icon tone="inherit"` | leave `tone` out | codemod |
+| `ProgressBar`, `SplitBar`, `StatTile` `tone="negative"` (and `toneA`, `toneB`) | `danger` | codemod |
+| `StackedBar`, `Legend`, `TrendChart` `tone: "violet"` | `accent`, the theme's accent ink | codemod |
+| `StackedBar segments` | `items` | codemod |
+| `BulletList` with `<li>` or `Text as="li"` children | `BulletItem` children | by hand |
+| `Callout`, `StatTile`, `Badge`, `Kbd`, `Code`, `Divider`, `BulletList`, `KeyValueList`, `KeyValue`, `PageFade`, `Morph`, `CopyLine` took their element's every attribute | `id`, `data-*` and `aria-*` only | by hand (any other prop is reported) |
+| `PageHeaderProps`, `HeroProps`, `ListRowProps`, `DialogProps`, `DrawerProps`, `BottomSheetProps`, `LightboxProps`, `TabsProps`, `FieldDialogProps`, `ImageProps`, `MediaTileProps`, `ScrollStripProps`, `TypographyProps`, `DateFieldProps`, `DateRangePickerProps` | not exported: `ComponentProps<typeof Dialog>` | by hand |
+| `ButtonLook` | not exported | by hand |
+
+New, nothing to change: `Callout icon`; every component takes an `id` on its root; `StackRowFrom`,
+`ClusterGrowMinWidth`, `TextAlign` and `TextMinWidth` are exported.
+
+Not flagged by TypeScript: a `Callout` with no `tone` is now neutral (grey, not blue), `tone="muted"`
+is one step darker than `color="muted"` was, a chart's `violet` part is now the accent, and a bare
+`Text` or `Caption` is now a block `<p>`, which also must not sit inside another `<p>`, a `<span>`,
+a `<button>`, an `<a>` or a `<label>`.
+
+### The router link adapter
+
+The app names its router's link once, on `LinkProvider`, and every part that links takes a plain
+`href`. `render` is gone from `Button`, `IconButton`, `TextLink`, `Pill`, `Card`, `ListRow`,
+`AppShellBrand`, a `Crumb` and a `Tabs` or `SegmentedControl` link item; `renderHome` is gone from
+the status pages.
+
+| Old | New | |
+| --- | --- | --- |
+| a `render` on each link | wrap the app once: TanStack Router `createRouter({ InnerWrap: ({ children }) => <LinkProvider link={(p) => <Link to="." {...p} />}>{children}</LinkProvider> })` (`to="."` satisfies the typed `to`; the `href` wins), or React Router `<LinkProvider link={({ href, ...p }) => <Link to={href} {...p} />}>` | by hand, once |
+| `render={(p) => <Link to="/quotes" {...p} />}` | `href="/quotes"` | codemod |
+| `to="/stores/$storeId" params={{ storeId: id }}` | ``href={`/stores/${encodeURIComponent(id)}`}`` | by hand |
+| `search={{ project, env }}`, `hash="for-shops"` | `href={"/?" + new URLSearchParams({ project, env })}`, `href="/about#for-shops"` | by hand |
+| `{ label, render }` crumbs and items | `{ label, href }` | codemod for a literal `to`, else by hand |
+| `LinkRenderProps`, `LinkRender` | `LinkAdapterProps`, `LinkAdapter`; the props carry `href`, so an adapter spreads them and sets no `href` of its own | codemod, and reported |
+| `viewTransition` on one `Link` | `defaultViewTransition` on `createRouter` | by hand |
+
+New, nothing to change: `MediaTile` and `Avatar` take `href` and `external` beside `onClick`, and
+their `onClick` is handed the click event. A `SiteSearch` result is a client-side navigation under
+a `LinkProvider`. Only an in-app path (one that starts with a single `/`) reaches the adapter; an
+`external` link, a full URL, a `#hash` and a relative path stay a plain `<a>`.
+
+### The status pages' home link
+
+Every status page but `Maintenance` links "Back to home" by itself, to the `home` on
+`LinkProvider` (`/` by default). A page takes no home prop.
+
+| Old | New | |
+| --- | --- | --- |
+| `<NotFound homeHref="/" />`, and the same on each page | `<NotFound />` | codemod |
+| `renderHome={(p) => <a href="/" {...p} />}`, `renderHome={(p) => <Link to="/" {...p} />}` | nothing: the default, through the adapter | codemod |
+| a home that is not `/` (`homeHref={SITE}`) | `<LinkProvider home={SITE}>` once, around the app or in TanStack's `InnerWrap` | by hand |
+
+TypeScript does not flag these:
+
+- `action` with no `homeHref` had no home link. The page now shows both, the action first, and
+  there is no way to hide it.
+- A `NotFound`, `ErrorPage`, `Offline` or `Forbidden` that had no `homeHref` gains "Back to home".
+- `Maintenance` draws no home link, even where it had a `homeHref`.
+
+### Buttons and pills
+
+| Old | New | |
+| --- | --- | --- |
+| `Button tone="default"`, `IconButton tone="default"` | leave `tone` out: `neutral` is the default | codemod |
+| `IconButton badge={3}` | `IconButton count={3}` | codemod |
+| `<IconButton label="Close"><Icon name="close" /></IconButton>` | `<IconButton label="Close" icon="close" />`: `icon` is required and there are no children | codemod for an `<Icon name>` child, else by hand |
+| an icon as a `Button`'s first child | `<Button icon="plus">Add a line</Button>` | by hand |
+| `busy={saving} busyLabel="Saving"` | `busy={saving && "Saving"}` | codemod |
+| `Pill tone="slate"` | leave `tone` out (`neutral`) | codemod |
+| `Pill tone="amber"`, `"emerald"`, `"blue"`, `"red"`, `"violet"` | `"warn"`, `"positive"`, `"info"`, `"danger"`, `"accent"` | codemod |
+| `Pill tone="sky"` | `tone="info"` (the blue tint) | codemod, and reported |
+| `Pill label="Weight"` (the name half) | `Pill name="Weight"` | codemod |
+| a tone kept in code, `const tones: PillTone[] = ["amber", "slate"]` | the new values, `["warn", "neutral"]` | codemod for a value or list typed `PillTone`, `BarTone`, `ButtonTone`, `IconButtonTone` or `CellTone`; any other `tone={…}` whose old values are gone is reported |
+| any `div` attribute on `ButtonGroup` | only `id`, `data-*` and `aria-*` | by hand |
+
+New, nothing to change: `Button` takes `ref`; `Pill` takes `size`. A `Button`, `IconButton` or
+`Pill` with no `size` takes the size of the `Card`, `ListRow` or `Table` it sits in, else `md`.
+
+TypeScript does not flag these:
+
+- `CopyButton`'s default words are `Copy` and `Copied` (were `copy` and `copied`), so an e2e or a
+  test that finds it by the name `copy` needs the capital.
+- `Pill tone="sky"` drew its own sky tint; `info` is the blue one.
+
+### Layouts and navigation
+
+| Old | New | |
+| --- | --- | --- |
+| `subtitle` on `PageHeader`, `ListLayout`, `DetailLayout`, `FormLayout`, `ProseLayout`, `CenteredLayout` | `description` | codemod |
+| `SidebarLayout rail`, `railLabel` | `aside`, `asideLabel` | codemod |
+| `FullBleedLayout panel`, `panelLabel` | `aside`, `asideLabel` | codemod |
+| `DetailLayout stickyAside` | `sticky` | codemod |
+| `ListLayout isEmpty={rows.length === 0}` | nothing: `empty` shows when there are no children | codemod drops it, and reports it |
+| `AppShell hideChromeInPrint` | `printChrome={false}` | codemod |
+| `action` on `NotFound`, `ErrorPage`, `Offline`, `Maintenance`, `Forbidden` | `actions` | codemod |
+| `FilterGroup legend` | `label` | codemod |
+| `Breadcrumbs crumbs` | `items` | codemod |
+| `AvatarStack people` | `items` | codemod |
+| `active: true` on a `Tabs` or `SegmentedControl` link item | `selected: true` | codemod for an inline `items`, else by hand |
+| `Tabs variant="pill" orientation="vertical"` | `Tabs orientation="vertical"` | codemod |
+| `Tabs variant="pill"` across (and its `size`) | `Tabs`: across is always underline | codemod drops it, and reports it |
+| `Container elementRef` | `ref` | codemod |
+| `NavigationProgress active` | `loading`, the one name for a pending state | codemod |
+| any other HTML attribute on `Avatar` or `AppShell` (`onError`, a `div` handler) | only `id`, `data-*` and `aria-*` | by hand |
+| `avatarColourClass`, `initialsOf` | not exported: `Avatar` draws both from `name` | by hand |
+
+New, nothing to change: `Breadcrumbs label` (default `Breadcrumb`), `Lightbox closeLabel`,
+`previousLabel` and `nextLabel`, `MediaTile removeLabel` (default `Remove`) and
+`SortableSection emptyLabel` (default `Drop here`). `SortableList`, `SortableSection` and
+`SortableItem` pass every `aria-*`.
+
+TypeScript does not flag these:
+
+- A pill row across (`variant="pill"` in an `AppShell` `nav`, a `PageHeader` `tabs` slot or a
+  section nav) is now an underline row. Only the vertical rail is pills.
+- `active` on a link item in an array held in a variable (`const items = [{ ..., active: true }]`)
+  still compiles, since it is not an object literal at the `Tabs`, and is ignored: rename it to
+  `selected`, or no tab is marked current.
+- A `ListLayout` whose children are an empty array, `null` or `false` now shows `empty` without
+  `isEmpty`; one that passed `isEmpty` while it still had children now shows the children.
+
+### EpicHeader and groupByEpic are gone
+
+No consumer used either. There is no replacement component and no codemod swap; the codemod
+reports an import of either and changes nothing.
+
+| Removed | Write instead |
+| --- | --- |
+| `<EpicHeader color={c} label="HC-42 Voice Inbox" />` over a group | The group's title as `<SubsectionHeading as="h3" size="sm">` (or an `Overline` for a small label) over the group. A status beside it is a `Pill tone=… dot`. In a table, the group is a `<TableGroupRow label=… colSpan=… />`. There is no raw-colour dot. |
+| `groupByEpic(items, (i) => i.epic)` | App logic, not UI: `Object.groupBy(items, (i) => i.epic ?? "")` or a `Map`, then sort the keys your way (the old order was real refs ascending, `null` last). |
+
+### ToolCallCard is gone
+
+No app used it. `ChatThread`, `ChatMessage` and `ChatComposer` stay.
+
+| Removed | Write instead |
+| --- | --- |
+| `<ToolCallCard name="search" status="done" summary="…">…</ToolCallCard>` | A `Disclosure bordered` whose `summary` names the tool (a `Code`) and carries a `Pill` for how it went (`tone="positive"` Done, `tone="danger"` Failed, a neutral Running), with the detail as its children. |
+
+### Running text is 1rem
+
+Text is 1rem: an app that wants the old density sets `AppShell density="compact"` once. Nothing
+else sets the step, and no component takes a type size of its own.
+
+| | 0.10 | 0.11 | 0.11 under `AppShell density="compact"` |
+| --- | --- | --- | --- |
+| `Text` | 14px (`text-sm/5`) | 16px (`text-base/6`) | 14px |
+| `Caption` | 12px | 14px | 12px |
+| `SectionHeading` | 16px | 20px | 16px |
+| `SubsectionHeading` `sm`, `md`, `lg` | 14, 16, 18px | 16, 18, 20px | 14, 16, 18px |
+| `Input`, `Select`, `Textarea`, `DateField`, `Button` `sm`, `md`, `lg` | 12, 14, 16px | 14, 16, 18px | 12, 14, 16px |
+
+TypeScript does not flag these, since no name changes:
+
+- Every page reads one step larger unless its `AppShell` sets `density="compact"`. The codemod
+  reports every `AppShell` with no `density` so a person chooses; it writes nothing.
+- A text field is never under 16px on a touch screen, at any size or step, so iOS Safari does not
+  zoom the page when it takes the focus.
+- `Prose` now sets only its line height: `Text` inside it is 16px, as it is outside.
+
+### Controls
+
+Every labelled control takes the same words: `hint` for the muted line, `error` for the red one
+(it marks the control invalid and replaces the hint), `disabled` and `required`, and `checked` or
+`defaultChecked` with `onChange(checked)` on the two toggles.
+
+| Old | New | |
+| --- | --- | --- |
+| `description` on `Checkbox`, `Switch`, `Radio`, `DateField`, `DateRangePicker` | `hint` | codemod |
+| `isInvalid errorMessage="…"` on `DateField`, `DateRangePicker` | `error="…"` | codemod |
+| `isInvalid` alone | `error` with the reason: the field says why | by hand |
+| `errorMessage` alone, rewording the built-in message | nothing: the built-in message stands | by hand, and reported |
+| `isDisabled`, `isRequired` on `RadioGroup`, `Radio`, `DateField`, `DateRangePicker` | `disabled`, `required` | codemod |
+| `Checkbox onChange={(e) => f(e.target.checked)}` | `onChange={f}`: it gets the new state | codemod for that shape, else by hand |
+| `Checkbox align="start"` or `align="center"` | leave it out: the box sits on the label's first line | codemod drops it |
+| `ColourSchemeToggle initial` | `defaultValue` | codemod |
+| `Input icon={<Icon name="search" />}` | `icon="search"` | codemod for an `<Icon name>`, else by hand |
+| `<Select><option value="a">A</option></Select>` | `<Select items={[{ value: "a", label: "A" }]} />` | codemod for literal options, else by hand |
+| `Select width="auto"` | nothing: `auto` is the default outside a `Field` and still right inside one | nothing to change; codemod reports a `Select` with no `width` and no `Field` round it in the file |
+| `Field hideLabel` | `labelHidden` | codemod |
+| `FieldDialog label="…" inputLabel="…"` | `label` alone, which names the input | codemod drops `inputLabel` |
+| `FormRow action` | `actions` | codemod |
+
+New, nothing to change: `RadioGroup hint`; `error` on `Checkbox` and `Switch`; `Switch
+defaultChecked`; `Disclosure open` and `onOpenChange`; `Input clearLabel` (default `Clear search`);
+`monthLabel` and `yearLabel` on a calendar `DateField` and on `DateRangePicker` (default `Month`
+and `Year`); `ref` on `Input`, `Select` and `Checkbox`. `Textarea` takes `ref` as a plain prop, as
+before. `RadioGroup`, `DateField` and `DateRangePicker` pass every `aria-*` and `data-*`.
+
+TypeScript does not flag these:
+
+- The peers are `react` and `react-dom` `>=19`.
+- A `Select` with no `width` outside a `Field` is now as wide as its longest choice, not the full
+  row: pass `width="full"` to keep it.
+- A `Checkbox` with a one-line label sits on the line's top, where `align="center"` centred it: the
+  same place for a label that fits on one line.
+
+### Containers and rows
+
+A container now sets what sits in it: a `Stack`'s gap, a heading's level and, in a `sm` card or
+row, the size of the buttons in it. An explicit prop on the child always wins.
+
+| Old | New | |
+| --- | --- | --- |
+| `Stack`, `Section` with no `gap` | the same at page level; inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow` the gap is `xs` | codemod writes `gap="md"` where there is none, so nothing moves |
+| `Cluster` with no `wrap` | now wraps: `wrap={false}` keeps one line | codemod writes `wrap={false}`; drops `wrap` |
+| `Cluster` with no `gap` | now `sm` (was `xs`) | codemod writes `gap="xs"` |
+| `MetaList nowrap` | leave it out: an item never breaks inside itself | codemod drops it |
+| `ListRow active` | `highlighted` | codemod |
+| `ListRow detail` | `panel` | codemod |
+| `ListRow static` | leave it out: a row with no `href` and no `onClick` is static by itself, and a button row needs `onClick` | codemod drops it |
+| `Card as="section"`, `Card as="div"` | leave `as` out: a card with a `title` or an `aria-label` is a `section`, any other a `div` | codemod drops it |
+| `Card dashed` whose only child is an `EmptyState` | the `EmptyState` alone: it draws its own dashed frame | codemod for a `Card` with no prop but `dashed`, else by hand |
+| `Card dashed` or `dashed="filled"` round anything else | an `EmptyState` with a `title` | by hand, and reported |
+| `Dialog size` | `width` | codemod |
+| `Drawer size` | `width` | codemod |
+
+New, nothing to change: `level` on `Card` and `Section`, and `EmptyState`'s now comes from where
+it sits; `EmptyState icon`; `Drawer description`; `SiteSearch resultsLabel` (default `Results`).
+
+TypeScript does not flag these:
+
+- A `Card` title is an `h3` inside a `Section`, and an `EmptyState` title one below the heading
+  that holds it, where both were always an `h2`. A test that finds one by `level: 2` needs the new
+  level, or a `level` prop to pin it.
+- A `Card` with neither a `title` nor an `aria-label` (or `aria-labelledby`) is a `div`, so it is
+  no landmark; one with a name stays a `section`.
+- A `Button`, `IconButton` or `Pill` with no `size` in a `Card size="sm"` or a `ListRow size="sm"`
+  is now `sm`. The codemod reports every `Card size="sm"` and `ListRow size="sm"` so a person
+  checks what is inside.
+- A `ListRow` with neither `href` nor `onClick` is now a plain row with no hover fill and no button.
+- A `Stack` with no `gap` inside a card, dialog, drawer, sheet, callout or row is now `xs` apart.
+- A standalone `EmptyState` now draws a dashed frame round itself.
+
+### Tables
+
+A table is named by `label`, says a column of figures once in its head, and is plain inside a
+`Card` with no prop.
+
+| Old | New | |
+| --- | --- | --- |
+| `Table caption` | `label`, now required | codemod renames; reports a `Table` with none |
+| `Table variant="plain"` | leave it out: a table inside a `Card` is plain | codemod drops it |
+| `TableHeaderCell srLabel` | `label` | codemod |
+| `TableHeaderCell align="end"` over a column of `numeric` cells | `TableHeaderCell numeric`: the title and every cell under it are end aligned in tabular figures | codemod, where the first body row's cell in that column is `numeric` |
+| `TableCell numeric align="end"` | `numeric` alone: it implies `end` | codemod drops `align="end"` |
+| `TableCell tone="default"` | leave it out: `neutral` is the default | codemod drops it |
+| `TableCell tone="neutral"` (`text-slate-600`) | `neutral`, now `text-slate-700`, the one plain cell ink | nothing to change |
+
+New, nothing to change: `TableRow selected` (the `ListRow` selected fill and `aria-selected`) and
+`Table size` (the row padding, `sm` by default).
+
+TypeScript does not flag these:
+
+- A `Table` inside a `Card` that was not `plain` now draws plain: no card of its own, no head strip
+  and no row hover.
+- A `numeric` cell with no `align` is now end aligned. The codemod writes `align="start"` on one,
+  so nothing moves until you drop it.
+- A `Button`, `IconButton` or `Pill` with no `size` in a `Table` is now `sm`; a field keeps `md`. The codemod reports every `Table` so a person checks what is inside.
+- A cell that was `tone="neutral"` is one step darker.
+
+### Running the codemod
+
+The codemod lives in this repository at `tools/codemod` and is not published. From a checkout of
+it, after `bun install` once, point it at the app's source folder:
+
+```bash
+bun <checkout>/tools/codemod/src/run.ts src           # a dry run: lists what it would change
+bun <checkout>/tools/codemod/src/run.ts src --write   # rewrites the files
+```
+
+It reads every `.ts`, `.tsx`, `.js` and `.jsx` file under the folder (not `node_modules`, `dist` or
+a `.d.ts`), and changes only elements and types imported from `@hackcove/ui-react`, an aliased or
+namespace import included. It edits the attributes in place and leaves the rest of the file as it
+was, so run the app's formatter after it.
+
+Each `file:line` it prints is a **by hand** row above, on a line of the rewritten file. Work through
+them, then typecheck: what TypeScript still flags sits on or next to a line the codemod printed. The
+lists under "TypeScript does not flag these" are what is left to check by eye.
+
 ## 0.9 → 0.10: Avatar `2xl` is 64px, the old 96px is `3xl`
 
 `Avatar` gained a 64px size. The sizes keep their order (`xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`),

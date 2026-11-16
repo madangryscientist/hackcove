@@ -3,8 +3,8 @@ import {
   Button,
   ButtonGroup,
   Card,
+  Cluster,
   CardGrid,
-  type LinkRenderProps,
   ListRow,
   Pill,
   Stack,
@@ -18,18 +18,11 @@ const meta: Meta = { title: "Content/Card" };
 export default meta;
 type S = StoryObj;
 
-/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
-function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
-  return <a href={`#${to}`} {...rest} />;
-}
-
 /** `status` puts a Pill directly beside the title; `actions` stays at the far end. */
 export const DoStatus: S = {
   render: () => (
-    <Card title="PixelSlash" status={<Pill tone="amber">Coming soon</Pill>}>
-      <Text as="p" color="muted">
-        Visual review for every pull request.
-      </Text>
+    <Card title="PixelSlash" status={<Pill tone="warn">Coming soon</Pill>}>
+      <Text tone="muted">Visual review for every pull request.</Text>
     </Card>
   ),
 };
@@ -39,10 +32,8 @@ export const DontStatus: S = {
   render: () => (
     <Card>
       <SubsectionHeading>PixelSlash</SubsectionHeading>
-      <Pill tone="amber">Coming soon</Pill>
-      <Text as="p" color="muted">
-        Visual review for every pull request.
-      </Text>
+      <Pill tone="warn">Coming soon</Pill>
+      <Text tone="muted">Visual review for every pull request.</Text>
     </Card>
   ),
 };
@@ -52,14 +43,10 @@ export const DoSpacing: S = {
   render: () => (
     <Stack>
       <Card title="Open" count={3}>
-        <Text as="p" color="muted">
-          Three things to do.
-        </Text>
+        <Text tone="muted">Three things to do.</Text>
       </Card>
       <Card title="Done" count={12}>
-        <Text as="p" color="muted">
-          Twelve things finished.
-        </Text>
+        <Text tone="muted">Twelve things finished.</Text>
       </Card>
     </Stack>
   ),
@@ -70,14 +57,10 @@ export const DontSpacing: S = {
   render: () => (
     <>
       <Card title="Open" count={3}>
-        <Text as="p" color="muted">
-          Three things to do.
-        </Text>
+        <Text tone="muted">Three things to do.</Text>
       </Card>
       <Card title="Done" count={12}>
-        <Text as="p" color="muted">
-          Twelve things finished.
-        </Text>
+        <Text tone="muted">Twelve things finished.</Text>
       </Card>
     </>
   ),
@@ -87,15 +70,13 @@ export const DontSpacing: S = {
 export const Status: S = {
   render: () => (
     <div className="flex max-w-md flex-col gap-4">
-      <Card title="Hack Cove UI" status={<Pill tone="emerald">Available</Pill>}>
-        <Text as="p" color="muted">
-          Components and themes, designed together.
-        </Text>
+      <Card title="Hack Cove UI" status={<Pill tone="positive">Available</Pill>}>
+        <Text tone="muted">Components and themes, designed together.</Text>
       </Card>
       <Card
         bar
         title="PixelSlash"
-        status={<Pill tone="amber">Coming soon</Pill>}
+        status={<Pill tone="warn">Coming soon</Pill>}
         actions={
           <Button size="sm" variant="outline">
             Join
@@ -148,24 +129,7 @@ export const HeaderBarPadded: S = {
   ),
 };
 
-export const Dashed: S = {
-  render: () => (
-    <div className="max-w-md">
-      <Card dashed>No statements yet. Import one to get started.</Card>
-    </div>
-  ),
-};
-
-/** `dashed="filled"`: the dashed outline on a surface fill with more padding, for an empty state that reads as a panel. */
-export const DashedFilled: S = {
-  render: () => (
-    <div className="max-w-md">
-      <Card dashed="filled">No statements yet. Import one to get started.</Card>
-    </div>
-  ),
-};
-
-/** `size="sm"`: dense padding, the same word on `ListRow` and `FileDrop`. */
+/** `size="sm"`: dense padding, the same word on `ListRow` and `FileDrop`; a `Button` in it with no `size` of its own is `sm` too. */
 export const Small: S = {
   render: () => (
     <div className="flex max-w-md flex-col gap-4">
@@ -175,8 +139,11 @@ export const Small: S = {
       <Card size="sm" bar title="Notes" actions={<Button size="sm">Save</Button>}>
         <p className="text-sm text-slate-700">A dense body under the strip.</p>
       </Card>
-      <Card size="sm" dashed>
-        Nothing here yet.
+      <Card size="sm" title="Draft">
+        <Cluster>
+          <Button>Publish</Button>
+          <Button variant="outline">Discard</Button>
+        </Cluster>
       </Card>
     </div>
   ),
@@ -204,15 +171,11 @@ export const Tones: S = {
 export const Link: S = {
   render: () => (
     <CardGrid>
-      <Card href="#shot-1" title="Dashboard" status={<Pill tone="amber">changed</Pill>}>
-        <Text as="p" color="muted">
-          Open the diff for this shot.
-        </Text>
+      <Card href="#shot-1" title="Dashboard" status={<Pill tone="warn">changed</Pill>}>
+        <Text tone="muted">Open the diff for this shot.</Text>
       </Card>
       <Card href="#shot-2" title="Settings">
-        <Text as="p" color="muted">
-          Unchanged.
-        </Text>
+        <Text tone="muted">Unchanged.</Text>
       </Card>
     </CardGrid>
   ),
@@ -224,9 +187,7 @@ export const AnchorTarget: S = {
     <div className="flex max-w-md flex-col gap-4">
       <TextLink href="#billing">Jump to billing</TextLink>
       <Card id="billing" title="Billing">
-        <Text as="p" color="muted">
-          This card is the target of the link above.
-        </Text>
+        <Text tone="muted">This card is the target of the link above.</Text>
       </Card>
     </div>
   ),
@@ -235,14 +196,12 @@ export const AnchorTarget: S = {
   },
 };
 
-/** `render` draws the app's own router `<Link>`, already carrying the card's classes. */
-export const LinkRender: S = {
+/** An in-app `href` is drawn by the app's router `<Link>` through `LinkProvider`, already carrying the card's classes. */
+export const RouterLink: S = {
   render: () => (
     <div className="max-w-md">
-      <Card render={(p) => <FakeLink to="/shots/1" {...p} />} title="Dashboard">
-        <Text as="p" color="muted">
-          The router Link is the card.
-        </Text>
+      <Card href="/shots/1" title="Dashboard">
+        <Text tone="muted">The router Link is the card.</Text>
       </Card>
     </div>
   ),
@@ -327,9 +286,7 @@ export const Sizes: S = {
     <div className="flex max-w-md flex-col gap-4">
       {(["sm", "md", "lg"] as const).map((size) => (
         <Card key={size} size={size} title={`Open, ${size}`} count={3}>
-          <Text as="p" color="muted">
-            Three things to do.
-          </Text>
+          <Text tone="muted">Three things to do.</Text>
         </Card>
       ))}
     </div>

@@ -1,0 +1,3 @@
+import { NotFound } from "@hackcove/ui-react";
+
+export const view = <NotFound homeHref="/" />;

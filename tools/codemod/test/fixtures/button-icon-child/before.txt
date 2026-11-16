@@ -1,0 +1,8 @@
+import { Button, Icon } from "@hackcove/ui-react";
+
+export const view = (
+  <Button>
+    <Icon name="plus" />
+    Add
+  </Button>
+);

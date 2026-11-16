@@ -16,16 +16,18 @@ export const pages: ComponentSection = {
         do: [
           "Pick the page by the state: `NotFound` for a missing page (404), `Forbidden` for a page the reader may not see (403), `ErrorPage` for a failure (500), `Offline` for no connection, `Maintenance` for a site that is down on purpose.",
           "The copy is fixed, so every site reads the same. Change the heading with `title` and the text with children only when the state needs a specific line.",
-          '`homeHref` adds a "Back to home" button; with a router, `renderHome` draws it with the app\'s own `<Link>`.',
-          '`onRetry` adds a "Try again" button on `ErrorPage` and `Offline`; `action` replaces it with the one action that fits, and the home link turns outline beside it.',
+          'Every page but `Maintenance` links "Back to home", to `LinkProvider`\'s `home` (`/` by default). `Maintenance` has none: home is the site that is down.',
+          'Say where home is once, on the provider (`<LinkProvider home="/app">`).',
+          '`onRetry` adds a "Try again" button on `ErrorPage` and `Offline`; `actions` replaces it with the buttons that fit, and the home link turns outline beside them.',
           'On `NotFound`, `numeral` draws a large "404" above the title, for a designed 404. Off by default; the digits are fixed.',
-          'A button worded differently is `action` with no `homeHref`, so there is no "Back to home" link. There is no label prop.',
+          'A button worded differently goes in `actions`: it comes first, and "Back to home" stays beside it. There is no label prop.',
           "On `ErrorPage`, `detail` is a request id or a short message a reader can quote.",
           "Render one as the content of an `AppShell`, or on its own in a `Container`.",
         ],
         dont: [
           "Do not offer a retry where trying again cannot help.",
           "Never put a stack trace in `detail`.",
+          "Never wire a home link on each page; a page takes no home prop.",
         ],
       },
       accessibility: [

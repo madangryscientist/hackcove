@@ -53,13 +53,16 @@ const chevron = (d: string) => (
   </Icon>
 );
 
-const selectClass = `rounded-md border border-slate-300 bg-white py-1 pr-1 pl-2 text-sm text-slate-900 transition hover:border-violet-400 ${focusRing}`;
+const selectClass = `rounded-md border border-slate-300 bg-white py-1 pr-1 pl-2 text-sm text-slate-900 pointer-coarse:text-base transition hover:border-violet-400 ${focusRing}`;
 
 /**
  * ‹, a month dropdown, a year dropdown and ›: a birth date decades back is two picks away. It reads
  * a one-date calendar's state, or a range calendar's when there is none.
  */
-function CalendarHeader(): ReactElement | null {
+/** The names of the calendar's month and year dropdowns, for an app in another language. */
+export type CalendarLabels = { monthLabel: string; yearLabel: string };
+
+function CalendarHeader({ monthLabel, yearLabel }: CalendarLabels): ReactElement | null {
   const single = useContext(CalendarStateContext);
   const range = useContext(RangeCalendarStateContext);
   const state = single ?? range;
@@ -75,7 +78,7 @@ function CalendarHeader(): ReactElement | null {
         {chevron("M12.5 15l-5-5 5-5")}
       </Button>
       <select
-        aria-label="Month"
+        aria-label={monthLabel}
         className={cx(selectClass, "flex-1")}
         value={focused.month}
         disabled={state.isDisabled}
@@ -90,7 +93,7 @@ function CalendarHeader(): ReactElement | null {
         ))}
       </select>
       <select
-        aria-label="Year"
+        aria-label={yearLabel}
         className={selectClass}
         value={focused.year}
         disabled={state.isDisabled}
@@ -237,11 +240,17 @@ function PickerPopover({
 }
 
 /** The date picker's popover: header, a Monday-first month grid and a Clear footer. */
-export function CalendarPopover({ container }: { container: Element | undefined }): ReactElement {
+export function CalendarPopover({
+  container,
+  labels,
+}: {
+  container: Element | undefined;
+  labels: CalendarLabels;
+}): ReactElement {
   return (
     <PickerPopover container={container}>
       <Calendar<CalendarDate> firstDayOfWeek="mon" className="flex flex-col gap-3">
-        <CalendarHeader />
+        <CalendarHeader {...labels} />
         <MonthGrid cellClass={cellClass} />
       </Calendar>
     </PickerPopover>
@@ -275,15 +284,17 @@ function PresetRow({ presets }: { presets: readonly DateRangePreset[] }): ReactE
 export function RangeCalendarPopover({
   container,
   presets,
+  labels,
 }: {
   container: Element | undefined;
   presets: readonly DateRangePreset[] | undefined;
+  labels: CalendarLabels;
 }): ReactElement {
   return (
     <PickerPopover container={container}>
       {presets && presets.length > 0 ? <PresetRow presets={presets} /> : null}
       <RangeCalendar<CalendarDate> firstDayOfWeek="mon" className="flex flex-col gap-3">
-        <CalendarHeader />
+        <CalendarHeader {...labels} />
         <MonthGrid cellClass={rangeCellClass} />
       </RangeCalendar>
     </PickerPopover>

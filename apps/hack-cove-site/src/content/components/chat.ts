@@ -10,7 +10,7 @@ export const chatPages: ComponentPage[] = [
     pairs: ["ChatThread/Empty"],
     usage: {
       do: [
-        "Name it with `label`. Its children are `ChatMessage`s, `ToolCallCard`s and anything else that belongs in the conversation, in order, oldest first.",
+        "Name it with `label`. Its children are `ChatMessage`s and anything else that belongs in the conversation (a tool call is a bordered `Disclosure` whose `summary` names the tool and carries a `Pill` for how it went), in order, oldest first.",
         "It starts at the bottom and stays there as content grows, a streamed reply included. When the reader scrolls up it leaves them where they are; scrolling back to the bottom (within 32px) follows again. You write no scrolling of your own.",
         "`height` caps it: `sm`, `md` (default) or `lg`. `fill` takes the height of a parent that sets one, for a whole-page chat.",
         "`empty` is what it draws with no children, an `EmptyState`.",
@@ -69,24 +69,5 @@ export const chatPages: ComponentPage[] = [
       "After Send is pressed the focus goes back to the box, since the button has just been disabled under it.",
     ],
     api: ["ChatComposer"],
-  },
-  {
-    slug: "tool-call-card",
-    name: "ToolCallCard",
-    summary: "One tool call in a chat: a line that says how it went, and the detail behind it.",
-    whenToUse: "Showing that an assistant called a tool, in a `ChatThread`.",
-    pairs: ["ToolCallCard/Detail"],
-    usage: {
-      do: [
-        "`name` is the tool, in the monospace face. `summary` is one line on what it did; a long one is cut off.",
-        "`status` is `running`, `done` or `error`, drawn as a `Pill` reading Running, Done or Failed.",
-        "The children are the arguments and the result, shown when it is opened; a `CodeBlock` suits them. It starts closed and keeps its own state.",
-      ],
-    },
-    accessibility: [
-      "It is a bordered `Disclosure`: the line is a real `<button>` with `aria-expanded`, and Enter and Space toggle it.",
-      "The status is a word, so colour is never the only signal.",
-    ],
-    api: ["ToolCallCard"],
   },
 ];

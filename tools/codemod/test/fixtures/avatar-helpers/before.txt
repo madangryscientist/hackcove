@@ -1,0 +1,4 @@
+import { avatarColourClass, initialsOf } from "@hackcove/ui-react";
+
+export const label = initialsOf(name);
+export const ink = avatarColourClass(name);

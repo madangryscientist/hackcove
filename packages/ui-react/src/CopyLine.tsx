@@ -1,11 +1,11 @@
-import type { ComponentPropsWithoutRef, ReactElement } from "react";
+import type { ReactElement } from "react";
 import { CopyButton } from "./CopyButton.js";
-import type { Unstyled } from "./props.js";
+import type { Passthrough } from "./props.js";
 
 const BOX =
   "flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-2.5 py-2 font-mono text-[12.5px] leading-normal text-slate-900";
 
-/** One line of mono text in a box, with a `CopyButton`: a command or a token to paste elsewhere. `disabled` disables the button, e.g. until hydration. Every other div prop goes on the root `<div>`, so `data-testid` lands there; the `<code>` holds only `text`. */
+/** One line of mono text in a box, with a `CopyButton`: a command or a token to paste elsewhere. `disabled` disables the button, e.g. until hydration. An `id`, `data-*` and `aria-*` go on the root `<div>`, so `data-testid` lands there; the `<code>` holds only `text`. */
 export function CopyLine({
   text,
   disabled,
@@ -15,7 +15,7 @@ export function CopyLine({
   text: string;
   /** Disables the copy button, e.g. until hydration. */
   disabled?: boolean;
-} & Unstyled<Omit<ComponentPropsWithoutRef<"div">, "children">>): ReactElement {
+} & Passthrough): ReactElement {
   return (
     <div {...rest} className={BOX}>
       <code className="min-w-0 break-words">{text}</code>

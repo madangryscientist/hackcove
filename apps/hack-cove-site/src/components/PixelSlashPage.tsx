@@ -1,4 +1,5 @@
 import {
+  BulletItem,
   BulletList,
   Button,
   ButtonGroup,
@@ -114,10 +115,10 @@ function CommandGrid({ items }: { items: { title: string; code: string; text: st
       {items.map((item) => (
         <Card key={item.title} as="article" title={item.title}>
           <Stack gap="sm">
-            <Text as="p">
+            <Text>
               <Code>{item.code}</Code>
             </Text>
-            <Text as="p">{item.text}</Text>
+            <Text>{item.text}</Text>
           </Stack>
         </Card>
       ))}
@@ -134,13 +135,13 @@ function PlaywrightCard() {
   return (
     <Card as="article" title={playwright.title}>
       <Stack gap="sm">
-        <Text as="p">{playwright.intro}</Text>
+        <Text>{playwright.intro}</Text>
         <CodeBlock lines={[playwright.install]} label="bash" language="bash" />
         <CodeBlock language="ts">{playwright.example}</CodeBlock>
-        <Text as="p">
+        <Text>
           <Code>ignore</Code> {playwright.ignore}
         </Text>
-        <Text as="p">{playwright.upload}</Text>
+        <Text>{playwright.upload}</Text>
         <CodeBlock lines={[playwright.command]} label="bash" language="bash" />
         <TextLink href={links.playwright.href}>{links.playwright.label}</TextLink>
       </Stack>
@@ -162,7 +163,7 @@ function ForCi() {
   const { ci } = pixelslash;
   return (
     <Section title={ci.title}>
-      <Text as="p">{ci.intro}</Text>
+      <Text>{ci.intro}</Text>
       <CommandGrid items={ci.items} />
     </Section>
   );
@@ -183,12 +184,10 @@ function Points({
       <Stack gap="sm">
         <BulletList>
           {items.map((item) => (
-            <Text as="li" key={item} color="secondary">
-              {item}
-            </Text>
+            <BulletItem key={item}>{item}</BulletItem>
           ))}
         </BulletList>
-        <MetaList nowrap separator="none">
+        <MetaList separator="none">
           {more.map((link) => (
             <TextLink key={link.href} href={link.href}>
               {link.label}
@@ -217,7 +216,7 @@ function Closing() {
   const { closing } = pixelslash;
   return (
     <Section title={closing.title}>
-      <Text as="p">{closing.text}</Text>
+      <Text>{closing.text}</Text>
       <CodeBlock lines={closing.code} label="bash" language="bash" />
       <Actions />
     </Section>

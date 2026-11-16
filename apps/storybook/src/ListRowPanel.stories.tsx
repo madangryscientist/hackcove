@@ -11,12 +11,12 @@ export const ActiveOnPanel: S = {
   render: () => (
     <FullBleedLayout
       padded
-      panel={
+      aside={
         <div>
           <ListRow size="sm" trailing="2">
             Missing part
           </ListRow>
-          <ListRow size="sm" divided active trailing="1">
+          <ListRow size="sm" divided highlighted trailing="1">
             Raw colour
           </ListRow>
           <ListRow size="sm" divided selected trailing="4">
@@ -52,7 +52,6 @@ export const StaticDetail: S = {
           {chats.map((chat, index) => (
             <ListRow
               key={chat.name}
-              static
               divided={index > 0}
               leading={<Avatar name={chat.name} />}
               trailing="10:42"
@@ -66,10 +65,12 @@ export const StaticDetail: S = {
                   {open === chat.name ? "Close" : "Open"}
                 </Button>
               }
-              detail={open === chat.name && <Text as="p">Thread with {chat.name} opens here.</Text>}
+              panel={open === chat.name && <Text>Thread with {chat.name} opens here.</Text>}
             >
-              <Text strong>{chat.name}</Text>
-              <Caption as="p">{chat.last}</Caption>
+              <Text as="span" strong>
+                {chat.name}
+              </Text>
+              <Caption>{chat.last}</Caption>
             </ListRow>
           ))}
         </Card>

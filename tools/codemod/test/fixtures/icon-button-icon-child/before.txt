@@ -1,0 +1,7 @@
+import { IconButton, Icon } from "@hackcove/ui-react";
+
+export const view = (
+  <IconButton label="Close">
+    <Icon name="close" />
+  </IconButton>
+);

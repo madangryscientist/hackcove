@@ -15,10 +15,10 @@ export const text: ComponentSection = {
       stories: ["typography"],
       usage: {
         do: [
-          "A page has one title: `PageHeading` for an app page, `Display` for the headline of a public page. A `PageHeader` already draws the `PageHeading` and its subtitle, so use it for the top of a page.",
+          "A page has one title: `PageHeading` for an app page, `Display` for the headline of a public page. A `PageHeader` already draws the `PageHeading` and its `description`, so use it for the top of a page.",
           "Name the parts of a page with `SectionHeading`; `rule` puts the hairline under it, with the space either side built in.",
           "Name what is inside a part with `SubsectionHeading`: `size` `sm` is a form-group caption, `md` (default) a card title in a header bar, `lg` a drawer title. `truncate` cuts one that is too long for its column to a single line.",
-          'Put a `Lead` under a `Display`, and a `Text as="p"` under any other heading. `Dialog` and `Drawer` draw their own title from their `title`.',
+          "Put a `Lead` under a `Display`, and a `Text` under any other heading. `Dialog` and `Drawer` draw their own title from their `title`.",
           "Pick the heading for its place in the outline, never for its size. `Display` is not a big `SectionHeading`.",
           "`color` takes `default`, `secondary`, `tertiary`, `muted` or `brand` for the hierarchy of the text. A heading's meaning is carried by its words, not a colour.",
           "`as` changes the element, only to keep the outline in order, and never the look.",
@@ -50,7 +50,7 @@ export const text: ComponentSection = {
           "The sizes are fixed: `Prose` has no size to choose.",
         ],
         dont: [
-          "Never use `Prose` on an app screen. A dashboard, a form or a list keeps the dense app sizes.",
+          "Never use `Prose` on an app screen. A dashboard, a form or a list keeps the app sizes.",
         ],
       },
       accessibility: [
@@ -76,10 +76,10 @@ export const text: ComponentSection = {
       ],
       usage: {
         do: [
-          'Set a paragraph in `Text as="p"`. `Text` is a `span` by default so it sits inside a sentence; a block of it stops at a readable line length.',
-          'Emphasise a run with `Text strong` inside the `Text`: font-medium in the primary ink. Use `Caption` for fine print and metadata, as `Caption as="p"` when it stands alone.',
-          'Put a `Text as="p"` under a heading and `Lead` under a `Display`. `Overline` is the small all-caps label above a group, not a title.',
-          'A Card or a list with nothing in it yet gets one muted line, `Text as="p" color="muted"`: "Nothing finished yet." A whole empty view, with a way forward, is an `EmptyState` with its `actions`.',
+          'Set a paragraph in `Text`, a `<p>`. Inside a row, a cell or a sentence it is `Text as="span"`. A block of it stops at a readable line length.',
+          'Emphasise a run with `Text strong` inside the `Text`: font-medium in the primary ink. Use `Caption` for fine print and metadata, `Caption as="span"` inside a row.',
+          "Put a `Text` under a heading and `Lead` under a `Display`. `Overline` is the small all-caps label above a group, not a title.",
+          'A Card or a list with nothing in it yet gets one muted line, `Text tone="muted"`: "Nothing finished yet." A whole empty view, with a way forward, is an `EmptyState` with its `actions`.',
           "`tone` says what a run means: `positive`, `warn`, `danger`, `info` or `muted`. It beats `color`, and the words still say it, so colour is never the only signal. `color` is only the hierarchy of the text.",
           "`numeric` sets tabular figures so a column of amounts lines up, `mono` the monospace face for an id or a path, and `truncate` cuts a run to one line.",
           '`align` sets a run at `start`, `center` or `end` of its block, for a table header or a right-hand column. `minWidth="amount"` on `Text` fixes a width and right-aligns a money figure in it, so a column of amounts lines up.',
@@ -91,7 +91,7 @@ export const text: ComponentSection = {
         ],
       },
       accessibility: [
-        "`Text`, `Caption` and `Overline` render a `span`, and `Lead` a `p`. `as` changes the element, for a `p` or an `li`, or a `label` for an `Overline` with `htmlFor`.",
+        "`Text`, `Caption` and `Lead` render a `p`, and `Overline` a `span`. `as` changes the element: a `span` for `Text` or `Caption` inside a row or a sentence, an `li`, or a `label` for an `Overline` with `htmlFor`.",
         "`Overline` is a label, not a heading: it adds nothing to the page outline.",
         "`truncate` sets the full text as the `title` when the content is plain text, so a pointer user can read what was cut. Give a `title` of your own when the content is not.",
         "A `tone` changes only the colour. The wording has to carry the meaning.",
@@ -196,39 +196,46 @@ export const text: ComponentSection = {
         do: [
           "Use `TextLink` for every link in running text.",
           '`external` is for another site: it opens a new tab with `rel="noreferrer"`.',
-          'In an app with a router, `render` draws the router\'s own `<Link>`: `render={(p) => <Link to="/terms" {...p} />}`. The library has no router.',
+          "In an app with a router, set the router's `<Link>` once on a `LinkProvider` and give each `TextLink` its `href`. The library has no router.",
+          'Set the adapter once, at the router. TanStack Router: `InnerWrap: ({ children }) => <LinkProvider link={(p) => <Link to="." {...p} />}>{children}</LinkProvider>` on `createRouter` (`to="."` satisfies the typed `to`; the `href` wins). React Router: `<LinkProvider link={({ href, ...p }) => <Link to={href} {...p} />}>`. Astro: no provider.',
+          '`home` on the same `LinkProvider` is where every status page\'s "Back to home" goes, `/` by default (`home="https://example.com"` with no `link` for a home on another site). A provider inside another keeps what it does not set.',
+          "Only an in-app path (`/quotes?page=2#top`) reaches the adapter; `external`, `https:`, `mailto:`, `#hash` and a relative path are a plain `<a>`.",
           "`size` pins the type size to `sm`, `md` or `lg`; left out, the link takes the size of its text. `mono` sets the monospace face for a path or an id.",
           '`tone` gives the link a meaning\'s colour (`warn`, `danger`, `positive`, `info`, `muted`), underlined on hover. Use it for a link that is the message, like "3 failed".',
           "`stretch` makes the nearest `relative` ancestor the click target: a `Card` or a `TableRow`. Put it on the one link in that row; any other link or button in the row sits above it and is clickable on its own.",
         ],
-        dont: ["Never write a bare `<a>` for a link in running text."],
+        dont: [
+          "Never write a bare `<a>` for a link in running text.",
+          "Never a render prop or a wrapper component per link. Every part that links (`Button`, `Card`, `ListRow`, `Tabs`, `Breadcrumbs` and the rest) takes `href` and goes through the same `LinkProvider`.",
+        ],
       },
       accessibility: [
         "A `TextLink` is a native `<a>`, so it is in the tab order and opens with Enter.",
         "It has a focus ring from the component, so the keyboard focus is always visible.",
         '`external` sets `target="_blank"` and `rel="noreferrer"`.',
-        "Every anchor prop (`aria-*`, `download`, `title`, a handler) goes on the `<a>`; `render` receives them as well.",
+        "Every anchor prop (`aria-*`, `download`, `title`, a handler) goes on the `<a>`; the app's `LinkProvider` adapter receives them as well.",
       ],
-      api: ["TextLink"],
+      api: ["TextLink", "LinkProvider"],
     },
     {
       slug: "bullet-list",
       name: "BulletList",
-      summary: "A bulleted list with the discs, indent and gap built in.",
+      summary:
+        "A bulleted list with the discs, indent and gap built in; each item is a `BulletItem`.",
       whenToUse: "Items that read as a list of points: what changed, what to bring.",
       pairs: ["BulletList/Items"],
       usage: {
         do: [
-          'Give a `BulletList` `<li>` children, set in `Text as="li"`.',
+          "Give a `BulletList` `BulletItem` children: each is an `<li>` in the body text.",
           "Items that have a label and a value are a `KeyValueList`; a list of records is a `Table` or a `ListRow`.",
         ],
         dont: ["Never type a hyphen into a paragraph to make a list."],
       },
       accessibility: [
         "A `BulletList` renders a `<ul>`, so a screen reader announces a list and the number of items.",
-        "`id`, `aria-*` and `data-*` go on the list.",
+        "`id`, `aria-*` and `data-*` go on the list, or on one item.",
       ],
-      api: ["BulletList"],
+      api: ["BulletList", "BulletItem"],
     },
     {
       slug: "meta-list",
@@ -241,7 +248,7 @@ export const text: ComponentSection = {
         do: [
           "Each child is one item: text, a `Code` or a `TextLink`.",
           "`separator` is `·` (default), `•` or `none`.",
-          "`nowrap` keeps each item on one line, for a row of links; the row still wraps between items.",
+          "An item never breaks inside itself; the row wraps between items.",
           "`mono` sets the whole row in the monospace face, for ids and paths.",
           "A labelled fact is a `KeyValueList`.",
         ],

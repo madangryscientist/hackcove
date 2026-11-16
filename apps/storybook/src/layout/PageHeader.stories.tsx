@@ -16,11 +16,11 @@ export const AllSlots: S = {
       <PageHeader
         breadcrumbs={
           <Breadcrumbs
-            crumbs={[{ label: "Org", href: "#" }, { label: "Hack Cove", href: "#" }, "Build 412"]}
+            items={[{ label: "Org", href: "#" }, { label: "Hack Cove", href: "#" }, "Build 412"]}
           />
         }
         title="Build 412"
-        subtitle="main · 4c93f0b · 3 changed, 1 new"
+        description="main · 4c93f0b · 3 changed, 1 new"
         actions={
           <>
             <Button variant="outline">Reject</Button>
@@ -29,17 +29,16 @@ export const AllSlots: S = {
         }
         tabs={
           <Tabs
-            variant="pill"
             label="Build"
             items={[
-              { label: "Changed", href: "#changed", active: true },
+              { label: "Changed", href: "#changed", selected: true },
               { label: "New", href: "#new" },
               { label: "Unchanged", href: "#unchanged" },
             ]}
           />
         }
       />
-      <Text as="p">The first block starts here, the same distance under every header.</Text>
+      <Text>The first block starts here, the same distance under every header.</Text>
     </DemoShell>
   ),
 };
@@ -48,7 +47,7 @@ export const TitleOnly: S = {
   render: () => (
     <DemoShell>
       <PageHeader title="Settings" />
-      <Text as="p">The first block starts here.</Text>
+      <Text>The first block starts here.</Text>
     </DemoShell>
   ),
 };

@@ -34,11 +34,8 @@ function CategoryInCell() {
               setCategory(event.target.value);
               close();
             }}
-          >
-            {CATEGORIES.map((name) => (
-              <option key={name}>{name}</option>
-            ))}
-          </Select>
+            items={CATEGORIES.map((name) => ({ value: name, label: name }))}
+          />
         )}
       >
         {category}
@@ -50,7 +47,7 @@ function CategoryInCell() {
 /** `InlineEdit` is the edit trigger without the cell: put it in a `TableCell` that holds other content (a `secondary` line, a `Pill`). It behaves as `TableEditCell` does: a click, Enter or Space opens the editor and focuses it; Esc, a save's `close`, a press outside or Tab out closes it. */
 export const InlineEditInCell: S = {
   render: () => (
-    <Table caption="Transactions">
+    <Table label="Transactions">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Description</TableHeaderCell>
@@ -62,9 +59,7 @@ export const InlineEditInCell: S = {
         <TableRow>
           <TableCell tone="strong">Woolworths</TableCell>
           <CategoryInCell />
-          <TableCell align="end" numeric>
-            R 349.00
-          </TableCell>
+          <TableCell numeric>R 349.00</TableCell>
         </TableRow>
         <TableRow>
           <TableCell tone="strong">Engen</TableCell>
@@ -77,13 +72,11 @@ export const InlineEditInCell: S = {
             >
               Transport
             </InlineEdit>
-            <Pill tone="amber" dot>
+            <Pill tone="warn" dot>
               Needs a receipt
             </Pill>
           </TableCell>
-          <TableCell align="end" numeric>
-            R 880.00
-          </TableCell>
+          <TableCell numeric>R 880.00</TableCell>
         </TableRow>
       </TableBody>
     </Table>

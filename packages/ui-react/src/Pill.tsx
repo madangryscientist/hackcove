@@ -1,17 +1,28 @@
 import type { MouseEventHandler, ReactElement, ReactNode } from "react";
 import { cx, focusRing } from "./cx.js";
-import { type LinkRender, renderLink } from "./link.js";
+import { useDensity } from "./density.js";
+import { renderLink } from "./link.js";
 import type { Passthrough } from "./props.js";
+import type { Size } from "./size.js";
+import type { Tone } from "./tone.js";
 
-export type PillTone = "slate" | "amber" | "emerald" | "blue" | "red" | "violet" | "sky";
+/** A Pill's tones: the five meanings, and `accent` for a category that is none of them. */
+export type PillTone = Tone | "accent";
 
 type PillBase = {
   children: ReactNode;
   /**
-   * The tint: `slate`, `amber`, `emerald`, `blue`, `red`, `violet` or `sky`.
-   * @default slate
+   * What the pill means: `neutral`, `info`, `positive`, `warn` or `danger`, or `accent` for a
+   * category that is none of those.
+   * @default neutral
    */
   tone?: PillTone;
+  /**
+   * `sm` is smaller text, for a dense row; `lg` larger, beside a heading. Left out, a Pill takes
+   * the size of the `Card`, `ListRow` or `Table` it sits in, else `md`.
+   * @default the container's, else md
+   */
+  size?: Size | undefined;
   /** A leading dot in the pill's own text colour. */
   dot?: boolean;
   /** A full pill shape in place of the rounded-md corners. */
@@ -19,11 +30,11 @@ type PillBase = {
   /** The tooltip on hover, for a pill whose text is short or cut off: the full status, a date. */
   title?: string | undefined;
   /**
-   * The name half of a two-tone `label: value` pill: `children` is the value. The label keeps the
+   * The name half of a two-tone `name: value` pill: `children` is the value. The name keeps the
    * tone's tint and the value sits on a plain surface beside it, in a hairline border. Keep the
-   * label to a word or two (`Weight`, `Sleep`).
+   * name to a word or two (`Weight`, `Sleep`).
    */
-  label?: string | undefined;
+  name?: string | undefined;
 };
 
 type Removable =
@@ -39,43 +50,33 @@ type PillProps = PillBase &
   Removable &
   Passthrough &
   (
-    | { href?: undefined; render?: undefined; external?: undefined; onClick?: undefined }
+    | { href?: undefined; external?: undefined; onClick?: undefined }
     | {
         /** A Pill that is a button: runs `onClick`. Defaults to `type="button"`. */
         onClick: MouseEventHandler<HTMLButtonElement>;
         href?: undefined;
-        render?: undefined;
         external?: undefined;
       }
-    | ({
+    | {
         onClick?: undefined;
         /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
         external?: boolean | undefined;
-      } & (
-        | {
-            /** Makes the pill a link to this URL. */
-            href: string;
-            /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/flakes" {...p} />`. */
-            render?: LinkRender | undefined;
-          }
-        | {
-            /** Makes the pill a link to this URL. */
-            href?: string | undefined;
-            /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/flakes" {...p} />`. */
-            render: LinkRender;
-          }
-      ))
+        /** Makes the pill a link to this URL; an in-app path goes through the app's `LinkProvider`. */
+        href: string;
+      }
   );
 
 const PILL_TONES: Record<PillTone, string> = {
-  slate: "bg-slate-100 text-slate-600",
-  amber: "bg-amber-50 text-amber-700",
-  emerald: "bg-emerald-50 text-emerald-700",
-  blue: "bg-blue-50 text-blue-700",
-  red: "bg-red-50 text-red-900",
-  violet: "bg-violet-50 text-violet-700",
-  sky: "bg-sky-50 text-sky-700",
+  neutral: "bg-slate-100 text-slate-600",
+  warn: "bg-amber-50 text-amber-700",
+  positive: "bg-emerald-50 text-emerald-700",
+  info: "bg-blue-50 text-blue-700",
+  danger: "bg-red-50 text-red-900",
+  accent: "bg-violet-50 text-violet-700",
 };
+
+/** The text size of each step: `md` is the pill as it has always been. */
+const TEXT: Record<Size, string> = { sm: "text-[11px]", md: "text-xs", lg: "text-sm" };
 
 const INTERACTIVE = cx("transition hover:opacity-80", focusRing);
 
@@ -96,6 +97,7 @@ const REMOVE_MARK = (
 
 type Look = {
   tone: PillTone;
+  size: Size;
   round: boolean;
   dot: boolean;
   labelled: boolean;
@@ -103,23 +105,25 @@ type Look = {
 };
 
 /** The two-tone pill is a hairline-bordered box: the label half carries the tint, the value half sits on the surface. */
-const SPLIT = "inline-flex overflow-hidden border border-slate-200 text-xs font-medium";
+const SPLIT = "inline-flex overflow-hidden border border-slate-200 font-medium";
 
 /** The box a one-piece pill draws, or the whole pill when it is a single element. */
-function pillClass({ tone, round, dot, labelled }: Look, interactive: boolean): string {
+function pillClass({ tone, size, round, dot, labelled }: Look, interactive: boolean): string {
   return cx(
     round ? "rounded-full" : "rounded-md",
-    labelled ? SPLIT : cx("px-1.5 py-0.5 text-xs font-medium", PILL_TONES[tone]),
+    TEXT[size],
+    labelled ? SPLIT : cx("px-1.5 py-0.5 font-medium", PILL_TONES[tone]),
     dot && !labelled && "inline-flex items-center gap-1",
     interactive && INTERACTIVE,
   );
 }
 
 /** The shell round a pill with an x: it carries the tint and the corners, and the text and the x are its two children. */
-function shellClass({ tone, round, labelled }: Look): string {
+function shellClass({ tone, size, round, labelled }: Look): string {
   return cx(
     round ? "rounded-full" : "rounded-md",
-    "inline-flex items-center text-xs font-medium",
+    "inline-flex items-center font-medium",
+    TEXT[size],
     labelled ? "overflow-hidden border border-slate-200" : PILL_TONES[tone],
   );
 }
@@ -141,18 +145,18 @@ function removeClass({ labelled }: Look): string {
   );
 }
 
-/** The inside of a pill: the dot and the text, or for a two-tone one the tinted label beside the value. */
+/** The inside of a pill: the dot and the text, or for a two-tone one the tinted name beside the value. */
 function PillBody({
   look: { tone, dot, removable },
-  label,
+  name,
   children,
 }: {
   look: Look;
-  label: string | undefined;
+  name: string | undefined;
   children: ReactNode;
 }): ReactElement {
   const mark = dot && <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-current" />;
-  if (label === undefined) {
+  if (name === undefined) {
     return (
       <>
         {mark}
@@ -166,7 +170,7 @@ function PillBody({
         className={cx("px-1.5 py-px", PILL_TONES[tone], dot && "inline-flex items-center gap-1")}
       >
         {mark}
-        {label}
+        {name}
         <span className="sr-only">:</span>
       </span>
       <span className={cx("bg-white py-px text-slate-900", removable ? "pl-1.5 pr-0.5" : "px-1.5")}>
@@ -177,33 +181,23 @@ function PillBody({
 }
 
 type MainParts = {
-  isLink: boolean;
   interactive: boolean;
   look: Look;
   rest: object;
   href: string | undefined;
-  render: LinkRender | undefined;
   external: boolean;
   onClick: MouseEventHandler<HTMLButtonElement> | undefined;
   body: ReactNode;
 };
 
 /** The pill itself, or the text half of a removable one: a link, a button or a span. */
-function renderMain({
-  isLink,
-  interactive,
-  look,
-  rest,
-  href,
-  render,
-  external,
-  onClick,
-  body,
-}: MainParts) {
+function renderMain({ interactive, look, rest, href, external, onClick, body }: MainParts) {
   const className = look.removable ? mainClass(look, interactive) : pillClass(look, interactive);
   // A removable pill's attributes go on its link or button; on a plain one, the shell is the pill.
   const own = look.removable && !interactive ? {} : rest;
-  if (isLink) return renderLink({ ...own, href, render, external, className, children: body });
+  if (href !== undefined) {
+    return renderLink({ ...own, href, external, className, children: body });
+  }
   if (onClick) {
     return (
       <button type="button" {...own} onClick={onClick} className={cx(className, "cursor-pointer")}>
@@ -249,50 +243,49 @@ function RemoveShell({
 }
 
 /**
- * A small tinted label; `dot` adds a leading dot in the pill's own text colour, `round` swaps the
- * rounded-md corners for a full pill shape. `label` makes it two-tone, `label: value`: the label
+ * A small tinted label whose `tone` says what it means; `dot` adds a leading dot in the pill's own
+ * text colour, `round` swaps the rounded-md corners for a full pill shape, and `size` steps the
+ * text (with none, it takes its container's). `name` makes it two-tone, `name: value`: the name
  * keeps the tone's tint and the children, the value, sit on the surface beside it. `href` makes it
- * a link (a plain `<a>`, or with `render` the app's own router `<Link>`:
- * `render={(p) => <Link to="/flakes" {...p} />}`; `external` opens a new tab) and `onClick` makes it
+ * a link (the app's router link through `LinkProvider` for an in-app path, else a plain `<a>`;
+ * `external` opens a new tab) and `onClick` makes it
  * a button, each with a hover dim and the focus ring. `onRemove` adds an x button after the text
  * (named by `removeLabel`), a separate button beside a link or button pill rather than nested in
  * it. `title` is the native tooltip.
  */
 export function Pill({
   children,
-  tone = "slate",
+  tone = "neutral",
+  size,
   dot = false,
   round = false,
-  label,
+  name,
   href,
-  render,
   external = false,
   onClick,
   onRemove,
   removeLabel,
   ...rest
 }: PillProps): ReactElement {
-  const isLink = href !== undefined || render !== undefined;
-  const interactive = isLink || onClick !== undefined;
+  const interactive = href !== undefined || onClick !== undefined;
   const look: Look = {
     tone,
+    size: useDensity(size),
     round,
     dot,
-    labelled: label !== undefined,
+    labelled: name !== undefined,
     removable: onRemove !== undefined,
   };
   const body = (
-    <PillBody look={look} label={label}>
+    <PillBody look={look} name={name}>
       {children}
     </PillBody>
   );
   const main = renderMain({
-    isLink,
     interactive,
     look,
     rest,
     href,
-    render,
     external,
     onClick,
     body,

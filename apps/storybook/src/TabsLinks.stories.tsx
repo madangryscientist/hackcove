@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Stack, Tabs, type LinkRenderProps } from "@hackcove/ui-react";
+import { Button, Stack, Tabs } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Navigation/Tabs" };
 export default meta;
@@ -9,12 +9,11 @@ type S = StoryObj;
 export const DoRail: S = {
   render: () => (
     <Tabs
-      variant="pill"
       orientation="vertical"
       label="Sections"
       items={[
         { label: "Overview", href: "#overview" },
-        { label: "Button", href: "#button", active: true },
+        { label: "Button", href: "#button", selected: true },
         { label: "Card", href: "#card" },
       ]}
     />
@@ -41,11 +40,10 @@ export const DontRail: S = {
 export const Links: S = {
   render: () => (
     <Tabs
-      variant="pill"
       label="Main"
       items={[
         { label: "Map", href: "/" },
-        { label: "Directory", href: "/stores", active: true },
+        { label: "Directory", href: "/stores", selected: true },
         { label: "Events", href: "/events" },
         { label: "About", href: "/about" },
       ]}
@@ -58,12 +56,11 @@ export const Vertical: S = {
   render: () => (
     <div className="w-56">
       <Tabs
-        variant="pill"
         orientation="vertical"
         label="Sections"
         items={[
           { label: "Overview", href: "/" },
-          { label: "Button", href: "/button", active: true },
+          { label: "Button", href: "/button", selected: true },
           { label: "Card", href: "/card" },
           { label: "Tabs", href: "/tabs" },
         ]}
@@ -72,20 +69,14 @@ export const Vertical: S = {
   ),
 };
 
-/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
-function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
-  return <a href={`#${to}`} {...rest} />;
-}
-
-/** Each tab's `render` draws the app's own Link and gets the tab's classes and `aria-current`. */
+/** Each tab's `href` is drawn by the app's own Link through `LinkProvider`, which gets the tab's classes and `aria-current`. */
 export const LinksWithRouterLink: S = {
   render: () => (
     <Tabs
-      variant="pill"
       label="Main"
       items={[
-        { label: "Quotes", active: true, render: (p) => <FakeLink to="/quotes" {...p} /> },
-        { label: "Settings", render: (p) => <FakeLink to="/settings" {...p} /> },
+        { label: "Quotes", selected: true, href: "/quotes" },
+        { label: "Settings", href: "/settings" },
         { label: "Traces", href: "https://example.com/traces", external: true },
       ]}
     />
@@ -98,13 +89,11 @@ export const Sizes: S = {
     <Stack gap="sm">
       {(["sm", "md", "lg"] as const).map((size) => (
         <Tabs
-          variant="pill"
           key={size}
-          size={size}
           label={`Main, ${size}`}
           items={[
             { label: "Map", href: "/" },
-            { label: "Directory", href: "/stores", active: true },
+            { label: "Directory", href: "/stores", selected: true },
           ]}
         />
       ))}

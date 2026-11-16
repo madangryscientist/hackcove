@@ -30,22 +30,22 @@ export function FormGrid({
 
 /**
  * An inline-edit row: several controls side by side with proportional widths (`FormRowField`
- * `span` 1 to 4), an optional `action` after them (a save button), and one `hint` or `error` line
- * under the whole row. Every control sits on the bottom edge, so the action lines up with them
- * whatever the labels do. Under `md` the fields and the action stack.
+ * `span` 1 to 4), optional `actions` after them (a save button), and one `hint` or `error` line
+ * under the whole row. Every control sits on the bottom edge, so the actions line up with them
+ * whatever the labels do. Under `md` the fields and the actions stack.
  *
  * The row owns the note, so the fields beside each other keep their height: a `FormRowField` has
  * no `hint` or `error` of its own.
  */
 export function FormRow({
-  action,
+  actions,
   hint,
   error,
   children,
   ...rest
 }: {
   /** A button or two after the last field. It keeps its own width. */
-  action?: ReactNode;
+  actions?: ReactNode;
   /** One muted line under the whole row. */
   hint?: ReactNode;
   /** Replaces the hint when set, as `Field`'s does. */
@@ -57,7 +57,7 @@ export function FormRow({
     <div {...rest} className="col-span-full flex flex-col gap-1.5">
       <div className="flex flex-col gap-3 md:flex-row md:items-end">
         {children}
-        {action && <div className="flex items-center gap-2 md:shrink-0">{action}</div>}
+        {actions && <div className="flex items-center gap-2 md:shrink-0">{actions}</div>}
       </div>
       {note}
     </div>

@@ -26,7 +26,7 @@ export const Tones: S = {
     <div className="grid max-w-3xl gap-4 sm:grid-cols-3">
       <StatTile label="Income" value="R 42 000" accent />
       <StatTile label="Savings once debt-free" value="R 9 800" tone="positive" accent />
-      <StatTile label="Total interest" value="−R 12 400" hint="shortfall" tone="negative" accent />
+      <StatTile label="Total interest" value="−R 12 400" hint="shortfall" tone="danger" accent />
     </div>
   ),
 };
@@ -34,7 +34,7 @@ export const Tones: S = {
 export const WithoutAccent: S = {
   render: () => (
     <div className="grid max-w-xl gap-4 sm:grid-cols-2">
-      <StatTile label="Total interest" value="R 12 400" tone="negative" />
+      <StatTile label="Total interest" value="R 12 400" tone="danger" />
       <StatTile label="Savings once debt-free" value="R 9 800" tone="positive" />
     </div>
   ),
@@ -65,7 +65,7 @@ export const DoTone: S = {
   render: () => (
     <CardGrid columns={2}>
       <StatTile label="Left over" value="+R 4 250" hint="surplus" tone="positive" accent />
-      <StatTile label="Total interest" value="−R 12 400" hint="shortfall" tone="negative" accent />
+      <StatTile label="Total interest" value="−R 12 400" hint="shortfall" tone="danger" accent />
     </CardGrid>
   ),
 };
@@ -75,7 +75,7 @@ export const DontTone: S = {
   render: () => (
     <CardGrid columns={2}>
       <StatTile label="Left over" value="R 4 250" tone="positive" accent />
-      <StatTile label="Total interest" value="R 12 400" tone="negative" accent />
+      <StatTile label="Total interest" value="R 12 400" tone="danger" accent />
     </CardGrid>
   ),
 };
@@ -118,7 +118,7 @@ export const WithTrend: S = {
         label="Open bugs"
         value="23"
         hint="up 8 in two weeks"
-        tone="negative"
+        tone="danger"
         trend={[12, 14, 13, 15, 18, 20, 23]}
       />
     </div>

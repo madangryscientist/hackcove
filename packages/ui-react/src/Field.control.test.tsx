@@ -14,16 +14,12 @@ type ControlA11y = { id?: string; "aria-describedby"?: string; "aria-invalid"?: 
 /** Every control that reads the Field, drawn with the given props on its native element. */
 const controls: { name: string; draw: (props: ControlA11y) => ReactElement }[] = [
   { name: "Input", draw: (props) => <Input {...props} /> },
-  { name: "Input icon", draw: (props) => <Input {...props} icon={<span>?</span>} /> },
+  { name: "Input icon", draw: (props) => <Input {...props} icon="search" /> },
   { name: "Input prefix", draw: (props) => <Input {...props} prefix="R" /> },
   { name: "Input search", draw: (props) => <Input {...props} type="search" /> },
   {
     name: "Select",
-    draw: (props) => (
-      <Select {...props}>
-        <option>One</option>
-      </Select>
-    ),
+    draw: (props) => <Select {...props} items={[{ value: "one", label: "One" }]} />,
   },
   { name: "Textarea", draw: (props) => <Textarea {...props} /> },
   { name: "FileDrop", draw: (props) => <FileDrop {...props}>Drop a file</FileDrop> },

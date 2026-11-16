@@ -1,0 +1,3 @@
+import { Offline } from "@hackcove/ui-react";
+
+export const view = <Offline renderHome={(p) => <a href="/" {...p} />} />;

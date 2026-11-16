@@ -64,12 +64,12 @@ export const DontFactsList: S = {
   render: () => (
     <Stack gap="xs">
       <Cluster justify="between">
-        <Text>Size</Text>
-        <Text>1280×720</Text>
+        <Text as="span">Size</Text>
+        <Text as="span">1280×720</Text>
       </Cluster>
       <Cluster justify="between">
-        <Text>Changed pixels</Text>
-        <Text>0.4%</Text>
+        <Text as="span">Changed pixels</Text>
+        <Text as="span">0.4%</Text>
       </Cluster>
     </Stack>
   ),

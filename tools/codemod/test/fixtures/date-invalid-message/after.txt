@@ -1,0 +1,3 @@
+import { DateRangePicker } from "@hackcove/ui-react";
+
+export const view = <DateRangePicker label="Period" error="Pick an end." />;

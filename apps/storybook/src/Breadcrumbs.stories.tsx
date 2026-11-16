@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Breadcrumbs, type LinkRenderProps } from "@hackcove/ui-react";
+import { Breadcrumbs } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Navigation/Breadcrumbs" };
 export default meta;
@@ -9,7 +9,7 @@ type S = StoryObj;
 export const DoTrail: S = {
   render: () => (
     <Breadcrumbs
-      crumbs={[
+      items={[
         { label: "Projects", href: "#projects" },
         { label: "Launch film", href: "#launch-film" },
         "Shots",
@@ -20,23 +20,23 @@ export const DoTrail: S = {
 
 /** Parents given as plain text look like the trail but lead nowhere, so a reader cannot go back up. */
 export const DontTrail: S = {
-  render: () => <Breadcrumbs crumbs={["Projects", "Launch film", "Shots"]} />,
+  render: () => <Breadcrumbs items={["Projects", "Launch film", "Shots"]} />,
 };
 
 /** Breadcrumbs show where the page sits in a hierarchy. */
 export const DoHierarchy: S = {
   render: () => (
     <Breadcrumbs
-      crumbs={[{ label: "Acme", href: "#acme" }, { label: "Quotes", href: "#quotes" }, "Quote 12"]}
+      items={[{ label: "Acme", href: "#acme" }, { label: "Quotes", href: "#quotes" }, "Quote 12"]}
     />
   ),
 };
 
-/** Siblings are not a hierarchy: switching between peer sections is `Tabs variant="pill"` of links. */
+/** Siblings are not a hierarchy: switching between peer sections is `Tabs` of links. */
 export const DontHierarchy: S = {
   render: () => (
     <Breadcrumbs
-      crumbs={[
+      items={[
         { label: "Quotes", href: "#quotes" },
         { label: "Invoices", href: "#invoices" },
         "Receipts",
@@ -48,26 +48,26 @@ export const DontHierarchy: S = {
 const link = (href: string, label: string) => ({ label, href });
 
 export const Two: S = {
-  render: () => <Breadcrumbs crumbs={[link("/", "Projects"), "Hack Cove"]} />,
+  render: () => <Breadcrumbs items={[link("/", "Projects"), "Hack Cove"]} />,
 };
 
 export const Four: S = {
   render: () => (
     <Breadcrumbs
-      crumbs={[link("/", "Org"), link("/project", "Project"), link("/build", "Build"), "Snapshot"]}
+      items={[link("/", "Org"), link("/project", "Project"), link("/build", "Build"), "Snapshot"]}
     />
   ),
 };
 
 export const PlainParents: S = {
-  render: () => <Breadcrumbs crumbs={["Org", "Project", "Build", "Snapshot"]} />,
+  render: () => <Breadcrumbs items={["Org", "Project", "Build", "Snapshot"]} />,
 };
 
 export const LongTruncates: S = {
   render: () => (
     <div className="flex w-72">
       <Breadcrumbs
-        crumbs={[
+        items={[
           link("/", "An organisation with a very long name"),
           link("/project", "A project whose name keeps going well past the width"),
           link("/build", "Build 2026-10-22"),
@@ -78,17 +78,12 @@ export const LongTruncates: S = {
   ),
 };
 
-/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
-function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
-  return <a href={`#${to}`} {...rest} />;
-}
-
-/** A crumb object links with `href` or draws the app's own Link with `render`; the last is never a link. */
+/** A crumb object links with `href`, an in-app one through the app's `LinkProvider`; the last is never a link. */
 export const LinkCrumbs: S = {
   render: () => (
     <Breadcrumbs
-      crumbs={[
-        { label: "Quotes", render: (p) => <FakeLink to="/quotes" {...p} /> },
+      items={[
+        { label: "Quotes", href: "/quotes" },
         { label: "Docs", href: "https://example.com/docs", external: true },
         "Quote 12",
       ]}

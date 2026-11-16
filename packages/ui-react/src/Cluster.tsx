@@ -22,33 +22,33 @@ const JUSTIFY: Record<ClusterJustify, string> = {
 };
 
 /**
- * A horizontal row of items a fixed `gap` apart (`xs` by default): the row counterpart of `Stack`. `align` is the
+ * A horizontal row of items a fixed `gap` apart (`sm` by default): the row counterpart of `Stack`. `align` is the
  * cross axis (`center` default, `baseline` for mixed text sizes, `start`, `end`) and `justify` the
  * main one (`start` default, `between` to push the first and last items to the two ends, `end`).
- * `wrap` lets the items flow onto further lines on a narrow viewport (off by default, so a row
- * stays on one line).
+ * The items flow onto further lines when the row runs out of room; `wrap={false}` keeps them on one
+ * line.
  *
  * Put one `ClusterGrow` around the item that takes the room left over, an input beside its
  * buttons, say. An empty `ClusterGrow` is a spacer that pushes what follows it to the end.
  * `ButtonGroup` is the row for buttons; use `Cluster` for any other row. `as="span"` is for a row
- * inside phrasing content, such as a `PageHeader` subtitle (a `<p>`): its items must be phrasing
+ * inside phrasing content, such as a `PageHeader` description (a `<p>`): its items must be phrasing
  * content too, so no `ClusterGrow`.
  */
 export function Cluster({
   as: Tag = "div",
-  gap = "xs",
+  gap = "sm",
   align = "center",
   justify = "start",
-  wrap = false,
+  wrap = true,
   children,
   ...rest
 }: {
   /** The element. `span` for a row inside a `<p>` or other phrasing content; default `div`. */
   as?: "div" | "span" | undefined;
   /**
-   * The space between items. Defaults to `xs`, not `md`, one of the library's two exceptions to the
-   * `md` default: the items of a row sit closer than the blocks of a column.
-   * @default xs
+   * The space between items. Defaults to `sm`, not `md`: the items of a row sit closer than the
+   * blocks of a column.
+   * @default sm
    */
   gap?: ClusterGap | undefined;
   /**
@@ -61,7 +61,10 @@ export function Cluster({
    * @default start
    */
   justify?: ClusterJustify | undefined;
-  /** Let the items flow onto further lines on a narrow viewport. Off, the row stays on one line. */
+  /**
+   * Let the items flow onto further lines when the row runs out of room. `false` keeps them on one line.
+   * @default true
+   */
   wrap?: boolean | undefined;
   children?: ReactNode;
 } & Passthrough): ReactElement {

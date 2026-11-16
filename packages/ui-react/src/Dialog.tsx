@@ -7,10 +7,14 @@ import {
   useRef,
   type RefObject,
 } from "react";
+import { InCard } from "./cardContext.js";
 import { cx } from "./cx.js";
+import { DensityProvider } from "./density.js";
+import { HeadingLevelProvider } from "./headingLevel.js";
 import { useModal } from "./modal.js";
 import type { Passthrough } from "./props.js";
 import { scrollStopProps, TABBABLE, useScrollStop } from "./scrollStop.js";
+import { GapProvider } from "./stackGap.js";
 import type { Size } from "./size.js";
 import { AppScale, HeaderText, SectionHeading } from "./typography.js";
 
@@ -89,10 +93,33 @@ export type DialogProps = {
    * click, so give it a close action in the `footer` (a `<form method="dialog">` button).
    * @default md
    */
-  size?: Size | "full";
+  width?: Size | "full";
   /** Called when the dialog closes: Esc, a click on the backdrop, or a `<form method="dialog">` submit. */
   onClose: () => void;
 } & Passthrough;
+
+/**
+ * What a modal resets, since the browser's `<dialog>` renders where it is written: it is back on the
+ * app scale, out of any card, and its controls are `md` whatever row, card or table opened it.
+ */
+export function ModalScope({ children }: { children: ReactNode }): ReactElement {
+  return (
+    <AppScale>
+      <DensityProvider size={null}>
+        <InCard value={false}>{children}</InCard>
+      </DensityProvider>
+    </AppScale>
+  );
+}
+
+/** What a dialog or drawer sets for its body: a `Stack` in it is `xs` apart, and a heading in it is one below the title. */
+export function BodyContext({ children }: { children: ReactNode }): ReactElement {
+  return (
+    <GapProvider gap="xs">
+      <HeadingLevelProvider level={2}>{children}</HeadingLevelProvider>
+    </GapProvider>
+  );
+}
 
 /**
  * A modal on the browser's own `<dialog>`: it is opened with `showModal()` on mount, so render it
@@ -105,7 +132,7 @@ export function Dialog({
   description,
   children,
   footer,
-  size = "md",
+  width = "md",
   onClose,
   ...rest
 }: DialogProps): ReactElement {
@@ -113,7 +140,7 @@ export function Dialog({
   const titleId = useId();
 
   const closed = useModal(dialog, onClose);
-  const full = size === "full";
+  const full = width === "full";
 
   const {
     attach,
@@ -122,14 +149,14 @@ export function Dialog({
   } = useScrollingBody(dialog, titleId, full);
 
   return (
-    <AppScale>
+    <ModalScope>
       <dialog
         {...rest}
         ref={dialog}
         aria-labelledby={titleId}
         onClose={closed}
         onClick={(event) => event.target === dialog.current && dialog.current?.close()}
-        className={cx(BASE, size === "full" ? FULL : `${WINDOW} ${WIDTH[size]}`)}
+        className={cx(BASE, width === "full" ? FULL : `${WINDOW} ${WIDTH[width]}`)}
       >
         <div className={cx("flex flex-col p-5.5", full ? "min-h-0 flex-1" : CAP)}>
           <SectionHeading id={titleId}>{title}</SectionHeading>
@@ -140,12 +167,12 @@ export function Dialog({
           )}
           {children && (
             <div ref={attach} {...bodyProps} className={bodyClass}>
-              {children}
+              <BodyContext>{children}</BodyContext>
             </div>
           )}
           {footer && <div className="mt-5 flex shrink-0 justify-end gap-2">{footer}</div>}
         </div>
       </dialog>
-    </AppScale>
+    </ModalScope>
   );
 }

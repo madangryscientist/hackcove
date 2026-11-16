@@ -1,0 +1,4 @@
+import { type LinkAdapterProps, type LinkAdapter } from "@hackcove/ui-react";
+
+export type A = LinkAdapterProps;
+export type B = LinkAdapter;

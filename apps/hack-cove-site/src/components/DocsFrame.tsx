@@ -7,24 +7,23 @@ const plain = (path: string) => (path.length > 1 ? path.replace(/\/+$/, "") : pa
 /** The /ui/ pages' frame: Getting started, then the components grouped by section as vertical link rails on the page, the page beside them (folded behind a disclosure on a phone, so the page comes first), in the same grid as the header. */
 export function DocsFrame({ pathname, children }: { pathname: string; children: ReactNode }) {
   const here = plain(pathname);
-  const start = [{ label: "Getting started", href: "/ui/", active: here === "/ui" }];
+  const start = [{ label: "Getting started", href: "/ui/", selected: here === "/ui" }];
   return (
     <SidebarLayout
-      railLabel="All components"
-      rail={
+      asideLabel="All components"
+      aside={
         <Stack gap="md">
-          <Tabs variant="pill" orientation="vertical" label="Docs" items={start} />
+          <Tabs orientation="vertical" label="Docs" items={start} />
           {componentSections.map((section) => (
             <Stack key={section.title} gap="xs">
               <Overline>{section.title}</Overline>
               <Tabs
-                variant="pill"
                 orientation="vertical"
                 label={section.title}
                 items={section.pages.map((page) => ({
                   label: page.name,
                   href: `/ui/${page.slug}/`,
-                  active: here === `/ui/${page.slug}`,
+                  selected: here === `/ui/${page.slug}`,
                 }))}
               />
             </Stack>

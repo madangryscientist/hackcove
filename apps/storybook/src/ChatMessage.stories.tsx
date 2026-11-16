@@ -171,7 +171,7 @@ export const DoActions: S = {
 export const DontActions: S = {
   render: () => (
     <ChatMessage role="assistant" author="Helper">
-      <Text as="p">The pantry did not answer.</Text>
+      <Text>The pantry did not answer.</Text>
       <Button size="sm" variant="ghost">
         Retry
       </Button>

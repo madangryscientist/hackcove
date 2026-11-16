@@ -81,8 +81,11 @@ for (const scheme of schemes) {
       await setScheme(page, scheme);
       const figure = page.locator("figure").first();
       const button = figure.getByRole("button", { name: "Save" });
-      // The Button story's size: `md` is text-sm.
-      expect(await size(button)).toBe(14);
+      // The Button story's size: `md` is 16px on a 20px line, where the prose around it sets 28px.
+      expect(await size(button)).toBe(16);
+      expect(
+        await button.evaluate((el) => Number.parseFloat(getComputedStyle(el).lineHeight)),
+      ).toBe(20);
     });
   });
 }

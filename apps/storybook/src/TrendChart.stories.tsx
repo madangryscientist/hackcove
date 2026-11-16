@@ -49,7 +49,7 @@ export const Line: S = {
         series={[
           {
             label: "Open",
-            tone: "violet",
+            tone: "accent",
             values: [32, 30, 35, 33, 30, 32, 33, 31, 25, 27, 24, 17],
           },
         ]}

@@ -1,10 +1,10 @@
-import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
+import type { ChangeEvent, ComponentPropsWithoutRef, ReactElement, ReactNode, Ref } from "react";
 import { cx, focusRing } from "./cx.js";
-import { useDescription, Words } from "./labelWords.js";
+import { useNote, Words } from "./labelWords.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 
-/** The label's gap and text, the box, and the box's drop onto the first line, by `size`. */
+/** The label's gap and text, the box, and the box's drop onto the label's first line, by `size`. */
 const SIZE: Record<Size, { label: string; box: string; start: string }> = {
   sm: { label: "gap-1.5 text-xs", box: "h-3.5 w-3.5", start: "mt-px" },
   md: { label: "gap-2 text-sm", box: "h-4 w-4", start: "mt-0.5" },
@@ -14,47 +14,48 @@ const SIZE: Record<Size, { label: string; box: string; start: string }> = {
 /**
  * A checkbox with its label. It is a real `<input type="checkbox">`, drawn by the library (an
  * empty outlined box, then a filled violet one with a check mark) so it reads the same in every
- * theme and browser. Every prop but the label goes on the input.
+ * theme and browser. Every prop but the label goes on the input, and `ref` reaches it.
  * `size="sm"` is `text-xs` and a smaller box, for a dense row; `size="lg"` is `text-base` and a
- * larger box. Leave `label` out for a bare box in
- * a table cell, and name it with `aria-label`. `align="start"` puts the box on the label's first
- * line, for a label that wraps onto several; the default centres it on the whole label. The box
- * keeps its size either way. `description` is a muted line under the label that says more, like a
- * `Field`'s hint; it is the box's `aria-describedby`, and with it the box sits on the label's first
- * line.
+ * larger box. Leave `label` out for a bare box in a table cell, and name it with `aria-label`. The
+ * box sits on the label's first line, so a label that wraps reads from the box. `hint` is a muted
+ * line under the label that says more, like a `Field`'s; `error` replaces it with a red line
+ * (`role="alert"`) and makes the box `aria-invalid`. The note is the box's `aria-describedby`.
+ * `onChange` gets the new checked state; take `checked` with it, or `defaultChecked` alone.
  */
 export function Checkbox({
   label,
-  description,
+  hint,
+  error,
   size = "md",
-  align = "center",
+  onChange,
   "aria-describedby": describedBy,
   ...rest
 }: {
   /** The text beside the box. Leave it out for a bare box (a table cell) and name it with `aria-label`. */
   label?: ReactNode;
   /** A muted line under the label that says more. It is the box's `aria-describedby`. */
-  description?: ReactNode;
+  hint?: ReactNode;
+  /** Replaces the hint with a red line (`role="alert"`) and makes the box `aria-invalid`. */
+  error?: ReactNode;
   /**
    * The label's text size and the box with it.
    * @default md
    */
   size?: Size | undefined;
-  /**
-   * `start` puts the box on the label's first line, for a label that wraps; `center` centres it on the whole label. A `description` makes it `start`.
-   * @default center
-   */
-  align?: "center" | "start" | undefined;
-} & Unstyled<Omit<ComponentPropsWithoutRef<"input">, "type" | "size" | "width">>): ReactElement {
-  const { descriptionId, describedIds } = useDescription(description, describedBy);
-  const start = align === "start" || descriptionId !== undefined;
+  /** Called with the new checked state when the person ticks or clears the box. */
+  onChange?: ((checked: boolean) => void) | undefined;
+  /** The `<input>`, for focus control. */
+  ref?: Ref<HTMLInputElement> | undefined;
+} & Unstyled<
+  Omit<ComponentPropsWithoutRef<"input">, "type" | "size" | "width" | "onChange">
+>): ReactElement {
+  const { noteId, describedIds, invalid } = useNote(hint, error, describedBy);
   return (
     <label
       className={cx(
         // Faded and default-cursor unless the box is enabled. Written as `has-enabled` so the
         // label carries no `disabled` class text: the disabled state belongs on the input.
-        "group/checkbox inline-flex cursor-default text-slate-700 opacity-50 has-enabled:cursor-pointer has-enabled:opacity-100",
-        start ? "items-start" : "items-center",
+        "group/checkbox inline-flex cursor-default items-start text-slate-700 opacity-50 has-enabled:cursor-pointer has-enabled:opacity-100",
         SIZE[size].label,
       )}
     >
@@ -68,7 +69,7 @@ export function Checkbox({
         aria-hidden="true"
         className={cx(
           SIZE[size].box,
-          start && SIZE[size].start,
+          label != null && SIZE[size].start,
           "pointer-events-none invisible absolute in-[.isolate]:z-20 block rounded border border-violet-600 bg-violet-600 text-violet-50 group-has-checked/checkbox:visible",
         )}
       >
@@ -87,14 +88,18 @@ export function Checkbox({
         className={cx(
           SIZE[size].box,
           "shrink-0",
-          start && SIZE[size].start,
+          label != null && SIZE[size].start,
           "appearance-none rounded border border-slate-300 bg-white hover:border-violet-400",
           focusRing,
         )}
         {...(describedIds ? { "aria-describedby": describedIds } : {})}
+        {...(invalid ? { "aria-invalid": true } : {})}
         {...rest}
+        {...(onChange
+          ? { onChange: (event: ChangeEvent<HTMLInputElement>) => onChange(event.target.checked) }
+          : {})}
       />
-      <Words label={label} description={description} id={descriptionId} />
+      <Words label={label} hint={hint} error={error} id={noteId} />
     </label>
   );
 }

@@ -18,15 +18,19 @@ type S = StoryObj;
 /** Fields side by side, widths in proportion to `span` (1 to 4), the action after them. Under `md` they stack. */
 export const InlineEdit: S = {
   render: () => (
-    <FormRow action={<Button>Save</Button>}>
+    <FormRow actions={<Button>Save</Button>}>
       <FormRowField label="Description" htmlFor="row-desc" span={2}>
         <Input id="row-desc" defaultValue="Kitchen renovation" />
       </FormRowField>
       <FormRowField label="Category" htmlFor="row-cat">
-        <Select id="row-cat" defaultValue="home">
-          <option value="home">Home</option>
-          <option value="car">Car</option>
-        </Select>
+        <Select
+          id="row-cat"
+          defaultValue="home"
+          items={[
+            { value: "home", label: "Home" },
+            { value: "car", label: "Car" },
+          ]}
+        />
       </FormRowField>
       <FormRowField label="Amount" htmlFor="row-amount">
         <Input id="row-amount" defaultValue="12,400.00" align="end" />
@@ -39,7 +43,7 @@ export const InlineEdit: S = {
 export const NoteUnderTheRow: S = {
   render: () => (
     <Stack>
-      <FormRow hint="Press Save to apply the change." action={<Button>Save</Button>}>
+      <FormRow hint="Press Save to apply the change." actions={<Button>Save</Button>}>
         <FormRowField label="Description" htmlFor="hint-desc" span={3}>
           <Input id="hint-desc" defaultValue="Kitchen renovation" />
         </FormRowField>
@@ -47,7 +51,7 @@ export const NoteUnderTheRow: S = {
           <Input id="hint-amount" defaultValue="12,400.00" align="end" />
         </FormRowField>
       </FormRow>
-      <FormRow error="Amount is required." action={<Button>Save</Button>}>
+      <FormRow error="Amount is required." actions={<Button>Save</Button>}>
         <FormRowField label="Description" htmlFor="err-desc" span={3}>
           <Input id="err-desc" defaultValue="Kitchen renovation" />
         </FormRowField>
@@ -90,7 +94,7 @@ export const TwoColumnForm: S = {
       <Field label="Notes" htmlFor="grid-notes" span="full" hint="Only you see these.">
         <Textarea id="grid-notes" />
       </Field>
-      <FormRow action={<Button variant="outline">Add</Button>}>
+      <FormRow actions={<Button variant="outline">Add</Button>}>
         <FormRowField label="Item" htmlFor="grid-item" span={3}>
           <Input id="grid-item" />
         </FormRowField>
@@ -105,7 +109,7 @@ export const TwoColumnForm: S = {
 /** A row of controls with proportional widths, an `action` after them, and one `hint` under the whole row. */
 export const DoInlineEdit: S = {
   render: () => (
-    <FormRow hint="Press Save to apply the change." action={<Button>Save</Button>}>
+    <FormRow hint="Press Save to apply the change." actions={<Button>Save</Button>}>
       <FormRowField label="Description" htmlFor="do-row-desc" span={3}>
         <Input id="do-row-desc" defaultValue="Kitchen renovation" />
       </FormRowField>
@@ -119,7 +123,7 @@ export const DoInlineEdit: S = {
 /** A `Field` with its own hint inside a `FormRow` makes its column taller, so the controls drift out of line and the save button with them. */
 export const DontInlineEdit: S = {
   render: () => (
-    <FormRow action={<Button>Save</Button>}>
+    <FormRow actions={<Button>Save</Button>}>
       <Field label="Description" htmlFor="dont-row-desc" hint="Shown on the invoice.">
         <Input id="dont-row-desc" defaultValue="Kitchen renovation" />
       </Field>

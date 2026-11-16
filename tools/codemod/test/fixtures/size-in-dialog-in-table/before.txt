@@ -1,0 +1,15 @@
+import { Table, TableBody, TableRow, TableCell, Dialog, Button } from "@hackcove/ui-react";
+
+export const view = (
+  <Table label="Lines">
+    <TableBody>
+      <TableRow>
+        <TableCell>
+          <Dialog title="Delete?" onClose={close}>
+            <Button size="sm">Yes</Button>
+          </Dialog>
+        </TableCell>
+      </TableRow>
+    </TableBody>
+  </Table>
+);

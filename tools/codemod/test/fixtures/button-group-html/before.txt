@@ -1,0 +1,3 @@
+import { ButtonGroup, Button } from "@hackcove/ui-react";
+
+export const view = <ButtonGroup role="toolbar"><Button>Save</Button></ButtonGroup>;

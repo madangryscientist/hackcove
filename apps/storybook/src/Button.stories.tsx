@@ -1,10 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, ButtonGroup, type LinkRenderProps } from "@hackcove/ui-react";
-
-/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
-function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
-  return <a href={`#${to}`} {...rest} />;
-}
+import { Button, ButtonGroup } from "@hackcove/ui-react";
+import { CompactApp } from "./typeSteps";
 
 const meta: Meta = { title: "Actions/Button" };
 export default meta;
@@ -103,13 +99,13 @@ export const Dashed: S = {
   render: () => (
     <div className="flex max-w-sm flex-col gap-2">
       <Button variant="dashed">Add a budget line</Button>
-      <Button variant="dashed" size="sm">
-        <span aria-hidden="true">+</span> Add a category
+      <Button variant="dashed" size="sm" icon="plus">
+        Add a category
       </Button>
       <Button variant="dashed" disabledReason="Pick a month first">
         Add a line
       </Button>
-      <Button variant="dashed" busy busyLabel="Adding…">
+      <Button variant="dashed" busy="Adding…">
         Add a line
       </Button>
     </div>
@@ -153,7 +149,7 @@ export const Danger: S = {
       <Button tone="danger" disabledReason="Nothing to delete">
         Blocked
       </Button>
-      <Button tone="danger" busy busyLabel="Deleting…">
+      <Button tone="danger" busy="Deleting…">
         Delete
       </Button>
     </div>
@@ -179,7 +175,7 @@ export const Positive: S = {
       <Button tone="positive" disabledReason="Nothing to accept">
         Blocked
       </Button>
-      <Button tone="positive" busy busyLabel="Accepting…">
+      <Button tone="positive" busy="Accepting…">
         Accept
       </Button>
     </div>
@@ -240,7 +236,7 @@ export const LinkLook: S = {
 export const Disabled: S = {
   render: () => (
     <div className="flex flex-col gap-3">
-      {(["default", "positive", "danger"] as const).map((tone) => (
+      {(["neutral", "positive", "danger"] as const).map((tone) => (
         <div key={tone} className="flex flex-wrap items-center gap-2">
           <Button tone={tone} disabled>
             Save
@@ -275,10 +271,8 @@ export const Blocked: S = {
 export const Busy: S = {
   render: () => (
     <div className="flex flex-wrap gap-2">
-      <Button busy busyLabel="Saving…">
-        Save
-      </Button>
-      <Button variant="outline" busy busyLabel="Cancelling…">
+      <Button busy="Saving…">Save</Button>
+      <Button variant="outline" busy="Cancelling…">
         Cancel
       </Button>
       <Button variant="ghost" busy>
@@ -302,25 +296,33 @@ export const AsLink: S = {
     </div>
   ),
 };
-/** `render` draws the app's own router Link; here a stand-in. No router lives in @hackcove/ui-react. */
+/** An in-app `href` is drawn by the app's router Link through `LinkProvider`; here a stand-in. No router lives in @hackcove/ui-react. */
 export const WithRouterLink: S = {
-  render: () => <Button render={(props) => <FakeLink to="/quotes" {...props} />}>New quote</Button>,
+  render: () => <Button href="/quotes">New quote</Button>,
 };
 
 /** `sm`, `md` (the default) and `lg`: the one size scale every control shares. */
+const sizes = () => (
+  <div className="flex flex-wrap items-center gap-2">
+    {(["sm", "md", "lg"] as const).map((size) => (
+      <Button key={size} size={size}>
+        Save {size}
+      </Button>
+    ))}
+    {(["sm", "md", "lg"] as const).map((size) => (
+      <Button key={size} href="#quotes" size={size} variant="outline">
+        Quotes {size}
+      </Button>
+    ))}
+  </div>
+);
+
 export const Sizes: S = {
-  render: () => (
-    <div className="flex flex-wrap items-center gap-2">
-      {(["sm", "md", "lg"] as const).map((size) => (
-        <Button key={size} size={size}>
-          Save {size}
-        </Button>
-      ))}
-      {(["sm", "md", "lg"] as const).map((size) => (
-        <Button key={size} href="#quotes" size={size} variant="outline">
-          Quotes {size}
-        </Button>
-      ))}
-    </div>
-  ),
+  render: sizes,
+};
+
+/** The same sizes in an app that set `AppShell density="compact"`: each is one type step down. */
+export const SizesCompact: S = {
+  parameters: { layout: "fullscreen" },
+  render: () => <CompactApp>{sizes()}</CompactApp>,
 };

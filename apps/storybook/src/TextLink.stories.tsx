@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Card, type LinkRenderProps, Text, TextLink } from "@hackcove/ui-react";
+import { Card, type LinkAdapter, LinkProvider, Text, TextLink } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Text/TextLink" };
 export default meta;
@@ -83,13 +83,11 @@ export const Tones: S = {
   ),
 };
 
-/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
-function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
-  return <a href={`#${to}`} {...rest} />;
-}
+/** Stands in for a router's <Link>: the app's adapter, set once on a `LinkProvider`. */
+const FakeLink: LinkAdapter = ({ href, ...rest }) => <a {...rest} href={`#${href}`} />;
 
 export const WithRouterLink: S = {
-  render: () => <TextLink render={(p) => <FakeLink to="/terms" {...p} />}>Read the terms</TextLink>,
+  render: () => <TextLink href="/terms">Read the terms</TextLink>,
 };
 
 /** `stretch` covers the nearest `relative` ancestor, so the whole row is the click target. */
@@ -112,7 +110,7 @@ export const Stretch: S = {
 /** A link in running text is a `TextLink` inside a `Text`. */
 export const DoInSentence: S = {
   render: () => (
-    <Text as="p">
+    <Text>
       Questions? Email <TextLink href="mailto:hello@example.com">hello@example.com</TextLink>, or
       read the <TextLink href="#terms">terms</TextLink> first.
     </Text>
@@ -122,7 +120,7 @@ export const DoInSentence: S = {
 /** A bare `<a>` has none of the theme's link colour, weight or focus ring. */
 export const DontInSentence: S = {
   render: () => (
-    <Text as="p">
+    <Text>
       Questions? Email <a href="mailto:hello@example.com">hello@example.com</a>, or read the{" "}
       <a href="#terms">terms</a> first.
     </Text>
@@ -147,14 +145,31 @@ export const DontExternal: S = {
   ),
 };
 
-/** In an app with a router, `render` draws the router's own `<Link>`; here an anchor stands in. */
-export const DoRouter: S = {
-  render: () => <TextLink render={(p) => <a href="#terms" {...p} />}>Read the terms</TextLink>,
+/** The app names its router's link once, on a `LinkProvider`: every part below takes a plain `href`, and only the in-app ones reach the adapter. */
+export const RouterLinks: S = {
+  render: () => (
+    <LinkProvider link={FakeLink}>
+      <Card title="Shot 12">
+        <Text>
+          Back to <TextLink href="/builds/7">build 7</TextLink>, or open the{" "}
+          <TextLink href="https://example.com/docs" external>
+            docs
+          </TextLink>
+          .
+        </Text>
+      </Card>
+    </LinkProvider>
+  ),
 };
 
-/** In an app with a router, a bare `href` loads the whole page again: pass the router's `<Link>` through `render`. */
+/** In an app with a router, set the router's `<Link>` once on a `LinkProvider` and give each link its `href`; here an anchor stands in. */
+export const DoRouter: S = {
+  render: () => <TextLink href="/terms">Read the terms</TextLink>,
+};
+
+/** A router `<Link>` drawn by hand at each link loses the TextLink look and its focus ring: give `TextLink` the `href`, and the app's `LinkProvider` draws the router link. */
 export const DontRouter: S = {
-  render: () => <TextLink href="#terms">Read the terms</TextLink>,
+  render: () => <a href="#terms">Read the terms</a>,
 };
 
 /** `stretch` makes the whole of the nearest `relative` ancestor the click target: a `Card` here, a `TableRow` in a table. */

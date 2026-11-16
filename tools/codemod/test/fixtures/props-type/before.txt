@@ -1,0 +1,3 @@
+import { type DialogProps } from "@hackcove/ui-react";
+
+export type Props = DialogProps;

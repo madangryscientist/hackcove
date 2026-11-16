@@ -75,10 +75,9 @@ export function GalleryLayout() {
         }
         nav={
           <Tabs
-            variant="pill"
             label="Gallery shell"
             items={[
-              { label: "Builds", href: "#builds", active: true },
+              { label: "Builds", href: "#builds", selected: true },
               { label: "Settings", href: "#settings" },
             ]}
           />
@@ -88,7 +87,7 @@ export function GalleryLayout() {
       >
         <PageHeader
           title="PageHeader"
-          subtitle="in an AppShell"
+          description="in an AppShell"
           actions={<Button>Action</Button>}
         />
         <Stack width="narrow">
@@ -103,7 +102,7 @@ export function GalleryLayout() {
           </Section>
           <Stack gap="xs">
             <SubsectionHeading>Text block</SubsectionHeading>
-            <Text as="p">A Stack at gap xs, in a narrow (max-w-3xl) column.</Text>
+            <Text>A Stack at gap xs, in a narrow (max-w-3xl) column.</Text>
           </Stack>
           <Stack as="form" gap="sm" aria-label="Stack as form" onSubmit={(e) => e.preventDefault()}>
             <Field label="Stack as form" htmlFor="gallery-stack-form">

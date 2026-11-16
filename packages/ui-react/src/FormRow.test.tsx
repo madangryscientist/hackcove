@@ -25,7 +25,7 @@ describe("FormRow", () => {
   );
 
   it("reads the action after the fields", () => {
-    render(<FormRow action={<button type="button">Save</button>}>{fields}</FormRow>);
+    render(<FormRow actions={<button type="button">Save</button>}>{fields}</FormRow>);
     expect(
       follows(screen.getByLabelText("Name"), screen.getByRole("button", { name: "Save" })),
     ).toBeTruthy();
@@ -39,7 +39,7 @@ describe("FormRow", () => {
 
   it("reads the hint after the whole row, the action included, and it is no alert", () => {
     render(
-      <FormRow hint="Saved on enter." action={<button type="button">Save</button>}>
+      <FormRow hint="Saved on enter." actions={<button type="button">Save</button>}>
         {fields}
       </FormRow>,
     );

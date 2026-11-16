@@ -1,0 +1,3 @@
+import { EpicHeader } from "@hackcove/ui-react";
+
+export const view = <EpicHeader label="HC-42" />;

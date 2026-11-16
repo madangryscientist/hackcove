@@ -109,9 +109,9 @@ const pixelslash = {
     title: "See what your change did to the page, before you merge it.",
     lead: "PixelSlash screenshots your main branch and your branch, sets real change apart from rendering noise, and gives you a report cropped to what moved.",
     pills: [
-      { label: "Source available", tone: "emerald" },
-      { label: "ELv2", tone: "slate" },
-      { label: "Local first", tone: "violet" },
+      { label: "Source available", tone: "positive" },
+      { label: "ELv2", tone: "neutral" },
+      { label: "Local first", tone: "accent" },
     ] as const,
     install: "npm i -D @hackcove/pixelslash",
     installNote:

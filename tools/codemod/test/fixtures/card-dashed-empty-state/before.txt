@@ -1,0 +1,7 @@
+import { Card, EmptyState } from "@hackcove/ui-react";
+
+export const view = (
+  <Card dashed>
+    <EmptyState title="No invoices yet" />
+  </Card>
+);

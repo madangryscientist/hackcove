@@ -1,10 +1,12 @@
 import {
+  useMemo,
   useRef,
   useState,
   type ChangeEvent,
   type ComponentPropsWithoutRef,
   type ReactElement,
   type ReactNode,
+  type Ref,
 } from "react";
 import {
   CONTROL_ALIGN,
@@ -14,6 +16,7 @@ import {
   type ControlSize,
 } from "./control.js";
 import { cx, focusRing } from "./cx.js";
+import { useTypeStep } from "./density.js";
 import { InputShell } from "./InputShell.js";
 import type { Unstyled } from "./props.js";
 
@@ -50,12 +53,20 @@ function clearValue(input: HTMLInputElement): void {
   input.focus();
 }
 
-function ClearButton({ size, onClear }: { size: ControlSize; onClear: () => void }): ReactElement {
+function ClearButton({
+  size,
+  label,
+  onClear,
+}: {
+  size: ControlSize;
+  label: string;
+  onClear: () => void;
+}): ReactElement {
   return (
     <button
       type="button"
-      aria-label="Clear search"
-      title="Clear search"
+      aria-label={label}
+      title={label}
       onClick={onClear}
       className={cx(CLEAR_BUTTON, CLEAR_SIZE[size].box)}
     >
@@ -71,37 +82,63 @@ function ClearButton({ size, onClear }: { size: ControlSize; onClear: () => void
   );
 }
 
-/** `Input` for `type="search"`: native search look reset, and a "Clear search" button at the trailing edge while the field has a value. */
+/** Sets both the field's own ref and the consumer's. */
+function bothRefs(
+  own: { current: HTMLInputElement | null },
+  theirs: Ref<HTMLInputElement> | undefined,
+): (el: HTMLInputElement | null) => void {
+  return (el) => {
+    own.current = el;
+    if (typeof theirs === "function") theirs(el);
+    else if (theirs) theirs.current = el;
+  };
+}
+
+/** `Input` for `type="search"`: native search look reset, and a clear button named `clearLabel` at the trailing edge while the field has a value. */
 export function SearchInput({
   icon,
   size = "md",
   width = "full",
   align = "start",
+  clearLabel,
   onChange,
+  ref,
   ...rest
-}: { icon?: ReactNode; align?: ControlAlign | undefined } & ControlProps &
+}: {
+  icon?: ReactNode;
+  align?: ControlAlign | undefined;
+  clearLabel: string;
+  ref?: Ref<HTMLInputElement> | undefined;
+} & ControlProps &
   Unstyled<Omit<ComponentPropsWithoutRef<"input">, "size" | "width">>): ReactElement {
+  const step = useTypeStep();
   const inputRef = useRef<HTMLInputElement>(null);
+  // One callback for the life of the ref, so a caller's function ref is not called on every keystroke.
+  const attach = useMemo(() => bothRefs(inputRef, ref), [ref]);
   const [typed, setTyped] = useState(() => String(rest.value ?? rest.defaultValue ?? "") !== "");
   const filled = rest.value !== undefined ? String(rest.value) !== "" : typed;
   return (
     <InputShell icon={icon} size={size} width={width}>
       <input
         {...rest}
-        ref={inputRef}
+        ref={attach}
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
           setTyped(event.currentTarget.value !== "");
           onChange?.(event);
         }}
         className={cx(
-          controlClass(size, width === "auto" ? "auto" : "full"),
+          controlClass(size, width === "auto" ? "auto" : "full", step),
           SEARCH_PAD[size][icon === undefined ? "plain" : "icon"],
           SEARCH_RESET,
           CONTROL_ALIGN[align],
         )}
       />
       {filled && !rest.disabled && !rest.readOnly && (
-        <ClearButton size={size} onClear={() => inputRef.current && clearValue(inputRef.current)} />
+        <ClearButton
+          size={size}
+          label={clearLabel}
+          onClear={() => inputRef.current && clearValue(inputRef.current)}
+        />
       )}
     </InputShell>
   );

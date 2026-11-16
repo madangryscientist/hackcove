@@ -18,19 +18,14 @@ describe("typography", () => {
     expect(out).toContain("text-slate-900");
   });
 
-  it("makes inline roles spans, and `as` turns them into blocks", () => {
-    expect(renderToStaticMarkup(<Text>x</Text>)).toMatch(/^<span /);
-    expect(renderToStaticMarkup(<Text as="p">x</Text>)).toMatch(/^<p /);
-  });
-
-  it("maps the colour prop to its slate/violet utility", () => {
-    expect(renderToStaticMarkup(<Caption color="brand">x</Caption>)).toContain("text-violet-600");
-    expect(renderToStaticMarkup(<Caption color="muted">x</Caption>)).toContain("text-slate-400");
+  it("maps the accent and muted tones to their utilities", () => {
+    expect(renderToStaticMarkup(<Caption tone="accent">x</Caption>)).toContain("text-violet-600");
+    expect(renderToStaticMarkup(<Caption tone="muted">x</Caption>)).toContain("text-slate-500");
   });
 
   it("forwards element props", () => {
     const out = renderToStaticMarkup(<SectionHeading id="s1">x</SectionHeading>);
-    expect(out).toContain('class="text-base/6 font-semibold scroll-mt-28 text-slate-900"');
+    expect(out).toContain('class="text-xl/7 font-semibold scroll-mt-28 text-slate-900"');
     expect(out).toContain('id="s1"');
   });
 
@@ -54,7 +49,7 @@ describe("typography", () => {
   it("SectionHeading `rule` builds in the hairline and its spacing, and is not forwarded", () => {
     const out = renderToStaticMarkup(<SectionHeading rule>Experience</SectionHeading>);
     expect(out).toContain(
-      'class="mb-4 border-b border-slate-200/70 pb-2 text-base/6 font-semibold text-slate-900"',
+      'class="mb-4 border-b border-slate-200/70 pb-2 text-xl/7 font-semibold text-slate-900"',
     );
     expect(out).not.toContain("rule");
     expect(renderToStaticMarkup(<SectionHeading>x</SectionHeading>)).not.toContain("border-b");
@@ -74,13 +69,13 @@ describe("typography", () => {
 
   it("SubsectionHeading `size` steps the scale, and md is the default", () => {
     const plain = renderToStaticMarkup(<SubsectionHeading>x</SubsectionHeading>);
-    expect(plain).toContain('class="text-base/6 font-semibold text-slate-900"');
+    expect(plain).toContain('class="text-lg/7 font-semibold text-slate-900"');
     expect(renderToStaticMarkup(<SubsectionHeading size="md">x</SubsectionHeading>)).toBe(plain);
     expect(renderToStaticMarkup(<SubsectionHeading size="sm">x</SubsectionHeading>)).toContain(
-      "text-sm/5 font-semibold",
+      "text-base/6 font-semibold",
     );
     const lg = renderToStaticMarkup(<SubsectionHeading size="lg">x</SubsectionHeading>);
-    expect(lg).toContain("text-lg/7 font-semibold");
+    expect(lg).toContain("text-xl/7 font-semibold");
     expect(lg).not.toContain("size=");
   });
 
@@ -103,17 +98,19 @@ describe("typography", () => {
 
   it("Text `strong` is font-medium in the primary ink, and color and tone still win", () => {
     const strong = renderToStaticMarkup(<Text strong>x</Text>);
-    expect(strong).toContain("text-sm/5 font-medium text-slate-900");
+    expect(strong).toContain("text-base/6 font-medium text-slate-900");
     expect(strong).not.toContain("font-normal");
     expect(strong).not.toContain("strong=");
-    expect(renderToStaticMarkup(<Text>x</Text>)).toContain("text-sm/5 font-normal text-slate-600");
+    expect(renderToStaticMarkup(<Text>x</Text>)).toContain(
+      "text-base/6 font-normal text-slate-600",
+    );
     expect(
       renderToStaticMarkup(
-        <Text strong color="muted">
+        <Text strong tone="muted">
           x
         </Text>,
       ),
-    ).toContain("font-medium text-slate-400");
+    ).toContain("font-medium text-slate-500");
     expect(
       renderToStaticMarkup(
         <Text strong tone="danger">
@@ -147,16 +144,12 @@ describe("typography inline roles: tone, numeric, mono, truncate", () => {
     }
   });
 
-  it("a tone replaces the role's colour, and wins over `color`", () => {
-    const out = renderToStaticMarkup(
-      <Text tone="danger" color="brand">
-        x
-      </Text>,
-    );
+  it("a tone replaces the role's ink, and `neutral` keeps it", () => {
+    const out = renderToStaticMarkup(<Text tone="danger">x</Text>);
     expect(out).toContain("text-red-700");
-    expect(out).not.toContain("text-violet-600");
     expect(out).not.toContain("text-slate-600");
     expect(renderToStaticMarkup(<Text>x</Text>)).toContain("text-slate-600");
+    expect(renderToStaticMarkup(<Text tone="neutral">x</Text>)).toContain("text-slate-600");
   });
 
   it.each(roles)("%s `numeric` and `mono` are opt-in and not forwarded", (_name, Role) => {
@@ -299,7 +292,7 @@ describe("SectionHeading description", () => {
       </SectionHeading>,
     );
     expect(out).toContain(
-      '<h2 id="s1" class="text-base/6 font-semibold scroll-mt-28 text-slate-900">Plan</h2>',
+      '<h2 id="s1" class="text-xl/7 font-semibold scroll-mt-28 text-slate-900">Plan</h2>',
     );
     expect(out).toContain("<p ");
     expect(out).toContain(">What you owe each month.</p>");

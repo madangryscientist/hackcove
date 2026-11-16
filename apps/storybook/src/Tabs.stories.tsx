@@ -1,14 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import {
-  Breadcrumbs,
-  Button,
-  type LinkRenderProps,
-  Tabs,
-  PageHeader,
-  Stack,
-  Text,
-} from "@hackcove/ui-react";
+import { Breadcrumbs, Button, Tabs, PageHeader, Stack, Text } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Navigation/Tabs" };
 export default meta;
@@ -44,14 +36,13 @@ export const DoSwitchView: S = {
   },
 };
 
-/** Going to another page is not a tab: `Tabs variant="pill"` with `href` items are links, so the URL and history move. */
+/** Going to another page is not a tab: `Tabs` with `href` items are links, so the URL and history move. */
 export const DoSwitchPage: S = {
   render: () => (
     <Tabs
-      variant="pill"
       label="Sections"
       items={[
-        { label: "Quotes", href: "#quotes", active: true },
+        { label: "Quotes", href: "#quotes", selected: true },
         { label: "Invoices", href: "#invoices" },
       ]}
     />
@@ -169,13 +160,7 @@ export const Pill: S = {
     const [value, setValue] = useState("overview");
     return (
       <div className="flex max-w-xl flex-col gap-4">
-        <Tabs
-          variant="pill"
-          label="Project views"
-          items={views}
-          value={value}
-          onChange={setValue}
-        />
+        <Tabs label="Project views" items={views} value={value} onChange={setValue} />
         <Text id="panel" role="tabpanel">
           Showing {value}.
         </Text>
@@ -196,7 +181,7 @@ export const WithCounts: S = {
     return (
       <div className="flex max-w-xl flex-col gap-6">
         <Tabs label="Assets" items={items} value={value} onChange={setValue} />
-        <Tabs variant="pill" label="Assets" items={items} value={value} onChange={setValue} />
+        <Tabs label="Assets" items={items} value={value} onChange={setValue} />
       </div>
     );
   },
@@ -214,13 +199,7 @@ export const WithDisabledReason: S = {
     return (
       <div className="flex max-w-xl flex-col gap-6">
         <Tabs label="Project views" items={items} value={value} onChange={setValue} />
-        <Tabs
-          variant="pill"
-          label="Project views"
-          items={items}
-          value={value}
-          onChange={setValue}
-        />
+        <Tabs label="Project views" items={items} value={value} onChange={setValue} />
       </div>
     );
   },
@@ -231,14 +210,7 @@ export const Disabled: S = {
   render: () => (
     <div className="flex max-w-xl flex-col gap-6">
       <Tabs label="Project views" items={views} value="overview" onChange={() => {}} disabled />
-      <Tabs
-        variant="pill"
-        label="Project views"
-        items={views}
-        value="overview"
-        onChange={() => {}}
-        disabled
-      />
+      <Tabs label="Project views" items={views} value="overview" onChange={() => {}} disabled />
     </div>
   ),
 };
@@ -250,13 +222,12 @@ export const InPageHeader: S = {
     return (
       <div className="max-w-3xl">
         <PageHeader
-          breadcrumbs={<Breadcrumbs crumbs={["Projects", "Launch film"]} />}
+          breadcrumbs={<Breadcrumbs items={["Projects", "Launch film"]} />}
           title="Launch film"
-          subtitle="Updated 2 minutes ago"
+          description="Updated 2 minutes ago"
           actions={<Button>Upload</Button>}
           tabs={
             <Tabs
-              variant="pill"
               label="Assets"
               value={value}
               onChange={setValue}
@@ -273,26 +244,21 @@ export const InPageHeader: S = {
             />
           }
         />
-        <Text as="p">Showing {value}.</Text>
+        <Text>Showing {value}.</Text>
       </div>
     );
   },
 };
 
-/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
-function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
-  return <a href={`#${to}`} {...rest} />;
-}
-
-/** Each tab's `render` draws the app's own Link; `value` marks the current route and gets `aria-current`. */
+/** Each tab's `href` is drawn by the app's own Link through `LinkProvider`; `value` marks the current route and gets `aria-current`. */
 export const WithRouterLink: S = {
   render: () => (
     <Tabs
       label="Business"
       value="quotes"
       items={[
-        { value: "quotes", label: "Quotes", render: (p) => <FakeLink to="/quotes" {...p} /> },
-        { value: "invoices", label: "Invoices", render: (p) => <FakeLink to="/invoices" {...p} /> },
+        { value: "quotes", label: "Quotes", href: "/quotes" },
+        { value: "invoices", label: "Invoices", href: "/invoices" },
         { value: "traces", label: "Traces", href: "https://example.com/traces", external: true },
       ]}
     />
@@ -306,8 +272,6 @@ export const PillSizes: S = {
       {(["sm", "md", "lg"] as const).map((size) => (
         <Tabs
           key={size}
-          variant="pill"
-          size={size}
           label={`Project views, ${size}`}
           items={views.map(({ value, label }) => ({ value, label }))}
           value="overview"

@@ -1,6 +1,7 @@
-import type { HTMLAttributes, ReactElement } from "react";
+import type { MouseEventHandler, ReactElement } from "react";
 import { cx, focusRing } from "./cx.js";
-import type { Unstyled } from "./props.js";
+import { renderLink } from "./link.js";
+import type { Passthrough } from "./props.js";
 import { useImageFailed } from "./useImageFailed.js";
 
 /** The identity colours, in hash order. Each is a stock background utility; a theme remaps them. */
@@ -85,18 +86,32 @@ type AvatarProps = {
    * @default round
    */
   shape?: AvatarShape;
-  /**
-   * Makes the Avatar one button, named by `name`: a person who opens their profile or a menu.
-   * Without it the Avatar is a plain mark.
-   */
-  onClick?: (() => void) | undefined;
-} & Unstyled<Omit<HTMLAttributes<HTMLElement>, "children" | "onClick">>;
+} & Passthrough &
+  (
+    | { onClick?: undefined; href?: undefined; external?: undefined }
+    | {
+        /**
+         * Makes the Avatar one button, named by `name`: a person who opens their profile or a menu.
+         * Without it (or `href`) the Avatar is a plain mark.
+         */
+        onClick: MouseEventHandler<HTMLButtonElement>;
+        href?: undefined;
+        external?: undefined;
+      }
+    | {
+        onClick?: undefined;
+        /** Makes the Avatar one link, named by `name`; an in-app path goes through `LinkProvider`. */
+        href: string;
+        /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
+        external?: boolean | undefined;
+      }
+  );
 
 /**
  * A person as a round badge of initials, or as their photo when `src` is given; `shape="square"`
  * marks an org or a team instead. It never loads a remote image on its own: that is a request to
  * another server for decoration, and it makes a screenshot depend on the network. `src` is the
- * app's own local path. With `onClick` the whole Avatar is one button. A row of overlapping avatars
+ * app's own local path. With `onClick` the whole Avatar is one button, with `href` one link. A row of overlapping avatars
  * is an `AvatarStack`.
  */
 export function Avatar(props: AvatarProps): ReactElement {
@@ -110,14 +125,15 @@ export function AvatarMark({
   size = "md",
   shape = "round",
   ring = false,
-  onError,
   onClick,
+  href,
+  external = false,
   ...rest
 }: AvatarProps & { ring?: string | false }): ReactElement {
   const { ref, failed, markFailed } = useImageFailed(src);
   const corners = avatarShapeClass(shape, size);
-  // As a button, the button takes the consumer's props and the mark inside keeps only its look.
-  const markProps = onClick ? {} : rest;
+  // As a button or a link, it takes the consumer's props and the mark inside keeps only its look.
+  const markProps = onClick || href !== undefined ? {} : rest;
   const mark =
     src && !failed ? (
       <img
@@ -126,10 +142,7 @@ export function AvatarMark({
         alt={name}
         title={name}
         className={cx("shrink-0 object-cover", corners, SIZE_CLASSES[size], ring)}
-        onError={(event) => {
-          onError?.(event);
-          markFailed();
-        }}
+        onError={markFailed}
         {...markProps}
       />
     ) : (
@@ -148,6 +161,38 @@ export function AvatarMark({
         {initialsOf(name)}
       </span>
     );
+  return framed({ name, href, external, onClick, rest, mark, corners });
+}
+
+/** The mark alone, or inside the one link or button the Avatar is, named by `name`. */
+function framed({
+  name,
+  href,
+  external,
+  onClick,
+  rest,
+  mark,
+  corners,
+}: {
+  name: string;
+  href: string | undefined;
+  external: boolean;
+  onClick: MouseEventHandler<HTMLButtonElement> | undefined;
+  rest: object;
+  mark: ReactElement;
+  corners: string;
+}): ReactElement {
+  const frame = cx("inline-grid shrink-0", corners, focusRing);
+  if (href !== undefined) {
+    return renderLink({
+      "aria-label": name,
+      ...rest,
+      href,
+      external,
+      className: frame,
+      children: mark,
+    });
+  }
   if (!onClick) return mark;
   return (
     <button
@@ -155,7 +200,7 @@ export function AvatarMark({
       {...rest}
       type="button"
       onClick={onClick}
-      className={cx("inline-grid shrink-0 cursor-pointer", corners, focusRing)}
+      className={cx(frame, "cursor-pointer")}
     >
       {mark}
     </button>

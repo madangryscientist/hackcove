@@ -1,0 +1,3 @@
+import { RadioGroup } from "@hackcove/ui-react";
+
+export const view = <RadioGroup label="Scope" isDisabled isRequired>x</RadioGroup>;

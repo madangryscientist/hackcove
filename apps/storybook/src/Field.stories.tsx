@@ -80,10 +80,10 @@ export const Row: S = {
 export const HiddenLabel: S = {
   render: () => (
     <div className="flex max-w-md flex-col gap-4">
-      <Field label="Search shops" hideLabel>
+      <Field label="Search shops" labelHidden>
         <Input type="search" placeholder="Search shops" />
       </Field>
-      <Field label="Search shops" hideLabel layout="row" hint="By name or town.">
+      <Field label="Search shops" labelHidden layout="row" hint="By name or town.">
         <Input type="search" placeholder="Search shops" />
       </Field>
     </div>

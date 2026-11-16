@@ -66,7 +66,7 @@ async function typeDigits(canvasElement: HTMLElement, digits: string): Promise<v
 }
 
 export const Empty: S = {
-  render: () => <DateField calendar label="Date of birth" description="As on your ID document." />,
+  render: () => <DateField calendar label="Date of birth" hint="As on your ID document." />,
 };
 
 export const Filled: S = {
@@ -95,14 +95,14 @@ export const ExternalError: S = {
     <DateField
       calendar
       label="Paid on"
-      description="The day the money moved."
+      hint="The day the money moved."
       error="That date is before the invoice."
     />
   ),
 };
 
 export const Disabled: S = {
-  render: () => <DateField calendar label="Date of birth" defaultValue={birthday} isDisabled />,
+  render: () => <DateField calendar label="Date of birth" defaultValue={birthday} disabled />,
 };
 
 /** The calendar open: Monday-first, outside days dimmed, the selected day filled. */
@@ -116,7 +116,7 @@ export const Open: S = {
 
 /** The field alone, with no calendar. */
 export const FieldOnly: S = {
-  render: () => <DateField label="Date of birth" description="DD/MM/YYYY" />,
+  render: () => <DateField label="Date of birth" hint="DD/MM/YYYY" />,
 };
 
 /** Open when the story loads; the button opens it again. */
@@ -167,16 +167,14 @@ export const CalendarInCard: S = {
         <DateField calendar label="Visit date" />
       </Card>
       <Card title="Below">
-        <Text as="p" color="muted">
-          The calendar opens over this card.
-        </Text>
+        <Text tone="muted">The calendar opens over this card.</Text>
       </Card>
     </Stack>
   ),
 };
 
 export const DoDate: S = {
-  render: () => <DateField calendar label="Date of birth" description="As on your ID document." />,
+  render: () => <DateField calendar label="Date of birth" hint="As on your ID document." />,
 };
 
 /** A text input takes any characters, so 17/5/90, 1990-05-17 and "May" all arrive, and nothing says which is meant. */
@@ -190,7 +188,7 @@ export const DoError: S = {
     <DateField
       calendar
       label="Paid on"
-      description="The day the money moved."
+      hint="The day the money moved."
       error="That date is before the invoice."
     />
   ),
@@ -198,9 +196,7 @@ export const DoError: S = {
 
 /** `isInvalid` alone turns the field red and says nothing about why. */
 export const DontError: S = {
-  render: () => (
-    <DateField calendar label="Paid on" description="The day the money moved." isInvalid />
-  ),
+  render: () => <DateField calendar label="Paid on" hint="The day the money moved." />,
 };
 
 /** The value is a `CalendarDate`. `fromISODate` reads a stored `YYYY-MM-DD`, `toISODate` writes it back, and `name` posts the same string in a form. */
@@ -218,7 +214,7 @@ export const DoValue: S = {
 
 /** `DateField` without `calendar` is the same input with no calendar button, for a date the person knows by heart. */
 export const DoTypedOnly: S = {
-  render: () => <DateField label="Date of birth" description="DD/MM/YYYY" />,
+  render: () => <DateField label="Date of birth" hint="DD/MM/YYYY" />,
 };
 
 /** `sm`, `md` (the default) and `lg`, with the calendar and without. */

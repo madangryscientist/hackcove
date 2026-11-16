@@ -31,10 +31,9 @@ export const FullPage: S = {
       brand={<a href="#">Hack Cove</a>}
       nav={
         <Tabs
-          variant="pill"
           label="Main"
           items={[
-            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Quotes", href: "#quotes", selected: true },
             { label: "Clients", href: "#clients" },
           ]}
         />
@@ -42,10 +41,10 @@ export const FullPage: S = {
     >
       <ListLayout
         title="Quotes"
-        subtitle="Every quote you have sent."
+        description="Every quote you have sent."
         actions={<Button>New quote</Button>}
         filters={
-          <FilterGroup legend="Status">
+          <FilterGroup label="Status">
             <Button variant="outline" size="sm" pressed>
               All
             </Button>
@@ -59,20 +58,12 @@ export const FullPage: S = {
         }
       >
         <Card as="article">
-          <Text strong as="p">
-            Naledi Mokoena
-          </Text>
-          <Text as="p" color="secondary">
-            Q-1042 · R 1 240 / mo
-          </Text>
+          <Text strong>Naledi Mokoena</Text>
+          <Text>Q-1042 · R 1 240 / mo</Text>
         </Card>
         <Card as="article">
-          <Text strong as="p">
-            Pieter van Wyk
-          </Text>
-          <Text as="p" color="secondary">
-            Q-1041 · R 860 / mo
-          </Text>
+          <Text strong>Pieter van Wyk</Text>
+          <Text>Q-1041 · R 860 / mo</Text>
         </Card>
       </ListLayout>
     </AppShell>
@@ -87,7 +78,7 @@ export const WithRows: S = {
   ),
 };
 
-/** `isEmpty` swaps the list for the `empty` slot; the header and filters stay. */
+/** With no children, the `empty` slot takes the list's place; the header and filters stay. */
 export const Empty: S = {
   render: () => (
     <DemoShell>
@@ -101,10 +92,10 @@ export const DoRows: S = {
   render: () => (
     <ListLayout
       title="Quotes"
-      subtitle="Every quote you have sent."
+      description="Every quote you have sent."
       actions={<Button>New quote</Button>}
       filters={
-        <FilterGroup legend="Status">
+        <FilterGroup label="Status">
           <Button variant="outline" size="sm" pressed>
             All
           </Button>
@@ -114,11 +105,11 @@ export const DoRows: S = {
         </FilterGroup>
       }
     >
-      <Card as="article" title="Naledi Mokoena" status={<Pill tone="emerald">Accepted</Pill>}>
-        <Text as="p">Q-1042 · R 1 240 / mo</Text>
+      <Card as="article" title="Naledi Mokoena" status={<Pill tone="positive">Accepted</Pill>}>
+        <Text>Q-1042 · R 1 240 / mo</Text>
       </Card>
-      <Card as="article" title="Pieter van Wyk" status={<Pill tone="slate">Sent</Pill>}>
-        <Text as="p">Q-1041 · R 860 / mo</Text>
+      <Card as="article" title="Pieter van Wyk" status={<Pill tone="neutral">Sent</Pill>}>
+        <Text>Q-1041 · R 860 / mo</Text>
       </Card>
     </ListLayout>
   ),
@@ -128,33 +119,30 @@ export const DoRows: S = {
 export const DontRows: S = {
   render: () => (
     <Stack>
-      <PageHeader title="Quotes" subtitle="Every quote you have sent." />
+      <PageHeader title="Quotes" description="Every quote you have sent." />
       <Card as="article" title="Naledi Mokoena">
-        <Text as="p">Q-1042 · R 1 240 / mo</Text>
+        <Text>Q-1042 · R 1 240 / mo</Text>
       </Card>
     </Stack>
   ),
 };
 
-/** `empty` takes the list's place when `isEmpty`: say what is missing and what to do. */
+/** `empty` takes the list's place when there are no children: say what is missing and what to do. */
 export const DoNothingYet: S = {
   render: () => (
     <ListLayout
       title="Quotes"
-      subtitle="Every quote you have sent."
-      isEmpty
+      description="Every quote you have sent."
       empty={
         <EmptyState title="No quotes yet" actions={<Button>New quote</Button>}>
-          <Text as="p" color="secondary">
-            Quotes you send show up here.
-          </Text>
+          <Text>Quotes you send show up here.</Text>
         </EmptyState>
       }
     />
   ),
 };
 
-/** `isEmpty` without `empty` leaves a blank page under the header. */
+/** An empty list with no `empty` leaves a blank page under the header. */
 export const DontNothingYet: S = {
-  render: () => <ListLayout title="Quotes" subtitle="Every quote you have sent." isEmpty />,
+  render: () => <ListLayout title="Quotes" description="Every quote you have sent." />,
 };

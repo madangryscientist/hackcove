@@ -1,0 +1,3 @@
+import { StatTile } from "@hackcove/ui-react";
+
+export const view = <StatTile label="Spent" value="R 9" tone="danger" />;

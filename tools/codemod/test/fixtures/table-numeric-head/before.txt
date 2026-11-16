@@ -1,0 +1,22 @@
+import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow } from "@hackcove/ui-react";
+
+export const view = (
+  <Table label="Quotes">
+    <TableHead>
+      <TableRow>
+        <TableHeaderCell>Client</TableHeaderCell>
+        <TableHeaderCell align="end">Premium</TableHeaderCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {quotes.map((q) => (
+        <TableRow key={q.ref}>
+          <TableCell>{q.client}</TableCell>
+          <TableCell align="end" numeric>
+            {q.premium}
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+);

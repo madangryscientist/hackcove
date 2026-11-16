@@ -8,7 +8,7 @@ type S = StoryObj;
 export const Inline: S = {
   render: () => (
     <div className="max-w-xl">
-      <Text as="p">
+      <Text>
         Run <Code>bun install</Code> once, then <Code>bunx nx run-many -t test</Code> to check it.
       </Text>
     </div>
@@ -18,7 +18,7 @@ export const Inline: S = {
 /** `Code` is one short run of code inside a sentence: a command, a name, a path. */
 export const DoInline: S = {
   render: () => (
-    <Text as="p">
+    <Text>
       Run <Code>bun install</Code> once, then <Code>bunx nx run-many -t test</Code> to check it.
     </Text>
   ),
@@ -27,7 +27,7 @@ export const DoInline: S = {
 /** `Code` is inline, so its line breaks collapse into one run. Several lines are a `CodeBlock`. */
 export const DontInline: S = {
   render: () => (
-    <Text as="p">
+    <Text>
       <Code>{"bun install\nbun run build\nbun run test"}</Code>
     </Text>
   ),

@@ -1,0 +1,3 @@
+import { Section } from "@hackcove/ui-react";
+
+export const view = <Section gap="md" title="Billing">x</Section>;

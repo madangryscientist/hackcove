@@ -9,27 +9,12 @@ import {
   Textarea,
 } from "@hackcove/ui-react";
 
-const searchIcon = (
-  <svg viewBox="0 0 20 20" fill="currentColor">
-    <path
-      fillRule="evenodd"
-      d="M9 3.5a5.5 5.5 0 1 0 3.4 9.8l3.15 3.15a.75.75 0 1 0 1.06-1.06l-3.15-3.15A5.5 5.5 0 0 0 9 3.5Zm-4 5.5a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z"
-      clipRule="evenodd"
-    />
-  </svg>
-);
-
 /** The search Field of the Gallery's control column. */
 export function GalleryNameField() {
   const nameId = useId();
   return (
     <Field label="Display name" htmlFor={nameId} hint="Shown on your reviews.">
-      <Input
-        id={nameId}
-        type="search"
-        placeholder="Search by name, suburb or tag…"
-        icon={searchIcon}
-      />
+      <Input id={nameId} type="search" placeholder="Search by name, suburb or tag…" icon="search" />
     </Field>
   );
 }
@@ -86,7 +71,7 @@ export function GalleryForm() {
         >
           <Input id="gallery-row" size="sm" defaultValue="3" />
         </Field>
-        <FormRow hint="Press Save to apply." action={<Button size="sm">Save</Button>}>
+        <FormRow hint="Press Save to apply." actions={<Button size="sm">Save</Button>}>
           <FormRowField label="Item" htmlFor="gallery-item" span={3}>
             <Input id="gallery-item" size="sm" defaultValue="Kitchen renovation" />
           </FormRowField>

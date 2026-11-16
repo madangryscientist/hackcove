@@ -3,7 +3,11 @@ import type { ReactElement } from "react";
 import * as ui from "./index.js";
 
 /** The two attributes every case passes, and every test looks for. */
-export const A = { "data-testid": "probe", "aria-describedby": "described" } as const;
+export const A = {
+  id: "probe-id",
+  "data-testid": "probe",
+  "aria-describedby": "described",
+} as const;
 const noop = () => undefined;
 const ITEMS = [<li key="x">x</li>];
 
@@ -13,13 +17,14 @@ export const CASES: Record<string, () => ReactElement> = {
   AppShellBrand: () => <ui.AppShellBrand label="Brand" href="/" {...A} />,
   AppShellHideBelow: () => <ui.AppShellHideBelow {...A}>x</ui.AppShellHideBelow>,
   Avatar: () => <ui.Avatar name="Ada Lovelace" {...A} />,
-  AvatarStack: () => <ui.AvatarStack people={[{ name: "Ada Lovelace" }]} {...A} />,
+  AvatarStack: () => <ui.AvatarStack items={[{ name: "Ada Lovelace" }]} {...A} />,
   Badge: () => <ui.Badge count={3} {...A} />,
   BottomSheet: () => (
     <ui.BottomSheet label="Sheet" snaps={[0.25, 0.5]} snap={0} onSnapChange={noop} {...A} />
   ),
-  Breadcrumbs: () => <ui.Breadcrumbs crumbs={["Home", "Page"]} {...A} />,
-  BulletList: () => <ui.BulletList {...A} />,
+  Breadcrumbs: () => <ui.Breadcrumbs items={["Home", "Page"]} {...A} />,
+  BulletItem: () => <ui.BulletItem {...A}>x</ui.BulletItem>,
+  BulletList: () => <ui.BulletList {...A}>x</ui.BulletList>,
   Button: () => <ui.Button {...A}>x</ui.Button>,
   ButtonGroup: () => <ui.ButtonGroup {...A}>x</ui.ButtonGroup>,
   Callout: () => <ui.Callout {...A}>x</ui.Callout>,
@@ -73,7 +78,6 @@ export const CASES: Record<string, () => ReactElement> = {
       x
     </ui.Lightbox>
   ),
-  EpicHeader: () => <ui.EpicHeader color="#000" label="Epic" {...A} />,
   ErrorPage: () => <ui.ErrorPage {...A} />,
   Field: () => (
     <ui.Field label="L" htmlFor="f" {...A}>
@@ -84,7 +88,6 @@ export const CASES: Record<string, () => ReactElement> = {
     <ui.FieldDialog
       title="T"
       label="L"
-      inputLabel="I"
       placeholder="p"
       hint="h"
       emptyReason="e"
@@ -96,7 +99,7 @@ export const CASES: Record<string, () => ReactElement> = {
     />
   ),
   FileDrop: () => <ui.FileDrop {...A}>x</ui.FileDrop>,
-  FilterGroup: () => <ui.FilterGroup legend="L" {...A} />,
+  FilterGroup: () => <ui.FilterGroup label="L" {...A} />,
   Forbidden: () => <ui.Forbidden {...A} />,
   FormGrid: () => <ui.FormGrid {...A}>x</ui.FormGrid>,
   FormLayout: () => (
@@ -117,11 +120,7 @@ export const CASES: Record<string, () => ReactElement> = {
       <svg />
     </ui.Icon>
   ),
-  IconButton: () => (
-    <ui.IconButton label="L" {...A}>
-      x
-    </ui.IconButton>
-  ),
+  IconButton: () => <ui.IconButton label="L" {...A} icon="close" />,
   InlineEdit: () => (
     <ui.InlineEdit label="Edit" renderEditor={() => null} {...A}>
       x
@@ -152,14 +151,14 @@ export const CASES: Record<string, () => ReactElement> = {
   ),
   SortableSection: () => (
     <ui.SortableList label="Queue" onReorder={noop}>
-      <ui.SortableSection id="s" title="S" {...A}>
+      <ui.SortableSection title="S" {...A} id="s">
         <ui.SortableItem id="a" title="A" />
       </ui.SortableSection>
     </ui.SortableList>
   ),
   SortableItem: () => (
     <ui.SortableList label="Queue" onReorder={noop}>
-      <ui.SortableItem id="a" title="A" {...A} />
+      <ui.SortableItem title="A" {...A} id="a" />
     </ui.SortableList>
   ),
   Maintenance: () => <ui.Maintenance {...A} />,
@@ -171,7 +170,7 @@ export const CASES: Record<string, () => ReactElement> = {
       x
     </ui.Morph>
   ),
-  NavigationProgress: () => <ui.NavigationProgress active {...A} />,
+  NavigationProgress: () => <ui.NavigationProgress loading {...A} />,
   NotFound: () => <ui.NotFound {...A} />,
   Offline: () => <ui.Offline {...A} />,
   OutlineRegion: () => (
@@ -220,14 +219,14 @@ export const CASES: Record<string, () => ReactElement> = {
       {...A}
     />
   ),
-  Select: () => <ui.Select {...A} />,
+  Select: () => <ui.Select items={[]} {...A} />,
   SideColumn: () => (
     <ui.SideColumn aside="a" {...A}>
       x
     </ui.SideColumn>
   ),
   SidebarLayout: () => (
-    <ui.SidebarLayout rail="r" {...A}>
+    <ui.SidebarLayout aside="r" {...A}>
       x
     </ui.SidebarLayout>
   ),
@@ -237,7 +236,7 @@ export const CASES: Record<string, () => ReactElement> = {
   Stack: () => <ui.Stack {...A}>x</ui.Stack>,
   StickyBar: () => <ui.StickyBar {...A}>x</ui.StickyBar>,
   StackedBar: () => (
-    <ui.StackedBar segments={[{ label: "a", value: 1, tone: "info" }]} label="L" {...A} />
+    <ui.StackedBar items={[{ label: "a", value: 1, tone: "info" }]} label="L" {...A} />
   ),
   StatTile: () => <ui.StatTile label="L" value="1" {...A} />,
   TrendChart: () => (
@@ -251,7 +250,7 @@ export const CASES: Record<string, () => ReactElement> = {
   Switch: () => <ui.Switch aria-label="Flag" checked onChange={noop} {...A} />,
   SubsectionHeading: () => <ui.SubsectionHeading {...A}>x</ui.SubsectionHeading>,
   Table: () => (
-    <ui.Table {...A}>
+    <ui.Table label="Rows" {...A}>
       <ui.TableBody>{null}</ui.TableBody>
     </ui.Table>
   ),
@@ -286,10 +285,5 @@ export const CASES: Record<string, () => ReactElement> = {
     </ui.Timeline>
   ),
   TimelineItem: () => <ui.TimelineItem title="T" {...A} />,
-  ToolCallCard: () => (
-    <ui.ToolCallCard name="search" status="done" {...A}>
-      x
-    </ui.ToolCallCard>
-  ),
   Video: () => <ui.Video src="/x.mp4" {...A} />,
 };

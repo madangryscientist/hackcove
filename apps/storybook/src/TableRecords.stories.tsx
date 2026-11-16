@@ -17,25 +17,21 @@ type S = StoryObj;
 /** A table is a head and a body: names in strong cells, amounts in `align="end" numeric` cells so the figures line up. */
 export const DoRecords: S = {
   render: () => (
-    <Table caption="Quotes">
+    <Table label="Quotes">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Client</TableHeaderCell>
-          <TableHeaderCell align="end">Premium</TableHeaderCell>
+          <TableHeaderCell numeric>Premium</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
         <TableRow>
           <TableCell tone="strong">Naledi Dlamini</TableCell>
-          <TableCell align="end" numeric>
-            R 1 249.00
-          </TableCell>
+          <TableCell numeric>R 1 249.00</TableCell>
         </TableRow>
         <TableRow>
           <TableCell tone="strong">Pieter van Wyk</TableCell>
-          <TableCell align="end" numeric>
-            R 880.50
-          </TableCell>
+          <TableCell numeric>R 880.50</TableCell>
         </TableRow>
       </TableBody>
     </Table>
@@ -45,7 +41,7 @@ export const DoRecords: S = {
 /** Amounts in plain start-aligned cells do not line up, so the eye cannot compare them. */
 export const DontRecords: S = {
   render: () => (
-    <Table caption="Quotes">
+    <Table label="Quotes">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Client</TableHeaderCell>
@@ -69,33 +65,27 @@ export const DontRecords: S = {
 /** Totals go in a `TableFoot` after the body: strong cells and a firmer line above them. */
 export const DoTotals: S = {
   render: () => (
-    <Table caption="Budget">
+    <Table label="Budget">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Line</TableHeaderCell>
-          <TableHeaderCell align="end">Spent</TableHeaderCell>
+          <TableHeaderCell numeric>Spent</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
         <TableRow>
           <TableCell>Groceries</TableCell>
-          <TableCell align="end" numeric>
-            R 4 120.00
-          </TableCell>
+          <TableCell numeric>R 4 120.00</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Eating out</TableCell>
-          <TableCell align="end" numeric>
-            R 2 980.00
-          </TableCell>
+          <TableCell numeric>R 2 980.00</TableCell>
         </TableRow>
       </TableBody>
       <TableFoot>
         <TableRow>
           <TableCell>Total</TableCell>
-          <TableCell align="end" numeric>
-            R 7 100.00
-          </TableCell>
+          <TableCell numeric>R 7 100.00</TableCell>
         </TableRow>
       </TableFoot>
     </Table>
@@ -105,29 +95,25 @@ export const DoTotals: S = {
 /** A total faked as one more body row, in a strong cell, reads like a line item and is not a `<tfoot>`. */
 export const DontTotals: S = {
   render: () => (
-    <Table caption="Budget">
+    <Table label="Budget">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Line</TableHeaderCell>
-          <TableHeaderCell align="end">Spent</TableHeaderCell>
+          <TableHeaderCell numeric>Spent</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
         <TableRow>
           <TableCell>Groceries</TableCell>
-          <TableCell align="end" numeric>
-            R 4 120.00
-          </TableCell>
+          <TableCell numeric>R 4 120.00</TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Eating out</TableCell>
-          <TableCell align="end" numeric>
-            R 2 980.00
-          </TableCell>
+          <TableCell numeric>R 2 980.00</TableCell>
         </TableRow>
         <TableRow>
           <TableCell tone="strong">Total</TableCell>
-          <TableCell align="end" numeric tone="strong">
+          <TableCell numeric tone="strong">
             R 7 100.00
           </TableCell>
         </TableRow>
@@ -139,30 +125,26 @@ export const DontTotals: S = {
 /** `tone` marks the row's status with a stripe and a soft fill, and a `Pill` in a cell names the status in words. */
 export const DoRowStatus: S = {
   render: () => (
-    <Table caption="Debit orders">
+    <Table label="Debit orders">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Debit order</TableHeaderCell>
           <TableHeaderCell>Status</TableHeaderCell>
-          <TableHeaderCell align="end">Amount</TableHeaderCell>
+          <TableHeaderCell numeric>Amount</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
         <TableRow>
           <TableCell tone="strong">Insurance</TableCell>
           <TableCell>Paid</TableCell>
-          <TableCell align="end" numeric>
-            R 1 850.00
-          </TableCell>
+          <TableCell numeric>R 1 850.00</TableCell>
         </TableRow>
         <TableRow tone="danger">
           <TableCell tone="strong">Gym</TableCell>
           <TableCell>
-            <Pill tone="red">Failed</Pill>
+            <Pill tone="danger">Failed</Pill>
           </TableCell>
-          <TableCell align="end" numeric>
-            R 349.00
-          </TableCell>
+          <TableCell numeric>R 349.00</TableCell>
         </TableRow>
       </TableBody>
     </Table>
@@ -172,25 +154,21 @@ export const DoRowStatus: S = {
 /** A toned row whose cells never say what the tone means: colour alone tells nobody who cannot see it. */
 export const DontRowStatus: S = {
   render: () => (
-    <Table caption="Debit orders">
+    <Table label="Debit orders">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Debit order</TableHeaderCell>
-          <TableHeaderCell align="end">Amount</TableHeaderCell>
+          <TableHeaderCell numeric>Amount</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
         <TableRow>
           <TableCell tone="strong">Insurance</TableCell>
-          <TableCell align="end" numeric>
-            R 1 850.00
-          </TableCell>
+          <TableCell numeric>R 1 850.00</TableCell>
         </TableRow>
         <TableRow tone="danger">
           <TableCell tone="strong">Gym</TableCell>
-          <TableCell align="end" numeric>
-            R 349.00
-          </TableCell>
+          <TableCell numeric>R 349.00</TableCell>
         </TableRow>
       </TableBody>
     </Table>

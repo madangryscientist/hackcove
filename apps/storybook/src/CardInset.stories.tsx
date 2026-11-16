@@ -11,14 +11,10 @@ export const Inset: S = {
   render: () => (
     <div className="flex max-w-md flex-col gap-4">
       <Card title="Kitchen" inset={<ProgressBar value={62} label="Kitchen progress" />}>
-        <Text as="p" color="muted">
-          62% done, R 84 000 of R 135 000 spent.
-        </Text>
+        <Text tone="muted">62% done, R 84 000 of R 135 000 spent.</Text>
       </Card>
       <Card size="sm" title="Bathroom" inset={<ProgressBar value={20} label="Bathroom progress" />}>
-        <Text as="p" color="muted">
-          Dense padding: the band follows it.
-        </Text>
+        <Text tone="muted">Dense padding: the band follows it.</Text>
       </Card>
     </div>
   ),
@@ -30,7 +26,7 @@ export const NestedNeutral: S = {
     <div className="max-w-md">
       <Card title="Order 1042">
         <Card tone="neutral" size="sm">
-          <Text as="p">Deliver to the back gate, after 14:00.</Text>
+          <Text>Deliver to the back gate, after 14:00.</Text>
         </Card>
       </Card>
     </div>

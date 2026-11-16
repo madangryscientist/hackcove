@@ -1,16 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import {
-  Button,
-  Card,
-  EmptyState,
-  EpicHeader,
-  groupByEpic,
-  type LinkRenderProps,
-  Markdown,
-  Pill,
-  Stack,
-  Text,
-} from "@hackcove/ui-react";
+import { Button, Card, EmptyState, Markdown, Pill, Stack, Text } from "@hackcove/ui-react";
 
 const meta: Meta = { title: "Text/Body text" };
 export default meta;
@@ -19,32 +8,26 @@ type S = StoryObj;
 export const Pills: S = {
   render: () => (
     <div className="flex gap-2">
-      <Pill>slate</Pill>
-      <Pill tone="amber">amber</Pill>
-      <Pill tone="emerald">emerald</Pill>
-      <Pill tone="blue">blue</Pill>
-      <Pill tone="red">red</Pill>
-      <Pill tone="violet">violet</Pill>
-      <Pill tone="sky">sky</Pill>
+      <Pill>neutral</Pill>
+      <Pill tone="warn">warn</Pill>
+      <Pill tone="positive">positive</Pill>
+      <Pill tone="info">info</Pill>
+      <Pill tone="danger">danger</Pill>
+      <Pill tone="accent">accent</Pill>
     </div>
   ),
 };
-/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
-function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
-  return <a href={`#${to}`} {...rest} />;
-}
-
-/** `href` makes a Pill a link, `render` the app's router `<Link>`, `onClick` a button: all with a hover dim and the focus ring. */
+/** `href` makes a Pill a link (an in-app one through the app's router `<Link>`), `onClick` a button: all with a hover dim and the focus ring. */
 export const PillsInteractive: S = {
   render: () => (
     <div className="flex items-center gap-2">
-      <Pill href="#flakes" tone="amber" round>
+      <Pill href="#flakes" tone="warn" round>
         flaky
       </Pill>
-      <Pill render={(p) => <FakeLink to="/flakes" {...p} />} tone="violet">
+      <Pill href="/flakes" tone="accent">
         router link
       </Pill>
-      <Pill onClick={() => undefined} tone="sky" dot>
+      <Pill onClick={() => undefined} tone="info" dot>
         button
       </Pill>
     </div>
@@ -53,23 +36,23 @@ export const PillsInteractive: S = {
 export const PillsRound: S = {
   render: () => (
     <div className="flex gap-2">
-      <Pill round>slate</Pill>
-      <Pill tone="amber" round>
-        amber
+      <Pill round>neutral</Pill>
+      <Pill tone="warn" round>
+        warn
       </Pill>
-      <Pill tone="emerald" round>
-        emerald
+      <Pill tone="positive" round>
+        positive
       </Pill>
-      <Pill tone="blue" round>
-        blue
+      <Pill tone="info" round>
+        info
       </Pill>
-      <Pill tone="red" round>
-        red
+      <Pill tone="danger" round>
+        danger
       </Pill>
-      <Pill tone="violet" round>
-        violet
+      <Pill tone="accent" round>
+        accent
       </Pill>
-      <Pill tone="sky" round dot>
+      <Pill tone="info" round dot>
         sky
       </Pill>
     </div>
@@ -78,24 +61,21 @@ export const PillsRound: S = {
 export const PillsWithDot: S = {
   render: () => (
     <div className="flex gap-2">
-      <Pill dot>slate</Pill>
-      <Pill tone="amber" dot>
-        amber
+      <Pill dot>neutral</Pill>
+      <Pill tone="warn" dot>
+        warn
       </Pill>
-      <Pill tone="emerald" dot>
-        emerald
+      <Pill tone="positive" dot>
+        positive
       </Pill>
-      <Pill tone="blue" dot>
-        blue
+      <Pill tone="info" dot>
+        info
       </Pill>
-      <Pill tone="red" dot>
-        red
+      <Pill tone="danger" dot>
+        danger
       </Pill>
-      <Pill tone="violet" dot>
-        violet
-      </Pill>
-      <Pill tone="sky" dot>
-        sky
+      <Pill tone="accent" dot>
+        accent
       </Pill>
     </div>
   ),
@@ -114,32 +94,23 @@ export const CardAsArticle: S = {
     </Card>
   ),
 };
-export const Header: S = {
-  render: () => <EpicHeader color="#cba6f7" label="HC-42 · Voice Inbox" />,
-};
 export const MarkdownStory: S = {
   render: () => <Markdown md={"## What I did\n- **HC-42** shipped\n- plain item"} />,
 };
 export const EmptyLine: S = {
-  render: () => (
-    <Text as="p" color="muted">
-      nothing here yet
-    </Text>
-  ),
+  render: () => <Text tone="muted">nothing here yet</Text>,
 };
 
-/** A Card with nothing to show yet holds one muted line, `Text as="p" color="muted"`. */
+/** A Card with nothing to show yet holds one muted line, `Text tone="muted"`. */
 export const DoEmptyNote: S = {
   render: () => (
     <Card title="Done" count={0}>
-      <Text as="p" color="muted">
-        Nothing finished yet.
-      </Text>
+      <Text tone="muted">Nothing finished yet.</Text>
     </Card>
   ),
 };
 
-/** A bare `<p>` in a Card has its own colour and size, so it drifts from every other empty Card: use `Text as="p" color="muted"`. */
+/** A bare `<p>` in a Card has its own colour and size, so it drifts from every other empty Card: use `Text tone="muted"`. */
 export const DontEmptyNote: S = {
   render: () => (
     <Card title="Done" count={0}>
@@ -161,45 +132,8 @@ export const DoEmptyView: S = {
 export const DontEmptyView: S = {
   render: () => (
     <Stack>
-      <Text as="p" color="muted">
-        No projects yet.
-      </Text>
+      <Text tone="muted">No projects yet.</Text>
       <Button>Create a project</Button>
-    </Stack>
-  ),
-};
-
-/** `groupByEpic` orders the groups, real epics first by ref and "No epic" last; an `EpicHeader` heads each one. */
-export const DoEpicGroups: S = {
-  render: () => (
-    <Card title="Open work" count={3}>
-      {groupByEpic(
-        [
-          { task: "Record a voice note", epic: "HC-42", colour: "#cba6f7" },
-          { task: "Tidy the settings page", epic: null, colour: "#9399b2" },
-          { task: "Transcribe the note", epic: "HC-42", colour: "#cba6f7" },
-        ],
-        (item) => item.epic,
-      ).map(([epic, items]) => (
-        <div key={epic ?? "none"}>
-          <EpicHeader color={items[0]?.colour ?? "#9399b2"} label={epic ?? "No epic"} />
-          {items.map((item) => (
-            <Text as="p" key={item.task}>
-              {item.task}
-            </Text>
-          ))}
-        </div>
-      ))}
-    </Card>
-  ),
-};
-
-/** `EpicHeader` is a row of epic data with a dot in the epic's own colour, not a heading: a section is titled with `SectionHeading` or a Card `title`. */
-export const DontEpicGroups: S = {
-  render: () => (
-    <Stack>
-      <EpicHeader color="#cba6f7" label="Settings" />
-      <Text as="p">Choose how the site looks and what it tells you about.</Text>
     </Stack>
   ),
 };

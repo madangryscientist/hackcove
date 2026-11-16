@@ -1,0 +1,3 @@
+import { TextLink } from "@hackcove/ui-react";
+
+export const view = <TextLink render={(p) => <Link to="/s/$id" params={{ id }} {...p} />}>Shop</TextLink>;

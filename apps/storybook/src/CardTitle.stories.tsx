@@ -13,12 +13,10 @@ export const NameTitle: S = {
       <Card
         title="Corner Books"
         titleStyle="name"
-        status={<Pill tone="emerald">Open</Pill>}
+        status={<Pill tone="positive">Open</Pill>}
         footer={<Button size="sm">Visit</Button>}
       >
-        <Text as="p" color="muted">
-          Second-hand paperbacks and a reading corner.
-        </Text>
+        <Text tone="muted">Second-hand paperbacks and a reading corner.</Text>
       </Card>
       <Card
         title="Spring swap meet"
@@ -27,9 +25,7 @@ export const NameTitle: S = {
         bar
         actions={<Button size="sm">Join</Button>}
       >
-        <Text as="p" color="muted">
-          Saturday, 10:00 at the town hall.
-        </Text>
+        <Text tone="muted">Saturday, 10:00 at the town hall.</Text>
       </Card>
     </CardGrid>
   ),

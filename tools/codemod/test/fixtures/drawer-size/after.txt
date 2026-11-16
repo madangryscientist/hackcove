@@ -1,0 +1,3 @@
+import { Drawer } from "@hackcove/ui-react";
+
+export const view = <Drawer title="Edit" width="sm" onClose={close}>x</Drawer>;

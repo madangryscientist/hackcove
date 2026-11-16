@@ -15,10 +15,10 @@ export const navigation: ComponentSection = {
       usage: {
         do: [
           "`Tabs` switches a view in place; the caller owns `value` and `onChange`, and the panel sits right under the row.",
-          'Going to another page is `variant="pill"` with link items (`href` or `render`, and `active` on the current one): links, so the URL, the back button and a new tab all work.',
+          "Going to another page is link items (`href`, and `selected` on the current one): links, so the URL, the back button and a new tab all work.",
           "A `count` sits muted after the label and is read as part of the tab's name.",
-          '`variant="pill"` fills the current tab, for under a `PageHeader`.',
-          "`size` (`sm`, `md` the default, `lg`) sets a pill row on the control scale, so they line up with a `Button` of the same size.",
+          'Across, tabs are always underline, under a `PageHeader` too. `orientation="vertical"` is the pill rail, the current tab filled, for a `SidebarLayout` aside, and only the rail takes `size`.',
+          "`size` (`sm`, `md` the default, `lg`) sets the vertical rail on the control scale, so it lines up with a `Button` of the same size; the underline row has one size.",
           "A disabled tab keeps a `title` as the reason.",
           'Pill links with `orientation="vertical"` are the rail of a `SidebarLayout`: one link per line.',
         ],
@@ -40,8 +40,8 @@ export const navigation: ComponentSection = {
       pairs: ["Breadcrumbs/Trail", "Breadcrumbs/Hierarchy"],
       usage: {
         do: [
-          "Give the trail in order, parents first. A parent that links is `{ label, href }` (or `{ label, render }` for the app's router link); the last crumb is the current page, plain text.",
-          "Breadcrumbs show a hierarchy. Peer sections are pill `Tabs` of links.",
+          "Give the trail in order, parents first. A parent that links is `{ label, href }`, drawn through the app's `LinkProvider` for an in-app path; the last crumb is the current page, plain text.",
+          "Breadcrumbs show a hierarchy. Peer sections are `Tabs` of links.",
           "Each crumb truncates, so a long name does not widen the row.",
           "Put the trail in the `breadcrumbs` slot of a `PageHeader`.",
         ],
@@ -63,7 +63,7 @@ export const navigation: ComponentSection = {
       usage: {
         do: [
           "Put one `SiteSearch` in `AppShell`'s `controls`, on every page, and pass every page as `items`: `{ label, description, href, keywords }`.",
-          '`label` names the button and titles the dialog: say what is searched ("Search components").',
+          '`label` names the button and titles the dialog: say what is searched ("Search components"). `resultsLabel` names the list of matches, "Results" by default, for an app in another language.',
           "Give `items` in the nav's order: results of the same rank keep it.",
           "`keywords` are other names a page answers to (the exports it documents); they match but are not shown.",
           "A result ranks by the name starting with the text, then the name containing it, then a keyword, then the description.",

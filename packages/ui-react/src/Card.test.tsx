@@ -10,7 +10,7 @@ const follows = (a: Node, b: Node) =>
 describe("Card badge", () => {
   it("reads the badge after the body", () => {
     render(
-      <Card title="Shot" badge={<Pill tone="amber">Flaky</Pill>}>
+      <Card title="Shot" badge={<Pill tone="warn">Flaky</Pill>}>
         <p>body</p>
       </Card>,
     );
@@ -19,7 +19,7 @@ describe("Card badge", () => {
 
   it("on a link card is part of the link's accessible name", () => {
     render(
-      <Card href="/shots/1" title="Home page" badge={<Pill tone="amber">Flaky</Pill>}>
+      <Card href="/shots/1" title="Home page" badge={<Pill tone="warn">Flaky</Pill>}>
         Desktop
       </Card>,
     );
@@ -56,6 +56,18 @@ describe("Card title names its section", () => {
     expect(within(screen.getByRole("region", { name: "Two" })).getByText("b")).not.toBeNull();
   });
 
+  it("is a region named by an aria-label with no title, and a plain div with neither", () => {
+    render(
+      <>
+        <Card aria-label="Usage">a</Card>
+        <Card>b</Card>
+      </>,
+    );
+    expect(within(screen.getByRole("region", { name: "Usage" })).getByText("a")).not.toBeNull();
+    expect(screen.getByText("b").tagName).toBe("DIV");
+    expect(screen.getAllByRole("region")).toHaveLength(1);
+  });
+
   it("lets a caller's aria-label win", () => {
     render(
       <Card title="Billing" aria-label="Invoices">
@@ -84,15 +96,13 @@ describe("Card title names its section", () => {
     expect(screen.queryByRole("region")).toBeNull();
   });
 
-  it("leaves a bare div unnamed", () => {
+  it("is an article named by its title with as=article", () => {
     render(
-      <Card as="div" title="Billing" data-testid="card">
+      <Card as="article" title="Billing">
         body
       </Card>,
     );
-    expect(screen.queryByRole("region")).toBeNull();
-    // A card root that is no region has no role or name, so its test id is the only handle on it.
-    expect(screen.getByTestId("card").hasAttribute("aria-labelledby")).toBe(false);
+    expect(screen.getByRole("article", { name: "Billing" })).not.toBeNull();
   });
 });
 
@@ -110,7 +120,7 @@ describe("Card that is a link: root attributes", () => {
 
   it("is still named by the card's text, the badge included, under the caller's id", () => {
     render(
-      <Card href="/x" title="Home" id="home" badge={<Pill tone="amber">Flaky</Pill>}>
+      <Card href="/x" title="Home" id="home" badge={<Pill tone="warn">Flaky</Pill>}>
         body
       </Card>,
     );

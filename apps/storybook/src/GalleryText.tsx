@@ -1,4 +1,5 @@
 import {
+  BulletItem,
   BulletList,
   Button,
   Card,
@@ -28,17 +29,15 @@ import { sampleVideo } from "./sampleVideo";
 function GalleryTextOptions() {
   return (
     <div className="flex flex-col gap-1">
-      <Text as="p" italic color="muted">
+      <Text italic tone="muted">
         An italic muted hint.
       </Text>
       <div className="w-40">
-        <Caption as="p" breakWords>
-          Caption breakWords: 0f3a9c1d7b2e4f60a8c5d9e1b3f7a2c4d6e8
-        </Caption>
+        <Caption breakWords>Caption breakWords: 0f3a9c1d7b2e4f60a8c5d9e1b3f7a2c4d6e8</Caption>
       </div>
       <div className="flex w-56 flex-col gap-1">
         <Overline align="end">Amount</Overline>
-        <Text strong minWidth="amount">
+        <Text as="span" strong minWidth="amount">
           1,111.11
         </Text>
       </div>
@@ -51,7 +50,7 @@ function GalleryInsetEmpty() {
   return (
     <Card flush>
       <EmptyState title="EmptyState inset" padding="inset">
-        <Text as="p">In a flush card.</Text>
+        <Text>In a flush card.</Text>
       </EmptyState>
     </Card>
   );
@@ -62,7 +61,7 @@ function GalleryEmpty() {
   return (
     <>
       <EmptyState title="EmptyState" actions={<Button size="sm">Action</Button>}>
-        <Text as="p">A body line under the title.</Text>
+        <Text>A body line under the title.</Text>
         <Steps>
           <Step title="Steps, numbered by CSS">
             With a detail line and <Code>Code</Code>.
@@ -72,6 +71,37 @@ function GalleryEmpty() {
       </EmptyState>
       <GalleryInsetEmpty />
     </>
+  );
+}
+
+/** Text tones with numeric, mono and truncate. */
+function GalleryTones() {
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex flex-wrap gap-x-4">
+        <Text as="span" tone="positive">
+          Saved.
+        </Text>
+        <Text as="span" tone="danger">
+          Could not save.
+        </Text>
+        <Text as="span" tone="warn">
+          Expires tomorrow.
+        </Text>
+        <Text as="span" tone="info">
+          Syncing.
+        </Text>
+        <Caption as="span" tone="muted" numeric>
+          1,111.11
+        </Caption>
+        <Caption as="span" mono>
+          HC-130
+        </Caption>
+      </div>
+      <div className="w-40">
+        <Text truncate>Text truncate cuts a long line with an ellipsis.</Text>
+      </div>
+    </div>
   );
 }
 
@@ -91,33 +121,15 @@ export function GalleryText() {
           SectionHeading rule
         </SectionHeading>
         <BulletList>
-          <Text as="li">BulletList item</Text>
-          <Text as="li">
+          <BulletItem>BulletList item</BulletItem>
+          <BulletItem>
             Inline <Code>Code</Code> in an item
-          </Text>
+          </BulletItem>
         </BulletList>
       </div>
       <GalleryEmpty />
-      <Text as="p" preserveNewlines>
-        {"Text with preserveNewlines:\nthe second line of a note."}
-      </Text>
-      <div className="flex flex-col gap-1">
-        <div className="flex flex-wrap gap-x-4">
-          <Text tone="positive">Saved.</Text>
-          <Text tone="danger">Could not save.</Text>
-          <Text tone="warn">Expires tomorrow.</Text>
-          <Text tone="info">Syncing.</Text>
-          <Caption tone="muted" numeric>
-            1,111.11
-          </Caption>
-          <Caption mono>HC-130</Caption>
-        </div>
-        <div className="w-40">
-          <Text as="p" truncate>
-            Text truncate cuts a long line with an ellipsis.
-          </Text>
-        </div>
-      </div>
+      <Text preserveNewlines>{"Text with preserveNewlines:\nthe second line of a note."}</Text>
+      <GalleryTones />
       <GalleryTextOptions />
       <CodeBlock
         label="bash"

@@ -38,8 +38,8 @@ describe("Checkbox", () => {
     expect(screen.getByRole("checkbox", { name: "Select row" })).not.toBeNull();
   });
 
-  it("description describes the box and reads after the label", () => {
-    render(<Checkbox label="Weekly summary" description="One email on Mondays" />);
+  it("hint describes the box and reads after the label", () => {
+    render(<Checkbox label="Weekly summary" hint="One email on Mondays" />);
     const box = screen.getByRole("checkbox", {
       name: /^Weekly summary/,
       description: "One email on Mondays",
@@ -52,11 +52,11 @@ describe("Checkbox", () => {
     );
   });
 
-  it("description keeps a caller's aria-describedby, and without one the box has none", () => {
+  it("hint keeps a caller's aria-describedby, and without one the box has none", () => {
     const { unmount } = render(
       <>
         <span id="other">Also this</span>
-        <Checkbox label="L" description="D" aria-describedby="other" />
+        <Checkbox label="L" hint="D" aria-describedby="other" />
       </>,
     );
     expect(screen.getByRole("checkbox", { description: "Also this D" })).not.toBeNull();

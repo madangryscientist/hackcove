@@ -3,7 +3,6 @@ import { act, type ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { mount, unmount } from "./dom.harness.js";
-import type { LinkRenderProps } from "./link.js";
 import { SegmentedControl } from "./SegmentedControl.js";
 import type { SwitchProps } from "./switcher.js";
 import { Tabs } from "./Tabs.js";
@@ -18,9 +17,6 @@ const items = [
 ];
 
 // A stand-in for a router's <Link>: it takes `to` and spreads the props it is handed.
-const Link = ({ to, ...rest }: { to: string } & LinkRenderProps): ReactElement => (
-  <a data-to={to} {...rest} />
-);
 
 const press = (element: Element | null | undefined, key: string): void => {
   act(() => {
@@ -206,26 +202,6 @@ describe.each(kinds)("%s", (_name, { Component, group, role, selected }) => {
     expect(out).toContain('target="_blank"');
     expect(out).not.toContain("<button");
   });
-
-  it("draws a link option with the app's own Link through render, and no href", () => {
-    const out = renderToStaticMarkup(
-      <Component
-        label="Range"
-        value="a"
-        items={[
-          { value: "a", label: "A", render: (p) => <Link to="/a" {...p} /> },
-          { value: "b", label: "B", render: (p) => <Link to="/b" {...p} /> },
-        ]}
-      />,
-    );
-    expect(out).toContain('data-to="/a"');
-    expect(out).toContain('data-to="/b"');
-    expect(out).not.toContain("href=");
-    expect(out).toMatch(
-      /data-to="\/a"[^>]*aria-current="page"|aria-current="page"[^>]*data-to="\/a"/,
-    );
-    expect(out.match(/aria-current="page"/g)).toHaveLength(1);
-  });
 });
 
 describe("Tabs", () => {
@@ -238,9 +214,9 @@ describe("Tabs", () => {
     expect(out.match(/border-transparent/g)).toHaveLength(3);
   });
 
-  it("fills the current tab as a pill, with no rule, for variant=pill", () => {
+  it("fills the current tab as a pill, with no rule, in the vertical rail", () => {
     const out = renderToStaticMarkup(
-      <Tabs items={items} value="day" onChange={() => {}} label="Range" variant="pill" />,
+      <Tabs items={items} value="day" onChange={() => {}} label="Range" orientation="vertical" />,
     );
     expect(out).not.toContain("border-b");
     expect(out).toContain("rounded-lg");
@@ -248,8 +224,8 @@ describe("Tabs", () => {
     expect(out.match(/hover:bg-slate-100/g)).toHaveLength(2);
   });
 
-  it("gives a disabled tab no hover look, in both variants", () => {
-    for (const variant of ["underline", "pill"] as const) {
+  it("gives a disabled tab no hover look, across and in the rail", () => {
+    for (const orientation of ["horizontal", "vertical"] as const) {
       const out = mount(
         <Tabs
           items={[
@@ -259,7 +235,7 @@ describe("Tabs", () => {
           value="a"
           onChange={() => {}}
           label="Range"
-          variant={variant}
+          orientation={orientation}
         />,
       );
       const [, b] = [...out.querySelectorAll("button")];

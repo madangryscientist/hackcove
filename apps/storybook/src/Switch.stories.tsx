@@ -32,13 +32,7 @@ function Kept({
 }) {
   const [checked, setChecked] = useState(initial);
   return (
-    <Switch
-      label={label}
-      description={description}
-      size={size}
-      checked={checked}
-      onChange={setChecked}
-    />
+    <Switch label={label} hint={description} size={size} checked={checked} onChange={setChecked} />
   );
 }
 
@@ -133,7 +127,7 @@ export const Bare: S = {
   render: () => {
     const [on, setOn] = useState<Record<string, boolean>>({ "dark-mode": true });
     return (
-      <Table caption="Flags">
+      <Table label="Flags">
         <TableHead>
           <TableRow>
             <TableHeaderCell>Flag</TableHeaderCell>
@@ -186,7 +180,7 @@ export const DoRow: S = {
   render: () => {
     const [checked, setChecked] = useState(true);
     return (
-      <Table caption="Flags">
+      <Table label="Flags">
         <TableBody>
           <TableRow>
             <TableCell mono>checkout-v2</TableCell>

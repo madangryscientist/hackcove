@@ -20,7 +20,7 @@ export function SplitBar({
   b,
   label,
   names,
-  toneA = "negative",
+  toneA = "danger",
   toneB = "positive",
   size = "md",
   ...rest
@@ -33,7 +33,7 @@ export function SplitBar({
   label: string;
   /** The left and right parties, spoken before their percentages. */
   names?: readonly [string, string];
-  /** Defaults to "negative". */
+  /** Defaults to "danger". */
   toneA?: BarTone;
   /** Defaults to "positive". */
   toneB?: BarTone;

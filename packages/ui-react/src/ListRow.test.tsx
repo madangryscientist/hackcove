@@ -3,6 +3,8 @@ import { describe, expect, it, vi } from "vitest";
 import { ListRow } from "./ListRow.js";
 import { render, screen, user } from "./render.harness.js";
 
+const noop = () => undefined;
+
 const follows = (a: Node, b: Node) =>
   a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
@@ -23,7 +25,7 @@ describe("ListRow", () => {
 
   it("passes button props through to its button", () => {
     render(
-      <ListRow disabled aria-controls="rows">
+      <ListRow onClick={noop} disabled aria-controls="rows">
         Rent
       </ListRow>,
     );
@@ -35,8 +37,12 @@ describe("ListRow", () => {
   it("expanded makes it a collapsible header with aria-expanded", () => {
     render(
       <>
-        <ListRow expanded={false}>Closed</ListRow>
-        <ListRow expanded>Open</ListRow>
+        <ListRow onClick={noop} expanded={false}>
+          Closed
+        </ListRow>
+        <ListRow onClick={noop} expanded>
+          Open
+        </ListRow>
       </>,
     );
     expect(screen.getByRole("button", { name: "Closed" }).getAttribute("aria-expanded")).toBe(
@@ -54,20 +60,15 @@ describe("ListRow", () => {
     expect(screen.getByRole("link", { name: "Status 3" }).getAttribute("href")).toBe("/status");
     expect(screen.queryByRole("button")).toBeNull();
   });
-
-  it("render draws the app's own link", () => {
-    render(<ListRow render={(props) => <a data-router="1" href="/x" {...props} />}>Go</ListRow>);
-    const link = screen.getByRole("link", { name: "Go" });
-    expect(link.getAttribute("data-router")).toBe("1");
-    expect(link.getAttribute("href")).toBe("/x");
-  });
 });
 
 describe("ListRow leading and selected", () => {
   it("reads leading before the label, on a button and a link alike", () => {
     render(
       <>
-        <ListRow leading="B">Button row</ListRow>
+        <ListRow onClick={noop} leading="B">
+          Button row
+        </ListRow>
         <ListRow href="#a" leading="L">
           Link row
         </ListRow>
@@ -80,11 +81,13 @@ describe("ListRow leading and selected", () => {
   it("selected sets aria-current on the button, the link and a static row", () => {
     render(
       <>
-        <ListRow selected>Button row</ListRow>
+        <ListRow onClick={noop} selected>
+          Button row
+        </ListRow>
         <ListRow selected href="#a">
           Link row
         </ListRow>
-        <ListRow selected static aria-label="Static row">
+        <ListRow selected aria-label="Static row">
           a
         </ListRow>
       </>,
@@ -99,15 +102,15 @@ describe("ListRow leading and selected", () => {
   });
 
   it("is not current unless selected", () => {
-    render(<ListRow>Rent</ListRow>);
+    render(<ListRow onClick={noop}>Rent</ListRow>);
     expect(screen.getByRole("button", { name: "Rent" }).hasAttribute("aria-current")).toBe(false);
   });
 });
 
-describe("ListRow static", () => {
+describe("ListRow with no href or onClick", () => {
   it("is neither a button nor a link, and reads leading, label, trailing, then actions", () => {
     render(
-      <ListRow static leading="L" trailing="admin" actions={<button type="button">Remove</button>}>
+      <ListRow leading="L" trailing="admin" actions={<button type="button">Remove</button>}>
         Ada
       </ListRow>,
     );
@@ -124,7 +127,7 @@ describe("ListRow static", () => {
 describe("ListRow label", () => {
   it("is a div, so a div or a paragraph inside it is valid HTML", () => {
     render(
-      <ListRow>
+      <ListRow onClick={noop}>
         <p>Name</p>
       </ListRow>,
     );
@@ -138,7 +141,11 @@ describe("ListRow label", () => {
 
 describe("ListRow secondary", () => {
   it("reads a second line after the label, inside the button's name", () => {
-    render(<ListRow secondary="Due 1 Dec">Rent</ListRow>);
+    render(
+      <ListRow onClick={noop} secondary="Due 1 Dec">
+        Rent
+      </ListRow>,
+    );
     expect(follows(screen.getByText("Rent"), screen.getByText("Due 1 Dec"))).toBeTruthy();
     expect(screen.getByRole("button", { name: "Rent Due 1 Dec" })).not.toBeNull();
   });
@@ -149,9 +156,7 @@ describe("ListRow secondary", () => {
         <ListRow href="/rent" secondary="Due">
           Rent
         </ListRow>
-        <ListRow static secondary={0}>
-          Water
-        </ListRow>
+        <ListRow secondary={0}>Water</ListRow>
       </>,
     );
     expect(screen.getByRole("link", { name: "Rent Due" })).not.toBeNull();

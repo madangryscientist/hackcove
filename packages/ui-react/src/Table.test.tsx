@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
+import { Card } from "./Card.js";
 import { render, screen, within } from "./render.harness.js";
 import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow } from "./Table.js";
 
@@ -19,40 +20,31 @@ const cell = (props: Parameters<typeof TableCell>[0]) =>
   );
 
 describe("Table", () => {
-  it("is a table with no name and no caption without one", () => {
+  it("is named by its label", () => {
     render(
-      <Table>
-        <TableBody>{null}</TableBody>
-      </Table>,
-    );
-    const table = screen.getByRole<HTMLTableElement>("table");
-    expect(table.caption).toBeNull();
-    expect(screen.queryByRole("table", { name: /./ })).toBeNull();
-  });
-
-  it("is named by its caption", () => {
-    render(
-      <Table caption="Quotes">
+      <Table label="Quotes">
         <TableBody>{null}</TableBody>
       </Table>,
     );
     expect(screen.getByRole("table", { name: "Quotes" })).not.toBeNull();
   });
 
-  it("is still a table named by its caption when plain", () => {
+  it("is still a table named by its label inside a Card, where it is plain", () => {
     render(
-      <Table variant="plain" caption="Quotes">
-        <TableHead>
-          <TableRow>
-            <TableHeaderCell>Ref</TableHeaderCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow>
-            <TableCell>x</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>,
+      <Card title="Quotes">
+        <Table label="Quotes">
+          <TableHead>
+            <TableRow>
+              <TableHeaderCell>Ref</TableHeaderCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell>x</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </Card>,
     );
     const table = screen.getByRole("table", { name: "Quotes" });
     expect(within(table).getByRole("columnheader", { name: "Ref" })).not.toBeNull();

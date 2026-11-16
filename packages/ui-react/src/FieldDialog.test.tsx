@@ -9,8 +9,7 @@ beforeEach(stubDialog);
 
 const PROPS = {
   title: "New project",
-  label: "Name",
-  inputLabel: "Project name",
+  label: "Project name",
   placeholder: "my-project",
   hint: "Letters and dashes.",
   emptyReason: "Type a name first.",

@@ -1,0 +1,1 @@
+3: Pill tone is set in code: check it is never "slate" or "amber" or "emerald" or "blue" or "red" or "violet" or "sky"

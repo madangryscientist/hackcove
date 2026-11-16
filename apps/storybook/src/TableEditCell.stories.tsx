@@ -34,11 +34,8 @@ function CategoryCell() {
             setCategory(event.target.value);
             close();
           }}
-        >
-          {CATEGORIES.map((name) => (
-            <option key={name}>{name}</option>
-          ))}
-        </Select>
+          items={CATEGORIES.map((name) => ({ value: name, label: name }))}
+        />
       )}
     >
       {category}
@@ -77,7 +74,7 @@ function NoteCell() {
 /** `TableEditCell` shows a value as a button with a dotted underline; a click, Enter or Space opens `renderEditor` in the cell. The editor saves and calls `close`; Esc cancels. Both put the focus back on the value. */
 export const InlineEdit: S = {
   render: () => (
-    <Table caption="Transactions">
+    <Table label="Transactions">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Description</TableHeaderCell>
@@ -91,9 +88,7 @@ export const InlineEdit: S = {
           <TableCell tone="strong">Woolworths</TableCell>
           <CategoryCell />
           <NoteCell />
-          <TableCell align="end" numeric>
-            R 349.00
-          </TableCell>
+          <TableCell numeric>R 349.00</TableCell>
         </TableRow>
       </TableBody>
     </Table>

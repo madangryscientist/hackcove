@@ -45,7 +45,7 @@ describe("a sticky column's scroll stop", () => {
   it("DetailLayout stickyAside of plain text that overflows takes a tab stop, named by asideLabel", () => {
     overflowing(900, 400);
     const root = mount(
-      <DetailLayout title="Quote" aside="Just text" asideLabel="Quote facts" stickyAside>
+      <DetailLayout title="Quote" aside="Just text" asideLabel="Quote facts" sticky>
         MAIN
       </DetailLayout>,
     );
@@ -59,7 +59,7 @@ describe("a sticky column's scroll stop", () => {
   it("without a label the stop has no group role or name", () => {
     overflowing(900, 400);
     const root = mount(
-      <DetailLayout title="Quote" aside="Just text" stickyAside>
+      <DetailLayout title="Quote" aside="Just text" sticky>
         MAIN
       </DetailLayout>,
     );
@@ -72,7 +72,7 @@ describe("a sticky column's scroll stop", () => {
   it("takes none when the aside fits", () => {
     overflowing(400, 400);
     const root = mount(
-      <DetailLayout title="Quote" aside="Just text" stickyAside>
+      <DetailLayout title="Quote" aside="Just text" sticky>
         MAIN
       </DetailLayout>,
     );
@@ -82,7 +82,7 @@ describe("a sticky column's scroll stop", () => {
   it("takes none when the aside holds a link, though it overflows", () => {
     overflowing(900, 400);
     const root = mount(
-      <DetailLayout title="Quote" aside={<a href="#x">A link</a>} stickyAside>
+      <DetailLayout title="Quote" aside={<a href="#x">A link</a>} sticky>
         MAIN
       </DetailLayout>,
     );
@@ -106,14 +106,14 @@ describe("a sticky column's scroll stop", () => {
       return this.tagName !== "SUMMARY";
     };
     const links = mount(
-      <SidebarLayout rail={<a href="#a">A</a>} railLabel="All sections">
+      <SidebarLayout aside={<a href="#a">A</a>} asideLabel="All sections">
         CANVAS
       </SidebarLayout>,
     );
     expect(links.querySelector("[tabindex]")).toBeNull();
     unmount();
     const text = mount(
-      <SidebarLayout rail="No links here" railLabel="All sections">
+      <SidebarLayout aside="No links here" asideLabel="All sections">
         CANVAS
       </SidebarLayout>,
     );

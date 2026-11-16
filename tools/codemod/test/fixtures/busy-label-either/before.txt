@@ -1,0 +1,3 @@
+import { Button } from "@hackcove/ui-react";
+
+export const view = <Button busy={saving || loading} busyLabel="Saving">Save</Button>;

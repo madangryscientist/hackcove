@@ -18,8 +18,8 @@ type S = StoryObj;
 const thread = (
   <Card title="Thread">
     <Stack gap="sm">
-      <Text as="p">Naledi: Can you move the debit order to the 25th?</Text>
-      <Text as="p">You: Done, it starts next month.</Text>
+      <Text>Naledi: Can you move the debit order to the 25th?</Text>
+      <Text>You: Done, it starts next month.</Text>
       <Input aria-label="Reply" placeholder="Write a reply" />
     </Stack>
   </Card>
@@ -28,9 +28,7 @@ const thread = (
 const agent = (
   <Card title="Reply agent">
     <Stack gap="sm">
-      <Text as="p" tone="muted">
-        Ask for a draft, then edit it before it is sent.
-      </Text>
+      <Text tone="muted">Ask for a draft, then edit it before it is sent.</Text>
       <Button variant="outline">Suggest a reply</Button>
     </Stack>
   </Card>
@@ -55,12 +53,12 @@ export const Widths: S = {
           asideWidth={width}
           aside={
             <Card title={`asideWidth ${width}`}>
-              <Text as="p">{width === "sm" ? "18rem" : "24rem"}</Text>
+              <Text>{width === "sm" ? "18rem" : "24rem"}</Text>
             </Card>
           }
         >
           <Card title="Main">
-            <Text as="p">Takes the room left.</Text>
+            <Text>Takes the room left.</Text>
           </Card>
         </SideColumn>
       ))}
@@ -87,12 +85,12 @@ export const DoFixedColumn: S = {
     <SideColumn
       aside={
         <Card title="Reply agent">
-          <Text as="p">Ask for a draft, then edit it before it is sent.</Text>
+          <Text>Ask for a draft, then edit it before it is sent.</Text>
         </Card>
       }
     >
       <Card title="Thread">
-        <Text as="p">The main area takes everything the aside leaves.</Text>
+        <Text>The main area takes everything the aside leaves.</Text>
       </Card>
     </SideColumn>
   ),
@@ -104,12 +102,12 @@ export const DontFixedColumn: S = {
     <Stack rowFrom="lg">
       <ClusterGrow>
         <Card title="Thread">
-          <Text as="p">The main area takes what is left.</Text>
+          <Text>The main area takes what is left.</Text>
         </Card>
       </ClusterGrow>
       <Card>
         <Overline>Reply agent</Overline>
-        <Text as="p">
+        <Text>
           Whatever width the aside's text wants is the width it takes, so it changes with its words.
         </Text>
       </Card>

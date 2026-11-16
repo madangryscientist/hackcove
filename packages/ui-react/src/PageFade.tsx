@@ -1,6 +1,6 @@
-import type { HTMLAttributes, ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { flushSync } from "react-dom";
-import type { Unstyled } from "./props.js";
+import type { Passthrough } from "./props.js";
 
 // The one place the View Transitions pseudo-elements can be styled: a stylesheet, as Tailwind
 // classes cannot reach `::view-transition-*`. The browser's own cross-fade does the fading; under
@@ -39,7 +39,7 @@ export function PageFade({
   /** A view-transition name for this box, a CSS identifier (letters, digits, `-`, `_`), for a region no taller than the screen that fades apart from the page. */
   name?: string;
   children: ReactNode;
-} & Unstyled<HTMLAttributes<HTMLDivElement>>): ReactElement {
+} & Passthrough): ReactElement {
   return (
     <>
       <style>{css(name)}</style>

@@ -1,26 +1,12 @@
 import { Button, ButtonGroup, ColourSchemeToggle, IconButton } from "@hackcove/ui-react";
 
-const moonIcon = (
-  <svg
-    viewBox="0 0 24 24"
-    className="h-4 w-4"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.8"
-    strokeLinecap="round"
-    aria-hidden="true"
-  >
-    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
-  </svg>
-);
-
 /** The full-width dashed Button, then buttons with a `count` chip: a ghost toggle that opens something, an outline and a pressed one. */
 function DashedAndCountButtons() {
   return (
     <>
       <div className="max-w-sm">
-        <Button variant="dashed">
-          <span aria-hidden="true">+</span> Add a line
+        <Button variant="dashed" icon="plus">
+          Add a line
         </Button>
       </div>
       <div className="flex flex-wrap items-center gap-2">
@@ -48,10 +34,10 @@ export function GalleryButtons() {
         <Button variant="ghost">Skip</Button>
         <Button variant="link">Edit</Button>
         <Button disabledReason="Pick a shop first">Blocked</Button>
-        <Button variant="outline" busy busyLabel="Saving…">
+        <Button variant="outline" busy="Saving…">
           Busy
         </Button>
-        <IconButton label="Switch to dark theme">{moonIcon}</IconButton>
+        <IconButton label="Switch to dark theme" icon="theme" />
         <ColourSchemeToggle />
       </div>
       <div className="flex flex-wrap items-center gap-2">
@@ -85,15 +71,9 @@ export function GalleryButtons() {
         <Button variant="outline" tone="danger" pressed>
           Pressed
         </Button>
-        <IconButton label="Switch to dark theme" variant="ghost">
-          {moonIcon}
-        </IconButton>
-        <IconButton label="Delete" variant="ghost" tone="danger">
-          {moonIcon}
-        </IconButton>
-        <IconButton label="Delete" tone="danger">
-          {moonIcon}
-        </IconButton>
+        <IconButton label="Switch to dark theme" variant="ghost" icon="theme" />
+        <IconButton label="Delete" variant="ghost" tone="danger" icon="theme" />
+        <IconButton label="Delete" tone="danger" icon="theme" />
       </div>
       <DashedAndCountButtons />
       <ButtonGroup

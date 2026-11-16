@@ -41,7 +41,6 @@ export const MultiLine: S = {
         defaultChecked
       />
       <Checkbox
-        align="start"
         label="Email me when a shop I follow posts a new find, and a weekly summary of the best ones"
         defaultChecked
       />
@@ -55,11 +54,11 @@ export const WithDescription: S = {
     <div className="flex w-72 flex-col gap-4">
       <Checkbox
         label="Weekly summary"
-        description="One email on Mondays with the best finds from the shops you follow."
+        hint="One email on Mondays with the best finds from the shops you follow."
         defaultChecked
       />
-      <Checkbox size="sm" label="Price drops" description="Only for items on your watchlist." />
-      <Checkbox label="Weekly summary" description="Paused while you are away." disabled />
+      <Checkbox size="sm" label="Price drops" hint="Only for items on your watchlist." />
+      <Checkbox label="Weekly summary" hint="Paused while you are away." disabled />
     </div>
   ),
 };
@@ -95,7 +94,7 @@ export const InCard: S = {
         </div>
       </Card>
       <Card title="Shops">
-        <Table variant="plain" caption="Shops">
+        <Table label="Shops">
           <TableHead>
             <TableRow>
               <TableHeaderCell>

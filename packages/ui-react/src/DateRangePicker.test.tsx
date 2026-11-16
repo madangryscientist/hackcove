@@ -92,7 +92,7 @@ describe("DateRangePicker", () => {
   });
 
   it("shows an error from outside as an alert and marks the field invalid", () => {
-    render(<DateRangePicker label="Period" description="A hint." error="Too long a period." />);
+    render(<DateRangePicker label="Period" hint="A hint." error="Too long a period." />);
     expect(screen.getByRole("alert").textContent).toBe("Too long a period.");
     expect(screen.getAllByRole("spinbutton")[0]?.getAttribute("aria-invalid")).toBe("true");
     expect(screen.queryByText("A hint.")).toBeNull();

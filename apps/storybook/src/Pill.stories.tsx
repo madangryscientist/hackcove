@@ -9,13 +9,13 @@ type S = StoryObj;
 export const DoStatus: S = {
   render: () => (
     <Cluster>
-      <Pill tone="emerald" dot>
+      <Pill tone="positive" dot>
         Paid
       </Pill>
-      <Pill tone="amber" dot>
+      <Pill tone="warn" dot>
         Due
       </Pill>
-      <Pill tone="red" dot>
+      <Pill tone="danger" dot>
         Overdue
       </Pill>
       <Pill dot>Draft</Pill>
@@ -27,13 +27,13 @@ export const DoStatus: S = {
 export const DontStatus: S = {
   render: () => (
     <Cluster>
-      <Pill tone="violet" dot>
+      <Pill tone="accent" dot>
         Paid
       </Pill>
-      <Pill tone="violet" dot>
+      <Pill tone="accent" dot>
         Due
       </Pill>
-      <Pill tone="violet" dot>
+      <Pill tone="accent" dot>
         Overdue
       </Pill>
     </Cluster>
@@ -44,10 +44,10 @@ export const DontStatus: S = {
 export const WithTitle: S = {
   render: () => (
     <Cluster>
-      <Pill tone="emerald" dot title="Accepted on 12 Oct by Ada Lovelace">
+      <Pill tone="positive" dot title="Accepted on 12 Oct by Ada Lovelace">
         Accepted
       </Pill>
-      <Pill href="#flakes" tone="amber" round title="3 stories changed between the last two builds">
+      <Pill href="#flakes" tone="warn" round title="3 stories changed between the last two builds">
         3 flaky
       </Pill>
     </Cluster>
@@ -57,7 +57,7 @@ export const WithTitle: S = {
 /** A Pill that goes somewhere takes `href`: it dims on hover and carries the focus ring. */
 export const DoLink: S = {
   render: () => (
-    <Pill href="#flakes" tone="amber" round>
+    <Pill href="#flakes" tone="warn" round>
       3 flaky
     </Pill>
   ),
@@ -67,25 +67,25 @@ export const DoLink: S = {
 export const DontLink: S = {
   render: () => (
     <TextLink href="#flakes">
-      <Pill tone="amber" round>
+      <Pill tone="warn" round>
         3 flaky
       </Pill>
     </TextLink>
   ),
 };
 
-/** `label` makes a two-tone `label: value` pill: the label keeps the tone's tint and the children, the value, sit on the surface beside it. Keep the label to a word or two. */
+/** `name` makes a two-tone `name: value` pill: the name keeps the tone's tint and the children, the value, sit on the surface beside it. Keep the name to a word or two. */
 export const TwoTone: S = {
   render: () => (
     <Cluster>
-      <Pill label="Weight">72 kg</Pill>
-      <Pill label="Sleep" tone="sky" round>
+      <Pill name="Weight">72 kg</Pill>
+      <Pill name="Sleep" tone="info" round>
         7 h 20 min
       </Pill>
-      <Pill label="Mood" tone="emerald" dot>
+      <Pill name="Mood" tone="positive" dot>
         Good
       </Pill>
-      <Pill label="Pain" tone="red" href="#pain">
+      <Pill name="Pain" tone="danger" href="#pain">
         3 / 10
       </Pill>
     </Cluster>
@@ -96,20 +96,41 @@ export const TwoTone: S = {
 export const Removable: S = {
   render: () => (
     <Cluster>
-      <Pill onRemove={() => undefined} removeLabel="Remove tag Urgent" tone="amber">
+      <Pill onRemove={() => undefined} removeLabel="Remove tag Urgent" tone="warn">
         Urgent
       </Pill>
       <Pill
         onClick={() => undefined}
         onRemove={() => undefined}
         removeLabel="Remove invoice.pdf"
-        tone="sky"
+        tone="info"
         round
       >
         invoice.pdf
       </Pill>
-      <Pill href="#a" onRemove={() => undefined} removeLabel="Remove report.pdf" label="File">
+      <Pill href="#a" onRemove={() => undefined} removeLabel="Remove report.pdf" name="File">
         report.pdf
+      </Pill>
+    </Cluster>
+  ),
+};
+
+/** `size` steps the text: `sm` for a dense row, `md` (the default), `lg` beside a heading. */
+export const Sizes: S = {
+  render: () => (
+    <Cluster>
+      <Pill size="sm" tone="positive">
+        Paid
+      </Pill>
+      <Pill tone="positive">Paid</Pill>
+      <Pill size="lg" tone="positive">
+        Paid
+      </Pill>
+      <Pill size="sm" name="Weight">
+        72 kg
+      </Pill>
+      <Pill size="lg" name="Weight">
+        72 kg
       </Pill>
     </Cluster>
   ),

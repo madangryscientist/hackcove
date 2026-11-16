@@ -9,7 +9,7 @@ const follows = (a: Node, b: Node) =>
 describe("SidebarLayout", () => {
   it("reads the rail, in its own landmark, before the canvas", () => {
     render(
-      <SidebarLayout rail={<p>RAIL</p>}>
+      <SidebarLayout aside={<p>RAIL</p>}>
         <p>CANVAS</p>
       </SidebarLayout>,
     );
@@ -19,9 +19,9 @@ describe("SidebarLayout", () => {
     expect(follows(screen.getByText("RAIL"), screen.getByText("CANVAS"))).toBeTruthy();
   });
 
-  it("shows the rail with no disclosure and leaves it unnamed without railLabel", () => {
+  it("shows the rail with no disclosure and leaves it unnamed without asideLabel", () => {
     render(
-      <SidebarLayout rail={<p>RAIL</p>}>
+      <SidebarLayout aside={<p>RAIL</p>}>
         <p>CANVAS</p>
       </SidebarLayout>,
     );
@@ -29,9 +29,9 @@ describe("SidebarLayout", () => {
     expect(screen.getByRole("complementary").hasAttribute("aria-label")).toBe(false);
   });
 
-  it("folds the rail behind a closed disclosure with railLabel, summary first", () => {
+  it("folds the rail behind a closed disclosure with asideLabel, summary first", () => {
     render(
-      <SidebarLayout rail={<p>RAIL</p>} railLabel="All sections">
+      <SidebarLayout aside={<p>RAIL</p>} asideLabel="All sections">
         <p>CANVAS</p>
       </SidebarLayout>,
     );
@@ -42,9 +42,9 @@ describe("SidebarLayout", () => {
     expect(follows(screen.getByText("RAIL"), screen.getByText("CANVAS"))).toBeTruthy();
   });
 
-  it("names the rail's landmark with railLabel", () => {
+  it("names the rail's landmark with asideLabel", () => {
     render(
-      <SidebarLayout rail={<p>RAIL</p>} railLabel="All sections">
+      <SidebarLayout aside={<p>RAIL</p>} asideLabel="All sections">
         <p>CANVAS</p>
       </SidebarLayout>,
     );

@@ -9,8 +9,8 @@ describe("Code", () => {
     expect(screen.getByRole("code").textContent).toBe("bun install");
   });
 
-  it("passes a title through", () => {
-    render(<Code title="command">x</Code>);
-    expect(screen.getByRole("code").getAttribute("title")).toBe("command");
+  it("passes an id through", () => {
+    render(<Code id="command">x</Code>);
+    expect(screen.getByRole("code").id).toBe("command");
   });
 });

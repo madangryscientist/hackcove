@@ -1,5 +1,4 @@
 import {
-  type AriaAttributes,
   type JSX,
   Children,
   isValidElement,
@@ -20,7 +19,8 @@ import {
   useDragAndDrop,
 } from "react-aria-components";
 import { cx, focusRing } from "./cx.js";
-import type { DataAttributes } from "./link.js";
+import { dataAttributes } from "./link.js";
+import type { Passthrough } from "./props.js";
 
 /** A move the user made: which item, the section it lands in, and the item it lands next to. */
 export type SortableMove = {
@@ -66,19 +66,28 @@ const TAIL = "h-0 overflow-hidden outline-none";
 /** A marker on every row a pointer can drop next to: the items and each section's tail row. */
 const ROW_MARK = "data-sortable-row";
 
-/** What a part takes through to its element: `data-*` (an e2e hook) and a description. */
-type Through = DataAttributes & Pick<AriaAttributes, "aria-describedby" | "aria-details">;
+/** What a part takes through to its element: `id`, `data-*` and `aria-*`, as every component does. */
+type Through = Passthrough;
 
 /**
  * react-aria drops an `aria-describedby` or `aria-details` it is handed on a row or a section, and
  * sets its own describedby on a row. This draws the element with both: its own ids and the app's.
  */
-function describedBy({ "aria-describedby": described, "aria-details": details, ...data }: Through) {
+function describedBy(
+  { "aria-describedby": described, "aria-details": details, id: _own, ...through }: Through,
+  id?: string,
+) {
+  // react-aria passes `data-*` on; every other `aria-*` goes on the element it draws.
+  const aria = Object.fromEntries(
+    Object.entries(through).filter(([key]) => key.startsWith("aria-")),
+  );
   return {
-    ...data,
+    ...dataAttributes(through),
     render: (props: JSX.IntrinsicElements["div"]) => (
       <div
         {...props}
+        {...aria}
+        id={id ?? props.id}
         aria-describedby={
           [props["aria-describedby"], described].filter(Boolean).join(" ") || undefined
         }
@@ -220,7 +229,9 @@ export function SortableList({
   /** `SortableSection`s, or `SortableItem`s for a list with no sections. */
   children: ReactNode;
 } & Through): ReactElement {
-  const listId = useId();
+  const ownId = useId();
+  const { id, ...through } = rest;
+  const listId = id ?? ownId;
   const dragType = `application/x-hackcove-sortable-${useId()
     .replace(/[^a-z0-9]/gi, "")
     .toLowerCase()}`;
@@ -255,7 +266,7 @@ export function SortableList({
   });
   return (
     <GridList
-      {...describedBy(rest)}
+      {...describedBy(through, listId)}
       id={listId}
       aria-label={label}
       dragAndDropHooks={dragAndDropHooks}
@@ -272,8 +283,13 @@ type SortableSectionProps = {
   id: string;
   /** The heading over its items. */
   title: string;
-  /** Its `SortableItem`s, each a direct child. With none it shows a quiet "Drop here" row. */
+  /** Its `SortableItem`s, each a direct child. With none it shows a quiet `emptyLabel` row. */
   children?: ReactNode;
+  /**
+   * The quiet row an empty section shows, where a drop lands.
+   * @default Drop here
+   */
+  emptyLabel?: string | undefined;
 };
 
 /**
@@ -284,6 +300,7 @@ export function SortableSection({
   id,
   title,
   children,
+  emptyLabel = "Drop here",
   ...rest
 }: SortableSectionProps & Through): ReactElement {
   const count = itemsOf(children).length;
@@ -302,14 +319,14 @@ export function SortableSection({
       {children}
       <GridListItem
         id={tailKey(id)}
-        textValue={count > 0 ? `End of ${title}` : "Drop here"}
+        textValue={count > 0 ? `End of ${title}` : emptyLabel}
         isDisabled
         {...{ [ROW_MARK]: "" }}
         className={count > 0 ? TAIL : cx(PLACEHOLDER, AFTER_ROW)}
       >
         {/* react-aria wants a drag slot in every row; this one is never shown or used. */}
         <Button slot="drag" className="hidden" />
-        {count === 0 && "Drop here"}
+        {count === 0 && emptyLabel}
       </GridListItem>
     </GridListSection>
   );

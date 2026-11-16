@@ -19,7 +19,7 @@ describe("PageHeader", () => {
       <PageHeader
         breadcrumbs={<nav aria-label="Breadcrumb">crumbs</nav>}
         title="Builds"
-        subtitle="every build"
+        description="every build"
         actions={<button type="button">New</button>}
         tabs={<nav aria-label="Tabs">tabs</nav>}
       />,

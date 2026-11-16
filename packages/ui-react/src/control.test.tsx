@@ -13,7 +13,9 @@ const WIDTHS = Object.values(CONTROL_WIDTH).flatMap((w) => w?.split(" ") ?? []);
 
 const controls = {
   Input: (props: { size?: "sm"; width?: "auto" | "fill" | "md" }) => <Input {...props} />,
-  Select: (props: { size?: "sm"; width?: "auto" | "fill" | "md" }) => <Select {...props} />,
+  Select: (props: { size?: "sm"; width?: "auto" | "fill" | "md" }) => (
+    <Select items={[]} width="full" {...props} />
+  ),
   Textarea: (props: { size?: "sm"; width?: "auto" | "fill" | "md" }) => <Textarea {...props} />,
 };
 
@@ -22,15 +24,17 @@ describe.each(Object.entries(controls))("%s size and width", (_name, render) => 
     const classes = classOf(renderToStaticMarkup(render({})));
     expect(classes).toContain("w-full");
     expect(classes).toContain("py-2");
-    expect(classes).toContain("text-sm");
+    expect(classes).toContain("text-base");
     expect(classes).toContain("px-3");
   });
 
-  it("sm is compact", () => {
+  it("sm is compact, and never under 16px on touch", () => {
     const classes = classOf(renderToStaticMarkup(render({ size: "sm" })));
-    expect(classes).toEqual(expect.arrayContaining(["py-1", "text-xs", "px-2"]));
+    expect(classes).toEqual(
+      expect.arrayContaining(["py-1", "text-sm", "pointer-coarse:text-base", "px-2"]),
+    );
     expect(classes).not.toContain("py-2");
-    expect(classes).not.toContain("text-sm");
+    expect(classes).not.toContain("text-base");
   });
 
   it("a fixed width replaces w-full, never joins it", () => {
@@ -52,7 +56,7 @@ describe.each(Object.entries(controls))("%s size and width", (_name, render) => 
 });
 
 describe("Input with an icon", () => {
-  const icon = <svg viewBox="0 0 20 20" />;
+  const icon = "search";
 
   it("sm shrinks the icon gutter", () => {
     const out = renderToStaticMarkup(<Input icon={icon} size="sm" />);
@@ -85,7 +89,7 @@ describe("Input with an icon", () => {
 });
 
 describe("Input align", () => {
-  const icon = <svg viewBox="0 0 20 20" />;
+  const icon = "search";
 
   it("start is the default and adds no alignment class", () => {
     expect(classOf(renderToStaticMarkup(<Input />))).not.toContain("text-right");

@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import { cx, focusRing } from "./cx.js";
+import { controlText, type TypeStep, useTypeStep } from "./density.js";
 import type { Size } from "./size.js";
 import { Switcher, type SwitchItem, type SwitchProps } from "./switcher.js";
 
@@ -14,18 +15,24 @@ const OFF_LIVE = "hover:text-violet-700";
 // A transparent border, so a pill is as tall as a `Button` of the same size.
 const PILL = `rounded-lg border border-transparent transition ${focusRing}`;
 
-/** A pill's padding and text, by `size`. */
+/** A pill's padding, by `size`; its text is a control's (`controlText`), so it lines up with a `Button`. */
 const PILL_SIZE: Record<Size, string> = {
-  sm: "px-2.5 py-1 text-xs",
-  md: "px-3 py-2 text-sm",
-  lg: "px-4 py-2.5 text-base",
+  sm: "px-2.5 py-1",
+  md: "px-3 py-2",
+  lg: "px-4 py-2.5",
 };
 
-/** The classes of one pill tab. A `disabled` one drops the hover fill. */
-export function pillTabClass(active: boolean, disabled = false, size: Size = "md"): string {
+/** The classes of one pill tab at the type `step` in force. A `disabled` one drops the hover fill. */
+export function pillTabClass(
+  active: boolean,
+  disabled = false,
+  size: Size = "md",
+  step?: TypeStep,
+): string {
   return cx(
     PILL,
     PILL_SIZE[size],
+    controlText(size, step, false),
     active ? "bg-slate-100 font-medium text-slate-900" : "text-slate-600",
     !active && !disabled && "hover:bg-slate-100",
   );
@@ -34,48 +41,44 @@ export function pillTabClass(active: boolean, disabled = false, size: Size = "md
 export type TabsProps = SwitchProps &
   (
     | {
-        /** `underline` (default) is a row over a bottom rule; `pill` fills the current tab. */
-        variant?: "underline";
-        /** Only a `pill` row takes a `size`. */
+        /**
+         * `horizontal` is a row of underline tabs over a bottom rule; `vertical` is the pill rail, a
+         * column at the rail's width for a `SidebarLayout` aside, where the up and down arrows move
+         * between button tabs.
+         * @default horizontal
+         */
+        orientation?: "horizontal";
+        /** Only the vertical rail takes a `size`. */
         size?: undefined;
-        /** Only a `pill` row takes an `orientation`. */
-        orientation?: undefined;
       }
     | {
-        variant: "pill";
+        orientation: "vertical";
         /**
          * The pills' height and text, on the scale of a `Button`.
          * @default md
          */
         size?: Size;
-        /**
-         * `vertical` stacks the pills in one column at the rail's width, for a `SidebarLayout` rail;
-         * the up and down arrows then move between button tabs.
-         * @default horizontal
-         */
-        orientation?: "horizontal" | "vertical";
       }
   );
 
 /**
- * Underline tabs for switching a view in place: a row over a bottom rule, the current tab
- * underlined in the accent. `items` are `{ value, label }` buttons (`value` and `onChange` are the
- * caller's state; the arrow keys, Home and End move between tabs) or links (`href`, or `render` to
- * draw the app's own router `<Link>`; `active` on an item, or `value`, marks the current one, which
- * gets `aria-current`). `variant="pill"` fills the current tab instead, with no rule, for under a
- * `PageHeader` or as a site's section nav, and takes a `size`; `orientation="vertical"` stacks the
- * pills for a `SidebarLayout` rail. An item may carry a `count`, and a button one `disabled` (with a
- * `title` for the reason); `disabled` on the row disables every tab. `label` names the tab list.
- * The panel is the caller's: give it `role="tabpanel"`, and a tab `controls` to point at it.
+ * Tabs for switching a view in place or between pages. Across (the default) they are underline
+ * tabs: a row over a bottom rule, the current tab underlined in the accent. `orientation="vertical"`
+ * is the pill rail instead, the current tab filled, for a `SidebarLayout` aside, and takes a
+ * `size`. `items` are `{ value, label }` buttons (`value` and `onChange` are the caller's state;
+ * the arrow keys, Home and End move between tabs) or links (`href`, an in-app one through
+ * `LinkProvider`; `selected` on an item, or `value`, marks the current one, which gets
+ * `aria-current`). An item may carry a `count`, and a button one `disabled` (with a `title` for
+ * the reason); `disabled` on the row disables every tab. `label` names the tab list. The panel is
+ * the caller's: give it `role="tabpanel"`, and a tab `controls` to point at it.
  */
 export function Tabs({
-  variant = "underline",
   size = "md",
   orientation = "horizontal",
   ...props
 }: TabsProps): ReactElement {
-  const pill = variant === "pill";
-  const stacked = pill && orientation === "vertical";
+  const stacked = orientation === "vertical";
+  const step = useTypeStep();
   return (
     <Switcher
       {...props}
@@ -84,17 +87,14 @@ export function Tabs({
         item: "tab",
         vertical: stacked,
         stacked,
-        root: rootClass(pill, stacked),
+        root: stacked ? "flex flex-col gap-1" : UNDERLINE_ROW,
         option: (active, disabled) =>
-          pill
-            ? pillTabClass(active, disabled, size)
+          stacked
+            ? pillTabClass(active, disabled, size, step)
             : cx(BASE, active ? ON : OFF, !active && !disabled && OFF_LIVE),
       }}
     />
   );
 }
 
-function rootClass(pill: boolean, stacked: boolean): string {
-  if (stacked) return "flex flex-col gap-1";
-  return pill ? "flex flex-wrap gap-1" : "flex flex-wrap gap-x-5 border-b border-slate-200 text-sm";
-}
+const UNDERLINE_ROW = "flex flex-wrap gap-x-5 border-b border-slate-200 text-sm";

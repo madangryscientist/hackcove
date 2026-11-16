@@ -32,10 +32,8 @@ export const Names: S = {
       {iconNames.map((name) => (
         <div key={name} className="flex flex-col items-start gap-2">
           <Icon name={name} size="feature" tone="info" />
-          <Text as="p" mono>
-            {name}
-          </Text>
-          <Caption as="p">{iconIdeas[name]}</Caption>
+          <Text mono>{name}</Text>
+          <Caption>{iconIdeas[name]}</Caption>
         </div>
       ))}
     </div>
@@ -57,15 +55,17 @@ export const SetSizes: S = {
   ),
 };
 
-/** `tone` is a text tone; `inherit` (the default) takes the colour of the text around it. */
+/** `tone` is a text tone; left out, the icon takes the colour of the text around it. */
 export const Tones: S = {
   render: () => (
     <div className="flex items-center gap-4">
-      {(["inherit", "muted", "positive", "warn", "danger", "info"] as const).map((tone) => (
-        <Icon key={tone} tone={tone}>
-          {flagIcon}
-        </Icon>
-      ))}
+      {([undefined, "muted", "accent", "info", "positive", "warn", "danger"] as const).map(
+        (tone) => (
+          <Icon key={tone ?? "inherit"} tone={tone}>
+            {flagIcon}
+          </Icon>
+        ),
+      )}
     </div>
   ),
 };
@@ -74,7 +74,7 @@ export const Tones: S = {
 export const Label: S = {
   render: () => (
     <Stack gap="sm">
-      <Text as="p">
+      <Text>
         <Icon tone="warn" label="Flaky">
           {flagIcon}
         </Icon>{" "}

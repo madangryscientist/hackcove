@@ -55,14 +55,12 @@ describe("Button states", () => {
     expect(save().getAttribute("aria-busy")).toBe("true");
   });
 
-  it("busy: busyLabel replaces the label; without one the label stays", () => {
+  it("busy: a string is the label while busy; busy alone keeps the label", () => {
     render(
       <>
-        <Button busy busyLabel="Saving…">
-          Save
-        </Button>
+        <Button busy="Saving…">Save</Button>
         <Button busy>Busy</Button>
-        <Button busyLabel="Saving…">Idle</Button>
+        <Button>Idle</Button>
       </>,
     );
     expect(screen.getByRole("button", { name: "Saving…" })).not.toBeNull();
@@ -73,7 +71,7 @@ describe("Button states", () => {
 
   it("busy wins over disabledReason: aria-busy, and no reason as the title", () => {
     render(
-      <Button busy busyLabel="Saving…" disabledReason="No">
+      <Button busy="Saving…" disabledReason="No">
         Save
       </Button>,
     );

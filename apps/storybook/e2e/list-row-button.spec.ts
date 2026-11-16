@@ -42,7 +42,7 @@ for (const { id: theme } of themes) {
     // The second row's link: it is lifted above its row's button, so the click lands on it.
     const adaView = page.getByRole("link", { name: "View" }).nth(1);
     await adaView.click();
-    await expect(page).toHaveURL(/#shop-ada$/);
+    await expect(page).toHaveURL(/#\/shop-ada$/);
     await expect(status).toHaveText("Selected: Grace");
 
     // Keyboard, on a fresh page: Tab reaches the row button, then its trailing link, then the next row.

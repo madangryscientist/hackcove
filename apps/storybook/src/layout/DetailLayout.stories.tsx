@@ -13,7 +13,7 @@ import {
 import { DemoShell, layoutPage } from "./DemoShell";
 import { DetailPage } from "./pages";
 
-/** Main two thirds and aside one third from `lg`; the aside stacks below main under it. `stickyAside` keeps the aside in view under the header from `lg` as a long page scrolls. */
+/** Main two thirds and aside one third from `lg`; the aside stacks below main under it. `sticky` keeps the aside in view under the header from `lg` as a long page scrolls. */
 const meta: Meta = {
   title: "Page layouts/DetailLayout",
   parameters: { layout: "fullscreen", bare: true },
@@ -29,10 +29,9 @@ export const FullPage: S = {
       brand={<a href="#">Hack Cove</a>}
       nav={
         <Tabs
-          variant="pill"
           label="Main"
           items={[
-            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Quotes", href: "#quotes", selected: true },
             { label: "Clients", href: "#clients" },
           ]}
         />
@@ -40,7 +39,7 @@ export const FullPage: S = {
     >
       <DetailLayout
         title="Quote Q-1042"
-        subtitle="Naledi Mokoena"
+        description="Naledi Mokoena"
         actions={<Button variant="outline">Edit</Button>}
         aside={
           <Card title="Details">
@@ -52,10 +51,10 @@ export const FullPage: S = {
         }
       >
         <Card title="Cover">
-          <Text as="p">Life cover of R 1 500 000, to age 65.</Text>
+          <Text>Life cover of R 1 500 000, to age 65.</Text>
         </Card>
         <Card title="Notes">
-          <Text as="p">The client asked to be debited on the 25th.</Text>
+          <Text>The client asked to be debited on the 25th.</Text>
         </Card>
       </DetailLayout>
     </AppShell>
@@ -72,19 +71,19 @@ export const MainAndAside: S = {
 
 const longMain = Array.from({ length: 12 }, (_, i) => (
   <Card key={i} title={`Block ${i + 1}`}>
-    <Text as="p">A block of a long record. The aside stays in view while this scrolls.</Text>
+    <Text>A block of a long record. The aside stays in view while this scrolls.</Text>
   </Card>
 ));
 
-/** `stickyAside` on a long page: from `lg` the aside sticks under the header; taller than the room left, it scrolls itself. Below `lg` it stacks. */
+/** `sticky` on a long page: from `lg` the aside sticks under the header; taller than the room left, it scrolls itself. Below `lg` it stacks. */
 export const StickyAside: S = {
   render: () => (
     <DemoShell>
       <DetailLayout
         title="Quote Q-1042"
-        subtitle="Naledi Mokoena"
+        description="Naledi Mokoena"
         actions={<Button variant="outline">Edit</Button>}
-        stickyAside
+        sticky
         aside={
           <Card title="Details">
             <KeyValueList>
@@ -101,7 +100,7 @@ export const StickyAside: S = {
 };
 
 const notes = Array.from({ length: 18 }, (_, i) => (
-  <Text key={i} as="p">
+  <Text key={i}>
     Note {i + 1}: the client asked for a call back about the cover, and for the quote to be sent by
     email, not post.
   </Text>
@@ -117,9 +116,9 @@ export const StickyAsideText: S = {
     <DemoShell>
       <DetailLayout
         title="Quote Q-1042"
-        subtitle="Naledi Mokoena"
+        description="Naledi Mokoena"
         actions={<Button variant="outline">Edit</Button>}
-        stickyAside
+        sticky
         asideLabel="Quote notes"
         aside={notes}
       >
@@ -134,7 +133,7 @@ export const DoRecord: S = {
   render: () => (
     <DetailLayout
       title="Quote Q-1042"
-      subtitle="Naledi Mokoena"
+      description="Naledi Mokoena"
       actions={<Button variant="outline">Edit</Button>}
       aside={
         <Card title="Details">
@@ -146,7 +145,7 @@ export const DoRecord: S = {
       }
     >
       <Card title="Cover">
-        <Text as="p">Life cover of R 1 500 000, to age 65.</Text>
+        <Text>Life cover of R 1 500 000, to age 65.</Text>
       </Card>
     </DetailLayout>
   ),
@@ -157,11 +156,11 @@ export const DontRecord: S = {
   render: () => (
     <ListLayout
       title="Quote Q-1042"
-      subtitle="Naledi Mokoena"
+      description="Naledi Mokoena"
       actions={<Button variant="outline">Edit</Button>}
     >
       <Card title="Cover">
-        <Text as="p">Life cover of R 1 500 000, to age 65.</Text>
+        <Text>Life cover of R 1 500 000, to age 65.</Text>
       </Card>
       <Card title="Details">
         <KeyValueList>

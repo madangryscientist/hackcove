@@ -1,0 +1,3 @@
+import { MetaList } from "@hackcove/ui-react";
+
+export const view = <MetaList>x</MetaList>;

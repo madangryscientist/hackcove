@@ -1,0 +1,3 @@
+import { Pill } from "@hackcove/ui-react";
+
+export const view = <Pill tone={tone}>Draft</Pill>;

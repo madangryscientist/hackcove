@@ -34,10 +34,10 @@ export function ListPage({ isEmpty = false }: { isEmpty?: boolean }) {
   return (
     <ListLayout
       title="Quotes"
-      subtitle="Every quote you have sent."
+      description="Every quote you have sent."
       actions={<Button>New quote</Button>}
       filters={
-        <FilterGroup legend="Status">
+        <FilterGroup label="Status">
           <Button variant="outline" size="sm" pressed>
             All
           </Button>
@@ -52,25 +52,18 @@ export function ListPage({ isEmpty = false }: { isEmpty?: boolean }) {
           </Button>
         </FilterGroup>
       }
-      isEmpty={isEmpty}
-      empty={
-        <Text as="p" color="muted">
-          No quotes match these filters.
-        </Text>
-      }
+      empty={<Text tone="muted">No quotes match these filters.</Text>}
     >
-      {quotes.map(([ref, name, premium, status]) => (
+      {(isEmpty ? [] : quotes).map(([ref, name, premium, status]) => (
         <Card key={ref} as="article">
           <div className="flex items-center justify-between gap-4">
             <div className="min-w-0">
-              <Text strong as="p">
-                {name}
-              </Text>
-              <Text as="p" color="secondary">
+              <Text strong>{name}</Text>
+              <Text>
                 {ref} · {premium}
               </Text>
             </div>
-            <Pill tone={status === "Accepted" ? "emerald" : "slate"}>{status}</Pill>
+            <Pill tone={status === "Accepted" ? "positive" : "neutral"}>{status}</Pill>
           </div>
         </Card>
       ))}
@@ -81,9 +74,9 @@ export function ListPage({ isEmpty = false }: { isEmpty?: boolean }) {
 export function DetailPage() {
   return (
     <DetailLayout
-      breadcrumbs={<Breadcrumbs crumbs={[{ label: "Quotes", href: "#quotes" }, "Q-1042"]} />}
+      breadcrumbs={<Breadcrumbs items={[{ label: "Quotes", href: "#quotes" }, "Q-1042"]} />}
       title="Quote Q-1042"
-      subtitle="Naledi Mokoena"
+      description="Naledi Mokoena"
       actions={
         <>
           <Button variant="outline">Edit</Button>
@@ -102,10 +95,10 @@ export function DetailPage() {
       }
     >
       <Card title="Cover">
-        <Text as="p">Life cover of R 1 500 000 with a funeral benefit, to age 65.</Text>
+        <Text>Life cover of R 1 500 000 with a funeral benefit, to age 65.</Text>
       </Card>
       <Card title="Notes">
-        <Text as="p">Client asked for the premium to be debited on the 25th.</Text>
+        <Text>Client asked for the premium to be debited on the 25th.</Text>
       </Card>
     </DetailLayout>
   );
@@ -116,7 +109,7 @@ export function FormPage() {
   return (
     <FormLayout
       title="New quote"
-      subtitle="Start with who it is for."
+      description="Start with who it is for."
       onSubmit={(event) => event.preventDefault()}
       actions={
         <>
@@ -135,11 +128,15 @@ export function FormPage() {
             htmlFor={`${id}-cover`}
             hint="Monthly premium is worked out on save."
           >
-            <Select id={`${id}-cover`} defaultValue="1500000">
-              <option value="500000">R 500 000</option>
-              <option value="1500000">R 1 500 000</option>
-              <option value="3000000">R 3 000 000</option>
-            </Select>
+            <Select
+              id={`${id}-cover`}
+              defaultValue="1500000"
+              items={[
+                { value: "500000", label: "R 500 000" },
+                { value: "1500000", label: "R 1 500 000" },
+                { value: "3000000", label: "R 3 000 000" },
+              ]}
+            />
           </Field>
         </div>
       </Card>
@@ -155,23 +152,23 @@ export function FormPage() {
 export function ProsePage() {
   return (
     <ProseLayout
-      breadcrumbs={<Breadcrumbs crumbs={[{ label: "Hack Cove", href: "#home" }, "Privacy"]} />}
+      breadcrumbs={<Breadcrumbs items={[{ label: "Hack Cove", href: "#home" }, "Privacy"]} />}
       title="Privacy"
-      subtitle="Last updated 12 October 2026"
+      description="Last updated 12 October 2026"
       gap="lg"
     >
       <Section title="What we collect">
-        <Text as="p">
+        <Text>
           We keep the email address you write to us from and nothing else: no cookies, no analytics
           and no accounts. A message stays in one inbox until the question it asks is answered.
         </Text>
-        <Text as="p">
+        <Text>
           This paragraph is long on purpose: the column stops at the reading measure, so a line
           holds a comfortable number of words however wide the window is.
         </Text>
       </Section>
       <Section title="Who to ask">
-        <Text as="p">Write to the address in the footer and we reply within a working week.</Text>
+        <Text>Write to the address in the footer and we reply within a working week.</Text>
       </Section>
     </ProseLayout>
   );

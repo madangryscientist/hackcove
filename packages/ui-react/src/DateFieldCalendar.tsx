@@ -10,26 +10,34 @@ import {
   Label,
 } from "react-aria-components";
 import { cx } from "./cx.js";
-import { CalendarPopover, calendarIcon } from "./DateCalendar.js";
+import { CalendarPopover, type CalendarLabels, calendarIcon } from "./DateCalendar.js";
 import {
   FieldSegment,
   type FieldProps,
   LOCALE,
+  fieldFlags,
   forcedInvalid,
   Notes,
   frameClass,
   iconButtonLook,
   labelClass,
 } from "./DateField.js";
+import { definedProps } from "./props.js";
 import { ShownInput, useShownDate } from "./shownDate.js";
 import type { Size } from "./size.js";
+import { controlText, useTypeStep } from "./density.js";
 
-/** The picker's padding, text and calendar button, by `size`. The button sets the height, so the padding is less than a `DateField`'s. */
+/** The picker's padding and calendar button, by `size` (its type is `controlText`'s). The button sets the height, so the padding is less than a `DateField`'s. */
 export const PICKER_SIZE: Record<Size, { frame: string; button: string }> = {
-  sm: { frame: "py-0.5 pl-2 pr-0.5 text-xs", button: "h-5 w-5" },
-  md: { frame: "py-1 pl-2.5 pr-1 text-sm", button: "h-7 w-7" },
-  lg: { frame: "py-1.5 pl-3 pr-1.5 text-base", button: "h-8 w-8" },
+  sm: { frame: "py-0.5 pl-2 pr-0.5", button: "h-5 w-5" },
+  md: { frame: "py-1 pl-2.5 pr-1", button: "h-7 w-7" },
+  lg: { frame: "py-1.5 pl-3 pr-1.5", button: "h-8 w-8" },
 };
+
+/** The picker's frame at `size`: its gap and padding, and the type of a control at the type step in force. */
+export function usePickerFrame(size: Size): string {
+  return cx("gap-1", PICKER_SIZE[size].frame, controlText(size, useTypeStep(), true));
+}
 
 /**
  * The picker's input, read-only while `leaving`. Only the field: a read-only picker would also
@@ -71,17 +79,19 @@ export function useDialogContainer(): {
 /** The body of `<DateField calendar>`: the field with a calendar button that opens a month view in a popover. */
 export function CalendarDateField({
   label,
-  description,
-  errorMessage,
+  hint,
   error,
-  isInvalid: invalidProp,
+  disabled,
+  required,
+  labels,
   value,
   defaultValue,
   onChange,
   name,
   size = "md",
   ...rest
-}: FieldProps & { defaultOpen?: boolean }): ReactElement {
+}: FieldProps & { defaultOpen?: boolean; labels: CalendarLabels }): ReactElement {
+  const frame = usePickerFrame(size);
   const { inner, setInner, shown, impossible, onRead, validate, leaving, onBlurCapture, onLeft } =
     useShownDate({
       value,
@@ -89,18 +99,19 @@ export function CalendarDateField({
       onChange,
       minValue: rest.minValue,
       maxValue: rest.maxValue,
-      isRequired: rest.isRequired,
+      isRequired: required,
     });
   const { container, findDialog } = useDialogContainer();
   return (
     <I18nProvider locale={LOCALE}>
       <AriaDatePicker<CalendarDate>
-        {...rest}
+        {...definedProps(rest)}
+        {...fieldFlags(disabled, required)}
         ref={findDialog}
         value={inner}
         onChange={setInner}
         validate={validate}
-        {...forcedInvalid({ impossible, isInvalid: invalidProp, error })}
+        {...forcedInvalid({ impossible, error })}
         granularity="day"
         shouldForceLeadingZeros
         className="flex flex-col gap-1.5"
@@ -108,7 +119,7 @@ export function CalendarDateField({
         {({ isInvalid }) => (
           <>
             {label ? <Label className={labelClass}>{label}</Label> : null}
-            <Group className={(state) => cx(frameClass(state), "gap-1", PICKER_SIZE[size].frame)}>
+            <Group className={(state) => cx(frameClass(state), frame)}>
               <div className="contents" onBlurCapture={onBlurCapture}>
                 <PickerInput leaving={leaving} onLeft={onLeft}>
                   <DateInput className="flex flex-1">
@@ -125,15 +136,9 @@ export function CalendarDateField({
                 {calendarIcon}
               </Button>
             </Group>
-            <ShownInput name={name} shown={shown} isDisabled={rest.isDisabled} />
-            <Notes
-              description={description}
-              errorMessage={errorMessage}
-              error={error}
-              impossible={impossible}
-              isInvalid={isInvalid}
-            />
-            <CalendarPopover container={container} />
+            <ShownInput name={name} shown={shown} isDisabled={disabled} />
+            <Notes hint={hint} error={error} impossible={impossible} isInvalid={isInvalid} />
+            <CalendarPopover container={container} labels={labels} />
           </>
         )}
       </AriaDatePicker>

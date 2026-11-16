@@ -1,0 +1,3 @@
+import { groupByEpic } from "@hackcove/ui-react";
+
+export const groups = groupByEpic(items, (i) => i.epic);

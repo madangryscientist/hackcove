@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { CardBar, CardHeader, CardHeading, CardIcon, CardInset } from "./CardParts.js";
 import { cx } from "./cx.js";
+import type { HeadingLevel } from "./headingLevel.js";
 import type { IconName } from "./icons.js";
 import type { Size } from "./size.js";
 
@@ -11,7 +12,6 @@ export const BODY_PAD: Record<Size, string> = { sm: "p-3", md: "p-5", lg: "p-6" 
 type BodyForm = {
   flush: boolean;
   bar: boolean;
-  dashed: boolean;
   icon: IconName | undefined;
   fill: boolean;
   footer: boolean;
@@ -21,6 +21,7 @@ type BodyForm = {
 type BodyParts = {
   title: string | undefined;
   titleStyle: "overline" | "name" | undefined;
+  level: HeadingLevel;
   count: number | undefined;
   status: ReactNode;
   actions: ReactNode;
@@ -30,7 +31,7 @@ type BodyParts = {
 };
 
 function insetBand(form: BodyForm, inset: ReactNode): ReactNode {
-  if (!inset || form.dashed) return null;
+  if (!inset) return null;
   return (
     <CardInset size={form.size} bleed={!form.flush}>
       {inset}
@@ -67,6 +68,7 @@ export function cardBody(form: BodyForm, parts: BodyParts): ReactNode {
       id={parts.headingId}
       title={parts.title}
       titleStyle={parts.titleStyle}
+      level={parts.level}
       count={parts.count}
       status={parts.status}
       bar={form.bar}

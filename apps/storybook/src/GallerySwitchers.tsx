@@ -23,7 +23,6 @@ export function GallerySwitchers() {
       />
       <Text role="tabpanel">Showing {tab}.</Text>
       <Tabs
-        variant="pill"
         label="Assets"
         items={[
           { value: "shots", label: "Shots", count: 12 },

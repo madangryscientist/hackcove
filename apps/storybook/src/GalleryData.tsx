@@ -4,6 +4,7 @@ import {
   Callout,
   Caption,
   Card,
+  EmptyState,
   ListRow,
   Pill,
   TextLink,
@@ -47,7 +48,7 @@ function GalleryCalloutActions() {
   );
 }
 
-/** The Card variants (flush, header bar, dashed, dashed filled, dense, toned), the Callout actions (info and danger), banner and link, the ListRow set (a dense row and a compact bordered list of `static` `size="sm"` rows, a static row with leading, selected and hover actions), a SortableList with an empty section, a link Card, a Table with a stretched row link and toned rows, a Table with a group row, cell tones, a truncated cell and a totals foot, a plain Table with a second-line cell and an `srLabel` actions column and a Timeline. */
+/** The Card variants (flush, header bar, dense, toned), a standalone EmptyState, the Callout actions (info and danger), banner and link, the ListRow set (a dense row and a compact bordered list of `size="sm"` rows with no action, a row with leading, selected and hover actions), a SortableList with an empty section, a link Card, a Table with a stretched row link and toned rows, a Table with a group row, cell tones, a truncated cell and a totals foot, a Table in a Card (plain) with a second-line cell and a `label` actions column and a Timeline. */
 export function GalleryData() {
   return (
     <div className="flex flex-col gap-4">
@@ -78,7 +79,7 @@ export function GalleryData() {
           </ListRow>
         </div>
       </Card>
-      <Card title="PixelSlash" status={<Pill tone="amber">Coming soon</Pill>}>
+      <Card title="PixelSlash" status={<Pill tone="warn">Coming soon</Pill>}>
         Status beside the title.
       </Card>
       <Card size="sm" tone="positive" title="Forecast">
@@ -86,7 +87,7 @@ export function GalleryData() {
       </Card>
       <Card tone="warn">A toned data panel.</Card>
       <InsetAndNested />
-      <Card href="#shot" title="Dashboard" status={<Pill tone="amber">changed</Pill>}>
+      <Card href="#shot" title="Dashboard" status={<Pill tone="warn">changed</Pill>}>
         A card that is one link.
       </Card>
       <Callout
@@ -102,8 +103,9 @@ export function GalleryData() {
       <DenseRows />
       <GalleryStaticRows />
       <GallerySortableList />
-      <Card dashed>No statements yet.</Card>
-      <Card dashed="filled">No quotes yet.</Card>
+      <EmptyState title="No statements yet" icon="page">
+        <Text>Import a statement to get started.</Text>
+      </EmptyState>
       <Callout tone="positive" title="Callout align" align="center">
         Centred, as a success state.
       </Callout>
@@ -112,12 +114,12 @@ export function GalleryData() {
       <Timeline label="Status history">
         <TimelineItem
           tone="positive"
-          title={<Pill tone="emerald">accepted</Pill>}
+          title={<Pill tone="positive">accepted</Pill>}
           time="12 Oct 2026, 09:14"
         >
           Client confirmed by phone.
         </TimelineItem>
-        <TimelineItem title={<Pill tone="amber">sent</Pill>} time="10 Oct 2026, 16:02" />
+        <TimelineItem title={<Pill tone="warn">sent</Pill>} time="10 Oct 2026, 16:02" />
       </Timeline>
     </div>
   );
@@ -127,11 +129,10 @@ export function GalleryData() {
 function GalleryStaticRows() {
   return (
     <Card flush>
-      <ListRow static selected leading={<Avatar name="Ada Lovelace" size="sm" />} trailing="admin">
+      <ListRow selected leading={<Avatar name="Ada Lovelace" size="sm" />} trailing="admin">
         Selected static row
       </ListRow>
       <ListRow
-        static
         divided
         revealOnHover
         leading={<Avatar name="Grace Hopper" size="sm" />}
@@ -147,10 +148,10 @@ function GalleryStaticRows() {
         href="#dashboard"
         leadingWidth="thumbnail"
         leading={<img alt="" src={samplePhoto} />}
-        trailing={<Pill tone="amber">changed</Pill>}
+        trailing={<Pill tone="warn">changed</Pill>}
       >
-        <Text as="p">Thumbnail row</Text>
-        <Caption as="p">A block label under the title.</Caption>
+        <Text>Thumbnail row</Text>
+        <Caption>A block label under the title.</Caption>
       </ListRow>
     </Card>
   );
@@ -170,12 +171,12 @@ function GalleryTables() {
 
 function QuotesTable() {
   return (
-    <Table caption="Quotes">
+    <Table label="Quotes">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Reference</TableHeaderCell>
           <TableHeaderCell>Client</TableHeaderCell>
-          <TableHeaderCell align="end">Premium</TableHeaderCell>
+          <TableHeaderCell numeric>Premium</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -186,9 +187,7 @@ function QuotesTable() {
             </TextLink>
           </TableCell>
           <TableCell tone="strong">Naledi Dlamini</TableCell>
-          <TableCell align="end" numeric>
-            R 1 249.00
-          </TableCell>
+          <TableCell numeric>R 1 249.00</TableCell>
         </TableRow>
         <TableRow tone="danger">
           <TableCell mono>
@@ -197,30 +196,22 @@ function QuotesTable() {
             </TextLink>
           </TableCell>
           <TableCell tone="muted">Pieter van Wyk</TableCell>
-          <TableCell align="end" numeric>
-            R 880.50
-          </TableCell>
+          <TableCell numeric>R 880.50</TableCell>
         </TableRow>
         <TableRow tone="warn">
           <TableCell mono>Q-1044</TableCell>
           <TableCell>Thandi Mokoena</TableCell>
-          <TableCell align="end" numeric>
-            R 2 310.00
-          </TableCell>
+          <TableCell numeric>R 2 310.00</TableCell>
         </TableRow>
         <TableRow tone="muted">
           <TableCell mono>Q-1045</TableCell>
           <TableCell>Transfer</TableCell>
-          <TableCell align="end" numeric>
-            R 500.00
-          </TableCell>
+          <TableCell numeric>R 500.00</TableCell>
         </TableRow>
         <TableRow stripe="info">
           <TableCell mono>Q-1046</TableCell>
           <TableCell>Lindiwe Khumalo</TableCell>
-          <TableCell align="end" numeric>
-            R 1 120.00
-          </TableCell>
+          <TableCell numeric>R 1 120.00</TableCell>
         </TableRow>
       </TableBody>
     </Table>
@@ -229,11 +220,11 @@ function QuotesTable() {
 
 function BudgetTable() {
   return (
-    <Table caption="Budget">
+    <Table label="Budget">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Line</TableHeaderCell>
-          <TableHeaderCell align="end">Spent</TableHeaderCell>
+          <TableHeaderCell numeric>Spent</TableHeaderCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -242,13 +233,13 @@ function BudgetTable() {
           <TableCell mono truncate>
             feature/a-branch-name-long-enough-to-be-cut-at-the-cell-width-by-truncate
           </TableCell>
-          <TableCell align="end" numeric tone="positive">
+          <TableCell numeric tone="positive">
             + R 1 200.00
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell>Groceries</TableCell>
-          <TableCell align="end" numeric tone="danger">
+          <TableCell numeric tone="danger">
             - R 4 120.00
           </TableCell>
         </TableRow>
@@ -256,9 +247,7 @@ function BudgetTable() {
       <TableFoot>
         <TableRow>
           <TableCell>Total</TableCell>
-          <TableCell align="end" numeric>
-            - R 2 920.00
-          </TableCell>
+          <TableCell numeric>- R 2 920.00</TableCell>
         </TableRow>
       </TableFoot>
     </Table>
@@ -268,12 +257,12 @@ function BudgetTable() {
 function ClientsCard() {
   return (
     <Card title="Clients">
-      <Table variant="plain" caption="Clients">
+      <Table label="Clients">
         <TableHead>
           <TableRow>
             <TableHeaderCell>Client</TableHeaderCell>
-            <TableHeaderCell align="end">Premium</TableHeaderCell>
-            <TableHeaderCell align="end" srLabel="Actions" />
+            <TableHeaderCell numeric>Premium</TableHeaderCell>
+            <TableHeaderCell align="end" label="Actions" />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -281,9 +270,7 @@ function ClientsCard() {
             <TableCell tone="strong" secondary="Q-1042">
               Naledi Dlamini
             </TableCell>
-            <TableCell align="end" numeric>
-              R 1 249.00
-            </TableCell>
+            <TableCell numeric>R 1 249.00</TableCell>
             <TableCell align="end">
               <Button variant="outline" size="sm">
                 Open
@@ -294,9 +281,7 @@ function ClientsCard() {
         <TableFoot>
           <TableRow>
             <TableCell>Total</TableCell>
-            <TableCell align="end" numeric>
-              R 1 249.00
-            </TableCell>
+            <TableCell numeric>R 1 249.00</TableCell>
             <TableCell>{null}</TableCell>
           </TableRow>
         </TableFoot>

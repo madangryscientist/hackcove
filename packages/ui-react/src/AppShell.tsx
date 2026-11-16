@@ -1,10 +1,11 @@
-import { type HTMLAttributes, type ReactElement, type ReactNode, useState } from "react";
+import { type ReactElement, type ReactNode, useState } from "react";
 import { AppShellMenu } from "./AppShellMenu.js";
 import { ContainerFrame } from "./Container.js";
 import { schemeClass, type ColourScheme, type ColourSchemeClasses } from "./colourScheme.js";
 import { cx, focusRing } from "./cx.js";
-import { type LinkRender, renderLink } from "./link.js";
-import type { Passthrough, Unstyled } from "./props.js";
+import { DensityProvider } from "./density.js";
+import { renderLink } from "./link.js";
+import type { Passthrough } from "./props.js";
 import { useScrollEdges } from "./scrollEdges.js";
 import type { Size } from "./size.js";
 
@@ -28,8 +29,8 @@ const LOGO_BOX: Record<Size, string> = { sm: "size-5", md: "size-6", lg: "size-8
 /**
  * The `brand` slot as one link: a logo and a label inside the same `<a>`, so the whole brand is the
  * way home. The label names the link; the logo is decoration and hidden from assistive tech.
- * `collapse` shows only the logo below `sm`, the label staying in the accessible name. With
- * `render` it draws the app's own router `<Link>` (`render={(p) => <Link to="/" {...p} />}`).
+ * `collapse` shows only the logo below `sm`, the label staying in the accessible name. An in-app
+ * `href` is drawn by the app's router link through `LinkProvider`.
  */
 export function AppShellBrand({
   logo,
@@ -37,11 +38,12 @@ export function AppShellBrand({
   label,
   collapse = false,
   href,
-  render,
   ...rest
 }: Passthrough & {
   /** The name beside the logo. It is the link's accessible name. */
   label: ReactNode;
+  /** Where the brand links, usually the app's home (`/`). */
+  href: string;
   /** The logo slot's box: sm 20px, md 24px (the default, an `Avatar size="sm"`), lg 32px. An `<img>` or `<svg>` logo fills it. */
   logoSize?: Size;
 } & (
@@ -55,25 +57,10 @@ export function AppShellBrand({
         /** Below `sm` only the logo shows; the label is visually hidden and still names the link. Needs a `logo`. */
         collapse: true;
       }
-  ) &
-  (
-    | {
-        /** Where the brand links, usually the app's home (`/`). */
-        href: string;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/" {...p} />`. */
-        render?: LinkRender | undefined;
-      }
-    | {
-        /** Where the brand links, usually the app's home (`/`). */
-        href?: string | undefined;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/" {...p} />`. */
-        render: LinkRender;
-      }
   )): ReactElement {
   return renderLink({
     ...rest,
     href,
-    render,
     className: cx("flex items-center gap-2 rounded", focusRing),
     children: (
       <>
@@ -142,7 +129,7 @@ function ScrollRow({ className, children }: { className: string; children: React
   const [row, setRow] = useState<HTMLElement | null>(null);
   useScrollEdges(row, "x");
   return (
-    <ContainerFrame elementRef={setRow} className={cx(ROW, FADE, className)}>
+    <ContainerFrame ref={setRow} className={cx(ROW, FADE, className)}>
       {children}
     </ContainerFrame>
   );
@@ -251,6 +238,9 @@ function AppShellHeader({
   );
 }
 
+/** The type step an app sets once on its `AppShell`: `compact` is one step down for the whole app. */
+export type AppShellDensity = "compact";
+
 /**
  * The page frame: it paints the page canvas and sets the type face, ink and font smoothing
  * (`antialiased`), so an app writes no page-background or font rule of its own (a theme remaps
@@ -286,13 +276,14 @@ export function AppShell({
   menuLabel = "Menu",
   footer,
   bleed = false,
-  hideChromeInPrint = false,
+  printChrome = true,
+  density,
   children,
   ...rest
 }: {
   /** The brand: a logo and a name, in the header's brand type, with the gap between them. `AppShellBrand` makes both one link. */
   brand?: ReactNode;
-  /** The main navigation, e.g. a `Tabs variant="pill"` of links (it is already a `<nav>`). Below `md` it is in the menu. */
+  /** The main navigation, e.g. a `Tabs` of links (it is already a `<nav>`). Below `md` it is in the menu. */
   nav?: ReactNode;
   /** The end of the row: a picker, a theme toggle. Gap-2, vertically centred; no child shrinks, and a full-width control (a `Select` at its default) sizes to its content. */
   controls?: ReactNode;
@@ -305,7 +296,7 @@ export function AppShell({
   menuControls?: ReactNode;
   /** The escape hatch: a free node in the header row, after `brand` and `nav`. */
   header?: ReactNode;
-  /** A second fixed-height row under the header from `md`, e.g. a `Tabs variant="pill"` of links. Below `md` it is in the menu with `nav`. */
+  /** A second fixed-height row under the header from `md`, e.g. a `Tabs` of links. Below `md` it is in the menu with `nav`. */
   subnav?: ReactNode;
   /**
    * The phone menu button's name, for an app in another language. Only drawn below `md`, and only
@@ -313,53 +304,62 @@ export function AppShell({
    * @default Menu
    */
   menuLabel?: string;
-  /** The page footer: small muted text in a `Container`, under a hairline. Hidden in print with `hideChromeInPrint`. */
+  /** The page footer: small muted text in a `Container`, under a hairline. Hidden in print with `printChrome={false}`. */
   footer?: ReactNode;
   /** Main without a Container, for a full-bleed layout. */
   bleed?: boolean;
   /**
-   * Print only the page: the header and footer are hidden, and main's Container drops its padding
-   * (the page margin is then `@page`'s). Off by default, so a print is unchanged unless an app asks.
+   * Whether a print shows the header and footer. `false` prints only the page: the header and
+   * footer are hidden, and main's Container drops its padding (the page margin is then `@page`'s).
+   * @default true
    */
-  hideChromeInPrint?: boolean;
+  printChrome?: boolean;
+  /**
+   * The app's type step, set once here and nowhere else: `compact` sets text, headings and controls
+   * one step down everywhere inside, for an app's dense chrome. Left out, text is 16px, as a site's.
+   */
+  density?: AppShellDensity | undefined;
   children: ReactNode;
-} & Unstyled<Omit<HTMLAttributes<HTMLDivElement>, "children">>): ReactElement {
+} & Passthrough): ReactElement {
+  const hideChromeInPrint = !printChrome;
   return (
-    <div
-      {...rest}
-      className={cx(
-        "flex min-h-dvh flex-col bg-gray-50 font-sans text-slate-900 antialiased",
-        // The sticky header's height (its rows and the bottom border), for a bar that sticks under it.
-        // Below `md` it is one row whatever the slots are: the subnav is in the menu.
-        "[--app-header:calc(3.5rem+1px)]",
-        subnav ? "md:[--app-header:calc(6.5rem+1px)]" : undefined,
-      )}
-    >
-      <AppShellHeader
-        brand={brand}
-        nav={nav}
-        controls={controls}
-        menuControls={menuControls}
-        subnav={subnav}
-        menuLabel={menuLabel}
-        hideChromeInPrint={hideChromeInPrint}
-      >
-        {header}
-      </AppShellHeader>
-      <main className="flex flex-1 flex-col">
-        {bleed ? (
-          children
-        ) : (
-          <ContainerFrame className={cx("py-8", hideChromeInPrint && "print:p-0")}>
-            {children}
-          </ContainerFrame>
+    <DensityProvider type={density}>
+      <div
+        {...rest}
+        className={cx(
+          "flex min-h-dvh flex-col bg-gray-50 font-sans text-slate-900 antialiased",
+          // The sticky header's height (its rows and the bottom border), for a bar that sticks under it.
+          // Below `md` it is one row whatever the slots are: the subnav is in the menu.
+          "[--app-header:calc(3.5rem+1px)]",
+          subnav ? "md:[--app-header:calc(6.5rem+1px)]" : undefined,
         )}
-      </main>
-      {footer && (
-        <footer className={cx("border-t border-slate-200", hideChromeInPrint && "print:hidden")}>
-          <ContainerFrame className="py-6 text-sm text-slate-500">{footer}</ContainerFrame>
-        </footer>
-      )}
-    </div>
+      >
+        <AppShellHeader
+          brand={brand}
+          nav={nav}
+          controls={controls}
+          menuControls={menuControls}
+          subnav={subnav}
+          menuLabel={menuLabel}
+          hideChromeInPrint={hideChromeInPrint}
+        >
+          {header}
+        </AppShellHeader>
+        <main className="flex flex-1 flex-col">
+          {bleed ? (
+            children
+          ) : (
+            <ContainerFrame className={cx("py-8", hideChromeInPrint && "print:p-0")}>
+              {children}
+            </ContainerFrame>
+          )}
+        </main>
+        {footer && (
+          <footer className={cx("border-t border-slate-200", hideChromeInPrint && "print:hidden")}>
+            <ContainerFrame className="py-6 text-sm text-slate-500">{footer}</ContainerFrame>
+          </footer>
+        )}
+      </div>
+    </DensityProvider>
   );
 }

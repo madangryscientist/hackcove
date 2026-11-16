@@ -10,7 +10,7 @@ const writeText = vi.fn<(text: string) => Promise<void>>();
 async function pressCopy(): Promise<void> {
   const person = user();
   Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
-  await person.click(screen.getByRole("button", { name: "copy" }));
+  await person.click(screen.getByRole("button", { name: "Copy" }));
 }
 
 beforeEach(() => {
@@ -58,8 +58,8 @@ describe("the copy button on a code block", () => {
     expect(screen.getByRole("status").textContent).toBe("");
     await pressCopy();
     expect(writeText).toHaveBeenCalledExactlyOnceWith("# note\nbun install");
-    expect(screen.getByRole("button", { name: "copy" })).not.toBeNull();
-    expect(screen.getByRole("status").textContent).toBe("copied");
+    expect(screen.getByRole("button", { name: "Copy" })).not.toBeNull();
+    expect(screen.getByRole("status").textContent).toBe("Copied");
   });
 
   it("announces a second copy again, with new text in the status region", async () => {
@@ -75,7 +75,7 @@ describe("the copy button on a code block", () => {
     observer.disconnect();
     expect(writeText).toHaveBeenCalledTimes(2);
     expect(changes.some((change) => change.addedNodes.length > 0)).toBe(true);
-    expect(status.textContent).toBe("copied");
+    expect(status.textContent).toBe("Copied");
   });
 
   it("copies only the commands of a console block, without the prompt or the output", async () => {
@@ -124,7 +124,7 @@ describe("the copy button on a code block", () => {
     render(<CodeBlock copy>x</CodeBlock>);
     const person = user();
     Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
-    const button = screen.getByRole("button", { name: "copy" });
+    const button = screen.getByRole("button", { name: "Copy" });
     expect(button.getAttribute("type")).toBe("button");
     await person.tab();
     expect(document.activeElement).toBe(button);

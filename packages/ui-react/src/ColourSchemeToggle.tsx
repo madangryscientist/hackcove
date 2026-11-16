@@ -77,14 +77,14 @@ function subscribe(onChange: () => void): () => void {
 const never = (): (() => void) => () => {};
 
 /**
- * A sun/moon button that switches `<html>` between light and dark and remembers the choice. It shows the scheme you would switch to. Pair it with `colourSchemeScript` in `<head>`, unless you pass `schemes` or `initial`: the script knows only the `dark` class and the stored choice, so an app that sets the scheme itself leaves it out.
+ * A sun/moon button that switches `<html>` between light and dark and remembers the choice. It shows the scheme you would switch to. Pair it with `colourSchemeScript` in `<head>`, unless you pass `schemes` or `defaultValue`: the script knows only the `dark` class and the stored choice, so an app that sets the scheme itself leaves it out.
  *
  * An app whose light scheme has a class of its own passes `schemes` (`{ light: "my-light", dark: "dark" }`);
  * the toggle swaps those classes, and `schemeClass` gives the same one for the server to render on `<html>`.
- * An app that knows the scheme on the server (from a cookie) passes it as `initial`, so the server
+ * An app that knows the scheme on the server (from a cookie) passes it as `defaultValue`, so the server
  * markup, the hydrating client and the `<html>` class agree; persist a change from `onChange`.
  * The icon and the button's accessible name follow the class on `<html>` through CSS (the name is
- * two visually hidden "Switch to …" spans, one hidden by `display:none`), so even without `initial`
+ * two visually hidden "Switch to …" spans, one hidden by `display:none`), so even without `defaultValue`
  * a dark page shows the sun and is named "Switch to light theme" from the first frame, with no
  * script. Only the tooltip catches up once the client has hydrated.
  * `store={false}` skips `localStorage`, for an app that keeps the choice in a server cookie and
@@ -93,7 +93,7 @@ const never = (): (() => void) => () => {};
 export function ColourSchemeToggle({
   onChange,
   schemes = { light: "", dark: "dark" },
-  initial,
+  defaultValue,
   store = true,
   size = "md",
   ...rest
@@ -111,7 +111,7 @@ export function ColourSchemeToggle({
    * The scheme the server rendered. What the server and the hydrating client show; the real state follows right after.
    * @default light
    */
-  initial?: ColourScheme | undefined;
+  defaultValue?: ColourScheme | undefined;
   /** Remember the choice in `localStorage`. `false` leaves persisting to `onChange`. */
   store?: boolean | undefined;
 } & Unstyled<
@@ -123,7 +123,7 @@ export function ColourSchemeToggle({
   const scheme = useSyncExternalStore(
     subscribe,
     () => appliedColourScheme(document.documentElement, schemes),
-    () => initial ?? "light",
+    () => defaultValue ?? "light",
   );
   const hydrated = useSyncExternalStore(
     never,

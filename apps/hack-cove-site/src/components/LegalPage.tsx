@@ -22,14 +22,12 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
       gap="lg"
       breadcrumbs={<TextLink href="/">{site.name}</TextLink>}
       title={doc.title}
-      subtitle={<>Last updated {doc.updated}</>}
+      description={<>Last updated {doc.updated}</>}
     >
       {doc.sections.map((section) => (
         <Section key={section.heading} title={section.heading}>
           {section.paragraphs.map((para) => (
-            <Text key={para} as="p">
-              {para}
-            </Text>
+            <Text key={para}>{para}</Text>
           ))}
         </Section>
       ))}
@@ -37,8 +35,8 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
       <footer className="mt-8">
         <Divider />
         <Stack gap="xs">
-          <Caption as="p">{site.legalName}</Caption>
-          <MetaList nowrap>
+          <Caption>{site.legalName}</Caption>
+          <MetaList>
             <TextLink href={`mailto:${site.contactEmail}`}>{site.contactEmail}</TextLink>
             <TextLink href={other.href}>{other.label}</TextLink>
           </MetaList>

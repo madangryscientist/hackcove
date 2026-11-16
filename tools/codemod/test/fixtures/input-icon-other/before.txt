@@ -1,0 +1,3 @@
+import { Input } from "@hackcove/ui-react";
+
+export const view = <Input aria-label="Search" icon={<Glass />} />;

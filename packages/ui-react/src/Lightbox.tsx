@@ -66,6 +66,21 @@ export type LightboxProps = {
   onPrevious?: (() => void) | undefined;
   /** Shows a next button and binds ArrowRight. Leave it out at the last item. */
   onNext?: (() => void) | undefined;
+  /**
+   * The close button's name, for an app in another language.
+   * @default Close
+   */
+  closeLabel?: string | undefined;
+  /**
+   * The previous button's name.
+   * @default Previous
+   */
+  previousLabel?: string | undefined;
+  /**
+   * The next button's name.
+   * @default Next
+   */
+  nextLabel?: string | undefined;
 } & Passthrough;
 
 /**
@@ -84,6 +99,9 @@ export function Lightbox({
   onClose,
   onPrevious,
   onNext,
+  closeLabel = "Close",
+  previousLabel = "Previous",
+  nextLabel = "Next",
   ...rest
 }: LightboxProps): ReactElement {
   const dialog = useRef<HTMLDialogElement>(null);
@@ -118,17 +136,17 @@ export function Lightbox({
           {title && <div className="text-sm font-semibold">{title}</div>}
           {meta && <div className="text-xs text-white/70">{meta}</div>}
         </div>
-        <ScrimButton label="Close" path={CLOSE} onClick={close} />
+        <ScrimButton label={closeLabel} path={CLOSE} onClick={close} />
       </header>
       <div data-scrim="" className="flex min-h-0 flex-1 items-center gap-2 px-3">
-        {onPrevious && <ScrimButton label="Previous" path={PREVIOUS} onClick={onPrevious} />}
+        {onPrevious && <ScrimButton label={previousLabel} path={PREVIOUS} onClick={onPrevious} />}
         <div
           data-scrim=""
           className="flex size-full min-w-0 items-center justify-center *:max-h-full *:max-w-full *:object-contain"
         >
           {children}
         </div>
-        {onNext && <ScrimButton label="Next" path={NEXT} onClick={onNext} />}
+        {onNext && <ScrimButton label={nextLabel} path={NEXT} onClick={onNext} />}
       </div>
       <footer data-scrim="" className="flex shrink-0 justify-center px-5 py-4">
         {caption && <p className="max-w-prose text-center text-sm text-white/70">{caption}</p>}

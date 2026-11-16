@@ -1,35 +1,34 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Card, Field, Icon, Input } from "@hackcove/ui-react";
+import { Button, Card, Field, Input } from "@hackcove/ui-react";
+import { CompactApp } from "./typeSteps";
 
 const meta: Meta = { title: "Forms/Input" };
 export default meta;
 type S = StoryObj;
 
-const search = <Icon name="search" />;
-
 export const Default: S = {
   render: () => <Input placeholder="Your name" />,
 };
 export const WithIcon: S = {
-  render: () => <Input type="search" placeholder="Search by name, suburb or tag…" icon={search} />,
+  render: () => <Input type="search" placeholder="Search by name, suburb or tag…" icon="search" />,
 };
 /** Inside a Card (or a ListRow), where a field is lifted above a stretched link, the leading icon still shows, for a plain field and a search field alike. */
 export const IconInCard: S = {
   render: () => (
     <Card title="Filter stores">
       <div className="flex flex-col gap-2">
-        <Input aria-label="Name" placeholder="Name" icon={search} />
+        <Input aria-label="Name" placeholder="Name" icon="search" />
         <Input
           type="search"
           aria-label="Search"
           placeholder="Search by name, suburb or tag…"
-          icon={search}
+          icon="search"
         />
         <Input
           type="search"
           aria-label="Search, filled"
           defaultValue="Thrifty paper"
-          icon={search}
+          icon="search"
         />
       </div>
     </Card>
@@ -43,7 +42,7 @@ export const LongPlaceholder: S = {
         type="search"
         aria-label="Search"
         placeholder="Search by name, suburb or tag…"
-        icon={search}
+        icon="search"
       />
     </div>
   ),
@@ -62,7 +61,7 @@ export const Small: S = {
   render: () => <Input size="sm" placeholder="Qty" />,
 };
 export const SmallWithIcon: S = {
-  render: () => <Input size="sm" type="search" placeholder="Find…" icon={search} />,
+  render: () => <Input size="sm" type="search" placeholder="Find…" icon="search" />,
 };
 /** A fixed width replaces `w-full`; there is no class to collide with. */
 export const FixedWidths: S = {
@@ -85,7 +84,7 @@ export const AutoWidth: S = {
         type="search"
         aria-label="Find"
         placeholder="Find"
-        icon={search}
+        icon="search"
       />
     </div>
   ),
@@ -101,7 +100,7 @@ export const SearchWithValue: S = {
       aria-label="Search"
       defaultValue="Thrifty paper"
       placeholder="Search by name, suburb or tag…"
-      icon={search}
+      icon="search"
     />
   ),
 };
@@ -165,7 +164,7 @@ export const DoSearch: S = {
       type="search"
       aria-label="Search shops"
       placeholder="Search by name or suburb…"
-      icon={<Icon name="search" />}
+      icon="search"
     />
   ),
 };
@@ -176,32 +175,34 @@ export const DontSearch: S = {
 };
 
 /** `sm`, `md` (the default) and `lg`, plain and with an icon: the heights match a `Button` of the size. */
+const sizes = () => (
+  <div className="flex flex-col gap-2">
+    {(["sm", "md", "lg"] as const).map((size) => (
+      <div key={size} className="flex flex-wrap items-center gap-2">
+        <Input size={size} width="md" placeholder={`Name, ${size}`} aria-label={`Name ${size}`} />
+        <Input
+          size={size}
+          width="md"
+          type="search"
+          placeholder="Find…"
+          icon="search"
+          aria-label={`Find ${size}`}
+        />
+        <Input size={size} width="sm" prefix="R" placeholder="0.00" aria-label={`Amount ${size}`} />
+        <Button size={size}>Save</Button>
+      </div>
+    ))}
+  </div>
+);
+
 export const Sizes: S = {
-  render: () => (
-    <div className="flex flex-col gap-2">
-      {(["sm", "md", "lg"] as const).map((size) => (
-        <div key={size} className="flex flex-wrap items-center gap-2">
-          <Input size={size} width="md" placeholder={`Name, ${size}`} aria-label={`Name ${size}`} />
-          <Input
-            size={size}
-            width="md"
-            type="search"
-            placeholder="Find…"
-            icon={search}
-            aria-label={`Find ${size}`}
-          />
-          <Input
-            size={size}
-            width="sm"
-            prefix="R"
-            placeholder="0.00"
-            aria-label={`Amount ${size}`}
-          />
-          <Button size={size}>Save</Button>
-        </div>
-      ))}
-    </div>
-  ),
+  render: sizes,
+};
+
+/** The same sizes in an app that set `AppShell density="compact"`: each is one type step down. */
+export const SizesCompact: S = {
+  parameters: { layout: "fullscreen" },
+  render: () => <CompactApp>{sizes()}</CompactApp>,
 };
 
 /** In an errored `Field`, every form of the input takes a red edge and is described by the error. */
@@ -212,13 +213,13 @@ export const Invalid: S = {
         <Input defaultValue="A very long display name indeed" />
       </Field>
       <Field label="Shop name" error="Name the shop.">
-        <Input icon={search} />
+        <Input icon="search" />
       </Field>
       <Field label="Price" error="Enter a price above zero.">
         <Input prefix="R" align="end" inputMode="decimal" defaultValue="0.00" />
       </Field>
       <Field label="Search shops" error="Type at least two letters.">
-        <Input type="search" icon={search} defaultValue="a" />
+        <Input type="search" icon="search" defaultValue="a" />
       </Field>
     </div>
   ),

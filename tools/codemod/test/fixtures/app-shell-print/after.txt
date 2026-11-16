@@ -1,0 +1,3 @@
+import { AppShell } from "@hackcove/ui-react";
+
+export const view = <AppShell density="compact" printChrome={false}>x</AppShell>;

@@ -1,0 +1,3 @@
+import { DetailLayout } from "@hackcove/ui-react";
+
+export const view = <DetailLayout aside={info} sticky>x</DetailLayout>;

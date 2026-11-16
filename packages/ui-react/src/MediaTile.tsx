@@ -1,8 +1,9 @@
-import type { ReactElement, ReactNode } from "react";
+import type { MouseEventHandler, ReactElement, ReactNode } from "react";
 import { cx, focusRing } from "./cx.js";
 import { Icon } from "./Icon.js";
 import { IMAGE_WIDTH, Image, type ImageAspect, type ImageWidth } from "./Image.js";
 import { CLOSE } from "./Lightbox.js";
+import { renderLink } from "./link.js";
 import type { Passthrough } from "./props.js";
 
 const PLAY =
@@ -31,24 +32,44 @@ export type MediaTileProps = {
   /** Draws a play mark on the thumbnail: the tile opens a video, not a photo. Say so in `alt` too. */
   video?: boolean | undefined;
   /**
-   * Makes the whole tile one button; open a `Lightbox` from it. Without it the tile is a plain,
-   * non-interactive block.
-   */
-  onClick?: (() => void) | undefined;
-  /**
-   * Adds a round remove button on the picture's top-right corner, named "Remove" and `alt`: a
+   * Adds a round remove button on the picture's top-right corner, named `removeLabel` and `alt`: a
    * photo attached to a form, until it is sent. It is its own button, beside the tile's, so a tile
    * with `onClick` still opens its `Lightbox`.
    */
   onRemove?: (() => void) | undefined;
-} & Passthrough;
+  /**
+   * The remove button's word, before `alt` in its name and alone as its tooltip.
+   * @default Remove
+   */
+  removeLabel?: string | undefined;
+} & Passthrough &
+  (
+    | { onClick?: undefined; href?: undefined; external?: undefined }
+    | {
+        /**
+         * Makes the whole tile one button; open a `Lightbox` from it. Without it (or `href`) the
+         * tile is a plain, non-interactive block.
+         */
+        onClick: MouseEventHandler<HTMLButtonElement>;
+        href?: undefined;
+        external?: undefined;
+      }
+    | {
+        onClick?: undefined;
+        /** Makes the whole tile one link, named as the button form is; an in-app path goes through `LinkProvider`. */
+        href: string;
+        /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
+        external?: boolean | undefined;
+      }
+  );
 
 /**
  * A thumbnail tile: a picture in a fixed shape with an optional label on its bottom edge and a
  * caption under it. With `onClick` the whole tile is one button, which is how a grid or a
  * `ScrollStrip` of media opens each item in a `Lightbox`. The label sits on the same near-black
  * media scrim as the Lightbox, in every theme. The thumbnail is cropped to fill its shape, or with
- * `aspect="natural"` shown whole. `onRemove` adds a remove button for a tile that can be taken back out.
+ * `aspect="natural"` shown whole. With `href` the whole tile is one link instead. `onRemove` adds a
+ * remove button for a tile that can be taken back out.
  */
 export function MediaTile({
   src,
@@ -59,7 +80,10 @@ export function MediaTile({
   width = "md",
   video = false,
   onClick,
+  href,
+  external = false,
   onRemove,
+  removeLabel,
   ...rest
 }: MediaTileProps): ReactElement {
   const body = (
@@ -88,37 +112,73 @@ export function MediaTile({
   );
   // With a remove button the tile fills a wrapper that carries the width and the button's anchor.
   const box = cx("block min-w-0 text-left", onRemove ? "w-full" : IMAGE_WIDTH[width]);
-  const tile = onClick ? (
-    <button
-      {...rest}
-      type="button"
-      onClick={onClick}
-      className={cx(box, "group rounded-lg", focusRing)}
-    >
-      {body}
-    </button>
-  ) : (
-    <div {...rest} className={box}>
-      {body}
-    </div>
-  );
+  const tile = tileOf({ rest, onClick, href, external, className: box, body });
   if (!onRemove) return tile;
   return (
     <div className={cx("relative min-w-0", IMAGE_WIDTH[width])}>
       {tile}
-      <button
-        type="button"
-        aria-label={`Remove ${alt}`}
-        title="Remove"
-        onClick={onRemove}
-        className="absolute top-1 right-1 inline-flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/90 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-      >
-        <Icon>
-          <svg viewBox="0 0 20 20" fill="currentColor">
-            <path d={CLOSE} />
-          </svg>
-        </Icon>
+      <RemoveButton label={removeLabel} alt={alt} onRemove={onRemove} />
+    </div>
+  );
+}
+
+/** The round remove button on a tile's corner, named by its word and the picture's `alt`. */
+function RemoveButton({
+  label = "Remove",
+  alt,
+  onRemove,
+}: {
+  label: string | undefined;
+  alt: string;
+  onRemove: () => void;
+}): ReactElement {
+  return (
+    <button
+      type="button"
+      aria-label={`${label} ${alt}`}
+      title={label}
+      onClick={onRemove}
+      className="absolute top-1 right-1 inline-flex size-8 cursor-pointer items-center justify-center rounded-full bg-black/90 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+    >
+      <Icon>
+        <svg viewBox="0 0 20 20" fill="currentColor">
+          <path d={CLOSE} />
+        </svg>
+      </Icon>
+    </button>
+  );
+}
+
+/** The tile itself: one button, one link, or a plain block. */
+function tileOf({
+  rest,
+  onClick,
+  href,
+  external,
+  className,
+  body,
+}: {
+  rest: Passthrough;
+  onClick: MouseEventHandler<HTMLButtonElement> | undefined;
+  href: string | undefined;
+  external: boolean;
+  className: string;
+  body: ReactNode;
+}): ReactElement {
+  const interactive = cx(className, "group rounded-lg", focusRing);
+  if (href !== undefined) {
+    return renderLink({ ...rest, href, external, className: interactive, children: body });
+  }
+  if (onClick) {
+    return (
+      <button {...rest} type="button" onClick={onClick} className={interactive}>
+        {body}
       </button>
+    );
+  }
+  return (
+    <div {...rest} className={className}>
+      {body}
     </div>
   );
 }

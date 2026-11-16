@@ -50,12 +50,12 @@ export const FillPlain: S = {
       <Card title="Notes" fill>
         <Stack>
           {Array.from({ length: 8 }, (_, i) => (
-            <Text key={i} as="p" color="muted">
+            <Text key={i} tone="muted">
               Shops open at nine on weekdays and close early on Saturdays. Most take cards, a few
               take cash only, and the market stalls change from week to week.
             </Text>
           ))}
-          <Text as="p">
+          <Text>
             Opening hours change over the holidays:{" "}
             <TextLink href="#hours">read the hours</TextLink>.
           </Text>

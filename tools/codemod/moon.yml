@@ -1,0 +1,14 @@
+$schema: "../../.moon/cache/schemas/project.json"
+
+# The 0.10 to 0.11 codemod (packages/ui-react/MIGRATING.md). Each task runs the package.json script
+# of its name. The fixtures under test/fixtures are plain text, read by the test.
+tasks:
+  typecheck:
+    command: "bun run typecheck"
+    inputs: ["**/*"]
+  lint:
+    command: "bun run lint"
+    inputs: ["**/*"]
+  test:
+    command: "bun run test"
+    inputs: ["**/*"]

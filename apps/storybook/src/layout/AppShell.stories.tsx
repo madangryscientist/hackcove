@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
+  AppShell,
   AppShellBrand,
+  Caption,
+  LinkProvider,
   AppShellHideBelow,
   Avatar,
   Button,
@@ -26,13 +29,12 @@ type S = StoryObj;
 
 const subnav = (
   <Tabs
-    variant="pill"
     label="Project"
     items={["Latest", "Branches", "Baselines", "Flaky", "Ignore boxes", "Audit"].map(
       (label, i) => ({
         label,
         href: `#${label}`,
-        active: i === 0,
+        selected: i === 0,
       }),
     )}
   />
@@ -42,7 +44,7 @@ const subnav = (
 export const LongPage: S = {
   render: () => (
     <DemoShell subnav={subnav} footer="Hack Cove · MIT">
-      <PageHeader title="Builds" subtitle="Every build of every branch." />
+      <PageHeader title="Builds" description="Every build of every branch." />
       <Stack>
         {Array.from({ length: 12 }, (_, i) => (
           <Card key={i} title={`Build ${12 - i}`}>
@@ -59,7 +61,7 @@ export const ShortPage: S = {
   render: () => (
     <DemoShell>
       <PageHeader title="About" />
-      <Text as="p">One short paragraph.</Text>
+      <Text>One short paragraph.</Text>
     </DemoShell>
   ),
 };
@@ -72,9 +74,9 @@ export const ShortPage: S = {
 export const ThemeCanvas: S = {
   render: () => (
     <DemoShell>
-      <PageHeader title="Canvas" subtitle="The page behind the cards." />
+      <PageHeader title="Canvas" description="The page behind the cards." />
       <Card title="On the canvas">
-        <Text as="p">
+        <Text>
           Body text in the theme's sans face, and <Code>mono_in_the_theme_face</Code> beside it.
         </Text>
       </Card>
@@ -94,6 +96,10 @@ const personal = [
   "Travel",
   "Health",
   "Journal",
+  "Contacts",
+  "Photos",
+  "Files",
+  "Goals",
   "Settings",
 ];
 
@@ -107,13 +113,12 @@ export const OverflowingSubnav: S = {
     <DemoShell
       subnav={
         <Tabs
-          variant="pill"
           label="Personal"
-          items={personal.map((label, i) => ({ label, href: `#${label}`, active: i === 0 }))}
+          items={personal.map((label, i) => ({ label, href: `#${label}`, selected: i === 0 }))}
         />
       }
     >
-      <PageHeader title="Personal" subtitle="Too wide for one row; the row fades at its edge." />
+      <PageHeader title="Personal" description="Too wide for one row; the row fades at its edge." />
     </DemoShell>
   ),
 };
@@ -129,8 +134,8 @@ export const PhoneMenu: S = {
   globals: { viewport: { value: "phone", isRotated: false } },
   render: () => (
     <DemoShell subnav={subnav} controls={<ColourSchemeToggle />}>
-      <PageHeader title="Phone menu" subtitle="Nav and subnav behind one button." />
-      <Text as="p">The header is the same height on every page.</Text>
+      <PageHeader title="Phone menu" description="Nav and subnav behind one button." />
+      <Text>The header is the same height on every page.</Text>
     </DemoShell>
   ),
 };
@@ -140,48 +145,48 @@ export const MenuLabel: S = {
   globals: { viewport: { value: "phone", isRotated: false } },
   render: () => (
     <DemoShell subnav={subnav} menuLabel="Navigatie">
-      <PageHeader title="Menu label" subtitle="The button reads Navigatie." />
+      <PageHeader title="Menu label" description="The button reads Navigatie." />
     </DemoShell>
   ),
 };
 
+const advisers = [
+  { value: "a", label: "Ada Lovelace" },
+  { value: "b", label: "Grace Hopper" },
+];
+
 /**
  * The three header slots, none with a wrapper or `className` from the app: `brand` is the logo and
- * name at the brand type with the logo gap, `nav` is a `Tabs variant="pill"` of links, and `controls` sits at the end of
- * the row, gap-2 and vertically centred. No child of `controls` shrinks, and the `Select` at its
- * default `width="full"` sizes to its content, so the toggle keeps its square.
+ * name at the brand type with the logo gap, `nav` is a `Tabs` of links, and `controls` sits at the end of
+ * the row, gap-2 and vertically centred. No child of `controls` shrinks, and the `Select` sizes to
+ * its content, so the toggle keeps its square.
  */
 export const HeaderSlots: S = {
   render: () => (
     <DemoShell
       controls={
         <>
-          <Select aria-label="Adviser" defaultValue="a">
-            <option value="a">Ada Lovelace</option>
-            <option value="b">Grace Hopper</option>
-          </Select>
+          <Select aria-label="Adviser" defaultValue="a" items={advisers} />
           <ColourSchemeToggle />
         </>
       }
     >
-      <PageHeader title="Header slots" subtitle="Brand, nav and controls." />
+      <PageHeader title="Header slots" description="Brand, nav and controls." />
     </DemoShell>
   ),
 };
 
-const projectPicker = (
-  <Select aria-label="Project" defaultValue="web">
-    <option value="web">Web app</option>
-    <option value="api">API</option>
-  </Select>
+const pick = (label: string, items: { value: string; label: string }[]) => (
+  <Select aria-label={label} defaultValue={items[0]?.value} items={items} />
 );
-
-const environmentPicker = (
-  <Select aria-label="Environment" defaultValue="production">
-    <option value="production">Production</option>
-    <option value="staging">Staging</option>
-  </Select>
-);
+const projectPicker = pick("Project", [
+  { value: "web", label: "Web app" },
+  { value: "api", label: "API" },
+]);
+const environmentPicker = pick("Environment", [
+  { value: "production", label: "Production" },
+  { value: "staging", label: "Staging" },
+]);
 
 /**
  * `menuControls`: pickers and actions that do not fit a phone row. From `md` the two Selects and
@@ -201,7 +206,7 @@ export const MenuControls: S = {
         </>
       }
     >
-      <PageHeader title="Menu controls" subtitle="In the row from md, in the Menu on a phone." />
+      <PageHeader title="Menu controls" description="In the row from md, in the Menu on a phone." />
     </DemoShell>
   ),
 };
@@ -222,7 +227,10 @@ export const CrowdedControls: S = {
         </>
       }
     >
-      <PageHeader title="Crowded controls" subtitle="The Menu button is never the one clipped." />
+      <PageHeader
+        title="Crowded controls"
+        description="The Menu button is never the one clipped."
+      />
     </DemoShell>
   ),
 };
@@ -241,7 +249,7 @@ export const HideBelow: S = {
         </>
       }
     >
-      <PageHeader title="Hide below" subtitle="The viewer chip shows from sm up." />
+      <PageHeader title="Hide below" description="The viewer chip shows from sm up." />
     </DemoShell>
   ),
 };
@@ -252,7 +260,7 @@ export const LinkedBrand: S = {
     <DemoShell
       brand={<AppShellBrand href="#" logo={<Avatar name="Quotes" size="sm" />} label="Quotes" />}
     >
-      <PageHeader title="Linked brand" subtitle="Logo and label are one link." />
+      <PageHeader title="Linked brand" description="Logo and label are one link." />
     </DemoShell>
   ),
 };
@@ -267,7 +275,7 @@ const squareLogo = (
 export const LogoSizes: S = {
   render: () => (
     <DemoShell brand={<AppShellBrand href="#" logoSize="sm" logo={squareLogo} label="Quotes" />}>
-      <PageHeader title="Logo sizes" subtitle="sm in the header; sm, md and lg below." />
+      <PageHeader title="Logo sizes" description="sm in the header; sm, md and lg below." />
       <Stack>
         {(["sm", "md", "lg"] as const).map((size) => (
           <AppShellBrand
@@ -291,37 +299,66 @@ export const CollapsedBrand: S = {
         <AppShellBrand href="#" logo={<Avatar name="Quotes" size="sm" />} label="Quotes" collapse />
       }
     >
-      <PageHeader title="Collapsed brand" subtitle="Logo only below sm." />
+      <PageHeader title="Collapsed brand" description="Logo only below sm." />
     </DemoShell>
   ),
 };
 
-/** The same brand drawn by the app's own router link, through `render` (here a stand-in `<a>`). */
+/** The same brand drawn by the app's own router link, set once on a `LinkProvider` (here a stand-in `<a>`). */
 export const RouterBrand: S = {
   render: () => (
-    <DemoShell
-      brand={
-        <AppShellBrand
-          logo={<Avatar name="Quotes" size="sm" />}
-          label="Quotes"
-          render={(props) => <a {...props} href="#router" data-router="/" />}
-        />
-      }
+    <LinkProvider
+      link={({ href, ...rest }) => <a {...rest} href={`#${href}`} data-router={href} />}
     >
-      <PageHeader title="Router brand" subtitle="Drawn by render, no href of its own." />
+      <DemoShell
+        brand={<AppShellBrand logo={<Avatar name="Quotes" size="sm" />} label="Quotes" href="/" />}
+      >
+        <PageHeader
+          title="Router brand"
+          description="Drawn by the app's router link through LinkProvider."
+        />
+      </DemoShell>
+    </LinkProvider>
+  ),
+};
+
+/**
+ * `printChrome={false}`: on screen nothing changes. On paper the header and footer are gone and main
+ * has no padding, so the page margin is `@page`'s. Try it with Print preview, or emulate print media.
+ */
+export const HiddenInPrint: S = {
+  render: () => (
+    <DemoShell footer="Hack Cove · MIT" printChrome={false}>
+      <PageHeader title="Printed page" description="Only this prints." />
+      <Text>The header and footer above and below are hidden in print.</Text>
     </DemoShell>
   ),
 };
 
 /**
- * `hideChromeInPrint`: on screen nothing changes. On paper the header and footer are gone and main
- * has no padding, so the page margin is `@page`'s. Try it with Print preview, or emulate print media.
+ * `density="compact"`, set once on the shell: text, headings and controls inside are one type step
+ * down, for an app's dense chrome. A site leaves it out and reads at 16px.
  */
-export const HiddenInPrint: S = {
+export const Compact: S = {
   render: () => (
-    <DemoShell footer="Hack Cove · MIT" hideChromeInPrint>
-      <PageHeader title="Printed page" subtitle="Only this prints." />
-      <Text as="p">The header and footer above and below are hidden in print.</Text>
-    </DemoShell>
+    <AppShell
+      density="compact"
+      brand={<span>Hack Cove</span>}
+      nav={
+        <Tabs
+          label="Main"
+          items={[
+            { label: "Builds", href: "#builds", selected: true },
+            { label: "Settings", href: "#settings" },
+          ]}
+        />
+      }
+    >
+      <PageHeader title="Builds" description="Every build of every branch, one step down." />
+      <Card title="Build 12">
+        <Text>Compared against main: 3 changed, 1 new.</Text>
+        <Caption>Started 2 minutes ago</Caption>
+      </Card>
+    </AppShell>
   ),
 };

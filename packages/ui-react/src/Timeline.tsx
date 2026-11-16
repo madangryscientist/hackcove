@@ -1,11 +1,11 @@
 import { Children, type ReactElement, type ReactNode } from "react";
-import type { CalloutTone } from "./Callout.js";
+import type { Tone } from "./tone.js";
 import { cx } from "./cx.js";
 import type { Passthrough } from "./props.js";
 
 // The marker's colour is the tone's text colour, which every theme already remaps, drawn as a
 // solid dot; `neutral` is the ring.
-const DOT: Record<CalloutTone, string> = {
+const DOT: Record<Tone, string> = {
   neutral: "border-slate-300 bg-white",
   info: "border-current bg-current text-blue-700",
   positive: "border-current bg-current text-emerald-700",
@@ -55,7 +55,7 @@ export function TimelineItem({
   /** When, already formatted by the app, small and muted beside the title. */
   time?: ReactNode;
   /** The marker dot's colour. Defaults to `neutral`, a plain ring. Say it in the text too: colour alone says nothing to a screen reader. */
-  tone?: CalloutTone;
+  tone?: Tone;
   children?: ReactNode;
 } & Passthrough): ReactElement {
   return (

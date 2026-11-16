@@ -57,7 +57,7 @@ export function Field({
   error,
   span,
   layout = "column",
-  hideLabel = false,
+  labelHidden = false,
   children,
   ...rest
 }: {
@@ -85,10 +85,10 @@ export function Field({
    * column helps nobody.
    * @default false
    */
-  hideLabel?: boolean | undefined;
+  labelHidden?: boolean | undefined;
   children: ReactNode;
 } & Passthrough): ReactElement {
-  const row = layout === "row" && !hideLabel;
+  const row = layout === "row" && !labelHidden;
   const { control, note } = useFieldNote(htmlFor, hint, error);
   return (
     <div
@@ -101,7 +101,7 @@ export function Field({
       <label
         htmlFor={control.id}
         className={
-          hideLabel
+          labelHidden
             ? "sr-only"
             : cx("text-sm font-medium text-slate-700", row && "min-w-0 wrap-anywhere")
         }

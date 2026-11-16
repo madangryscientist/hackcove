@@ -1,0 +1,3 @@
+import { StackedBar } from "@hackcove/ui-react";
+
+export const view = <StackedBar segments={[{ label: "Rent", value: 3, tone: "info" }]} />;

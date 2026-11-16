@@ -13,19 +13,19 @@ const settle = () => act(async () => {});
 describe("CopyButton", () => {
   it("is named by its label and announces nothing before a click", () => {
     render(<CopyButton text="bun add" />);
-    expect(screen.getByRole("button", { name: "copy" })).not.toBeNull();
+    expect(screen.getByRole("button", { name: "Copy" })).not.toBeNull();
     expect(screen.getByRole("status").textContent).toBe("");
-    expect(screen.getByText("copied").getAttribute("aria-hidden")).toBe("true");
+    expect(screen.getByText("Copied").getAttribute("aria-hidden")).toBe("true");
   });
 
   it("copies its text on a click, announces copied, and keeps its name", async () => {
     const u = user();
     render(<CopyButton text="bun add" />);
-    await u.click(screen.getByRole("button", { name: "copy" }));
+    await u.click(screen.getByRole("button", { name: "Copy" }));
     await settle();
     expect(await navigator.clipboard.readText()).toBe("bun add");
-    expect(screen.getByRole("status").textContent).toBe("copied");
-    expect(screen.getByRole("button", { name: "copy" })).not.toBeNull();
+    expect(screen.getByRole("status").textContent).toBe("Copied");
+    expect(screen.getByRole("button", { name: "Copy" })).not.toBeNull();
   });
 
   it("announces nothing when the clipboard refuses the write", async () => {
@@ -33,7 +33,7 @@ describe("CopyButton", () => {
     const writeText = vi.fn<(text: string) => Promise<void>>(() => Promise.reject(new Error("no")));
     vi.spyOn(navigator.clipboard, "writeText").mockImplementation(writeText);
     render(<CopyButton text="bun add" />);
-    await u.click(screen.getByRole("button", { name: "copy" }));
+    await u.click(screen.getByRole("button", { name: "Copy" }));
     await settle();
     expect(writeText).toHaveBeenCalledExactlyOnceWith("bun add");
     expect(screen.getByRole("status").textContent).toBe("");
@@ -55,7 +55,7 @@ describe("CopyButton", () => {
         <CopyButton text="x" />
       </form>,
     );
-    const button = screen.getByRole("button", { name: "copy" });
+    const button = screen.getByRole("button", { name: "Copy" });
     expect(button.getAttribute("type")).toBe("button");
     await u.click(button);
     expect(onSubmit).not.toHaveBeenCalled();
@@ -65,7 +65,7 @@ describe("CopyButton", () => {
     const u = user();
     const writeText = vi.spyOn(navigator.clipboard, "writeText");
     render(<CopyButton text="x" disabled />);
-    const button = screen.getByRole("button", { name: "copy" });
+    const button = screen.getByRole("button", { name: "Copy" });
     expect(button.hasAttribute("disabled")).toBe(true);
     await u.click(button);
     expect(writeText).not.toHaveBeenCalled();

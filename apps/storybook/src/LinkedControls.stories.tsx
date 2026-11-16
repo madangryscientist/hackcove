@@ -16,13 +16,7 @@ import {
   TableHeaderCell,
   TableRow,
   Text,
-  type LinkRenderProps,
 } from "@hackcove/ui-react";
-
-/** Stands in for a router's <Link to>: takes `to`, spreads the rest on an anchor. */
-function FakeLink({ to, ...rest }: { to: string } & LinkRenderProps) {
-  return <a href={`#${to}`} {...rest} />;
-}
 
 const meta: Meta = { title: "Data/ListRow" };
 export default meta;
@@ -44,7 +38,7 @@ export const ListRowWithControls: S = {
         >
           Grace Hopper
         </ListRow>
-        <ListRow divided href="#ada" trailing={<Pill tone="amber">pending</Pill>}>
+        <ListRow divided href="#ada" trailing={<Pill tone="warn">pending</Pill>}>
           Ada Lovelace
         </ListRow>
       </Card>
@@ -66,11 +60,7 @@ function SelectingRows() {
             selected={selected === shop}
             onClick={() => setSelected(shop)}
             trailing={
-              <Button
-                size="sm"
-                variant="outline"
-                render={(p) => <FakeLink to={`shop-${shop.toLowerCase()}`} {...p} />}
-              >
+              <Button size="sm" variant="outline" href={`/shop-${shop.toLowerCase()}`}>
                 View
               </Button>
             }
@@ -79,14 +69,12 @@ function SelectingRows() {
           </ListRow>
         ))}
       </Card>
-      <Text as="p" color="muted">
-        Selected: {selected ?? "none"}
-      </Text>
+      <Text tone="muted">Selected: {selected ?? "none"}</Text>
     </Stack>
   );
 }
 
-/** A button row can hold a link too: a tap on the row runs its `onClick` (here, selecting the shop), and the "View" link in `trailing` (drawn with `render`, as an app's router link is) sits above the row's button and opens the shop's page on its own. */
+/** A button row can hold a link too: a tap on the row runs its `onClick` (here, selecting the shop), and the "View" link in `trailing` (drawn by the app's router link through `LinkProvider`) sits above the row's button and opens the shop's page on its own. */
 export const ButtonRowWithLink: S = {
   render: () => (
     <div className="max-w-md">
@@ -103,12 +91,12 @@ const quotes = [
 /** A link and a button in a linked table row sit above the row's stretched `TextLink` and take their own click; the rest of the row still follows it. */
 export const TableRowWithControls: S = {
   render: () => (
-    <Table caption="Quotes">
+    <Table label="Quotes">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Reference</TableHeaderCell>
           <TableHeaderCell>Client</TableHeaderCell>
-          <TableHeaderCell align="end" srLabel="Actions" />
+          <TableHeaderCell align="end" label="Actions" />
         </TableRow>
       </TableHead>
       <TableBody>
@@ -138,11 +126,9 @@ export const TableRowWithControls: S = {
 export const CardWithAction: S = {
   render: () => (
     <CardGrid>
-      <Card href="#shot-1" title="Dashboard" status={<Pill tone="amber">changed</Pill>}>
+      <Card href="#shot-1" title="Dashboard" status={<Pill tone="warn">changed</Pill>}>
         <Stack>
-          <Text as="p" color="muted">
-            Open the diff for this shot.
-          </Text>
+          <Text tone="muted">Open the diff for this shot.</Text>
           <TextLink href="#shot-1-history">History</TextLink>
           <Button size="sm" variant="outline">
             Accept

@@ -1,7 +1,7 @@
 import { Badge, Icon, IconButton, Pill, type PillTone } from "@hackcove/ui-react";
 import { iconNames } from "./iconIdeas.js";
 
-const tones: PillTone[] = ["slate", "amber", "emerald", "blue", "red", "violet", "sky"];
+const tones: PillTone[] = ["neutral", "info", "positive", "warn", "danger", "accent"];
 
 const bellIcon = (
   <svg viewBox="0 0 20 20" fill="currentColor" className="size-5">
@@ -9,7 +9,7 @@ const bellIcon = (
   </svg>
 );
 
-/** The Pill and Badge rows of the Gallery: the seven tones plain, with a dot and round, then red counts alone and on an icon, then a link Pill, a button Pill, two-tone `label` Pills, removable Pills and a badged IconButton link and button, then Icon in its sizes (feature included) and tones, then the whole icon set at feature size and small. */
+/** The Pill and Badge rows of the Gallery: the six tones plain, with a dot and round, then red counts alone and on an icon, then a link Pill, a button Pill, two-tone `name` Pills, removable Pills and a badged IconButton link and button, then Icon in its sizes (feature included) and tones, then the whole icon set at feature size and small. */
 export function GalleryPills() {
   return (
     <div className="flex flex-col gap-3">
@@ -40,23 +40,19 @@ export function GalleryPills() {
           <Badge count={120} />
         </div>
         <span className="relative inline-flex">
-          <IconButton label="Alerts">{bellIcon}</IconButton>
+          <IconButton label="Alerts" icon="bell" />
           <Badge count={3} corner />
         </span>
       </div>
       <div className="flex flex-wrap items-center gap-2">
-        <Pill href="#flakes" tone="amber" round>
+        <Pill href="#flakes" tone="warn" round>
           link
         </Pill>
-        <Pill onClick={() => undefined} tone="sky" dot>
+        <Pill onClick={() => undefined} tone="info" dot>
           button
         </Pill>
-        <IconButton href="#alerts" label="Alerts" badge={3}>
-          {bellIcon}
-        </IconButton>
-        <IconButton label="Alerts" variant="ghost" badge={120}>
-          {bellIcon}
-        </IconButton>
+        <IconButton href="#alerts" label="Alerts" count={3} icon="bell" />
+        <IconButton label="Alerts" variant="ghost" count={120} icon="bell" />
       </div>
       <GalleryPillParts />
       <div className="flex flex-wrap items-center gap-3">
@@ -85,33 +81,33 @@ export function GalleryPills() {
   );
 }
 
-/** Two-tone `label` Pills (plain, round, dotted, a link) and removable Pills (plain, on a button, with a label). */
+/** Two-tone `name` Pills (plain, round, dotted, a link) and removable Pills (plain, on a button, with a label). */
 function GalleryPillParts() {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Pill label="Weight">72 kg</Pill>
-      <Pill label="Sleep" tone="sky" round>
+      <Pill name="Weight">72 kg</Pill>
+      <Pill name="Sleep" tone="info" round>
         7 h
       </Pill>
-      <Pill label="Mood" tone="emerald" dot>
+      <Pill name="Mood" tone="positive" dot>
         Good
       </Pill>
-      <Pill label="Pain" tone="red" href="#pain">
+      <Pill name="Pain" tone="danger" href="#pain">
         3 / 10
       </Pill>
-      <Pill onRemove={() => undefined} removeLabel="Remove tag Urgent" tone="amber">
+      <Pill onRemove={() => undefined} removeLabel="Remove tag Urgent" tone="warn">
         Urgent
       </Pill>
       <Pill
         onClick={() => undefined}
         onRemove={() => undefined}
         removeLabel="Remove invoice.pdf"
-        tone="sky"
+        tone="info"
         round
       >
         invoice.pdf
       </Pill>
-      <Pill label="File" onRemove={() => undefined} removeLabel="Remove report.pdf">
+      <Pill name="File" onRemove={() => undefined} removeLabel="Remove report.pdf">
         report.pdf
       </Pill>
     </div>

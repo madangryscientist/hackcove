@@ -11,19 +11,13 @@ export const Icon: S = {
   render: () => (
     <CardGrid columns={3}>
       <Card icon="diff" title="Visual diffs">
-        <Text as="p" color="muted">
-          Every changed pixel, side by side with the approved screenshot.
-        </Text>
+        <Text tone="muted">Every changed pixel, side by side with the approved screenshot.</Text>
       </Card>
-      <Card icon="review" title="Review" status={<Pill tone="emerald">New</Pill>}>
-        <Text as="p" color="muted">
-          Approve or reject each change from the pull request.
-        </Text>
+      <Card icon="review" title="Review" status={<Pill tone="positive">New</Pill>}>
+        <Text tone="muted">Approve or reject each change from the pull request.</Text>
       </Card>
       <Card icon="self-host" title="Self-host">
-        <Text as="p" color="muted">
-          Runs on your own machine; nothing leaves it.
-        </Text>
+        <Text tone="muted">Runs on your own machine; nothing leaves it.</Text>
       </Card>
     </CardGrid>
   ),
@@ -34,19 +28,13 @@ export const IconSizes: S = {
   render: () => (
     <CardGrid columns={3} align="start">
       <Card icon="privacy" title="Privacy" size="sm">
-        <Text as="p" color="muted">
-          Dense.
-        </Text>
+        <Text tone="muted">Dense.</Text>
       </Card>
       <Card icon="ci" title="CI" href="#ci">
-        <Text as="p" color="muted">
-          A link card.
-        </Text>
+        <Text tone="muted">A link card.</Text>
       </Card>
       <Card icon="baseline" title="Baseline" size="lg">
-        <Text as="p" color="muted">
-          Roomy.
-        </Text>
+        <Text tone="muted">Roomy.</Text>
       </Card>
     </CardGrid>
   ),

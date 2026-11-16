@@ -6,7 +6,6 @@ import {
   Card,
   Checkbox,
   DateField,
-  EpicHeader,
   fromISODate,
   Markdown,
   Overline,
@@ -50,6 +49,7 @@ import {
   GalleryNavigationProgress,
   GalleryPageFade,
 } from "./GalleryBlocks";
+import { CompactApp, TypeSpecimen } from "./typeSteps";
 
 /**
  * One slice of the Gallery: a few blocks that sit together on the page. Overview / Gallery and
@@ -76,15 +76,31 @@ export const gallerySections: GallerySection[] = [
         </div>
 
         <div className="flex flex-col gap-2">
-          <Text as="p">
-            Text with a <Text strong>strong run</Text> inside it.
+          <Text>
+            Text with a{" "}
+            <Text as="span" strong>
+              strong run
+            </Text>{" "}
+            inside it.
           </Text>
-          <Caption as="p">Caption: fine print and metadata.</Caption>
+          <Caption>Caption: fine print and metadata.</Caption>
         </div>
       </>
     ),
   },
   { id: "text", title: "Text", render: () => <GalleryText /> },
+  {
+    id: "type-steps",
+    title: "Type steps",
+    render: () => (
+      <div className="flex flex-col gap-6">
+        <TypeSpecimen />
+        <CompactApp>
+          <TypeSpecimen />
+        </CompactApp>
+      </div>
+    ),
+  },
   {
     id: "pills-and-bars",
     title: "Pills and bars",
@@ -103,7 +119,6 @@ export const gallerySections: GallerySection[] = [
       <>
         <Card title="Section" count={3}>
           <div className="flex flex-col gap-4">
-            <EpicHeader color="#cba6f7" label="HC-42 · Voice Inbox" />
             <Markdown md={"## What I did\n- **HC-42** shipped\n- plain item"} />
           </div>
         </Card>
@@ -135,16 +150,19 @@ export const gallerySections: GallerySection[] = [
         <div className="flex max-w-sm flex-col gap-3">
           <GalleryNameField />
           <GalleryNotes />
-          <Select defaultValue={5}>
-            <option value={5}>★★★★★ (5)</option>
-            <option value={4}>★★★★ (4)</option>
-            <option value={3}>★★★ (3)</option>
-            <option value={2}>★★ (2)</option>
-            <option value={1}>★ (1)</option>
-          </Select>
+          <Select
+            defaultValue={5}
+            items={[
+              { value: String(5), label: "★★★★★ (5)" },
+              { value: String(4), label: "★★★★ (4)" },
+              { value: String(3), label: "★★★ (3)" },
+              { value: String(2), label: "★★ (2)" },
+              { value: String(1), label: "★ (1)" },
+            ]}
+          />
           <Checkbox label="Open now" defaultChecked />
           <DateField calendar label="Date of birth" defaultValue={fromISODate("1990-05-17")} />
-          <DateField label="Visited on" description="DD/MM/YYYY" />
+          <DateField label="Visited on" hint="DD/MM/YYYY" />
         </div>
 
         <GalleryForm />
@@ -168,7 +186,7 @@ export const gallerySections: GallerySection[] = [
     render: () => (
       <>
         <Breadcrumbs
-          crumbs={[
+          items={[
             { label: "Org", href: "#org" },
             { label: "Project", href: "#project" },
             "Build",
@@ -240,9 +258,7 @@ export const gallerySections: GallerySection[] = [
       <>
         <GalleryStatusPages />
 
-        <Text as="p" color="muted">
-          nothing here yet
-        </Text>
+        <Text tone="muted">nothing here yet</Text>
       </>
     ),
   },

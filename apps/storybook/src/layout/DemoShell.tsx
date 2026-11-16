@@ -21,7 +21,7 @@ export function DemoShell({
   menuControls,
   footer,
   bleed = false,
-  hideChromeInPrint = false,
+  printChrome = true,
   children,
 }: {
   /** Replaces the default brand link. */
@@ -32,7 +32,7 @@ export function DemoShell({
   menuControls?: ReactNode;
   footer?: ReactNode;
   bleed?: boolean;
-  hideChromeInPrint?: boolean;
+  printChrome?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -46,9 +46,8 @@ export function DemoShell({
       }
       nav={
         <Tabs
-          variant="pill"
           label="Main"
-          items={nav.map((label, index) => ({ label, href: `#${label}`, active: index === 1 }))}
+          items={nav.map((label, index) => ({ label, href: `#${label}`, selected: index === 1 }))}
         />
       }
       controls={controls}
@@ -57,7 +56,7 @@ export function DemoShell({
       {...(menuLabel === undefined ? {} : { menuLabel })}
       footer={footer}
       bleed={bleed}
-      hideChromeInPrint={hideChromeInPrint}
+      printChrome={printChrome}
     >
       {children}
     </AppShell>

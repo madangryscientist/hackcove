@@ -26,7 +26,7 @@ function Install() {
     <Section title={ui.install.title} gap="md">
       {ui.install.steps.map((step) => (
         <Stack key={step.text} gap="xs">
-          <Text as="p">{step.text}</Text>
+          <Text>{step.text}</Text>
           {step.code !== undefined && (
             <CodeBlock
               lines={[step.code].flat()}
@@ -44,8 +44,8 @@ function Install() {
 function Themes() {
   return (
     <Section title={ui.themes.title} gap="md">
-      <Text as="p">{ui.themes.intro}</Text>
-      <Table caption={ui.themes.title}>
+      <Text>{ui.themes.intro}</Text>
+      <Table label={ui.themes.title}>
         <TableHead>
           <TableRow>
             <TableHeaderCell>{ui.themes.themeLabel}</TableHeaderCell>
@@ -70,7 +70,7 @@ function Themes() {
 function Components() {
   return (
     <Section title={ui.components.title} gap="md">
-      <Text as="p">{ui.components.intro}</Text>
+      <Text>{ui.components.intro}</Text>
       <Stack gap="sm">
         {componentSections.map((section) => (
           <Card
@@ -81,8 +81,8 @@ function Components() {
             count={section.pages.length}
           >
             <Stack gap="sm">
-              <Text as="p">{section.description}</Text>
-              <MetaList nowrap>
+              <Text>{section.description}</Text>
+              <MetaList>
                 {section.pages.map((page) => (
                   <TextLink key={page.slug} href={`/ui/${page.slug}/`}>
                     {page.name}
@@ -104,9 +104,7 @@ export function UiPage() {
       <Stack gap="xl">
         <Stack gap="md">
           {ui.intro.map((paragraph) => (
-            <Text as="p" key={paragraph}>
-              {paragraph}
-            </Text>
+            <Text key={paragraph}>{paragraph}</Text>
           ))}
         </Stack>
         <Install />
@@ -119,7 +117,7 @@ export function UiPage() {
           links={ui.docs.links}
         />
         <Section title={ui.links.title}>
-          <MetaList nowrap>
+          <MetaList>
             {ui.links.items.map((link) => (
               <TextLink key={link.href} href={link.href}>
                 {link.label}

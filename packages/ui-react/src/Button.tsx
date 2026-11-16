@@ -1,19 +1,25 @@
-import type { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactElement, ReactNode, Ref } from "react";
 import { cx, focusRing } from "./cx.js";
-import { type LinkRender, renderLink } from "./link.js";
+import { controlText, type TypeStep, useDensity, useTypeStep } from "./density.js";
+import { Icon } from "./Icon.js";
+import type { IconName } from "./icons.js";
+import { renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
+import type { Tone } from "./tone.js";
 
 export type ButtonVariant = "primary" | "outline" | "ghost" | "link" | "dashed";
 export type ButtonSize = Size;
-export type ButtonTone = "default" | "positive" | "danger";
+/** A Button's tones: `neutral` (the accent fill, the default), `positive` and `danger`. */
+export type ButtonTone = Extract<Tone, "neutral" | "positive" | "danger">;
 
 const SHAPE = "inline-flex items-center justify-center rounded-lg border font-medium transition";
-// Size sets the padding and the text. The link variant has no box, so it takes the text size only.
-const SIZE: Record<ButtonSize, { box: string; text: string }> = {
-  sm: { box: "gap-1.5 px-2.5 py-1", text: "text-xs" },
-  md: { box: "gap-2 px-4 py-2", text: "text-sm" },
-  lg: { box: "gap-2 px-5 py-2.5", text: "text-base" },
+// Size sets the padding; the text is `controlText`'s, from the size and the type step. The link
+// variant has no box, so it takes the text size only.
+const BOX: Record<ButtonSize, string> = {
+  sm: "gap-1.5 px-2.5 py-1",
+  md: "gap-2 px-4 py-2",
+  lg: "gap-2 px-5 py-2.5",
 };
 // A plain `disabled` washes out and ignores the pointer. Blocked and busy buttons are disabled too,
 // but they keep pointer events (the title shows, the cursor says why) and do not take this.
@@ -24,7 +30,7 @@ type Look = { color: string; hover: string };
 const LINK = "underline-offset-2";
 
 const TONE: Record<ButtonTone, Record<Exclude<ButtonVariant, "dashed">, Look>> = {
-  default: {
+  neutral: {
     primary: {
       color: "border-violet-600 bg-violet-600 text-violet-50",
       hover: "hover:bg-violet-700",
@@ -105,7 +111,7 @@ const BLOCKED_BY_VARIANT: Partial<Record<ButtonVariant, string>> = {
 const BUSY = "cursor-progress opacity-85";
 
 /** Size, tone and variant: the look of a button, apart from its state. */
-export type ButtonLook = {
+type ButtonLook = {
   /**
    * `primary` is filled, for the one main action; `outline` and `ghost` are quieter; `link` is
    * text with an underline on hover; `dashed` is an "add another" row that fills its container.
@@ -113,26 +119,28 @@ export type ButtonLook = {
    */
   variant?: ButtonVariant | undefined;
   /**
-   * `sm` is compact, for table rows and toolbars; `lg` is larger, for a hero call to action.
+   * `sm` is compact, for table rows and toolbars; `lg` is larger, for a hero call to action. Left
+   * out, a Button takes the size of the `Card`, `ListRow` or `Table` it sits in, else `md`.
    * @default md
    */
   size?: ButtonSize | undefined;
   /**
    * `positive` is green, for accept and approve; `danger` is red, for delete and clear. Not for
    * `dashed`, which has the one look.
-   * @default default
+   * @default neutral
    */
   tone?: ButtonTone | undefined;
+  /** An icon from the `Icon` set before the label, decorative, at the button's size. */
+  icon?: IconName | undefined;
 };
 
-function shape(variant: ButtonVariant, size: ButtonSize): string {
-  const { box, text } = SIZE[size];
+function shape(variant: ButtonVariant, size: ButtonSize, step: TypeStep | undefined): string {
   return cx(
     SHAPE,
-    variant !== "link" && box,
+    variant !== "link" && BOX[size],
     variant === "link" && "gap-1.5",
     variant === "dashed" && "w-full border-dashed",
-    text,
+    controlText(size, step, false),
     focusRing,
   );
 }
@@ -140,28 +148,30 @@ function shape(variant: ButtonVariant, size: ButtonSize): string {
 /** The classes of an idle Button: what `href` draws, and what the tests compare against. */
 export function buttonClass(
   variant: ButtonVariant = "primary",
-  { size = "md", tone = "default" }: Omit<ButtonLook, "variant"> = {},
+  { size = "md", tone = "neutral" }: Omit<ButtonLook, "variant" | "icon"> = {},
+  step?: TypeStep,
 ): string {
-  return idleClass(variant, size, tone);
+  return idleClass(variant, size, tone, { step });
 }
 
 function idleClass(
   variant: ButtonVariant,
   size: ButtonSize,
   tone: ButtonTone,
-  pressed?: boolean,
+  { step, pressed }: { step: TypeStep | undefined; pressed?: boolean | undefined },
 ): string {
   const look = lookOf(variant, tone, pressed);
-  return cx(shape(variant, size), DISABLED_PLAIN, look.color, look.hover);
+  return cx(shape(variant, size, step), DISABLED_PLAIN, look.color, look.hover);
 }
 
 type ButtonAsButton = ButtonLook & {
   /** Why the button cannot be pressed: disables it, sets it as the `title`, and greys it flat. */
   disabledReason?: string | undefined;
-  /** The work is in flight: disabled, `aria-busy`, keeps its colour. Wins over `disabledReason`. */
-  busy?: boolean | undefined;
-  /** The label while `busy`, in place of the children. */
-  busyLabel?: string | undefined;
+  /**
+   * The work is in flight: disabled, `aria-busy`, keeps its colour. Wins over `disabledReason`. A
+   * string is also the label while busy, in place of the children: `busy={saving && "Saving"}`.
+   */
+  busy?: boolean | string | undefined;
   /**
    * A toggle: sets `aria-pressed`. On `outline` and `ghost`, `false` draws the neutral off look
    * and `true` the tone's primary fill, so a row of filter chips shows the selected one plainly.
@@ -175,8 +185,9 @@ type ButtonAsButton = ButtonLook & {
    */
   count?: number | undefined;
   href?: undefined;
-  render?: undefined;
   external?: undefined;
+  /** Reaches the `<button>`, to focus it or measure it. */
+  ref?: Ref<HTMLButtonElement> | undefined;
 } & Unstyled<ComponentPropsWithoutRef<"button">>;
 
 type ButtonAsLink = ButtonLook & {
@@ -184,7 +195,6 @@ type ButtonAsLink = ButtonLook & {
   external?: boolean | undefined;
   disabledReason?: undefined;
   busy?: undefined;
-  busyLabel?: undefined;
   pressed?: undefined;
   /**
    * A small number in a chip after the label: how many are behind the button (the splits a row
@@ -192,26 +202,16 @@ type ButtonAsLink = ButtonLook & {
    * shown. For a button that opens something, also pass `aria-expanded`.
    */
   count?: number | undefined;
-} & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href">> &
-  (
-    | {
-        /** Makes the button a link to this URL. */
-        href: string;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/quotes" {...p} />`. */
-        render?: LinkRender | undefined;
-      }
-    | {
-        /** Makes the button a link to this URL. */
-        href?: string | undefined;
-        /** Draws the link with the app's own router `<Link>`: `(p) => <Link to="/quotes" {...p} />`. */
-        render: LinkRender;
-      }
-  );
+  /** Makes the button a link to this URL; an in-app path goes through the app's `LinkProvider`. */
+  href: string;
+  /** Reaches the `<a>`, to focus it or measure it. */
+  ref?: Ref<HTMLAnchorElement> | undefined;
+} & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href">>;
 
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 function isLink(props: ButtonProps): props is ButtonAsLink {
-  return props.href !== undefined || props.render !== undefined;
+  return props.href !== undefined;
 }
 
 type State = "blocked" | "busy" | "idle";
@@ -224,52 +224,69 @@ function stateOf(busy: boolean, disabledReason: string | undefined): State {
 
 /** The classes of a Button in a given state: blocked swaps the colour out, busy keeps it. */
 function stateClass(
-  { variant = "primary", size = "md", tone = "default" }: ButtonLook,
+  { variant = "primary", size = "md", tone = "neutral" }: ButtonLook,
   state: State,
   pressed: boolean | undefined,
+  step: TypeStep | undefined,
 ): string {
   if (state === "blocked") {
-    return cx(shape(variant, size), BLOCKED_BY_VARIANT[variant] ?? BLOCKED);
+    return cx(shape(variant, size, step), BLOCKED_BY_VARIANT[variant] ?? BLOCKED);
   }
-  if (state === "busy") return cx(shape(variant, size), lookOf(variant, tone, pressed).color, BUSY);
-  return idleClass(variant, size, tone, pressed);
+  if (state === "busy") {
+    return cx(shape(variant, size, step), lookOf(variant, tone, pressed).color, BUSY);
+  }
+  return idleClass(variant, size, tone, { step, pressed });
 }
 
 /**
  * A button in the primary, outline, ghost, link or dashed style (the link has no box: text with an
  * underline on hover, for an in-line action; `dashed` is the full-width "add" row, a dashed
- * outline with muted text that fills its container, with an optional leading icon in the
- * children). `size="sm"` is compact and `size="lg"` larger; `tone="positive"` is green and `tone="danger"` is red;
+ * outline with muted text that fills its container). `icon` puts an `Icon` before the label.
+ * `size="sm"` is compact and `size="lg"` larger, and with no `size` it takes its container's;
+ * `tone="positive"` is green and `tone="danger"` is red;
  * `pressed` makes it a toggle: neutral when off, the tone's fill when on. `count` puts a small
  * number chip after the label; the chip is part of the name, and a button that opens something
  * also takes `aria-expanded`.
  * Defaults to `type="button"`. `disabledReason` and `busy` are the two disabled states that say
- * more than a plain `disabled`, which keeps its half-opacity look. `href` makes it a link instead,
- * with the same look (a plain `<a>`, or with `render` the app's own router `<Link>`:
- * `render={(p) => <Link to="/quotes" {...p} />}`; `external` opens a new tab).
+ * more than a plain `disabled`, which keeps its half-opacity look; `busy="Saving"` also swaps the
+ * label. `ref` reaches the `<button>` or the `<a>`. `href` makes it a link instead,
+ * with the same look (the app's router link through `LinkProvider` for an in-app path, else a plain
+ * `<a>`; `external` opens a new tab).
  */
 export function Button(props: ButtonProps): ReactElement {
   return isLink(props) ? <LinkButton {...props} /> : <PlainButton {...props} />;
 }
 
+/** The icon, the label and the count chip: what a Button holds. */
+function content(icon: IconName | undefined, size: Size, label: ReactNode): ReactNode {
+  if (icon === undefined) return label;
+  return (
+    <>
+      <Icon name={icon} size={size} />
+      {label}
+    </>
+  );
+}
+
 function LinkButton({
   variant = "primary",
-  size = "md",
-  tone = "default",
+  size,
+  tone = "neutral",
+  icon,
   href,
-  render,
   external = false,
   count,
   children,
   ...rest
 }: ButtonAsLink): ReactElement {
+  const drawn = useDensity(size);
+  const step = useTypeStep();
   return renderLink({
     ...rest,
     href,
-    render,
     external,
-    className: buttonClass(variant, { size, tone }),
-    children: withCount(children, count),
+    className: buttonClass(variant, { size: drawn, tone }, step),
+    children: content(icon, drawn, withCount(children, count)),
   });
 }
 
@@ -277,9 +294,9 @@ function PlainButton({
   variant,
   size,
   tone,
+  icon,
   disabledReason,
   busy = false,
-  busyLabel,
   pressed,
   count,
   children,
@@ -287,19 +304,23 @@ function PlainButton({
   disabled,
   ...rest
 }: ButtonAsButton): ReactElement {
-  const state = stateOf(busy, disabledReason);
+  const drawn = useDensity(size);
+  const step = useTypeStep();
+  const working = Boolean(busy);
+  const state = stateOf(working, disabledReason);
   const blocked = state === "blocked";
+  const label = working && typeof busy === "string" ? busy : withCount(children, count);
   return (
     <button
       type="button"
-      className={stateClass({ variant, size, tone }, state, pressed)}
-      disabled={disabled || busy || blocked}
-      aria-busy={busy || undefined}
+      className={stateClass({ variant, size: drawn, tone }, state, pressed, step)}
+      disabled={disabled || working || blocked}
+      aria-busy={working || undefined}
       aria-pressed={pressed}
       title={blocked ? disabledReason : title}
       {...rest}
     >
-      {busy && busyLabel ? busyLabel : withCount(children, count)}
+      {content(icon, drawn, label)}
     </button>
   );
 }

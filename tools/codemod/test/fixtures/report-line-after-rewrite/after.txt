@@ -1,0 +1,8 @@
+import { IconButton, Select } from "@hackcove/ui-react";
+
+export const view = (
+  <>
+    <Select width="full" items={[{ value: "free", label: "Free" }, { value: "team", label: "Team" }]} />
+    <IconButton label="Close">x</IconButton>
+  </>
+);

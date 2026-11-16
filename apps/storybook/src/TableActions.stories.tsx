@@ -13,24 +13,22 @@ const meta: Meta = { title: "Data/Table" };
 export default meta;
 type S = StoryObj;
 
-/** A column with nothing to show in its head (a row's actions) takes `srLabel` in place of children: the name a screen reader hears, visually hidden. */
+/** A column with nothing to show in its head (a row's actions) takes `label` in place of children: the name a screen reader hears, visually hidden. */
 export const ActionsColumn: S = {
   render: () => (
-    <Table caption="Clients">
+    <Table label="Clients">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Client</TableHeaderCell>
-          <TableHeaderCell align="end">Premium</TableHeaderCell>
-          <TableHeaderCell align="end" srLabel="Actions" />
+          <TableHeaderCell numeric>Premium</TableHeaderCell>
+          <TableHeaderCell align="end" label="Actions" />
         </TableRow>
       </TableHead>
       <TableBody>
         {["Naledi Dlamini", "Pieter van Wyk"].map((client) => (
           <TableRow key={client}>
             <TableCell tone="strong">{client}</TableCell>
-            <TableCell align="end" numeric>
-              R 1 249.00
-            </TableCell>
+            <TableCell numeric>R 1 249.00</TableCell>
             <TableCell align="end">
               <Button variant="outline" size="sm">
                 Open
@@ -43,14 +41,14 @@ export const ActionsColumn: S = {
   ),
 };
 
-/** A row's actions get a column of their own whose head has an `srLabel`: the head keeps its column and a screen reader hears "Actions". */
+/** A row's actions get a column of their own whose head has a `label`: the head keeps its column and a screen reader hears "Actions". */
 export const DoActionsColumn: S = {
   render: () => (
-    <Table caption="Clients">
+    <Table label="Clients">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Client</TableHeaderCell>
-          <TableHeaderCell align="end" srLabel="Actions" />
+          <TableHeaderCell align="end" label="Actions" />
         </TableRow>
       </TableHead>
       <TableBody>
@@ -70,7 +68,7 @@ export const DoActionsColumn: S = {
 /** An empty header cell leaves the column with no name, so a screen reader hears a column of unlabelled buttons. */
 export const DontActionsColumn: S = {
   render: () => (
-    <Table caption="Clients">
+    <Table label="Clients">
       <TableHead>
         <TableRow>
           <TableHeaderCell>Client</TableHeaderCell>

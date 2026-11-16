@@ -1,0 +1,3 @@
+import { type PillTone } from "@hackcove/ui-react";
+
+export const tones: PillTone[] = ["neutral", "warn", "info", "info"];

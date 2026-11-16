@@ -9,11 +9,11 @@ export const StatusHistory: S = {
   render: () => (
     <div className="max-w-md">
       <Timeline label="Status history">
-        <TimelineItem title={<Pill tone="emerald">accepted</Pill>} time="12 Oct 2026, 09:14">
+        <TimelineItem title={<Pill tone="positive">accepted</Pill>} time="12 Oct 2026, 09:14">
           Client confirmed by phone.
         </TimelineItem>
-        <TimelineItem title={<Pill tone="amber">sent</Pill>} time="10 Oct 2026, 16:02" />
-        <TimelineItem title={<Pill tone="slate">draft</Pill>} time="10 Oct 2026, 15:40">
+        <TimelineItem title={<Pill tone="warn">sent</Pill>} time="10 Oct 2026, 16:02" />
+        <TimelineItem title={<Pill tone="neutral">draft</Pill>} time="10 Oct 2026, 15:40">
           Created from the intake form.
         </TimelineItem>
       </Timeline>
@@ -55,12 +55,12 @@ export const DoEvents: S = {
     <Timeline label="Status history">
       <TimelineItem
         tone="positive"
-        title={<Pill tone="emerald">accepted</Pill>}
+        title={<Pill tone="positive">accepted</Pill>}
         time="12 Oct 2026, 09:14"
       >
         Client confirmed by phone.
       </TimelineItem>
-      <TimelineItem title={<Pill tone="amber">sent</Pill>} time="10 Oct 2026, 16:02" />
+      <TimelineItem title={<Pill tone="warn">sent</Pill>} time="10 Oct 2026, 16:02" />
     </Timeline>
   ),
 };

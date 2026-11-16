@@ -29,10 +29,9 @@ export const FullPage: S = {
       brand={<a href="#">Hack Cove</a>}
       nav={
         <Tabs
-          variant="pill"
           label="Main"
           items={[
-            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Quotes", href: "#quotes", selected: true },
             { label: "Clients", href: "#clients" },
           ]}
         />
@@ -40,7 +39,7 @@ export const FullPage: S = {
     >
       <FormLayout
         title="New client"
-        subtitle="Who is the quote for?"
+        description="Who is the quote for?"
         onSubmit={(event) => event.preventDefault()}
         actions={
           <>
@@ -77,7 +76,7 @@ export const DoForm: S = {
   render: () => (
     <FormLayout
       title="New client"
-      subtitle="Who is the quote for?"
+      description="Who is the quote for?"
       onSubmit={(event) => event.preventDefault()}
       actions={
         <>
@@ -105,7 +104,7 @@ export const DontForm: S = {
   render: () => (
     <ListLayout
       title="New client"
-      subtitle="Who is the quote for?"
+      description="Who is the quote for?"
       actions={<Button>Save client</Button>}
     >
       <Card title="Client">

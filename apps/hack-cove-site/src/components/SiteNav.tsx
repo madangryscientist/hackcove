@@ -19,7 +19,7 @@ export function SiteNav({ pathname }: { pathname: string }) {
   const items = site.sections.map((section) => ({
     label: section.navLabel,
     href: section.href,
-    active: section === current,
+    selected: section === current,
   }));
-  return <Tabs variant="pill" items={items} label="Sections" />;
+  return <Tabs items={items} label="Sections" />;
 }

@@ -1,0 +1,13 @@
+import { Table, TableBody, TableRow, TableCell, IconButton } from "@hackcove/ui-react";
+
+export const view = (
+  <Table label="Lines">
+    <TableBody>
+      <TableRow>
+        <TableCell>
+          <IconButton label="Edit" icon="edit" size="sm" />
+        </TableCell>
+      </TableRow>
+    </TableBody>
+  </Table>
+);

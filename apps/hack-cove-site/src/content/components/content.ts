@@ -25,49 +25,23 @@ export const content: ComponentSection = {
           "`footer` is a strip across the bottom for the card's own actions or a total; it stays at the foot of a stretched card in a `CardGrid`.",
           '`CardGrid` takes `columns` 2, 3 or 4, `"2:1"` or `"1:2"` for unequal columns, or `columns="auto"` with `minWidth` `sm` or `md` to fill by width; `align="start"` stops cards stretching to the tallest in their row.',
           '`inset` is a band across the card, edge to edge inside its padding, under the title: a `ProgressBar` that runs the card\'s full width. A bordered sub-card inside a card is a nested `Card tone="neutral"`, not a hand-built box.',
-          "`dashed` is the empty state.",
-          '`badge` pins a `Pill` to the top-right corner, over the content, on a panel or a link card: a category (`Pill tone="sky"`) or a flag on the thing itself.',
-          '`attention` draws the strong warn edge round a card that needs a look (a flaky shot, a failing check); add `tone="warn"` for the warn surface too. It does nothing on a `dashed` card.',
-          "`icon` puts one of the library's icons above the title at feature size, in the accent colour: the mark of a feature card. Pick it by the idea it stands for; it is ignored on a `bar`, `flush` or `dashed` card.",
-          "`size` sets the padding: `sm` for a dense dashboard, `md` (default), `lg` for a card that stands alone.",
+          "An empty state is an `EmptyState`, inside the card or on its own, where it draws its own dashed frame.",
+          '`badge` pins a `Pill` to the top-right corner, over the content, on a panel or a link card: a category (`Pill tone="info"`) or a flag on the thing itself.',
+          '`attention` draws the strong warn edge round a card that needs a look (a flaky shot, a failing check); add `tone="warn"` for the warn surface too.',
+          "`icon` puts one of the library's icons above the title at feature size, in the accent colour: the mark of a feature card. Pick it by the idea it stands for; it is ignored on a `bar` or `flush` card.",
+          "`size` sets the padding: `sm` for a dense dashboard, `md` (default), `lg` for a card that stands alone. In a `sm` card a `Button`, `IconButton` or `Pill` with no `size` is `sm` too, and a `Stack` inside any card is `xs` apart.",
           "A Card with an `id` is an anchor target: a link to `#id` scrolls it clear of the sticky header and outlines it in violet while it is the target.",
           "`fill` makes a card take its parent's full height, for a panel in a fixed-height layout such as a sheet over a map; the title or bar stays put and the body scrolls. Give the parent a height. Put links or controls in the body, so a keyboard can reach and scroll it.",
         ],
       },
       accessibility: [
-        "A Card is a `<section>` by default and its `title` names it (`aria-labelledby` points at the heading); `as` picks another element, e.g. `article`. Your own `aria-label` or `aria-labelledby` wins.",
+        'A titled Card is a `<section>` named by its `title` (`aria-labelledby` points at the heading), a card with only an `aria-label` a `<section>` named by it, and any other a `<div>`; `as="article"` makes it an `article`. Your own `aria-label` or `aria-labelledby` wins. The title is an `h2` on the page and an `h3` in a `Section`; `level` sets it by hand.',
         "`id`, `data-*` and `aria-*` go on the root element. On a link card too: the link inside it keeps only its own `aria-label`, `aria-labelledby` and `aria-current`, and is named by the card's text.",
         "On a link card the `badge` is inside the link, so it is part of the link's name; on a panel it is read after the content.",
         "`attention` is colour only: say why in the card's title or text.",
         "The `icon` is decorative and `aria-hidden`: the title says what the card is.",
       ],
       api: ["Card"],
-    },
-    {
-      slug: "epic-header",
-      name: "EpicHeader",
-      summary: "A row that heads a group of work with a dot in its epic's colour and its label.",
-      whenToUse: "Heading a group of tasks that share an epic, in a list grouped by `groupByEpic`.",
-      pairs: ["ui/EpicGroups"],
-      usage: {
-        do: [
-          "Group the items with `groupByEpic(items, (item) => item.epic)` and put one `EpicHeader` over each group.",
-          "`color` is the epic's own colour, a CSS colour from your data; `label` is the epic's name. The no-epic group has a `null` key: give it a label such as \"No epic\".",
-          "`EpicHeader` is a row of data, not a heading. Title a section with `SectionHeading` or a `Card` `title`.",
-        ],
-      },
-      accessibility: [
-        "The dot is decoration with no text alternative; the `label` carries the meaning, so the colour is never the only signal.",
-        "The row is a `<div>`, not a heading element, so it does not appear in a screen reader's heading outline.",
-        "`aria-*` and `data-*` props go on the root element.",
-      ],
-      api: ["EpicHeader"],
-      functions: [
-        {
-          name: "groupByEpic",
-          text: "Groups items by their epic ref, real epics first in ref order and the items with no epic (`null`) last; returns `[epic, items][]` to map over.",
-        },
-      ],
     },
     {
       slug: "avatar",
@@ -94,16 +68,6 @@ export const content: ComponentSection = {
         "`aria-*` and `data-*` props go on the root element.",
       ],
       api: ["Avatar"],
-      functions: [
-        {
-          name: "initialsOf",
-          text: "The up to two letters or digits of a name, upper-cased, or `?` when it has none: the same initials `Avatar` draws, for where you need them as text.",
-        },
-        {
-          name: "avatarColourClass",
-          text: "The background class `Avatar` picks for a name, so the same name always gets the same colour. `Avatar` applies it for you; pass `name` to `Avatar` instead of using it.",
-        },
-      ],
     },
     {
       slug: "avatar-stack",
@@ -114,7 +78,7 @@ export const content: ComponentSection = {
       pairs: ["AvatarStack/Max"],
       usage: {
         do: [
-          "Pass `people`, each with the full `name` and an optional local `src`, as for `Avatar`.",
+          "Pass `items`, each with the full `name` and an optional local `src`, as for `Avatar`.",
           "Each avatar overlaps the one before it, in a ring in the page colour that keeps them apart. Draw no ring or overlap of your own.",
           '`max` shows the first `max` and a "+N" chip of the same size and shape for the rest; leave it off to show everyone.',
           "`size` and `shape` are `Avatar`'s and apply to every avatar and the chip: `square` for a stack of orgs or teams.",
@@ -135,7 +99,7 @@ export const content: ComponentSection = {
       pairs: ["Badge/OnIcon", "Badge/Count"],
       usage: {
         do: [
-          "On an icon, give the `IconButton` a `badge` count; it pins the Badge to the corner and puts the count in the button's name.",
+          "On an icon, give the `IconButton` a `count`; it pins the Badge to the corner and puts the count in the button's name.",
           "A `count` above 99 reads `99+`.",
           "Show a Badge only when there is something to count: a `count` of 0 still draws a `0`, so leave it out instead.",
           "A tinted label with words in it is a `Pill`, not a Badge.",
@@ -156,11 +120,12 @@ export const content: ComponentSection = {
       pairs: ["Pill/Status", "Pill/Link"],
       usage: {
         do: [
-          "Choose `tone` by meaning: `emerald` for done or good, `amber` for waiting or at risk, `red` for failed, `slate` for neutral or draft; `blue`, `sky` and `violet` for kinds and categories.",
+          "Choose `tone` by meaning: `positive` for done or good, `warn` for waiting or at risk, `danger` for failed, `neutral` (the default) for a draft or no state, `info` for a note; `accent` for a kind or category that is none of those.",
+          "`size` is `sm`, `md` (default) or `lg`; with none, a Pill takes the size of the `Card`, `ListRow` or `Table` it sits in.",
           "`dot` adds a leading dot in the Pill's colour; `round` swaps the rounded-square corners for a full pill shape. Use one look across a view.",
-          '`label` makes a two-tone `label: value` pill (`<Pill label="Weight">72 kg</Pill>`): the label keeps the tone\'s tint and the children sit on the surface beside it. Keep the label to a word or two.',
+          '`name` makes a two-tone `name: value` pill (`<Pill name="Weight">72 kg</Pill>`): the name keeps the tone\'s tint and the children sit on the surface beside it. Keep the name to a word or two.',
           "`onRemove` adds an x button after the text, for a chip the reader can drop (an attachment, a filter); `removeLabel` names it (`Remove invoice.pdf`) and is required with it. On a link or button Pill the x is a separate button beside it, never nested inside.",
-          "A Pill that goes somewhere takes `href` (or `render` for your router's `Link`, `external` for a new tab); one that does something takes `onClick`.",
+          "A Pill that goes somewhere takes `href` (`external` for a new tab; an in-app one goes through your router's `Link` on `LinkProvider`); one that does something takes `onClick`.",
           "`title` is a native tooltip for detail the short label leaves out; it is not shown on touch or to a keyboard, so never put anything a reader needs only there.",
           "A Pill beside a card's title is the Card's `status`, not a hand-built row.",
           "A message to read is a `Callout`, and an action is a `Button`.",

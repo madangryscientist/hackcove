@@ -1,0 +1,3 @@
+import { FullBleedLayout } from "@hackcove/ui-react";
+
+export const view = <FullBleedLayout panel={info} panelLabel="Details">x</FullBleedLayout>;

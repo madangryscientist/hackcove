@@ -1,5 +1,6 @@
 import {
   Avatar,
+  BulletItem,
   BulletList,
   Caption,
   Card,
@@ -18,9 +19,7 @@ function Bullets({ items }: { items: string[] }) {
   return (
     <BulletList>
       {items.map((line) => (
-        <li key={line}>
-          <Text>{line}</Text>
-        </li>
+        <BulletItem key={line}>{line}</BulletItem>
       ))}
     </BulletList>
   );
@@ -33,23 +32,17 @@ function Job({ job }: { job: CvJob }) {
         <SubsectionHeading>
           {job.title}, {job.company}
         </SubsectionHeading>
-        <Caption color="brand">{job.dates}</Caption>
+        <Caption tone="accent">{job.dates}</Caption>
       </div>
       {job.summary?.split("\n\n").map((para) => (
-        <Text key={para} as="p">
-          {para}
-        </Text>
+        <Text key={para}>{para}</Text>
       ))}
       {job.groups.map((group) => (
         <div key={group.heading ?? group.items[0]} className="mt-3">
-          {group.heading && (
-            <Text strong as="p">
-              {group.heading}
-            </Text>
-          )}
+          {group.heading && <Text strong>{group.heading}</Text>}
           <Bullets items={group.items} />
           {group.links && (
-            <Text as="p">
+            <Text>
               {group.links.map((link, index) => (
                 <Fragment key={link.href}>
                   {index > 0 && " · "}
@@ -60,7 +53,7 @@ function Job({ job }: { job: CvJob }) {
           )}
         </div>
       ))}
-      {job.tech && <Caption as="p">Tech: {job.tech}</Caption>}
+      {job.tech && <Caption>Tech: {job.tech}</Caption>}
     </article>
   );
 }
@@ -79,12 +72,14 @@ function Experience() {
             {cv.earlierRoles.map((role) => (
               <li key={role.company}>
                 <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                  <Text strong>
+                  <Text as="span" strong>
                     {role.title}, {role.company}
                   </Text>
-                  <Caption color="brand">{role.dates}</Caption>
+                  <Caption as="span" tone="accent">
+                    {role.dates}
+                  </Caption>
                 </div>
-                <Text as="p">{role.summary}</Text>
+                <Text>{role.summary}</Text>
               </li>
             ))}
           </ul>
@@ -100,7 +95,7 @@ export function Cv() {
       <ProseLayout
         breadcrumbs={
           <div className="cv-screen-nav">
-            <MetaList nowrap>
+            <MetaList>
               <TextLink href="/">{site.name}</TextLink>
               <TextLink href={cv.pdf} download="jacobus.pdf">
                 Download PDF
@@ -109,14 +104,14 @@ export function Cv() {
           </div>
         }
         title={cv.name}
-        subtitle={
+        description={
           <>
             {cv.headline} · {cv.location}
           </>
         }
         actions={<Avatar name={cv.name} src={cv.photo} size="3xl" />}
         tabs={
-          <MetaList nowrap separator="•">
+          <MetaList separator="•">
             {cv.links.map((link) => (
               <TextLink key={link.href} href={link.href}>
                 {link.label}
@@ -128,7 +123,7 @@ export function Cv() {
         {/* One block, so the sections keep their own mt-12 rhythm: no Stack gap is 48px. */}
         <div>
           <Card>
-            <Text as="p">{cv.summary}</Text>
+            <Text>{cv.summary}</Text>
           </Card>
 
           <Experience />
@@ -138,9 +133,7 @@ export function Cv() {
             <SubsectionHeading>
               {cv.education.qualification} ({cv.education.school})
             </SubsectionHeading>
-            <Caption as="p" color="brand">
-              {cv.education.detail}
-            </Caption>
+            <Caption tone="accent">{cv.education.detail}</Caption>
           </section>
 
           <section className="mt-12">

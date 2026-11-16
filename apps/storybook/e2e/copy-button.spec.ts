@@ -16,8 +16,8 @@ test("a click writes the text, shows copied and announces it, and a second click
     });
   });
   await page.goto(story("actions-copybutton--default"));
-  const button = page.getByRole("button", { name: "copy", exact: true });
-  await expect(button.getByText("copied", { exact: true })).toBeHidden();
+  const button = page.getByRole("button", { name: "Copy", exact: true });
+  await expect(button.getByText("Copied", { exact: true })).toBeHidden();
   await expect(page.getByRole("status")).toHaveText("");
   for (const time of [1, 2]) {
     // Tag the copied label and the region's text as they are, so the click must replace both.
@@ -35,10 +35,10 @@ test("a click writes the text, shows copied and announces it, and a second click
       "bun add @hackcove/ui-react",
     );
     // The name stays `copy`; the copied label shows, the idle one hides, and the region says it.
-    await expect(button, `copy ${time}`).toHaveAccessibleName("copy");
-    await expect(button.getByText("copied", { exact: true })).toBeVisible();
-    await expect(button.getByText("copy", { exact: true })).toBeHidden();
-    await expect(page.getByRole("status")).toHaveText("copied");
+    await expect(button, `copy ${time}`).toHaveAccessibleName("Copy");
+    await expect(button.getByText("Copied", { exact: true })).toBeVisible();
+    await expect(button.getByText("Copy", { exact: true })).toBeHidden();
+    await expect(page.getByRole("status")).toHaveText("Copied");
     // New nodes: the labels restarted their animation, and the region announced again.
     await expect
       .poll(() =>
@@ -60,10 +60,10 @@ test("a missing clipboard does not throw and leaves the label on copy", async ({
     Object.defineProperty(navigator, "clipboard", { configurable: true, value: undefined });
   });
   await page.goto(story("actions-copybutton--default"));
-  const button = page.getByRole("button", { name: "copy", exact: true });
+  const button = page.getByRole("button", { name: "Copy", exact: true });
   await button.click();
-  await expect(button.getByText("copy", { exact: true })).toBeVisible();
-  await expect(button.getByText("copied", { exact: true })).toBeHidden();
+  await expect(button.getByText("Copy", { exact: true })).toBeVisible();
+  await expect(button.getByText("Copied", { exact: true })).toBeHidden();
   await expect(button).not.toHaveAttribute("data-copied");
   await expect(page.getByRole("status")).toHaveText("");
   expect(errors).toEqual([]);

@@ -1,6 +1,9 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import * as ui from "./index.js";
-import type { Prose, TypographyProps } from "./index.js";
+import type { PageHeading, Prose, Text } from "./index.js";
+
+type TypographyProps<E extends "p" | "a" | "h2"> = Parameters<typeof PageHeading<E>>[0];
+type TextProps<E extends "p" | "a" | "span"> = Parameters<typeof Text<E>>[0];
 
 // Components take no `className` and no `style`: a consumer composes the parts and never restyles
 // them. This is the type-level guard: every exported component's props must lack both keys.
@@ -32,6 +35,8 @@ describe("components take no className or style", () => {
     expectTypeOf<Styling<TypographyProps<"p">>>().toEqualTypeOf<never>();
     expectTypeOf<Styling<TypographyProps<"a">>>().toEqualTypeOf<never>();
     expectTypeOf<Styling<TypographyProps<"h2">>>().toEqualTypeOf<never>();
+    expectTypeOf<Styling<TextProps<"span">>>().toEqualTypeOf<never>();
+    expectTypeOf<Styling<TextProps<"a">>>().toEqualTypeOf<never>();
   });
 
   it("Prose accepts neither, and only the Passthrough props", () => {

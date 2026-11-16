@@ -1,0 +1,3 @@
+import { IconButton } from "@hackcove/ui-react";
+
+export const view = <IconButton label="Inbox" icon="bell" count={3} />;

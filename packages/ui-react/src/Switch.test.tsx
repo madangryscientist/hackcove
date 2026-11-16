@@ -87,8 +87,8 @@ describe("Switch", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
-  it("a description is the switch's description, and reads after the label", () => {
-    render(<Switch label="Live" description="Serves all traffic" checked onChange={noop} />);
+  it("a hint is the switch's description, and reads after the label", () => {
+    render(<Switch label="Live" hint="Serves all traffic" checked onChange={noop} />);
     expect(
       screen.getByRole("switch", { name: /^Live/, description: "Serves all traffic" }),
     ).not.toBeNull();
@@ -99,17 +99,17 @@ describe("Switch", () => {
     );
   });
 
-  it("a description keeps a caller's aria-describedby", () => {
+  it("a hint keeps a caller's aria-describedby", () => {
     render(
       <>
         <span id="other">Also this</span>
-        <Switch label="L" description="D" aria-describedby="other" checked onChange={noop} />
+        <Switch label="L" hint="D" aria-describedby="other" checked onChange={noop} />
       </>,
     );
     expect(screen.getByRole("switch", { description: "Also this D" })).not.toBeNull();
   });
 
-  it("without a description the switch has none", () => {
+  it("without a hint the switch has none", () => {
     render(<Switch label="L" checked onChange={noop} />);
     expect(theSwitch().hasAttribute("aria-describedby")).toBe(false);
   });

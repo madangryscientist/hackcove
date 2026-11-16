@@ -26,17 +26,16 @@ const meta: Meta = {
 export default meta;
 type S = StoryObj;
 
-/** A whole viewer page: the shell with `bleed`, then the layout with the viewer in `children` and the facts in `panel`. The `EmptyState` stands in for the app's own viewer. */
+/** A whole viewer page: the shell with `bleed`, then the layout with the viewer in `children` and the facts in `aside`. The `EmptyState` stands in for the app's own viewer. */
 export const FullPage: S = {
   render: () => (
     <AppShell
       brand={<a href="#">Hack Cove</a>}
       nav={
         <Tabs
-          variant="pill"
           label="Main"
           items={[
-            { label: "Quotes", href: "#quotes", active: true },
+            { label: "Quotes", href: "#quotes", selected: true },
             { label: "Clients", href: "#clients" },
           ]}
         />
@@ -44,7 +43,7 @@ export const FullPage: S = {
       bleed
     >
       <FullBleedLayout
-        panel={
+        aside={
           <>
             <Overline as="h2">Snapshot</Overline>
             <KeyValueList>
@@ -55,9 +54,7 @@ export const FullPage: S = {
         }
       >
         <EmptyState title="Snapshot viewer">
-          <Text as="p" color="secondary">
-            Your viewer goes here and fills the width.
-          </Text>
+          <Text>Your viewer goes here and fills the width.</Text>
         </EmptyState>
       </FullBleedLayout>
     </AppShell>
@@ -66,9 +63,7 @@ export const FullPage: S = {
 
 const snapshotCanvas = (
   <div className="flex h-96 items-center justify-center bg-slate-100">
-    <Text as="p" color="secondary">
-      Snapshot viewer: fills the width
-    </Text>
+    <Text>Snapshot viewer: fills the width</Text>
   </div>
 );
 
@@ -88,7 +83,7 @@ const snapshotPanel = (
 export const WithPanel: S = {
   render: () => (
     <DemoShell bleed>
-      <FullBleedLayout panel={snapshotPanel}>{snapshotCanvas}</FullBleedLayout>
+      <FullBleedLayout aside={snapshotPanel}>{snapshotCanvas}</FullBleedLayout>
     </DemoShell>
   ),
 };
@@ -105,9 +100,9 @@ export const WithoutPanel: S = {
 export const Padded: S = {
   render: () => (
     <DemoShell bleed>
-      <FullBleedLayout padded panel={snapshotPanel}>
+      <FullBleedLayout padded aside={snapshotPanel}>
         <Card title="Quotes">
-          <Text as="p">Every quote you have sent.</Text>
+          <Text>Every quote you have sent.</Text>
         </Card>
       </FullBleedLayout>
     </DemoShell>
@@ -116,7 +111,7 @@ export const Padded: S = {
 
 const viewerBar = (
   <Cluster justify="between" gap="md">
-    <Text as="p">Button / Primary</Text>
+    <Text>Button / Primary</Text>
     <Button size="sm" variant="outline">
       Accept
     </Button>
@@ -127,7 +122,7 @@ const viewerBar = (
 export const WithBar: S = {
   render: () => (
     <DemoShell bleed>
-      <FullBleedLayout bar={viewerBar} panel={snapshotPanel}>
+      <FullBleedLayout bar={viewerBar} aside={snapshotPanel}>
         {snapshotCanvas}
       </FullBleedLayout>
     </DemoShell>
@@ -138,20 +133,20 @@ export const WithBar: S = {
 export const BarPadded: S = {
   render: () => (
     <DemoShell bleed>
-      <FullBleedLayout bar={viewerBar} padded panel={snapshotPanel}>
+      <FullBleedLayout bar={viewerBar} padded aside={snapshotPanel}>
         <Card title="Quotes">
-          <Text as="p">Every quote you have sent.</Text>
+          <Text>Every quote you have sent.</Text>
         </Card>
       </FullBleedLayout>
     </DemoShell>
   ),
 };
 
-/** A viewer that needs the whole width (a snapshot, a canvas, a player) fills it, with the facts in the `panel`. */
+/** A viewer that needs the whole width (a snapshot, a canvas, a player) fills it, with the facts in the `aside`. */
 export const DoViewer: S = {
   render: () => (
     <FullBleedLayout
-      panel={
+      aside={
         <>
           <Overline as="h2">Snapshot</Overline>
           <KeyValueList>
@@ -161,9 +156,7 @@ export const DoViewer: S = {
         </>
       }
     >
-      <Text as="p" color="secondary">
-        The snapshot fills the width.
-      </Text>
+      <Text>The snapshot fills the width.</Text>
     </FullBleedLayout>
   ),
 };
@@ -173,7 +166,7 @@ export const DontViewer: S = {
   render: () => (
     <FullBleedLayout>
       <Card title="Quotes">
-        <Text as="p">Every quote you have sent.</Text>
+        <Text>Every quote you have sent.</Text>
       </Card>
     </FullBleedLayout>
   ),

@@ -3,7 +3,7 @@ import { site } from "../content/site";
 
 export function CvLink() {
   return (
-    <Text as="p">
+    <Text>
       <TextLink href={site.contracting.cv.href}>{site.contracting.cv.text}</TextLink>
     </Text>
   );

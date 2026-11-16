@@ -1,0 +1,3 @@
+import { SectionHeading } from "@hackcove/ui-react";
+
+export const view = <SectionHeading color="muted">Billing</SectionHeading>;

@@ -95,7 +95,7 @@ export function ChatComposer({
     <form {...rest} onSubmit={onSubmit}>
       <Cluster align="end" gap="sm">
         <ClusterGrow>
-          <Field label={label} htmlFor={id} hideLabel>
+          <Field label={label} htmlFor={id} labelHidden>
             <Textarea
               ref={box}
               id={id}

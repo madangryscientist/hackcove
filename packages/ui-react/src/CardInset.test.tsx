@@ -48,16 +48,6 @@ describe("Card inset", () => {
     expect(follows(body, screen.getByText("foot"))).toBeTruthy();
   });
 
-  it("is dropped by a dashed card", () => {
-    render(
-      <Card dashed inset={<i>band</i>}>
-        <p>body</p>
-      </Card>,
-    );
-    expect(screen.queryByText("band")).toBeNull();
-    expect(screen.getByText("body")).not.toBeNull();
-  });
-
   it("reads under the title and above the children on a link card too", () => {
     render(
       <Card href="/x" title="Reno" inset={<i>band</i>}>

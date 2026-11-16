@@ -77,9 +77,7 @@ function AddMessageDemo() {
       <ChatThread label="Growing chat" height="sm">
         {messages(count)}
       </ChatThread>
-      <Text as="p" color="muted">
-        {count} messages
-      </Text>
+      <Text tone="muted">{count} messages</Text>
     </Stack>
   );
 }
@@ -87,7 +85,7 @@ function AddMessageDemo() {
 /** It follows new content; scroll up and it leaves you there; scroll back down and it follows again. */
 export const AddMessage: S = { render: () => <AddMessageDemo /> };
 
-/** The whole chat: all four parts, an approval from a `Callout` and `Button`s, and a reply still streaming. */
+/** The whole chat: the three parts, two tool calls as bordered `Disclosure`s, an approval from a `Callout` and `Button`s, and a reply still streaming. */
 export const ToolCallAndApproval: S = {
   name: "Chat with a tool call and an approval",
   render: () => <SampleChat label="Cooking chat" />,

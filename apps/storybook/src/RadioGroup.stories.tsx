@@ -45,12 +45,8 @@ export const Controlled: S = {
 export const WithDescriptions: S = {
   render: () => (
     <RadioGroup label="Who can see your reviews" defaultValue="followers">
-      <Radio
-        value="public"
-        label="Everyone"
-        description="Anyone with the link, signed in or not."
-      />
-      <Radio value="followers" label="Followers" description="People who follow you." />
+      <Radio value="public" label="Everyone" hint="Anyone with the link, signed in or not." />
+      <Radio value="followers" label="Followers" hint="People who follow you." />
       <Radio value="me" label="Only me" />
     </RadioGroup>
   ),
@@ -67,7 +63,7 @@ export const WithError: S = {
 };
 export const Disabled: S = {
   render: () => (
-    <RadioGroup label="Shop type" defaultValue="books" isDisabled>
+    <RadioGroup label="Shop type" defaultValue="books" disabled>
       <Radio value="vintage" label="Vintage" />
       <Radio value="books" label="Books" />
       <Radio value="furniture" label="Furniture" />
@@ -80,7 +76,7 @@ export const DisabledOption: S = {
     <RadioGroup label="Delivery" defaultValue="post">
       <Radio value="post" label="Post" />
       <Radio value="courier" label="Courier" />
-      <Radio value="pickup" label="Pick up" description="Not available in your area." isDisabled />
+      <Radio value="pickup" label="Pick up" hint="Not available in your area." disabled />
     </RadioGroup>
   ),
 };

@@ -1,0 +1,3 @@
+import { ToolCallCard } from "@hackcove/ui-react";
+
+export const view = <ToolCallCard name="search" status="done" />;
