@@ -55,7 +55,11 @@ export function StatTile({
   value: ReactNode;
   /** A muted line under the value. */
   hint?: ReactNode;
-  /** Defaults to "neutral". Say it in the text too: colour alone says nothing to a screen reader. */
+  /**
+   * What the figure means: `neutral` (the default) a plain figure, `positive` good or on track,
+   * `warn` at risk, `danger` failed or over. Say it in the text too: colour alone says nothing to a
+   * screen reader.
+   */
   tone?: StatTileTone;
   /** A bar across the top edge in the tone's colour. */
   accent?: boolean;

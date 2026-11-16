@@ -1,7 +1,8 @@
 /**
  * The anti-slop rules Oxlint has no rule for, as one pure function so they can be tested:
  * a TODO/FIXME with no ticket ref, commented-out code, and anything time dependent, which read
- * only TypeScript, and an em or en dash, which reads every file (copy, CSS, docs, scripts). In a
+ * only TypeScript, and an em or en dash, which reads every file (copy, CSS, docs, scripts). Docs
+ * prose (the site's component pages, a README) calls the palette's purple the accent. In a
  * `@hackcove/ui-react` component it also holds the palette: a stock colour utility the themes do not
  * remap (one outside `palette.json`), or one behind an arbitrary `[&...]` variant, which no theme can
  * reach; and the content width and side padding outside `Container`. `check-slop.ts` globs the files and prints what this returns.
@@ -51,6 +52,17 @@ function paletteHits(line: string, palette: ReadonlySet<string>): string[] {
 // renders one instead of copying its classes.
 const CONTENT_EDGE = /max-w-6xl|px-4 sm:px-6/;
 
+// The palette's names are the theme's: the purple ink is the accent in every theme, so docs prose
+// that calls it violet is wrong in all but one. A value in backticks (`violet`) is code and passes.
+const VIOLET = /(?<![\w-])violet(?![\w-])/i;
+const VIOLET_RULE = '"violet" in prose; the palette calls it accent';
+/** The site's component docs and any package README: prose a reader takes the palette's names from. */
+const isDocsProse = (path: string, pkg: string): boolean =>
+  path === "README.md" ||
+  path.endsWith("/README.md") ||
+  (pkg === "hack-cove-site" && path.startsWith("src/content/"));
+const outsideBackticks = (line: string): string => line.replace(/`[^`]*`/g, "``");
+
 const isTest = (path: string): boolean =>
   /\.test\.tsx?$/.test(path) ||
   /\.stories\.tsx$/.test(path) ||
@@ -71,11 +83,13 @@ export function slopRules(
   const test = isTest(path);
   const component = pkg === "@hackcove/ui-react" && path.startsWith("src/") && !test;
   const paletted = component && palette !== undefined && path.endsWith(".tsx");
+  const prose = isDocsProse(path, pkg);
   const hits: string[] = [];
   const lines = text.split("\n");
   lines.forEach((line, i) => {
     const at = `${path}:${i + 1}`;
     if (DASH.test(line)) hits.push(`${at}: ${DASH_RULE}`);
+    if (prose && VIOLET.test(outsideBackticks(line))) hits.push(`${at}: ${VIOLET_RULE}`);
     if (!code) return;
     if (paletted) for (const hit of paletteHits(line, palette)) hits.push(`${at}: ${hit}`);
     if (component && path !== "src/Container.tsx" && CONTENT_EDGE.test(line))

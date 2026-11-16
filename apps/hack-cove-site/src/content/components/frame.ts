@@ -45,10 +45,12 @@ export const framePages: ComponentPage[] = [
       "Give `nav` and `subnav` `Tabs` of links, so each is a labelled `<nav>`.",
     ],
     api: ["AppShell", "AppShellBrand"],
+    types: ["AppShellDensity"],
     functions: [
       {
         name: "appShellRootClassFor",
         text: "Everything the app's `<html>` takes from the scheme the server knows: that scheme's class and the class that always reserves the scrollbar, so centred content does not shift between a short page and a long one.",
+        example: "<html className={appShellRootClassFor(scheme, schemes)}>",
       },
     ],
   },
@@ -77,5 +79,6 @@ export const framePages: ComponentPage[] = [
       "The links are a list, so a screen reader counts them.",
     ],
     api: ["SiteFooter"],
+    types: ["SiteFooterLink"],
   },
 ];

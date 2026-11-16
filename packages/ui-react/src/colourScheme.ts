@@ -1,3 +1,4 @@
+/** The two colour schemes a site switches between: `light` and `dark`. */
 export type ColourScheme = "light" | "dark";
 
 const STORAGE_KEY = "hackcove:colour-scheme";

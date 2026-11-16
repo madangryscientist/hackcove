@@ -36,7 +36,7 @@ export const content: ComponentSection = {
           '`attention` draws the strong warn edge round a card that needs a look (a flaky shot, a failing check); add `tone="warn"` for the warn surface too.',
           "`icon` puts one of the library's icons above the title at feature size, in the accent colour: the mark of a feature card. Pick it by the idea it stands for; it is ignored on a `bar` or `flush` card.",
           "`size` sets the padding: `sm` for a dense dashboard, `md` (default), `lg` for a card that stands alone. In a `sm` card a `Button`, `IconButton` or `Pill` with no `size` is `sm` too, and a `Stack` inside any card is `xs` apart.",
-          "A Card with an `id` is an anchor target: a link to `#id` scrolls it clear of the sticky header and outlines it in violet while it is the target.",
+          "A Card with an `id` is an anchor target: a link to `#id` scrolls it clear of the sticky header and outlines it in the accent colour while it is the target.",
           "`fill` makes a card take its parent's full height, for a panel in a fixed-height layout such as a sheet over a map; the title or bar stays put and the body scrolls. Give the parent a height. Put links or controls in the body, so a keyboard can reach and scroll it.",
         ],
       },
@@ -80,6 +80,7 @@ export const content: ComponentSection = {
         "`aria-*` and `data-*` props go on the root element.",
       ],
       api: ["Avatar"],
+      types: ["AvatarShape", "AvatarSize"],
     },
     {
       slug: "avatar-stack",
@@ -102,6 +103,7 @@ export const content: ComponentSection = {
         "`aria-*` and `data-*` props go on the root element.",
       ],
       api: ["AvatarStack"],
+      types: ["AvatarStackPerson"],
     },
     {
       slug: "badge",
@@ -155,6 +157,7 @@ export const content: ComponentSection = {
         '`external` adds `target="_blank"` and `rel="noreferrer"`.',
       ],
       api: ["Pill"],
+      types: ["PillTone"],
     },
     {
       slug: "steps",
@@ -184,6 +187,7 @@ export const content: ComponentSection = {
         "Name the list with `aria-label`.",
       ],
       api: ["Steps", "Step"],
+      types: ["StepsSize"],
     },
     {
       slug: "timeline",
@@ -287,6 +291,7 @@ export const content: ComponentSection = {
         "A `label` is plain text and is read out; a region with no label says nothing to a screen reader, so name the areas in text as well when they matter.",
       ],
       api: ["RegionFrame", "OutlineRegion"],
+      types: ["RegionRect"],
     },
   ],
 };

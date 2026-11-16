@@ -9,7 +9,9 @@ import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 import type { Tone } from "./tone.js";
 
+/** A Button's look: `primary` the one main action, `outline` and `ghost` the others, `link` text in running text, `dashed` the add-another row. */
 export type ButtonVariant = "primary" | "outline" | "ghost" | "link" | "dashed";
+/** A Button's height and text, on the library's one `Size` scale. */
 export type ButtonSize = Size;
 /** A Button's tones: `neutral` (the accent fill, the default), `positive` and `danger`. */
 export type ButtonTone = Extract<Tone, "neutral" | "positive" | "danger">;

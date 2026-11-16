@@ -4,10 +4,9 @@ import type { Passthrough } from "./props.js";
 import { type LoadingProps, useLoading, WaitingBone } from "./skeleton.js";
 
 /**
- * A small red count, 10px, for sitting on an icon. `corner` pins it to the top-right corner of its
- * `relative` parent (wrap the icon button and the badge in a `relative inline-flex` element); a
- * count above 99 reads `99+`. Name the control it sits on (`aria-label` on the button) for a
- * screen reader. An `IconButton` takes `count` itself and does all of this. While `loading` it is
+ * A small red count, 10px, for sitting on an icon. An icon with a count is an `IconButton` with
+ * its `count`, which pins the Badge to its corner and puts the count in the button's name. A
+ * count above 99 reads `99+`. While `loading` it is
  * a bone of its size: a count is a number, so 0 is a value and not a gap.
  */
 export function Badge({

@@ -85,7 +85,10 @@ type OwnProps = {
 
 /** The opt-in props of the inline roles (`Text`, `Caption`, `Overline`). */
 type InlineOwnProps = {
-  /** A meaning's colour (see `TextTone`); `neutral`, the default, is the role's own ink. */
+  /**
+   * The ink: `neutral`, the default, is the role's own; `muted` and `accent` set the hierarchy of
+   * the text; `positive`, `warn`, `danger` and `info` say what a run means (see `TextTone`).
+   */
   tone?: TextTone | undefined;
   /** Tabular figures, so a column of amounts lines up. */
   numeric?: boolean | undefined;
@@ -357,6 +360,7 @@ export function SectionHeading<E extends ElementType = "h2">({
   );
 }
 
+/** A SubsectionHeading's type size: `sm` a form-group caption, `md` a card title, `lg` a drawer title. */
 export type SubsectionHeadingSize = Size;
 
 const SUBSECTION_SIZE: Record<SubsectionHeadingSize, Scale> = {
@@ -378,9 +382,9 @@ const SUBSECTION_SIZE: Record<SubsectionHeadingSize, Scale> = {
 };
 
 /**
- * Nested header. `h3`, text-lg/7 semibold, primary text. `size` steps it down for a dense card
- * or up for a drawer or form-group title: `sm` (text-base, body size set apart by its weight), `md`
- * (default) or `lg` (text-xl). Under an `AppShell density="compact"` each is one step down. Inside a `Prose`
+ * Nested header. `h3`, text-lg/7 semibold, primary text. `size` steps it down to `sm` (text-base,
+ * body size set apart by its weight) for a form-group caption or a dense card, or up to `lg`
+ * (text-xl) for a drawer title; `md` is the default. Under an `AppShell density="compact"` each is one step down. Inside a `Prose`
  * `md` is text-xl/7 (the h3 of a doc), `sm` text-base/7 (the h4: body size, set apart by its weight)
  * and `lg` text-2xl/8, the size of a `SectionHeading` there. `truncate` keeps it on
  * one line and cuts it with an ellipsis where its container ends, the full text as the `title`.

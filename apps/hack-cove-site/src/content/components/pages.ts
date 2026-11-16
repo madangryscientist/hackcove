@@ -3,7 +3,7 @@ import type { ComponentSection } from "./types";
 export const pages: ComponentSection = {
   title: "Pages",
   icon: "page",
-  description: "Whole-page layouts and the status pages.",
+  description: "The ready-made status pages.",
   pages: [
     {
       slug: "status-pages",

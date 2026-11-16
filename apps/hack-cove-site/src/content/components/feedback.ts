@@ -26,13 +26,14 @@ export const feedback: ComponentSection = {
       pairs: ["Callout/Tone", "Callout/Action", "Callout/Retry"],
       usage: {
         do: [
-          "Pick the `tone` by how much the message matters: `neutral` for a note, `info` (the default) for something worth knowing, `positive` for a result, `warn` for a thing to check before going on, `danger` for a failure or something that cannot be undone. Keep `danger` for the real failure.",
+          "Pick the `tone` by how much the message matters: `neutral` (the default) for a note, `info` for something worth knowing, `positive` for a result, `warn` for a thing to check before going on, `danger` for a failure or something that cannot be undone. Keep `danger` for the real failure.",
           "Add a `title` for a short bold lead-in; the body carries the detail.",
           'Put the one action in `actions`, at the end of the row: a `Button size="sm"` or a `TextLink stretch`, which makes the whole callout the click target.',
           "`banner` is the flat strip at the top of a `Card flush`; do not use it anywhere else. In a page's column (a `FullBleedLayout`, padded or not) the notice is a plain Callout, first in the column's `Stack`.",
           'A section that failed to load is a `Callout tone="danger"` with a `title` that says what failed and one `Button` in `actions` that tries again. A whole page that failed is an `ErrorPage`.',
           "A block of content that has a status is a `Card` with `tone`; a Callout is the message.",
           'A short confirmation that should not move the page ("Saved", "Copied") is a `Toast`. A message that must be answered before the reader goes on is a `Dialog`; a field\'s own error is the `error` of its `Field`; a submit\'s failure in a `Dialog` or `FormLayout` is its `error`.',
+          '`align="center"` centres the title and body, for a success that stands alone; with `actions` only the text is centred. `start` is the default.',
         ],
       },
       accessibility: [
@@ -41,6 +42,7 @@ export const feedback: ComponentSection = {
         "Buttons and links in `actions` keep their own focus ring and keyboard behaviour.",
       ],
       api: ["Callout"],
+      types: ["Tone"],
     },
     {
       slug: "toast",
@@ -64,6 +66,7 @@ export const feedback: ComponentSection = {
         "The hide pauses on hover and on focus, and under `prefers-reduced-motion` it still leaves at the same moment, with no fade.",
       ],
       api: ["ToastRegion"],
+      types: ["Toast"],
     },
     {
       slug: "empty-state",
@@ -84,6 +87,7 @@ export const feedback: ComponentSection = {
           "On its own it draws a dashed frame round itself; inside a `Card` the card is the frame. `icon` sets one of the library's icons above the title.",
           'It is the one empty look. Give it to the part\'s `empty` slot (`ListLayout`, `CardGrid`, `ChatThread`, `TableBody`, `Timeline`, a `Stack as="ul"`), which shows it when the part has no children: `empty={<EmptyState title="No invoices yet." />}` everywhere.',
           'The slot picks the size: one muted line (`size="sm"`, no heading) in a `TableBody`, a `Timeline` or a `Stack as="ul"`; the titled block (`md`) on a page, in a `CardGrid` or a `ChatThread`. `size` sets it by hand.',
+          '`padding="inset"` pads all four sides, for an EmptyState in a `Card flush`, whose body has no padding of its own; the default pads above and below.',
         ],
         dont: [
           "Do not leave it as a title alone: a page with nothing in it and nothing to do is a dead end.",

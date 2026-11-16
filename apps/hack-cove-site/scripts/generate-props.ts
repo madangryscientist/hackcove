@@ -11,7 +11,7 @@ import { globSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { withCustomConfig, type PropItem } from "react-docgen-typescript";
 import ts from "typescript";
-import type { ComponentDoc, PropDoc, PropsJson } from "../src/docs/types.js";
+import type { ComponentDoc, PropDoc, PropsJson, TypeDoc, TypesJson } from "../src/docs/types.js";
 import { armDocsOf } from "./armDocs.js";
 
 const UI = join(import.meta.dirname, "..", "..", "..", "packages", "ui-react");
@@ -19,6 +19,8 @@ const TSCONFIG = join(UI, "tsconfig.json");
 const INDEX = join(UI, "src", "index.ts");
 /** Where `scripts/props.ts` writes the result and the docs read it. */
 export const PROPS_JSON = join(import.meta.dirname, "..", "src", "generated", "props.json");
+/** Where the type exports go, beside the props. */
+export const TYPES_JSON = join(import.meta.dirname, "..", "src", "generated", "types.json");
 const LEFT_OUT = new Set(["className", "style"]);
 
 /**
@@ -175,8 +177,58 @@ export function generateProps(): PropsJson {
   );
 }
 
-/** Writes `props.json` from the source as it is now: the `props` task, and `astro dev` on a change. */
+const DEFINITION =
+  ts.TypeFormatFlags.NoTruncation |
+  ts.TypeFormatFlags.InTypeAlias |
+  ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope;
+
+/** A type's definition one level down: an object's fields with their types, else the type itself. */
+function definitionOf(checker: ts.TypeChecker, symbol: ts.Symbol): string {
+  const type = checker.getDeclaredTypeOfSymbol(symbol);
+  const at = symbol.declarations?.[0];
+  const isObject = type.flags & ts.TypeFlags.Object && !type.getCallSignatures().length;
+  if (!isObject || type.isUnion()) return checker.typeToString(type, at, DEFINITION);
+  const fields = checker.getPropertiesOfType(type).map((prop) => {
+    const optional = prop.flags & ts.SymbolFlags.Optional ? "?" : "";
+    const declared = prop.valueDeclaration;
+    const written =
+      declared && (ts.isPropertySignature(declared) || ts.isPropertyDeclaration(declared))
+        ? declared.type?.getText().replace(/\s+/g, " ")
+        : undefined;
+    const value = written ?? checker.typeToString(checker.getTypeOfSymbol(prop), at, DEFINITION);
+    return `${prop.name}${optional}: ${value.replace(/ \| undefined$/, "")}`;
+  });
+  return `{ ${fields.join("; ")} }`;
+}
+
+/** Every type `@hackcove/ui-react` exports, in name order: its JSDoc and its definition. */
+export function generateTypes(): TypesJson {
+  const source = program();
+  const checker = source.getTypeChecker();
+  const index = source.getSourceFile(INDEX);
+  const module = index && checker.getSymbolAtLocation(index);
+  if (module === undefined) throw new Error(`${INDEX}: not a module`);
+  const types = checker.getExportsOfModule(module).flatMap((symbol): TypeDoc[] => {
+    const target = symbol.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(symbol) : symbol;
+    if (target.flags & ts.SymbolFlags.Value) return [];
+    return [
+      {
+        name: symbol.name,
+        description: ts.displayPartsToString(target.getDocumentationComment(checker)),
+        definition: definitionOf(checker, target),
+      },
+    ];
+  });
+  return Object.fromEntries(
+    types.toSorted((a, b) => a.name.localeCompare(b.name)).map((doc) => [doc.name, doc]),
+  );
+}
+
+const json = (value: unknown): string => `${JSON.stringify(value, null, 2)}\n`;
+
+/** Writes `props.json` and `types.json` from the source as it is now: the `props` task, and `astro dev` on a change. */
 export function writeProps(): void {
   mkdirSync(dirname(PROPS_JSON), { recursive: true });
-  writeFileSync(PROPS_JSON, `${JSON.stringify(generateProps(), null, 2)}\n`);
+  writeFileSync(PROPS_JSON, json(generateProps()));
+  writeFileSync(TYPES_JSON, json(generateTypes()));
 }

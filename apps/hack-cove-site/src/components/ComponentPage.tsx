@@ -2,6 +2,7 @@ import {
   BulletItem,
   BulletList,
   Code,
+  CodeBlock,
   type DocsHeading,
   type DocsNeighbour,
   Prose,
@@ -22,7 +23,7 @@ import type { ComponentPage as Page } from "../content/components/index";
 import { componentPageOf, neighboursOf } from "../content/components/index";
 import { DoDont } from "../docs/DoDont";
 import { Example } from "../docs/Example";
-import { docOf, Props } from "../docs/Props";
+import { docOf, Props, Types } from "../docs/Props";
 import { InlineCode } from "../docs/InlineCode";
 
 /** The page's top-level sections, in page order: the "On this page" list and the anchors it jumps to. */
@@ -145,13 +146,22 @@ export function ComponentPage({ page }: { page: Page }) {
           {page.api.map((name) => (
             <Props key={name} of={name} />
           ))}
+          {page.types !== undefined && page.types.length > 0 && <Types names={page.types} />}
           {page.functions !== undefined && page.functions.length > 0 && (
             <Stack gap="sm">
               <SubsectionHeading>Functions</SubsectionHeading>
               <BulletList>
                 {page.functions.map((fn) => (
                   <BulletItem key={fn.name}>
-                    <Code>{docOf(fn.name).signature ?? fn.name}</Code> <InlineCode text={fn.text} />
+                    <Stack gap="xs">
+                      <Text as="span">
+                        <Code>{docOf(fn.name).signature ?? fn.name}</Code>{" "}
+                        <InlineCode text={fn.text} />
+                      </Text>
+                      {fn.example !== undefined && (
+                        <CodeBlock language="tsx">{fn.example}</CodeBlock>
+                      )}
+                    </Stack>
                   </BulletItem>
                 ))}
               </BulletList>

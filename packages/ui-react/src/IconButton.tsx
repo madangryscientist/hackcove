@@ -11,6 +11,7 @@ import type { Unstyled } from "./props.js";
 import type { Size } from "./size.js";
 import type { Tone } from "./tone.js";
 
+/** An IconButton's look: `outline` with a border, or `ghost` with none until hover. */
 export type IconButtonVariant = "outline" | "ghost";
 /** An IconButton's tones: `neutral` (the default) and `danger`. */
 export type IconButtonTone = Extract<Tone, "neutral" | "danger">;

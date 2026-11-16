@@ -16,7 +16,7 @@ const SIZE: Record<Size, { label: string; box: string; start: string }> = {
 
 /** The tick: shown over the box when it is checked. */
 function Tick({ size, onFirstLine }: { size: Size; onFirstLine: boolean }): ReactElement {
-  /* The checked box: a filled violet square at the input's own place (an absolutely
+  /* The checked box: a filled accent square at the input's own place (an absolutely
     positioned flex child sits where the first flex item would, so it needs no insets), shown
     by the label's `:has(:checked)` so an uncontrolled Checkbox changes with no re-render.
     Inside a Card or table row the input is lifted to `z-10` by `liftInteractive` (cx.ts), and
@@ -71,7 +71,7 @@ type CheckboxProps = {
 
 /**
  * A checkbox with its label. It is a real `<input type="checkbox">`, drawn by the library (an
- * empty outlined box, then a filled violet one with a check mark) so it reads the same in every
+ * empty outlined box, then a filled accent one with a check mark) so it reads the same in every
  * theme and browser. Every prop but the label goes on the input, and `ref` reaches it.
  * `size="sm"` is `text-xs` and a smaller box, for a dense row; `size="lg"` is `text-base` and a
  * larger box. Leave `label` out for a bare box in a table cell, and name it with `aria-label`. The

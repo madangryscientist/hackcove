@@ -38,9 +38,9 @@ export function SplitBar({
   label: string;
   /** The left and right parties, spoken before their percentages. */
   names?: readonly [string, string];
-  /** Defaults to "danger". */
+  /** The left part's colour, by what it means (`accent`, `positive`, `warn` or `danger`). Defaults to "danger". */
   toneA?: BarTone;
-  /** Defaults to "positive". */
+  /** The right part's colour, by what it means (`accent`, `positive`, `warn` or `danger`). Defaults to "positive". */
   toneB?: BarTone;
   /**
    * The bar's height: `sm` 6px, `md` 8px, `lg` 12px.

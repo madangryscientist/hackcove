@@ -322,7 +322,10 @@ describe("/ui/llms.txt", () => {
 
   test("has no extension recipe or styling escape hatch", () => {
     expect(text).toContain("do not restyle a component");
-    expect(text).not.toMatch(/\bclassName\b/);
+    // Two classNames are not a way in: the library's own class, handed to the app's router link to
+    // spread, and the scheme class the app puts on its own `<html>`.
+    const rest = text.replace(/^- LinkAdapterProps: .*$/m, "").replaceAll("<html className=", "");
+    expect(rest).not.toMatch(/\bclassName\b/);
     expect(site.ui.intro.join(" ")).toContain("strict on purpose");
   });
 });

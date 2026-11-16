@@ -47,6 +47,7 @@ export const navigation: ComponentSection = {
         'Link items form a `<nav>` named by `label`; the current link gets `aria-current="page"`.',
       ],
       api: ["Tabs"],
+      types: ["Tab"],
     },
     {
       slug: "breadcrumbs",
@@ -69,6 +70,7 @@ export const navigation: ComponentSection = {
         "The `/` separators are `aria-hidden`.",
       ],
       api: ["Breadcrumbs"],
+      types: ["Crumb"],
     },
     {
       slug: "pagination",
@@ -119,6 +121,7 @@ export const navigation: ComponentSection = {
         'A polite live region reads the result count as you type ("3 results").',
       ],
       api: ["SiteSearch"],
+      types: ["SiteSearchItem"],
     },
   ],
 };

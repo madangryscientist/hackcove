@@ -29,7 +29,7 @@ export function ListLayout({
   loadingLabel,
   ...rest
 }: PageHeaderProps & {
-  /** A row between the header and the list, e.g. a `Fieldset` of chips or a `SearchInput`. */
+  /** A row between the header and the list, e.g. a `Fieldset` of chips or an `Input type="search"`. */
   filters?: ReactNode;
   /** Shown in place of `children` when there are none (no rows, an empty array, `null`): an `EmptyState`. */
   empty?: ReactNode;

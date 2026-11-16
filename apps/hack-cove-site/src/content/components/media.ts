@@ -45,7 +45,7 @@ export const mediaPages: ComponentPage[] = [
     usage: {
       do: [
         "`src` is your own picture, a local path or a data URL, and `alt` says what it shows. The corners are rounded and a hairline frames it on the inset surface.",
-        "`aspect` is the shape it is cropped to: `square`, `4:3` (the default), `3:2`, `16:9`, or the portrait `3:4` and `9:16`. The shape is reserved before the picture loads, so the page does not jump. `natural` is the exception: the picture keeps its own proportions, with nothing cropped, and the space is not reserved until it loads.",
+        "`aspect` is the shape it is cropped to: `square`, `4:3` (the default), `3:2`, `16:9`, the portrait `3:4` and `9:16`, or `natural`. The shape is reserved before the picture loads, so the page does not jump. `natural` is the exception: the picture keeps its own proportions, with nothing cropped, and the space is not reserved until it loads.",
         '`fit="cover"` (the default) fills the shape and crops what overflows. `fit="contain"` shows the whole picture, for a QR code or a logo that must not lose its edges.',
         "`framed` sets the picture on a white mat with padding and shows all of it. The mat is white in every theme, dark ones included, so a QR code scans off a dark page. Use it for a code, not for a photo.",
         "`width` is `sm` (96px), `md` (160px) or `lg` (256px), each a cap that a narrower parent still wins over, or `full` (the default) for the parent's width.",
@@ -58,6 +58,7 @@ export const mediaPages: ComponentPage[] = [
       "An empty `alt` marks the picture as decoration: it is hidden from a screen reader, placeholder included. Do that only when the text beside it says the same thing.",
     ],
     api: ["Image"],
+    types: ["ImageAspect", "ImageWidth"],
   },
   {
     slug: "media-tile",
@@ -100,7 +101,7 @@ export const mediaPages: ComponentPage[] = [
     usage: {
       do: [
         "Put `MediaTile`s or `Avatar`s as the children and name the strip with `label`. They keep their own width and never shrink or wrap.",
-        "`gap` is a `Cluster`'s: `xs`, `sm` (the default) or `md`.",
+        "`gap` is a `Cluster`'s: `xs`, `sm` (the default) or `md`; the `Size` type lists every default that is not `md`.",
         "It scrolls only when the items run past its width, with a thin themed scrollbar, and the items snap to the start edge.",
       ],
       dont: [

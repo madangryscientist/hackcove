@@ -50,7 +50,9 @@ export function Callout({
   ...rest
 }: {
   /**
-   * What the notice means; `neutral` is a plain note.
+   * What the notice means: `neutral` a plain note, `info` something worth knowing, `positive` a
+   * result, `warn` a thing to check before going on, `danger` a failure or something that cannot
+   * be undone.
    * @default neutral
    */
   tone?: Tone;

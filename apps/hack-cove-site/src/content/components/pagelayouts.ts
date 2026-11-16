@@ -181,6 +181,7 @@ export const pagelayouts: ComponentSection = {
         'Previous and next are one `<nav>` named from `previousLabel` and `nextLabel`; each link\'s name is the word and the page ("Previous: Install").',
       ],
       api: ["DocsLayout"],
+      types: ["DocsHeading", "DocsNavGroup", "DocsNeighbour"],
     },
     {
       slug: "full-bleed-layout",
@@ -220,6 +221,7 @@ export const pagelayouts: ComponentSection = {
           "It is the one layout that does not share the left edge: it is centred, at a fixed offset from the top.",
           "A form inside the app is `FormLayout`, not this.",
           "The ready-made status pages (not found, forbidden, offline, error, maintenance) are already built on it.",
+          "`mark` is drawn first in the card, above the title: a large status numeral, as the status pages draw. It is not a heading.",
         ],
       },
       accessibility: [

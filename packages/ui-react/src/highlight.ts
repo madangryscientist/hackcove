@@ -18,6 +18,7 @@ import type { Emit, Token, TokenKind } from "./highlightKit.js";
 export { consoleCommands } from "./highlightConsole.js";
 export type { Token, TokenKind } from "./highlightKit.js";
 
+/** The languages a `CodeBlock` colours; `text` is plain, and `console` marks the commands of a terminal session. */
 export type CodeLanguage =
   | "text"
   | "tsx"

@@ -26,7 +26,7 @@ type Shared = LoadingProps & {
   /** Content at the far end of the row: a value, a count, a Pill. */
   trailing?: ReactNode | undefined;
   /**
-   * Marks the row in view, the one whose detail is open: a violet fill and `aria-current="true"`.
+   * Marks the row in view, the one whose detail is open: an accent fill and `aria-current="true"`.
    * Set it on one row of a list.
    */
   selected?: boolean | undefined;

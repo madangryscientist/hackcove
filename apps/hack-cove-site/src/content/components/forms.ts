@@ -16,12 +16,13 @@ export const forms: ComponentSection = {
       pairs: ["Field/Label", "Field/Error"],
       usage: {
         do: [
-          "Wrap every `Input`, `Textarea`, `Select` and `FileDrop` in a `Field`, with no `htmlFor` and no `id` on the control: the `Field` links its label, hint and error to the control itself, and the `label` is always in the accessibility tree. Pass `htmlFor` only when something else must name the control by a fixed id.",
+          "Wrap every `Input`, `Textarea` and `Select` in a `Field`, with no `htmlFor` and no `id` on the control: the `Field` links its label, hint and error to the control itself, and the `label` is always in the accessibility tree. Pass `htmlFor` only when something else must name the control by a fixed id.",
           '`labelHidden` draws no label text but keeps it for assistive tech: use it only when the control\'s purpose is plain from what surrounds it (a search box in a toolbar). Otherwise leave the label visible; a placeholder is not a label. With `layout="row"` it draws as a column.',
           "A `hint` is the one line of help under the control.",
           "A validation message is `error`, not `hint`: it replaces the hint, in red.",
           'Inside a `FormGrid` a `Field` takes one column; `span="full"` runs it across both.',
           "A `Checkbox`, a `Switch`, a `RadioGroup` and a `DateField` draw their own `label` and note (a `hint`, or an `error` in its place); do not wrap them in a `Field`. A group of them is a `Fieldset`.",
+          '`layout="row"` puts the label beside the control, for a compact setting or a drawer row: the hint or error sits under the control, and stacked rows line their controls up.',
         ],
       },
       accessibility: [
@@ -62,6 +63,7 @@ export const forms: ComponentSection = {
         "The focus ring comes from the component.",
       ],
       api: ["Input"],
+      types: ["ControlSize", "ControlWidth"],
     },
     {
       slug: "textarea",
@@ -75,6 +77,7 @@ export const forms: ComponentSection = {
           "`rows` is 3 unless you set it; set more for a long answer.",
           "`size` and `width` are the same choices as on `Input`. In a `Field` it fills the row; on its own it is as wide as its longest choice.",
           "One line of text is an `Input`.",
+          "`mono` sets the monospace face, for pasted CSV or statement text where the columns must line up.",
         ],
       },
       accessibility: [
@@ -94,7 +97,7 @@ export const forms: ComponentSection = {
         do: [
           "Put a `Select` in a `Field` and give it its choices as `items` (`{ value, label, disabled? }`); set `defaultValue` or control it with `value` and `onChange`.",
           "A yes or no is a `Checkbox`.",
-          "Two to four modes switched in place are a `SegmentedControl`.",
+          "Two to five modes switched in place are a `SegmentedControl`.",
           "`size` and `width` are the same choices as on `Input`.",
         ],
       },
@@ -174,7 +177,7 @@ export const forms: ComponentSection = {
           "Keep the choice with `defaultValue`, or control it with `value` and `onChange(value)`. `name` posts it in a form.",
           "A `hint` on a `Radio` is a muted line under its label, for the option that needs a sentence; a `hint` on the group is a line under the group's label.",
           "An `error` on the group is a red line under the options and marks every circle red; it is the same wording rule as `Field`'s. The group draws its own label and error, so it is never put in a `Field`.",
-          "`disabled` on the group disables every option; on a `Radio` it disables that one.",
+          "`disabled` on the group disables every option; on a `Radio` it disables that one. Say why in the group's `hint`.",
           "`required` marks a choice the form cannot submit without; the group is `aria-required`.",
           "`size` (`sm`, `md` the default, `lg`) sets every circle and label, to match the `Input`s around it.",
           "More than five options, or a list that grows, is a `Select`. Several ticks are `Checkbox`es. Switching a view in place is a `SegmentedControl`.",
@@ -199,7 +202,7 @@ export const forms: ComponentSection = {
           "Say what the zone wants in its children, and restrict the type with `accept`.",
           "Show the chosen file's name in the children from `onChange`; the zone does not do it for you.",
           '`size="sm"` is a compact chip or tile, `size="lg"` a roomy drop zone; `md` is the default.',
-          "`multiple`, `name` and `disabled` go on the zone like any file input.",
+          "`multiple`, `name` and `disabled` go on the zone like any file input; say why it is disabled in its `Field` hint.",
           "Put a `FileDrop` in a `Field` when it needs a label of its own above it.",
         ],
       },
@@ -243,6 +246,7 @@ export const forms: ComponentSection = {
         "Under `md` the fields and the action stack in reading order.",
       ],
       api: ["FormRow", "FormRowField", "FormGrid"],
+      types: ["FormRowSpan"],
     },
     ...datePages,
     ...groupPages,

@@ -12,7 +12,7 @@ import {
 import { site } from "../content/site.js";
 import { themes } from "../content/themes.js";
 import { pairOf } from "./pairs.js";
-import { docOf } from "./Props.js";
+import { docOf, typeOf } from "./Props.js";
 import { findStory } from "./stories.js";
 
 const fence = (code: string) => `\`\`\`tsx\n${code}\n\`\`\``;
@@ -49,12 +49,23 @@ function propsOf(name: string): string {
   return [`### ${name}`, description.replace(/\s*\n\s*/g, " "), ...lines].join("\n");
 }
 
+/** One type: its name, its definition and what it is. */
+function typeLine(name: string): string {
+  const { description, definition } = typeOf(name);
+  return `- ${name}: \`${definition}\`. ${description.replace(/\s*\n\s*/g, " ")}`;
+}
+
+function typesOf(page: ComponentPage): string[] {
+  const { types = [] } = page;
+  return types.length === 0 ? [] : [`### Types\n${types.map(typeLine).join("\n")}`];
+}
+
 function functionsOf(page: ComponentPage): string[] {
   const { functions = [] } = page;
   return functions.length === 0
     ? []
     : [
-        `### Functions\n${functions.map((fn) => `- ${fn.name}: \`${docOf(fn.name).signature ?? fn.name}\`. ${fn.text}`).join("\n")}`,
+        `### Functions\n${functions.map((fn) => `- ${fn.name}: \`${docOf(fn.name).signature ?? fn.name}\`. ${fn.text}${fn.example === undefined ? "" : `\n${fence(fn.example)}`}`).join("\n")}`,
       ];
 }
 
@@ -90,6 +101,7 @@ function sectionOf(page: ComponentPage): string {
     `### Don't\n${dontSectionOf(page)}`,
     `### Accessibility\n${bullets(page.accessibility)}`,
     `### Props\n${page.api.map(propsOf).join("\n\n")}`,
+    ...typesOf(page),
     ...functionsOf(page),
   ].join("\n\n");
 }

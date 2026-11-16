@@ -29,7 +29,7 @@ const pages: SiteSearchItem[] = [
     description: "Where this page sits in the hierarchy.",
     href: "#breadcrumbs",
   },
-  { label: "Input", description: "A text field.", href: "#input", keywords: ["SearchInput"] },
+  { label: "Input", description: "A text field.", href: "#input", keywords: ["search"] },
 ];
 
 /** The trigger on its own: from `sm` up, Search and its key; below, the search icon. Ctrl+K opens it. */

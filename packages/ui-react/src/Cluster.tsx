@@ -5,7 +5,9 @@ import { STACK_GAP, type StackGap } from "./Stack.js";
 
 /** The first three steps of `Stack`'s scale: `xs` between items in a line, `sm` inside a group, `md` between blocks. */
 export type ClusterGap = Extract<StackGap, "xs" | "sm" | "md">;
+/** Where a `Cluster`'s items sit across the row: `center`, `baseline` for mixed text sizes, `start` or `end`. */
 export type ClusterAlign = "center" | "baseline" | "start" | "end";
+/** Where a `Cluster`'s items sit along the row: `start`, `end`, or `between` to spread them to both ends. */
 export type ClusterJustify = "start" | "between" | "end";
 
 const ALIGN: Record<ClusterAlign, string> = {
@@ -52,8 +54,8 @@ export function Cluster({
    */
   as?: "div" | "span" | "ul" | "ol" | undefined;
   /**
-   * The space between items. Defaults to `sm`, not `md`: the items of a row sit closer than the
-   * blocks of a column.
+   * The space between items: the first steps of the gap scale. Its default is one of those the
+   * `Size` type lists as not `md`.
    * @default sm
    */
   gap?: ClusterGap | undefined;
@@ -91,6 +93,7 @@ export function Cluster({
   );
 }
 
+/** The narrowest a `ClusterGrow` gets before the row wraps: `sm` or `md`. */
 export type ClusterGrowMinWidth = "sm" | "md";
 
 /** The narrowest a `ClusterGrow` gets before it wraps under, the same two steps as `CardGrid`'s `minWidth`. */

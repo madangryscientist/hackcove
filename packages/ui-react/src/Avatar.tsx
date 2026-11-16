@@ -26,6 +26,7 @@ const SIZE_CLASSES = {
   "3xl": "size-24 text-3xl",
 } as const;
 
+/** An Avatar's size: `xs` 16px, `sm` 24px, `md` 32px, `lg` 40px, `xl` 56px, `2xl` 64px, `3xl` 96px. */
 export type AvatarSize = keyof typeof SIZE_CLASSES;
 
 /** `round` for a person, `square` (rounded corners that grow with the size) for an org or a team. */

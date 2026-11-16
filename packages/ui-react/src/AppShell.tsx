@@ -18,8 +18,8 @@ export const appShellRootClass = "overflow-y-scroll";
 
 /**
  * Everything an app puts on its own `<html>` from the scheme the server knows: that scheme's class
- * (`schemeClass`) and `appShellRootClass`, joined. `<html className={appShellRootClassFor(scheme,
- * schemes)}>` replaces `schemeClass(scheme, schemes) + " " + appShellRootClass`.
+ * (`schemeClass`) and the shell's root class, joined: `<html className={appShellRootClassFor(scheme,
+ * schemes)}>`.
  */
 export function appShellRootClassFor(scheme: ColourScheme, schemes?: ColourSchemeClasses): string {
   return cx(schemeClass(scheme, schemes), appShellRootClass);

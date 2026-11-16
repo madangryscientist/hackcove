@@ -42,8 +42,8 @@ function scrollToCentre(scroller: HTMLElement, item: HTMLElement): void {
  * a rail taller than the screen scrolls itself, so its last link is reachable. Below `md` it stacks
  * above the canvas and nothing sticks. A long rail sets `asideLabel`:
  * below `md` it then folds behind a disclosure of that name, closed, so the page comes first on a
- * phone, and from `md` it is the same rail; `asideLabel` also names the rail's `<aside>` landmark. Upgrading from 0.2: the rail no longer has a fill, a
- * border or a fixed height, and it no longer sits beside the canvas on a phone. Once the page has
+ * phone, and from `md` it is the same rail; `asideLabel` also names the rail's `<aside>` landmark.
+ * Once the page has
  * loaded, a rail that scrolls shows its current link (the one with `aria-current`) in view, and the
  * folded disclosure reads `asideLabel` and the current link's name ("All components: Button"); both
  * need the layout to hydrate.

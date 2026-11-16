@@ -90,7 +90,7 @@ export const layout: ComponentSection = {
           "One `Hero` per page, and only on the landing page: it is the page's top block. Inner pages use `PageHeader`.",
           "Pass `title` and, if it has one, `overline`; put a `Lead` in `children`, then the page's first actions in a `Cluster` if there are any: a primary `Button` and an `outline` or `ghost` one in the default tone, or a `TextLink`. That is the text the theme's contrast check holds over the glow.",
           "The glow is always on and takes no prop. Its colours and its strength are the theme's, so a paper theme keeps it faint.",
-          "It caps itself at a reading measure at the parent's left edge, and the glow is clipped to it, so a phone never scrolls sideways. Put it as the first child of the page's `Stack`.",
+          "It caps itself at a reading measure at the parent's start edge, and the glow is clipped to it, so a phone never scrolls sideways. Put it as the first child of the page's `Stack`.",
         ],
         dont: [
           "Never build the block from an `Overline`, a `Display` and a `Lead` by hand: the hand-built one has no glow and drifts from the one top block.",
@@ -134,7 +134,7 @@ export const layout: ComponentSection = {
       usage: {
         do: [
           "`gap` is a scale: `xs` between lines of text, `sm` inside a group, `md` between blocks, `lg` between groups, `xl` between a page's top-level blocks (the one responsive page rhythm). Left out, it comes from where the Stack sits: `xs` inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow`, `md` on the page.",
-          "`width` caps the column at the left edge: `compact` (one card or one picture's column), `narrow` (a reading measure), `wide`, `full`, or `default` for the parent's width. It is never re-centred. A width cap on any one block is a `Stack` around it: `<Stack width=\"compact\"><Card>...</Card></Stack>`.",
+          "`width` caps the column at the start edge: `compact` (one card or one picture's column), `narrow` (a reading measure), `wide`, `full`, or `default` for the parent's width. It is never re-centred. A width cap on any one block is a `Stack` around it: `<Stack width=\"compact\"><Card>...</Card></Stack>`.",
           '`align="start"` keeps each child at its own width: a `Button` under a form\'s fields. Left out, every child spans the column.',
           "`divided` draws a line between each pair of children and sets them touching, with no gap: rows that carry their own padding, such as `ListRow`s in a `Card flush`. For space and a line between blocks, put a `Divider` in the Stack.",
           '`as` is `div` (default), `section`, `form`, `ul` or `ol`. `as="form"` takes the form props and spaces its fields; `as="ul"` and `as="ol"` draw no markers and their children are `<li>`s, and take `empty`, an `EmptyState` drawn as one muted line when the list has no children.',
@@ -143,7 +143,7 @@ export const layout: ComponentSection = {
           "`rowFrom` (`sm`, `md` or `lg`) turns the column into a row from that breakpoint and leaves it a column below: a main block beside a side column on a wide screen, stacked on a phone. Put the block that takes the width left in a `ClusterGrow`.",
           "A row that is a row at every width is a `Cluster`, not a Stack.",
           "`overline` puts a small label above a `Section`'s title, in the same `<header>`, and `description` a line under it that is not part of the heading's name.",
-          'A landing page\'s section under the `Hero` is `Section size="lg"` and nothing else: a mono `overline` kicker, the title at display size, `description` as a `Lead`, then `actions` as its calls to action, the opening capped at the reading measure at the left edge and the blocks `lg` apart. A feature card in it is a `Card href icon titleStyle="name"` in a `CardGrid`; text beside code is a `SideColumn`.',
+          'A landing page\'s section under the `Hero` is `Section size="lg"` and nothing else: a mono `overline` kicker, the title at display size, `description` as a `Lead`, then `actions` as its calls to action, the opening capped at the reading measure at the start edge and the blocks `lg` apart. A feature card in it is a `Card href icon titleStyle="name"` in a `CardGrid`; text beside code is a `SideColumn`.',
         ],
         dont: [
           "Never build a landing section from an `Overline`, a `Display` and a `Lead` by hand: it is unnamed and drifts from every other one.",
@@ -157,6 +157,7 @@ export const layout: ComponentSection = {
         "A `div` Stack adds no role.",
       ],
       api: ["Stack", "Section"],
+      types: ["SectionSize", "StackAlign", "StackGap", "StackRowFrom", "StackWidth"],
     },
     {
       slug: "cluster",
@@ -168,7 +169,7 @@ export const layout: ComponentSection = {
       pairs: ["Cluster/FillRow", "Cluster/Buttons", "Cluster/Spacer", "Cluster/List"],
       usage: {
         do: [
-          "`gap` is `xs`, `sm` (default) or `md`, the first steps of the `Stack` scale. Cluster is the one row whose default is not `md`: the items of a row sit closer than the blocks of a column.",
+          "`gap` is `xs`, `sm` (default) or `md`, the first steps of the `Stack` scale: the items of a row sit closer than the blocks of a column. The `Size` type lists every default that is not `md`.",
           "`align` is the cross axis: `center` (default), `baseline` for mixed text sizes, `start` or `end`. `justify` is the main axis: `start` (default), `between` for the two ends, `end`.",
           "The items flow onto more lines when the row runs out of room; `wrap={false}` keeps them on one line.",
           "Wrap the one item that should fill the row in `ClusterGrow`; it can shrink to nothing, so a long value truncates and the others stay.",
@@ -186,6 +187,7 @@ export const layout: ComponentSection = {
         "`ClusterGrow` is a `div` too: put the labelled control inside it, with its own `aria-label` or `Field`.",
       ],
       api: ["Cluster", "ClusterGrow"],
+      types: ["ClusterAlign", "ClusterGap", "ClusterGrowMinWidth", "ClusterJustify"],
     },
     {
       slug: "side-column",
@@ -212,6 +214,7 @@ export const layout: ComponentSection = {
         "With `asideLabel` the aside is a native `<details>` disclosure below `lg`: its `<summary>` is the toggle, on the keyboard like any button. From `lg` the summary is gone and, once the page has loaded, the `<details>` is open for real, so the aside is in the accessibility tree.",
       ],
       api: ["SideColumn"],
+      types: ["SideColumnWidth"],
     },
     {
       slug: "card-grid",
@@ -265,6 +268,7 @@ export const layout: ComponentSection = {
         "It is CSS only, the same markup on the server and the client, so it works before the page hydrates and with no script.",
       ],
       api: ["Show"],
+      types: ["Breakpoint"],
     },
     {
       slug: "divider",

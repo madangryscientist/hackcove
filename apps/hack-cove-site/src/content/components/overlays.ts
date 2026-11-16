@@ -107,6 +107,7 @@ export const overlayPages: ComponentPage[] = [
       "The body scrolls on its own and never scrolls the page.",
     ],
     api: ["BottomSheet"],
+    types: ["BottomSheetSnap"],
   },
   {
     slug: "lightbox",

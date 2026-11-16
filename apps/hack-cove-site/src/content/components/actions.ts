@@ -46,6 +46,7 @@ export const actions: ComponentSection = {
         "The `count` chip is part of the button's name: `Splits, 3` (a `count` of 0 is shown as `Splits, 0`). Pass `aria-expanded` on a button that opens something, so a screen reader hears whether it is open.",
       ],
       api: ["Button", "ButtonGroup"],
+      types: ["ButtonSize", "ButtonTone", "ButtonVariant", "Size"],
     },
     {
       slug: "icon-button",
@@ -78,6 +79,7 @@ export const actions: ComponentSection = {
         "It has the component's focus ring.",
       ],
       api: ["IconButton"],
+      types: ["IconButtonTone", "IconButtonVariant"],
     },
     {
       slug: "menu",
@@ -106,6 +108,7 @@ export const actions: ComponentSection = {
         "Inside a `Dialog` the menu opens in the dialog, so it is not inert, and Escape closes only the menu.",
       ],
       api: ["Menu"],
+      types: ["MenuAction"],
     },
     {
       slug: "icon",
@@ -119,7 +122,7 @@ export const actions: ComponentSection = {
           "`name` picks one of the library's icons, all on one grid and one stroke: `diff`, `baseline`, `review`, `ci`, `self-host`, `privacy`, `capture`, `branch`, `theme`, `speed`, `search`, `chevron-right`, `chevron-down`, `close`, `external-link`, `settings`, `bell`, `check`, `plus`, `more`, `grid`, `window`, `type`, `card`, `pointer`, `field`, `table`, `compass`, `page` and `briefcase`. Each is named for its idea or action, not a product. Prefer one to drawing your own.",
           "For a glyph the set lacks, put a bare `<svg>` (with a `viewBox`, no size or colour classes) in an `Icon`; it fills the box.",
           "`size` is `sm` (14px), `md` (16px, the default), `lg` (20px) or `feature` (32px), for an icon that stands for an idea on its own. A feature card takes its icon through `Card`'s `icon`.",
-          "`tone` is a text tone (`muted`, `accent`, `info`, `positive`, `warn`, `danger`); left out, the icon takes the colour of the text around it, so draw the glyph with `currentColor`.",
+          "`tone` is a text tone: `neutral`, `muted`, `accent`, `info`, `positive`, `warn` or `danger`. Left out, the icon takes the colour of the text around it, so draw the glyph with `currentColor`.",
           "An icon that is a button is an `IconButton`.",
         ],
       },
@@ -128,6 +131,7 @@ export const actions: ComponentSection = {
         'An icon that carries meaning on its own takes a `label`, which makes it `role="img"` with that name.',
       ],
       api: ["Icon"],
+      types: ["IconName"],
     },
     {
       slug: "copy-button",
@@ -162,6 +166,7 @@ export const actions: ComponentSection = {
         {
           name: "copyScript",
           text: "A string of JavaScript to inline once on a page rendered to static HTML: one click listener on `document` that makes every copy button work without hydration.",
+          example: "<script is:inline set:html={copyScript} />",
         },
       ],
     },
@@ -216,26 +221,35 @@ export const actions: ComponentSection = {
         "`applyColourScheme` also sets `color-scheme` on `<html>`, so native controls and scrollbars follow.",
       ],
       api: ["ColourSchemeToggle"],
+      types: ["ColourScheme", "ColourSchemeClasses"],
       functions: [
         {
           name: "applyColourScheme",
           text: "Puts a scheme on `<html>`: its class, the other scheme's class taken off, and `color-scheme`.",
+          example:
+            'button.addEventListener("click", () => {\n  const next = readColourScheme() === "dark" ? "light" : "dark";\n  applyColourScheme(next);\n  storeColourScheme(next);\n});',
         },
         {
           name: "schemeClass",
           text: "The class a scheme puts on `<html>`, for the server to render so the first paint is right; empty for the default light scheme.",
+          example: '<html className={schemeClass(scheme, { light: "my-light", dark: "dark" })}>',
         },
         {
           name: "colourSchemeScript",
           text: "A string of JavaScript to inline in `<head>` before first paint: applies the stored scheme, else the system one.",
+          example:
+            "<head>\n  <script dangerouslySetInnerHTML={{ __html: colourSchemeScript }} />\n</head>",
         },
         {
           name: "readColourScheme",
           text: "The stored choice, else the system preference, with a fallback (default light) when neither is available, as on the server.",
+          example:
+            "const scheme = readColourScheme(); // the stored choice, else the system's, else light",
         },
         {
           name: "storeColourScheme",
           text: "Remembers a scheme in `localStorage` for the next visit; a storage error is swallowed.",
+          example: "storeColourScheme(next); // read back on the next visit",
         },
       ],
     },
