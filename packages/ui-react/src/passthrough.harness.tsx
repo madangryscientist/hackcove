@@ -290,5 +290,6 @@ export const CASES: Record<string, () => ReactElement> = {
     </ui.Timeline>
   ),
   TimelineItem: () => <ui.TimelineItem title="T" {...A} />,
+  ToastRegion: () => <ui.ToastRegion toasts={[]} onDismiss={noop} {...A} />,
   Video: () => <ui.Video src="/x.mp4" {...A} />,
 };

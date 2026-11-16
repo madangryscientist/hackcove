@@ -49,6 +49,7 @@ import {
   GalleryHeader,
   GalleryNavigationProgress,
   GalleryPageFade,
+  GalleryToast,
 } from "./GalleryBlocks";
 import { CompactApp, TypeSpecimen } from "./typeSteps";
 
@@ -235,6 +236,8 @@ export const gallerySections: GallerySection[] = [
         <GalleryMorph />
 
         <GalleryNavigationProgress />
+
+        <GalleryToast />
 
         <GalleryDialogs />
 

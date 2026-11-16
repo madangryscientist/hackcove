@@ -54,6 +54,7 @@ export { AvatarStack, type AvatarStackPerson } from "./AvatarStack.js";
 export { Breadcrumbs, type Crumb } from "./Breadcrumbs.js";
 export { BulletItem, BulletList } from "./BulletList.js";
 export { Callout } from "./Callout.js";
+export { ToastRegion, type Toast } from "./ToastRegion.js";
 export { ListRow } from "./ListRow.js";
 export { SortableItem, SortableList, type SortableMove, SortableSection } from "./SortableList.js";
 export { OutlineRegion, RegionFrame, type RegionRect } from "./OutlineRegion.js";
