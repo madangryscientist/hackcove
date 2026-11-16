@@ -92,7 +92,7 @@ function merged(spans: readonly Span[]): Span[] {
  */
 function commaAfter(text: string, end: number): Span | undefined {
   const match =
-    /^[ \t]*(?:\/\*[^\n*]*(?:\*(?!\/)[^\n*]*)*\*\/[ \t]*)*(?:\/\/[^\n]*)?\s*,(?:(?![ \t]*\/[/*])[ \t]*)?/.exec(
+    /^[ \t]*(?:\/\*[^\n*]*(?:\*(?!\/)[^\n*]*)*\*\/[ \t]*)*(?:\/\/[^\n]*(?=\n))?\s*,(?:(?![ \t]*\/[/*])[ \t]*)?/.exec(
       text.slice(end),
     );
   if (match === null) return undefined;
