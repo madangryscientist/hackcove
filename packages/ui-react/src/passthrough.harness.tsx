@@ -200,6 +200,9 @@ export const CASES: Record<string, () => ReactElement> = {
       <ui.Radio value="a" label="A" />
     </ui.RadioGroup>
   ),
+  Pagination: () => (
+    <ui.Pagination label="L" page={1} pageCount={2} pageHref={(p) => `/${p}`} {...A} />
+  ),
   Pill: () => <ui.Pill {...A}>x</ui.Pill>,
   ProgressBar: () => <ui.ProgressBar value={1} label="L" {...A} />,
   Prose: () => <ui.Prose {...A}>x</ui.Prose>,

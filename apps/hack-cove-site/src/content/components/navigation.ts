@@ -61,6 +61,30 @@ export const navigation: ComponentSection = {
       api: ["Breadcrumbs"],
     },
     {
+      slug: "pagination",
+      name: "Pagination",
+      summary: "Page links for a long list.",
+      whenToUse:
+        "A list split into pages that the reader moves through: a directory, search results, an archive.",
+      pairs: ["Pagination/Links"],
+      stories: ["PaginationStates"],
+      usage: {
+        do: [
+          "Give `pageHref` the URL of a page; the page lives in the URL, so back, a new tab and a shared link work. Each link goes through the app's `LinkProvider`.",
+          "`page` is the page shown, from 1, and `pageCount` how many there are; a stale page past the end draws the last one, and a single page draws nothing.",
+          "One Pagination under the list; a long list may add one above it too, each with its own `label`.",
+          'The count line ("21 to 40 of 312") is a `Caption` beside it, not part of it.',
+          "`previousLabel`, `nextLabel` and `pageLabel` carry the words for another language.",
+        ],
+      },
+      accessibility: [
+        'A `<nav>` named by `label`. Every page is a link, and the current one has `aria-current="page"`.',
+        "Previous on the first page and Next on the last are plain text, not links, so there is no dead stop in the tab order.",
+        'The gaps (`…`) are `aria-hidden`. Below `sm` the numbers give way to `pageLabel` ("Page 4 of 12") between Previous and Next.',
+      ],
+      api: ["Pagination"],
+    },
+    {
       slug: "site-search",
       name: "SiteSearch",
       summary: "Find a page by name, from a header button or Ctrl+K.",

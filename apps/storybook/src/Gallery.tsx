@@ -10,6 +10,7 @@ import {
   fromISODate,
   Markdown,
   Overline,
+  Pagination,
   PageHeading,
   SectionHeading,
   SiteSearch,
@@ -199,6 +200,8 @@ export const gallerySections: GallerySection[] = [
             "Snapshot",
           ]}
         />
+
+        <Pagination label="Pages" page={3} pageCount={10} pageHref={(page) => `#page-${page}`} />
 
         <SiteSearch
           label="Search components"

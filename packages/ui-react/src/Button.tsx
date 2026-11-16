@@ -155,6 +155,18 @@ export function buttonClass(
   return idleClass(variant, size, tone, { step });
 }
 
+/**
+ * The classes of a blocked Button, for an element that is not a button: a pager's Previous on the
+ * first page, drawn as text in the same box so the row does not jump.
+ */
+export function blockedButtonClass(
+  variant: ButtonVariant = "primary",
+  { size = "md" }: Pick<ButtonLook, "size"> = {},
+  step?: TypeStep,
+): string {
+  return stateClass({ variant, size }, "blocked", undefined, step);
+}
+
 function idleClass(
   variant: ButtonVariant,
   size: ButtonSize,
