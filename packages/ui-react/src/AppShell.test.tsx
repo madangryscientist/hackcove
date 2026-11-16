@@ -1,14 +1,14 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
-import {
-  AppShell,
-  AppShellBrand,
-  AppShellHideBelow,
-  appShellRootClass,
-  appShellRootClassFor,
-} from "./AppShell.js";
+import { AppShell, AppShellBrand, appShellRootClass, appShellRootClassFor } from "./AppShell.js";
 import { schemeClass } from "./colourScheme.js";
+import { Show } from "./Show.js";
 import { render, screen, within } from "./render.harness.js";
+
+// jsdom has no layout, so these are the slot-order tests only. The nav that folds into the Menu
+// from `md` when it does not fit is proved in the e2e (`apps/storybook/e2e/appshell-nav-fold.spec.ts`),
+// not here by faking a ResizeObserver measurement. The safe-area insets and where an anchor lands
+// are read, not tested: a headless browser reports no insets, and a scroll position is not asserted.
 
 const follows = (a: Node, b: Node) =>
   a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
@@ -114,9 +114,19 @@ describe("AppShellBrand", () => {
   });
 });
 
-describe("AppShellHideBelow", () => {
-  it("renders its children in the header's controls", () => {
-    render(<AppShell controls={<AppShellHideBelow>ada</AppShellHideBelow>}>x</AppShell>);
+describe("Show in the header", () => {
+  it("a Show in controls renders its children in the banner", () => {
+    render(
+      <AppShell
+        controls={
+          <Show from="sm" as="span">
+            ada
+          </Show>
+        }
+      >
+        x
+      </AppShell>,
+    );
     expect(within(screen.getByRole("banner")).getByText("ada")).not.toBeNull();
   });
 });

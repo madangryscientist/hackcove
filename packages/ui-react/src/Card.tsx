@@ -67,7 +67,7 @@ function cardPadding(form: ReturnType<typeof cardForm>): string | false {
 
 function cardClass(form: ReturnType<typeof cardForm>): string {
   return cx(
-    "relative scroll-mt-28 rounded-xl border target:outline-2 target:outline-violet-600",
+    "relative scroll-mt-[calc(var(--app-header,0px)+1rem)] rounded-xl border target:outline-2 target:outline-violet-600",
     liftInteractive,
     cardBorder(form),
     cardPadding(form),

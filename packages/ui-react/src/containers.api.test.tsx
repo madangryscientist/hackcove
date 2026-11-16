@@ -8,7 +8,7 @@ import { EmptyState } from "./EmptyState.js";
 import { ListRow } from "./ListRow.js";
 import { render, screen, user } from "./render.harness.js";
 import { SiteSearch } from "./SiteSearch.js";
-import { Section } from "./Stack.js";
+import { Section } from "./Section.js";
 
 // What a container sets for what sits in it: the root a card takes from its title, the heading
 // level from the heading that holds it, and a row's form from what it does.

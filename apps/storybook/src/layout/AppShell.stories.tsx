@@ -4,7 +4,6 @@ import {
   AppShellBrand,
   Caption,
   LinkProvider,
-  AppShellHideBelow,
   Avatar,
   Button,
   Card,
@@ -15,6 +14,8 @@ import {
   Select,
   Stack,
   Text,
+  Cluster,
+  Show,
 } from "@hackcove/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 
@@ -235,16 +236,18 @@ export const CrowdedControls: S = {
   ),
 };
 
-/** `AppShellHideBelow` in `controls`: the viewer's name shows from `sm` up and is gone on a phone, so the toggle keeps its place. Narrow the viewport to see it. */
+/** A `Show from="sm"` in `controls`: the viewer's name shows from `sm` up and is gone on a phone, so the toggle keeps its place. Narrow the viewport to see it. */
 export const HideBelow: S = {
   render: () => (
     <DemoShell
       controls={
         <>
-          <AppShellHideBelow>
-            <Avatar name="Ada Lovelace" size="sm" />
-            <Text>Ada Lovelace</Text>
-          </AppShellHideBelow>
+          <Show from="sm">
+            <Cluster gap="xs">
+              <Avatar name="Ada Lovelace" size="sm" />
+              <Text as="span">Ada Lovelace</Text>
+            </Cluster>
+          </Show>
           <ColourSchemeToggle />
         </>
       }

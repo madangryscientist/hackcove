@@ -13,14 +13,8 @@ export {
 } from "./StackedBar.js";
 export { TrendChart, type TrendSeries } from "./TrendChart.js";
 export { Markdown } from "./Markdown.js";
-export {
-  AppShell,
-  AppShellBrand,
-  type AppShellBreakpoint,
-  type AppShellDensity,
-  AppShellHideBelow,
-  appShellRootClassFor,
-} from "./AppShell.js";
+export { AppShell, AppShellBrand, type AppShellDensity, appShellRootClassFor } from "./AppShell.js";
+export { SiteFooter, type SiteFooterLink } from "./SiteFooter.js";
 export { Container } from "./Container.js";
 export { PageHeader } from "./PageHeader.js";
 export { Hero } from "./Hero.js";
@@ -34,6 +28,12 @@ export {
   ProseLayout,
 } from "./PageLayouts.js";
 export { SidebarLayout } from "./SidebarLayout.js";
+export {
+  DocsLayout,
+  type DocsHeading,
+  type DocsNavGroup,
+  type DocsNeighbour,
+} from "./DocsLayout.js";
 export { SideColumn, type SideColumnWidth } from "./SideColumn.js";
 export { StickyBar } from "./StickyBar.js";
 export { ErrorPage, Forbidden, Maintenance, NotFound, Offline } from "./StatusPages.js";
@@ -45,7 +45,15 @@ export {
   type ClusterGap,
   type ClusterJustify,
 } from "./Cluster.js";
-export { Section, Stack, type StackGap, type StackRowFrom, type StackWidth } from "./Stack.js";
+export { Section, type SectionSize } from "./Section.js";
+export {
+  Stack,
+  type StackAlign,
+  type StackGap,
+  type StackRowFrom,
+  type StackWidth,
+} from "./Stack.js";
+export { Show, type Breakpoint } from "./Show.js";
 export { Button, type ButtonSize, type ButtonTone, type ButtonVariant } from "./Button.js";
 export { ButtonGroup } from "./ButtonGroup.js";
 export { type LinkAdapter, type LinkAdapterProps, LinkProvider } from "./link.js";
@@ -74,7 +82,7 @@ export type { RowTone } from "./tableRow.js";
 export { InlineEdit } from "./InlineEdit.js";
 export { TableEditCell } from "./TableEditCell.js";
 export { EmptyState } from "./EmptyState.js";
-export { Step, Steps } from "./Steps.js";
+export { Step, Steps, type StepsSize } from "./Steps.js";
 export { Timeline, TimelineItem } from "./Timeline.js";
 export { ChatComposer } from "./ChatComposer.js";
 export { ChatMessage } from "./ChatMessage.js";
@@ -146,6 +154,7 @@ export {
   type SubsectionHeadingSize,
   Text,
   type TextAlign,
+  type TextLines,
   type TextMinWidth,
   type TextTone,
 } from "./typography.js";

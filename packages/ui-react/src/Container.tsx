@@ -31,6 +31,11 @@ type ContainerProps = {
   children?: ReactNode;
 } & Unstyled<Omit<HTMLAttributes<HTMLElement>, "children">>;
 
+// The one content edge: px-4 (px-6 from `sm`), or the safe-area inset where a notch or a rounded
+// corner is wider (an app with `viewport-fit=cover`; the inset is 0 in an ordinary tab).
+const SIDES =
+  "mx-auto w-full max-w-6xl pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] sm:pl-[max(1.5rem,env(safe-area-inset-left))] sm:pr-[max(1.5rem,env(safe-area-inset-right))]";
+
 /** Container with the extra classes its own parts need (AppShell's padding): internal, not exported. */
 export function ContainerFrame({
   as: Tag = "div",
@@ -50,7 +55,7 @@ export function ContainerFrame({
     [ref],
   );
   return (
-    <Tag {...rest} ref={attach} className={cx("mx-auto w-full max-w-6xl px-4 sm:px-6", className)}>
+    <Tag {...rest} ref={attach} className={cx(SIDES, className)}>
       {children}
     </Tag>
   );

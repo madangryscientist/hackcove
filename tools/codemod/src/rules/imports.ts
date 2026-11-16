@@ -8,6 +8,8 @@ const RENAMED: Readonly<Record<string, string>> = {
   LinkRenderProps: "LinkAdapterProps",
   LinkRender: "LinkAdapter",
   FilterGroup: "Fieldset",
+  AppShellHideBelow: "Show",
+  AppShellBreakpoint: "Breakpoint",
 };
 
 const PROPS_TYPES = [

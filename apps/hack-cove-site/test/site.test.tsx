@@ -197,8 +197,9 @@ describe("the home page", () => {
         [
           "overline" in want ? want.overline : undefined,
           want.name,
-          want.label,
-          want.pitch,
+          // A product ready to use is a landing section: its pitch is the lede under the title,
+          // then its status. A coming card shows its status in its header.
+          ...("overline" in want ? [want.pitch, want.label] : [want.label, want.pitch]),
           ...(features ?? []),
           want.action,
           sample?.label,
@@ -223,8 +224,10 @@ describe("the home page", () => {
 
   test("the three products ready to use come first, each a block with a picture or real output", () => {
     expect(sections).toHaveLength(5);
-    // Five section headings, three questions and two coming cards (a Card's title is an h2).
-    expect(html.match(/<h2/g)).toHaveLength(10);
+    // Five section headings; the three questions and two coming cards sit in a section, so a
+    // Card's title is one level below it, an h3.
+    expect(html.match(/<h2/g)).toHaveLength(5);
+    expect(html.match(/<h3/g)).toHaveLength(5);
     expect(coming).toContain(`>${site.home.coming.title}<`);
     expect(coming.match(/<article/g)).toHaveLength(2);
     expect(html.match(/<img /g)).toHaveLength(2);

@@ -280,6 +280,26 @@ export const removed = {
   r95: () => <ui.Input align="end" />,
   // @ts-expect-error ControlAlign is gone with Input align
   r96: () => ((t: import("./index.js").ControlAlign) => t)("end"),
+
+  // Layout and composition
+  // @ts-expect-error truncate is lines={1}
+  r97: () => <ui.Text truncate>x</ui.Text>,
+  // @ts-expect-error truncate is lines={1}
+  r98: () => <ui.Caption truncate>x</ui.Caption>,
+  // @ts-expect-error an Overline takes no truncate
+  r99: () => <ui.Overline truncate>x</ui.Overline>,
+  // @ts-expect-error AppShellHideBelow is Show from
+  r100: (t: typeof import("./index.js").AppShellHideBelow) => t,
+  // @ts-expect-error AppShellBreakpoint is Breakpoint
+  r101: () => ((t: import("./index.js").AppShellBreakpoint) => t)("sm"),
+  // @ts-expect-error CardGrid columns="2:1" is a SideColumn asideWidth="third"
+  r102: () => <ui.CardGrid columns="2:1">x</ui.CardGrid>,
+  // @ts-expect-error CardGrid columns="1:2" is a SideColumn asideWidth="third"
+  r103: () => <ui.CardGrid columns="1:2">x</ui.CardGrid>,
+  // @ts-expect-error RegionFrame width is the frame's, not the picture's pixels
+  r104: () => <ui.RegionFrame src="/x.png" alt="" width={1600} />,
+  // @ts-expect-error RegionFrame takes no height
+  r105: () => <ui.RegionFrame src="/x.png" alt="" height={920} />,
 };
 
 describe("removed API", () => {

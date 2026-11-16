@@ -1,0 +1,1 @@
+4: Text truncate is lines={1}: rewrite this one by hand

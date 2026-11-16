@@ -109,31 +109,6 @@ export const pagelayouts: ComponentSection = {
       api: ["ProseLayout"],
     },
     {
-      slug: "card-grid",
-      name: "CardGrid",
-      summary: "A responsive grid of cards or tiles.",
-      whenToUse:
-        "Several cards or `StatTile`s of the same weight that should sit side by side on a wide screen.",
-      pairs: ["CardGrid/Tiles", "CardGrid/Auto"],
-      fullPage: "CardGrid/FullPage",
-      usage: {
-        do: [
-          "Use `columns` 2, 3 or 4 when you know how many; it is one column on a phone, two from `sm` and `columns` from `lg`.",
-          'Use `columns="auto"` when the count varies: it fits as many per row as the width allows, none narrower than `minWidth` (`md`, the default, or `sm`).',
-          '`columns="2:1"` or `"1:2"` is two unequal columns from `md` (one on a phone): the wide one twice the narrow one, for a record\'s detail beside its side panel.',
-          '`align="start"` keeps each card its own height; by default every card stretches to the tallest in its row.',
-          "`CardGrid` goes inside a page layout; it sets no page width of its own.",
-          "A single column of blocks is a `Stack`, not a one-column `CardGrid`.",
-          '`as="ul"` makes the grid a list and wraps each child in a list item, for a set of like tiles a screen reader should count. The look is the same.',
-        ],
-      },
-      accessibility: [
-        'The grid is a plain `div` with no role: the cards keep their own order and semantics. With `as="ul"` it is a list, and each child is a list item.',
-        "The order is the DOM order, so the tab order follows the reading order.",
-      ],
-      api: ["CardGrid"],
-    },
-    {
       slug: "sidebar-layout",
       name: "SidebarLayout",
       summary: "A rail of links beside the page.",
@@ -151,6 +126,7 @@ export const pagelayouts: ComponentSection = {
           "A long rail sets `asideLabel`: below `md` it folds behind a closed disclosure of that name, so the page comes first on a phone; from `md` it is the same rail. A short rail leaves it out.",
           'Once the page has loaded, a rail that scrolls shows its current link (the one with `aria-current`) in view, with its own thin scrollbar, and the folded disclosure reads `asideLabel` and the current link, such as "All components: Button". Nothing to set; in Astro, hydrate the layout (`client:load`).',
           "Facts about one record go in `DetailLayout`'s aside, not a rail.",
+          "A docs site uses `DocsLayout`, which is this rail with the docs page's title, contents list and neighbours fixed.",
         ],
       },
       accessibility: [
@@ -161,6 +137,36 @@ export const pagelayouts: ComponentSection = {
         "A rail that scrolls itself is still in the tab order, and a focus ring on a link in it is not cut off at the rail's edge. A rail of links has no tab stop of its own; a rail that scrolls and holds no link takes one, named by `asideLabel`.",
       ],
       api: ["SidebarLayout"],
+    },
+    {
+      slug: "docs-layout",
+      name: "DocsLayout",
+      summary: "A docs page: the docs nav, the title, an On this page list and the way onwards.",
+      whenToUse:
+        "Every page of a docs site: a nav of grouped pages, an article with its own headings, and previous and next in reading order.",
+      pairs: ["DocsLayout/Docs"],
+      fullPage: "DocsLayout/FullPage",
+      stories: ["DocsLayout"],
+      usage: {
+        do: [
+          "Give `nav` the docs pages in reading order, in groups: each group's `title` over its links, a group with no title at the top. `navLabel` names the rail and the disclosure it folds behind below `md`.",
+          "Give `contents` the page's own headings (`id`, `label`, `level` 2 or 3) in order; the layout draws the On this page list, a closed disclosure above the article below `xl` and a sticky column right of it from `xl`. With fewer than two there is no list.",
+          "`current` is the id of the heading being read, a value the page passes; a site that follows the reader computes it. Left out, no entry is marked.",
+          "Give `previous` and `next` the pages either side in reading order; they are links, not cards, so they add no heading to the outline.",
+          "Wrap the article in a `Prose`; its `Section` headings start at `h2` under the layout's `h1`.",
+        ],
+        dont: [
+          "Do not hand-build a contents list or a pager beside a `SidebarLayout`: that is `DocsLayout`.",
+          "Never put a scroll spy in the page to mark the list; pass `current`.",
+        ],
+      },
+      accessibility: [
+        'The rail is an `<aside>` named `navLabel`; each group is a `<nav>` named by its title (the top group by `navLabel`), and the current page has `aria-current="page"`.',
+        "The title is the page's one `h1`.",
+        'The On this page list is one `<nav>` named `contentsLabel` at every width, so there is one copy of each link; the entry for `current` has `aria-current="location"`.',
+        'Previous and next are one `<nav>` named from `previousLabel` and `nextLabel`; each link\'s name is the word and the page ("Previous: Install").',
+      ],
+      api: ["DocsLayout"],
     },
     {
       slug: "full-bleed-layout",

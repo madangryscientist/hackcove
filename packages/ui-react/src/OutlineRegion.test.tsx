@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { OutlineRegion, RegionFrame } from "./OutlineRegion.js";
-import { render, screen } from "./render.harness.js";
+import { fireEvent, render, screen } from "./render.harness.js";
 
 const within = { width: 200, height: 100 };
 const rect = { x: 0, y: 0, width: 10, height: 10 };
@@ -31,6 +31,26 @@ describe("RegionFrame", () => {
     const img = screen.getByRole("img", { name: "A shot" });
     expect(img.getAttribute("src")).toBe("/shot.png");
     expect(img.getAttribute("loading")).toBe("lazy");
+    expect(follows(img, screen.getByText("config"))).toBeTruthy();
+  });
+
+  it("keeps the picture's alt and onLoad at a letterboxed aspect and a fixed width", () => {
+    const loaded: string[] = [];
+    render(
+      <RegionFrame
+        src="/shot.png"
+        alt="A shot"
+        aspect="16:9"
+        width="md"
+        onLoad={(event) => loaded.push(event.currentTarget.alt)}
+      >
+        <OutlineRegion rect={rect} within={within} label="config" />
+      </RegionFrame>,
+    );
+    const img = screen.getByRole("img", { name: "A shot" });
+    // A load is not something jsdom does, so it is fired by hand.
+    fireEvent.load(img);
+    expect(loaded).toEqual(["A shot"]);
     expect(follows(img, screen.getByText("config"))).toBeTruthy();
   });
 });

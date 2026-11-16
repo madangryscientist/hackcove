@@ -87,3 +87,14 @@ test("at 390px the On this page list fits: no sideways scroll on /ui/button/", a
   const width = await page.evaluate(() => document.documentElement.scrollWidth);
   expect(width).toBeLessThanOrEqual(390);
 });
+
+test("at 390px the On this page list is folded above the article and opens to its links", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 900 });
+  await page.goto("/ui/button/");
+  const nav = onThisPage(page);
+  await expect(nav.getByRole("link", { name: "API" })).toBeHidden();
+  await nav.getByText("On this page", { exact: true }).first().click();
+  await expect(nav.getByRole("link", { name: "API" })).toBeVisible();
+});

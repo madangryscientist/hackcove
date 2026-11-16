@@ -1,0 +1,15 @@
+import { Caption, Text } from "@hackcove/ui-react";
+
+export const view = (
+  <>
+    <Text lines={1}>
+      a
+    </Text>
+    <Caption as="span" lines={1} mono>
+      b
+    </Caption>
+    <Text>
+      c
+    </Text>
+  </>
+);

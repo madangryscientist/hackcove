@@ -70,7 +70,7 @@ describe("Card", () => {
 
   it("renders the same markup as before when as is off", () => {
     expect(renderToStaticMarkup(<Card>body</Card>)).toBe(
-      `<div class="relative scroll-mt-28 rounded-xl border target:outline-2 target:outline-violet-600 ${lifted} border-slate-200/70 bg-white p-5 shadow-sm">body</div>`,
+      `<div class="relative scroll-mt-[calc(var(--app-header,0px)+1rem)] rounded-xl border target:outline-2 target:outline-violet-600 ${lifted} border-slate-200/70 bg-white p-5 shadow-sm">body</div>`,
     );
   });
 
@@ -138,14 +138,14 @@ describe("Card", () => {
 
   it("is an anchor target: it scrolls clear of the sticky header and outlines itself when targeted", () => {
     const panel = renderToStaticMarkup(<Card id="billing">x</Card>);
-    expect(panel).toContain("scroll-mt-28");
+    expect(panel).toContain("scroll-mt-[calc(var(--app-header,0px)+1rem)]");
     expect(panel).toContain("target:outline-2 target:outline-violet-600");
     const link = renderToStaticMarkup(
       <Card href="#x" id="billing">
         x
       </Card>,
     );
-    expect(link).toContain("scroll-mt-28");
+    expect(link).toContain("scroll-mt-[calc(var(--app-header,0px)+1rem)]");
     expect(link).toContain("target:outline-violet-600");
   });
 

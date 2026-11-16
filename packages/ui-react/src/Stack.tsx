@@ -1,15 +1,12 @@
 import {
-  useId,
   type ComponentPropsWithoutRef,
   type ElementType,
   type ReactElement,
   type ReactNode,
 } from "react";
 import { cx } from "./cx.js";
-import { type HeadingLevel, HeadingLevelProvider, useHeadingLevel } from "./headingLevel.js";
 import type { Passthrough, Unstyled } from "./props.js";
 import { useStackGap } from "./stackGap.js";
-import { SectionHeading } from "./typography.js";
 
 export type StackGap = "xs" | "sm" | "md" | "lg" | "xl";
 
@@ -30,10 +27,11 @@ export const STACK_ROW_FROM: Record<StackRowFrom, string> = {
   lg: "lg:flex-row",
 };
 
-export type StackWidth = "narrow" | "default" | "wide" | "full";
+export type StackWidth = "compact" | "narrow" | "default" | "wide" | "full";
 
 /** `default` adds nothing: the Stack is as wide as its parent. */
 export const STACK_WIDTH: Record<StackWidth, string | undefined> = {
+  compact: "max-w-md",
   narrow: "max-w-3xl",
   default: undefined,
   wide: "max-w-5xl",
@@ -47,9 +45,18 @@ export const STACK_WIDTH: Record<StackWidth, string | undefined> = {
  * Stack sits: `xs` inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow`, and
  * `md` on the page.
  *
- * `width` caps the column: `narrow` is a reading measure (`max-w-3xl`), `wide` is `max-w-5xl`, `full`
- * is the parent's whole width and `default` sets nothing. A capped Stack starts at its parent's left
- * edge (it is never re-centred), so its first line lines up with every other block on the page.
+ * `width` caps the column: `compact` is the width of one card or one picture's column (28rem),
+ * `narrow` is a reading measure, `wide` is wider again, `full` is the parent's whole width and
+ * `default` sets nothing. A capped Stack starts at its parent's left edge (it is never re-centred),
+ * so its first line lines up with every other block on the page. A width cap on any one block (a
+ * `Card`, an `Image`) is a Stack around it.
+ *
+ * `align="start"` keeps each child at its own width, capped at the column's (a `Button` under a
+ * form's fields); left out, every child spans the column.
+ *
+ * `divided` draws a line between each pair of children and sets them touching, with no gap: it is
+ * for rows that carry their own padding (`ListRow`s in a `Card flush`). Space and a line between
+ * blocks is a `Divider` in the Stack instead.
  *
  * `rowFrom` turns the column into a row from `sm`, `md` or `lg` (a column below it): the blocks sit
  * side by side, `gap` apart, and a `ClusterGrow` around one of them takes the width left. Without it the
@@ -64,10 +71,13 @@ export function Stack({
   gap,
   width = "default",
   rowFrom,
+  align = "stretch",
+  divided = false,
   as = "div",
   children,
   ...rest
 }: StackProps): ReactElement {
+  const spacing = STACK_GAP[useStackGap(gap)];
   return (
     <Box
       tag={as}
@@ -75,7 +85,10 @@ export function Stack({
         "flex flex-col",
         (as === "ul" || as === "ol") && "list-none",
         rowFrom && STACK_ROW_FROM[rowFrom],
-        STACK_GAP[useStackGap(gap)],
+        // The line colour sits on the Stack and each row after the first inherits it, so the
+        // theme's remap of the one line utility reaches every line.
+        divided ? "border-slate-200/70 *:not-first:border-t *:not-first:border-inherit" : spacing,
+        align === "start" && "items-start *:max-w-full",
         STACK_WIDTH[width],
         "*:data-page-header:mb-0",
       )}
@@ -94,17 +107,34 @@ function Box({
   return <Tag {...props} />;
 }
 
+/** Where a Stack's children sit across the column: `stretch` spans it, `start` keeps each child's own width. */
+export type StackAlign = "stretch" | "start";
+
 type StackBase = {
+  /**
+   * Caps the column: `compact` max-w-md (one card or one picture's column), `narrow` max-w-3xl (a
+   * reading measure), `wide` max-w-5xl, `full` the parent's whole width, `default` sets nothing.
+   * @default default
+   */
+  width?: StackWidth | undefined;
+  /**
+   * Where the children sit across the column: `stretch` spans it, `start` keeps each child at its
+   * own width (a `Button` under a form's fields).
+   * @default stretch
+   */
+  align?: StackAlign | undefined;
+  children?: ReactNode;
+} & (StackSpaced | StackDivided);
+
+/** A Stack whose blocks are a gap apart. */
+type StackSpaced = {
   /**
    * The space between blocks: `xs` gap-2, `sm` gap-4, `md` gap-6, `lg` gap-8, `xl` gap-12 (gap-16 from `sm`).
    * @default xs inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow`, else md
    */
   gap?: StackGap | undefined;
-  /**
-   * Caps the column: `narrow` max-w-3xl (a reading measure), `wide` max-w-5xl, `full` the parent's whole width, `default` sets nothing.
-   * @default default
-   */
-  width?: StackWidth | undefined;
+  /** A line between each pair of children, which then touch (no gap). */
+  divided?: false | undefined;
   /**
    * Turns the column into a row from this breakpoint (`sm`, `md` or `lg`), a column below it: a main
    * area beside a side column on a wide screen, stacked on a phone. In the row the blocks sit side by side
@@ -112,7 +142,17 @@ type StackBase = {
    * `ClusterGrow`. Left out, the Stack is always a column.
    */
   rowFrom?: StackRowFrom | undefined;
-  children?: ReactNode;
+};
+
+/** A Stack of rows with a line between each pair and no gap. */
+type StackDivided = {
+  /**
+   * A line between each pair of children, which then touch (no gap): rows that carry their own
+   * padding. Space and a line between blocks is a `Divider` in the Stack instead.
+   */
+  divided: true;
+  gap?: never;
+  rowFrom?: never;
 };
 
 type StackProps = StackBase &
@@ -134,90 +174,3 @@ type StackProps = StackBase &
         as: "ol";
       } & Unstyled<Omit<ComponentPropsWithoutRef<"ol">, "children">>)
   );
-
-/** The id a `Section`'s heading takes: the caller's, or one of React's. */
-function useHeadingId(id: string | undefined): string {
-  const generated = useId();
-  return id ?? generated;
-}
-
-/**
- * A `<section>` Stack with an optional `SectionHeading` title (which names it) and `actions` beside
- * it. Its blocks are `gap` apart, from where it sits as in a `Stack`. `rule` draws a hairline under the
- * title row, `actions` included, as `SectionHeading`'s `rule` does for a bare heading. A line
- * between two sections is a `Divider` in the `Stack` that holds them. `level` is the title's
- * heading level, one below the heading that holds the section (an `h2` on the page), and a heading
- * inside it (a `Card`'s title) is one below that.
- */
-export function Section({
-  id,
-  title,
-  actions,
-  rule = false,
-  level,
-  gap,
-  width = "default",
-  children,
-  ...rest
-}: {
-  /**
-   * Makes the section a link target: `#<id>` scrolls to its heading, which stops below the sticky
-   * AppShell header. Needs a `title`: with no title the heading that carries it is not rendered.
-   */
-  id?: string | undefined;
-  /** A `SectionHeading` at the top, which names the section. */
-  title?: ReactNode;
-  /** Buttons or links at the end of the title row. */
-  actions?: ReactNode;
-  /**
-   * A hairline under the title row across the section's width, `actions` included. Needs a `title`
-   * or `actions`.
-   * @default false
-   */
-  rule?: boolean | undefined;
-  /**
-   * The title's heading level, 2 to 6. It does not change how the title looks.
-   * @default one below the heading that holds the section: 2 on the page
-   */
-  level?: HeadingLevel | undefined;
-  /**
-   * The space between blocks: `xs` gap-2, `sm` gap-4, `md` gap-6, `lg` gap-8, `xl` gap-12 (gap-16 from `sm`).
-   * @default xs inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow`, else md
-   */
-  gap?: StackGap | undefined;
-  /**
-   * Caps the column: `narrow` max-w-3xl (a reading measure), `wide` max-w-5xl, `full` the parent's whole width, `default` sets nothing.
-   * @default default
-   */
-  width?: StackWidth | undefined;
-  children?: ReactNode;
-} & Passthrough): ReactElement {
-  const titleId = useHeadingId(id);
-  const own = useHeadingLevel(level);
-  return (
-    <Stack
-      as="section"
-      {...rest}
-      gap={gap}
-      width={width}
-      aria-labelledby={title ? titleId : rest["aria-labelledby"]}
-    >
-      {(title || actions) && (
-        <div
-          className={cx(
-            "flex items-center justify-between gap-4",
-            rule && "border-b border-slate-200/70 pb-2",
-          )}
-        >
-          {title && (
-            <SectionHeading as={`h${own}`} id={titleId}>
-              {title}
-            </SectionHeading>
-          )}
-          {actions && <div className="ml-auto flex items-center gap-2">{actions}</div>}
-        </div>
-      )}
-      {title ? <HeadingLevelProvider level={own}>{children}</HeadingLevelProvider> : children}
-    </Stack>
-  );
-}

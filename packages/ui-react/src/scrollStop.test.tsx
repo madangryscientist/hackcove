@@ -1,7 +1,9 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DetailLayout } from "./PageLayouts.js";
+import { SideColumn } from "./SideColumn.js";
 import { SidebarLayout } from "./SidebarLayout.js";
+import { within } from "./render.harness.js";
 import { mount, unmount } from "./dom.harness.js";
 
 afterEach(() => {
@@ -42,6 +44,31 @@ const scrollerOf = (root: HTMLElement) => {
 };
 
 describe("a sticky column's scroll stop", () => {
+  it("SideColumn sticky whose aside overflows takes a tab stop, named by asideLabel", () => {
+    overflowing(900, 400);
+    // Wide, the folded column's <summary> is `display: none`: jsdom has no layout, so say so.
+    HTMLElement.prototype.checkVisibility = function (this: HTMLElement) {
+      return this.tagName !== "SUMMARY";
+    };
+    const root = mount(
+      <SideColumn aside="Just text" asideLabel="Reply agent" sticky>
+        MAIN
+      </SideColumn>,
+    );
+    expect(within(root).getByRole("group", { name: "Reply agent" }).tabIndex).toBe(0);
+  });
+
+  it("SideColumn without sticky gets no scroll stop, however tall", () => {
+    overflowing(900, 400);
+    const root = mount(
+      <SideColumn aside="Just text" asideLabel="Reply agent">
+        MAIN
+      </SideColumn>,
+    );
+    expect(within(root).queryByRole("group", { name: "Reply agent" })).toBeNull();
+    expect(root.querySelector("[tabindex]")).toBeNull();
+  });
+
   it("DetailLayout stickyAside of plain text that overflows takes a tab stop, named by asideLabel", () => {
     overflowing(900, 400);
     const root = mount(

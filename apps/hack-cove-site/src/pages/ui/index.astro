@@ -4,17 +4,18 @@ import { DocsFrame } from "../../components/DocsFrame";
 import { UiPage } from "../../components/UiPage";
 import { sectionOf, site } from "../../content/site";
 import Base from "../../layouts/Base.astro";
-import { PageHeader, Stack } from "@hackcove/ui-react";
 
 const section = sectionOf("ui");
 ---
 
 <Base title={`${section.name} · ${site.name}`} description={section.description}>
-  <DocsFrame client:load pathname={Astro.url.pathname}>
-    <Stack gap="xl">
-      <PageHeader title="Getting started" description={site.ui.subtitle} />
-      <UiPage />
-    </Stack>
+  <DocsFrame
+    client:load
+    pathname={Astro.url.pathname}
+    title="Getting started"
+    description={site.ui.subtitle}
+  >
+    <UiPage />
   </DocsFrame>
   <Contact slot="footer" />
 </Base>

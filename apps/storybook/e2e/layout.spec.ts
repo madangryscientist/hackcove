@@ -181,3 +181,15 @@ for (const width of widths) {
     expect(new Set(tops).size).toBe(1);
   });
 }
+
+test("at 375 a Stack align start with a long paragraph, a long token and a button leaves no sideways scroll", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 800 });
+  await page.goto(storyUrl("layout-stack--align-start"));
+  await expect(page.getByRole("button", { name: "Copy the key" })).toBeVisible();
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  expect(overflow).toBe(0);
+});

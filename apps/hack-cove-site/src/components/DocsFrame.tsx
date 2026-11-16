@@ -1,37 +1,50 @@
-import { Tabs, Overline, SidebarLayout, Stack } from "@hackcove/ui-react";
+import { DocsLayout, type DocsHeading, type DocsNeighbour } from "@hackcove/ui-react";
 import type { ReactNode } from "react";
 import { componentSections } from "../content/components/index";
 
 const plain = (path: string) => (path.length > 1 ? path.replace(/\/+$/, "") : path);
 
-/** The /ui/ pages' frame: Getting started, then the components grouped by section as vertical link rails on the page, the page beside them (folded behind a disclosure on a phone, so the page comes first), in the same grid as the header. */
-export function DocsFrame({ pathname, children }: { pathname: string; children: ReactNode }) {
+/** The /ui/ pages' frame: a `DocsLayout` whose nav is Getting started, then the components grouped by section. */
+export function DocsFrame({
+  pathname,
+  title,
+  description,
+  contents,
+  previous,
+  next,
+  children,
+}: {
+  pathname: string;
+  title: ReactNode;
+  description?: ReactNode;
+  contents?: DocsHeading[] | undefined;
+  previous?: DocsNeighbour | undefined;
+  next?: DocsNeighbour | undefined;
+  children: ReactNode;
+}) {
   const here = plain(pathname);
-  const start = [{ label: "Getting started", href: "/ui/", selected: here === "/ui" }];
+  const nav = [
+    { items: [{ label: "Getting started", href: "/ui/", selected: here === "/ui" }] },
+    ...componentSections.map((section) => ({
+      title: section.title,
+      items: section.pages.map((page) => ({
+        label: page.name,
+        href: `/ui/${page.slug}/`,
+        selected: here === `/ui/${page.slug}`,
+      })),
+    })),
+  ];
   return (
-    <SidebarLayout
-      asideLabel="All components"
-      aside={
-        <Stack gap="md">
-          <Tabs orientation="vertical" label="Docs" items={start} />
-          {componentSections.map((section) => (
-            <Stack key={section.title} gap="xs">
-              <Overline>{section.title}</Overline>
-              <Tabs
-                orientation="vertical"
-                label={section.title}
-                items={section.pages.map((page) => ({
-                  label: page.name,
-                  href: `/ui/${page.slug}/`,
-                  selected: here === `/ui/${page.slug}`,
-                }))}
-              />
-            </Stack>
-          ))}
-        </Stack>
-      }
+    <DocsLayout
+      nav={nav}
+      navLabel="All components"
+      title={title}
+      description={description}
+      contents={contents}
+      previous={previous}
+      next={next}
     >
       {children}
-    </SidebarLayout>
+    </DocsLayout>
   );
 }

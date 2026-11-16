@@ -11,10 +11,9 @@ import {
   Code,
   CodeBlock,
   CopyLine,
-  Display,
+  Hero,
   Lead,
   MetaList,
-  Overline,
   Pill,
   RegionFrame,
   Section,
@@ -51,15 +50,8 @@ function Actions() {
 export function PixelSlashHero() {
   const { hero } = pixelslash;
   return (
-    <Stack gap="lg" width="narrow">
-      <Stack gap="sm">
-        {/* A plain block, not a Stack: the Overline is an inline span (see Hero.tsx). */}
-        <header>
-          <Overline>PixelSlash</Overline>
-          <Display>{hero.title}</Display>
-        </header>
-        <Lead>{hero.lead}</Lead>
-      </Stack>
+    <Hero overline="PixelSlash" title={hero.title}>
+      <Lead>{hero.lead}</Lead>
       <Cluster wrap>
         {hero.pills.map((pill) => (
           <Pill key={pill.label} tone={pill.tone} round>
@@ -72,7 +64,7 @@ export function PixelSlashHero() {
         <CopyLine text={hero.install} />
         <Caption>{hero.installNote}</Caption>
       </Stack>
-    </Stack>
+    </Hero>
   );
 }
 
@@ -81,12 +73,7 @@ function Report() {
   return (
     <figure>
       <Stack gap="xs">
-        <RegionFrame
-          src={report.src}
-          alt={report.alt}
-          width={report.width}
-          height={report.height}
-        />
+        <RegionFrame src={report.src} alt={report.alt} aspect="16:9" />
         <Caption as="figcaption">{report.caption}</Caption>
       </Stack>
     </figure>

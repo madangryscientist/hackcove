@@ -28,6 +28,19 @@ export const WithBody: S = {
   ),
 };
 
+/** `ordered`: a numbered list, for steps a reader follows in order. */
+export const Ordered: S = {
+  render: () => (
+    <div className="max-w-xl">
+      <BulletList ordered>
+        <BulletItem>Install the CLI.</BulletItem>
+        <BulletItem>Add a token to the CI secrets.</BulletItem>
+        <BulletItem>Run the first capture.</BulletItem>
+      </BulletList>
+    </div>
+  ),
+};
+
 /** A list is a `BulletList` of `BulletItem`s: the list owns the discs, the indent and the gap. */
 export const DoItems: S = {
   render: () => (

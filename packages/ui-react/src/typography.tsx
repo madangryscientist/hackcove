@@ -8,10 +8,15 @@ import {
   useContext,
 } from "react";
 import { cx } from "./cx.js";
+import type { StackGap } from "./Stack.js";
+import { useStackGap } from "./stackGap.js";
 import { useTypeStep } from "./density.js";
+import { layoutClass, type TextAlign, type TextLines } from "./textBox.js";
 import type { Passthrough } from "./props.js";
 import type { Size } from "./size.js";
 import type { Tone } from "./tone.js";
+
+export type { TextAlign, TextLines } from "./textBox.js";
 
 /* ---------------------------------------------------------------------------
    Typography system
@@ -22,8 +27,8 @@ import type { Tone } from "./tone.js";
    Ink: each role has its own fixed ink (a heading the primary ink, `Text` the secondary, `Caption`
    and `Overline` the tertiary), which a theme remaps. The inline roles (Text, Caption, Overline)
    take `tone` to colour a run by meaning (`TextTone`: the library's `Tone` plus `muted` and
-   `accent`), and the closed switches `numeric`, `mono`, `truncate` and `align`. Text and Caption
-   add the face switches `italic` and `breakWords`; Text alone takes `strong`, `preserveNewlines`
+   `accent`), and the closed switches `numeric`, `mono` and `align`. Text and Caption
+   add `lines` (a clamp to 1 to 4 lines) and the face switches `italic` and `breakWords`; Text alone takes `strong`, `preserveNewlines`
    and `minWidth`. A heading takes no ink of its own.
 
    Element axis: every component has a semantic default element; the `as` prop
@@ -73,15 +78,6 @@ type OwnProps = {
   children?: ReactNode;
 };
 
-/** Where a run of text sits across its block. */
-export type TextAlign = "start" | "center" | "end";
-
-const ALIGN: Record<TextAlign, string> = {
-  start: "text-start",
-  center: "text-center",
-  end: "text-end",
-};
-
 /** The opt-in props of the inline roles (`Text`, `Caption`, `Overline`). */
 type InlineOwnProps = {
   /** A meaning's colour (see `TextTone`); `neutral`, the default, is the role's own ink. */
@@ -90,8 +86,6 @@ type InlineOwnProps = {
   numeric?: boolean | undefined;
   /** The monospace face, for an id, a path or a command. */
   mono?: boolean | undefined;
-  /** One line, cut with an ellipsis where the container ends; the full text is the `title`. */
-  truncate?: boolean | undefined;
   /**
    * Set the text at `start`, `center` or `end` of its block. The run becomes block-level, so the
    * alignment has a box to act on (a table header cell, a right-hand column).
@@ -101,6 +95,12 @@ type InlineOwnProps = {
 
 /** The opt-in props of `Text` and `Caption` only: the face of the run, not a label's. */
 type RunOwnProps = {
+  /**
+   * Show at most this many lines (1 to 4) and end in an ellipsis: `1` cuts the run where its
+   * container ends, `2` to `4` wrap and stop. With plain-text content the full text becomes the
+   * `title`. A "Show all" toggle is the app's own state: `lines={open ? undefined : 3}`.
+   */
+  lines?: TextLines | undefined;
   /** Italic: a muted hint or a caption. */
   italic?: boolean | undefined;
   /** Break a long unbroken string (a URL, a token) where the container ends, instead of overflowing. */
@@ -116,7 +116,7 @@ type TypographyProps<E extends ElementType> = OwnProps & {
 } & Omit<ComponentPropsWithoutRef<E>, keyof OwnProps | "as" | "className" | "style" | "color">;
 
 /**
- * The props of an inline role: `TypographyProps` plus `tone`, `numeric`, `mono` and `truncate`.
+ * The props of an inline role: `TypographyProps` plus `tone`, `numeric`, `mono` and `align`.
  * Spelled out like `TypographyProps`, not as an `Omit` of it, so the docs read its real types.
  */
 export type InlineTypographyProps<E extends ElementType> = Own & {
@@ -143,7 +143,7 @@ function typography<D extends ElementType>(
   return Typography;
 }
 
-/** `typography` for the inline roles, which also take `tone`, `numeric`, `mono` and `truncate`. */
+/** `typography` for the inline roles, which also take `tone`, `numeric`, `mono` and `align`. */
 function inlineRole<D extends ElementType>(
   displayName: string,
   defaultAs: D,
@@ -170,39 +170,32 @@ function pinned(
     tone,
     numeric,
     mono,
-    truncate,
+    lines,
     align,
     children,
     ...rest
-  }: Own & { as?: ElementType | undefined; title?: string | undefined },
+  }: Own & {
+    as?: ElementType | undefined;
+    title?: string | undefined;
+    lines?: TextLines | undefined;
+  },
 ): ReactElement {
   const Tag: ElementType = as ?? defaultAs;
   return (
     <Tag
       {...rest}
-      {...(truncate ? { title: rest.title ?? plainText(children) } : {})}
+      {...(lines ? { title: rest.title ?? plainText(children) } : {})}
       className={cx(
         variantClass,
         textToneClass(tone) ?? INK[ink],
         numeric && "tabular-nums",
         mono && "font-mono",
-        layoutClass(align, truncate),
+        layoutClass(align, lines),
       )}
     >
       {children}
     </Tag>
   );
-}
-
-/**
- * The alignment, and the box it needs. An aligned run is block-level, so text-align has a box to set
- * the text in. A truncated run clips: inline-block by default, a block when it is aligned too.
- */
-function layoutClass(align: TextAlign | undefined, truncate: boolean | undefined): string {
-  const box = truncate
-    ? cx("min-w-0 truncate align-bottom", align ? "block" : "inline-block")
-    : align && "block";
-  return cx(align && ALIGN[align], box);
 }
 
 /** The text of `children` when it is all strings and numbers: what a truncated run shows on hover. */
@@ -266,6 +259,19 @@ export function AppScale({ children }: { children?: ReactNode }): ReactElement {
 }
 
 /**
+ * The space between a `Prose`'s blocks: a `Stack`'s gap where it sits (`md` on a page, `xs` in a
+ * `Card`), as a top margin on every block after the first. A margin and not a flex gap, so text and
+ * links written straight into a `Prose` stay one line.
+ */
+const PROSE_FLOW: Record<StackGap, string> = {
+  xs: "*:not-first:mt-2",
+  sm: "*:not-first:mt-4",
+  md: "*:not-first:mt-6",
+  lg: "*:not-first:mt-8",
+  xl: "*:not-first:mt-12 sm:*:not-first:mt-16",
+};
+
+/**
  * Long-form content, for a docs page or an article. A block (`div`) that sets the long line height
  * (leading-7) on itself and puts the text roles inside it on the prose scale: `Text` text-base/7
  * (the size it is outside, on a longer line), `SectionHeading` text-2xl/8, `SubsectionHeading` `lg` text-2xl/8,
@@ -273,11 +279,13 @@ export function AppScale({ children }: { children?: ReactNode }): ReactElement {
  * text-base/7. Every other role keeps its size. Nothing outside a `Prose` changes, and a `Dialog`,
  * `Drawer` or `EmptyState` inside one is back on the app scale. An app screen never uses it: wrap the
  * body of a docs page or an article, inside a `ProseLayout`, a `SidebarLayout` or anywhere else.
+ * Its blocks (`Section`s, paragraphs) are a `Stack`'s gap apart, as they would be in a `Stack`.
  */
 export function Prose({ children, ...rest }: { children?: ReactNode } & Passthrough): ReactElement {
+  const flow = PROSE_FLOW[useStackGap(undefined)];
   return (
     <ProseContext.Provider value={true}>
-      <div {...rest} className="leading-7">
+      <div {...rest} className={cx("leading-7", flow)}>
         {children}
       </div>
     </ProseContext.Provider>
@@ -305,7 +313,7 @@ function useScale(scale: Scale): string {
 }
 
 /** The offset an anchored heading keeps from the top, so the sticky header does not cover it. */
-const SCROLL_TARGET = "scroll-mt-28";
+const SCROLL_TARGET = "scroll-mt-[calc(var(--app-header,0px)+1rem)]";
 
 /**
  * Top-level section header. `h2`, text-xl/7 semibold, primary text (text-base/6 under an
@@ -370,6 +378,7 @@ const SUBSECTION_SIZE: Record<SubsectionHeadingSize, Scale> = {
  */
 export function SubsectionHeading<E extends ElementType = "h3">({
   size = "md",
+  truncate,
   ...props
 }: TypographyProps<E> & {
   /**
@@ -381,7 +390,10 @@ export function SubsectionHeading<E extends ElementType = "h3">({
   /** One line, cut with an ellipsis where the container ends; the full text becomes the `title`. */
   truncate?: boolean | undefined;
 }): ReactElement {
-  return pinned("h3", useScale(SUBSECTION_SIZE[size]), "default", props);
+  return pinned("h3", useScale(SUBSECTION_SIZE[size]), "default", {
+    ...props,
+    lines: truncate ? 1 : undefined,
+  });
 }
 
 // --- Inline roles -------------------------------------------------------------
@@ -390,7 +402,7 @@ const OVERLINE = "text-xs font-semibold uppercase tracking-wide";
 
 /**
  * Small all-caps label above a group. `span`, text-xs semibold uppercase, tertiary. `tone`,
- * `numeric`, `mono`, `truncate` and `align` are opt-in, as on `Text`.
+ * `numeric`, `mono` and `align` are opt-in, as on `Text`.
  */
 export const Overline = inlineRole("Overline", "span", OVERLINE, "tertiary");
 
@@ -422,8 +434,8 @@ export type TextMinWidth = "amount";
  * font-medium in the primary ink, unless `tone` says otherwise.
  * `preserveNewlines` keeps the line breaks in the text (a user-typed note); runs of spaces still collapse.
  * `tone` colours it by meaning (`positive` for "Saved.", `danger` for an error, `muted` for a quieter line),
- * `numeric` sets tabular figures, `mono` the monospace face, and `truncate` cuts it to one line with an
- * ellipsis (the full text becomes its `title`). `align` sets it at `start`, `center` or `end`.
+ * `numeric` sets tabular figures, `mono` the monospace face, and `lines` shows at most 1 to 4 lines,
+ * ending in an ellipsis (the full text becomes its `title`). `align` sets it at `start`, `center` or `end`.
  * `italic` slants it, `breakWords` breaks a long unbroken string at the edge of its box, and `minWidth="amount"`
  * fixes a width and right-aligns the figure in it (a column of amounts lines up); it does not take `align`.
  */
@@ -485,7 +497,7 @@ function textVariant(
 /**
  * Fine print / metadata. A paragraph (`p`; `as="span"` inline), text-sm/5 normal, tertiary
  * (text-xs/4 under an `AppShell density="compact"`). Takes `tone`,
- * `numeric`, `mono`, `truncate` and `align` like `Text`, and `italic` for a muted hint and `breakWords`
+ * `numeric`, `mono`, `lines` and `align` like `Text`, and `italic` for a muted hint and `breakWords`
  * for a long unbroken string such as a URL.
  */
 export function Caption<E extends ElementType = "p">({

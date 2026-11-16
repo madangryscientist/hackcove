@@ -1,4 +1,6 @@
 import type { HTMLAttributes, ImgHTMLAttributes, ReactElement, ReactNode } from "react";
+import { cx } from "./cx.js";
+import { IMAGE_WIDTH, type ImageAspect, type ImageWidth } from "./Image.js";
 import type { Unstyled } from "./props.js";
 
 /** A box in a picture's own units (an image's pixels): its top-left corner and its size. */
@@ -53,14 +55,33 @@ export function OutlineRegion({
   );
 }
 
+/** The shapes `RegionFrame` letterboxes a picture into, as `Image`'s `aspect`, or `natural` (its own). */
+const FRAME_ASPECT: Record<ImageAspect, string> = {
+  square: "aspect-square",
+  "4:3": "aspect-[4/3]",
+  "3:2": "aspect-[3/2]",
+  "16:9": "aspect-video",
+  "3:4": "aspect-[3/4]",
+  "9:16": "aspect-[9/16]",
+  natural: "",
+};
+
 /**
- * A picture drawn full width with a hairline edge, and `children` laid over it: the
- * `OutlineRegion`s that mark its areas. Every other prop goes to the `<img>` (`onLoad`, `loading`,
- * `data-*`), so the app can read the picture's own size for `within`.
+ * A picture with a hairline edge, and `children` laid over it: the `OutlineRegion`s that mark its
+ * areas. Every other prop goes to the `<img>` (`onLoad`, `loading`, `data-*`), so the app can read
+ * the picture's own size for `within`.
+ *
+ * It sizes as `Image` does. `width` is `full` (the parent's width) or 96, 160 or 256px. `aspect`
+ * `natural` keeps the picture's own proportions; any other shape letterboxes it (contain, never a
+ * crop) on the inset surface, centred and never scaled up, and the regions are laid over the
+ * picture itself, not the box, so each stays on its spot. A letterboxed picture needs its own size:
+ * a screenshot has one; an SVG needs `width` and `height` on its root, not only a `viewBox`.
  */
 export function RegionFrame({
   src,
   alt,
+  aspect = "natural",
+  width = "full",
   children,
   ...rest
 }: {
@@ -68,13 +89,44 @@ export function RegionFrame({
   src: string;
   /** What the picture shows; `""` for one that only decorates. */
   alt: string;
+  /**
+   * The box's shape: `natural` is the picture's own; any other letterboxes the picture inside it.
+   * @default natural
+   */
+  aspect?: ImageAspect | undefined;
+  /**
+   * How wide the frame is: `full` fills its parent; `sm`, `md` and `lg` are 96, 160 and 256px, capped at the parent's width.
+   * @default full
+   */
+  width?: ImageWidth | undefined;
   /** The `OutlineRegion`s over the picture. */
   children?: ReactNode;
-} & Unstyled<Omit<ImgHTMLAttributes<HTMLImageElement>, "src" | "alt" | "children">>): ReactElement {
+} & Unstyled<
+  Omit<ImgHTMLAttributes<HTMLImageElement>, "src" | "alt" | "children" | "width" | "height">
+>): ReactElement {
+  if (aspect === "natural") {
+    return (
+      <div className={cx("relative border border-slate-200", IMAGE_WIDTH[width])}>
+        <img {...rest} src={src} alt={alt} className="block w-full" />
+        {children}
+      </div>
+    );
+  }
+  // The box is a size container, so the picture is capped by its width and height in `cq` units
+  // (a percentage height would not resolve), and the inner box shrinks to the picture: the
+  // regions are placed in percent of the picture, wherever the letterbox puts it.
   return (
-    <div className="relative border border-slate-200">
-      <img {...rest} src={src} alt={alt} className="block w-full" />
-      {children}
+    <div
+      className={cx(
+        "grid place-items-center overflow-hidden border border-slate-200 bg-slate-100 [container-type:size]",
+        FRAME_ASPECT[aspect],
+        IMAGE_WIDTH[width],
+      )}
+    >
+      <div className="relative">
+        <img {...rest} src={src} alt={alt} className="block max-h-[100cqh] max-w-[100cqw]" />
+        {children}
+      </div>
     </div>
   );
 }

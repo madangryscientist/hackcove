@@ -1,5 +1,15 @@
 import ts from "typescript";
-import { attributeOf, attributesOf, insert, literalOf, nameOf, replace } from "../attributes.js";
+import {
+  attributeOf,
+  attributesOf,
+  insert,
+  isOn,
+  literalOf,
+  nameOf,
+  remove,
+  replace,
+  valueOf,
+} from "../attributes.js";
 import { type Context, meaningfulChildren, report, type Tag, type TagRule } from "../source.js";
 
 const INLINE = ["Text", "Caption", "Overline"];
@@ -104,8 +114,25 @@ export function passthrough(tag: Tag, component: string, context: Context): void
   }
 }
 
+/** `truncate` on `Text` and `Caption` is `lines={1}`; an `Overline` takes no clamp. */
+export function truncateLines(tag: Tag, component: string, context: Context): void {
+  if (!INLINE.includes(component)) return;
+  const truncate = attributeOf(tag, "truncate");
+  if (truncate === undefined) return;
+  if (component === "Overline") {
+    report(context, truncate, "Overline truncate is gone: an overline is a short label");
+  } else if (isOn(truncate)) {
+    replace(context, truncate, "lines={1}");
+  } else if (valueOf(truncate)?.kind === ts.SyntaxKind.FalseKeyword) {
+    remove(context, truncate);
+  } else {
+    report(context, truncate, `${component} truncate is lines={1}: rewrite this one by hand`);
+  }
+}
+
 export const tagRules: readonly TagRule[] = [
   textColor,
+  truncateLines,
   inlineElement,
   calloutTone,
   bulletItems,

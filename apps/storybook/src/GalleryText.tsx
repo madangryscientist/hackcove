@@ -56,7 +56,7 @@ function GalleryInsetEmpty() {
   );
 }
 
-/** An EmptyState with a body, Steps and an action, then one with `padding="inset"` in a flush Card. */
+/** An EmptyState with a body, Steps and an action, one with `padding="inset"` in a flush Card, then Steps size lg. */
 function GalleryEmpty() {
   return (
     <>
@@ -70,11 +70,16 @@ function GalleryEmpty() {
         </Steps>
       </EmptyState>
       <GalleryInsetEmpty />
+      <Steps size="lg" aria-label="Steps size lg">
+        <Step title="Steps size lg">Across the page from md.</Step>
+        <Step title="A second">Each number at feature size.</Step>
+        <Step title="A third">Two to four steps.</Step>
+      </Steps>
     </>
   );
 }
 
-/** Text tones with numeric, mono and truncate. */
+/** Text tones with numeric, mono and lines. */
 function GalleryTones() {
   return (
     <div className="flex flex-col gap-1">
@@ -99,13 +104,19 @@ function GalleryTones() {
         </Caption>
       </div>
       <div className="w-40">
-        <Text truncate>Text truncate cuts a long line with an ellipsis.</Text>
+        <Text lines={1}>Text lines={1} cuts a long line with an ellipsis.</Text>
+      </div>
+      <div className="w-56">
+        <Text lines={2}>
+          Text lines={2} wraps a long description and stops after the second line, ending in an
+          ellipsis where the rest is cut.
+        </Text>
       </div>
     </div>
   );
 }
 
-/** The text-level block of the Gallery: heading sizes, a ruled heading, preserved newlines, text tones with numeric, mono and truncate, a list, an EmptyState with Steps, inline code, a CodeBlock, a CodeExample, a divider, a video and an OutlineRegion in a RegionFrame. */
+/** The text-level block of the Gallery: heading sizes, a ruled heading, preserved newlines, text tones with numeric, mono and lines, a list, an EmptyState with Steps, inline code, a CodeBlock, a CodeExample, a divider, a video and an OutlineRegion in a RegionFrame. */
 export function GalleryText() {
   return (
     <div className="flex flex-col gap-3">
@@ -125,6 +136,10 @@ export function GalleryText() {
           <BulletItem>
             Inline <Code>Code</Code> in an item
           </BulletItem>
+        </BulletList>
+        <BulletList ordered>
+          <BulletItem>BulletList ordered, first</BulletItem>
+          <BulletItem>Second</BulletItem>
         </BulletList>
       </div>
       <GalleryEmpty />

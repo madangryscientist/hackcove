@@ -199,3 +199,27 @@ export const RowFromMd: S = {
     </DemoShell>
   ),
 };
+
+/** `Section size="lg"`: a landing page's section under the `Hero`, a mono kicker, a display title, a `Lead` and its calls to action, the blocks `lg` apart. */
+export const LandingSection: S = {
+  render: () => (
+    <DemoShell>
+      <Section
+        size="lg"
+        overline="02 / Visual check"
+        title="Every story, every theme."
+        description="Each pull request is shot in the reference theme and every other theme's Gallery."
+        actions={
+          <>
+            <Button>Start</Button>
+            <Button variant="outline">Read the docs</Button>
+          </>
+        }
+      >
+        <Card title="What it shoots">
+          <Text>Every story in the reference theme.</Text>
+        </Card>
+      </Section>
+    </DemoShell>
+  ),
+};

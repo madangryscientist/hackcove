@@ -23,7 +23,7 @@ export const content: ComponentSection = {
           "`flush` is for a table that runs edge to edge, and it needs a `bar` for its title.",
           "A Card with `href` is one link; a `TextLink` or `Button` inside it sits above that link and is clickable on its own, and a click elsewhere on the card follows the link.",
           "`footer` is a strip across the bottom for the card's own actions or a total; it stays at the foot of a stretched card in a `CardGrid`.",
-          '`CardGrid` takes `columns` 2, 3 or 4, `"2:1"` or `"1:2"` for unequal columns, or `columns="auto"` with `minWidth` `sm` or `md` to fill by width; `align="start"` stops cards stretching to the tallest in their row.',
+          '`CardGrid` takes `columns` 2, 3 or 4, or `columns="auto"` with `minWidth` `sm` or `md` to fill by width; `align="start"` stops cards stretching to the tallest in their row.',
           '`inset` is a band across the card, edge to edge inside its padding, under the title: a `ProgressBar` that runs the card\'s full width. A bordered sub-card inside a card is a nested `Card tone="neutral"`, not a hand-built box.',
           "An empty state is an `EmptyState`, inside the card or on its own, where it draws its own dashed frame.",
           '`badge` pins a `Pill` to the top-right corner, over the content, on a panel or a link card: a category (`Pill tone="info"`) or a flag on the thing itself.',
@@ -151,6 +151,7 @@ export const content: ComponentSection = {
           "For things done in order only. Nothing here is done or current, so it is not a progress indicator.",
           "A list with no order is a `BulletList`.",
           'In an empty view, put `Steps` inside the `EmptyState` as the "get started" list.',
+          '`size="lg"` is a landing page\'s way in: two to four steps side by side from `md`, each number at feature size, stacked on a phone. `Step` takes its size from its `Steps`.',
         ],
         dont: [
           "Do not type the numbers: `Steps` counts them, so a step can sit behind a condition and the rest still run 1, 2, 3.",
@@ -245,6 +246,7 @@ export const content: ComponentSection = {
         do: [
           "Put the picture in a `RegionFrame` (`src`, `alt`, and any `<img>` prop such as `onLoad`) and the `OutlineRegion`s inside it; each region places itself over the picture.",
           "`rect` is the area and `within` the picture's full size, both in the picture's own pixels (its natural size), so the box stays on its area at any width.",
+          "Size the frame as an `Image`: `width` (`full`, or `sm`, `md`, `lg`) and `aspect` (`natural`, its own proportions, or a shape that letterboxes the picture, never cropping it and never scaling it up). The regions stay on the picture, not the box. A shape also holds the frame's height before the picture loads.",
           "`label` is a short tag in the top-left corner that says what the area is or where it came from. `hatched` stripes the inside, for an area that is left out.",
           "The outline is the accent colour in every theme; do not draw a box of your own with a raw colour.",
         ],

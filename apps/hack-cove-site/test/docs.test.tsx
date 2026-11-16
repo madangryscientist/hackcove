@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { ComponentPage } from "../src/components/ComponentPage";
+import { ComponentPage, contentsOf } from "../src/components/ComponentPage";
+import { DocsFrame } from "../src/components/DocsFrame";
 import * as ui from "@hackcove/ui-react";
 import {
   componentPageOf,
@@ -22,8 +23,13 @@ import { dontWorded, opensDont } from "./usageRules";
 
 /** The section ids a page's "On this page" list links to, in the order it lists them. */
 function onThisPageHrefs(slug: string): string[] {
-  const html = renderToStaticMarkup(<ComponentPage page={componentPageOf(slug)} />);
-  const nav = /<nav aria-label="On this page">([\s\S]*?)<\/nav>/.exec(html)?.[1] ?? "";
+  const page = componentPageOf(slug);
+  const html = renderToStaticMarkup(
+    <DocsFrame pathname={`/ui/${slug}/`} title={page.name} contents={contentsOf(page)}>
+      <ComponentPage page={page} />
+    </DocsFrame>,
+  );
+  const nav = /<nav aria-label="On this page"[^>]*>([\s\S]*?)<\/nav>/.exec(html)?.[1] ?? "";
   return [...nav.matchAll(/href="#([^"]+)"/g)].map((m) => m[1] ?? "");
 }
 

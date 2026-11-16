@@ -39,8 +39,9 @@ for (const scheme of schemes) {
       await page.goto("/");
       await setScheme(page, scheme);
       const h1 = await size(page.getByRole("heading", { level: 1 }));
-      // The product blocks' names are display headings too, so compare with a card's title.
-      const card = await size(page.getByRole("article").first().getByRole("heading", { level: 2 }));
+      // The product blocks' names are display headings too, so compare with a card's title, an
+      // h3 under its section's h2.
+      const card = await size(page.getByRole("article").first().getByRole("heading", { level: 3 }));
       expect(h1).toBeGreaterThanOrEqual(36);
       expect(h1, "h1 is larger than a card title").toBeGreaterThan(card);
     });

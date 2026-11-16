@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { render, screen, user, within } from "./render.harness.js";
-import { Section, Stack } from "./Stack.js";
+import { Section } from "./Section.js";
+import { Stack } from "./Stack.js";
 
 describe("Stack as", () => {
   it("renders a form that passes its form props through", () => {
@@ -55,6 +56,19 @@ describe("Stack as", () => {
   });
 });
 
+describe("Stack divided, align and width", () => {
+  it("types divided apart from gap and rowFrom, and takes compact and start", () => {
+    // @ts-expect-error a divided Stack has no gap: its rows touch
+    expect(render(<Stack divided gap="sm" />)).toBeTruthy();
+    // @ts-expect-error a divided Stack is a column
+    expect(render(<Stack divided rowFrom="md" />)).toBeTruthy();
+    // @ts-expect-error align is stretch or start
+    expect(render(<Stack align="center" />)).toBeTruthy();
+    expect(render(<Stack width="compact" align="start" />)).toBeTruthy();
+    expect(render(<Section width="compact" title="Hours" />)).toBeTruthy();
+  });
+});
+
 describe("Section", () => {
   it("is a region named by its level-2 heading, with actions beside it", () => {
     render(
@@ -101,5 +115,102 @@ describe("Section", () => {
     // The id is a link target, read as data: with no heading to carry it, no element has it.
     expect(document.getElementById("usage")).toBeNull();
     expect(screen.queryByRole("region")).toBeNull();
+  });
+});
+
+describe('Section size="sm"', () => {
+  it("is a region named by its title, a heading at the level md uses", () => {
+    render(
+      <Section size="sm" title="Flaky">
+        body
+      </Section>,
+    );
+    const region = screen.getByRole("region", { name: "Flaky" });
+    expect(within(region).getByRole("heading", { level: 2, name: "Flaky" })).not.toBeNull();
+  });
+
+  it("puts an id on its heading, so #id is a link target", () => {
+    render(
+      <Section size="sm" id="ignore-areas" title="Ignore areas">
+        body
+      </Section>,
+    );
+    expect(screen.getByRole("heading", { name: "Ignore areas" }).id).toBe("ignore-areas");
+  });
+
+  it("puts actions inside the region, after the heading", () => {
+    render(
+      <Section size="sm" title="Flaky" actions={<button type="button">Rerun</button>}>
+        body
+      </Section>,
+    );
+    const region = screen.getByRole("region", { name: "Flaky" });
+    const heading = within(region).getByRole("heading", { name: "Flaky" });
+    const action = within(region).getByRole("button", { name: "Rerun" });
+    expect(heading.compareDocumentPosition(action) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("nests one level below a Section that holds it", () => {
+    render(
+      <Section title="Build 412">
+        <Section size="sm" title="Flaky">
+          body
+        </Section>
+      </Section>,
+    );
+    expect(screen.getByRole("heading", { level: 3, name: "Flaky" })).not.toBeNull();
+  });
+});
+
+describe("Section overline, description and size lg", () => {
+  it("is named by its title only, with the overline in the same header as the heading", () => {
+    render(
+      <Section overline="Feature" title="Every theme" description="One switch reskins it.">
+        body
+      </Section>,
+    );
+    const region = screen.getByRole("region", { name: "Every theme" });
+    const heading = within(region).getByRole("heading", { level: 2, name: "Every theme" });
+    expect(heading.closest("header")?.textContent).toContain("Feature");
+    expect(screen.getByText("One switch reskins it.").closest("h2")).toBeNull();
+  });
+
+  it('size="lg" is an h2 title named by it, the description a paragraph, then the actions', () => {
+    render(
+      <Section
+        size="lg"
+        overline="Fit"
+        title="Built for agents"
+        description="A site from props alone."
+        actions={<a href="/ui/">Read the docs</a>}
+      >
+        body
+      </Section>,
+    );
+    const region = screen.getByRole("region", { name: "Built for agents" });
+    expect(
+      within(region).getByRole("heading", { level: 2, name: "Built for agents" }),
+    ).not.toBeNull();
+    const description = within(region).getByText("A site from props alone.");
+    expect(description.tagName).toBe("P");
+    const action = within(region).getByRole("link", { name: "Read the docs" });
+    expect(
+      description.compareDocumentPosition(action) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it("an overline with no title renders nothing", () => {
+    render(<Section overline="Feature">body</Section>);
+    expect(screen.queryByText("Feature")).toBeNull();
+    expect(screen.queryByRole("heading")).toBeNull();
+  });
+
+  it("keeps the overline and description off size sm, and the rule off size lg", () => {
+    type P = Parameters<typeof Section>[0];
+    // @ts-expect-error a small section has no overline
+    const small: P = { size: "sm", title: "Flaky", overline: "x" };
+    // @ts-expect-error a landing section has no rule
+    const large: P = { size: "lg", title: "Fit", rule: true };
+    expect([small, large]).toHaveLength(2);
   });
 });
