@@ -164,34 +164,52 @@ describe("typography inline roles: tone, numeric, mono, truncate", () => {
     expect(mono).not.toContain("mono=");
   });
 
-  it.each(roles)(
-    "%s `truncate` cuts to one line and keeps the full text as the title",
+  it.each([
+    ["Text", Text],
+    ["Caption", Caption],
+  ] as const)(
+    "%s `lines` keeps the full plain text as the title, and is not forwarded",
     (_name, Role) => {
-      const out = renderToStaticMarkup(<Role truncate>A long file name.txt</Role>);
-      expect(out).toContain("truncate");
-      expect(out).toContain("inline-block");
-      expect(out).toContain('title="A long file name.txt"');
-      expect(out).not.toContain("truncate=");
-      expect(renderToStaticMarkup(<Role>x</Role>)).not.toContain("truncate");
+      for (const lines of [1, 2, 3, 4] as const) {
+        const out = renderToStaticMarkup(<Role lines={lines}>A long file name.txt</Role>);
+        expect(out).toContain('title="A long file name.txt"');
+        expect(out).not.toContain("lines=");
+      }
       expect(renderToStaticMarkup(<Role>x</Role>)).not.toContain("title=");
     },
   );
 
-  it("truncate keeps a title the caller passed, and adds none for non-text children", () => {
+  it("`lines` keeps a title the caller passed, and adds none for non-text children", () => {
     expect(
       renderToStaticMarkup(
-        <Caption truncate title="Own title">
+        <Caption lines={2} title="Own title">
           text
         </Caption>,
       ),
     ).toContain('title="Own title"');
     expect(
       renderToStaticMarkup(
-        <Caption truncate>
+        <Text lines={2}>
           <b>bold</b>
-        </Caption>,
+        </Text>,
       ),
     ).not.toContain("title=");
+  });
+
+  it("`lines` is typed 1 to 4, on Text and Caption only", () => {
+    // @ts-expect-error a clamp stops at 4 lines
+    expect(renderToStaticMarkup(<Text lines={5}>x</Text>)).toBeTruthy();
+    // @ts-expect-error truncate is gone: lines={1}
+    expect(renderToStaticMarkup(<Text truncate>x</Text>)).toBeTruthy();
+    // @ts-expect-error an Overline is a short label: no clamp
+    expect(renderToStaticMarkup(<Overline lines={1}>x</Overline>)).toBeTruthy();
+    expect(
+      renderToStaticMarkup(
+        <Text preserveNewlines lines={4}>
+          {"a\nb"}
+        </Text>,
+      ),
+    ).toContain('title="a\nb"');
   });
 
   it("works with `as` and Text's other props", () => {
@@ -222,18 +240,6 @@ describe("typography options: align, italic, breakWords, minWidth", () => {
     const plain = renderToStaticMarkup(Role({}));
     expect(plain).not.toMatch(/text-(start|center|end)/);
     expect(plain).not.toMatch(/\bblock\b/);
-  });
-
-  it("`align` with `truncate` is a block that clips, not an inline box", () => {
-    const out = renderToStaticMarkup(
-      <Overline align="end" truncate>
-        A long label
-      </Overline>,
-    );
-    expect(out).toContain("block");
-    expect(out).not.toContain("inline-block");
-    expect(out).toContain("truncate");
-    expect(out).toContain("text-end");
   });
 
   it.each([

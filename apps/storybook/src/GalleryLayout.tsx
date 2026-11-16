@@ -11,6 +11,7 @@ import {
   Container,
   Field,
   Input,
+  ListRow,
   Tabs,
   PageHeader,
   Section,
@@ -30,7 +31,7 @@ const galleryControls = (
   </>
 );
 
-/** Cluster and ClusterGrow (also with `minWidth`) and Stack `rowFrom`. */
+/** Cluster and ClusterGrow (also with `minWidth`), and Stack `rowFrom`, `width="compact"`, `align="start"` and `divided`. */
 function ClusterAndStackOptions() {
   return (
     <>
@@ -56,6 +57,24 @@ function ClusterAndStackOptions() {
           <Text>Side column.</Text>
         </Card>
       </Stack>
+      <Stack width="compact">
+        <Card title="Stack width compact">
+          <Text>One card's width, at the left edge.</Text>
+        </Card>
+      </Stack>
+      <Stack align="start" gap="sm">
+        <Input aria-label="Stack align start" placeholder="Stack align start" />
+        <Button>Keeps its width</Button>
+      </Stack>
+      <Card flush>
+        <Stack as="ul" divided aria-label="Stack divided">
+          {["Stack divided", "Rows touch", "A line between"].map((label) => (
+            <li key={label}>
+              <ListRow secondary="ListRow">{label}</ListRow>
+            </li>
+          ))}
+        </Stack>
+      </Card>
     </>
   );
 }

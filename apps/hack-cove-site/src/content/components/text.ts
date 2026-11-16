@@ -81,7 +81,7 @@ export const text: ComponentSection = {
           "Put a `Text` under a heading and `Lead` under a `Display`. `Overline` is the small all-caps label above a group, not a title.",
           'A Card or a list with nothing in it yet gets one muted line, `Text tone="muted"`: "Nothing finished yet." A whole empty view, with a way forward, is an `EmptyState` with its `actions`.',
           "`tone` says what a run means: `positive`, `warn`, `danger`, `info` or `muted`. It beats `color`, and the words still say it, so colour is never the only signal. `color` is only the hierarchy of the text.",
-          "`numeric` sets tabular figures so a column of amounts lines up, `mono` the monospace face for an id or a path, and `truncate` cuts a run to one line.",
+          '`numeric` sets tabular figures so a column of amounts lines up and `mono` the monospace face for an id or a path. `lines` (1 to 4) on `Text` or `Caption` shows at most that many lines and ends in an ellipsis: `lines={1}` cuts a run where its box ends, `lines={3}` clamps a long description. A "Show all" is your own state: `lines={open ? undefined : 3}` beside a `Button`.',
           '`align` sets a run at `start`, `center` or `end` of its block, for a table header or a right-hand column. `minWidth="amount"` on `Text` fixes a width and right-aligns a money figure in it, so a column of amounts lines up.',
           "`italic` on `Text` or `Caption` sets a muted hint or a caption in italic. `breakWords` breaks a long unbroken string, such as a URL or a token, at the edge of its box.",
           "`preserveNewlines` on `Text` keeps the line breaks of text a person typed, such as a note.",
@@ -93,7 +93,7 @@ export const text: ComponentSection = {
       accessibility: [
         "`Text`, `Caption` and `Lead` render a `p`, and `Overline` a `span`. `as` changes the element: a `span` for `Text` or `Caption` inside a row or a sentence, an `li`, or a `label` for an `Overline` with `htmlFor`.",
         "`Overline` is a label, not a heading: it adds nothing to the page outline.",
-        "`truncate` sets the full text as the `title` when the content is plain text, so a pointer user can read what was cut. Give a `title` of your own when the content is not.",
+        "`lines` sets the full text as the `title` when the content is plain text, so a pointer user can read what was cut. Give a `title` of your own when the content is not.",
         "A `tone` changes only the colour. The wording has to carry the meaning.",
       ],
       api: ["Text", "Caption", "Overline", "Lead"],

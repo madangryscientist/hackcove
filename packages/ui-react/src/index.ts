@@ -45,7 +45,14 @@ export {
   type ClusterGap,
   type ClusterJustify,
 } from "./Cluster.js";
-export { Section, Stack, type StackGap, type StackRowFrom, type StackWidth } from "./Stack.js";
+export {
+  Section,
+  Stack,
+  type StackAlign,
+  type StackGap,
+  type StackRowFrom,
+  type StackWidth,
+} from "./Stack.js";
 export { Button, type ButtonSize, type ButtonTone, type ButtonVariant } from "./Button.js";
 export { ButtonGroup } from "./ButtonGroup.js";
 export { type LinkAdapter, type LinkAdapterProps, LinkProvider } from "./link.js";
@@ -146,6 +153,7 @@ export {
   type SubsectionHeadingSize,
   Text,
   type TextAlign,
+  type TextLines,
   type TextMinWidth,
   type TextTone,
 } from "./typography.js";

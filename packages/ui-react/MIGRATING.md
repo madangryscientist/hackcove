@@ -316,6 +316,17 @@ TypeScript does not flag these:
   uppercase, and its chips sit 2px further apart (a `ButtonGroup`'s gap).
 - A `numeric` field sets its digits in tabular figures, where `align="end"` did not.
 
+### Layout and composition
+
+| Old | New | |
+| --- | --- | --- |
+| `Text truncate`, `Caption truncate` | `lines={1}` (`lines` also clamps to 2, 3 or 4 lines) | codemod; a `truncate={expression}` is reported |
+| `Overline truncate` | removed: an overline is a short label | by hand (reported) |
+
+New, nothing to change: `Stack width="compact"` (28rem, one card's width), `Stack align="start"`
+(children keep their own width), `Stack divided` (a line between rows, no gap), and the `StackAlign`
+and `TextLines` types.
+
 ### Running the codemod
 
 The codemod lives in this repository at `tools/codemod` and is not published. From a checkout of

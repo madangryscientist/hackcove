@@ -138,3 +138,24 @@ export const MinWidthStory: S = {
     </div>
   ),
 };
+
+const DESCRIPTION =
+  "A corner shop on the high street that sells second-hand books, vinyl and the odd lamp. It opens early on Saturdays, keeps a box of free paperbacks by the door and takes cards for anything over fifty rand. The owner buys whole collections, so the shelves turn over every week.";
+
+/** `lines` shows at most 2, 3 or 4 lines and ends in an ellipsis; with plain text the full text is the `title`. It keeps `preserveNewlines`. */
+export const LinesStory: S = {
+  name: "Lines",
+  render: () => (
+    <Stack width="compact">
+      <Text lines={2}>{DESCRIPTION}</Text>
+      <Text lines={3}>{DESCRIPTION}</Text>
+      <Text lines={4}>{DESCRIPTION}</Text>
+      <Caption lines={1}>{DESCRIPTION}</Caption>
+      <Text lines={4} preserveNewlines>
+        {
+          "Check the header on every page.\nThe logo is the new one.\nThe footer links work.\nNo sideways scroll on a phone.\nThe dark theme reads."
+        }
+      </Text>
+    </Stack>
+  ),
+};

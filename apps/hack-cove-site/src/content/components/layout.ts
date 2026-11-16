@@ -150,12 +150,21 @@ export const layout: ComponentSection = {
       summary: "A vertical column of blocks a fixed gap apart, and Section for a titled group.",
       whenToUse:
         "Any blocks that follow each other: space is a Stack's `gap`, never a margin on a block.",
-      pairs: ["StackDocs/Gap", "StackDocs/SectionTitle", "StackDocs/List"],
+      pairs: [
+        "StackDocs/Gap",
+        "StackDocs/SectionTitle",
+        "StackDocs/List",
+        "StackDocs/Width",
+        "StackDocs/Align",
+        "StackDocs/Divided",
+      ],
       stories: ["Stack"],
       usage: {
         do: [
           "`gap` is a scale: `xs` between lines of text, `sm` inside a group, `md` between blocks, `lg` between groups, `xl` between a page's top-level blocks (the one responsive page rhythm). Left out, it comes from where the Stack sits: `xs` inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow`, `md` on the page.",
-          "`width` caps the column at the left edge: `narrow` (a reading measure), `wide`, `full`, or `default` for the parent's width. It is never re-centred.",
+          "`width` caps the column at the left edge: `compact` (one card or one picture's column), `narrow` (a reading measure), `wide`, `full`, or `default` for the parent's width. It is never re-centred. A width cap on any one block is a `Stack` around it: `<Stack width=\"compact\"><Card>...</Card></Stack>`.",
+          '`align="start"` keeps each child at its own width: a `Button` under a form\'s fields. Left out, every child spans the column.',
+          "`divided` draws a line between each pair of children and sets them touching, with no gap: rows that carry their own padding, such as `ListRow`s in a `Card flush`. For space and a line between blocks, put a `Divider` in the Stack.",
           '`as` is `div` (default), `section`, `form`, `ul` or `ol`. `as="form"` takes the form props and spaces its fields; `as="ul"` and `as="ol"` draw no markers and their children are `<li>`s.',
           "A titled group is a `Section`: `title`, `actions` beside it, then the blocks, spaced as a `Stack`. It takes `gap` and `width` as `Stack` does. `rule` draws a hairline under the title row, `actions` included. Its title is an `h2` on the page, one level below the section that holds it, and a `Card` or `EmptyState` inside it is one below that; `level` sets it by hand.",
           "`rowFrom` (`sm`, `md` or `lg`) turns the column into a row from that breakpoint and leaves it a column below: a main block beside a side column on a wide screen, stacked on a phone. Put the block that takes the width left in a `ClusterGrow`.",
@@ -164,7 +173,7 @@ export const layout: ComponentSection = {
       },
       accessibility: [
         "`Section` is a `<section>` named by its `title` (`aria-labelledby`), so it is a region; with no `title` give it an `aria-label`.",
-        'A `Stack` with `as="ul"` or `as="ol"` is a real list: give it an `aria-label` when more than one list is on the page.',
+        'A `Stack` with `as="ul"` or `as="ol"` is a real list: give it an `aria-label` when more than one list is on the page. `as="ul" divided` is still a list; the lines are only drawn.',
         '`as="form"` is a `<form>`; give it an `aria-label` or let a heading name it.',
         "A `div` Stack adds no role.",
       ],
@@ -232,6 +241,7 @@ export const layout: ComponentSection = {
           "Use it between two parts of a page that are not bordered, such as the content and its footer.",
           "The space around it is the layout's: put it in a `Stack`, never add margin.",
           "For a rule under a section title, `SectionHeading` and `Section` have `rule`. For a line between two `Section`s, put a `Divider` between them in their `Stack`.",
+          "Rows with a line between each and no gap (a list of `ListRow`s) are a `Stack divided`, not a `Divider` after every row.",
         ],
         dont: [
           "Do not draw it between bordered blocks such as `Card`: their borders and the `gap` already separate them.",

@@ -1,0 +1,15 @@
+import { Caption, Text } from "@hackcove/ui-react";
+
+export const view = (
+  <>
+    <Text as="p" truncate>
+      a
+    </Text>
+    <Caption as="span" truncate={true} mono>
+      b
+    </Caption>
+    <Text as="p" truncate={false}>
+      c
+    </Text>
+  </>
+);

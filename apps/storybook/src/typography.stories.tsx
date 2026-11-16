@@ -108,7 +108,7 @@ export const TextToneStory: S = {
 };
 
 export const InlineFigures: S = {
-  name: "numeric, mono and truncate",
+  name: "numeric, mono and lines",
   render: () => (
     <div className="flex w-72 flex-col gap-2">
       <Text>
@@ -132,10 +132,10 @@ export const InlineFigures: S = {
           packages/ui-react/src/typography.tsx
         </Caption>
       </Text>
-      <Text truncate>
+      <Text lines={1}>
         A long line of body text that does not fit the width of its container and is cut off.
       </Text>
-      <Caption truncate tone="muted">
+      <Caption lines={1} tone="muted">
         packages/ui-react/src/some/very/deeply/nested/path/typography.test.tsx
       </Caption>
     </div>

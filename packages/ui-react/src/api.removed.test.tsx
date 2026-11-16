@@ -280,6 +280,14 @@ export const removed = {
   r95: () => <ui.Input align="end" />,
   // @ts-expect-error ControlAlign is gone with Input align
   r96: () => ((t: import("./index.js").ControlAlign) => t)("end"),
+
+  // Layout and composition
+  // @ts-expect-error truncate is lines={1}
+  r97: () => <ui.Text truncate>x</ui.Text>,
+  // @ts-expect-error truncate is lines={1}
+  r98: () => <ui.Caption truncate>x</ui.Caption>,
+  // @ts-expect-error an Overline takes no truncate
+  r99: () => <ui.Overline truncate>x</ui.Overline>,
 };
 
 describe("removed API", () => {

@@ -55,6 +55,35 @@ describe("Stack as", () => {
   });
 });
 
+describe("Stack divided, align and width", () => {
+  it("a divided list is still one list of its items", () => {
+    render(
+      <Stack as="ul" divided aria-label="Builds">
+        <li>One</li>
+        <li>Two</li>
+        <li>Three</li>
+      </Stack>,
+    );
+    const list = screen.getByRole("list", { name: "Builds" });
+    expect(
+      within(list)
+        .getAllByRole("listitem")
+        .map((item) => item.textContent),
+    ).toEqual(["One", "Two", "Three"]);
+  });
+
+  it("types divided apart from gap and rowFrom, and takes compact and start", () => {
+    // @ts-expect-error a divided Stack has no gap: its rows touch
+    expect(render(<Stack divided gap="sm" />)).toBeTruthy();
+    // @ts-expect-error a divided Stack is a column
+    expect(render(<Stack divided rowFrom="md" />)).toBeTruthy();
+    // @ts-expect-error align is stretch or start
+    expect(render(<Stack align="center" />)).toBeTruthy();
+    expect(render(<Stack width="compact" align="start" />)).toBeTruthy();
+    expect(render(<Section width="compact" title="Hours" />)).toBeTruthy();
+  });
+});
+
 describe("Section", () => {
   it("is a region named by its level-2 heading, with actions beside it", () => {
     render(

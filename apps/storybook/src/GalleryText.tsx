@@ -74,7 +74,7 @@ function GalleryEmpty() {
   );
 }
 
-/** Text tones with numeric, mono and truncate. */
+/** Text tones with numeric, mono and lines. */
 function GalleryTones() {
   return (
     <div className="flex flex-col gap-1">
@@ -99,13 +99,19 @@ function GalleryTones() {
         </Caption>
       </div>
       <div className="w-40">
-        <Text truncate>Text truncate cuts a long line with an ellipsis.</Text>
+        <Text lines={1}>Text lines={1} cuts a long line with an ellipsis.</Text>
+      </div>
+      <div className="w-56">
+        <Text lines={2}>
+          Text lines={2} wraps a long description and stops after the second line, ending in an
+          ellipsis where the rest is cut.
+        </Text>
       </div>
     </div>
   );
 }
 
-/** The text-level block of the Gallery: heading sizes, a ruled heading, preserved newlines, text tones with numeric, mono and truncate, a list, an EmptyState with Steps, inline code, a CodeBlock, a CodeExample, a divider, a video and an OutlineRegion in a RegionFrame. */
+/** The text-level block of the Gallery: heading sizes, a ruled heading, preserved newlines, text tones with numeric, mono and lines, a list, an EmptyState with Steps, inline code, a CodeBlock, a CodeExample, a divider, a video and an OutlineRegion in a RegionFrame. */
 export function GalleryText() {
   return (
     <div className="flex flex-col gap-3">

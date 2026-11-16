@@ -132,6 +132,12 @@ const CASES: Record<string, Case[]> = {
     { prop: "size", node: () => <ui.Menu label="More" size="sm" items={MENU} /> },
     { prop: "defaultOpen", node: () => <ui.Menu label="More" defaultOpen items={MENU} /> },
   ],
+  Stack: [
+    { prop: "align", node: () => <ui.Stack align="start">x</ui.Stack> },
+    { prop: "divided", node: () => <ui.Stack divided>x</ui.Stack> },
+  ],
+  Text: [{ prop: "lines", node: () => <ui.Text lines={2}>x</ui.Text> }],
+  Caption: [{ prop: "lines", node: () => <ui.Caption lines={3}>x</ui.Caption> }],
 };
 
 /** Every attribute name on every element of `html`, lower-cased as the DOM reads them. */
