@@ -22,7 +22,8 @@ type Distinction = {
 
 /**
  * The bars come from the site, read at a glance: 0.12 between two fills and 0.09 between two inks,
- * both past the point where the pair reads as one colour.
+ * both past the point where the pair reads as one colour. A loading bone (the `skeleton` role) needs
+ * only 0.05 from what it sits on: it is a quiet shape, not a colour with a meaning.
  */
 const DISTINCTIONS: readonly Distinction[] = [
   {
@@ -39,6 +40,19 @@ const DISTINCTIONS: readonly Distinction[] = [
     bar: 0.09,
     why: "a link must not read as a warning",
   },
+  ...(
+    [
+      ["canvas", "bg-gray-50"],
+      ["surface", "bg-white"],
+      ["subtle strip", "bg-slate-50"],
+    ] as const
+  ).map(([where, under]) => ({
+    name: `loading bone on the ${where}`,
+    from: "bg-slate-200",
+    to: under,
+    bar: 0.05,
+    why: "a loading bone must read as a shape on the page, the card and a tinted strip",
+  })),
 ];
 
 /** The colour a theme gives a utility, which a pair of tones must set opaque to be measured. */

@@ -1,3 +1,4 @@
+import { loadingPage } from "./loading";
 import type { ComponentSection } from "./types";
 
 export const feedback: ComponentSection = {
@@ -75,6 +76,7 @@ export const feedback: ComponentSection = {
       ],
       api: ["EmptyState"],
     },
+    loadingPage,
     {
       slug: "dialog",
       name: "Dialog",

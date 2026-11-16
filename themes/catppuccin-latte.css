@@ -70,6 +70,12 @@
 .latte .bg-slate-100 {
   background-color: #dce0e8; /* crust: one step deeper than mantle */
 }
+/* A loading bone (the skeleton role): opaque, held apart from the canvas, a card and the subtle
+   strip by the distinction contract.
+   Surface0: the line colour, a shape on mantle, base and crust. */
+.latte .bg-slate-200 {
+  background-color: #ccd0da;
+}
 .latte .bg-slate-900 {
   background-color: #4c4f69; /* text: e.g. the brand badge */
 }

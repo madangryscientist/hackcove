@@ -33,6 +33,7 @@ import { GallerySwitchers } from "./GallerySwitchers";
 import { GalleryText } from "./GalleryText";
 import { GalleryLinkedRows } from "./GalleryLinkedRows";
 import { GalleryLinks } from "./GalleryLinks";
+import { GalleryLoading } from "./GalleryLoading";
 import { GalleryMorph } from "./GalleryMorph";
 import {
   GalleryBleedPages,
@@ -115,6 +116,7 @@ export const gallerySections: GallerySection[] = [
       </>
     ),
   },
+  { id: "loading", title: "Loading", render: () => <GalleryLoading /> },
   {
     id: "data",
     title: "Data",

@@ -149,3 +149,23 @@ export const TitleTooltip: S = {
     canvasElement.querySelector<HTMLElement>("[tabindex]")?.focus();
   },
 };
+
+type Loading = StoryObj<{ loading: boolean }>;
+
+/** A pill with no text yet is a bone of its size; one with its text draws it. */
+export const Loading: Loading = {
+  args: { loading: true },
+  render: ({ loading }) => (
+    <Cluster>
+      <Pill loading={loading} tone="positive">
+        {loading ? undefined : "Paid"}
+      </Pill>
+      <Pill loading={loading} round>
+        {loading ? undefined : "Draft"}
+      </Pill>
+      <Pill loading={loading} size="lg">
+        {loading ? undefined : "Overdue"}
+      </Pill>
+    </Cluster>
+  ),
+};

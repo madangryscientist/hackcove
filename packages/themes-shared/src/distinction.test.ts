@@ -8,6 +8,10 @@ const theme = (overrides: Record<string, string> = {}): string => {
     "bg-red-600": "#7a1220",
     "text-violet-600": "#9a3412",
     "text-red-700": "#7a1220",
+    "bg-gray-50": "#f5f5f4",
+    "bg-white": "#ffffff",
+    "bg-slate-50": "#f4efe6",
+    "bg-slate-200": "#d6cbb8",
     ...overrides,
   };
   return [
@@ -27,6 +31,14 @@ describe("distinctionFailures", () => {
     const [failure = ""] = distinctionFailures(theme({ "bg-red-600": "#c2410c" }));
     expect(failure).toMatch(
       /^primary and danger fills: bg-violet-600 #c2410c and bg-red-600 #c2410c are 0\.000 apart in OKLab, needs 0\.12 \(.+\)$/,
+    );
+  });
+
+  it("holds a loading bone apart from the canvas, the surface and the subtle strip", () => {
+    const failures = distinctionFailures(theme({ "bg-slate-200": "#f4efe6" }));
+    expect(failures).toHaveLength(3);
+    expect(failures[2]).toMatch(
+      /^loading bone on the subtle strip: bg-slate-200 #f4efe6 and bg-slate-50 #f4efe6 are 0\.000 apart in OKLab, needs 0\.05 \(.+\)$/,
     );
   });
 });

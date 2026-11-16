@@ -46,6 +46,12 @@
 .thriftloop-dark .bg-slate-100 {
   background-color: #1d3c46;
 }
+/* A loading bone (the skeleton role): opaque, held apart from the canvas, a card and the subtle
+   strip by the distinction contract.
+   The line colour, a shape on the canvas, a card and the subtle strip. */
+.thriftloop-dark .bg-slate-200 {
+  background-color: #214450;
+}
 
 .thriftloop-dark .bg-slate-900 {
   background-color: #18333c;

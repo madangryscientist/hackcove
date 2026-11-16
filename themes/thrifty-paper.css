@@ -70,6 +70,12 @@
 .thrifty-paper .bg-slate-100 {
   background-color: #ece3d4; /* line: one step deeper than subtle */
 }
+/* A loading bone (the skeleton role): opaque, held apart from the canvas, a card and the subtle
+   strip by the distinction contract.
+   A step darker than the line (#ece3d4), which sits too close to the subtle strip. */
+.thrifty-paper .bg-slate-200 {
+  background-color: #e2d6c2;
+}
 .thrifty-paper .bg-slate-900 {
   background-color: #1c1917; /* ink: e.g. the brand badge */
 }

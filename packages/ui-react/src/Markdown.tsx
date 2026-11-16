@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { Passthrough } from "./props.js";
+import { BoneLines, BusyLabel, busy, type LoadingProps, useLoading } from "./skeleton.js";
 
 // A minimal, SAFE markdown renderer (headings / bullets / bold). No
 // dangerouslySetInnerHTML: text is rendered as React nodes, so it can't inject HTML.
@@ -17,15 +18,32 @@ function inline(text: string): ReactNode[] {
 
 /**
  * A small, safe Markdown renderer for short notes: `## ` and `### ` headings, `- ` or `* ` bullets,
- * `**bold**` and paragraphs. Text is rendered as React nodes, never as HTML.
+ * `**bold**` and paragraphs. Text is rendered as React nodes, never as HTML. While `loading` with
+ * no `md` yet it draws a paragraph of bones.
  */
 export function Markdown({
   md,
+  loading: ownLoading,
+  loadingLabel,
   ...rest
 }: {
-  /** The Markdown source. */
-  md: string;
-} & Passthrough) {
+  /** The Markdown source; while `loading`, none yet is a paragraph of bones. */
+  md: string | undefined;
+} & LoadingProps &
+  Passthrough) {
+  const { loading, owner } = useLoading(ownLoading);
+  if (md === undefined || md === "") {
+    return (
+      <div {...rest} {...busy(owner, loading)} className="space-y-1">
+        {loading && (
+          <p className="text-sm">
+            <BoneLines />
+          </p>
+        )}
+        <BusyLabel owner={owner} loading={loading} label={loadingLabel} />
+      </div>
+    );
+  }
   const out: ReactNode[] = [];
   let bullets: ReactNode[] = [];
   const flush = () => {
@@ -76,8 +94,9 @@ export function Markdown({
   });
   flush();
   return (
-    <div {...rest} className="space-y-1">
+    <div {...rest} {...busy(owner, loading)} className="space-y-1">
       {out}
+      <BusyLabel owner={owner} loading={loading} label={loadingLabel} />
     </div>
   );
 }

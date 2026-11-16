@@ -82,3 +82,22 @@ export const SectionDescription: S = {
     </Stack>
   ),
 };
+
+type Loading = StoryObj<{ loading: boolean }>;
+
+/** A heading with no text yet is one bone at its own line height. */
+export const Loading: Loading = {
+  args: { loading: true },
+  render: ({ loading }) => {
+    const words = (text: string) => (loading ? undefined : text);
+    return (
+      <Stack gap="sm">
+        <Display loading={loading}>{words("Display")}</Display>
+        <Lead loading={loading}>{words("The supporting sentence under a display line.")}</Lead>
+        <PageHeading loading={loading}>{words("PageHeading")}</PageHeading>
+        <SectionHeading loading={loading}>{words("SectionHeading")}</SectionHeading>
+        <SubsectionHeading loading={loading}>{words("SubsectionHeading")}</SubsectionHeading>
+      </Stack>
+    );
+  },
+};

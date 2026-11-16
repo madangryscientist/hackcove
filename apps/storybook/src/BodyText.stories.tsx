@@ -159,3 +159,22 @@ export const LinesStory: S = {
     </Stack>
   ),
 };
+
+type Loading = StoryObj<{ loading: boolean }>;
+
+/** A paragraph with no text yet is three lines of bones, the last shorter; an inline run is one. */
+export const Loading: Loading = {
+  args: { loading: true },
+  render: ({ loading }) => {
+    const words = (text: string) => (loading ? undefined : text);
+    return (
+      <Stack gap="xs">
+        <Overline loading={loading}>{words("Overline")}</Overline>
+        <Text loading={loading}>
+          {words("Body copy is Text: a paragraph of running words at a readable line length.")}
+        </Text>
+        <Caption loading={loading}>{words("Caption: the fine print under it.")}</Caption>
+      </Stack>
+    );
+  },
+};

@@ -3,6 +3,7 @@
   "surface": ["bg-white"],
   "subtle": ["bg-slate-50", "hover:bg-slate-50", "border-slate-50"],
   "inset": ["bg-slate-100", "hover:bg-slate-100"],
+  "skeleton": ["bg-slate-200"],
   "scrim": ["backdrop:bg-slate-900/35"],
   "media-scrim": [
     "bg-black/90",
