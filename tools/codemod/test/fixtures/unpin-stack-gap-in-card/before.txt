@@ -1,4 +1,4 @@
-import { Card, Stack } from "@hackcove/ui-react";
+import { Card, CenteredLayout, Stack } from "@hackcove/ui-react";
 
 export const view = (
   <Card title="Orders">
@@ -6,4 +6,10 @@ export const view = (
       <Stack gap="md">x</Stack>
     </div>
   </Card>
+);
+
+export const signIn = (
+  <CenteredLayout title="Sign in">
+    <Stack gap="md">y</Stack>
+  </CenteredLayout>
 );

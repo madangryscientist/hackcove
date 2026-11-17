@@ -1,0 +1,11 @@
+import { Field, Input } from "@hackcove/ui-react";
+import { useId } from "./ids";
+
+export function Billing() {
+  const billingId = useId();
+  return (
+    <Field label="Billing" htmlFor={billingId}>
+      <Input id={billingId} />
+    </Field>
+  );
+}

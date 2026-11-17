@@ -24,8 +24,16 @@ const COLUMN_PARTS = new Set(["Stack", "Section", "Field"]);
 const BLOCK_PARTS = new Set(["Card", "Dialog", "Drawer", "BottomSheet", "Callout", "Fieldset"]);
 const BLOCK_ELEMENTS = new Set(["div", "section", "article", "main", "header", "footer", "li"]);
 
-/** The containers whose `Stack` and `Section` default to the `xs` gap, not `md`. */
-const TIGHT = new Set(["Card", "Dialog", "Drawer", "BottomSheet", "Callout", "ListRow"]);
+/** The containers whose `Stack` and `Section` default to the `xs` gap, not `md` (`CenteredLayout` draws a `Card`). */
+const TIGHT = new Set([
+  "Card",
+  "Dialog",
+  "Drawer",
+  "BottomSheet",
+  "Callout",
+  "ListRow",
+  "CenteredLayout",
+]);
 
 /**
  * Whether the element would look the same as a `<p>`, read from the JSX alone: in a flex column it

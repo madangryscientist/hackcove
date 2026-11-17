@@ -128,7 +128,44 @@ function otherNames(context: Context, id: string, skip: readonly ts.JsxAttribute
   return count;
 }
 
-/** The `const` a name is declared by, when it is `const name = useId()`: an id the file makes itself. */
+/** The file's imports from `react`. */
+function reactImports(context: Context): ts.ImportClause[] {
+  return context.file.statements.flatMap((statement) => {
+    if (!ts.isImportDeclaration(statement)) return [];
+    const from = statement.moduleSpecifier;
+    const clause = statement.importClause;
+    return ts.isStringLiteral(from) && from.text === "react" && clause !== undefined
+      ? [clause]
+      : [];
+  });
+}
+
+/** The names an import clause binds React itself to: its default and its `* as`. */
+function reactNames(clause: ts.ImportClause): string[] {
+  const bindings = clause.namedBindings;
+  const namespace =
+    bindings !== undefined && ts.isNamespaceImport(bindings) ? [bindings.name.text] : [];
+  return [...(clause.name ? [clause.name.text] : []), ...namespace];
+}
+
+/** Whether an import clause binds `useId` itself, unrenamed. */
+function bindsUseId(clause: ts.ImportClause): boolean {
+  const bindings = clause.namedBindings;
+  if (bindings === undefined || !ts.isNamedImports(bindings)) return false;
+  return bindings.elements.some((e) => e.name.text === "useId" && e.propertyName === undefined);
+}
+
+/** Whether a callee is React's `useId`, imported as `useId` or called through `React`. */
+function reactUseId(context: Context, callee: string): boolean {
+  const clauses = reactImports(context);
+  if (callee === "useId") return clauses.some(bindsUseId);
+  const [namespace, member] = callee.split(".");
+  return (
+    member === "useId" && clauses.some((clause) => reactNames(clause).includes(namespace ?? ""))
+  );
+}
+
+/** The `const` a name is declared by, when it is `const name = useId()` from React: an id the file makes itself. */
 function useIdConst(context: Context, name: string): ts.Identifier | undefined {
   return usesOf(context.file, name).find((use) => {
     const parent = use.parent;
@@ -137,7 +174,8 @@ function useIdConst(context: Context, name: string): ts.Identifier | undefined {
     return (
       init !== undefined &&
       ts.isCallExpression(init) &&
-      init.expression.getText(context.file).replace(/^React\./, "") === "useId"
+      init.arguments.length === 0 &&
+      reactUseId(context, init.expression.getText(context.file))
     );
   });
 }
@@ -147,16 +185,18 @@ function onlyPair(
   context: Context,
   htmlFor: ts.JsxAttribute,
   id: ts.JsxAttribute,
-): { declaration?: ts.Identifier } | undefined {
+): { declaration?: ts.Identifier } | string {
+  const elsewhere = "htmlFor kept: something else names this id";
   const literal = literalOf(htmlFor);
   if (literal !== undefined) {
-    return otherNames(context, literal, [htmlFor, id]) === 0 ? {} : undefined;
+    return otherNames(context, literal, [htmlFor, id]) === 0 ? {} : elsewhere;
   }
   const value = valueOf(htmlFor);
-  if (value === undefined || !ts.isIdentifier(value)) return undefined;
+  if (value === undefined || !ts.isIdentifier(value)) return elsewhere;
   // An id from a prop or anywhere else was chosen by a caller, who may name it from another file.
   const declaration = useIdConst(context, value.text);
-  if (declaration === undefined) return undefined;
+  if (declaration === undefined)
+    return "htmlFor kept: the id comes from outside this file, check it";
   const others = usesOf(context.file, value.text).filter(
     (use) =>
       use !== declaration &&
@@ -167,7 +207,7 @@ function onlyPair(
         use.parent.name === use
       ),
   );
-  return others.length > 0 ? undefined : { declaration };
+  return others.length > 0 ? elsewhere : { declaration };
 }
 
 /** Whether two `htmlFor`/`id` values are the same string, or the same identifier. */
@@ -221,8 +261,8 @@ export function fieldPair(tag: Tag, component: string, context: Context): void {
   const id = pairedControl(tag, htmlFor, context);
   if (typeof id === "string") return report(context, htmlFor, id);
   const pair = onlyPair(context, htmlFor, id);
-  if (pair === undefined) {
-    report(context, htmlFor, "htmlFor kept: something else names this id");
+  if (typeof pair === "string") {
+    report(context, htmlFor, pair);
     return;
   }
   remove(context, htmlFor);
