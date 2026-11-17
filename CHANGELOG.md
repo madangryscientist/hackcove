@@ -1,3 +1,14 @@
+## 0.11.1 (2026-11-17)
+
+### 🚀 Features
+
+- **ui-react:** refreshMorphs re-measures every Morph after a late scroll restore ([#160](https://github.com/madangryscientist/hackcove/pull/160))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+- Jacobus Langner @madangryscientist
+
 ## 0.11.0 (2026-11-16)
 
 ### 🚀 Features
