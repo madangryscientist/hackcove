@@ -58,6 +58,13 @@ tasks:
     deps: ["~:build"]
     options:
       cache: false
+  # The post-deploy smoke suite: Playwright requests (no browser) against SMOKE_BASE_URL, a live host
+  # that changes outside this repo, so it is never cached. Run it after every production deploy:
+  # SMOKE_BASE_URL=https://hack-cove.com bunx moon run hack-cove-site:smoke
+  smoke:
+    command: "bun run smoke"
+    options:
+      cache: false
   # Playwright against the built site, in every theme. Cached on what the run reads: the specs and
   # playwright.config.ts (in **/*), everything build hashes, since the specs run against its dist, and
   # Storybook's e2e/serve.ts, which serves it. The server is a loopback static one started per run,
