@@ -79,11 +79,15 @@ const FIELD_CONTROLS = new Set(["Input", "Select", "Textarea", "FileDrop"]);
 /** The attributes whose value names an element by its id. */
 const ID_REFERENCES = /^(id|htmlFor|for|href|form|list|headers|aria-[a-z]+)$/;
 
-/** Every tag under a node, through expressions too. */
-function tagsUnder(root: ts.Node): Tag[] {
+/** Every tag under a Field, through expressions too, but not inside a `Field` nested in it. */
+function tagsUnder(root: ts.Node, context: Context): Tag[] {
   const out: Tag[] = [];
   const visit = (node: ts.Node): void => {
-    if (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) out.push(node);
+    const tag = ts.isJsxElement(node) ? node.openingElement : node;
+    if (ts.isJsxOpeningElement(tag) || ts.isJsxSelfClosingElement(tag)) {
+      if (componentOf(tag, context.imports) === "Field") return;
+      if (tag === node) out.push(tag);
+    }
     ts.forEachChild(node, visit);
   };
   ts.forEachChild(root, visit);
@@ -124,13 +128,16 @@ function otherNames(context: Context, id: string, skip: readonly ts.JsxAttribute
   return count;
 }
 
-/** Where a name is declared: the identifier of its `const`, parameter or destructured binding. */
-function declarationOf(context: Context, name: string): ts.Identifier | undefined {
+/** The `const` a name is declared by, when it is `const name = useId()`: an id the file makes itself. */
+function useIdConst(context: Context, name: string): ts.Identifier | undefined {
   return usesOf(context.file, name).find((use) => {
     const parent = use.parent;
+    if (!ts.isVariableDeclaration(parent) || parent.name !== use) return false;
+    const init = parent.initializer;
     return (
-      (ts.isVariableDeclaration(parent) || ts.isParameter(parent) || ts.isBindingElement(parent)) &&
-      parent.name === use
+      init !== undefined &&
+      ts.isCallExpression(init) &&
+      init.expression.getText(context.file).replace(/^React\./, "") === "useId"
     );
   });
 }
@@ -147,7 +154,9 @@ function onlyPair(
   }
   const value = valueOf(htmlFor);
   if (value === undefined || !ts.isIdentifier(value)) return undefined;
-  const declaration = declarationOf(context, value.text);
+  // An id from a prop or anywhere else was chosen by a caller, who may name it from another file.
+  const declaration = useIdConst(context, value.text);
+  if (declaration === undefined) return undefined;
   const others = usesOf(context.file, value.text).filter(
     (use) =>
       use !== declaration &&
@@ -158,8 +167,7 @@ function onlyPair(
         use.parent.name === use
       ),
   );
-  if (others.length > 0) return undefined;
-  return declaration === undefined ? {} : { declaration };
+  return others.length > 0 ? undefined : { declaration };
 }
 
 /** Whether two `htmlFor`/`id` values are the same string, or the same identifier. */
@@ -189,7 +197,7 @@ function pairedControl(
   }
   const elsewhere = "htmlFor kept: something else names this id";
   if (!ts.isJsxOpeningElement(tag)) return elsewhere;
-  const matches = tagsUnder(tag.parent).flatMap((inner) => {
+  const matches = tagsUnder(tag.parent, context).flatMap((inner) => {
     const id = attributeOf(inner, "id");
     return id !== undefined && sameValue(htmlFor, id) ? [{ inner, id }] : [];
   });

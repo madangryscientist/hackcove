@@ -24,3 +24,11 @@ export const coded = (claim: { id: string }) => (
     <Input id={`code-${claim.id}`} />
   </Field>
 );
+
+export function Phone({ phoneId }: { phoneId: string }) {
+  return (
+    <Field label="Phone" htmlFor={phoneId}>
+      <Input id={phoneId} />
+    </Field>
+  );
+}

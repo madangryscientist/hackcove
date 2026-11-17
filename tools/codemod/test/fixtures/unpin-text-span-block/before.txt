@@ -1,10 +1,14 @@
-import { Caption, Stack, Text } from "@hackcove/ui-react";
+import { Caption, Card, Stack, Text } from "@hackcove/ui-react";
 
 export const view = (
   <Stack gap="sm">
     <Text as="span">One line</Text>
+    <Text as="span">Beside a sibling, still its own row</Text>
     <div>
       <Caption as="span">Under it</Caption>
     </div>
+    <Card>
+      <Text as="span">The card's one line</Text>
+    </Card>
   </Stack>
 );

@@ -8,6 +8,7 @@ import { type Options, transform } from "./transform.js";
 // --unpin runs only the second step instead: it drops the pins the 0.11 pass wrote, where the new
 // default means the same (packages/ui-react/MIGRATING.md, "0.11 to 0.12: drop the pins").
 
+const FLAGS = new Set(["--write", "--unpin"]);
 const SKIP = new Set(["node_modules", "dist", ".git"]);
 
 function filesUnder(dir: string): string[] {
@@ -32,14 +33,26 @@ function attempt(
   }
 }
 
-function main(args: readonly string[]): number {
+/** The folder and flags, or undefined after printing the usage. */
+function parseArgs(
+  args: readonly string[],
+): { dir: string; write: boolean; options: Options } | undefined {
   const dir = args.find((arg) => !arg.startsWith("--"));
-  if (dir === undefined) {
+  const unknown = args.filter((arg) => arg.startsWith("--") && !FLAGS.has(arg));
+  // A mistyped --unpin would otherwise run the 0.11 pass and write every pin back.
+  if (unknown.length > 0) process.stderr.write(`unknown flag: ${unknown.join(" ")}\n`);
+  if (dir === undefined || unknown.length > 0) {
     process.stderr.write("usage: bun tools/codemod/src/run.ts <src dir> [--unpin] [--write]\n");
-    return 2;
+    return undefined;
   }
-  const write = args.includes("--write");
   const options: Options = { step: args.includes("--unpin") ? "unpin" : "0.11" };
+  return { dir, write: args.includes("--write"), options };
+}
+
+function main(args: readonly string[]): number {
+  const parsed = parseArgs(args);
+  if (parsed === undefined) return 2;
+  const { dir, write, options } = parsed;
   let changed = 0;
   let reported = 0;
   for (const path of filesUnder(dir)) {

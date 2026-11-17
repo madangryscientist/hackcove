@@ -1,0 +1,15 @@
+import { Section } from "@hackcove/ui-react";
+
+export const view = (
+  <>
+    <Section title="Hero" size="lg" gap="md">
+      x
+    </Section>
+    <Section title="Small" size="sm" gap="md">
+      y
+    </Section>
+    <Section title="Plain" size="md">
+      z
+    </Section>
+  </>
+);

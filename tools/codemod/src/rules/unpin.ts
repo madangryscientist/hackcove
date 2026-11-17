@@ -1,40 +1,49 @@
 import ts from "typescript";
 import { attributeOf, isOn, literalOf, remove, valueOf } from "../attributes.js";
-import { componentOf, type Context, enclosing, report, type Tag, type TagRule } from "../source.js";
+import {
+  componentOf,
+  type Context,
+  enclosing,
+  meaningfulChildren,
+  report,
+  type Tag,
+  type TagRule,
+} from "../source.js";
 
 // The second step, `--unpin`: it takes out the pins the 0.11 pass wrote so nothing moved, where
 // the new default is what the pin meant. It cannot tell a pin it wrote from one a person wrote, so
 // it removes one only where the new default draws the same thing, and reports the rest.
 
-/** The package parts that lay their children out as blocks, one under the other. */
-const BLOCK_PARTS = new Set([
-  "Stack",
-  "Section",
-  "Card",
-  "Dialog",
-  "Drawer",
-  "BottomSheet",
-  "Callout",
-  "Field",
-  "Fieldset",
-]);
+/** The package parts that lay their children out in a flex column: each child is its own row. */
+const COLUMN_PARTS = new Set(["Stack", "Section", "Field"]);
 
-/** The HTML elements whose children are blocks. */
+/**
+ * The package parts and HTML elements whose children flow as plain blocks: a lone child that turns
+ * from a `<span>` into a `<p>` looks the same, but a `<p>` next to inline siblings breaks the line.
+ */
+const BLOCK_PARTS = new Set(["Card", "Dialog", "Drawer", "BottomSheet", "Callout", "Fieldset"]);
 const BLOCK_ELEMENTS = new Set(["div", "section", "article", "main", "header", "footer", "li"]);
 
 /** The containers whose `Stack` and `Section` default to the `xs` gap, not `md`. */
 const TIGHT = new Set(["Card", "Dialog", "Drawer", "BottomSheet", "Callout", "ListRow"]);
 
-/** Whether the element's direct parent, read from the JSX alone, lays it out as a block. */
+/**
+ * Whether the element would look the same as a `<p>`, read from the JSX alone: in a flex column it
+ * is its own row whatever sits beside it; in a plain block only when it is the block's one child.
+ */
 function inBlock(tag: Tag, context: Context): boolean {
   const element = ts.isJsxOpeningElement(tag) ? tag.parent : tag;
   const parent = element.parent;
   if (!ts.isJsxElement(parent)) return false;
   const opening = parent.openingElement;
   const part = componentOf(opening, context.imports);
-  if (part !== undefined) return BLOCK_PARTS.has(part);
+  if (part !== undefined && COLUMN_PARTS.has(part)) return true;
   const name = opening.tagName;
-  return ts.isIdentifier(name) && BLOCK_ELEMENTS.has(name.text);
+  const block =
+    part === undefined
+      ? ts.isIdentifier(name) && BLOCK_ELEMENTS.has(name.text)
+      : BLOCK_PARTS.has(part);
+  return block && meaningfulChildren(opening).length === 1;
 }
 
 /** `Text`/`Caption` `as="span"` goes where a paragraph sits as well: in a block container. */
@@ -51,6 +60,11 @@ export function unpinGap(tag: Tag, component: string, context: Context): void {
   if (component !== "Stack" && component !== "Section") return;
   const gap = attributeOf(tag, "gap");
   if (literalOf(gap) !== "md" || gap === undefined) return;
+  const size = attributeOf(tag, "size");
+  if (component === "Section" && size !== undefined && literalOf(size) !== "md") {
+    report(context, gap, 'gap="md" kept: this Section\'s size sets its own gap, check it');
+    return;
+  }
   if (enclosing(tag, context.imports).some(({ name }) => TIGHT.has(name))) {
     report(
       context,
