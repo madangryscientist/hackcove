@@ -9,6 +9,7 @@
  * keeps those main builds there.
  */
 import { isRecord } from "./visual-index.js";
+import { lookupFailure, type LookupMiss, type LookupResult } from "./visual-lookup.js";
 
 /** The command that puts a main build on the server, quoted by every failure that needs one. */
 const MAIN_COMMAND = "bunx moon run storybook:visual-upload";
@@ -46,36 +47,39 @@ export function decideUpload(state: UploadState): UploadMode {
   return "branch";
 }
 
+/** A project's recent `main` build shas, or why the server gave none. */
+export type MainShas = { kind: "ok"; shas: string[] } | Exclude<LookupResult, { kind: "ok" }>;
+
 /** How a branch upload asks the server what it holds, and git whether a commit is in reach. */
 export type BaselineDeps = {
   /**
-   * The shas of `project`'s recent `main` builds, newest first; `undefined` when the server
-   * refused (no such project, or a token that cannot see it).
+   * The shas of `project`'s recent `main` builds, newest first, or why the server gave none: the
+   * project is missing (or the token cannot see it), or the server did not answer.
    */
-  mainShas: (project: string) => Promise<string[] | undefined>;
+  mainShas: (project: string) => Promise<MainShas>;
   /** `git merge-base --is-ancestor sha mergeBase`: a sha the checkout does not have is `false`. */
   isAncestor: (sha: string) => Promise<boolean>;
 };
 
 /**
- * The projects that hold no `main` build at the merge-base or one of its ancestors, and the
- * projects the server did not answer for. A branch upload without a baseline reads "new" on every
- * shot, so it stops here, before any capture.
+ * The projects that hold no `main` build at the merge-base or one of its ancestors, the projects
+ * the server does not have, and the ones it did not answer for. A branch upload without a baseline
+ * reads "new" on every shot, so it stops here, before any capture.
  */
 async function baselineGaps(
   projects: string[],
   deps: BaselineDeps,
-): Promise<{ missing: string[]; unknown: string[] }> {
+): Promise<{ missing: string[]; misses: LookupMiss[] }> {
   const missing: string[] = [];
-  const unknown: string[] = [];
+  const misses: LookupMiss[] = [];
   for (const project of projects) {
-    const shas = await deps.mainShas(project);
-    if (shas === undefined) {
-      unknown.push(project);
+    const result = await deps.mainShas(project);
+    if (result.kind !== "ok") {
+      misses.push({ project, result });
       continue;
     }
     let found = false;
-    for (const sha of shas) {
+    for (const sha of result.shas) {
       if (await deps.isAncestor(sha)) {
         found = true;
         break;
@@ -83,26 +87,27 @@ async function baselineGaps(
     }
     if (!found) missing.push(project);
   }
-  return { missing, unknown };
+  return { missing, misses };
 }
 
-/** The failure for `baselineGaps`, or `undefined` when every project has its baseline. */
+/**
+ * The failure for `baselineGaps`, or `undefined` when every project has its baseline: one line per
+ * kind, server failures first, then projects the server does not have, then missing baselines.
+ */
 export async function baselineFailure(
   projects: string[],
   deps: BaselineDeps,
 ): Promise<string | undefined> {
-  const { missing, unknown } = await baselineGaps(projects, deps);
-  if (unknown.length > 0)
-    return (
-      `the server has no PixelSlash project ${unknown.join(", ")} (or the token cannot see it); ` +
-      "create each with `pixelslash project create <name>` and re-run"
-    );
+  const { missing, misses } = await baselineGaps(projects, deps);
+  const lines: string[] = [];
+  const lookup = lookupFailure(misses);
+  if (lookup !== undefined) lines.push(lookup);
   if (missing.length > 0)
-    return (
+    lines.push(
       `no main build at the merge-base or its ancestors in ${missing.join(", ")}; ` +
-      `upload main first: run \`${MAIN_COMMAND}\` on a checkout at origin/main`
+        `upload main first: run \`${MAIN_COMMAND}\` on a checkout at origin/main`,
     );
-  return undefined;
+  return lines.length > 0 ? lines.join("\n") : undefined;
 }
 
 /** Statuses of a build the server cannot diff against: it holds no finished shots yet, or none. */

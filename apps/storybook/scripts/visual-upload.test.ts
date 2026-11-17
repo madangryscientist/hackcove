@@ -10,6 +10,7 @@ import {
   uploadTotalLine,
   type GroupResult,
   type BuildState,
+  type MainShas,
   type UploadState,
 } from "./visual-upload.js";
 
@@ -54,14 +55,16 @@ describe("decideUpload", () => {
 
 describe("baselineFailure", () => {
   const ancestors = new Set(["c1", "c2"]);
-  const listings: Record<string, string[] | undefined> = {
-    "hackcove-ui-text": ["m9", "m8"],
-    "hackcove-ui-layout": ["m9", "c2"],
-    "hackcove-ui-empty": [],
-    "hackcove-ui-gone": undefined,
+  const listings: Record<string, MainShas> = {
+    "hackcove-ui-text": { kind: "ok", shas: ["m9", "m8"] },
+    "hackcove-ui-layout": { kind: "ok", shas: ["m9", "c2"] },
+    "hackcove-ui-empty": { kind: "ok", shas: [] },
+    gone: { kind: "missing", line: "no project gone" },
+    down: { kind: "failed", line: "GET /builds -> 500 internal: boom" },
+    denied: { kind: "failed", line: "GET /builds -> 401 unauthorized" },
   };
   const deps = {
-    mainShas: async (project: string) => listings[project],
+    mainShas: async (project: string) => listings[project] ?? { kind: "ok", shas: [] },
     isAncestor: async (sha: string) => ancestors.has(sha),
   };
 
@@ -87,10 +90,22 @@ describe("baselineFailure", () => {
     expect(await baselineFailure(["hackcove-ui-empty"], deps)).toContain("hackcove-ui-empty");
   });
 
-  it("names a project the server refused as missing from the server", async () => {
-    const failure = await baselineFailure(["hackcove-ui-gone"], deps);
-    expect(failure).toContain("hackcove-ui-gone");
-    expect(failure).toContain("pixelslash project create");
+  it("reports a missing project as one to create, and a 500 as PixelSlash not answering", async () => {
+    const gone = await baselineFailure(["gone"], deps);
+    expect(gone).toMatch(/no PixelSlash project gone \(pixelslash: no project .*create/);
+    const down = await baselineFailure(["down"], deps);
+    expect(down).toMatch(/did not answer for down \(pixelslash: .*-> 500 internal: boom.*planner/);
+    expect(down).not.toMatch(/no PixelSlash project|pixelslash project create/);
+  });
+
+  it("names every kind in one call, the server failure first", async () => {
+    const failure = await baselineFailure(["hackcove-ui-text", "gone", "denied", "down"], deps);
+    expect(failure?.split("\n")).toEqual([
+      expect.stringMatching(/^PixelSlash did not answer for down \(pixelslash: .*-> 500/),
+      expect.stringMatching(/^PixelSlash refused the token for denied \(/),
+      expect.stringMatching(/^the server has no PixelSlash project gone \(/),
+      expect.stringMatching(/^no main build .* in hackcove-ui-text; upload main first/),
+    ]);
   });
 });
 
