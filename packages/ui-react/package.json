@@ -12,9 +12,9 @@
     "tailwindcss",
     "ui"
   ],
-  "homepage": "https://github.com/madangryscientist/uislash/tree/main/packages/ui-react#readme",
+  "homepage": "https://github.com/slashsuite/uislash/tree/main/packages/ui-react#readme",
   "bugs": {
-    "url": "https://github.com/madangryscientist/uislash/issues"
+    "url": "https://github.com/slashsuite/uislash/issues"
   },
   "license": "MIT",
   "author": {
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/madangryscientist/uislash.git",
+    "url": "git+https://github.com/slashsuite/uislash.git",
     "directory": "packages/ui-react"
   },
   "files": [

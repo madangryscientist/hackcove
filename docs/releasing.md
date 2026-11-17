@@ -42,7 +42,7 @@ One-time setup, by hand:
    publish.
 2. On npmjs.com, for each package that is already on npm (`@hackcove/ui-react` today; a new
    package's publisher is added after its first publish, below): Settings → Trusted Publisher →
-   GitHub Actions, repository `madangryscientist/uislash`, workflow filename `publish.yml`,
+   GitHub Actions, repository `slashsuite/uislash`, workflow filename `publish.yml`,
    environment `npm-publish`.
 
 The release commit also carries `bun.lock`. The workspace entries in it hold each package's version, so
