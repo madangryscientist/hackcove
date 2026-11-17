@@ -116,8 +116,8 @@ other step sees it. If a project needs staging and `NPM_TOKEN` is unset, the wor
 it versions, tags or pushes anything, and names the project.
 
 1. On npmjs.com, make a granular access token: "Read and write (publish and stage)" on the
-   `@hackcove` packages, bypass 2FA off. (Since npm's July 2026 change, a token that bypasses 2FA
-   is on its way out for publishing; staging needs no bypass.)
+   `@hackcove` packages, bypass 2FA off. (npm's changelog of 2026-07-08: tokens that bypass 2FA
+   stop publishing directly around January 2027; staging needs no bypass.)
 2. `gh secret set NPM_TOKEN --env npm-publish` (paste the token when prompted).
 3. Run the workflow with `dry_run` on and read the log: the version (`0.1.0`), the tag
    (`oxlint-testing@0.1.0`), the changelog, the GitHub release it would create, and

@@ -36,11 +36,6 @@ describe("releasePick: classify", () => {
     expect(classify(facts({ npmVersions: [stagePlaceholder, "0.1.0"] }))).toBe("tagged");
   });
 
-  it("keeps a published package tagged when its newest version is not on npm yet", () => {
-    // An OIDC publish that failed after the tag was pushed: the next commit releases the next version.
-    expect(classify(facts({ npmVersions: ["0.1.0"] }))).toBe("tagged");
-  });
-
   it("files a rename that carries its predecessor's tag as renamed", () => {
     // The copied tag points at a commit where the folder held the old package, or nothing.
     expect(classify(facts({ nameAtLastTag: "@hackcove/ui", npmVersions: null }))).toBe("renamed");

@@ -53,14 +53,15 @@ export function needsToken(sets: Pick): boolean {
   return sets.new.length + sets.renamed.length > 0;
 }
 
-function run(cmd: string[]): { ok: boolean; out: string } {
+// Only stdout is parsed: a warning npm, Nx or git prints on stderr must not break the JSON.
+function run(cmd: string[]): { ok: boolean; out: string; err: string } {
   const r = Bun.spawnSync(cmd, { stdout: "pipe", stderr: "pipe" });
-  return { ok: r.exitCode === 0, out: `${r.stdout.toString()}${r.stderr.toString()}`.trim() };
+  return { ok: r.exitCode === 0, out: r.stdout.toString().trim(), err: r.stderr.toString().trim() };
 }
 
 function must(cmd: string[]): string {
   const r = run(cmd);
-  if (!r.ok) fail(`${cmd.join(" ")} failed: ${r.out}`);
+  if (!r.ok) fail(`${cmd.join(" ")} failed: ${r.err || r.out}`);
   return r.out;
 }
 
@@ -72,8 +73,8 @@ function fail(message: string): never {
 function npmVersions(name: string): string[] | null {
   const r = run(["npm", "view", name, "versions", "--json"]);
   if (!r.ok) {
-    if (r.out.includes("E404")) return null;
-    fail(`Could not ask npm whether ${name} exists: ${r.out}`);
+    if (`${r.out}\n${r.err}`.includes("E404")) return null;
+    fail(`Could not ask npm whether ${name} exists: ${r.err || r.out}`);
   }
   const parsed: unknown = JSON.parse(r.out);
   return (Array.isArray(parsed) ? parsed : [parsed]).map(String);
