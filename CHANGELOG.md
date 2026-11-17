@@ -1,3 +1,17 @@
+## 0.11.2 (2026-11-17)
+
+### 🚀 Features
+
+- **codemod:** a second step drops the 0.11 look pins and the Field htmlFor/id pairs ([#163](https://github.com/madangryscientist/hackcove/pull/163))
+
+### 🩹 Fixes
+
+- **ui-react:** Escape closes a hover tooltip without moving focus ([#164](https://github.com/madangryscientist/hackcove/pull/164))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.3.1 (2026-11-17)
 
 ### 🚀 Features
