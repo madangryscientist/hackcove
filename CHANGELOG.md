@@ -1,3 +1,13 @@
+## 0.3.1 (2026-11-17)
+
+### 🚀 Features
+
+- **themes:** the Slash suite pair, Slash Day and Slash Night ([#161](https://github.com/madangryscientist/hackcove/pull/161))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
 ## 0.11.1 (2026-11-17)
 
 ### 🚀 Features
