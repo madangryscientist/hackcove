@@ -34,6 +34,31 @@ function declarationsOf(body: string): Declarations {
   return declarations;
 }
 
+/** A class name as a selector writes it, with its escapes undone (`hover\\:bg-x` reads `hover:bg-x`). */
+const unescapeClass = (name: string): string => name.replace(/\\(.)/g, "$1");
+
+/**
+ * Record one selector's declarations: `.<scope> .<tint> .<utility>` as the utility drawn on that tint
+ * (keyed `<tint> <utility>`, tints only), and `.<scope> .<utility>[:state]` as the utility itself.
+ */
+function recordSelector(
+  utilities: Map<string, Declarations>,
+  selector: string,
+  declarations: Declarations,
+  patterns: { within: RegExp; plain: RegExp },
+): void {
+  const inside = patterns.within.exec(selector);
+  let key: string | undefined;
+  if (inside) {
+    const tint = unescapeClass(inside[1] ?? "");
+    if (tint.startsWith("bg-")) key = `${tint} ${unescapeClass(inside[2] ?? "")}`;
+  } else {
+    key = unescapeClass(patterns.plain.exec(selector)?.[1] ?? "") || undefined;
+  }
+  if (key === undefined) return;
+  utilities.set(key, { ...utilities.get(key), ...declarations });
+}
+
 /**
  * What a theme's CSS says each utility is under its scope class: `.<scope> .<utility>[:state]` rules
  * keyed by the utility's class name as a component writes it (`hover:bg-violet-700`, with Tailwind's
@@ -45,15 +70,14 @@ export function utilitiesOf(css: string): Map<string, Declarations> {
   const utilities = new Map<string, Declarations>();
   if (scope === undefined) return utilities;
   const rules = stripComments(css).replace(/@[^;{}]*;/g, "");
-  const descendant = new RegExp(`^\\.${scope}\\s+\\.((?:\\\\.|[\\w-])+)`);
+  const patterns = {
+    within: new RegExp(`^\\.${scope}\\s+\\.((?:\\\\.|[\\w-])+)\\s+\\.((?:\\\\.|[\\w-])+)$`),
+    plain: new RegExp(`^\\.${scope}\\s+\\.((?:\\\\.|[\\w-])+)`),
+  };
   for (const [, list = "", body = ""] of rules.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const declarations = declarationsOf(body);
-    for (const selector of selectorsOf(list)) {
-      const escaped = descendant.exec(selector)?.[1];
-      if (escaped === undefined) continue;
-      const utility = escaped.replace(/\\(.)/g, "$1");
-      utilities.set(utility, { ...utilities.get(utility), ...declarations });
-    }
+    for (const selector of selectorsOf(list))
+      recordSelector(utilities, selector, declarations, patterns);
   }
   return utilities;
 }

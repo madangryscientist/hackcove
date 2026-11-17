@@ -46,7 +46,7 @@
   --hc-line: #374463; /* border-slate-200 */
   --hc-ink: #e2e8fc; /* text-slate-900 */
   --hc-mute: #c6cce2; /* text-slate-500 */
-  --hc-accent: #fab387; /* text-violet-600 */
+  --hc-accent: #fbc5a1; /* text-violet-600 */
   --hc-cat-1: #72b6f5; /* text-indigo-600 */
   --hc-cat-2: #ebb589; /* text-orange-600 */
   --hc-cat-3: #8be0e7; /* text-teal-600 */
@@ -324,7 +324,7 @@
 }
 .slash-suite-dark .text-emerald-700,
 .slash-suite-dark .text-emerald-800 {
-  color: #a6e3a1; /* green */
+  color: #aae4a5; /* green, as Mocha */
 }
 .slash-suite-dark .text-amber-700,
 .slash-suite-dark .text-amber-800,
@@ -344,7 +344,7 @@
 }
 .slash-suite-dark .text-violet-600,
 .slash-suite-dark .text-violet-700 {
-  color: #fab387; /* peach */
+  color: #fbc5a1; /* peach */
 }
 .slash-suite-dark .text-sky-700 {
   color: #89dceb; /* sky */
@@ -415,7 +415,7 @@
    TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
    write class="link" on a bare <a>. */
 .slash-suite-dark .link {
-  color: #fab387; /* peach */
+  color: #fbc5a1; /* peach */
   font-weight: 500;
   text-underline-offset: 2px;
   transition: color 0.12s ease;
@@ -434,4 +434,12 @@
 }
 .slash-suite-dark .bg-rose-400\/25 {
   background-color: rgba(245, 194, 231, 0.06); /* pink */
+}
+/* The danger text drawn on a Callout tint (HC-442): lifted there only, so danger keeps its red everywhere else. */
+.slash-suite-dark .bg-slate-50 .text-red-700,
+.slash-suite-dark .bg-blue-50 .text-red-700,
+.slash-suite-dark .bg-emerald-50 .text-red-700,
+.slash-suite-dark .bg-amber-50 .text-red-700,
+.slash-suite-dark .bg-red-50 .text-red-700 {
+  color: #f7b0c4;
 }

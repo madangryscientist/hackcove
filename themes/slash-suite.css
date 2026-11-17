@@ -334,7 +334,7 @@
 }
 .slash-suite .text-emerald-700,
 .slash-suite .text-emerald-800 {
-  color: #2a7421; /* green #40a02b */
+  color: #276c1f; /* green #40a02b */
 }
 .slash-suite .text-amber-700,
 .slash-suite .text-amber-800,
@@ -447,4 +447,12 @@
 }
 .slash-suite .bg-rose-400\/25 {
   background-color: rgba(234, 118, 203, 0.05); /* pink */
+}
+/* The danger text drawn on a Callout tint (HC-442): lifted there only, so danger keeps its red everywhere else. */
+.slash-suite .bg-slate-50 .text-red-700,
+.slash-suite .bg-blue-50 .text-red-700,
+.slash-suite .bg-emerald-50 .text-red-700,
+.slash-suite .bg-amber-50 .text-red-700,
+.slash-suite .bg-red-50 .text-red-700 {
+  color: #b60f39;
 }

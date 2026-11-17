@@ -132,7 +132,7 @@ The fills take the Mocha peach pastel `#fab387` in both, with a dark label. On D
 edges and focus rings are the deep peach `#a03604`, since a pastel line is under 3:1 on white. The
 status tones stay Latte's; the avatar initials are the accent's label, so on Day the avatar fills, the
 positive button among them, are Latte's own tokens, which the dark label clears. On Night everything is
-the pastel and the status tones are Mocha's.
+the pastel, except the accent text (`#fbc5a1`, lifted so it clears AA on the Callout tints), and the status tones are Mocha's.
 
 ### Thriftloop
 
@@ -150,4 +150,4 @@ light: canvas `#f8f1d8` · surface `#fffaea` · subtle `#f5eac7` · line `#eedca
 accent `#c2410c` · accent-ink `#be3d04` · danger `#b31960` · warn `#ad4d00` · positive `#047857`
 
 dark: canvas `#0c191d` · surface `#102026` · subtle `#18333c` · line `#214450` · ink `#e6edef` ·
-accent `#e2622b` · accent-ink `#f2703b` · danger `#fca5a5` · warn `#fcd34d` · positive `#6ee7b7`
+accent `#e2622b` · accent-ink `#f37c4c` · danger `#fca5a5` · warn `#fcd34d` · positive `#6ee7b7`

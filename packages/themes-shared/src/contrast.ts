@@ -51,17 +51,33 @@ function backdropsOf(
 /** Two decimals, rounded down, so "4.50:1" is never printed for a ratio that missed 4.5. */
 const shown = (ratio: number): string => (Math.floor(ratio * 100) / 100).toFixed(2);
 
+/**
+ * The colour of a foreground on one stack. A scoped rule reads the theme's `.<scope> .<tint> .<fg>`
+ * value when the stack starts on that tint (a Callout's text), else the global utility.
+ */
+function inkOn(
+  utilities: Map<string, Declarations>,
+  rule: Rule,
+  fg: string,
+  stack: string[],
+): Colour {
+  const scoped = rule.scoped ? utilities.get(`${stack[0]} ${fg}`)?.color : undefined;
+  const colour = scoped === undefined ? undefined : parseColour(scoped);
+  return colour ?? colourOf(utilities, fg);
+}
+
 /** The failing pairs of one foreground over every backdrop of a rule. */
 function measureOne(utilities: Map<string, Declarations>, rule: Rule, fg: string): string[] {
-  const ink = colourOf(utilities, fg);
-  const backdrops = rule.on.flatMap((stack) => backdropsOf(utilities, stack, rule.base));
-  return backdrops.flatMap((backdrop) => {
-    const seen = composite(ink, backdrop.rgb);
-    const ratio = contrastRatio(seen, backdrop.rgb);
-    if (ratio >= rule.bar) return [];
-    return [
-      `${rule.name}: ${fg} ${toHex(seen)} on ${backdrop.label} ${toHex(backdrop.rgb)} is ${shown(ratio)}:1, needs ${rule.bar}:1`,
-    ];
+  return rule.on.flatMap((stack) => {
+    const ink = inkOn(utilities, rule, fg, stack);
+    return backdropsOf(utilities, stack, rule.base).flatMap((backdrop) => {
+      const seen = composite(ink, backdrop.rgb);
+      const ratio = contrastRatio(seen, backdrop.rgb);
+      if (ratio >= rule.bar) return [];
+      return [
+        `${rule.name}: ${fg} ${toHex(seen)} on ${backdrop.label} ${toHex(backdrop.rgb)} is ${shown(ratio)}:1, needs ${rule.bar}:1`,
+      ];
+    });
   });
 }
 

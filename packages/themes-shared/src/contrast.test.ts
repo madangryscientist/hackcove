@@ -11,7 +11,8 @@ const palette: Palette = {
 };
 
 const cssProperty = (name: string): string => {
-  if (name.startsWith("bg-")) return "background-color";
+  if (name.includes(".text-")) return "color";
+  if (/(?:^|:)bg-/.test(name)) return "background-color";
   if (name.startsWith("border-")) return "border-color";
   return "color";
 };
@@ -112,6 +113,106 @@ describe("contrastFailures", () => {
     expect(
       failures.every((line) => line.startsWith("chart colour: text-indigo-600 #45475a on ")),
     ).toBe(true);
+  });
+
+  it("measures a hovered button's text on its Callout tint with the hover fill stacked on top", () => {
+    const withDanger: Palette = {
+      ...palette,
+      danger: ["text-red-700", "bg-red-50", "hover:bg-red-50"],
+    };
+    // The text clears the white tint alone, and fails once the translucent grey hover fill sits on it.
+    const css = theme({
+      "text-red-700": "#7a0000",
+      "bg-red-50": "#ffffff",
+      "hover\\:bg-red-50:hover": "rgba(0, 0, 0, 0.5)",
+    });
+    const failures = contrastFailures(css, withDanger);
+    expect(
+      failures.some(
+        (line) =>
+          line.startsWith("button text on a tone tint: text-red-700 ") &&
+          line.includes("on bg-red-50 + hover:bg-red-50"),
+      ),
+    ).toBe(true);
+    expect(
+      failures.some(
+        (line) =>
+          line.startsWith("button text on a tone tint: text-red-700 ") &&
+          line.includes("on bg-red-50 #"),
+      ),
+    ).toBe(false);
+  });
+
+  it("reads a danger text lifted only where it is drawn on a Callout tint", () => {
+    const withDanger: Palette = { ...palette, danger: ["text-red-700", "bg-red-50"] };
+    // The global red is too pale for the red-50 tint; the scoped one, drawn on that tint, is dark enough.
+    const global = theme({ "text-red-700": "#f0b0b0", "bg-red-50": "#ffffff" });
+    expect(
+      contrastFailures(global, withDanger).some((line) =>
+        line.startsWith("button text on a tone tint: text-red-700"),
+      ),
+    ).toBe(true);
+    const scoped = theme({
+      "text-red-700": "#f0b0b0",
+      "bg-red-50": "#ffffff",
+      "bg-red-50 .text-red-700": "#7a0000",
+    });
+    expect(
+      contrastFailures(scoped, withDanger).some((line) =>
+        line.startsWith("button text on a tone tint: text-red-700"),
+      ),
+    ).toBe(false);
+  });
+
+  it("pairs a button's text only with its own tone's hover fill", () => {
+    const paired: Palette = {
+      ...palette,
+      danger: ["text-red-700", "bg-red-50"],
+      positive: ["bg-emerald-50", "hover:bg-emerald-50"],
+    };
+    // A translucent dark fill would fail red text, but a danger button never sits on the positive hover fill.
+    const css = theme({
+      "text-red-700": "#7a0000",
+      "bg-red-50": "#ffffff",
+      "bg-emerald-50": "#ffffff",
+      "hover\\:bg-emerald-50:hover": "rgba(0, 0, 0, 0.5)",
+    });
+    const failures = contrastFailures(css, paired);
+    expect(
+      failures.some(
+        (line) =>
+          line.startsWith("button text on a tone tint: text-red-700 ") &&
+          line.includes("hover:bg-emerald-50"),
+      ),
+    ).toBe(false);
+  });
+
+  it("measures an outline button's accent text on another tone's tint, named", () => {
+    const withTones: Palette = {
+      ...palette,
+      accent: ["text-violet-600", "bg-violet-50"],
+      positive: ["bg-emerald-50"],
+    };
+    // The accent text clears the page and its own tint, but not the light emerald tint of a positive Callout.
+    const split = theme({
+      "text-violet-600": "#cba6f7",
+      "bg-violet-50": "#2a2540",
+      "bg-emerald-50": "#a6e3a1",
+    });
+    const failures = contrastFailures(split, withTones);
+    expect(
+      failures.filter((line) =>
+        line.startsWith("button text on a tone tint: text-violet-600 #cba6f7 on bg-emerald-50"),
+      ),
+    ).not.toHaveLength(0);
+    expect(failures.some((line) => line.startsWith("accent text on its tint"))).toBe(false);
+    // Negative control: the own tint is the failing one here, so the rule must not name bg-violet-50.
+    const ownTint = contrastFailures(
+      theme({ "text-violet-600": "#cba6f7", "bg-violet-50": "#e6e0f8" }),
+      { ...palette, accent: ["text-violet-600", "bg-violet-50"] },
+    );
+    expect(ownTint.some((line) => line.startsWith("accent text on its tint"))).toBe(true);
+    expect(ownTint.some((line) => line.startsWith("button text on a tone tint"))).toBe(false);
   });
 });
 
