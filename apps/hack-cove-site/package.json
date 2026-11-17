@@ -11,7 +11,8 @@
     "test": "vitest run",
     "deploy": "./deploy.sh",
     "props": "bun scripts/props.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "smoke": "playwright test -c playwright.smoke.config.ts"
   },
   "dependencies": {
     "@hackcove/themes": "workspace:*",
