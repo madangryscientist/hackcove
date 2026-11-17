@@ -6,18 +6,15 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { isRecord } from "./visual-index.js";
+import { lookupFailure, lookupResult, type LookupMiss, type LookupResult } from "./visual-lookup.js";
 import { VisualError, git, log, pixelslashCli, repoRoot, run } from "./visual-tools.js";
 import {
   baselineFailure,
   buildIn,
   decideUpload,
-  lookupFailure,
-  lookupResult,
   settle,
   shasOf,
   type BuildState,
-  type LookupMiss,
-  type LookupResult,
   type MainShas,
   type UploadMode,
   type UploadState,
