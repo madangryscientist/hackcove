@@ -415,7 +415,7 @@
    TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
    write class="link" on a bare <a>. */
 .dark .link {
-  color: #cba6f7; /* mauve */
+  color: #cfadf7; /* mauve */
   font-weight: 500;
   text-underline-offset: 2px;
   transition: color 0.12s ease;

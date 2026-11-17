@@ -17,7 +17,7 @@
   --hc-line: #214450;
   --hc-ink: #e6edef;
   --hc-mute: #adbdc3;
-  --hc-accent: #f4804f;
+  --hc-accent: #f37c4c;
   --hc-cat-1: #72b6f5; /* text-indigo-600 */
   --hc-cat-2: #ebb589; /* text-orange-600 */
   --hc-cat-3: #8be0e7; /* text-teal-600 */
@@ -327,11 +327,11 @@
 }
 
 .thriftloop-dark .text-violet-600 {
-  color: #f4804f;
+  color: #f37c4c;
 }
 
 .thriftloop-dark .text-violet-700 {
-  color: #f37e4e;
+  color: #f37c4c;
 }
 
 .thriftloop-dark .text-sky-700 {
@@ -410,7 +410,7 @@
 }
 
 .thriftloop-dark .link {
-  color: #f2703b;
+  color: #f37c4c;
   font-weight: 500;
   text-underline-offset: 2px;
   transition: color 0.12s ease;

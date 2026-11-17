@@ -132,7 +132,7 @@ function buttonTintRule(palette: Palette, narrow: string[]): Rule {
   const calloutTints = [
     ...roleOf(palette, "subtle").filter((utility) => utility === "bg-slate-50"),
     ...["info", "positive", "warn", "danger"].flatMap((role) =>
-      roleOf(palette, role).filter((utility) => /^(?:hover:)?bg-[a-z]+-50$/.test(utility)),
+      roleOf(palette, role).filter((utility) => /^bg-[a-z]+-50$/.test(utility)),
     ),
   ];
   const fg = [

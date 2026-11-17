@@ -428,7 +428,7 @@
   transition: color 0.12s ease;
 }
 .latte .link:hover {
-  color: #525cad; /* lavender, as hover:text-violet-700 above */
+  color: #515bab; /* lavender, as hover:text-violet-700 above */
 }
 
 /* The hero glow (Hero): three ribbons behind a landing page's title, mauve, teal and pink kept faint
