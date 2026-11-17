@@ -1,0 +1,9 @@
+import { Card, Stack } from "@hackcove/ui-react";
+
+export const view = (
+  <Card title="Orders">
+    <div>
+      <Stack gap="md">x</Stack>
+    </div>
+  </Card>
+);

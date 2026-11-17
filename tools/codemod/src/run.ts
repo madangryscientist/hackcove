@@ -1,10 +1,12 @@
 import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
-import { transform } from "./transform.js";
+import { type Options, transform } from "./transform.js";
 
-// bun tools/codemod/src/run.ts <src dir> [--write]
+// bun tools/codemod/src/run.ts <src dir> [--unpin] [--write]
 // Rewrites an app's @hackcove/ui-react 0.10 code for 0.11. A dry run by default: it prints the files
 // it would change and a file:line for every swap a person has to make. --write saves the changes.
+// --unpin runs only the second step instead: it drops the pins the 0.11 pass wrote, where the new
+// default means the same (packages/ui-react/MIGRATING.md, "0.11 to 0.12: drop the pins").
 
 const SKIP = new Set(["node_modules", "dist", ".git"]);
 
@@ -18,9 +20,13 @@ function filesUnder(dir: string): string[] {
 }
 
 /** One file's rewrite, or why a rule tripped on it, so one odd file does not stop the run. */
-function attempt(source: string, path: string): ReturnType<typeof transform> | string {
+function attempt(
+  source: string,
+  path: string,
+  options: Options,
+): ReturnType<typeof transform> | string {
   try {
-    return transform(source, path);
+    return transform(source, path, options);
   } catch (error) {
     return error instanceof Error ? error.message : String(error);
   }
@@ -29,16 +35,17 @@ function attempt(source: string, path: string): ReturnType<typeof transform> | s
 function main(args: readonly string[]): number {
   const dir = args.find((arg) => !arg.startsWith("--"));
   if (dir === undefined) {
-    process.stderr.write("usage: bun tools/codemod/src/run.ts <src dir> [--write]\n");
+    process.stderr.write("usage: bun tools/codemod/src/run.ts <src dir> [--unpin] [--write]\n");
     return 2;
   }
   const write = args.includes("--write");
+  const options: Options = { step: args.includes("--unpin") ? "unpin" : "0.11" };
   let changed = 0;
   let reported = 0;
   for (const path of filesUnder(dir)) {
     const source = readFileSync(path, "utf8");
     const name = relative(process.cwd(), path);
-    const result = attempt(source, path);
+    const result = attempt(source, path, options);
     if (typeof result === "string") {
       process.stdout.write(
         `${name}:1: the codemod could not rewrite this file (${result}): do it by hand\n`,

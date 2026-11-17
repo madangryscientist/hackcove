@@ -1,0 +1,10 @@
+import { Section, Stack } from "@hackcove/ui-react";
+
+export const view = (
+  <Stack>
+    <Section title="Orders">
+      x
+    </Section>
+    <Stack gap="lg">y</Stack>
+  </Stack>
+);

@@ -1,0 +1,25 @@
+import { Field, Input, Text } from "@hackcove/ui-react";
+
+export const view = (
+  <>
+    <Field label="Email" htmlFor="email">
+      <Input id="email" type="email" />
+    </Field>
+    <a href="#email">Jump to the email</a>
+  </>
+);
+
+export const focus = () => document.getElementById("phone")?.focus();
+
+export const phone = (
+  <Field label="Phone" htmlFor="phone">
+    <Input id="phone" />
+  </Field>
+);
+
+export const hinted = (
+  <Field label="Code" htmlFor="code">
+    <Input id="code" aria-describedby="code-help code" />
+    <Text as="span" id="code-help">Six digits</Text>
+  </Field>
+);

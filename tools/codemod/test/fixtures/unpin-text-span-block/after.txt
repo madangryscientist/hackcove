@@ -1,0 +1,10 @@
+import { Caption, Stack, Text } from "@hackcove/ui-react";
+
+export const view = (
+  <Stack gap="sm">
+    <Text>One line</Text>
+    <div>
+      <Caption>Under it</Caption>
+    </div>
+  </Stack>
+);

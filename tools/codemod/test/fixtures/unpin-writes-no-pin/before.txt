@@ -1,0 +1,12 @@
+import { Callout, Caption, Cluster, Stack, TableCell, Text } from "@hackcove/ui-react";
+
+export const view = (
+  <Stack>
+    <Text>Plain</Text>
+    <Caption>Small</Caption>
+    <Cluster>
+      <Callout>Note</Callout>
+    </Cluster>
+    <TableCell numeric>1</TableCell>
+  </Stack>
+);

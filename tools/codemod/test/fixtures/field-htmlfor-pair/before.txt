@@ -1,0 +1,7 @@
+import { Field, Input } from "@hackcove/ui-react";
+
+export const view = (
+  <Field label="Email" htmlFor="email">
+    <Input id="email" type="email" />
+  </Field>
+);

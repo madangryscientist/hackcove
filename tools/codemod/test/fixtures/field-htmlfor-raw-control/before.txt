@@ -1,0 +1,7 @@
+import { Field } from "@hackcove/ui-react";
+
+export const view = (
+  <Field label="Colour" htmlFor="colour">
+    <input id="colour" type="color" />
+  </Field>
+);

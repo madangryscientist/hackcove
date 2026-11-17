@@ -1,0 +1,7 @@
+import { TableCell } from "@hackcove/ui-react";
+
+export const view = (figure: boolean) => (
+  <TableCell align="start" numeric={figure}>
+    1
+  </TableCell>
+);

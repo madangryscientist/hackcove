@@ -1,0 +1,17 @@
+import { Button, Cluster, Stack, Text } from "@hackcove/ui-react";
+
+export const view = (items: string[]) => (
+  <Stack gap="sm">
+    <Cluster gap="xs">
+      <Text as="span">In a row</Text>
+    </Cluster>
+    <Button>
+      <Text as="span">In a button</Text>
+    </Button>
+    {items.map((item) => (
+      <Text as="span" key={item}>
+        {item}
+      </Text>
+    ))}
+  </Stack>
+);
