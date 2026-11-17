@@ -53,7 +53,7 @@ Add one CSS file here, `<id>.css`. Its file name is the theme's id, and the id n
 has baselines. Nothing else registers it: the package's exports and `files` are globs, and Storybook,
 the docs and the e2e all read this folder. `themes.test.ts` is the contract, and it reads every CSS
 file here. Run it with `bunx moon run themes:test`. The repo's
-[README](https://github.com/madangryscientist/uislash#how-to-add-a-theme) has the steps.
+[README](https://github.com/slashsuite/uislash#how-to-add-a-theme) has the steps.
 
 ## Colours for chrome the kit cannot draw
 

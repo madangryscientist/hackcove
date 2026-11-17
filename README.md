@@ -183,7 +183,7 @@ on: pull_request
 jobs:
   ui-review:
     permissions: { contents: read, pull-requests: write }
-    uses: madangryscientist/uislash/.github/workflows/ui-review.yml@main
+    uses: slashsuite/uislash/.github/workflows/ui-review.yml@main
     secrets: inherit
 ```
 
