@@ -422,7 +422,7 @@
    TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
    write class="link" on a bare <a>. */
 .latte .link {
-  color: #8839ef; /* mauve */
+  color: #7e31e1; /* mauve, as text-violet-600 */
   font-weight: 500;
   text-underline-offset: 2px;
   transition: color 0.12s ease;

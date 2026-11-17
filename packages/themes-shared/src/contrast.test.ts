@@ -133,11 +133,13 @@ describe("contrastFailures", () => {
       ),
     ).not.toHaveLength(0);
     expect(failures.some((line) => line.startsWith("accent text on its tint"))).toBe(false);
-    const sameTint = contrastFailures(split, {
-      ...palette,
-      accent: ["text-violet-600", "bg-violet-50"],
-    });
-    expect(sameTint.some((line) => line.startsWith("button text on a tone tint"))).toBe(false);
+    // Negative control: the own tint is the failing one here, so the rule must not name bg-violet-50.
+    const ownTint = contrastFailures(
+      theme({ "text-violet-600": "#cba6f7", "bg-violet-50": "#e6e0f8" }),
+      { ...palette, accent: ["text-violet-600", "bg-violet-50"] },
+    );
+    expect(ownTint.some((line) => line.startsWith("accent text on its tint"))).toBe(true);
+    expect(ownTint.some((line) => line.startsWith("button text on a tone tint"))).toBe(false);
   });
 });
 

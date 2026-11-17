@@ -150,4 +150,4 @@ light: canvas `#f8f1d8` · surface `#fffaea` · subtle `#f5eac7` · line `#eedca
 accent `#c2410c` · accent-ink `#be3d04` · danger `#b31960` · warn `#ad4d00` · positive `#047857`
 
 dark: canvas `#0c191d` · surface `#102026` · subtle `#18333c` · line `#214450` · ink `#e6edef` ·
-accent `#e2622b` · accent-ink `#f2703b` · danger `#fca5a5` · warn `#fcd34d` · positive `#6ee7b7`
+accent `#e2622b` · accent-ink `#f37c4c` · danger `#fca5a5` · warn `#fcd34d` · positive `#6ee7b7`
