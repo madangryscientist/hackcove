@@ -181,6 +181,26 @@ The check runs in one of two modes:
 - **Everything** (`bunx moon run storybook:visual -- --all`, or
   `VISUAL_ALL=1 bunx moon run storybook:visual`): every group whole. An upload (`visual-upload`) is always this mode.
 
+**A run can be split into steps.** A bare run plans, runs every group and totals them in one
+process. The same three steps run one at a time, so a full check fits a machine that limits how
+long one browser run may take:
+
+```bash
+bunx moon run storybook:visual -- --all --plan-only        # write the plan and build the base; no browser
+bunx moon run storybook:visual -- --all --group overview   # one group of the saved plan; repeat per group
+bunx moon run storybook:visual -- --all --group forms --group pages   # or several in one run
+bunx moon run storybook:visual -- --summary-only           # total the saved plan's results
+```
+
+`--plan-only` writes `apps/storybook/.pixelslash/plan.json` and stops (for a local compare, after
+building the base Storybook) and prints the group slugs. `--group <slug>` runs only the named groups
+of that plan, and takes the same `--all` and `--upload` the plan had. It refuses when there is no
+plan, when the plan differs from this run in either flag (an upload or not, everything or only what
+the change reaches), when `HEAD` has moved since the plan (plan again), or for a slug the plan does
+not have, naming the plan's. `--summary-only` prints the per-group lines and the total, and
+fails naming each group with no result for this plan. Each group is its own run of a few minutes at
+most, so each can be wrapped in whatever limits a browser run on your machine.
+
 The local run (`visual`) builds the merge-base's Storybook in a shared worktree, captures it and
 writes one report per group to `apps/storybook/.pixelslash/<slug>/report/index.html`. An upload
 (`VISUAL_PARALLEL=3 bunx moon run storybook:visual-upload`, which needs `PIXELSLASH_SERVER` and a token;
