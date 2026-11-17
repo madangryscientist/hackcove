@@ -11,9 +11,14 @@ import {
   baselineFailure,
   buildIn,
   decideUpload,
+  lookupFailure,
+  lookupResult,
   settle,
   shasOf,
   type BuildState,
+  type LookupMiss,
+  type LookupResult,
+  type MainShas,
   type UploadMode,
   type UploadState,
 } from "./visual-upload.js";
@@ -35,26 +40,23 @@ async function uploadSnapshots(dir: string, cwd: string, project: string, ...fla
   );
 }
 
-/** `pixelslash builds --json` for `project`: the parsed reply, or `undefined` when the server refused. */
-async function listBuilds(project: string, ...flags: string[]): Promise<unknown> {
+/** `pixelslash builds --json` for `project`: the parsed reply, or why there is none. */
+async function listBuilds(project: string, ...flags: string[]): Promise<LookupResult> {
   const proc = Bun.spawn(
     ["bun", pixelslashCli, "builds", "--project", project, ...flags, "--json", ...tokenPathFlags()],
-    { cwd: repoRoot, stdout: "pipe", stderr: "inherit" },
+    { cwd: repoRoot, stdout: "pipe", stderr: "pipe" },
   );
-  const text = await new Response(proc.stdout).text();
-  if ((await proc.exited) !== 0) return undefined;
-  return JSON.parse(text);
+  const [stdout, stderr] = await Promise.all([
+    new Response(proc.stdout).text(),
+    new Response(proc.stderr).text(),
+  ]);
+  return lookupResult(await proc.exited, stdout, stderr);
 }
 
-/** Whether the server lists `project` for this token (an empty project counts). */
-async function projectExists(project: string): Promise<boolean> {
-  return (await listBuilds(project, "--limit", "1")) !== undefined;
-}
-
-/** The shas of `project`'s 20 newest `main` builds; `undefined` when the server refused. */
-async function mainShas(project: string): Promise<string[] | undefined> {
-  const listing = await listBuilds(project, "--branch", "main", "--limit", "20");
-  return listing === undefined ? undefined : shasOf(listing);
+/** The shas of `project`'s 20 newest `main` builds, or why the server gave none. */
+async function mainShas(project: string): Promise<MainShas> {
+  const result = await listBuilds(project, "--branch", "main", "--limit", "20");
+  return result.kind === "ok" ? { kind: "ok", shas: shasOf(result.listing) } : result;
 }
 
 async function isAncestor(sha: string, of: string): Promise<boolean> {
@@ -115,13 +117,15 @@ function decide(state: UploadState): UploadMode {
 
 /** Main's own upload needs no baseline, only a project to send to. */
 async function requireProjects(projects: string[]) {
-  const missing: string[] = [];
-  for (const project of projects) if (!(await projectExists(project))) missing.push(project);
-  if (missing.length > 0)
-    throw new VisualError(
-      `the server has no PixelSlash project ${missing.join(", ")} (or the token cannot see it); ` +
-        "create each with `pixelslash project create <name>` and re-run",
-    );
+  const failed: LookupMiss[] = [];
+  const missing: LookupMiss[] = [];
+  for (const project of projects) {
+    const result = await listBuilds(project, "--limit", "1");
+    if (result.kind === "failed") failed.push({ project, line: result.line });
+    if (result.kind === "missing") missing.push({ project, line: result.line });
+  }
+  const failure = lookupFailure(failed, missing);
+  if (failure !== undefined) throw new VisualError(failure);
 }
 
 async function requireBaselines(projects: string[], mergeBase: string) {
@@ -141,7 +145,13 @@ const POLL_INTERVAL_MS = 3000;
  * the same status and counts in a line.
  */
 async function readBuildState(project: string, id: string): Promise<BuildState> {
-  const build = buildIn(await listBuilds(project, "--limit", "20"), id);
+  const result = await listBuilds(project, "--limit", "20");
+  if (result.kind !== "ok") {
+    const miss = [{ project, line: result.line }];
+    const failed = result.kind === "failed" ? miss : [];
+    throw new VisualError(lookupFailure(failed, result.kind === "missing" ? miss : []) ?? result.line);
+  }
+  const build = buildIn(result.listing, id);
   if (build === undefined)
     throw new VisualError(`${project} lists no build ${id} among its newest 20`);
   return build;

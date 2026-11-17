@@ -46,36 +46,100 @@ export function decideUpload(state: UploadState): UploadMode {
   return "branch";
 }
 
+/**
+ * What `pixelslash builds` said about a project. Its exit code tells a missing project from a
+ * server that did not answer: 2 is the CLI's usage error, which is how an unknown project, or one
+ * the token cannot see, comes back (no other flag this script passes can cause one, so any other
+ * exit 2 is a bug here and its line shows it); 3 is a remote error, whose line ends
+ * `-> <status> <detail>` or reads `cannot fetch <url>: ...`. Any other non-zero exit is a failure
+ * too. `line` is the CLI's own first line on stderr.
+ */
+export type LookupResult =
+  | { kind: "ok"; listing: unknown }
+  | { kind: "missing"; line: string }
+  | { kind: "failed"; line: string };
+
+/** The `LookupResult` for one `pixelslash builds --json` run, from its exit code and output. */
+export function lookupResult(exitCode: number, stdout: string, stderr: string): LookupResult {
+  if (exitCode === 0) return { kind: "ok", listing: JSON.parse(stdout) };
+  const line =
+    stderr
+      .split("\n")
+      .map((each) => each.trim())
+      .find((each) => each !== "") ?? `pixelslash builds exited ${exitCode} and printed nothing`;
+  return { kind: exitCode === 2 ? "missing" : "failed", line };
+}
+
+/** A project the lookup did not find, or that the server did not answer for, with the CLI's line. */
+export type LookupMiss = { project: string; line: string };
+
+const quoted = (misses: LookupMiss[]) =>
+  misses.map(({ project, line }) => `${project} (pixelslash: ${line})`).join(", ");
+
+/**
+ * Why the lookups failed, one line per kind, server failures first: a server that did not answer
+ * hides whether the other projects exist, so the missing ones are named after it. `undefined` when
+ * nothing failed.
+ */
+export function lookupFailure(failed: LookupMiss[], missing: LookupMiss[]): string | undefined {
+  const lines: string[] = [];
+  if (failed.length > 0) {
+    const unauthorized = failed.some(({ line }) => / -> 401\b/.test(line));
+    lines.push(
+      `PixelSlash did not answer for ${quoted(failed)}. ` +
+        "This is a PixelSlash failure, not a missing project, so do not create it: " +
+        (unauthorized
+          ? "a 401 means the token is missing, wrong, expired or revoked and needs reissuing in " +
+            "the project's Settings on the server"
+          : "report it to the PixelSlash planner with this output"),
+    );
+  }
+  if (missing.length > 0)
+    lines.push(
+      `the server has no PixelSlash project ${quoted(missing)} (or the token cannot see it); ` +
+        "create each with `pixelslash project create <name>` and re-run",
+    );
+  return lines.length > 0 ? lines.join("\n") : undefined;
+}
+
+/** A project's recent `main` build shas, or why the server gave none. */
+export type MainShas = { kind: "ok"; shas: string[] } | Exclude<LookupResult, { kind: "ok" }>;
+
 /** How a branch upload asks the server what it holds, and git whether a commit is in reach. */
 export type BaselineDeps = {
   /**
-   * The shas of `project`'s recent `main` builds, newest first; `undefined` when the server
-   * refused (no such project, or a token that cannot see it).
+   * The shas of `project`'s recent `main` builds, newest first, or why the server gave none: the
+   * project is missing (or the token cannot see it), or the server did not answer.
    */
-  mainShas: (project: string) => Promise<string[] | undefined>;
+  mainShas: (project: string) => Promise<MainShas>;
   /** `git merge-base --is-ancestor sha mergeBase`: a sha the checkout does not have is `false`. */
   isAncestor: (sha: string) => Promise<boolean>;
 };
 
 /**
- * The projects that hold no `main` build at the merge-base or one of its ancestors, and the
- * projects the server did not answer for. A branch upload without a baseline reads "new" on every
- * shot, so it stops here, before any capture.
+ * The projects that hold no `main` build at the merge-base or one of its ancestors, the projects
+ * the server does not have, and the ones it did not answer for. A branch upload without a baseline
+ * reads "new" on every shot, so it stops here, before any capture.
  */
 async function baselineGaps(
   projects: string[],
   deps: BaselineDeps,
-): Promise<{ missing: string[]; unknown: string[] }> {
+): Promise<{ missing: string[]; unknown: LookupMiss[]; failed: LookupMiss[] }> {
   const missing: string[] = [];
-  const unknown: string[] = [];
+  const unknown: LookupMiss[] = [];
+  const failed: LookupMiss[] = [];
   for (const project of projects) {
-    const shas = await deps.mainShas(project);
-    if (shas === undefined) {
-      unknown.push(project);
+    const result = await deps.mainShas(project);
+    if (result.kind === "missing") {
+      unknown.push({ project, line: result.line });
+      continue;
+    }
+    if (result.kind === "failed") {
+      failed.push({ project, line: result.line });
       continue;
     }
     let found = false;
-    for (const sha of shas) {
+    for (const sha of result.shas) {
       if (await deps.isAncestor(sha)) {
         found = true;
         break;
@@ -83,26 +147,27 @@ async function baselineGaps(
     }
     if (!found) missing.push(project);
   }
-  return { missing, unknown };
+  return { missing, unknown, failed };
 }
 
-/** The failure for `baselineGaps`, or `undefined` when every project has its baseline. */
+/**
+ * The failure for `baselineGaps`, or `undefined` when every project has its baseline: one line per
+ * kind, server failures first, then projects the server does not have, then missing baselines.
+ */
 export async function baselineFailure(
   projects: string[],
   deps: BaselineDeps,
 ): Promise<string | undefined> {
-  const { missing, unknown } = await baselineGaps(projects, deps);
-  if (unknown.length > 0)
-    return (
-      `the server has no PixelSlash project ${unknown.join(", ")} (or the token cannot see it); ` +
-      "create each with `pixelslash project create <name>` and re-run"
-    );
+  const { missing, unknown, failed } = await baselineGaps(projects, deps);
+  const lines: string[] = [];
+  const lookup = lookupFailure(failed, unknown);
+  if (lookup !== undefined) lines.push(lookup);
   if (missing.length > 0)
-    return (
+    lines.push(
       `no main build at the merge-base or its ancestors in ${missing.join(", ")}; ` +
-      `upload main first: run \`${MAIN_COMMAND}\` on a checkout at origin/main`
+        `upload main first: run \`${MAIN_COMMAND}\` on a checkout at origin/main`,
     );
-  return undefined;
+  return lines.length > 0 ? lines.join("\n") : undefined;
 }
 
 /** Statuses of a build the server cannot diff against: it holds no finished shots yet, or none. */
