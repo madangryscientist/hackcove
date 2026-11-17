@@ -185,6 +185,32 @@ const CASES: Record<string, Case[]> = {
     { prop: "truncate", node: () => <ui.SubsectionHeading truncate>x</ui.SubsectionHeading> },
     { prop: "size", node: () => <ui.SubsectionHeading size="lg">x</ui.SubsectionHeading> },
   ],
+  TextLink: [
+    {
+      prop: "size",
+      node: () => (
+        <ui.TextLink href="/a" size="sm">
+          a
+        </ui.TextLink>
+      ),
+    },
+    {
+      prop: "mono",
+      node: () => (
+        <ui.TextLink href="/a" mono>
+          a
+        </ui.TextLink>
+      ),
+    },
+    {
+      prop: "tone",
+      node: () => (
+        <ui.TextLink href="/a" tone="danger">
+          a
+        </ui.TextLink>
+      ),
+    },
+  ],
   Textarea: [{ prop: "mono", node: () => <ui.Textarea mono /> }],
   Text: [
     { prop: "lines", node: () => <ui.Text lines={2}>x</ui.Text> },

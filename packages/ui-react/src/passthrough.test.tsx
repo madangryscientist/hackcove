@@ -98,6 +98,29 @@ describe("every exported component passes id, data-* and aria-* through", () => 
     unstubPopover();
   });
 
+  it("an IconButton that is a link puts both on the link", () => {
+    mount(<ui.IconButton href="/x" label="Settings" icon="close" {...A} />);
+    expect(screen.getByRole("link", { name: "Settings", description: "Read this" })).toBe(probe());
+  });
+
+  it("a Pill that is a link puts both on the link", () => {
+    mount(
+      <ui.Pill href="/x" {...A}>
+        x
+      </ui.Pill>,
+    );
+    expect(screen.getByRole("link", { name: "x", description: "Read this" })).toBe(probe());
+  });
+
+  it("a Pill that is a button puts both on the button", () => {
+    mount(
+      <ui.Pill onClick={() => undefined} {...A}>
+        x
+      </ui.Pill>,
+    );
+    expect(screen.getByRole("button", { name: "x", description: "Read this" })).toBe(probe());
+  });
+
   it("an Avatar with onClick puts both on its button, not on the mark inside it", () => {
     mount(<ui.Avatar name="Ada Lovelace" onClick={() => undefined} {...A} />);
     expect(screen.getByRole("button", { description: "Read this" })).toBe(probe());
@@ -170,5 +193,38 @@ describe("every exported component passes id, data-* and aria-* through", () => 
   it("a calendar DateField puts data-* on its wrapper and the description on the field inside", () => {
     mount(<ui.DateField calendar label="Day" defaultValue={new CalendarDate(2026, 1, 2)} {...A} />);
     expect(within(probe()).getAllByRole("group", { description: /Read this/ })).not.toEqual([]);
+  });
+});
+
+describe("an item's data-* goes on its own option, and no other", () => {
+  it.each([
+    ["Tabs", ui.Tabs, "tab"],
+    ["SegmentedControl", ui.SegmentedControl, "radio"],
+  ] as const)("%s puts it on that option's button", (_name, Component, role) => {
+    render(
+      <Component
+        label="Range"
+        value="day"
+        onChange={() => {}}
+        items={[
+          { value: "day", label: "Daily", "data-testid": "range-day" },
+          { value: "week", label: "Weekly" },
+        ]}
+      />,
+    );
+    expect(screen.getAllByTestId("range-day")).toEqual([screen.getByRole(role, { name: "Daily" })]);
+  });
+
+  it("Tabs puts it on that item's link", () => {
+    render(
+      <ui.Tabs
+        label="Sections"
+        items={[
+          { label: "Map", href: "/", "data-testid": "tab-map" },
+          { label: "Events", href: "/events" },
+        ]}
+      />,
+    );
+    expect(screen.getAllByTestId("tab-map")).toEqual([screen.getByRole("link", { name: "Map" })]);
   });
 });

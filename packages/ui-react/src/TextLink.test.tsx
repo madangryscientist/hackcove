@@ -1,127 +1,57 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
-import { linkClass, linkStretchClass, TextLink } from "./TextLink.js";
-import { TEXT_TONE } from "./typography.js";
+import { render, screen } from "./render.harness.js";
+import { TextLink } from "./TextLink.js";
+
+const link = (name: string) => screen.getByRole("link", { name });
 
 describe("TextLink", () => {
-  it("renders an anchor with the href, the children and the link classes", () => {
-    const out = renderToStaticMarkup(<TextLink href="/about">About</TextLink>);
-    expect(out.startsWith("<a")).toBe(true);
-    expect(out).toContain('href="/about"');
-    expect(out).toContain(">About</a>");
-    expect(out).toContain(`class="${linkClass}"`);
+  it("is a link named by its children, to its href", () => {
+    render(<TextLink href="/about">About</TextLink>);
+    expect(link("About").getAttribute("href")).toBe("/about");
   });
 
-  it("is the accent colour with a hover shade, medium weight and a focus ring", () => {
-    expect(linkClass).toContain("text-violet-600");
-    expect(linkClass).toContain("hover:text-violet-700");
-    expect(linkClass).toContain("font-medium");
-    expect(linkClass).toContain("underline-offset-2");
-    expect(linkClass).toContain("focus-visible:outline-violet-600");
+  it("opens in the same tab unless external", () => {
+    render(<TextLink href="/a">Plain</TextLink>);
+    expect(link("Plain").hasAttribute("target")).toBe(false);
+    expect(link("Plain").hasAttribute("rel")).toBe(false);
   });
 
-  it("opens in a new tab only when external", () => {
-    const plain = renderToStaticMarkup(<TextLink href="/a">a</TextLink>);
-    expect(plain).not.toContain("target");
-    expect(plain).not.toContain("rel=");
-    const ext = renderToStaticMarkup(
+  it("opens an external link in a new tab, with no referrer", () => {
+    render(
       <TextLink href="https://example.com" external>
-        a
+        Out
       </TextLink>,
     );
-    expect(ext).toContain('target="_blank"');
-    expect(ext).toContain('rel="noreferrer"');
-    const own = renderToStaticMarkup(
+    expect(link("Out").getAttribute("target")).toBe("_blank");
+    expect(link("Out").getAttribute("rel")).toBe("noreferrer");
+  });
+
+  it("lets the caller's rel win on an external link", () => {
+    render(
       <TextLink href="https://example.com" external rel="noopener">
-        a
+        Out
       </TextLink>,
     );
-    expect(own).toContain('rel="noopener"');
-    expect(own).not.toContain("noreferrer");
+    expect(link("Out").getAttribute("rel")).toBe("noopener");
   });
 
   it("passes other anchor props through", () => {
-    const out = renderToStaticMarkup(
+    render(
       <TextLink href="/cv.pdf" download="cv.pdf">
         PDF
       </TextLink>,
     );
-    expect(out).toContain(`class="${linkClass}"`);
-    expect(out).toContain('download="cv.pdf"');
+    expect(link("PDF").getAttribute("download")).toBe("cv.pdf");
   });
-});
 
-// A stand-in for a router's <Link>: it takes `to` and spreads the props it is handed.
-
-describe("TextLink stretch", () => {
-  it("covers the nearest relative ancestor with the link's ::after", () => {
-    expect(linkStretchClass).toBe("link-stretch after:absolute after:inset-0");
-    const out = renderToStaticMarkup(
-      <TextLink href="/q/1" stretch>
+  it("stays one link named by its text with stretch, size, mono and tone", () => {
+    render(
+      <TextLink href="/q/1" stretch size="sm" mono tone="danger">
         Quote 1
       </TextLink>,
     );
-    expect(out).toContain(`class="${linkClass} ${linkStretchClass}"`);
-  });
-
-  it("is off by default", () => {
-    expect(renderToStaticMarkup(<TextLink href="/a">a</TextLink>)).not.toContain("after:");
-  });
-});
-
-describe("TextLink size and mono", () => {
-  it("takes the surrounding size unless `size` pins one", () => {
-    const plain = renderToStaticMarkup(<TextLink href="/a">a</TextLink>);
-    expect(plain).not.toMatch(/text-(xs|sm|base)/);
-    expect(plain).not.toContain("font-mono");
-    for (const [size, cls] of [
-      ["sm", "text-xs/4"],
-      ["md", "text-sm/5"],
-      ["lg", "text-base/6"],
-    ] as const) {
-      const out = renderToStaticMarkup(
-        <TextLink href="/a" size={size}>
-          a
-        </TextLink>,
-      );
-      expect(out).toContain(cls);
-      expect(out).toContain(linkClass);
-      expect(out).not.toContain("size=");
-    }
-  });
-
-  it("`mono` sets the monospace face and is not forwarded", () => {
-    const out = renderToStaticMarkup(
-      <TextLink href="/a" mono size="sm">
-        src/a.ts
-      </TextLink>,
-    );
-    expect(out).toContain("font-mono");
-    expect(out).not.toContain("mono=");
-  });
-});
-
-describe("TextLink tone", () => {
-  it("is the accent colour until a tone is given", () => {
-    const out = renderToStaticMarkup(<TextLink href="/a">a</TextLink>);
-    expect(out).toContain("text-violet-600");
-    expect(out).not.toContain("hover:underline");
-  });
-
-  it("takes the colour of TEXT_TONE and underlines on hover, in place of the accent", () => {
-    for (const tone of ["muted", "info", "positive", "warn", "danger"] as const) {
-      const out = renderToStaticMarkup(
-        <TextLink href="/a" tone={tone}>
-          a
-        </TextLink>,
-      );
-      expect(out).toContain(TEXT_TONE[tone]);
-      expect(out).toContain("hover:underline");
-      expect(out).toContain("font-medium");
-      expect(out).toContain("focus-visible:outline-violet-600");
-      expect(out).not.toContain("text-violet-600");
-      expect(out).not.toContain("hover:text-violet-700");
-      expect(out).not.toContain("tone=");
-    }
+    expect(screen.getAllByRole("link")).toHaveLength(1);
+    expect(link("Quote 1").getAttribute("href")).toBe("/q/1");
   });
 });

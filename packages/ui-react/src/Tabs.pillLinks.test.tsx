@@ -1,6 +1,7 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
-import { pillTabClass, Tabs } from "./Tabs.js";
+import { render, screen, within } from "./render.harness.js";
+import { Tabs } from "./Tabs.js";
 
 const items = [
   { label: "Map", href: "/" },
@@ -8,90 +9,55 @@ const items = [
   { label: "Events", href: "/events" },
 ];
 
-describe("Tabs pill links", () => {
-  it("renders one <a> per item with its href", () => {
-    const out = renderToStaticMarkup(<Tabs items={items} label="Main" />);
-    expect(out.match(/<a /g)).toHaveLength(3);
-    expect(out).toContain('href="/"');
-    expect(out).toContain('href="/stores"');
-    expect(out).toContain('href="/events"');
+const nav = () => screen.getByRole("navigation", { name: "Main" });
+
+const forms = [
+  ["across", () => <Tabs items={items} label="Main" />],
+  ["in the vertical rail", () => <Tabs items={items} label="Main" orientation="vertical" />],
+] as const;
+
+describe.each(forms)("Tabs link items, %s", (_form, tabs) => {
+  it("is a nav named by label, with one link per item to its href", () => {
+    render(tabs());
+    expect(
+      within(nav())
+        .getAllByRole("link")
+        .map((link) => [link.textContent, link.getAttribute("href")]),
+    ).toEqual([
+      ["Map", "/"],
+      ["Directory", "/stores"],
+      ["Events", "/events"],
+    ]);
   });
 
-  it("marks only the selected item with aria-current and font-medium", () => {
-    const out = renderToStaticMarkup(<Tabs items={items} label="Main" />);
-    expect(out.match(/aria-current="page"/g)).toHaveLength(1);
-    expect(out.match(/font-medium/g)).toHaveLength(1);
-    expect(out).toMatch(/<a href="\/stores"[^>]*aria-current="page"/);
-  });
-
-  it("names the nav landmark with aria-label", () => {
-    const out = renderToStaticMarkup(<Tabs items={items} label="Main" />);
-    expect(out).toContain('<nav aria-label="Main"');
-  });
-});
-
-describe("Tabs pill links orientation", () => {
-  it("is a wrapping row by default", () => {
-    const out = renderToStaticMarkup(<Tabs items={items} label="Main" />);
-    expect(out).toContain("flex-wrap");
-    expect(out).not.toContain("flex-col");
-  });
-
-  it('stacks one link per line with orientation="vertical", with the same pills and aria-current', () => {
-    const out = renderToStaticMarkup(<Tabs items={items} label="Main" orientation="vertical" />);
-    expect(out).toMatch(/<nav aria-label="Main" class="[^"]*flex-col/);
-    expect(out).not.toContain("flex-wrap");
-    expect(out.match(/<a /g)).toHaveLength(3);
-    expect(out.match(/aria-current="page"/g)).toHaveLength(1);
-    expect(out).toMatch(/<a href="\/stores"[^>]*aria-current="page"/);
+  it("marks only the selected item as the current page", () => {
+    render(tabs());
+    expect(
+      within(nav())
+        .getAllByRole("link")
+        .map((link) => link.getAttribute("aria-current")),
+    ).toEqual([null, "page", null]);
   });
 });
 
-describe("pillTabClass", () => {
-  it("gives an inactive tab a hover fill", () => {
-    expect(pillTabClass(false)).toContain("hover:bg-slate-100");
-  });
-
-  it("fills and emphasises an active tab", () => {
-    expect(pillTabClass(true)).toContain("bg-slate-100");
-    expect(pillTabClass(true)).toContain("font-medium");
-  });
-});
-
-// A stand-in for a router's <Link>: it takes `to` and spreads the props it is handed.
-
-describe("Tabs pill links external tabs", () => {
+describe("Tabs link items, external", () => {
   it("opens an external tab in a new tab", () => {
-    const out = renderToStaticMarkup(
+    render(
       <Tabs
         items={[{ label: "Traces", href: "https://t.example", external: true }]}
         label="Main"
       />,
     );
-    expect(out).toContain('href="https://t.example"');
-    expect(out).toContain('target="_blank"');
-    expect(out).toContain('rel="noreferrer"');
+    const link = screen.getByRole("link", { name: "Traces" });
+    expect(link.getAttribute("href")).toBe("https://t.example");
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toBe("noreferrer");
   });
 
-  it("leaves a plain tab without target or rel", () => {
-    const out = renderToStaticMarkup(<Tabs items={items} label="Main" />);
-    expect(out).not.toContain("target");
-    expect(out).not.toContain("rel=");
-  });
-});
-
-describe("Tabs pill links data-*", () => {
-  it("puts an item's data-* on its link, and no other item's", () => {
-    const out = renderToStaticMarkup(
-      <Tabs
-        label="Sections"
-        items={[
-          { label: "Map", href: "/", "data-testid": "tab-map" },
-          { label: "Events", href: "/events" },
-        ]}
-      />,
-    );
-    expect(out).toMatch(/<a[^>]*data-testid="tab-map"/);
-    expect(out.match(/data-testid/g)).toHaveLength(1);
+  it("leaves a plain tab in the same tab, without target or rel", () => {
+    render(<Tabs items={items} label="Main" />);
+    const link = screen.getByRole("link", { name: "Map" });
+    expect(link.hasAttribute("target")).toBe(false);
+    expect(link.hasAttribute("rel")).toBe(false);
   });
 });

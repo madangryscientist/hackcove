@@ -1,5 +1,5 @@
 import { act, type ReactNode } from "react";
-import { type Root, createRoot, hydrateRoot } from "react-dom/client";
+import { type Root, hydrateRoot } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
 import { vi } from "vitest";
 
@@ -27,16 +27,6 @@ export function stubDialog(): void {
 }
 
 let mounted: { root: Root; container: HTMLElement } | undefined;
-
-/** Render into the document, so React's delegated events and `closest` work. Call `unmount` in `afterEach`. */
-export function mount(node: ReactNode): HTMLElement {
-  const container = document.createElement("div");
-  document.body.append(container);
-  const root = createRoot(container);
-  mounted = { root, container };
-  act(() => root.render(node));
-  return container;
-}
 
 /**
  * Server-render `node`, mark its <img> as the browser left it (`complete`, `naturalWidth`), then

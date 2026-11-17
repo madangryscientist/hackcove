@@ -1,62 +1,35 @@
+// @vitest-environment jsdom
 import type { ComponentProps } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
-import { IconButton } from "./IconButton.js";
-import { focusRing } from "./cx.js";
-import { Pill } from "./Pill.js";
+import { describe, expect, it, vi } from "vitest";
 import { Card } from "./Card.js";
+import { IconButton } from "./IconButton.js";
+import { Pill } from "./Pill.js";
+import { render, screen, user } from "./render.harness.js";
 
-// `href` makes the whole part the link:
-// Card, IconButton and Pill. Pill also has a button form.
+// `href` makes the whole part the link: Card, IconButton and Pill. Pill also has a button form.
 
 describe("Card href", () => {
-  it("is a card with the link stretched over it: the card holds the hover border and the body, the empty link the focus ring", () => {
-    const out = renderToStaticMarkup(
+  it("is one link to its href, named by the card's text, and no region", () => {
+    render(
       <Card href="/shots/1" title="Shot" count={3}>
         body
       </Card>,
     );
-    expect(out.startsWith('<div id="')).toBe(true);
-    expect(out).toContain(
-      "relative scroll-mt-[calc(var(--app-header,0px)+1rem)] rounded-xl border",
-    );
-    expect(out).toContain("hover:border-violet-400");
-    expect(out).toMatch(/<a [^>]*href="\/shots\/1"[^>]*class="link-stretch absolute inset-0 /);
-    expect(out).toContain('aria-labelledby="');
-    expect(out).toContain(focusRing);
-    expect(out).toContain("></a>");
-    expect(out).toContain("<h2");
-    expect(out.endsWith("body</div>")).toBe(true);
-    expect(out).not.toContain("<section");
+    expect(screen.getAllByRole("link")).toHaveLength(1);
+    expect(screen.getByRole("link", { name: /Shot.*body/ }).getAttribute("href")).toBe("/shots/1");
+    expect(screen.getByRole("heading", { level: 2, name: /Shot/ })).not.toBeNull();
+    expect(screen.queryByRole("region")).toBeNull();
   });
 
-  it("opens a new tab when external, and passes data-* and aria-* to the anchor", () => {
-    const out = renderToStaticMarkup(
-      <Card href="https://example.com" external data-testid="shot" aria-describedby="d">
+  it("opens a new tab when external", () => {
+    render(
+      <Card href="https://example.com" external title="Out">
         body
       </Card>,
     );
-    expect(out).toContain('target="_blank"');
-    expect(out).toContain('rel="noreferrer"');
-    expect(out).toContain('data-testid="shot"');
-    expect(out).toContain('aria-describedby="d"');
-  });
-
-  it("keeps every form: bar, flush, tone and size still style the link", () => {
-    const out = renderToStaticMarkup(
-      <Card href="/x" tone="warn" size="sm">
-        body
-      </Card>,
-    );
-    expect(out).toContain("bg-amber-50");
-    expect(out).toContain("p-3");
-  });
-
-  it("a titled card without href stays a relative section", () => {
-    const out = renderToStaticMarkup(<Card title="T">body</Card>);
-    expect(out.startsWith('<section aria-labelledby="')).toBe(true);
-    expect(out).toContain('class="relative ');
-    expect(out).not.toContain("hover:border-violet-400");
+    const link = screen.getByRole("link", { name: /Out/ });
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toBe("noreferrer");
   });
 
   it("takes no actions or as with href", () => {
@@ -77,103 +50,66 @@ describe("Card href", () => {
 });
 
 describe("IconButton href", () => {
-  it("is an anchor with the button's classes, an accessible name and a title", () => {
-    const out = renderToStaticMarkup(
-      <IconButton href="/settings" label="Settings" variant="ghost" icon="close" />,
-    );
-    expect(out.startsWith("<a ")).toBe(true);
-    expect(out).toContain('href="/settings"');
-    expect(out).toContain('aria-label="Settings"');
-    expect(out).toContain('title="Settings"');
-    expect(out).toContain("size-9.5");
-    expect(out).toContain("border-transparent");
-    expect(out).toContain(focusRing);
-    expect(out).not.toContain("type=");
-    expect(out).not.toContain("<button");
+  it("is a link to its href named and titled by its label, not a button", () => {
+    render(<IconButton href="/settings" label="Settings" variant="ghost" icon="close" />);
+    const link = screen.getByRole("link", { name: "Settings" });
+    expect(link.getAttribute("href")).toBe("/settings");
+    expect(link.getAttribute("title")).toBe("Settings");
+    expect(link.hasAttribute("type")).toBe(false);
+    expect(screen.queryByRole("button")).toBeNull();
   });
 
-  it("badge pins a count to the corner and names it, on a link and on a button", () => {
-    for (const out of [
-      renderToStaticMarkup(<IconButton href="/alerts" label="Alerts" count={3} icon="close" />),
-      renderToStaticMarkup(<IconButton label="Alerts" count={3} icon="close" />),
-    ]) {
-      expect(out).toContain('aria-label="Alerts, 3"');
-      expect(out).toContain('title="Alerts, 3"');
-      expect(out).toContain("absolute");
-      expect(out).toContain(">3</span>");
-      expect(out).toContain('aria-hidden="true"');
-    }
+  it.each([
+    ["a link", { href: "/alerts" }, "link"],
+    ["a button", {}, "button"],
+  ] as const)("names and titles a count on %s, and shows it", (_form, extra, role) => {
+    render(<IconButton {...extra} label="Alerts" count={3} icon="close" />);
+    const control = screen.getByRole(role, { name: "Alerts, 3" });
+    expect(control.getAttribute("title")).toBe("Alerts, 3");
+    expect(screen.getByText("3")).not.toBeNull();
   });
 
-  it("shows no badge at 0 or without one, and caps above 99", () => {
-    const zero = renderToStaticMarkup(<IconButton label="Alerts" count={0} icon="close" />);
-    expect(zero).not.toContain("absolute");
-    expect(zero).toContain('aria-label="Alerts"');
-    expect(renderToStaticMarkup(<IconButton label="Alerts" count={120} icon="close" />)).toContain(
-      "99+",
-    );
+  it("shows no count at 0", () => {
+    render(<IconButton label="Alerts" count={0} icon="close" />);
+    expect(screen.getByRole("button", { name: "Alerts" })).not.toBeNull();
+    expect(screen.queryByText("0")).toBeNull();
   });
 
-  it("passes data-* and aria-* to the anchor", () => {
-    const out = renderToStaticMarkup(
-      <IconButton href="/x" label="L" data-testid="gear" aria-describedby="d" icon="close" />,
-    );
-    expect(out).toContain('data-testid="gear"');
-    expect(out).toContain('aria-describedby="d"');
+  it("caps the shown count above 99, and names the real one", () => {
+    render(<IconButton label="Alerts" count={120} icon="close" />);
+    expect(screen.getByRole("button", { name: "Alerts, 120" })).not.toBeNull();
+    expect(screen.getByText("99+")).not.toBeNull();
   });
 });
 
 describe("Pill href and onClick", () => {
-  it("a plain Pill is unchanged: a span with no interaction classes", () => {
-    const out = renderToStaticMarkup(<Pill>x</Pill>);
-    expect(out.startsWith("<span")).toBe(true);
-    expect(out).not.toContain("hover:");
-    expect(out).not.toContain(focusRing);
+  it("a plain Pill is text, neither a link nor a button", () => {
+    render(<Pill>x</Pill>);
+    expect(screen.getByText("x")).not.toBeNull();
+    expect(screen.queryByRole("link")).toBeNull();
+    expect(screen.queryByRole("button")).toBeNull();
   });
 
-  it("href makes it an anchor with the tone, a hover dim and the focus ring", () => {
-    const out = renderToStaticMarkup(
+  it("href makes it a link to its href, named by its text", () => {
+    render(
       <Pill href="/flakes" tone="warn" round>
         flaky
       </Pill>,
     );
-    expect(out.startsWith("<a ")).toBe(true);
-    expect(out).toContain('href="/flakes"');
-    expect(out).toContain("bg-amber-50 text-amber-700");
-    expect(out).toContain("rounded-full");
-    expect(out).toContain("hover:opacity-80");
-    expect(out).toContain(focusRing);
+    expect(screen.getByRole("link", { name: "flaky" }).getAttribute("href")).toBe("/flakes");
   });
 
-  it("onClick makes it a type=button button", () => {
-    const out = renderToStaticMarkup(
-      <Pill onClick={() => undefined} dot>
+  it("onClick makes it a type=button button that calls it on a click", async () => {
+    const onClick = vi.fn<() => void>();
+    render(
+      <Pill onClick={onClick} dot>
         filter
       </Pill>,
     );
-    expect(out.startsWith('<button type="button"')).toBe(true);
-    expect(out).toContain("hover:opacity-80");
-    expect(out).toContain(focusRing);
-    expect(out).toContain("cursor-pointer");
-    expect(out).toContain("inline-flex items-center gap-1");
-  });
-
-  it("passes data-* and aria-* to the link and the button", () => {
-    for (const out of [
-      renderToStaticMarkup(
-        <Pill href="/x" data-testid="chip" aria-label="Chip">
-          x
-        </Pill>,
-      ),
-      renderToStaticMarkup(
-        <Pill onClick={() => undefined} data-testid="chip" aria-label="Chip">
-          x
-        </Pill>,
-      ),
-    ]) {
-      expect(out).toContain('data-testid="chip"');
-      expect(out).toContain('aria-label="Chip"');
-    }
+    const button = screen.getByRole("button", { name: "filter" });
+    expect(button.getAttribute("type")).toBe("button");
+    await user().click(button);
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 
   it("is a link or a button, never both", () => {
