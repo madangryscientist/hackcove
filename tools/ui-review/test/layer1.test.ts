@@ -32,8 +32,8 @@ describe("a clean diff", () => {
     const lines = [
       '@import "tailwindcss";',
       "",
-      "/* The theme comes from the hackcove repo (a sibling checkout,",
-      "   hackcove repo, ~/dev/hackcove), so the palette stays in one place. */",
+      "/* The theme comes from the uislash repo (a sibling checkout,",
+      "   uislash repo, ~/dev/uislash), so the palette stays in one place. */",
       '@import "@hackcove/themes/some-theme.css";',
       "",
       "/*",

@@ -183,7 +183,7 @@ on: pull_request
 jobs:
   ui-review:
     permissions: { contents: read, pull-requests: write }
-    uses: madangryscientist/hackcove/.github/workflows/ui-review.yml@main
+    uses: madangryscientist/uislash/.github/workflows/ui-review.yml@main
     secrets: inherit
 ```
 
@@ -199,7 +199,7 @@ It runs two layers on the lines the pull request adds:
   The palette and the export list are read from `@hackcove/ui-react` itself, never copied.
 - **Model review (advisory).** An OpenCode Zen model (`opencode/deepseek-v4.1-flash`) reads the diff
   against the UISlash purpose and the generated `/ui/llms.txt`, and posts inline comments plus one
-  summary. A part UISlash lacks is reported as "ask hackcove for X", never "build it locally". Its
+  summary. A part UISlash lacks is reported as "ask uislash for X", never "build it locally". Its
   findings are advisory and never fail the pull request. A review that did not happen does: if the
   model run crashes or times out, the reply cannot be parsed, or the component reference or the
   comments cannot be had, the step prints an error, writes a step summary and goes red. It is

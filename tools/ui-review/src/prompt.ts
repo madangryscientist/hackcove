@@ -17,7 +17,7 @@ Report the soft calls a script cannot make:
 - hand-rolled-layout: a page layout built from divs where a *Layout (ListLayout, DetailLayout, FormLayout, ...) fits.
 - hand-set-spacing: spacing, widths or alignment set by hand (utilities such as p-4, mt-6, gap-3, flex, grid) where Stack, Cluster, Section or a layout does it.
 - missing-state: a list, table or fetched view with no loading skeleton, empty state or error state, where Hack Cove has a part for it.
-- missing-part: the job needs something Hack Cove UI does not have. Set "missing_part" to the name of that part. The author will be told to ask hackcove for it; never tell them to build it locally.
+- missing-part: the job needs something Hack Cove UI does not have. Set "missing_part" to the name of that part. The author will be told to ask uislash for it; never tell them to build it locally.
 
 Use the component reference below as the only source of truth for what exists and how it is meant to be used. Do not invent components or props.
 

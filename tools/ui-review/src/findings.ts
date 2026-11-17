@@ -59,7 +59,7 @@ export function parseReply(reply: string): ModelFinding[] {
 export function bodyOf(finding: ModelFinding): string {
   return finding.missingPart === undefined
     ? finding.message
-    : `${finding.message}\n\nAsk hackcove for ${finding.missingPart}; do not build it locally.`;
+    : `${finding.message}\n\nAsk uislash for ${finding.missingPart}; do not build it locally.`;
 }
 
 export type Placed = { inline: ModelFinding[]; loose: ModelFinding[] };
