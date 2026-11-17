@@ -87,6 +87,62 @@ describe("tooltip, with anchor positioning", () => {
     expect(document.activeElement).toBe(save());
   });
 
+  it("closes a hover tooltip on Escape without moving focus off the body", async () => {
+    render(<IconButton label="Settings" icon="settings" />);
+    const u = user();
+    await u.hover(screen.getByRole("button", { name: "Settings" }));
+    expect(shown().map((tip) => tip.textContent)).toEqual(["Settings"]);
+    expect(document.activeElement).toBe(document.body);
+    await u.keyboard("{Escape}");
+    expect(shown()).toEqual([]);
+    expect(document.activeElement).toBe(document.body);
+  });
+
+  it("lets Escape through: not defaultPrevented, and it still reaches window", async () => {
+    render(<IconButton label="Settings" icon="settings" />);
+    const u = user();
+    await u.hover(screen.getByRole("button", { name: "Settings" }));
+    const seen: { prevented: boolean }[] = [];
+    const reached = (event: KeyboardEvent) => {
+      if (event.key === "Escape") seen.push({ prevented: event.defaultPrevented });
+    };
+    window.addEventListener("keydown", reached);
+    try {
+      await u.keyboard("{Escape}");
+    } finally {
+      window.removeEventListener("keydown", reached);
+    }
+    expect(seen).toEqual([{ prevented: false }]);
+    expect(shown()).toEqual([]);
+  });
+
+  it("removes its Escape listener when the tooltip closes and when it unmounts", async () => {
+    const add = vi.spyOn(document, "addEventListener");
+    const remove = vi.spyOn(document, "removeEventListener");
+    const escapeAdds = () =>
+      add.mock.calls.filter(([type, , capture]) => type === "keydown" && capture === true);
+    const escapeRemoves = () =>
+      remove.mock.calls.filter(([type, , capture]) => type === "keydown" && capture === true);
+    try {
+      const { unmount } = render(<IconButton label="Settings" icon="settings" />);
+      const u = user();
+      const button = screen.getByRole("button", { name: "Settings" });
+      await u.hover(button);
+      expect(escapeAdds()).toHaveLength(1);
+      await u.unhover(button);
+      expect(shown()).toEqual([]);
+      expect(escapeRemoves()).toEqual(escapeAdds());
+
+      await u.hover(button);
+      expect(escapeAdds()).toHaveLength(2);
+      unmount();
+      expect(escapeRemoves()).toHaveLength(2);
+    } finally {
+      add.mockRestore();
+      remove.mockRestore();
+    }
+  });
+
   it("closes on blur", async () => {
     render(
       <>

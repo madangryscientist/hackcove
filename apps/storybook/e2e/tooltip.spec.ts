@@ -39,6 +39,22 @@ test("an IconButton shows its label on hover and hides it when the pointer leave
   await expect(tip).toBeHidden();
 });
 
+test("an IconButton's hover tooltip closes on Escape with the pointer still over it", async ({
+  page,
+}) => {
+  await page.goto(story("actions-iconbutton--do-label"));
+  const button = page.getByRole("button", { name: "Delete quote" });
+  await expect(button).toBeVisible();
+  const tip = page.locator("[role=tooltip]", { hasText: "Delete quote" });
+
+  await button.hover();
+  await expect(tip).toBeVisible();
+  // The hover leaves focus where it was, so the key is caught on the document (WCAG 1.4.13).
+  await page.keyboard.press("Escape");
+  await expect(tip).toBeHidden();
+  await expect(button).not.toBeFocused();
+});
+
 // The tooltip stories hold the tooltip open by focusing the trigger in `play`, so their shots show it.
 for (const [id, text] of [
   ["actions-button--disabled-reason-tooltip", "Pick a shop first"],
