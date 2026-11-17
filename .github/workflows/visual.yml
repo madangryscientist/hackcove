@@ -52,7 +52,7 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: madangryscientist/pixelslash
-          ref: a13e481af1c620b46f3d32e51006b8c95c6de68c
+          ref: a191bd0490168e0906367273a895d20dd0bc5e89
           path: pixelslash
           persist-credentials: false
 
