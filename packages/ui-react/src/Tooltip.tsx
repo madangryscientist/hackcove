@@ -101,6 +101,23 @@ function useTapAway(on: boolean, trigger: Element | null, close: () => void): vo
   }, [on, trigger, close]);
 }
 
+/**
+ * While the tooltip is open, Escape closes it wherever focus is (WCAG 1.4.13): a hover opens it
+ * without moving focus, so the trigger's own key handler never sees the key. Capture on `document`,
+ * and no `preventDefault` or `stopPropagation`, so Escape still reaches a Dialog or Drawer in the
+ * same press.
+ */
+function useEscape(on: boolean, close: () => void): void {
+  useEffect(() => {
+    if (!on) return undefined;
+    const escape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") close();
+    };
+    document.addEventListener("keydown", escape, true);
+    return () => document.removeEventListener("keydown", escape, true);
+  }, [on, close]);
+}
+
 type TipState = {
   via: Via | null;
   setVia: (next: Via | null | ((current: Via | null) => Via | null)) => void;
@@ -186,6 +203,7 @@ export function useTooltip<E extends Element>(
   const close = useCallback(() => setVia(null), []);
   useLayer(layer, via !== null);
   useTapAway(via === "tap", trigger, close);
+  useEscape(via !== null, close);
 
   if (text === undefined || text === "") return { props: own, tooltip: null };
   if (!enhanced) return { props: { ...own, title: text }, tooltip: null };
