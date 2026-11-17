@@ -5,10 +5,7 @@ import { Button } from "./Button.js";
 import { Field } from "./Field.js";
 import { Input } from "./Input.js";
 import { FormLayout } from "./PageLayouts.js";
-import { render, screen, user } from "./render.harness.js";
-
-const follows = (a: Node, b: Node) =>
-  Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+import { follows, render, screen, user } from "./render.harness.js";
 
 describe("FormLayout error", () => {
   it("announces the error after the fields and before the actions", () => {

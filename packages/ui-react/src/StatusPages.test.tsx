@@ -4,10 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { Button } from "./Button.js";
 import { type LinkAdapterProps, LinkProvider } from "./link.js";
 import { ErrorPage, Forbidden, Maintenance, NotFound, Offline } from "./StatusPages.js";
-import { render, screen, user, within } from "./render.harness.js";
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
+import { follows, render, screen, user, within } from "./render.harness.js";
 
 const homeward = [
   ["NotFound", NotFound, "Page not found"],

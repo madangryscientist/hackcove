@@ -9,10 +9,7 @@ import {
   ListLayout,
   ProseLayout,
 } from "./PageLayouts.js";
-import { render, screen, within } from "./render.harness.js";
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
+import { follows, render, screen, within } from "./render.harness.js";
 
 /** Whether each text is found on the page, each after the one before it. */
 const inOrder = (texts: string[]): boolean => {

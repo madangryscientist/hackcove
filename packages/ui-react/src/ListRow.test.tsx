@@ -1,12 +1,9 @@
 // @vitest-environment jsdom
 import { describe, expect, it, vi } from "vitest";
 import { ListRow } from "./ListRow.js";
-import { render, screen, user } from "./render.harness.js";
+import { follows, render, screen, user } from "./render.harness.js";
 
 const noop = () => undefined;
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 describe("ListRow", () => {
   it("is a button named by its label, the trailing content after it, and not a collapsible header", async () => {

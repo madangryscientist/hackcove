@@ -5,13 +5,10 @@ import { Dialog } from "./Dialog.js";
 import { stubDialog } from "./dom.harness.js";
 import { Field } from "./Field.js";
 import { Input } from "./Input.js";
-import { render, screen, user } from "./render.harness.js";
+import { follows, render, screen, user } from "./render.harness.js";
 
 // stubDialog supplies the modal <dialog> methods jsdom lacks; it does not act through the DOM.
 beforeEach(stubDialog);
-
-const follows = (a: Node, b: Node) =>
-  Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
 
 type Submit = () => void;
 

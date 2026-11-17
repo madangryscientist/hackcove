@@ -1,10 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
-import { render, screen, within } from "./render.harness.js";
+import { follows, render, screen, within } from "./render.harness.js";
 import { SidebarLayout } from "./SidebarLayout.js";
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 describe("SidebarLayout", () => {
   it("reads the rail, in its own landmark, before the canvas", () => {

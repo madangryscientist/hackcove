@@ -1,10 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
-import { render, screen } from "./render.harness.js";
+import { follows, render, screen } from "./render.harness.js";
 import { StatTile } from "./StatTile.js";
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 describe("StatTile", () => {
   it("reads the caption before the value", () => {

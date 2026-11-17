@@ -1,11 +1,8 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { Card } from "./Card.js";
-import { render, screen, within } from "./render.harness.js";
+import { follows, render, screen, within } from "./render.harness.js";
 import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow } from "./Table.js";
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 /** One body cell in a bare table, so the cell is all there is to find. */
 const cell = (props: Parameters<typeof TableCell>[0]) =>

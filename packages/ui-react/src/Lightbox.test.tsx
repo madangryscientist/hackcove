@@ -2,15 +2,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { showModal, stubDialog } from "./dom.harness.js";
 import { Lightbox } from "./Lightbox.js";
-import { act, render, screen, user } from "./render.harness.js";
+import { act, follows, render, screen, user } from "./render.harness.js";
 
 // stubDialog supplies the modal <dialog> methods jsdom lacks; it does not act through the DOM.
 beforeEach(stubDialog);
 
 const photo = <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="Harbour at dusk" />;
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 /** Whether each arrow key that reached the page had its default (scrolling) taken by the viewer. */
 const prevented: boolean[] = [];
