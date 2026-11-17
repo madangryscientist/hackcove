@@ -46,7 +46,7 @@
   --hc-line: #374463; /* border-slate-200 */
   --hc-ink: #e2e8fc; /* text-slate-900 */
   --hc-mute: #c6cce2; /* text-slate-500 */
-  --hc-accent: #fbc9a9; /* text-violet-600 */
+  --hc-accent: #fbc5a1; /* text-violet-600 */
   --hc-cat-1: #72b6f5; /* text-indigo-600 */
   --hc-cat-2: #ebb589; /* text-orange-600 */
   --hc-cat-3: #8be0e7; /* text-teal-600 */
@@ -334,7 +334,7 @@
 .slash-suite-dark .text-red-700,
 .slash-suite-dark .text-red-800,
 .slash-suite-dark .text-red-900 {
-  color: #fde7ed; /* red */
+  color: #fcdee6; /* red, lifted to clear AA on the callout tints (HC-442) */
 }
 .slash-suite-dark .text-blue-600,
 .slash-suite-dark .text-blue-700,
@@ -344,7 +344,7 @@
 }
 .slash-suite-dark .text-violet-600,
 .slash-suite-dark .text-violet-700 {
-  color: #fbc9a9; /* peach */
+  color: #fbc5a1; /* peach */
 }
 .slash-suite-dark .text-sky-700 {
   color: #89dceb; /* sky */
@@ -415,7 +415,7 @@
    TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
    write class="link" on a bare <a>. */
 .slash-suite-dark .link {
-  color: #fbc9a9; /* peach */
+  color: #fab387; /* peach */
   font-weight: 500;
   text-underline-offset: 2px;
   transition: color 0.12s ease;

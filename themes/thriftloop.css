@@ -17,7 +17,7 @@
   --hc-line: #eedca0;
   --hc-ink: #352d13;
   --hc-mute: #6d5f33;
-  --hc-accent: #af3804;
+  --hc-accent: #be3d04;
   --hc-cat-1: #1b6096; /* text-indigo-600 */
   --hc-cat-2: #d2391a; /* text-orange-600 */
   --hc-cat-3: #1b8177; /* text-teal-600 */
@@ -295,7 +295,7 @@
 
 .thriftloop .text-emerald-700,
 .thriftloop .text-emerald-800 {
-  color: #046e50;
+  color: #047857;
 }
 
 .thriftloop .text-amber-700,
@@ -312,7 +312,7 @@
 }
 
 .thriftloop .text-violet-600 {
-  color: #af3804;
+  color: #be3d04;
 }
 
 .thriftloop .text-violet-700 {

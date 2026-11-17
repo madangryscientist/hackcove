@@ -122,46 +122,44 @@ function toneRules(palette: Palette, role: string, narrow: string[]): Rule[] {
 /**
  * The text of an outline or ghost Button, and of a link, drawn inside a Callout. A Callout sits on
  * one of its five tints (`TONE_SURFACE` in `Callout.tsx`: neutral, info, positive, warn, danger), and
- * a Button in it takes the Button's own tone (neutral, positive or danger). So the text is held
- * on each Callout tint, not on the tints of every tone: the accent (`text-violet-600`), the ink
- * ghost text (`text-slate-600`) and the positive and danger `text-*-700` are measured on the
- * neutral, info, positive, warn and danger tints. `toneRules` measures each tone's text only on its
- * own tint, so this rule is the one that sees a cross-tone pair.
+ * a Button in it takes the Button's own tone (neutral, positive or danger). Each tone's text is
+ * measured on the Callout tints, and on each tint with that tone's own hover fill stacked on top
+ * (`Button.tsx`: the accent outline fill, the positive and danger outline and ghost fills, the
+ * neutral ghost fill). `toneRules` measures each tone's text only on its own tint, so these rules
+ * are the ones that see a Button of one tone inside a Callout of another.
  */
-function buttonTintRule(palette: Palette, narrow: string[]): Rule {
+function buttonTintRules(palette: Palette, narrow: string[]): Rule[] {
   const calloutTints = [
     ...roleOf(palette, "subtle").filter((utility) => utility === "bg-slate-50"),
     ...["info", "positive", "warn", "danger"].flatMap((role) =>
       roleOf(palette, role).filter((utility) => /^bg-[a-z]+-50$/.test(utility)),
     ),
   ];
-  // An outline or ghost Button's hover fill is laid on the Callout tint it sits in: the accent,
-  // positive and danger outline fills and the neutral ghost fill.
-  const hoverFills = [
-    ...["accent", "positive", "danger"].flatMap((role) =>
-      roleOf(palette, role).filter((utility) => /^hover:bg-[a-z]+-50$/.test(utility)),
-    ),
-    ...roleOf(palette, "inset").filter((utility) => utility === "hover:bg-slate-100"),
+  const tints = [...new Set(calloutTints)];
+  const hoverOf = (role: string): string[] =>
+    roleOf(palette, role).filter((utility) => /^hover:bg-[a-z]+-50$/.test(utility));
+  const onFor = (fills: string[]): string[][] => [
+    ...stacks(tints),
+    ...tints.flatMap((tint) => fills.map((fill) => [tint, fill])),
   ];
-  const fg = [
-    ...roleOf(palette, "accent").filter((utility) =>
-      /^(?:hover:)?text-[a-z]+-(?:600|700)$/.test(utility),
-    ),
-    ...roleOf(palette, "ink").filter((utility) => utility === "text-slate-600"),
-    ...["positive", "danger"].flatMap((role) =>
-      roleOf(palette, role).filter((utility) => /^(?:hover:)?text-[a-z]+-700$/.test(utility)),
-    ),
-  ];
-  return {
+  const textOf = (role: string, pattern: RegExp): string[] =>
+    roleOf(palette, role).filter((utility) => pattern.test(utility));
+  const rule = (fg: string[], fills: string[]): Rule => ({
     name: "button text on a tone tint",
     bar: TEXT_BAR,
     fg: [...new Set(fg)],
-    on: [
-      ...stacks([...new Set(calloutTints)]),
-      ...[...new Set(calloutTints)].flatMap((tint) => hoverFills.map((fill) => [tint, fill])),
-    ],
+    on: onFor(fills),
     base: narrow,
-  };
+  });
+  return [
+    rule(textOf("accent", /^(?:hover:)?text-[a-z]+-(?:600|700)$/), hoverOf("accent")),
+    rule(
+      roleOf(palette, "ink").filter((utility) => utility === "text-slate-600"),
+      roleOf(palette, "inset").filter((utility) => utility === "hover:bg-slate-100"),
+    ),
+    rule(textOf("positive", /^(?:hover:)?text-[a-z]+-700$/), hoverOf("positive")),
+    rule(textOf("danger", /^(?:hover:)?text-[a-z]+-700$/), hoverOf("danger")),
+  ];
 }
 
 /**
@@ -274,7 +272,7 @@ export function rulesFor(palette: Palette): Rule[] {
       base: narrow,
     },
     ...TONES.flatMap((role) => toneRules(palette, role, narrow)),
-    buttonTintRule(palette, narrow),
+    ...buttonTintRules(palette, narrow),
     invalidEdge(palette, narrow),
     ...scrimRules(palette, narrow),
     ...glowRules(palette),
