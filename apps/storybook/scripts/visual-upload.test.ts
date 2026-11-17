@@ -53,26 +53,18 @@ describe("decideUpload", () => {
   });
 });
 
-const ok = (shas: string[]): MainShas => ({ kind: "ok", shas });
-
 describe("baselineFailure", () => {
   const ancestors = new Set(["c1", "c2"]);
   const listings: Record<string, MainShas> = {
-    "hackcove-ui-text": ok(["m9", "m8"]),
-    "hackcove-ui-layout": ok(["m9", "c2"]),
-    "hackcove-ui-empty": ok([]),
-    "hackcove-ui-gone": { kind: "missing", line: "no project hackcove-ui-gone" },
-    "hackcove-ui-down": {
-      kind: "failed",
-      line: "GET /api/projects/hackcove-ui-down/builds -> 500 internal: boom",
-    },
-    "hackcove-ui-denied": {
-      kind: "failed",
-      line: "GET /api/projects/hackcove-ui-denied/builds -> 401 unauthorized",
-    },
+    "hackcove-ui-text": { kind: "ok", shas: ["m9", "m8"] },
+    "hackcove-ui-layout": { kind: "ok", shas: ["m9", "c2"] },
+    "hackcove-ui-empty": { kind: "ok", shas: [] },
+    gone: { kind: "missing", line: "no project gone" },
+    down: { kind: "failed", line: "GET /builds -> 500 internal: boom" },
+    denied: { kind: "failed", line: "GET /builds -> 401 unauthorized" },
   };
   const deps = {
-    mainShas: async (project: string) => listings[project] ?? ok([]),
+    mainShas: async (project: string) => listings[project] ?? { kind: "ok", shas: [] },
     isAncestor: async (sha: string) => ancestors.has(sha),
   };
 
@@ -98,38 +90,22 @@ describe("baselineFailure", () => {
     expect(await baselineFailure(["hackcove-ui-empty"], deps)).toContain("hackcove-ui-empty");
   });
 
-  it("names a project the server does not have as missing, quoting the CLI's line", async () => {
-    const failure = await baselineFailure(["hackcove-ui-gone"], deps);
-    expect(failure).toContain("no PixelSlash project hackcove-ui-gone");
-    expect(failure).toContain("no project hackcove-ui-gone");
-    expect(failure).toContain("pixelslash project create");
-  });
-
-  it("reports a 500 as PixelSlash not answering, never as a project to create", async () => {
-    const failure = await baselineFailure(["hackcove-ui-down"], deps);
-    expect(failure).toContain("PixelSlash did not answer for hackcove-ui-down");
-    expect(failure).toContain("-> 500 internal: boom");
-    expect(failure).toContain("report it to the PixelSlash planner");
-    expect(failure).not.toContain("no PixelSlash project");
-    expect(failure).not.toContain("pixelslash project create");
+  it("reports a missing project as one to create, and a 500 as PixelSlash not answering", async () => {
+    const gone = await baselineFailure(["gone"], deps);
+    expect(gone).toMatch(/no PixelSlash project gone \(pixelslash: no project .*create/);
+    const down = await baselineFailure(["down"], deps);
+    expect(down).toMatch(/did not answer for down \(pixelslash: .*-> 500 internal: boom.*planner/);
+    expect(down).not.toMatch(/no PixelSlash project|pixelslash project create/);
   });
 
   it("names every kind in one call, the server failure first", async () => {
-    const failure = await baselineFailure(
-      ["hackcove-ui-text", "hackcove-ui-gone", "hackcove-ui-denied", "hackcove-ui-down"],
-      deps,
-    );
-    const lines = failure?.split("\n") ?? [];
-    expect(lines).toHaveLength(4);
-    expect(lines[0]).toContain("PixelSlash did not answer for hackcove-ui-down");
-    expect(lines[0]).toContain("-> 500");
-    expect(lines[0]).toContain("PixelSlash planner");
-    expect(lines[0]).not.toContain("hackcove-ui-gone");
-    expect(lines[1]).toContain("PixelSlash refused the token for hackcove-ui-denied");
-    expect(lines[2]).toContain("no PixelSlash project hackcove-ui-gone");
-    expect(lines[2]).not.toContain("hackcove-ui-down");
-    expect(lines[3]).toContain("upload main first");
-    expect(lines[3]).toContain("hackcove-ui-text");
+    const failure = await baselineFailure(["hackcove-ui-text", "gone", "denied", "down"], deps);
+    expect(failure?.split("\n")).toEqual([
+      expect.stringMatching(/^PixelSlash did not answer for down \(pixelslash: .*-> 500/),
+      expect.stringMatching(/^PixelSlash refused the token for denied \(/),
+      expect.stringMatching(/^the server has no PixelSlash project gone \(/),
+      expect.stringMatching(/^no main build .* in hackcove-ui-text; upload main first/),
+    ]);
   });
 });
 
