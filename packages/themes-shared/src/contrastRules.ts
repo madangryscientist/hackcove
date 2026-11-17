@@ -26,6 +26,8 @@ export type Rule = {
   fg: string[];
   on: string[][];
   base: string[];
+  /** The foreground may be lifted only where it is drawn on a tint: `.<scope> .<tint> .<fg>` in the theme. */
+  scoped?: boolean;
 };
 
 /** A group of palette utilities held to no bar, and why. */
@@ -166,7 +168,7 @@ function buttonTintRules(palette: Palette, narrow: string[]): Rule[] {
       roleOf(palette, "inset").filter((utility) => utility === "hover:bg-slate-100"),
     ),
     rule(textOf("positive", /^(?:hover:)?text-[a-z]+-700$/), hoverOf("positive")),
-    rule(textOf("danger", /^(?:hover:)?text-[a-z]+-700$/), hoverOf("danger")),
+    { ...rule(textOf("danger", /^(?:hover:)?text-[a-z]+-700$/), hoverOf("danger")), scoped: true },
   ];
 }
 

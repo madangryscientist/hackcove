@@ -344,7 +344,7 @@
 .slash-suite .text-red-700,
 .slash-suite .text-red-800,
 .slash-suite .text-red-900 {
-  color: #8e0c2d; /* red #d20f39, darkened to clear the distinction contract: at latte's #b90e31 the gap to the deep peach link is 0.076, under 0.09 */
+  color: #c2103d; /* red #d20f39, darkened and turned toward crimson: 0.09 apart from the deep peach link */
 }
 .slash-suite .text-blue-600,
 .slash-suite .text-blue-700,
@@ -447,4 +447,12 @@
 }
 .slash-suite .bg-rose-400\/25 {
   background-color: rgba(234, 118, 203, 0.05); /* pink */
+}
+/* The danger text drawn on a Callout tint (HC-442): lifted there only, so danger keeps its red everywhere else. */
+.slash-suite .bg-slate-50 .text-red-700,
+.slash-suite .bg-blue-50 .text-red-700,
+.slash-suite .bg-emerald-50 .text-red-700,
+.slash-suite .bg-amber-50 .text-red-700,
+.slash-suite .bg-red-50 .text-red-700 {
+  color: #b60f39;
 }

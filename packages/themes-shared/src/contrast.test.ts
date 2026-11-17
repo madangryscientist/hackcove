@@ -11,6 +11,7 @@ const palette: Palette = {
 };
 
 const cssProperty = (name: string): string => {
+  if (name.includes(".text-")) return "color";
   if (/(?:^|:)bg-/.test(name)) return "background-color";
   if (name.startsWith("border-")) return "border-color";
   return "color";
@@ -138,6 +139,27 @@ describe("contrastFailures", () => {
         (line) =>
           line.startsWith("button text on a tone tint: text-red-700 ") &&
           line.includes("on bg-red-50 #"),
+      ),
+    ).toBe(false);
+  });
+
+  it("reads a danger text lifted only where it is drawn on a Callout tint", () => {
+    const withDanger: Palette = { ...palette, danger: ["text-red-700", "bg-red-50"] };
+    // The global red is too pale for the red-50 tint; the scoped one, drawn on that tint, is dark enough.
+    const global = theme({ "text-red-700": "#f0b0b0", "bg-red-50": "#ffffff" });
+    expect(
+      contrastFailures(global, withDanger).some((line) =>
+        line.startsWith("button text on a tone tint: text-red-700"),
+      ),
+    ).toBe(true);
+    const scoped = theme({
+      "text-red-700": "#f0b0b0",
+      "bg-red-50": "#ffffff",
+      "bg-red-50 .text-red-700": "#7a0000",
+    });
+    expect(
+      contrastFailures(scoped, withDanger).some((line) =>
+        line.startsWith("button text on a tone tint: text-red-700"),
       ),
     ).toBe(false);
   });

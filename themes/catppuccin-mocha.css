@@ -191,7 +191,7 @@
   color: #11111b; /* crust: text on the mauve button */
 }
 .dark .hover\:text-violet-700:hover {
-  color: #c6cdfe; /* lavender */
+  color: #b7c0fe; /* lavender */
 }
 .dark .hover\:bg-violet-50:hover {
   background-color: rgba(203, 166, 247, 0.14); /* mauve tint */
@@ -237,7 +237,7 @@
     139,
     168,
     0.1
-  ); /* red tint: the danger text on it is measured by the contract */
+  ); /* red tint: red text on 0.14 over surface0 is under 4.5:1 */
 }
 
 /* Positive button (Button tone="positive"): solid, outline, ghost and the pressed tint.
@@ -311,7 +311,7 @@
     139,
     168,
     0.1
-  ); /* red text (the danger tint, see the red rule below) is measured by the contract */
+  ); /* red text on 0.13 over surface0 is 4.34:1, under 4.5:1 */
 }
 .dark .bg-blue-50 {
   background-color: rgba(137, 180, 250, 0.13);
@@ -331,9 +331,7 @@
 .dark .text-amber-900 {
   color: #f9e2af; /* yellow */
 }
-.dark .text-red-700 {
-  color: #fce5ec; /* red, lifted to clear AA on the callout tints (HC-442) */
-}
+.dark .text-red-700,
 .dark .text-red-800,
 .dark .text-red-900 {
   color: #f38ba8; /* red */
@@ -357,7 +355,7 @@
   color: #7f849c; /* overlay1: overlay0 is 2.57:1 on surface0, and a chart mark needs 3:1 */
 }
 .dark .text-purple-700 {
-  color: #cba6f7; /* mauve, the accent's original pastel (text-violet-600 is lifted, HC-442) */
+  color: #cba6f7; /* mauve */
 }
 /* The categorical scale (cat1 to cat8): one colour per category where the colour carries no
    meaning, for a chart and its key. Each starts from this theme's own hue and moved only as far as
@@ -423,7 +421,7 @@
   transition: color 0.12s ease;
 }
 .dark .link:hover {
-  color: #c6cdfe; /* lavender */
+  color: #b7c0fe; /* lavender */
 }
 
 /* The hero glow (Hero): three ribbons behind a landing page's title, a soft wash of mauve, teal and
@@ -436,4 +434,12 @@
 }
 .dark .bg-rose-400\/25 {
   background-color: rgba(245, 194, 231, 0.06); /* pink */
+}
+/* The danger text drawn on a Callout tint (HC-442): lifted there only, so danger keeps its red everywhere else. */
+.dark .bg-slate-50 .text-red-700,
+.dark .bg-blue-50 .text-red-700,
+.dark .bg-emerald-50 .text-red-700,
+.dark .bg-amber-50 .text-red-700,
+.dark .bg-red-50 .text-red-700 {
+  color: #f7b5c7;
 }

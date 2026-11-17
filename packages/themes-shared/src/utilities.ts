@@ -46,12 +46,24 @@ export function utilitiesOf(css: string): Map<string, Declarations> {
   if (scope === undefined) return utilities;
   const rules = stripComments(css).replace(/@[^;{}]*;/g, "");
   const descendant = new RegExp(`^\\.${scope}\\s+\\.((?:\\\\.|[\\w-])+)`);
+  // `.<scope> .<tint> .<utility>`: the utility as drawn on a surface of that tint, keyed `<tint> <utility>`.
+  const within = new RegExp(`^\\.${scope}\\s+\\.((?:\\\\.|[\\w-])+)\\s+\\.((?:\\\\.|[\\w-])+)$`);
+  const unescape = (name: string): string => name.replace(/\\(.)/g, "$1");
   for (const [, list = "", body = ""] of rules.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
     const declarations = declarationsOf(body);
     for (const selector of selectorsOf(list)) {
+      const inside = within.exec(selector);
+      if (inside) {
+        const tint = unescape(inside[1] ?? "");
+        if (tint.startsWith("bg-")) {
+          const key = `${tint} ${unescape(inside[2] ?? "")}`;
+          utilities.set(key, { ...utilities.get(key), ...declarations });
+        }
+        continue;
+      }
       const escaped = descendant.exec(selector)?.[1];
       if (escaped === undefined) continue;
-      const utility = escaped.replace(/\\(.)/g, "$1");
+      const utility = unescape(escaped);
       utilities.set(utility, { ...utilities.get(utility), ...declarations });
     }
   }
