@@ -79,7 +79,7 @@ describe("lookupResult", () => {
 
   it("reads exit 3 with a 401 as a server failure", () => {
     const stderr = "GET /api/projects -> 401 unauthorized; run `pixelslash login --server x`\n";
-    expect(lookupResult(3, "", stderr)).toMatchObject({ kind: "failed", line: /-> 401/ });
+    expect(lookupResult(3, "", stderr)).toMatchObject({ kind: "failed", line: expect.stringMatching(/-> 401/) });
   });
 
   it("reads exit 3 with `cannot fetch` as a server failure", () => {
@@ -160,25 +160,29 @@ describe("baselineFailure", () => {
 
   it("reports a 401 as a token that needs reissuing", async () => {
     const failure = await baselineFailure(["hackcove-ui-denied"], deps);
+    expect(failure).toContain("PixelSlash refused the token for hackcove-ui-denied");
     expect(failure).toContain("-> 401");
     expect(failure).toContain("needs reissuing");
+    expect(failure).not.toContain("did not answer");
     expect(failure).not.toContain("pixelslash project create");
   });
 
   it("names every kind in one call, the server failure first", async () => {
     const failure = await baselineFailure(
-      ["hackcove-ui-text", "hackcove-ui-gone", "hackcove-ui-down"],
+      ["hackcove-ui-text", "hackcove-ui-gone", "hackcove-ui-denied", "hackcove-ui-down"],
       deps,
     );
     const lines = failure?.split("\n") ?? [];
-    expect(lines).toHaveLength(3);
+    expect(lines).toHaveLength(4);
     expect(lines[0]).toContain("PixelSlash did not answer for hackcove-ui-down");
     expect(lines[0]).toContain("-> 500");
+    expect(lines[0]).toContain("PixelSlash planner");
     expect(lines[0]).not.toContain("hackcove-ui-gone");
-    expect(lines[1]).toContain("no PixelSlash project hackcove-ui-gone");
-    expect(lines[1]).not.toContain("hackcove-ui-down");
-    expect(lines[2]).toContain("upload main first");
-    expect(lines[2]).toContain("hackcove-ui-text");
+    expect(lines[1]).toContain("PixelSlash refused the token for hackcove-ui-denied");
+    expect(lines[2]).toContain("no PixelSlash project hackcove-ui-gone");
+    expect(lines[2]).not.toContain("hackcove-ui-down");
+    expect(lines[3]).toContain("upload main first");
+    expect(lines[3]).toContain("hackcove-ui-text");
   });
 });
 

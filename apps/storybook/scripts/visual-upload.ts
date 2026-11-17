@@ -70,33 +70,40 @@ export function lookupResult(exitCode: number, stdout: string, stderr: string): 
   return { kind: exitCode === 2 ? "missing" : "failed", line };
 }
 
-/** A project the lookup did not find, or that the server did not answer for, with the CLI's line. */
-export type LookupMiss = { project: string; line: string };
+/** A lookup that gave no listing: the project and what the CLI said. */
+export type LookupMiss = { project: string; result: Exclude<LookupResult, { kind: "ok" }> };
 
-const quoted = (misses: LookupMiss[]) =>
-  misses.map(({ project, line }) => `${project} (pixelslash: ${line})`).join(", ");
+const UNAUTHORIZED = / -> 401\b/;
 
 /**
- * Why the lookups failed, one line per kind, server failures first: a server that did not answer
- * hides whether the other projects exist, so the missing ones are named after it. `undefined` when
- * nothing failed.
+ * Why the lookups failed, one line per kind: the server not answering first, since that hides
+ * whether the other projects exist, then a token it refused, then the projects it does not have.
+ * Each names its projects with the CLI's line. `undefined` when there is nothing to report.
  */
-export function lookupFailure(failed: LookupMiss[], missing: LookupMiss[]): string | undefined {
+export function lookupFailure(misses: LookupMiss[]): string | undefined {
+  const named = (keep: (miss: LookupMiss) => boolean) =>
+    misses
+      .filter(keep)
+      .map(({ project, result }) => `${project} (pixelslash: ${result.line})`)
+      .join(", ");
+  const isFailed = ({ result }: LookupMiss) => result.kind === "failed";
+  const down = named((miss) => isFailed(miss) && !UNAUTHORIZED.test(miss.result.line));
+  const refused = named((miss) => isFailed(miss) && UNAUTHORIZED.test(miss.result.line));
+  const missing = named((miss) => !isFailed(miss));
   const lines: string[] = [];
-  if (failed.length > 0) {
-    const unauthorized = failed.some(({ line }) => / -> 401\b/.test(line));
+  if (down !== "")
     lines.push(
-      `PixelSlash did not answer for ${quoted(failed)}. ` +
-        "This is a PixelSlash failure, not a missing project, so do not create it: " +
-        (unauthorized
-          ? "a 401 means the token is missing, wrong, expired or revoked and needs reissuing in " +
-            "the project's Settings on the server"
-          : "report it to the PixelSlash planner with this output"),
+      `PixelSlash did not answer for ${down}. This is a PixelSlash failure, not a missing ` +
+        "project, so do not create it: report it to the PixelSlash planner with this output",
     );
-  }
-  if (missing.length > 0)
+  if (refused !== "")
     lines.push(
-      `the server has no PixelSlash project ${quoted(missing)} (or the token cannot see it); ` +
+      `PixelSlash refused the token for ${refused}: it is missing, wrong, expired or revoked ` +
+        "and needs reissuing in the project's Settings on the server; do not create the project",
+    );
+  if (missing !== "")
+    lines.push(
+      `the server has no PixelSlash project ${missing} (or the token cannot see it); ` +
         "create each with `pixelslash project create <name>` and re-run",
     );
   return lines.length > 0 ? lines.join("\n") : undefined;
@@ -124,18 +131,13 @@ export type BaselineDeps = {
 async function baselineGaps(
   projects: string[],
   deps: BaselineDeps,
-): Promise<{ missing: string[]; unknown: LookupMiss[]; failed: LookupMiss[] }> {
+): Promise<{ missing: string[]; misses: LookupMiss[] }> {
   const missing: string[] = [];
-  const unknown: LookupMiss[] = [];
-  const failed: LookupMiss[] = [];
+  const misses: LookupMiss[] = [];
   for (const project of projects) {
     const result = await deps.mainShas(project);
-    if (result.kind === "missing") {
-      unknown.push({ project, line: result.line });
-      continue;
-    }
-    if (result.kind === "failed") {
-      failed.push({ project, line: result.line });
+    if (result.kind !== "ok") {
+      misses.push({ project, result });
       continue;
     }
     let found = false;
@@ -147,7 +149,7 @@ async function baselineGaps(
     }
     if (!found) missing.push(project);
   }
-  return { missing, unknown, failed };
+  return { missing, misses };
 }
 
 /**
@@ -158,9 +160,9 @@ export async function baselineFailure(
   projects: string[],
   deps: BaselineDeps,
 ): Promise<string | undefined> {
-  const { missing, unknown, failed } = await baselineGaps(projects, deps);
+  const { missing, misses } = await baselineGaps(projects, deps);
   const lines: string[] = [];
-  const lookup = lookupFailure(failed, unknown);
+  const lookup = lookupFailure(misses);
   if (lookup !== undefined) lines.push(lookup);
   if (missing.length > 0)
     lines.push(

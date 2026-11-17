@@ -50,7 +50,11 @@ async function listBuilds(project: string, ...flags: string[]): Promise<LookupRe
     new Response(proc.stdout).text(),
     new Response(proc.stderr).text(),
   ]);
-  return lookupResult(await proc.exited, stdout, stderr);
+  const exitCode = await proc.exited;
+  // Exits 2 and 3 print one line, which the failure quotes; anything else (a crash in the CLI, or
+  // a warning on success) goes to the terminal whole, as it did before stderr was read.
+  if (exitCode !== 2 && exitCode !== 3) process.stderr.write(stderr);
+  return lookupResult(exitCode, stdout, stderr);
 }
 
 /** The shas of `project`'s 20 newest `main` builds, or why the server gave none. */
@@ -117,14 +121,12 @@ function decide(state: UploadState): UploadMode {
 
 /** Main's own upload needs no baseline, only a project to send to. */
 async function requireProjects(projects: string[]) {
-  const failed: LookupMiss[] = [];
-  const missing: LookupMiss[] = [];
+  const misses: LookupMiss[] = [];
   for (const project of projects) {
     const result = await listBuilds(project, "--limit", "1");
-    if (result.kind === "failed") failed.push({ project, line: result.line });
-    if (result.kind === "missing") missing.push({ project, line: result.line });
+    if (result.kind !== "ok") misses.push({ project, result });
   }
-  const failure = lookupFailure(failed, missing);
+  const failure = lookupFailure(misses);
   if (failure !== undefined) throw new VisualError(failure);
 }
 
@@ -146,11 +148,7 @@ const POLL_INTERVAL_MS = 3000;
  */
 async function readBuildState(project: string, id: string): Promise<BuildState> {
   const result = await listBuilds(project, "--limit", "20");
-  if (result.kind !== "ok") {
-    const miss = [{ project, line: result.line }];
-    const failed = result.kind === "failed" ? miss : [];
-    throw new VisualError(lookupFailure(failed, result.kind === "missing" ? miss : []) ?? result.line);
-  }
+  if (result.kind !== "ok") throw new VisualError(lookupFailure([{ project, result }]) ?? result.line);
   const build = buildIn(result.listing, id);
   if (build === undefined)
     throw new VisualError(`${project} lists no build ${id} among its newest 20`);
