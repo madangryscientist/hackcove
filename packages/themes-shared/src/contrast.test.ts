@@ -11,7 +11,7 @@ const palette: Palette = {
 };
 
 const cssProperty = (name: string): string => {
-  if (name.startsWith("bg-")) return "background-color";
+  if (/(?:^|:)bg-/.test(name)) return "background-color";
   if (name.startsWith("border-")) return "border-color";
   return "color";
 };
@@ -112,6 +112,34 @@ describe("contrastFailures", () => {
     expect(
       failures.every((line) => line.startsWith("chart colour: text-indigo-600 #45475a on ")),
     ).toBe(true);
+  });
+
+  it("measures a hovered button's text on its Callout tint with the hover fill stacked on top", () => {
+    const withDanger: Palette = {
+      ...palette,
+      danger: ["text-red-700", "bg-red-50", "hover:bg-red-50"],
+    };
+    // The text clears the white tint alone, and fails once the translucent grey hover fill sits on it.
+    const css = theme({
+      "text-red-700": "#7a0000",
+      "bg-red-50": "#ffffff",
+      "hover\\:bg-red-50:hover": "rgba(0, 0, 0, 0.5)",
+    });
+    const failures = contrastFailures(css, withDanger);
+    expect(
+      failures.some(
+        (line) =>
+          line.startsWith("button text on a tone tint: text-red-700 ") &&
+          line.includes("on bg-red-50 + hover:bg-red-50"),
+      ),
+    ).toBe(true);
+    expect(
+      failures.some(
+        (line) =>
+          line.startsWith("button text on a tone tint: text-red-700 ") &&
+          line.includes("on bg-red-50 #"),
+      ),
+    ).toBe(false);
   });
 
   it("measures an outline button's accent text on another tone's tint, named", () => {
