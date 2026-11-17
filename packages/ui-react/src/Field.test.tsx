@@ -13,7 +13,10 @@ describe("Field", () => {
         <input id="name" />
       </Field>,
     );
-    expect(screen.getByRole("textbox", { name: "Name" }).id).toBe("name");
+    const control = screen.getByRole("textbox", { name: "Name" });
+    expect(control.id).toBe("name");
+    // A real <label> tied through htmlFor, so a click on it focuses the control.
+    expect(screen.getByText("Name")).toHaveProperty("control", control);
   });
 
   it("shows the hint when there is no error", () => {

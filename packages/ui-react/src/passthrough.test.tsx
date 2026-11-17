@@ -162,8 +162,7 @@ describe("every exported component passes id, data-* and aria-* through", () => 
   it.each(split)(
     "%s puts data-* on its wrapper and the description on the field inside",
     (_name, role, build) => {
-      expect(build).toBeDefined();
-      mount((build as () => ReactElement)());
+      mount(build());
       expect(within(probe()).getAllByRole(role, { description: /Read this/ })).not.toEqual([]);
     },
   );

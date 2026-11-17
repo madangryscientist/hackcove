@@ -66,13 +66,13 @@ describe("TrendChart", () => {
     expect(top.every(isInaccessible)).toBe(true);
   });
 
-  it("gives a screen reader a table: a row per bucket, a column per series, blank where missing", () => {
+  it("gives a screen reader a table: a row per bucket, a column per series, blank where missing, nothing past the last bucket", () => {
     render(
       <TrendChart
         label="Tickets"
         buckets={["W1", "W2", "W3"]}
         series={[
-          { label: "Opened", tone: "info", values: [3, null, 1200] },
+          { label: "Opened", tone: "info", values: [3, null, 1200, 99] },
           { label: "Closed", tone: "positive", values: [2, 5] },
         ]}
       />,
