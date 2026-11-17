@@ -1,0 +1,26 @@
+import { Button, Card, Cluster, Pill, Stack, Text } from "@hackcove/ui-react";
+
+export const view = (items: string[]) => (
+  <Stack gap="sm">
+    <Cluster gap="xs">
+      <Text as="span">In a row</Text>
+    </Cluster>
+    <Button>
+      <Text as="span">In a button</Text>
+    </Button>
+    {items.map((item) => (
+      <Text as="span" key={item}>
+        {item}
+      </Text>
+    ))}
+    <ul>
+      <li>
+        <Text as="span">Ada</Text> <Pill>new</Pill>
+      </li>
+    </ul>
+    <Card>
+      <Text as="span">One</Text>
+      <Text as="span">Two</Text>
+    </Card>
+  </Stack>
+);

@@ -1,0 +1,13 @@
+import { TableCell, TableEditCell } from "@hackcove/ui-react";
+
+export const view = (
+  <>
+    <TableCell numeric>
+      1
+    </TableCell>
+    <TableEditCell numeric={true}>
+      2
+    </TableEditCell>
+    <TableCell align="start">name</TableCell>
+  </>
+);

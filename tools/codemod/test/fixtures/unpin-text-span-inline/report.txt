@@ -1,0 +1,6 @@
+6: as="span" kept: inline here, check it
+9: as="span" kept: inline here, check it
+12: as="span" kept: inline here, check it
+18: as="span" kept: inline here, check it
+22: as="span" kept: inline here, check it
+23: as="span" kept: inline here, check it

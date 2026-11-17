@@ -364,6 +364,32 @@ Each `file:line` it prints is a **by hand** row above, on a line of the rewritte
 them, then typecheck: what TypeScript still flags sits on or next to a line the codemod printed. The
 lists under "TypeScript does not flag these" are what is left to check by eye.
 
+The pins it writes (`as="span"`, `gap="md"`, `wrap={false}`, `align="start"`) keep the 0.10 look.
+Once the app is on 0.11, the second step takes them out: see "0.11 to 0.12: drop the pins".
+
+## 0.11 to 0.12: drop the pins
+
+The 0.11 codemod pinned the old look so nothing moved in the bump. Those pins are not the look
+0.11 was designed for: drop them, in their own change, once the app is on 0.11. A second codemod
+step does it:
+
+```bash
+bun <checkout>/tools/codemod/src/run.ts src --unpin           # a dry run
+bun <checkout>/tools/codemod/src/run.ts src --unpin --write   # rewrites the files
+```
+
+`--unpin` runs only these rules, never the 0.11 pass, which would write every pin back. It cannot
+tell a pin it wrote from one a person wrote, so it removes a pin only where the new default draws
+the same thing, and prints a `file:line` for each one a person decides.
+
+| Pin | What removing it changes | |
+| --- | --- | --- |
+| `Text as="span"`, `Caption as="span"` | the text is a `<p>`, a block on its own line: the same in a column, but anything inline beside it moves to the next line, and a long `Text` alone in a plain block (a `Card`, a `Callout`, a `div`) now wraps at 72 characters, the measure for reading | codemod removes it when the element sits directly in a `Stack`, `Section` or `Field`, or is the one child of a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout`, `Fieldset`, `div`, `section`, `article`, `main`, `header`, `footer` or `li`; anywhere else (a row, a cell, a button, a sentence, a `map`, next to a sibling in a plain block) it stays and is reported |
+| `Stack gap="md"`, `Section gap="md"` | nothing at page level, where `md` is the default; inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout`, `ListRow` or `CenteredLayout` (which draws a `Card`) the gap closes to `xs`, the new look | codemod removes it when no such container holds it in the same file; inside one it stays and is reported, and so does a `Section` with a `size` other than `md`, whose size sets its gap. A component rendered inside a `Card` from another file takes `xs` too: the codemod reads one file at a time |
+| `Cluster wrap={false}` | the row wraps onto a second line when it runs out of room | by hand: every one is reported, remove it unless the row must stay on one line |
+| `align="start"` on a `numeric` `TableCell` or `TableEditCell` | the figures line up at the end of the cell | codemod removes it when `numeric` is bare or `{true}`; when `numeric` is an expression it stays and is reported |
+| `Field htmlFor` with the control's matching `id` | nothing on screen: a `Field` makes its own id and gives it to the `Input`, `Select`, `Textarea` or `FileDrop` inside it, so the label still names the control. The control's DOM id becomes a generated one, so search the app for the old id (a stylesheet, a test selector, a link from another page) before you merge | codemod removes both when they name only each other in the file (no `aria-describedby`, `href="#…"`, `getElementById` or second use); `htmlFor={id}` with `id={id}` goes too when `id` is a `const id = useId()`, whose line is then reported as unused. An id from a prop or a `useId` that is not React's, a template string, a raw `<input>` or anything else stays and is reported. The 0.11 pass runs this rule as well, so an app still going 0.10 to 0.11 gets it in one run |
+
 ## 0.9 → 0.10: Avatar `2xl` is 64px, the old 96px is `3xl`
 
 `Avatar` gained a 64px size. The sizes keep their order (`xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`),

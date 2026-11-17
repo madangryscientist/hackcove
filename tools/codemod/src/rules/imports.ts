@@ -46,7 +46,7 @@ const REMOVED: Readonly<Record<string, string>> = {
 };
 
 /** Every identifier in the file with this text, except a property name. */
-function usesOf(file: ts.SourceFile, name: string): ts.Identifier[] {
+export function usesOf(file: ts.SourceFile, name: string): ts.Identifier[] {
   const out: ts.Identifier[] = [];
   const visit = (node: ts.Node): void => {
     const parent = node.parent;

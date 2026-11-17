@@ -1,0 +1,34 @@
+import { useId } from "react";
+import { Field, Input } from "@hackcove/ui-react";
+
+export function Email() {
+  const emailId = useId();
+  return (
+    <Field label="Email" htmlFor={emailId}>
+      <Input id={emailId} />
+    </Field>
+  );
+}
+
+export function Name({ nameId }: { nameId: string }) {
+  return (
+    <Field label="Name" htmlFor={nameId}>
+      <Input id={nameId} />
+      <p id={`${nameId}-note`}>Your full name</p>
+    </Field>
+  );
+}
+
+export const coded = (claim: { id: string }) => (
+  <Field label="Code" htmlFor={`code-${claim.id}`}>
+    <Input id={`code-${claim.id}`} />
+  </Field>
+);
+
+export function Phone({ phoneId }: { phoneId: string }) {
+  return (
+    <Field label="Phone" htmlFor={phoneId}>
+      <Input id={phoneId} />
+    </Field>
+  );
+}

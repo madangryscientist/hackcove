@@ -7,7 +7,7 @@ import { transform } from "../src/transform.js";
 // `after.txt` the file the codemod must produce, and `report.txt` the file:line reports it must
 // print (one `line: message` each). A folder with no `after.txt` is a by-hand row: the file stays
 // as it is and the report says where to look. The files are .txt so no formatter or linter
-// rewrites them.
+// rewrites them. A folder whose name starts `unpin-` runs the second step, `--unpin`.
 
 const root = join(import.meta.dirname, "fixtures");
 const read = (dir: string, name: string) => {
@@ -18,10 +18,21 @@ const read = (dir: string, name: string) => {
 describe("the codemod", () => {
   it.each(readdirSync(root).toSorted())("%s", (dir) => {
     const before = read(dir, "before.txt") ?? "";
-    const { output, reports } = transform(before, `${dir}.tsx`);
+    const step = dir.startsWith("unpin-") ? "unpin" : "0.11";
+    const { output, reports } = transform(before, `${dir}.tsx`, { step });
     expect(output).toBe(read(dir, "after.txt") ?? before);
     const lines = reports.map((line) => `${line.line}: ${line.message}`);
     expect(lines).toEqual((read(dir, "report.txt") ?? "").split("\n").filter(Boolean));
+  });
+
+  it("changes nothing and reports nothing on a Field it already unpaired", () => {
+    const unpaired = read("field-htmlfor-pair", "after.txt") ?? "";
+    expect(unpaired).not.toBe("");
+    expect(transform(unpaired, "field.tsx")).toEqual({ output: unpaired, reports: [] });
+    expect(transform(unpaired, "field.tsx", { step: "unpin" })).toEqual({
+      output: unpaired,
+      reports: [],
+    });
   });
 
   it("reads a .ts file as TypeScript, so a generic arrow is not a tag", () => {

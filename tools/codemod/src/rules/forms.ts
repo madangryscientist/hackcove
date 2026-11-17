@@ -1,6 +1,7 @@
 import ts from "typescript";
-import { attributeOf, literalOf, remove, replace } from "../attributes.js";
-import { type Context, report, type Tag, type TagRule } from "../source.js";
+import { attributeOf, literalOf, nameOf, remove, replace, valueOf } from "../attributes.js";
+import { componentOf, type Context, report, type Tag, type TagRule } from "../source.js";
+import { usesOf } from "./imports.js";
 
 /**
  * How the file names a package export it may not import yet: its local name when it is imported,
@@ -72,4 +73,203 @@ export function inputAlign(tag: Tag, component: string, context: Context): void 
   if (mode !== undefined && literalOf(mode) === "decimal") remove(context, mode);
 }
 
-export const tagRules: readonly TagRule[] = [filterGroup, inputAlign];
+/** The controls that take the enclosing `Field`'s id, so its label names them with no `id` of theirs. */
+const FIELD_CONTROLS = new Set(["Input", "Select", "Textarea", "FileDrop"]);
+
+/** The attributes whose value names an element by its id. */
+const ID_REFERENCES = /^(id|htmlFor|for|href|form|list|headers|aria-[a-z]+)$/;
+
+/** Every tag under a Field, through expressions too, but not inside a `Field` nested in it. */
+function tagsUnder(root: ts.Node, context: Context): Tag[] {
+  const out: Tag[] = [];
+  const visit = (node: ts.Node): void => {
+    const tag = ts.isJsxElement(node) ? node.openingElement : node;
+    if (ts.isJsxOpeningElement(tag) || ts.isJsxSelfClosingElement(tag)) {
+      if (componentOf(tag, context.imports) === "Field") return;
+      if (tag === node) out.push(tag);
+    }
+    ts.forEachChild(node, visit);
+  };
+  ts.forEachChild(root, visit);
+  return out;
+}
+
+/** The attribute a string sits in as its value, `id="x"` or `id={"x"}`. */
+function attributeHolding(node: ts.Node): ts.JsxAttribute | undefined {
+  const parent = ts.isJsxExpression(node.parent) ? node.parent.parent : node.parent;
+  return ts.isJsxAttribute(parent) ? parent : undefined;
+}
+
+/**
+ * How many strings in the file name `id`, besides the attributes in `skip`: an id reference
+ * attribute (`aria-describedby`, `href="#…"`) or any string in code (`getElementById`, a selector).
+ */
+function otherNames(context: Context, id: string, skip: readonly ts.JsxAttribute[]): number {
+  const escaped = id.replaceAll(/[.*+?^$()|[\]{}\\]/g, "\\$&");
+  const word = new RegExp(`(^|[^\\w-])${escaped}($|[^\\w-])`);
+  let count = 0;
+  const visit = (node: ts.Node): void => {
+    if (
+      ts.isStringLiteralLike(node) ||
+      ts.isTemplateHead(node) ||
+      ts.isTemplateMiddle(node) ||
+      ts.isTemplateTail(node)
+    ) {
+      const attribute = attributeHolding(node);
+      const counts =
+        !ts.isImportDeclaration(node.parent) &&
+        (attribute === undefined ||
+          (!skip.includes(attribute) && ID_REFERENCES.test(nameOf(attribute))));
+      if (counts && word.test(node.text)) count += 1;
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(context.file);
+  return count;
+}
+
+/** The file's imports from `react`. */
+function reactImports(context: Context): ts.ImportClause[] {
+  return context.file.statements.flatMap((statement) => {
+    if (!ts.isImportDeclaration(statement)) return [];
+    const from = statement.moduleSpecifier;
+    const clause = statement.importClause;
+    return ts.isStringLiteral(from) && from.text === "react" && clause !== undefined
+      ? [clause]
+      : [];
+  });
+}
+
+/** The names an import clause binds React itself to: its default and its `* as`. */
+function reactNames(clause: ts.ImportClause): string[] {
+  const bindings = clause.namedBindings;
+  const namespace =
+    bindings !== undefined && ts.isNamespaceImport(bindings) ? [bindings.name.text] : [];
+  return [...(clause.name ? [clause.name.text] : []), ...namespace];
+}
+
+/** Whether an import clause binds `useId` itself, unrenamed. */
+function bindsUseId(clause: ts.ImportClause): boolean {
+  const bindings = clause.namedBindings;
+  if (bindings === undefined || !ts.isNamedImports(bindings)) return false;
+  return bindings.elements.some((e) => e.name.text === "useId" && e.propertyName === undefined);
+}
+
+/** Whether a callee is React's `useId`, imported as `useId` or called through `React`. */
+function reactUseId(context: Context, callee: string): boolean {
+  const clauses = reactImports(context);
+  if (callee === "useId") return clauses.some(bindsUseId);
+  const [namespace, member] = callee.split(".");
+  return (
+    member === "useId" && clauses.some((clause) => reactNames(clause).includes(namespace ?? ""))
+  );
+}
+
+/** The `const` a name is declared by, when it is `const name = useId()` from React: an id the file makes itself. */
+function useIdConst(context: Context, name: string): ts.Identifier | undefined {
+  return usesOf(context.file, name).find((use) => {
+    const parent = use.parent;
+    if (!ts.isVariableDeclaration(parent) || parent.name !== use) return false;
+    const init = parent.initializer;
+    return (
+      init !== undefined &&
+      ts.isCallExpression(init) &&
+      init.arguments.length === 0 &&
+      reactUseId(context, init.expression.getText(context.file))
+    );
+  });
+}
+
+/** Whether `htmlFor` and the control's `id` name each other and nothing else in the file. */
+function onlyPair(
+  context: Context,
+  htmlFor: ts.JsxAttribute,
+  id: ts.JsxAttribute,
+): { declaration?: ts.Identifier } | string {
+  const elsewhere = "htmlFor kept: something else names this id";
+  const literal = literalOf(htmlFor);
+  if (literal !== undefined) {
+    return otherNames(context, literal, [htmlFor, id]) === 0 ? {} : elsewhere;
+  }
+  const value = valueOf(htmlFor);
+  if (value === undefined || !ts.isIdentifier(value)) return elsewhere;
+  // An id from a prop or anywhere else was chosen by a caller, who may name it from another file.
+  const declaration = useIdConst(context, value.text);
+  if (declaration === undefined)
+    return "htmlFor kept: the id comes from outside this file, check it";
+  const others = usesOf(context.file, value.text).filter(
+    (use) =>
+      use !== declaration &&
+      use !== value &&
+      use !== valueOf(id) &&
+      !(
+        (ts.isPropertySignature(use.parent) || ts.isJsxAttribute(use.parent)) &&
+        use.parent.name === use
+      ),
+  );
+  return others.length > 0 ? elsewhere : { declaration };
+}
+
+/** Whether two `htmlFor`/`id` values are the same string, or the same identifier. */
+function sameValue(a: ts.JsxAttribute, b: ts.JsxAttribute): boolean {
+  const literal = literalOf(a);
+  if (literal !== undefined) return literalOf(b) === literal;
+  const left = valueOf(a);
+  const right = valueOf(b);
+  return (
+    left !== undefined &&
+    right !== undefined &&
+    ts.isIdentifier(left) &&
+    ts.isIdentifier(right) &&
+    left.text === right.text
+  );
+}
+
+/** The control whose `id` is the `htmlFor`, or why the codemod keeps the pair. */
+function pairedControl(
+  tag: Tag,
+  htmlFor: ts.JsxAttribute,
+  context: Context,
+): ts.JsxAttribute | string {
+  const value = valueOf(htmlFor);
+  if (literalOf(htmlFor) === undefined && (value === undefined || !ts.isIdentifier(value))) {
+    return "htmlFor kept: the id is not a literal or a name, check it";
+  }
+  const elsewhere = "htmlFor kept: something else names this id";
+  if (!ts.isJsxOpeningElement(tag)) return elsewhere;
+  const matches = tagsUnder(tag.parent, context).flatMap((inner) => {
+    const id = attributeOf(inner, "id");
+    return id !== undefined && sameValue(htmlFor, id) ? [{ inner, id }] : [];
+  });
+  const [match] = matches;
+  if (matches.length !== 1 || match === undefined) return elsewhere;
+  if (!FIELD_CONTROLS.has(componentOf(match.inner, context.imports) ?? "")) {
+    return "htmlFor kept: the control is not a Field part, check it";
+  }
+  return match.id;
+}
+
+/**
+ * `Field htmlFor` and its control's matching `id` go when they only pair the two: a `Field` makes
+ * its own id and gives it to the control (`Input`, `Select`, `Textarea`, `FileDrop`), so the label
+ * still names it. Anything else that names the id keeps both, reported.
+ */
+export function fieldPair(tag: Tag, component: string, context: Context): void {
+  if (component !== "Field") return;
+  const htmlFor = attributeOf(tag, "htmlFor");
+  if (htmlFor === undefined) return;
+  const id = pairedControl(tag, htmlFor, context);
+  if (typeof id === "string") return report(context, htmlFor, id);
+  const pair = onlyPair(context, htmlFor, id);
+  if (typeof pair === "string") {
+    report(context, htmlFor, pair);
+    return;
+  }
+  remove(context, htmlFor);
+  remove(context, id);
+  if (pair.declaration !== undefined) {
+    report(context, pair.declaration, `${pair.declaration.text} is unused now: remove it`);
+  }
+}
+
+export const tagRules: readonly TagRule[] = [filterGroup, inputAlign, fieldPair];
