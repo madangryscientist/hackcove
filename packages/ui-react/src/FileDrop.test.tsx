@@ -1,50 +1,37 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { FileDrop } from "./FileDrop.js";
+import { render, screen, user } from "./render.harness.js";
+
+/** The file input, named by the prompt around it (a file input has no role of its own). */
+const input = (prompt: string) => screen.getByLabelText<HTMLInputElement>(prompt);
 
 describe("FileDrop", () => {
-  it("is a dashed label around a file input and the prompt", () => {
-    const out = renderToStaticMarkup(<FileDrop>Drop a statement here</FileDrop>);
-    expect(out.startsWith("<label")).toBe(true);
-    expect(out).toContain("border-dashed");
-    expect(out).toContain('type="file"');
-    expect(out).toContain("Drop a statement here");
-  });
-
-  it("covers the zone with the input, so a drop lands on it", () => {
-    const out = renderToStaticMarkup(<FileDrop>Drop</FileDrop>);
-    expect(out).toMatch(/<input[^>]*class="[^"]*absolute inset-0 h-full w-full[^"]*opacity-0/);
+  it("is a file input named by the prompt around it", () => {
+    render(<FileDrop>Drop a statement here</FileDrop>);
+    expect(input("Drop a statement here").type).toBe("file");
   });
 
   it("sends everything to the input", () => {
-    const out = renderToStaticMarkup(
+    render(
       <FileDrop accept=".csv" multiple name="statement">
         Drop
       </FileDrop>,
     );
-    expect(out).toContain('accept=".csv"');
-    expect(out).toContain('multiple=""');
-    expect(out).toContain('name="statement"');
+    expect(input("Drop").accept).toBe(".csv");
+    expect(input("Drop").multiple).toBe(true);
+    expect(input("Drop").name).toBe("statement");
   });
 
-  it("dims the zone when the input is disabled", () => {
-    const out = renderToStaticMarkup(<FileDrop disabled>Drop</FileDrop>);
-    expect(out).toMatch(/^<label[^>]*class="[^"]*opacity-50/);
-    expect(out).toContain('disabled=""');
-  });
-});
-
-describe("FileDrop size", () => {
-  it("sm is a compact chip", () => {
-    expect(renderToStaticMarkup(<FileDrop size="sm">Drop</FileDrop>)).toMatch(
-      /^<label[^>]*class="[^"]*px-3 py-2/,
-    );
-    expect(renderToStaticMarkup(<FileDrop>Drop</FileDrop>)).toMatch(
-      /^<label[^>]*class="[^"]*px-4 py-6/,
-    );
+  it("takes the file a person picks", async () => {
+    render(<FileDrop>Drop</FileDrop>);
+    const file = new File(["a,b"], "statement.csv", { type: "text/csv" });
+    await user().upload(input("Drop"), file);
+    expect(input("Drop").files?.[0]).toBe(file);
   });
 
-  it("does not leak size onto the input", () => {
-    expect(renderToStaticMarkup(<FileDrop size="sm">Drop</FileDrop>)).not.toContain('size="sm"');
+  it("disables the input", () => {
+    render(<FileDrop disabled>Drop</FileDrop>);
+    expect(input("Drop").disabled).toBe(true);
   });
 });

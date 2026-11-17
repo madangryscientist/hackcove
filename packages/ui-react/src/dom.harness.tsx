@@ -68,12 +68,6 @@ export function unmount(): void {
   mounted = undefined;
 }
 
-export function dialogOf(container: HTMLElement): HTMLDialogElement {
-  const dialog = container.querySelector("dialog");
-  if (!dialog) throw new Error("no <dialog> rendered");
-  return dialog;
-}
-
 function showPopoverStub(this: HTMLElement): void {
   this.style.display = "block";
 }

@@ -16,7 +16,7 @@ const inOrder = (texts: string[]): boolean => {
   const nodes = texts.map((text) => screen.getByText(text));
   return nodes.slice(1).every((node, i) => {
     const before = nodes[i];
-    return before !== undefined && Boolean(follows(before, node));
+    return before !== undefined && follows(before, node);
   });
 };
 

@@ -26,6 +26,7 @@ function systemPrefers(dark: boolean | undefined): void {
 }
 
 function resetRoot(): void {
+  // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
   root.classList.remove("dark", "my-light");
   root.style.removeProperty("color-scheme");
 }
@@ -54,9 +55,11 @@ afterEach(() => {
 describe("applyColourScheme", () => {
   it("toggles the dark class and sets color-scheme on <html>", () => {
     applyColourScheme("dark");
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     expect(root.classList.contains("dark")).toBe(true);
     expect(root.style.colorScheme).toBe("dark");
     applyColourScheme("light");
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     expect(root.classList.contains("dark")).toBe(false);
     expect(root.style.colorScheme).toBe("light");
   });
@@ -64,8 +67,10 @@ describe("applyColourScheme", () => {
   it("applies to the root it is given and leaves <html> alone", () => {
     const scoped = document.createElement("div");
     applyColourScheme("dark", scoped);
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     expect(scoped.classList.contains("dark")).toBe(true);
     expect(scoped.style.colorScheme).toBe("dark");
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     expect(root.classList.contains("dark")).toBe(false);
   });
 });
@@ -81,20 +86,27 @@ describe("schemes with a light class of their own", () => {
   });
 
   it("leaves other classes on <html> alone", () => {
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     root.classList.add("antialiased");
     applyColourScheme("dark", root, paper);
     applyColourScheme("light", root, paper);
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     expect(root.classList.contains("antialiased")).toBe(true);
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     root.classList.remove("antialiased");
   });
 
   it("appliedColourScheme reads which one <html> carries", () => {
     expect(appliedColourScheme(root, paper)).toBe("light");
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     root.classList.add("dark");
     expect(appliedColourScheme(root, paper)).toBe("dark");
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     root.classList.remove("dark");
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     root.classList.add("my-light");
     expect(appliedColourScheme(root, paper)).toBe("light");
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     root.classList.remove("my-light");
   });
 });
@@ -160,28 +172,33 @@ describe("colourSchemeScript", () => {
   it("leaves a light page light, with no dark flash, when nothing is stored and the system is light", () => {
     systemPrefers(false);
     runScript();
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     expect(root.classList.contains("dark")).toBe(false);
     expect(root.style.colorScheme).toBe("light");
   });
 
-  it("does what readColourScheme + applyColourScheme do, for every stored and system state", () => {
-    const stored: (ColourScheme | undefined)[] = [undefined, "light", "dark"];
-    for (const system of [false, true]) {
-      for (const choice of stored) {
-        reset();
-        systemPrefers(system);
-        if (choice) localStorage.setItem(KEY, choice);
-        runScript();
-        const fromScript = [root.classList.contains("dark"), root.style.colorScheme];
+  // Every stored and system state; `stored` is what is in storage, empty when nothing is.
+  const states = [false, true].flatMap((system) =>
+    ([[], ["light"], ["dark"]] as ColourScheme[][]).map((stored) => ({ system, stored })),
+  );
 
-        resetRoot();
-        applyColourScheme(readColourScheme());
-        const fromApi = [root.classList.contains("dark"), root.style.colorScheme];
+  it.each(states)(
+    "does what readColourScheme + applyColourScheme do (stored $stored, system dark $system)",
+    ({ system, stored }) => {
+      systemPrefers(system);
+      for (const choice of stored) localStorage.setItem(KEY, choice);
+      runScript();
+      // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
+      const fromScript = [root.classList.contains("dark"), root.style.colorScheme];
 
-        expect(fromScript, `stored ${choice}, system dark ${system}`).toEqual(fromApi);
-      }
-    }
-  });
+      resetRoot();
+      applyColourScheme(readColourScheme());
+      // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
+      const fromApi = [root.classList.contains("dark"), root.style.colorScheme];
+
+      expect(fromScript).toEqual(fromApi);
+    },
+  );
 
   it("uses the system preference when storage throws", () => {
     systemPrefers(true);
@@ -189,6 +206,7 @@ describe("colourSchemeScript", () => {
       throw new Error("denied");
     });
     runScript();
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     expect(root.classList.contains("dark")).toBe(true);
   });
 
@@ -197,8 +215,10 @@ describe("colourSchemeScript", () => {
     vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
       throw new Error("denied");
     });
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     root.classList.add("dark");
     runScript();
+    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
     expect(root.classList.contains("dark")).toBe(true);
     expect(root.style.colorScheme).toBe("");
   });

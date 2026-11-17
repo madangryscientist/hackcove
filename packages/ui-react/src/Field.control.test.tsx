@@ -43,9 +43,7 @@ function description(element: HTMLElement): string[] {
 describe.each(controls)("$name inside a Field", ({ draw }) => {
   it("is named by the label with no htmlFor and no id", () => {
     render(<Field label={LABEL}>{draw({})}</Field>);
-    const label = screen.getByText(LABEL);
-    expect(label).toBeInstanceOf(HTMLLabelElement);
-    expect(label instanceof HTMLLabelElement && label.control).toBe(control());
+    expect(screen.getByLabelText(LABEL)).toBe(control());
   });
 
   it("is invalid and described by the error", () => {
@@ -130,12 +128,12 @@ describe.each(controls)("$name inside a Field", ({ draw }) => {
 
 describe.each(controls)("$name outside a Field", ({ draw }) => {
   it("gets no id, aria-describedby or aria-invalid it was not given", () => {
-    render(<div aria-label="Bare">{draw({})}</div>);
-    const element = screen.getByLabelText("Bare").querySelector("input, select, textarea");
-    expect(element).toBeInstanceOf(HTMLElement);
-    expect(element?.hasAttribute("id")).toBe(false);
-    expect(element?.hasAttribute("aria-describedby")).toBe(false);
-    expect(element?.hasAttribute("aria-invalid")).toBe(false);
+    // A wrapping label names the control without giving it an id, as a consumer's own form might.
+    render(<label>Bare {draw({})}</label>);
+    const element = screen.getByLabelText("Bare", { exact: false });
+    expect(element.hasAttribute("id")).toBe(false);
+    expect(element.hasAttribute("aria-describedby")).toBe(false);
+    expect(element.hasAttribute("aria-invalid")).toBe(false);
   });
 });
 

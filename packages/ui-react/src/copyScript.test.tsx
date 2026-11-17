@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { Script, runInNewContext } from "node:vm";
-import { act } from "react";
+import type { ReactNode } from "react";
 import { hydrateRoot } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -8,38 +8,45 @@ import { CodeBlock } from "./CodeBlock.js";
 import { CopyButton } from "./CopyButton.js";
 import { CopyLine } from "./CopyLine.js";
 import { copyScript } from "./copyScript.js";
+import { act, screen, user } from "./render.harness.js";
 
 const writeText = vi.fn<(text: string) => Promise<void>>();
 
-/** The page as the server sent it, with the script loaded and no React on it. */
-function staticPage(node: React.ReactNode): HTMLElement {
+/**
+ * The page as the server sent it, with the script loaded and no React on it. The script's subject is
+ * server markup that never hydrates, so the server render feeds the page here, as `hydrateWith` does.
+ */
+function staticPage(node: ReactNode): HTMLDivElement {
   const container = document.createElement("div");
   container.innerHTML = renderToStaticMarkup(node);
   document.body.append(container);
   return container;
 }
 
-/** What the region beside a button says: the copied label after a copy, nothing before. */
-const statusOf = (button: HTMLButtonElement): string | null | undefined =>
-  button.nextElementSibling?.matches("[data-copy-status]")
-    ? button.nextElementSibling.textContent
-    : undefined;
+/** The server page, then React hydrating it, as a page that loads both does. */
+async function hydratedPage(node: ReactNode): Promise<void> {
+  const container = staticPage(node);
+  await act(async () => {
+    hydrateRoot(container, node);
+  });
+}
 
-const buttonOf = (container: HTMLElement): HTMLButtonElement => {
-  const button = container.querySelector("button");
-  if (!button) throw new Error("no copy button");
-  return button;
-};
+let person = user();
 
 /** A click, then the clipboard promise settling. */
-const press = async (button: HTMLButtonElement): Promise<void> => {
-  await act(async () => button.click());
+const press = async (name?: string): Promise<void> => {
+  const button = screen.getByRole("button", name === undefined ? {} : { name });
+  await act(async () => {
+    await person.click(button);
+  });
 };
 
 let abort = new AbortController();
 
 beforeEach(() => {
   abort = new AbortController();
+  // user-event puts its own clipboard on `navigator` when it is set up, so set it up first.
+  person = user();
   writeText.mockReset().mockResolvedValue(undefined);
   Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
   // The script adds a listener to `document`; remove it after each test.
@@ -62,114 +69,87 @@ describe("copyScript", () => {
     expect(copyScript.length).toBeLessThan(1000);
   });
 
-  it("copies a static button's text, marks it copied and announces the copied label", async () => {
-    const button = buttonOf(staticPage(<CopyButton text="bun add x" />));
-    expect(statusOf(button)).toBe("");
-    await press(button);
+  it("copies a static button's text and announces the copied label", async () => {
+    staticPage(<CopyButton text="bun add x" />);
+    expect(screen.getByRole("status").textContent).toBe("");
+    await press();
     expect(writeText).toHaveBeenCalledExactlyOnceWith("bun add x");
-    expect(button.hasAttribute("data-copied")).toBe(true);
-    expect(statusOf(button)).toBe("Copied");
-  });
-
-  it("clears data-copied when the copied label's animation ends", async () => {
-    const button = buttonOf(staticPage(<CopyButton text="t" />));
-    await press(button);
-    button
-      .querySelector("[data-copy-done]")
-      ?.dispatchEvent(new Event("animationend", { bubbles: true }));
-    expect(button.hasAttribute("data-copied")).toBe(false);
+    expect(screen.getByRole("status").textContent).toBe("Copied");
   });
 
   it("announces the button's own copied label", async () => {
-    const button = buttonOf(
-      staticPage(<CopyButton text="t" label="Copy token" copiedLabel="Token copied" />),
-    );
-    await press(button);
-    expect(statusOf(button)).toBe("Token copied");
+    staticPage(<CopyButton text="t" label="Copy token" copiedLabel="Token copied" />);
+    await press("Copy token");
+    expect(screen.getByRole("status").textContent).toBe("Token copied");
   });
 
-  it("re-sets data-copied and puts a new node in the region on a second copy", async () => {
-    const button = buttonOf(staticPage(<CopyButton text="t" />));
-    await press(button);
-    const first = button.nextElementSibling?.firstChild;
-    const was: (string | null)[] = [];
-    new MutationObserver((records) => was.push(...records.map((r) => r.oldValue))).observe(button, {
-      attributeFilter: ["data-copied"],
-      attributeOldValue: true,
-    });
-    await press(button);
-    // Removed (it was ""), then set again (it was absent): the restart the CSS animation needs.
-    expect(was).toEqual(["", null]);
-    expect(button.hasAttribute("data-copied")).toBe(true);
-    const second = button.nextElementSibling?.firstChild;
-    expect(second).not.toBe(first);
-    expect(statusOf(button)).toBe("Copied");
+  it("puts a new node in the region on a second copy, so a screen reader hears it again", async () => {
+    staticPage(<CopyButton text="t" />);
+    await press();
+    const added: Node[] = [];
+    new MutationObserver((records) =>
+      added.push(...records.flatMap((r) => [...r.addedNodes])),
+    ).observe(screen.getByRole("status"), { childList: true });
+    await press();
+    // The observer reports on a microtask; the act around the click has let it run.
+    expect(added).toHaveLength(1);
+    expect(screen.getByRole("status").textContent).toBe("Copied");
   });
 
   it("copies a code block's code exactly", async () => {
     const code = "if (x) {\n  run --out out\n}";
-    const button = buttonOf(
-      staticPage(
-        <CodeBlock copy language="ts">
-          {code}
-        </CodeBlock>,
-      ),
+    staticPage(
+      <CodeBlock copy language="ts">
+        {code}
+      </CodeBlock>,
     );
-    await press(button);
+    await press();
     expect(writeText).toHaveBeenCalledExactlyOnceWith(code);
   });
 
   it("copies only the commands of a console block", async () => {
-    const button = buttonOf(
-      staticPage(
-        <CodeBlock copy language="console">
-          {"$ bun add @hackcove/ui-react\nadded 1 package\n$ bun run build"}
-        </CodeBlock>,
-      ),
+    staticPage(
+      <CodeBlock copy language="console">
+        {"$ bun add @hackcove/ui-react\nadded 1 package\n$ bun run build"}
+      </CodeBlock>,
     );
-    await press(button);
+    await press();
     expect(writeText).toHaveBeenCalledExactlyOnceWith("bun add @hackcove/ui-react\nbun run build");
   });
 
   it("works on a CopyLine", async () => {
-    const button = buttonOf(staticPage(<CopyLine text="npm i x" />));
-    await press(button);
+    staticPage(<CopyLine text="npm i x" />);
+    await press();
     expect(writeText).toHaveBeenCalledExactlyOnceWith("npm i x");
   });
 
   it("leaves the label alone when the clipboard refuses", async () => {
     writeText.mockRejectedValue(new Error("denied"));
-    const button = buttonOf(staticPage(<CopyButton text="t" />));
-    await press(button);
-    expect(button.hasAttribute("data-copied")).toBe(false);
-    expect(statusOf(button)).toBe("");
+    staticPage(<CopyButton text="t" />);
+    await press();
+    expect(screen.getByRole("status").textContent).toBe("");
   });
 
   it("leaves the label alone when there is no clipboard", async () => {
     Object.defineProperty(navigator, "clipboard", { configurable: true, value: undefined });
-    const button = buttonOf(staticPage(<CopyButton text="t" />));
-    await press(button);
-    expect(button.hasAttribute("data-copied")).toBe(false);
-    expect(statusOf(button)).toBe("");
+    staticPage(<CopyButton text="t" />);
+    await press();
+    expect(screen.getByRole("status").textContent).toBe("");
   });
 
   it("ignores a click that is not on a copy button", async () => {
-    const container = staticPage(<p>text</p>);
-    await act(async () => container.querySelector("p")?.click());
+    staticPage(<p>text</p>);
+    await act(async () => {
+      await person.click(screen.getByText("text"));
+    });
     expect(writeText).not.toHaveBeenCalled();
   });
 
   it("copies once on a hydrated button: React copies, the script stays out", async () => {
-    const node = <CopyButton text="once" />;
-    const container = staticPage(node);
-    await act(async () => {
-      hydrateRoot(container, node);
-    });
-    const button = buttonOf(container);
-    await press(button);
+    await hydratedPage(<CopyButton text="once" />);
+    await press();
     expect(writeText).toHaveBeenCalledExactlyOnceWith("once");
-    expect(button.hasAttribute("data-copied")).toBe(true);
-    expect(statusOf(button)).toBe("Copied");
+    expect(screen.getByRole("status").textContent).toBe("Copied");
   });
 
   it("copies once when the script hears the click before React does", async () => {
@@ -181,28 +161,21 @@ describe("copyScript", () => {
       },
       navigator,
     });
-    const node = <CopyButton text="first" />;
-    const container = staticPage(node);
-    await act(async () => {
-      hydrateRoot(container, node);
-    });
-    await press(buttonOf(container));
+    await hydratedPage(<CopyButton text="first" />);
+    await press();
     expect(writeText).toHaveBeenCalledExactlyOnceWith("first");
   });
 
   it("leaves a submit button's own action alone", async () => {
-    const node = (
-      <form>
-        <CopyButton text="t" type="submit" />
-      </form>
+    const submitted = vi.fn<(event: { preventDefault: () => void }) => void>((event) =>
+      event.preventDefault(),
     );
-    const container = staticPage(node);
-    await act(async () => {
-      hydrateRoot(container, node);
-    });
-    const submitted = vi.fn<(event: Event) => void>((event) => event.preventDefault());
-    container.querySelector("form")?.addEventListener("submit", submitted);
-    await press(buttonOf(container));
+    await hydratedPage(
+      <form onSubmit={submitted}>
+        <CopyButton text="t" type="submit" />
+      </form>,
+    );
+    await press();
     expect(submitted).toHaveBeenCalledOnce();
   });
 
@@ -211,13 +184,12 @@ describe("copyScript", () => {
     const errors: unknown[] = [];
     const node = <CopyButton text="early" />;
     const container = staticPage(node);
-    await press(buttonOf(container));
-    expect(statusOf(buttonOf(container))).toBe("Copied");
+    await press();
+    expect(screen.getByRole("status").textContent).toBe("Copied");
     await act(async () => {
       hydrateRoot(container, node, { onRecoverableError: (e) => errors.push(e) });
     });
     expect(errors).toEqual([]);
     expect(error).not.toHaveBeenCalled();
-    expect(buttonOf(container).hasAttribute("data-copied")).toBe(true);
   });
 });

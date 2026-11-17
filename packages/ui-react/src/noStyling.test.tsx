@@ -26,6 +26,16 @@ type Offenders = {
   ]: Styling<Ui[K] extends (props: infer P) => unknown ? P : never>;
 };
 
+/** A forwardRef component is an object at runtime, but its type has a call signature. */
+const isForwardRef = (value: unknown): boolean =>
+  typeof value === "object" && value !== null && "$$typeof" in value && "render" in value;
+
+/** The exported components (capitalised names) that are neither a function nor a forwardRef. */
+const notCallable = Object.entries(ui)
+  .filter(([name]) => /^[A-Z]/.test(name))
+  .filter(([, value]) => typeof value !== "function" && !isForwardRef(value))
+  .map(([name]) => name);
+
 describe("components take no className or style", () => {
   it("no exported component's props accept either", () => {
     expectTypeOf<Offenders>().toEqualTypeOf<{}>();
@@ -48,12 +58,6 @@ describe("components take no className or style", () => {
   });
 
   it("every component is callable (a function, or a forwardRef component), so the check above covers it", () => {
-    const components = Object.entries(ui).filter(([name]) => /^[A-Z]/.test(name));
-    for (const [name, value] of components) {
-      // A forwardRef component is an object at runtime, but its type has a call signature.
-      const forwardRef =
-        typeof value === "object" && value !== null && "$$typeof" in value && "render" in value;
-      expect.soft(typeof value === "function" || forwardRef, name).toBe(true);
-    }
+    expect(notCallable).toEqual([]);
   });
 });

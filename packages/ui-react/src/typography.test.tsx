@@ -1,5 +1,7 @@
-import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+// @vitest-environment jsdom
+import type { ComponentProps } from "react";
+import { describe, expect, expectTypeOf, it } from "vitest";
+import { follows, render, screen } from "./render.harness.js";
 import {
   Caption,
   Overline,
@@ -7,320 +9,133 @@ import {
   SectionHeading,
   SubsectionHeading,
   Text,
-  type TextTone,
 } from "./typography.js";
 
+// How each role looks (its size, weight, ink, tone, face, alignment and spacing) is the visual
+// check's. These tests hold what a reader or a screen reader meets: the element each role is, the
+// props it hands to the DOM, and the full text a clamped run keeps as its title. The props a role
+// keeps to itself are noLeak.test.tsx's.
+
 describe("typography", () => {
-  it("renders the semantic default element and pinned classes", () => {
-    const out = renderToStaticMarkup(<PageHeading>Status</PageHeading>);
-    expect(out).toMatch(/^<h1 /);
-    expect(out).toContain("text-3xl/9 font-bold");
-    expect(out).toContain("text-slate-900");
+  it("PageHeading is the page's h1", () => {
+    render(<PageHeading>Status</PageHeading>);
+    expect(screen.getByRole("heading", { level: 1, name: "Status" })).toBeTruthy();
   });
 
-  it("maps the accent and muted tones to their utilities", () => {
-    expect(renderToStaticMarkup(<Caption tone="accent">x</Caption>)).toContain("text-violet-600");
-    expect(renderToStaticMarkup(<Caption tone="muted">x</Caption>)).toContain("text-slate-500");
+  it("forwards element props, so a heading with an id is a link target", () => {
+    render(<SectionHeading id="s1">Plan</SectionHeading>);
+    expect(screen.getByRole("heading", { level: 2, name: "Plan" }).getAttribute("id")).toBe("s1");
   });
 
-  it("forwards element props", () => {
-    const out = renderToStaticMarkup(<SectionHeading id="s1">x</SectionHeading>);
-    expect(out).toContain(
-      'class="text-xl/7 font-semibold scroll-mt-[calc(var(--app-header,0px)+1rem)] text-slate-900"',
-    );
-    expect(out).toContain('id="s1"');
-  });
-
-  it("gives a heading with an id the scroll margin that clears the sticky header, and no other one it", () => {
-    const margin = "scroll-mt-[calc(var(--app-header,0px)+1rem)]";
-    expect(
-      renderToStaticMarkup(<SectionHeading id="s1">x</SectionHeading>).split(margin),
-    ).toHaveLength(2);
-    expect(renderToStaticMarkup(<SectionHeading>x</SectionHeading>)).not.toContain(margin);
-    expect(
-      renderToStaticMarkup(
-        <SectionHeading id="s1" description="More">
-          x
-        </SectionHeading>,
-      ),
-    ).toContain(margin);
-  });
-
-  it("SectionHeading `rule` builds in the hairline and its spacing, and is not forwarded", () => {
-    const out = renderToStaticMarkup(<SectionHeading rule>Experience</SectionHeading>);
-    expect(out).toContain(
-      'class="mb-4 border-b border-slate-200/70 pb-2 text-xl/7 font-semibold text-slate-900"',
-    );
-    expect(out).not.toContain("rule");
-    expect(renderToStaticMarkup(<SectionHeading>x</SectionHeading>)).not.toContain("border-b");
-  });
-
-  it("SubsectionHeading `truncate` cuts a long title to one line and keeps the text as its title", () => {
-    const out = renderToStaticMarkup(
-      <SubsectionHeading truncate>A very long section title</SubsectionHeading>,
-    );
-    expect(out).toContain("truncate");
-    expect(out).toContain('title="A very long section title"');
-    expect(out).not.toContain("truncate=");
-    expect(renderToStaticMarkup(<SubsectionHeading>x</SubsectionHeading>)).not.toContain(
-      "truncate",
-    );
-  });
-
-  it("SubsectionHeading `size` steps the scale, and md is the default", () => {
-    const plain = renderToStaticMarkup(<SubsectionHeading>x</SubsectionHeading>);
-    expect(plain).toContain('class="text-lg/7 font-semibold text-slate-900"');
-    expect(renderToStaticMarkup(<SubsectionHeading size="md">x</SubsectionHeading>)).toBe(plain);
-    expect(renderToStaticMarkup(<SubsectionHeading size="sm">x</SubsectionHeading>)).toContain(
-      "text-base/6 font-semibold",
-    );
-    const lg = renderToStaticMarkup(<SubsectionHeading size="lg">x</SubsectionHeading>);
-    expect(lg).toContain("text-xl/7 font-semibold");
-    expect(lg).not.toContain("size=");
-  });
-
-  it("Text stops at a readable 72ch line length, as a paragraph or inline", () => {
-    expect(renderToStaticMarkup(<Text as="p">x</Text>)).toContain("max-w-[72ch]");
-    expect(renderToStaticMarkup(<Text>x</Text>)).toContain("max-w-[72ch]");
-  });
-
-  it("Text `preserveNewlines` keeps a newline as a line break and is opt-in", () => {
-    const out = renderToStaticMarkup(
-      <Text as="p" preserveNewlines>
-        {"line one\nline two"}
-      </Text>,
-    );
-    expect(out).toContain("whitespace-pre-line");
-    expect(out).toContain("line one\nline two");
-    expect(out).not.toContain("preserve");
-    expect(renderToStaticMarkup(<Text>x</Text>)).not.toContain("whitespace-pre-line");
-  });
-
-  it("Text `strong` is font-medium in the primary ink, and color and tone still win", () => {
-    const strong = renderToStaticMarkup(<Text strong>x</Text>);
-    expect(strong).toContain("text-base/6 font-medium text-slate-900");
-    expect(strong).not.toContain("font-normal");
-    expect(strong).not.toContain("strong=");
-    expect(renderToStaticMarkup(<Text>x</Text>)).toContain(
-      "text-base/6 font-normal text-slate-600",
+  it("SubsectionHeading `truncate` keeps the full text as its title, and no title without it", () => {
+    render(
+      <>
+        <SubsectionHeading truncate>A very long section title</SubsectionHeading>
+        <SubsectionHeading>Short</SubsectionHeading>
+      </>,
     );
     expect(
-      renderToStaticMarkup(
-        <Text strong tone="muted">
-          x
-        </Text>,
-      ),
-    ).toContain("font-medium text-slate-500");
-    expect(
-      renderToStaticMarkup(
-        <Text strong tone="danger">
-          x
-        </Text>,
-      ),
-    ).toContain("font-medium text-red-700");
+      screen
+        .getByRole("heading", { level: 3, name: "A very long section title" })
+        .getAttribute("title"),
+    ).toBe("A very long section title");
+    expect(screen.getByRole("heading", { level: 3, name: "Short" }).hasAttribute("title")).toBe(
+      false,
+    );
   });
 });
 
-describe("typography inline roles: tone, numeric, mono, truncate", () => {
-  const roles = [
-    ["Text", Text],
-    ["Text strong", (props: Parameters<typeof Text>[0]) => <Text strong {...props} />],
-    ["Caption", Caption],
-    ["Overline", Overline],
-  ] as const;
-
-  it.each(roles)("%s maps each tone to the cell tone's text utility", (_name, Role) => {
-    const cases: Array<[TextTone, string]> = [
-      ["muted", "text-slate-500"],
-      ["positive", "text-emerald-700"],
-      ["warn", "text-amber-700"],
-      ["danger", "text-red-700"],
-      ["info", "text-blue-700"],
-    ];
-    for (const [tone, utility] of cases) {
-      const out = renderToStaticMarkup(<Role tone={tone}>x</Role>);
-      expect(out).toContain(utility);
-      expect(out).not.toContain("tone=");
-    }
-  });
-
-  it("a tone replaces the role's ink, and `neutral` keeps it", () => {
-    const out = renderToStaticMarkup(<Text tone="danger">x</Text>);
-    expect(out).toContain("text-red-700");
-    expect(out).not.toContain("text-slate-600");
-    expect(renderToStaticMarkup(<Text>x</Text>)).toContain("text-slate-600");
-    expect(renderToStaticMarkup(<Text tone="neutral">x</Text>)).toContain("text-slate-600");
-  });
-
-  it.each(roles)("%s `numeric` and `mono` are opt-in and not forwarded", (_name, Role) => {
-    const plain = renderToStaticMarkup(<Role>1</Role>);
-    expect(plain).not.toContain("tabular-nums");
-    expect(plain).not.toContain("font-mono");
-    const numeric = renderToStaticMarkup(<Role numeric>1</Role>);
-    expect(numeric).toContain("tabular-nums");
-    expect(numeric).not.toContain("numeric=");
-    const mono = renderToStaticMarkup(<Role mono>1</Role>);
-    expect(mono).toContain("font-mono");
-    expect(mono).not.toContain("mono=");
-  });
-
+describe("typography `lines`", () => {
   it.each([
     ["Text", Text],
     ["Caption", Caption],
   ] as const)(
-    "%s `lines` keeps the full plain text as the title, and is not forwarded",
+    "%s `lines` keeps the full plain text as the title, at every count",
     (_name, Role) => {
-      for (const lines of [1, 2, 3, 4] as const) {
-        const out = renderToStaticMarkup(<Role lines={lines}>A long file name.txt</Role>);
-        expect(out).toContain('title="A long file name.txt"');
-        expect(out).not.toContain("lines=");
-      }
-      expect(renderToStaticMarkup(<Role>x</Role>)).not.toContain("title=");
+      render(
+        <>
+          <Role lines={1}>One.txt</Role>
+          <Role lines={2}>Two.txt</Role>
+          <Role lines={3}>Three.txt</Role>
+          <Role lines={4}>Four.txt</Role>
+          <Role>Plain.txt</Role>
+        </>,
+      );
+      for (const name of ["One.txt", "Two.txt", "Three.txt", "Four.txt"])
+        expect(screen.getByText(name).getAttribute("title")).toBe(name);
+      expect(screen.getByText("Plain.txt").hasAttribute("title")).toBe(false);
     },
   );
 
-  it("`lines` keeps a title the caller passed, and adds none for non-text children", () => {
-    expect(
-      renderToStaticMarkup(
-        <Caption lines={2} title="Own title">
-          text
-        </Caption>,
-      ),
-    ).toContain('title="Own title"');
-    expect(
-      renderToStaticMarkup(
-        <Text lines={2}>
-          <b>bold</b>
-        </Text>,
-      ),
-    ).not.toContain("title=");
+  it("keeps a title the caller passed", () => {
+    render(
+      <Caption lines={2} title="Own title">
+        text
+      </Caption>,
+    );
+    expect(screen.getByText("text").getAttribute("title")).toBe("Own title");
   });
 
-  it("`lines` is typed 1 to 4, on Text and Caption only", () => {
-    // @ts-expect-error a clamp stops at 4 lines
-    expect(renderToStaticMarkup(<Text lines={5}>x</Text>)).toBeTruthy();
-    // @ts-expect-error truncate is gone: lines={1}
-    expect(renderToStaticMarkup(<Text truncate>x</Text>)).toBeTruthy();
-    // @ts-expect-error an Overline is a short label: no clamp
-    expect(renderToStaticMarkup(<Overline lines={1}>x</Overline>)).toBeTruthy();
-    expect(
-      renderToStaticMarkup(
-        <Text preserveNewlines lines={4}>
-          {"a\nb"}
-        </Text>,
-      ),
-    ).toContain('title="a\nb"');
-  });
-
-  it("works with `as` and Text's other props", () => {
-    const out = renderToStaticMarkup(
-      <Text as="p" tone="positive" preserveNewlines mono>
-        Saved.
+  it("adds no title for non-text children", () => {
+    render(
+      <Text lines={2}>
+        <b>bold</b>
       </Text>,
     );
-    expect(out).toMatch(/^<p /);
-    expect(out).toContain("text-emerald-700");
-    expect(out).toContain("whitespace-pre-line");
-    expect(out).toContain("font-mono");
+    expect(screen.getByRole("paragraph").hasAttribute("title")).toBe(false);
+  });
+
+  it("keeps the newlines of preserveNewlines text in the title", () => {
+    render(
+      <Text preserveNewlines lines={4}>
+        {"a\nb"}
+      </Text>,
+    );
+    // Testing Library folds the newline to a space when it matches the text; the title keeps it.
+    expect(screen.getByText("a b").getAttribute("title")).toBe("a\nb");
+  });
+
+  it("is typed 1 to 4, on Text and Caption only", () => {
+    // @ts-expect-error a clamp stops at 4 lines
+    void (() => <Text lines={5}>x</Text>);
+    // @ts-expect-error truncate is gone: lines={1}
+    void (() => <Text truncate>x</Text>);
+    // @ts-expect-error an Overline is a short label: no clamp
+    void (() => <Overline lines={1}>x</Overline>);
+    expectTypeOf<ComponentProps<typeof Caption>["lines"]>().toEqualTypeOf<
+      1 | 2 | 3 | 4 | undefined
+    >();
   });
 });
 
-describe("typography options: align, italic, breakWords, minWidth", () => {
-  it.each([
-    ["Text", (p: { align?: "start" | "center" | "end" }) => <Text {...p}>x</Text>],
-    ["Caption", (p: { align?: "start" | "center" | "end" }) => <Caption {...p}>x</Caption>],
-    ["Overline", (p: { align?: "start" | "center" | "end" }) => <Overline {...p}>x</Overline>],
-  ])("%s `align` sets the text alignment and makes the run block-level", (_name, Role) => {
-    expect(renderToStaticMarkup(Role({ align: "start" }))).toContain("text-start");
-    expect(renderToStaticMarkup(Role({ align: "center" }))).toContain("text-center");
-    const end = renderToStaticMarkup(Role({ align: "end" }));
-    expect(end).toContain("text-end");
-    expect(end).toMatch(/class="[^"]*\bblock\b/);
-    expect(end).not.toContain("align=");
-    const plain = renderToStaticMarkup(Role({}));
-    expect(plain).not.toMatch(/text-(start|center|end)/);
-    expect(plain).not.toMatch(/\bblock\b/);
-  });
-
-  it.each([
-    ["Text", Text],
-    ["Caption", Caption],
-  ])("%s `italic` slants the run and is opt-in", (_name, Role) => {
-    expect(renderToStaticMarkup(<Role italic>hint</Role>)).toContain('class="');
-    expect(renderToStaticMarkup(<Role italic>hint</Role>)).toMatch(/class="[^"]*\bitalic\b/);
-    expect(renderToStaticMarkup(<Role italic>hint</Role>)).not.toContain("italic=");
-    expect(renderToStaticMarkup(<Role>hint</Role>)).not.toMatch(/\bitalic\b/);
-  });
-
-  it.each([
-    ["Text", Text],
-    ["Caption", Caption],
-  ])("%s `breakWords` breaks long strings and is opt-in", (_name, Role) => {
-    const out = renderToStaticMarkup(<Role breakWords>https://example.com/a/very/long/path</Role>);
-    expect(out).toMatch(/class="[^"]*\bbreak-words\b/);
-    expect(out).not.toContain("breakWords");
-    expect(renderToStaticMarkup(<Role>x</Role>)).not.toContain("break-words");
-  });
-
-  it("Text `italic` and `breakWords` keep the strong face and the colour", () => {
-    const out = renderToStaticMarkup(
-      <Text strong italic breakWords>
-        x
-      </Text>,
+describe("typography `as`", () => {
+  it("draws the element `as` names, with the role's other props", () => {
+    render(
+      <ul>
+        <Text as="li" tone="positive" preserveNewlines mono>
+          Saved.
+        </Text>
+      </ul>,
     );
-    expect(out).toMatch(/\bfont-medium\b/);
-    expect(out).toContain("text-slate-900");
-    expect(out).toMatch(/\bitalic\b/);
-    expect(out).toMatch(/\bbreak-words\b/);
-  });
-
-  it('Text `minWidth="amount"` fixes a width, right-aligns and lines figures up', () => {
-    const out = renderToStaticMarkup(
-      <Text strong minWidth="amount" numeric>
-        1,111.11
-      </Text>,
-    );
-    expect(out).toContain("inline-block min-w-24 text-end");
-    expect(out.match(/tabular-nums/g)).toHaveLength(1);
-    expect(out).toMatch(/\bfont-medium\b/);
-    expect(out).toContain("text-slate-900");
-    expect(renderToStaticMarkup(<Text minWidth="amount">1</Text>)).toContain("tabular-nums");
-    expect(out).not.toContain("minWidth");
-    expect(renderToStaticMarkup(<Text>x</Text>)).not.toContain("min-w-24");
+    expect(screen.getByRole("listitem").textContent).toBe("Saved.");
   });
 });
 
 describe("SectionHeading description", () => {
-  it("puts a muted paragraph under the heading, outside the h2", () => {
-    const out = renderToStaticMarkup(
+  it("reads the description after the heading, outside its name", () => {
+    render(
       <SectionHeading id="s1" description="What you owe each month.">
         Plan
       </SectionHeading>,
     );
-    expect(out).toContain(
-      '<h2 id="s1" class="text-xl/7 font-semibold scroll-mt-[calc(var(--app-header,0px)+1rem)] text-slate-900">Plan</h2>',
-    );
-    expect(out).toContain("<p ");
-    expect(out).toContain(">What you owe each month.</p>");
-    expect(out).toContain("text-slate-500");
-    expect(out).not.toContain("description=");
-  });
-
-  it("moves the rule under the description", () => {
-    const out = renderToStaticMarkup(
-      <SectionHeading rule description="More">
-        Plan
-      </SectionHeading>,
-    );
-    expect(out.startsWith('<div class="flex flex-col gap-1 mb-4 border-b')).toBe(true);
-    expect(out.match(/border-b/g)).toHaveLength(1);
+    const heading = screen.getByRole("heading", { level: 2, name: "Plan" });
+    expect(heading.getAttribute("id")).toBe("s1");
+    expect(follows(heading, screen.getByText("What you owe each month."))).toBe(true);
   });
 
   it("is the bare heading without a description", () => {
-    const out = renderToStaticMarkup(<SectionHeading>Plan</SectionHeading>);
-    expect(out.startsWith("<h2")).toBe(true);
-    expect(renderToStaticMarkup(<SectionHeading description={false}>Plan</SectionHeading>)).toBe(
-      out,
-    );
+    render(<SectionHeading description={false}>Plan</SectionHeading>);
+    expect(screen.getByRole("heading", { level: 2, name: "Plan" })).toBeTruthy();
+    expect(screen.queryByRole("paragraph")).toBeNull();
   });
 });
