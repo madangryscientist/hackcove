@@ -152,7 +152,15 @@ function buttonTintRules(palette: Palette, narrow: string[]): Rule[] {
     base: narrow,
   });
   return [
-    rule(textOf("accent", /^(?:hover:)?text-[a-z]+-(?:600|700)$/), hoverOf("accent")),
+    rule(textOf("accent", /^text-[a-z]+-(?:600|700)$/), hoverOf("accent")),
+    // A link is accent text with no fill: its hover text sits on the Callout tint alone.
+    {
+      name: "button text on a tone tint",
+      bar: TEXT_BAR,
+      fg: textOf("accent", /^hover:text-[a-z]+-700$/),
+      on: stacks(tints),
+      base: narrow,
+    },
     rule(
       roleOf(palette, "ink").filter((utility) => utility === "text-slate-600"),
       roleOf(palette, "inset").filter((utility) => utility === "hover:bg-slate-100"),

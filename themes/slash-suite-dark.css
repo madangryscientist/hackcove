@@ -331,10 +331,12 @@
 .slash-suite-dark .text-amber-900 {
   color: #f9e2af; /* yellow */
 }
-.slash-suite-dark .text-red-700,
+.slash-suite-dark .text-red-700 {
+  color: #fcdee6; /* red, lifted to clear AA on the callout tints (HC-442) */
+}
 .slash-suite-dark .text-red-800,
 .slash-suite-dark .text-red-900 {
-  color: #fcdee6; /* red, lifted to clear AA on the callout tints (HC-442) */
+  color: #f38ba8; /* red */
 }
 .slash-suite-dark .text-blue-600,
 .slash-suite-dark .text-blue-700,
@@ -355,7 +357,7 @@
   color: #7f849c; /* overlay1: overlay0 is under 3:1 on surface0, and a chart mark needs 3:1 */
 }
 .slash-suite-dark .text-purple-700 {
-  color: #fab387; /* peach */
+  color: #fab387; /* peach, the accent's original pastel (text-violet-600 is lifted, HC-442) */
 }
 /* The categorical scale (cat1 to cat8): one colour per category where the colour carries no
    meaning, for a chart and its key. Each starts from this theme's own hue and moved only as far as
@@ -415,7 +417,7 @@
    TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
    write class="link" on a bare <a>. */
 .slash-suite-dark .link {
-  color: #fab387; /* peach */
+  color: #fbc5a1; /* peach, as text-violet-600 */
   font-weight: 500;
   text-underline-offset: 2px;
   transition: color 0.12s ease;

@@ -422,13 +422,13 @@
    TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
    write class="link" on a bare <a>. */
 .latte .link {
-  color: #8839ef; /* mauve */
+  color: #7828df; /* mauve, as text-violet-600 */
   font-weight: 500;
   text-underline-offset: 2px;
   transition: color 0.12s ease;
 }
 .latte .link:hover {
-  color: #525cad; /* lavender, as hover:text-violet-700 above */
+  color: #4e57a4; /* lavender, as hover:text-violet-700 above */
 }
 
 /* The hero glow (Hero): three ribbons behind a landing page's title, mauve, teal and pink kept faint

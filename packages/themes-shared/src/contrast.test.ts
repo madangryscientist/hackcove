@@ -142,6 +142,29 @@ describe("contrastFailures", () => {
     ).toBe(false);
   });
 
+  it("pairs a button's text only with its own tone's hover fill", () => {
+    const paired: Palette = {
+      ...palette,
+      danger: ["text-red-700", "bg-red-50"],
+      positive: ["bg-emerald-50", "hover:bg-emerald-50"],
+    };
+    // A translucent dark fill would fail red text, but a danger button never sits on the positive hover fill.
+    const css = theme({
+      "text-red-700": "#7a0000",
+      "bg-red-50": "#ffffff",
+      "bg-emerald-50": "#ffffff",
+      "hover\\:bg-emerald-50:hover": "rgba(0, 0, 0, 0.5)",
+    });
+    const failures = contrastFailures(css, paired);
+    expect(
+      failures.some(
+        (line) =>
+          line.startsWith("button text on a tone tint: text-red-700 ") &&
+          line.includes("hover:bg-emerald-50"),
+      ),
+    ).toBe(false);
+  });
+
   it("measures an outline button's accent text on another tone's tint, named", () => {
     const withTones: Palette = {
       ...palette,
