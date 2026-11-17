@@ -6,11 +6,15 @@ name: Publish
 # Publishing authenticates with npm trusted publishing (OIDC): no token, no OTP. Each package needs a
 # trusted publisher on npmjs.com pointing at this workflow file, repository madangryscientist/hackcove
 # and the environment below. The one exception is a package's first publish: npm cannot attach a trusted
-# publisher to a package that does not exist yet, so a project with no release tag is released by the
-# "First release" step with an NPM_TOKEN secret on the environment. See docs/releasing.md,
-# "First publish of a new package". A renamed package is the same case with a tag: it carries its
-# predecessor's tag but is not on npm yet, so it is released by conventional commits with the token
-# ("Release (renamed projects)"; docs/releasing.md, "Renaming a package").
+# publisher to a package that does not exist yet. So a project with no release tag is released by the
+# "First release" step, which STAGES its version (`npm stage publish`) with the NPM_TOKEN secret on the
+# environment, a granular token that does not bypass 2FA. Nothing is public until the maintainer approves
+# it with 2FA under Staged Packages on npmjs.com; then they add the trusted publisher, and from the next
+# release on the package goes through OIDC. See docs/releasing.md, "First publish of a new package". A
+# renamed package is the same case with a tag: it carries its predecessor's tag but is not on npm yet, so
+# it is released by conventional commits and staged the same way ("Release (renamed projects)";
+# docs/releasing.md, "Renaming a package"). A version staged and not yet approved is skipped by later
+# dispatches (scripts/releasePick.ts, "staged").
 on:
   workflow_dispatch:
     inputs:
@@ -53,66 +57,34 @@ jobs:
         with:
           bun-version: 1.4.2
 
-      # Trusted publishing needs npm 11.5.1 or newer; nx.json sets cli.packageManager to npm so
-      # `nx release` shells out to `npm publish`, which is the client that speaks OIDC.
+      # Trusted publishing needs npm 11.5.1 or newer and `npm stage publish` 11.15.0 or newer (with
+      # Node 22.14 or newer); nx.json sets cli.packageManager to npm so `nx release` shells out to
+      # `npm publish`, which is the client that speaks OIDC.
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24
 
       - name: Use a trusted-publishing capable npm
-        run: npm install -g npm@^11.5.1 && npm --version
+        run: npm install -g npm@^11.15.0 && npm --version
 
       - run: bun install --frozen-lockfile
 
-      # A releasable project (nx.json release.projects) falls in one of three sets, computed from tags
-      # and from npm, never from a list:
-      #   new      no <project>@<version> tag: its first publish, at the version on disk.
-      #   renamed  tagged, but its package name is not on npm: a rename whose predecessor's last tag was
-      #            copied to the new name. Released by conventional commits, authenticated by the token.
-      #   tagged   tagged and on npm: released by conventional commits through OIDC.
-      # The token check runs before anything is versioned, tagged or pushed.
-      - name: Pick the new, renamed and tagged projects
+      # A releasable project (nx.json release.projects) falls in one of four sets, computed from tags
+      # and from npm, never from a list (scripts/releasePick.ts, tested in themes-shared):
+      #   new      no <project>@<version> tag: its first publish, at the version on disk, staged.
+      #   renamed  tagged under another package name, nothing approved on npm: a rename whose
+      #            predecessor's last tag was copied to the new name. Bumped by conventional commits, staged.
+      #   staged   tagged under this name, nothing approved on npm: staged by an earlier dispatch and
+      #            waiting for the maintainer's approval. Skipped with a notice: no failure, no second bump.
+      #   tagged   on npm with an approved version: released by conventional commits through OIDC.
+      # npm's `0.0.0-stage` placeholder does not count as approved. The token check (needed by new and
+      # renamed only) runs before anything is versioned, tagged or pushed. No token is in this step.
+      - name: Pick the new, renamed, staged and tagged projects
         id: projects
         env:
           PROJECT: ${{ inputs.project }}
           HAS_NPM_TOKEN: ${{ secrets.NPM_TOKEN != '' }}
-        run: |
-          on_npm() {
-            local out
-            if out=$(npm view "$1" name 2>&1); then return 0; fi
-            if grep -q E404 <<<"$out"; then return 1; fi
-            echo "::error::Could not ask npm whether $1 exists: $out"
-            exit 1
-          }
-          patterns=$(jq -r '.release.projects | join(",")' nx.json)
-          releasable=$(bunx nx show projects -p "$patterns" --json | jq -r '.[]')
-          if [ -z "$releasable" ]; then
-            echo "::error::No releasable project (nx.json release.projects)."
-            exit 1
-          fi
-          if [ -n "$PROJECT" ] && ! grep -qx -- "$PROJECT" <<<"$releasable"; then
-            echo "::error::$PROJECT is not a releasable project. Releasable: $(paste -sd' ' <<<"$releasable")"
-            exit 1
-          fi
-          tagged=() renamed=() new=()
-          for project in ${PROJECT:-$releasable}; do
-            if [ -z "$(git tag -l "$project@*")" ]; then
-              new+=("$project")
-              continue
-            fi
-            root=$(bunx nx show project "$project" --json | jq -r .root)
-            if on_npm "$(jq -r .name "$root/package.json")"; then tagged+=("$project"); else renamed+=("$project"); fi
-          done
-          tagged=$(IFS=,; echo "${tagged[*]}")
-          renamed=$(IFS=,; echo "${renamed[*]}")
-          new=$(IFS=,; echo "${new[*]}")
-          echo "tagged=$tagged" | tee -a "$GITHUB_OUTPUT"
-          echo "renamed=$renamed" | tee -a "$GITHUB_OUTPUT"
-          echo "new=$new" | tee -a "$GITHUB_OUTPUT"
-          if [ -n "$new$renamed" ] && [ "$HAS_NPM_TOKEN" != "true" ]; then
-            echo "::error::Project(s) that npm cannot trust yet: new (no release tag) [$new], renamed (tagged, not on npm) [$renamed]. Their first publish needs an NPM_TOKEN secret on the npm-publish environment (docs/releasing.md \"First publish of a new package\"), or set the project input to release only an already-published project."
-            exit 1
-          fi
+        run: bun scripts/releasePick.ts
 
       # The gate reads the shared remote cache (.moon/workspace.yml `remote:`) with the read token
       # and never writes it: main's CI seeds the cache, a release does not.
@@ -124,13 +96,16 @@ jobs:
           bunx moon run --concurrency 3 :typecheck :lint :test :build :pack-check
 
       # A new project's first publish, at the version already in its package.json. Each one gets its
-      # own `nx release <that version> --first-release`: the explicit specifier is the on-disk version,
-      # so nothing is bumped (without it, conventional commits would bump it); `--first-release` makes
-      # Nx fall back to disk where there is no tag, start the changelog at the first commit and skip the
-      # "does it exist on npm" check. It tags <project>@<version>, writes the changelog, pushes and
-      # creates the GitHub release. This is the only step that sees NPM_TOKEN; it is written to an
-      # .npmrc outside the checkout that the step removes on exit.
-      - name: First release (new projects, NPM_TOKEN)
+      # own `nx release <that version> --first-release --skip-publish`: the explicit specifier is the
+      # on-disk version, so nothing is bumped (without it, conventional commits would bump it);
+      # `--first-release` makes Nx fall back to disk where there is no tag and start the changelog at
+      # the first commit. It tags <project>@<version>, writes the changelog, pushes and creates the
+      # GitHub release. Then `npm stage publish` stages that version (npm packs the folder and runs its
+      # prepack, as `npm publish` does): the token does not bypass 2FA, so a plain publish would stop
+      # at npm's OTP prompt, and Nx's publish executor can only run `npm publish`. The maintainer
+      # approves it under Staged Packages on npmjs.com. This is one of the two steps that see
+      # NPM_TOKEN; it is written to an .npmrc outside the checkout that the step removes on exit.
+      - name: First release (new projects, staged with NPM_TOKEN)
         if: steps.projects.outputs.new != ''
         env:
           NEW: ${{ steps.projects.outputs.new }}
@@ -143,19 +118,24 @@ jobs:
           export NPM_CONFIG_USERCONFIG="$RUNNER_TEMP/first-release.npmrc"
           trap 'rm -f "$NPM_CONFIG_USERCONFIG"' EXIT
           (umask 077 && printf '//registry.npmjs.org/:_authToken=%s\n' "$NPM_TOKEN" > "$NPM_CONFIG_USERCONFIG")
+          stage=(--access public)
+          if [ "$DRY_RUN" = "true" ]; then stage+=(--dry-run); fi
           for project in ${NEW//,/ }; do
             root=$(bunx nx show project "$project" --json | jq -r .root)
             version=$(jq -r .version "$root/package.json")
-            args=("$version" --first-release --projects "$project" --yes)
+            args=("$version" --first-release --projects "$project" --skip-publish)
             if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
             bunx nx release "${args[@]}"
+            npm stage publish "./$root" "${stage[@]}"
           done
 
       # A renamed project: its predecessor's last tag was copied to the new name, so conventional commits
       # decide the bump and the changelog continues from that tag, but the package is not on npm yet and
-      # OIDC cannot publish it. The same token handling as the first release; the only other step that
-      # sees NPM_TOKEN.
-      - name: Release (renamed projects, NPM_TOKEN)
+      # OIDC cannot publish it. `nx release --skip-publish` versions, tags, pushes and creates the
+      # release; each project it bumped is then staged as in the first release. A dry run bumps nothing
+      # on disk, so its `npm stage publish --dry-run` packs the current version. The same token handling
+      # as the first release; the only other step that sees NPM_TOKEN.
+      - name: Release (renamed projects, staged with NPM_TOKEN)
         if: steps.projects.outputs.renamed != ''
         env:
           RENAMED: ${{ steps.projects.outputs.renamed }}
@@ -168,9 +148,22 @@ jobs:
           export NPM_CONFIG_USERCONFIG="$RUNNER_TEMP/renamed-release.npmrc"
           trap 'rm -f "$NPM_CONFIG_USERCONFIG"' EXIT
           (umask 077 && printf '//registry.npmjs.org/:_authToken=%s\n' "$NPM_TOKEN" > "$NPM_CONFIG_USERCONFIG")
-          args=(--projects "$RENAMED" --yes)
-          if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+          declare -A root before
+          for project in ${RENAMED//,/ }; do
+            root[$project]=$(bunx nx show project "$project" --json | jq -r .root)
+            before[$project]=$(jq -r .version "${root[$project]}/package.json")
+          done
+          args=(--projects "$RENAMED" --skip-publish)
+          stage=(--access public)
+          if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); stage+=(--dry-run); fi
           bunx nx release "${args[@]}"
+          for project in ${RENAMED//,/ }; do
+            if [ "$DRY_RUN" != "true" ] && [ "$(jq -r .version "${root[$project]}/package.json")" = "${before[$project]}" ]; then
+              echo "::notice::$project has nothing to release, so nothing is staged."
+              continue
+            fi
+            npm stage publish "./${root[$project]}" "${stage[@]}"
+          done
 
       # Projects that already have a tag and are on npm: conventional commits decide the bump, and publishing
       # authenticates through OIDC. No token is in this step's environment.
