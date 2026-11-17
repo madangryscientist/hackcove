@@ -57,7 +57,7 @@
   --hc-line: #d8dbe5; /* border-slate-200 */
   --hc-ink: #24273a; /* text-slate-900 */
   --hc-mute: #5b5e74; /* text-slate-500 */
-  --hc-accent: #a03604; /* text-violet-600 */
+  --hc-accent: #a23704; /* text-violet-600 */
   --hc-cat-1: #1a60f8; /* text-indigo-600 */
   --hc-cat-2: #e94e05; /* text-orange-600 */
   --hc-cat-3: #2a8c98; /* text-teal-600 */
@@ -334,7 +334,7 @@
 }
 .slash-suite .text-emerald-700,
 .slash-suite .text-emerald-800 {
-  color: #297020; /* green #40a02b */
+  color: #276a1e; /* green #40a02b */
 }
 .slash-suite .text-amber-700,
 .slash-suite .text-amber-800,
@@ -344,7 +344,7 @@
 .slash-suite .text-red-700,
 .slash-suite .text-red-800,
 .slash-suite .text-red-900 {
-  color: #c2103d; /* red #d20f39, darkened and turned toward crimson: 0.09 apart from the deep peach link */
+  color: #8e0c2c; /* red #d20f39, darkened and turned toward crimson: 0.09 apart from the deep peach link */
 }
 .slash-suite .text-blue-600,
 .slash-suite .text-blue-700,
@@ -354,7 +354,7 @@
 }
 .slash-suite .text-violet-600,
 .slash-suite .text-violet-700 {
-  color: #a03604; /* deep peach */
+  color: #a23704; /* deep peach */
 }
 .slash-suite .text-sky-700 {
   color: #046b96; /* sky #04a5e5 */
@@ -428,7 +428,7 @@
    TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
    write class="link" on a bare <a>. */
 .slash-suite .link {
-  color: #a03604; /* deep peach */
+  color: #a23704; /* deep peach */
   font-weight: 500;
   text-underline-offset: 2px;
   transition: color 0.12s ease;

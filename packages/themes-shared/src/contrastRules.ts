@@ -135,6 +135,14 @@ function buttonTintRule(palette: Palette, narrow: string[]): Rule {
       roleOf(palette, role).filter((utility) => /^bg-[a-z]+-50$/.test(utility)),
     ),
   ];
+  // An outline or ghost Button's hover fill is laid on the Callout tint it sits in: the accent,
+  // positive and danger outline fills and the neutral ghost fill.
+  const hoverFills = [
+    ...["accent", "positive", "danger"].flatMap((role) =>
+      roleOf(palette, role).filter((utility) => /^hover:bg-[a-z]+-50$/.test(utility)),
+    ),
+    ...roleOf(palette, "inset").filter((utility) => utility === "hover:bg-slate-100"),
+  ];
   const fg = [
     ...roleOf(palette, "accent").filter((utility) =>
       /^(?:hover:)?text-[a-z]+-(?:600|700)$/.test(utility),
@@ -148,7 +156,10 @@ function buttonTintRule(palette: Palette, narrow: string[]): Rule {
     name: "button text on a tone tint",
     bar: TEXT_BAR,
     fg: [...new Set(fg)],
-    on: stacks([...new Set(calloutTints)]),
+    on: [
+      ...stacks([...new Set(calloutTints)]),
+      ...[...new Set(calloutTints)].flatMap((tint) => hoverFills.map((fill) => [tint, fill])),
+    ],
     base: narrow,
   };
 }

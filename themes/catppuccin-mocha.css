@@ -40,7 +40,7 @@
   --hc-line: #45475a; /* border-slate-200 */
   --hc-ink: #cdd6f4; /* text-slate-900 */
   --hc-mute: #a6adc8; /* text-slate-500 */
-  --hc-accent: #cfadf7; /* text-violet-600 */
+  --hc-accent: #e2cefa; /* text-violet-600 */
   --hc-cat-1: #72b6f5; /* text-indigo-600 */
   --hc-cat-2: #ebb589; /* text-orange-600 */
   --hc-cat-3: #8be0e7; /* text-teal-600 */
@@ -118,7 +118,7 @@
 }
 .dark .text-slate-700,
 .dark .text-slate-600 {
-  color: #bac2de; /* subtext1 */
+  color: #d0d6e9; /* subtext1 */
 }
 .dark .text-slate-500 {
   color: #a6adc8; /* subtext0 */
@@ -191,7 +191,7 @@
   color: #11111b; /* crust: text on the mauve button */
 }
 .dark .hover\:text-violet-700:hover {
-  color: #b4befe; /* lavender */
+  color: #cdd4fe; /* lavender */
 }
 .dark .hover\:bg-violet-50:hover {
   background-color: rgba(203, 166, 247, 0.14); /* mauve tint */
@@ -324,7 +324,7 @@
 }
 .dark .text-emerald-700,
 .dark .text-emerald-800 {
-  color: #a6e3a1; /* green */
+  color: #aae4a5; /* green */
 }
 .dark .text-amber-700,
 .dark .text-amber-800,
@@ -334,7 +334,7 @@
 .dark .text-red-700,
 .dark .text-red-800,
 .dark .text-red-900 {
-  color: #f5a2b9; /* red */
+  color: #fdeef2; /* red */
 }
 .dark .text-blue-600,
 .dark .text-blue-700,
@@ -344,7 +344,7 @@
 }
 .dark .text-violet-600,
 .dark .text-violet-700 {
-  color: #cfadf7; /* mauve */
+  color: #e2cefa; /* mauve */
 }
 .dark .text-sky-700 {
   color: #89dceb; /* sky */
@@ -415,13 +415,13 @@
    TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
    write class="link" on a bare <a>. */
 .dark .link {
-  color: #cfadf7; /* mauve */
+  color: #e2cefa; /* mauve */
   font-weight: 500;
   text-underline-offset: 2px;
   transition: color 0.12s ease;
 }
 .dark .link:hover {
-  color: #b4befe; /* lavender */
+  color: #cdd4fe; /* lavender */
 }
 
 /* The hero glow (Hero): three ribbons behind a landing page's title, a soft wash of mauve, teal and

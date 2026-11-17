@@ -46,7 +46,7 @@
   --hc-line: #ccd0da; /* border-slate-200 */
   --hc-ink: #4c4f69; /* text-slate-900 */
   --hc-mute: #616277; /* text-slate-500 */
-  --hc-accent: #7e31e1; /* text-violet-600 */
+  --hc-accent: #7828df; /* text-violet-600 */
   --hc-cat-1: #1a60f8; /* text-indigo-600 */
   --hc-cat-2: #e94e05; /* text-orange-600 */
   --hc-cat-3: #2a8c98; /* text-teal-600 */
@@ -124,7 +124,7 @@
 }
 .latte .text-slate-700,
 .latte .text-slate-600 {
-  color: #5c5f77; /* subtext1 */
+  color: #585a71; /* subtext1 */
 }
 .latte .text-slate-500 {
   color: #616277; /* subtext0 #6c6f85, darkened: under 4.5:1 on mantle and crust */
@@ -187,7 +187,7 @@
   color: #ffffff; /* text on the mauve button */
 }
 .latte .hover\:text-violet-700:hover {
-  color: #515bab; /* lavender #7287fd, darkened: 4.5:1 text on white, mantle and the mauve tint */
+  color: #4d56a2; /* lavender #7287fd, darkened: 4.5:1 text on white, mantle and the mauve tint */
 }
 .latte .hover\:bg-violet-50:hover {
   background-color: rgba(
@@ -328,7 +328,7 @@
 }
 .latte .text-emerald-700,
 .latte .text-emerald-800 {
-  color: #297020; /* green #40a02b */
+  color: #276a1e; /* green #40a02b */
 }
 .latte .text-amber-700,
 .latte .text-amber-800,
@@ -338,7 +338,7 @@
 .latte .text-red-700,
 .latte .text-red-800,
 .latte .text-red-900 {
-  color: #c00f33; /* red #d20f39 */
+  color: #b90e31; /* red #d20f39 */
 }
 .latte .text-blue-600,
 .latte .text-blue-700,
@@ -348,7 +348,7 @@
 }
 .latte .text-violet-600,
 .latte .text-violet-700 {
-  color: #7e31e1; /* mauve #8839ef */
+  color: #7828df; /* mauve #8839ef */
 }
 .latte .text-sky-700 {
   color: #046b96; /* sky #04a5e5 */
@@ -422,13 +422,13 @@
    TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
    write class="link" on a bare <a>. */
 .latte .link {
-  color: #7e31e1; /* mauve, as text-violet-600 */
+  color: #7828df; /* mauve, as text-violet-600 */
   font-weight: 500;
   text-underline-offset: 2px;
   transition: color 0.12s ease;
 }
 .latte .link:hover {
-  color: #515bab; /* lavender, as hover:text-violet-700 above */
+  color: #4d56a2; /* lavender, as hover:text-violet-700 above */
 }
 
 /* The hero glow (Hero): three ribbons behind a landing page's title, mauve, teal and pink kept faint
