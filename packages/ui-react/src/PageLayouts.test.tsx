@@ -9,17 +9,14 @@ import {
   ListLayout,
   ProseLayout,
 } from "./PageLayouts.js";
-import { render, screen, within } from "./render.harness.js";
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
+import { follows, render, screen, within } from "./render.harness.js";
 
 /** Whether each text is found on the page, each after the one before it. */
 const inOrder = (texts: string[]): boolean => {
   const nodes = texts.map((text) => screen.getByText(text));
   return nodes.slice(1).every((node, i) => {
     const before = nodes[i];
-    return before !== undefined && Boolean(follows(before, node));
+    return before !== undefined && follows(before, node);
   });
 };
 

@@ -1,13 +1,10 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { OutlineRegion, RegionFrame } from "./OutlineRegion.js";
-import { fireEvent, render, screen } from "./render.harness.js";
+import { fireEvent, follows, render, screen } from "./render.harness.js";
 
 const within = { width: 200, height: 100 };
 const rect = { x: 0, y: 0, width: 10, height: 10 };
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 describe("OutlineRegion", () => {
   it("shows its label tag", () => {

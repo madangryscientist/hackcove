@@ -1,10 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { ChatMessage } from "./ChatMessage.js";
-import { render, screen } from "./render.harness.js";
-
-const follows = (a: Node, b: Node): boolean =>
-  (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
+import { follows, render, screen } from "./render.harness.js";
 
 describe("ChatMessage", () => {
   it("is an article that reads the author, then meta, the body and the actions", () => {

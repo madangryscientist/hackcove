@@ -2,10 +2,7 @@
 import type { ComponentProps } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { Pill } from "./Pill.js";
-import { render, screen, user, within } from "./render.harness.js";
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
+import { follows, render, screen, user, within } from "./render.harness.js";
 
 describe("Pill label", () => {
   it("reads label: value, the colon there for a screen reader", () => {

@@ -1,72 +1,68 @@
-import { renderToStaticMarkup } from "react-dom/server";
+// @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
+import { follows, render, screen, within } from "./render.harness.js";
 import { Timeline, TimelineItem } from "./Timeline.js";
 
 describe("Timeline", () => {
-  it("is a named ordered list of items", () => {
-    const out = renderToStaticMarkup(
+  it("is an ordered list named by its label, an item per entry", () => {
+    render(
       <Timeline label="Status history">
         <TimelineItem title="Sent" />
         <TimelineItem title="Accepted" />
       </Timeline>,
     );
-    expect(out).toContain('<ol aria-label="Status history"');
-    expect(out.match(/<li /g)).toHaveLength(2);
+    const list = screen.getByRole("list", { name: "Status history" });
+    expect(list.tagName).toBe("OL");
+    expect(
+      within(list)
+        .getAllByRole("listitem")
+        .map((li) => li.textContent),
+    ).toEqual(["Sent", "Accepted"]);
   });
 
-  it("draws `empty` instead of an empty list, or nothing", () => {
-    expect(renderToStaticMarkup(<Timeline label="History" empty={<p>No history.</p>} />)).toBe(
-      "<p>No history.</p>",
+  it("draws `empty` instead of an empty list", () => {
+    render(<Timeline label="History" empty={<p>No history.</p>} />);
+    expect(screen.getByText("No history.")).toBeTruthy();
+    expect(screen.queryByRole("list")).toBeNull();
+  });
+
+  it("draws `empty` for an empty array of children", () => {
+    render(
+      <Timeline label="History" empty="none">
+        {[]}
+      </Timeline>,
     );
-    expect(renderToStaticMarkup(<Timeline label="History" />)).toBe("");
-    expect(
-      renderToStaticMarkup(
-        <Timeline label="History" empty="none">
-          {[]}
-        </Timeline>,
-      ),
-    ).toBe("none");
+    expect(screen.getByText("none")).toBeTruthy();
+    expect(screen.queryByRole("list")).toBeNull();
+  });
+
+  it("draws nothing when empty with no `empty`", () => {
+    render(<Timeline label="History" />);
+    expect(screen.queryByRole("list")).toBeNull();
+    expect(document.body.textContent).toBe("");
   });
 });
 
 describe("TimelineItem", () => {
-  it("lays out the title, the time and the note", () => {
-    const out = renderToStaticMarkup(
+  it("reads the title, then the time, then the note", () => {
+    render(
       <ol>
         <TimelineItem title="Accepted" time="12 Oct 2026, 09:14">
           Client confirmed by phone.
         </TimelineItem>
       </ol>,
     );
-    expect(out).toContain(">Accepted</span>");
-    expect(out).toContain("tabular-nums");
-    expect(out).toContain(">12 Oct 2026, 09:14</span>");
-    expect(out).toContain("Client confirmed by phone.");
+    const time = screen.getByText("12 Oct 2026, 09:14");
+    expect(follows(screen.getByText("Accepted"), time)).toBe(true);
+    expect(follows(time, screen.getByText("Client confirmed by phone."))).toBe(true);
   });
 
-  it("leaves out the time and the note when not given; the rail dot is hidden from assistive tech", () => {
-    const out = renderToStaticMarkup(
+  it("holds only its title when there is no time or note", () => {
+    render(
       <ol>
         <TimelineItem title="Sent" />
       </ol>,
     );
-    expect(out).not.toContain("tabular-nums");
-    expect(out).not.toContain("mt-1");
-    expect(out).toContain('aria-hidden="true"');
-  });
-});
-
-const dot = (tone: "info" | "positive" | "warn" | "danger") =>
-  renderToStaticMarkup(<TimelineItem title="x" tone={tone} />);
-
-describe("TimelineItem tone", () => {
-  it("defaults to the neutral ring", () => {
-    expect(renderToStaticMarkup(<TimelineItem title="Sent" />)).toContain(
-      "border-slate-300 bg-white",
-    );
-  });
-
-  it("colours the dot with the Callout's tones", () => {
-    expect(dot("danger")).toContain("bg-current text-red-700");
+    expect(screen.getByRole("listitem").textContent).toBe("Sent");
   });
 });

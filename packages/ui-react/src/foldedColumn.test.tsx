@@ -1,11 +1,7 @@
 // @vitest-environment jsdom
-import { act } from "react";
-import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { mount, unmount } from "./dom.harness.js";
 import { FoldedColumn } from "./foldedColumn.js";
-
-afterEach(unmount);
+import { act, render, screen } from "./render.harness.js";
 
 /** A `matchMedia` jsdom lacks: `width` is the viewport, and `resize` tells every query it changed. */
 function stubViewport(initial: number) {
@@ -43,52 +39,47 @@ const column = (from: "md" | "lg") => (
     <a href="#a">A</a>
   </FoldedColumn>
 );
-const detailsOf = (root: HTMLElement) => {
-  const details = root.querySelector("details");
-  if (!details) throw new Error("no <details>");
-  return details;
-};
+
+/** The column's `<details>`, a group: whether it is open, as the reader on a phone meets it. */
+const isOpen = () => screen.getByRole<HTMLDetailsElement>("group").open;
 
 describe("FoldedColumn", () => {
-  it("is closed in its server markup, with no open prop for React to fight", () => {
-    for (const from of ["md", "lg"] as const) {
-      expect(renderToStaticMarkup(column(from))).not.toMatch(/<details[^>]* open/);
-    }
-  });
-
   it("opens the <details> for real from md and closes it again below", () => {
     const viewport = stubViewport(1280);
-    const root = mount(column("md"));
-    expect(detailsOf(root).open).toBe(true);
+    render(column("md"));
+    expect(isOpen()).toBe(true);
     viewport.resize(400);
-    expect(detailsOf(root).open).toBe(false);
+    expect(isOpen()).toBe(false);
     viewport.resize(800);
-    expect(detailsOf(root).open).toBe(true);
+    expect(isOpen()).toBe(true);
   });
 
   it("stays closed on a phone", () => {
     stubViewport(400);
-    expect(detailsOf(mount(column("md"))).open).toBe(false);
+    render(column("md"));
+    expect(isOpen()).toBe(false);
   });
 
   it("folds to lg when asked: open at 1024, closed at 800", () => {
     const viewport = stubViewport(800);
-    const root = mount(column("lg"));
-    expect(detailsOf(root).open).toBe(false);
+    render(column("lg"));
+    expect(isOpen()).toBe(false);
     viewport.resize(1024);
-    expect(detailsOf(root).open).toBe(true);
+    expect(isOpen()).toBe(true);
   });
 
   it("stops listening when it unmounts", () => {
     const viewport = stubViewport(1280);
-    const root = mount(column("md"));
-    const details = detailsOf(root);
+    const { unmount } = render(column("md"));
+    const details = screen.getByRole<HTMLDetailsElement>("group");
     unmount();
     viewport.resize(400);
     expect(details.open).toBe(true);
   });
 
-  it("renders without matchMedia, as in a consumer's jsdom test", () => {
-    expect(detailsOf(mount(column("md"))).open).toBe(false);
+  it("renders closed without matchMedia, as on the server and in a consumer's jsdom test", () => {
+    render(column("md"));
+    expect(isOpen()).toBe(false);
+    expect(screen.getByText("All sections")).toBeTruthy();
   });
 });

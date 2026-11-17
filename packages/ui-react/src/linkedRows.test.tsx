@@ -1,31 +1,23 @@
 // @vitest-environment jsdom
-import { act } from "react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { Button } from "./Button.js";
 import { Card } from "./Card.js";
-import { liftInteractive } from "./cx.js";
-import { mount, unmount } from "./dom.harness.js";
 import { ListRow } from "./ListRow.js";
+import { render, screen, user } from "./render.harness.js";
 import { Table, TableBody, TableCell, TableRow } from "./Table.js";
 import { TextLink } from "./TextLink.js";
 
-afterEach(unmount);
-
 // A linked ListRow, TableRow and Card hold their own links and buttons. The row link is never an
 // ancestor of them, so a click on one is not a click on the row; the row (or card) lifts them
-// above the stretched link with `liftInteractive`, which a browser, not jsdom, lays out.
+// above the stretched link with `liftInteractive`, which a browser, not jsdom, lays out. A Card's
+// lift is clicked in a browser by `card-under-sticky-bars.spec.ts`, and a button ListRow's by
+// `list-row-button.spec.ts`; a linked ListRow's and a TableRow's have no browser spec yet.
 
 const clicks = {
   row: vi.fn<() => void>(),
   inner: vi.fn<() => void>(),
   button: vi.fn<() => void>(),
 };
-
-function click(element: Element): void {
-  act(() => {
-    element.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
-  });
-}
 
 const keep = (spy: () => void) => (event: { preventDefault: () => void }) => {
   event.preventDefault();
@@ -45,14 +37,14 @@ const inner = (
 
 const forms = {
   ListRow: () =>
-    mount(
+    render(
       <ListRow href="/row" onClick={keep(clicks.row)}>
         <b>Row</b>
         {inner}
       </ListRow>,
     ),
   TableRow: () =>
-    mount(
+    render(
       <Table label="Rows">
         <TableBody>
           <TableRow>
@@ -67,96 +59,83 @@ const forms = {
       </Table>,
     ),
   Card: () =>
-    mount(
+    render(
       <Card href="/row" title="Card" onClick={keep(clicks.row)}>
         {inner}
       </Card>,
     ),
 };
 
-const rowLink = (container: HTMLElement) => {
-  const link = container.querySelector<HTMLElement>('a[href="/row"]');
-  if (!link) throw new Error("no row link");
+/** The row's own link: the one link that goes to `/row`. */
+const rowLink = (): HTMLElement => {
+  const links = screen.getAllByRole("link").filter((link) => link.getAttribute("href") === "/row");
+  const [link] = links;
+  if (links.length !== 1 || !link) throw new Error(`${links.length} row links`);
   return link;
 };
 
-describe.each(Object.entries(forms))("a linked %s", (_name, render) => {
-  it("sends a click on an inner TextLink to that link and not to the row link", () => {
+describe.each(Object.entries(forms))("a linked %s", (_name, draw) => {
+  it("sends a click on an inner TextLink to that link and not to the row link", async () => {
     vi.clearAllMocks();
-    const container = render();
-    const link = container.querySelector<HTMLElement>('a[href="/inner"]');
-    if (!link) throw new Error("no inner link");
-    click(link);
+    draw();
+    await user().click(screen.getByRole("link", { name: "Inner link" }));
     expect(clicks.inner).toHaveBeenCalledTimes(1);
     expect(clicks.row).not.toHaveBeenCalled();
   });
 
-  it("sends a click on an inner Button to the button and not to the row link", () => {
+  it("sends a click on an inner Button to the button and not to the row link", async () => {
     vi.clearAllMocks();
-    const container = render();
-    const button = container.querySelector("button");
-    if (!button) throw new Error("no inner button");
-    click(button);
+    draw();
+    await user().click(screen.getByRole("button", { name: "Act" }));
     expect(clicks.button).toHaveBeenCalledTimes(1);
     expect(clicks.row).not.toHaveBeenCalled();
   });
 
-  it("still follows the row link when the click is on the row link", () => {
+  it("still follows the row link when the click is on the row link", async () => {
     vi.clearAllMocks();
-    const container = render();
-    click(rowLink(container));
+    draw();
+    await user().click(rowLink());
     expect(clicks.row).toHaveBeenCalledTimes(1);
     expect(clicks.inner).not.toHaveBeenCalled();
     expect(clicks.button).not.toHaveBeenCalled();
   });
 
-  it("keeps the row link out of the inner controls and lifts them above it", () => {
-    const container = render();
-    const link = rowLink(container);
-    for (const control of container.querySelectorAll('a[href="/inner"], button')) {
-      expect(link.contains(control)).toBe(false);
-    }
-    expect(link.classList.contains("link-stretch")).toBe(true);
-    const lifted = [...container.querySelectorAll("*")].filter((element) =>
-      element.getAttribute("class")?.includes(liftInteractive),
-    );
-    expect(lifted.length).toBeGreaterThan(0);
-    for (const control of container.querySelectorAll('a[href="/inner"], button')) {
-      expect(lifted.some((root) => root.contains(control))).toBe(true);
-    }
+  it("keeps the inner controls out of the row link", () => {
+    draw();
+    const link = rowLink();
+    expect(link.contains(screen.getByRole("link", { name: "Inner link" }))).toBe(false);
+    expect(link.contains(screen.getByRole("button", { name: "Act" }))).toBe(false);
   });
 });
 
 describe("a linked ListRow and Card", () => {
-  it("name the link by the row's own text, since the link itself is empty", () => {
-    for (const render of [forms.ListRow, forms.Card]) {
-      const link = rowLink(render());
-      const id = link.getAttribute("aria-labelledby");
-      expect(id).toBeTruthy();
+  it.each([
+    ["ListRow", forms.ListRow, /^Row\s*Inner link/],
+    ["Card", forms.Card, /^Card\s*Inner link/],
+  ])(
+    "a %s names the link by the row's own text, since the link itself is empty",
+    (_name, draw, name) => {
+      draw();
+      const link = rowLink();
       expect(link.textContent).toBe("");
-      expect(document.getElementById(id ?? "")?.textContent).toContain("Inner link");
-      unmount();
-    }
-  });
+      expect(screen.getByRole("link", { name })).toBe(link);
+    },
+  );
 });
 
 // A button ListRow is the same shape as a linked one (its click and tap order are proven in a
 // browser, `list-row-button.spec.ts`); a disabled one disables its button, so the row does not fire.
 describe("a disabled button ListRow", () => {
-  it("disables the row's button, so a tap on the row does nothing", () => {
+  it("disables the row's button, so a tap on the row does nothing", async () => {
     const select = vi.fn<() => void>();
-    const container = mount(
+    render(
       <ListRow disabled onClick={select}>
         Grace
       </ListRow>,
     );
-    const button = container.querySelector<HTMLButtonElement>("button[aria-labelledby]");
-    if (!button) throw new Error("no row button");
-    expect(document.getElementById(button.getAttribute("aria-labelledby") ?? "")?.textContent).toBe(
-      "Grace",
-    );
+    const button = screen.getByRole<HTMLButtonElement>("button", { name: "Grace" });
     expect(button.disabled).toBe(true);
-    click(button);
+    await user().click(button);
     expect(select).not.toHaveBeenCalled();
   });
 });

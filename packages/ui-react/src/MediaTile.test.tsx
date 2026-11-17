@@ -1,10 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it, vi } from "vitest";
 import { MediaTile } from "./MediaTile.js";
-import { render, screen, user, within } from "./render.harness.js";
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
+import { follows, render, screen, user, within } from "./render.harness.js";
 
 describe("MediaTile", () => {
   it("is a picture named by alt and no button when it has no onClick", () => {

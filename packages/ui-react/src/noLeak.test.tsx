@@ -55,8 +55,32 @@ const CASES: Record<string, Case[]> = {
     { prop: "level", node: () => <ui.EmptyState title="T" level={3} /> },
     { prop: "padding", node: () => <ui.EmptyState title="T" padding="inset" /> },
   ],
+  Field: [
+    {
+      prop: "layout",
+      node: () => (
+        <ui.Field label="Rank" htmlFor="rank" layout="row">
+          <input id="rank" />
+        </ui.Field>
+      ),
+    },
+    {
+      prop: "span",
+      node: () => (
+        <ui.Field label="Notes" htmlFor="n" span="full">
+          <input id="n" />
+        </ui.Field>
+      ),
+    },
+  ],
+  FileDrop: [{ prop: "size", node: () => <ui.FileDrop size="sm">Drop</ui.FileDrop> }],
   FullBleedLayout: [
     { prop: "padded", node: () => <ui.FullBleedLayout padded>x</ui.FullBleedLayout> },
+  ],
+  Input: [
+    { prop: "prefix", node: () => <ui.Input prefix="R" aria-label="Amount" /> },
+    { prop: "size", node: () => <ui.Input size="sm" /> },
+    { prop: "width", node: () => <ui.Input width="xs" /> },
   ],
   ListRow: [
     {
@@ -150,8 +174,45 @@ const CASES: Record<string, Case[]> = {
       ),
     },
   ],
-  Text: [{ prop: "lines", node: () => <ui.Text lines={2}>x</ui.Text> }],
-  Caption: [{ prop: "lines", node: () => <ui.Caption lines={3}>x</ui.Caption> }],
+  SectionHeading: [
+    { prop: "rule", node: () => <ui.SectionHeading rule>x</ui.SectionHeading> },
+    {
+      prop: "description",
+      node: () => <ui.SectionHeading description="More">x</ui.SectionHeading>,
+    },
+  ],
+  SubsectionHeading: [
+    { prop: "truncate", node: () => <ui.SubsectionHeading truncate>x</ui.SubsectionHeading> },
+    { prop: "size", node: () => <ui.SubsectionHeading size="lg">x</ui.SubsectionHeading> },
+  ],
+  Textarea: [{ prop: "mono", node: () => <ui.Textarea mono /> }],
+  Text: [
+    { prop: "lines", node: () => <ui.Text lines={2}>x</ui.Text> },
+    { prop: "tone", node: () => <ui.Text tone="danger">x</ui.Text> },
+    { prop: "numeric", node: () => <ui.Text numeric>1</ui.Text> },
+    { prop: "mono", node: () => <ui.Text mono>x</ui.Text> },
+    { prop: "align", node: () => <ui.Text align="end">x</ui.Text> },
+    { prop: "strong", node: () => <ui.Text strong>x</ui.Text> },
+    { prop: "preserveNewlines", node: () => <ui.Text preserveNewlines>{"a\nb"}</ui.Text> },
+    { prop: "italic", node: () => <ui.Text italic>x</ui.Text> },
+    { prop: "breakWords", node: () => <ui.Text breakWords>x</ui.Text> },
+    { prop: "minWidth", node: () => <ui.Text minWidth="amount">1</ui.Text> },
+  ],
+  Caption: [
+    { prop: "lines", node: () => <ui.Caption lines={3}>x</ui.Caption> },
+    { prop: "tone", node: () => <ui.Caption tone="muted">x</ui.Caption> },
+    { prop: "numeric", node: () => <ui.Caption numeric>1</ui.Caption> },
+    { prop: "mono", node: () => <ui.Caption mono>x</ui.Caption> },
+    { prop: "align", node: () => <ui.Caption align="center">x</ui.Caption> },
+    { prop: "italic", node: () => <ui.Caption italic>x</ui.Caption> },
+    { prop: "breakWords", node: () => <ui.Caption breakWords>x</ui.Caption> },
+  ],
+  Overline: [
+    { prop: "tone", node: () => <ui.Overline tone="info">x</ui.Overline> },
+    { prop: "numeric", node: () => <ui.Overline numeric>1</ui.Overline> },
+    { prop: "mono", node: () => <ui.Overline mono>x</ui.Overline> },
+    { prop: "align", node: () => <ui.Overline align="start">x</ui.Overline> },
+  ],
 };
 
 /** Every attribute name on every element of `html`, lower-cased as the DOM reads them. */

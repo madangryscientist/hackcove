@@ -1,10 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { Callout } from "./Callout.js";
-import { render, screen } from "./render.harness.js";
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
+import { follows, render, screen } from "./render.harness.js";
 
 describe("Callout", () => {
   it("reads the title before the body", () => {

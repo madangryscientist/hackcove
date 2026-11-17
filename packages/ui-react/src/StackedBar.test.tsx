@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
-import { render, screen, within } from "./render.harness.js";
+import { follows, render, screen, within } from "./render.harness.js";
 import { Legend, StackedBar, type StackedSegment } from "./StackedBar.js";
 
 const parts: StackedSegment[] = [
@@ -9,9 +9,6 @@ const parts: StackedSegment[] = [
   { label: "Removed", value: 10, tone: "danger" },
   { label: "Same", value: 60, tone: "muted" },
 ];
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 describe("StackedBar", () => {
   it("is an image naming every part and its share, in order", () => {

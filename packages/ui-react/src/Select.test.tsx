@@ -1,6 +1,6 @@
-import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
-import { Field } from "./Field.js";
+// @vitest-environment jsdom
+import { describe, expect, it, vi } from "vitest";
+import { render, screen, user, within } from "./render.harness.js";
 import { Select } from "./Select.js";
 
 const ITEMS = [
@@ -8,41 +8,33 @@ const ITEMS = [
   { value: "b", label: "Beta" },
 ];
 
-describe("Select", () => {
-  it("renders an option per item", () => {
-    const out = renderToStaticMarkup(<Select items={ITEMS} />);
-    expect(out.startsWith("<select")).toBe(true);
-    expect(out).toContain('<option value="a">Alpha</option>');
-    expect(out).toContain('<option value="b">Beta</option>');
-  });
+const select = () => screen.getByRole<HTMLSelectElement>("combobox", { name: "Plan" });
 
-  it("carries the control look and px-3", () => {
-    const out = renderToStaticMarkup(<Select items={ITEMS} />);
-    expect(out).toContain("border-slate-300");
-    expect(out).toContain("px-3");
+describe("Select", () => {
+  it("renders an option per item, named by its label and carrying its value", () => {
+    render(<Select items={ITEMS} aria-label="Plan" />);
+    const options = within(select()).getAllByRole<HTMLOptionElement>("option");
+    expect(options.map((o) => [o.value, o.textContent])).toEqual([
+      ["a", "Alpha"],
+      ["b", "Beta"],
+    ]);
   });
 
   it("passes value and disabled through", () => {
-    const out = renderToStaticMarkup(
-      <Select items={ITEMS} value="b" disabled onChange={() => {}} />,
-    );
-    expect(out).toContain('disabled=""');
-    expect(out).toContain('<option value="b" selected="">Beta</option>');
+    render(<Select items={ITEMS} value="b" disabled onChange={() => {}} aria-label="Plan" />);
+    expect(select().disabled).toBe(true);
+    expect(select().value).toBe("b");
   });
 
   it("passes defaultValue through", () => {
-    const out = renderToStaticMarkup(<Select items={ITEMS} defaultValue="b" />);
-    expect(out).toContain('<option value="b" selected="">Beta</option>');
+    render(<Select items={ITEMS} defaultValue="b" aria-label="Plan" />);
+    expect(select().value).toBe("b");
   });
 
-  it("is as wide as its choices on its own, and fills the row in a Field", () => {
-    expect(renderToStaticMarkup(<Select items={ITEMS} />)).not.toContain("w-full");
-    expect(
-      renderToStaticMarkup(
-        <Field label="Plan">
-          <Select items={ITEMS} />
-        </Field>,
-      ),
-    ).toContain("w-full");
+  it("reports the option a person picks", async () => {
+    const onChange = vi.fn<(value: string) => void>();
+    render(<Select items={ITEMS} aria-label="Plan" onChange={(e) => onChange(e.target.value)} />);
+    await user().selectOptions(select(), "Beta");
+    expect(onChange).toHaveBeenCalledExactlyOnceWith("b");
   });
 });

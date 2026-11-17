@@ -1,10 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { Card } from "./Card.js";
-import { render, screen } from "./render.harness.js";
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
+import { follows, render, screen } from "./render.harness.js";
 
 /** The heading, the band and the body, in the order they should read. */
 const titleBandBody = (): [HTMLElement, HTMLElement, HTMLElement] => [

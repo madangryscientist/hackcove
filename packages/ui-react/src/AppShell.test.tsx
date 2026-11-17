@@ -3,15 +3,12 @@ import { describe, expect, it } from "vitest";
 import { AppShell, AppShellBrand, appShellRootClass, appShellRootClassFor } from "./AppShell.js";
 import { schemeClass } from "./colourScheme.js";
 import { Show } from "./Show.js";
-import { render, screen, within } from "./render.harness.js";
+import { follows, render, screen, within } from "./render.harness.js";
 
 // jsdom has no layout, so these are the slot-order tests only. The nav that folds into the Menu
 // from `md` when it does not fit is proved in the e2e (`apps/storybook/e2e/appshell-nav-fold.spec.ts`),
 // not here by faking a ResizeObserver measurement. The safe-area insets and where an anchor lands
 // are read, not tested: a headless browser reports no insets, and a scroll position is not asserted.
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 function first<T>(found: T[]): T {
   const [one] = found;

@@ -1,10 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { ListRow } from "./ListRow.js";
-import { render, screen, within } from "./render.harness.js";
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
+import { follows, render, screen, within } from "./render.harness.js";
 
 describe("ListRow detail", () => {
   it("reads the detail after the row's line, inside the row", () => {

@@ -15,3 +15,8 @@ afterEach(cleanup);
 export function user(): UserEvent {
   return userEvent.setup();
 }
+
+/** Whether `b` comes after `a` in the document: reading order, the way a screen reader meets them. */
+export function follows(a: Node, b: Node): boolean {
+  return (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
+}

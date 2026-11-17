@@ -1,26 +1,36 @@
+// @vitest-environment jsdom
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { render, screen } from "./render.harness.js";
 import { Video } from "./Video.js";
 
+/** A video has no role; the test names it, as a page would when it has no caption beside it. */
+const video = () => screen.getByLabelText<HTMLVideoElement>("Intro");
+
 describe("Video", () => {
-  it("renders a full-width, rounded video with controls that loads metadata only", () => {
-    const out = renderToStaticMarkup(<Video src="/intro.mp4" />);
-    expect(out.startsWith("<video")).toBe(true);
-    expect(out).toContain("controls");
-    expect(out).toContain('preload="metadata"');
-    expect(out).toContain('src="/intro.mp4"');
-    expect(out).toContain("w-full rounded-lg");
-    expect(out).not.toContain("<track");
+  it("shows the browser's controls and loads metadata only", () => {
+    render(<Video src="/intro.mp4" aria-label="Intro" />);
+    expect(video().controls).toBe(true);
+    expect(video().preload).toBe("metadata");
+    expect(video().getAttribute("src")).toBe("/intro.mp4");
   });
 
-  it("adds the poster, a default captions track and the fallback children", () => {
-    const out = renderToStaticMarkup(
-      <Video src="/intro.mp4" poster="/intro.jpg" captions="/intro.vtt">
+  it("adds the poster and the fallback children", () => {
+    render(
+      <Video src="/intro.mp4" poster="/intro.jpg" aria-label="Intro">
         Your browser cannot play video.
       </Video>,
     );
-    expect(out).toContain('poster="/intro.jpg"');
-    expect(out).toContain('<track kind="captions" src="/intro.vtt" default=""/>');
-    expect(out).toContain("Your browser cannot play video.");
+    expect(video().getAttribute("poster")).toBe("/intro.jpg");
+    expect(screen.getByText("Your browser cannot play video.")).toBeInstanceOf(HTMLElement);
+  });
+
+  // A <track> has no role, name or text, and jsdom has no `textTracks`, so its markup is read as
+  // data: the captions file is a default captions track, and there is none without one.
+  it("adds a default captions track only when given captions", () => {
+    const captioned = renderToStaticMarkup(<Video src="/intro.mp4" captions="/intro.vtt" />); // markup read as data
+    const bare = renderToStaticMarkup(<Video src="/intro.mp4" />); // markup read as data
+    expect(captioned).toContain('<track kind="captions" src="/intro.vtt" default=""/>');
+    expect(bare).not.toContain("<track");
   });
 });

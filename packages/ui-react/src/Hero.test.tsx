@@ -2,11 +2,8 @@
 import { renderToStaticMarkup } from "react-dom/server"; // markup read as data, below
 import { describe, expect, it } from "vitest";
 import { Hero } from "./Hero.js";
-import { render, screen, within } from "./render.harness.js";
+import { follows, render, screen, within } from "./render.harness.js";
 import { Lead } from "./typography.js";
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
 
 const hero = (
   <Hero overline="Products" title="Software we make.">

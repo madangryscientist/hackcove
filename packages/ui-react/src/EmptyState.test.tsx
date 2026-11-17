@@ -1,10 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
 import { EmptyState } from "./EmptyState.js";
-import { render, screen } from "./render.harness.js";
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
+import { follows, render, screen } from "./render.harness.js";
 
 describe("EmptyState", () => {
   it("is a section named by its title, an h2 by default", () => {

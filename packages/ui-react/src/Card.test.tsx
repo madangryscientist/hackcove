@@ -2,10 +2,7 @@
 import { describe, expect, it } from "vitest";
 import { Card } from "./Card.js";
 import { Pill } from "./Pill.js";
-import { render, screen, within } from "./render.harness.js";
-
-const follows = (a: Node, b: Node) =>
-  a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING;
+import { follows, render, screen, within } from "./render.harness.js";
 
 describe("Card badge", () => {
   it("reads the badge after the body", () => {
