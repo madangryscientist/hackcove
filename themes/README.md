@@ -11,6 +11,8 @@ own tokens. Each also ships a `.link` class.
 | Thrifty Paper | `thrifty-paper.css` | `.thrifty-paper` | light: cream paper, ink text, clay accent |
 | Thriftloop | `thriftloop.css` | `.thriftloop` | light: butter paper, brown ink, clay accent |
 | Thriftloop Dark | `thriftloop-dark.css` | `.thriftloop-dark` | dark: deep teal night, lit-window clay; declares the `dark` variant on its own scope |
+| Slash suite | `slash-suite.css` | `.slash-suite` | light: Slash Day, a cool blue-grey canvas, navy ink, peach accent |
+| Slash suite dark | `slash-suite-dark.css` | `.slash-suite-dark` | dark: Slash Night, a deep navy ground, peach pastel accent; declares the `dark` variant on its own scope |
 
 Status: `0.x`. License: MIT.
 
@@ -42,7 +44,8 @@ the canvas (`bg-gray-50`, which the theme remaps) and sets `font-sans` and the i
 Each theme chooses its own type faces. Most use Inter, then the system stack; Thriftloop uses DM
 Sans, with DM Serif Display for headings through `--font-heading`. A theme ships no font file, so a
 face shows only where the app loads it or the machine has it; Thriftloop's two come from Google
-Fonts.
+Fonts. A Slash theme names Inter, headings included, and JetBrains Mono next after `ui-monospace`
+in its mono stack; the site that installs it loads those font files itself, as for every theme.
 
 ## How to add a theme
 
@@ -115,6 +118,21 @@ canvas `#fdfbf7` · surface `#ffffff` · subtle `#f7f2e9` · line `#ece3d4` · i
 ink-body `#3b342e` · ink-mute `#6b6259` · accent `#c2410c` · accent-hover `#9a3412` ·
 accent-ink `#9a3412` · accent-ink-hover `#7c2d12` · accent-soft `#fdf5f0` ·
 positive `#047857` / `#ecfdf5` · warn `#b45309` / `#fffbeb` · note `#0f766e` / `#f0fdfa`
+
+### Slash suite and Slash suite dark
+
+The Slash suite pair, built from Catppuccin Latte and Mocha (the credit is the same, see above), with
+the suite's peach as the accent. Slash Day is the light ground: canvas `#eef2f9` · card `#ffffff` ·
+subtle `#e6e9f1` · deep `#dee1ea` · lines `#d8dbe5`, `#c6c9d5`, `#b4b7c5` · ink `#24273a` (Macchiato's
+base) · ink-2 `#3a3d52` · mute `#5b5e74` · faint `#85879c`. Slash Night is the dark one: crust
+`#080d1c` · canvas `#0d1326` · card `#19233e` · s0 `#25304d` · s1 `#374463` · s2 `#485574` · ink
+`#e2e8fc` · ink-2 `#ccd4ee` · mute `#c6cce2` · faint `#b1b8d0`.
+
+The fills take the Mocha peach pastel `#fab387` in both, with a dark label. On Day the accent text,
+edges and focus rings are the deep peach `#a03604`, since a pastel line is under 3:1 on white. The
+status tones stay Latte's; the avatar initials are the accent's label, so on Day the avatar fills, the
+positive button among them, are Latte's own tokens, which the dark label clears. On Night everything is
+the pastel and the status tones are Mocha's.
 
 ### Thriftloop
 

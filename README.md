@@ -12,14 +12,15 @@ under the `@hackcove` scope (MIT, all `0.x`).
 | Folder | Package | What it is |
 | --- | --- | --- |
 | `packages/ui-react` | `@hackcove/ui-react` | The React components: primitives, typography roles, a safe Markdown renderer. Written against Tailwind v4 utilities. No theme CSS. |
-| `themes` | `@hackcove/themes` | Every theme, one CSS file each, remapping those utilities: `catppuccin-mocha.css` (dark, scope `.dark`), `catppuccin-latte.css` (light, scope `.latte`), `thrifty-paper.css` (light, scope `.thrifty-paper`), `thriftloop.css` (light, scope `.thriftloop`) and `thriftloop-dark.css` (dark, scope `.thriftloop-dark`). |
+| `themes` | `@hackcove/themes` | Every theme, one CSS file each, remapping those utilities: `catppuccin-mocha.css` (dark, scope `.dark`), `catppuccin-latte.css` (light, scope `.latte`), `thrifty-paper.css` (light, scope `.thrifty-paper`), `thriftloop.css` (light, scope `.thriftloop`), `thriftloop-dark.css` (dark, scope `.thriftloop-dark`), `slash-suite.css` (light, scope `.slash-suite`) and `slash-suite-dark.css` (dark, scope `.slash-suite-dark`). |
 | `packages/oxlint-testing` | `@hackcove/oxlint-testing` | A shared oxlint config and plugin for UI tests (Playwright, Testing Library, Vitest): elements found the way a user does, waits on a state, behaviour asserted rather than look, one Playwright config shape. |
 | `apps/storybook` | (private) | Storybook for the components, with a toolbar theme switcher that lists every CSS file in `themes/`. |
 | `apps/hack-cove-site` | (private) | The hack-cove.com website (Astro), built on the workspace components and the Mocha theme. |
 
 Each theme scopes under its own class, which goes on `<html>`: `.dark` for Mocha,
-`.latte` for Latte, `.thrifty-paper` for Thrifty Paper, `.thriftloop` for Thriftloop and
-`.thriftloop-dark` for Thriftloop Dark. Without a theme the components render in Tailwind's own
+`.latte` for Latte, `.thrifty-paper` for Thrifty Paper, `.thriftloop` for Thriftloop,
+`.thriftloop-dark` for Thriftloop Dark, `.slash-suite` for Slash suite and `.slash-suite-dark` for
+Slash suite dark. Without a theme the components render in Tailwind's own
 default colours, a plain light look: it works, but it is only what a theme remaps, not a look Hack
 Cove designs or checks, so Storybook and the visual check list the themes and nothing else.
 
