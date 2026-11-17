@@ -324,7 +324,7 @@
 }
 .slash-suite-dark .text-emerald-700,
 .slash-suite-dark .text-emerald-800 {
-  color: #a6e3a1; /* green */
+  color: #aae4a5; /* green, as Mocha */
 }
 .slash-suite-dark .text-amber-700,
 .slash-suite-dark .text-amber-800,
@@ -332,7 +332,7 @@
   color: #f9e2af; /* yellow */
 }
 .slash-suite-dark .text-red-700 {
-  color: #fcdee6; /* red, lifted to clear AA on the callout tints (HC-442) */
+  color: #fce5ec; /* red, lifted to clear AA on the callout tints (HC-442) */
 }
 .slash-suite-dark .text-red-800,
 .slash-suite-dark .text-red-900 {
