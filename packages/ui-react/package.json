@@ -12,9 +12,9 @@
     "tailwindcss",
     "ui"
   ],
-  "homepage": "https://github.com/madangryscientist/hackcove/tree/main/packages/ui-react#readme",
+  "homepage": "https://github.com/madangryscientist/uislash/tree/main/packages/ui-react#readme",
   "bugs": {
-    "url": "https://github.com/madangryscientist/hackcove/issues"
+    "url": "https://github.com/madangryscientist/uislash/issues"
   },
   "license": "MIT",
   "author": {
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/madangryscientist/hackcove.git",
+    "url": "git+https://github.com/madangryscientist/uislash.git",
     "directory": "packages/ui-react"
   },
   "files": [

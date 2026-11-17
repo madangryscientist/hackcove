@@ -3,7 +3,7 @@
  *
  * pixelslash is not published: it runs from the checkout `PIXELSLASH_DIR` names (default
  * ~/dev/pixelslash), whose dependencies are installed from its lockfile here when behind. The base
- * is built in a reusable worktree at ~/dev/hackcove.visual-main, so this checkout's branch and
+ * is built in a reusable worktree at ~/dev/uislash.visual-main, so this checkout's branch and
  * working tree are never touched. That worktree is shared by every checkout on the machine, so it
  * is built and captured under a lock.
  */
@@ -24,7 +24,7 @@ const pixelslashDir = resolve(
   process.env["PIXELSLASH_DIR"] ?? join(homedir(), "dev", "pixelslash"),
 );
 export const pixelslashCli = join(pixelslashDir, "packages", "cli", "src", "index.ts");
-export const baselineDir = join(homedir(), "dev", "hackcove.visual-main");
+export const baselineDir = join(homedir(), "dev", "uislash.visual-main");
 export const branchStatic = join(appDir, "storybook-static");
 export const baseStatic = join(baselineDir, "apps", "storybook", "storybook-static");
 // The base's build, stamped with its commit inside the shared worktree, so whichever checkout last

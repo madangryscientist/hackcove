@@ -21,7 +21,7 @@ describe("prompt", () => {
 
   it("carries the purpose, the reference and the diff, and says when files were left out", () => {
     const prompt = buildPrompt({ purpose: "P-URPOSE", reference: "R-EFERENCE", diff: "D-IFF" });
-    for (const part of ["P-URPOSE", "R-EFERENCE", "D-IFF", "ask hackcove", "missing_part"]) {
+    for (const part of ["P-URPOSE", "R-EFERENCE", "D-IFF", "ask uislash", "missing_part"]) {
       expect(prompt.toLowerCase()).toContain(part.toLowerCase());
     }
     const left = buildPrompt({ purpose: "p", reference: "r", diff: "d", left: 2 });
@@ -58,7 +58,7 @@ describe("model reply", () => {
 
   it("always phrases a missing part as an ask to hackcove", () => {
     const body = bodyOf(parseReply(reply)[1]!);
-    expect(body).toContain("Ask hackcove for a Board");
+    expect(body).toContain("Ask uislash for a Board");
     expect(body).not.toMatch(/build (?:it|one) locally\b(?!\.)/);
   });
 
