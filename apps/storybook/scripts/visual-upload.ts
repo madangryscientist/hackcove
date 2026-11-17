@@ -99,7 +99,7 @@ export function lookupFailure(misses: LookupMiss[]): string | undefined {
   if (refused !== "")
     lines.push(
       `PixelSlash refused the token for ${refused}: it is missing, wrong, expired or revoked ` +
-        "and needs reissuing in the project's Settings on the server; do not create the project",
+        "and needs reissuing (an org token, psorg_, or a personal one, psu_); do not create the project",
     );
   if (missing !== "")
     lines.push(
