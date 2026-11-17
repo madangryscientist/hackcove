@@ -1,6 +1,6 @@
 # @hackcove/themes
 
-The Hack Cove themes, all in one package. Each theme is one CSS file with its own scope class, and
+The UISlash themes, all in one package. Each theme is one CSS file with its own scope class, and
 each remaps the Tailwind slate/colour utilities that `@hackcove/ui-react` is written against to its
 own tokens. Each also ships a `.link` class.
 

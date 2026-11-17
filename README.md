@@ -1,6 +1,8 @@
-# hackcove
+# UISlash
 
-The Hack Cove design system: an opinionated, strict UI library that is fully integrated with its
+UI components your agents can't get wrong.
+
+The UISlash design system: an opinionated, strict UI library that is fully integrated with its
 theming. The components and the themes are designed together, and every theme remaps every palette
 utility the components use, so switching theme reskins a whole site with no component change and
 nothing to configure. It fixes the look and feel so agents reliably build good-looking sites; it is
@@ -71,7 +73,7 @@ re-export, so the old name stays at 0.7.1. To move:
 
 ## Browser support
 
-Hack Cove supports the web platform as of the [Baseline digest of August 2026](https://web.dev/blog/baseline-digest-aug-2026).
+UISlash supports the web platform as of the [Baseline digest of August 2026](https://web.dev/blog/baseline-digest-aug-2026).
 Anything Baseline newly available by then may be used; anything newer goes in only as
 feature-detected progressive enhancement (the page fade's `startViewTransition` is one). In
 practice that means the current evergreen browsers: Chrome and Edge 131+, Firefox 143+, and Safari
@@ -173,7 +175,7 @@ appears as a panel in **Overview / All themes**, with no code edit.
 
 ## UI review
 
-A pull request in a repo that uses Hack Cove can be checked for building its UI the Hack Cove way.
+A pull request in a repo that uses UISlash can be checked for building its UI the UISlash way.
 Add this workflow to the repo:
 
 ```yaml
@@ -193,11 +195,11 @@ It runs two layers on the lines the pull request adds:
 
 - **Rules (no model).** Fails the check with a `file:line` annotation on a new CSS file or
   `<style>` block, a raw palette utility (`bg-slate-800`), a `dark:` variant, a `className` or
-  `style` on an `@hackcove/ui-react` component, and a local component that duplicates a Hack Cove export.
+  `style` on an `@hackcove/ui-react` component, and a local component that duplicates a UISlash export.
   The palette and the export list are read from `@hackcove/ui-react` itself, never copied.
 - **Model review (advisory).** An OpenCode Zen model (`opencode/deepseek-v4.1-flash`) reads the diff
-  against the Hack Cove purpose and the generated `/ui/llms.txt`, and posts inline comments plus one
-  summary. A part Hack Cove lacks is reported as "ask hackcove for X", never "build it locally". Its
+  against the UISlash purpose and the generated `/ui/llms.txt`, and posts inline comments plus one
+  summary. A part UISlash lacks is reported as "ask hackcove for X", never "build it locally". Its
   findings are advisory and never fail the pull request. A review that did not happen does: if the
   model run crashes or times out, the reply cannot be parsed, or the component reference or the
   comments cannot be had, the step prints an error, writes a step summary and goes red. It is

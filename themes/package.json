@@ -1,7 +1,7 @@
 {
   "name": "@hackcove/themes",
   "version": "0.3.1",
-  "description": "The Hack Cove themes: one CSS file per theme, each remapping the Tailwind utilities @hackcove/ui-react is written against.",
+  "description": "The UISlash themes: one CSS file per theme, each remapping the Tailwind utilities @hackcove/ui-react is written against.",
   "keywords": [
     "dark-mode",
     "design-system",

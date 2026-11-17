@@ -1,6 +1,6 @@
 # hackcove: repo conventions
 
-The Hack Cove design system: React components (`@hackcove/ui-react`) and the themes
+The UISlash design system: React components (`@hackcove/ui-react`) and the themes
 (`@hackcove/themes`, one CSS file per theme), each its own npm package, in a moon + Bun-workspaces monorepo. moon runs every task; Nx is
 here only for `nx release` (`docs/releasing.md`).
 `README.md` is the user-facing contract (install, usage, how to add a theme);
@@ -11,7 +11,7 @@ private agent rules on top of it.
 
 ## Purpose
 
-Hack Cove UI is an opinionated, strict UI library that is fully integrated with its theming. The
+UISlash is an opinionated, strict UI library that is fully integrated with its theming. The
 components and the themes are designed together: every theme remaps every palette utility the
 components use (`palette.json`, `themes/themes.test.ts`), so switching theme reskins a whole site with
 no component change and nothing to configure. It fixes the look so agents reliably build good-looking
@@ -38,7 +38,7 @@ of options.
 | `storybook` | `apps/storybook` | Storybook for the components; a toolbar switcher lists every theme CSS file in `themes/`. Its `e2e/` is the Playwright layer (`test:e2e`). Private. |
 | `themes-shared` | `packages/themes-shared` | `@hackcove/themes-shared`: how Storybook and the docs find themes (the `themes/*.css` glob, the theme ids and each theme's scope class). Private; not in `nx release`. |
 | `hack-cove-site` | `apps/hack-cove-site` | The hack-cove.com Astro site, with the `/ui/` component docs (pages built from the Storybook stories, a generated `props.json` and `/ui/llms.txt`). Builds `dist/` against the workspace `@hackcove/ui-react` and `@hackcove/themes` (`workspace:*`). `deploy.sh` direct-uploads to Cloudflare Pages; only Jacobus runs it. Private; not in `nx release`. |
-| `ui-review` | `tools/ui-review` | `@hackcove/ui-review`: the engine behind the `ui-review.yml` reusable workflow (consumer pull requests are checked for building their UI the Hack Cove way: a deterministic layer, then an advisory model layer). Dev tooling; private; not in `nx release`. |
+| `ui-review` | `tools/ui-review` | `@hackcove/ui-review`: the engine behind the `ui-review.yml` reusable workflow (consumer pull requests are checked for building their UI the UISlash way: a deterministic layer, then an advisory model layer). Dev tooling; private; not in `nx release`. |
 | `codemod` | `tools/codemod` | `@hackcove/codemod`: the 0.10 to 0.11 codemod (`packages/ui-react/MIGRATING.md`, "Running the codemod"). It parses with `typescript` (pinned exact), edits JSX attributes by text range on elements imported from `@hackcove/ui-react`, and prints a `file:line` for each by-hand row; one fixture under `test/fixtures` per row. Dev tooling; private; not in `nx release`. |
 
 **One package, one CSS file per theme.** Adding a theme is adding a file (`README.md`, "How to add a
@@ -130,7 +130,7 @@ that section.
 
 ## Browser support
 
-Hack Cove supports the web platform as of the Baseline digest of August 2026
+UISlash supports the web platform as of the Baseline digest of August 2026
 (<https://web.dev/blog/baseline-digest-aug-2026>, Jacobus, 2026-10-28). Anything Baseline newly
 available by August 2026 may be used. Anything newer goes in only as feature-detected progressive
 enhancement, with a working fallback. The `browserslist` in the root `package.json` is the
