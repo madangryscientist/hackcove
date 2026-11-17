@@ -1,6 +1,6 @@
 # Contributing to hackcove
 
-Thanks for looking. This repo is the Hack Cove design system: React components (`@hackcove/ui-react`) and
+Thanks for looking. This repo is the UISlash design system: React components (`@hackcove/ui-react`) and
 the themes (`@hackcove/themes`, one CSS file per theme), each its own npm package, in a moon +
 Bun-workspaces monorepo. By taking part you agree to the [Code of Conduct](CODE_OF_CONDUCT.md). For
 a security problem, follow [SECURITY.md](SECURITY.md) instead of opening an issue.
@@ -13,7 +13,7 @@ the fix has landed, and is closed then. A small fix needs no issue first: open t
 
 ## What belongs here
 
-Hack Cove UI is an opinionated, strict UI library that is fully integrated with its theming: the
+UISlash is an opinionated, strict UI library that is fully integrated with its theming: the
 components and themes are designed together, and every theme remaps every palette utility the
 components use. It fixes the look and feel so agents reliably build good-looking sites; it is not an
 extensible framework. So the bar for a component ask is high. The default answer to a new prop,

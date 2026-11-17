@@ -1,9 +1,9 @@
 # @hackcove/ui-react
 
-Hack Cove React components, written against Tailwind v4 utilities. They carry no theme: pair them
+UISlash React components, written against Tailwind v4 utilities. They carry no theme: pair them
 with a theme from `@hackcove/themes`, such as `@hackcove/themes/catppuccin-mocha.css`, and put its scope
 class on `<html>` (`.dark` for Mocha). With no theme they render in Tailwind's own default colours,
-a plain light look; it works, but it is not a look Hack Cove designs or checks.
+a plain light look; it works, but it is not a look UISlash designs or checks.
 
 Status: `0.x`, published to npm. License: MIT.
 
