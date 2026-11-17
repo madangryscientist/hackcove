@@ -223,8 +223,10 @@ global rule; what is particular to hackcove:
    `npm login`. Jacobus or the hackcove planner dispatches it whenever a release is needed, with no
    sign-off; the `npm-publish` environment has no approval step and accepts runs from `main` only.
    Every release is a pre-release: versions stay `0.x`, and moving a package to `1.0.0` is
-   Jacobus's decision. A new package's first publish uses the workflow's `NPM_TOKEN` step
-   (`docs/releasing.md`, "First publish of a new package"); Jacobus sets and deletes that secret.
+   Jacobus's decision. A new package's first version is staged by the workflow's `NPM_TOKEN` step
+   (`npm stage publish`, `docs/releasing.md`, "First publish of a new package"), and Jacobus
+   approves it with 2FA on npmjs.com, then adds its trusted publisher. Never run `npm stage
+   publish` by hand either; Jacobus manages that secret.
 7. **Changes reach `main` only through a merged PR.** Nobody pushes to `main` directly; the
    release workflow's release commit is the one exception. Every package is MIT (a `LICENSE` in
    each package and at the root).

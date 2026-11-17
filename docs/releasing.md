@@ -29,7 +29,8 @@ not even a package's first version. It is a manual workflow (Actions → Publish
   changed in the same commit is missed.
 
 Already-released packages authenticate with npm trusted publishing (OIDC), so there is no
-`NPM_TOKEN` and no OTP in their step. `nx.json` sets `cli.packageManager` to `npm`, so the publish
+`NPM_TOKEN` and no OTP in their step. A package's first version is staged instead, and the
+maintainer approves it on npmjs.com ("First publish of a new package"). `nx.json` sets `cli.packageManager` to `npm`, so the publish
 step (Nx's `@nx/js:release-publish` executor) runs `npm publish` rather than `bun publish`: bun
 cannot do npm trusted publishing or prompt for an OTP. The release commit and tags are pushed with
 the job's `GITHUB_TOKEN` (`contents: write`), so `main` must accept pushes from GitHub Actions.
@@ -53,11 +54,12 @@ follows `cli.packageManager`, which must stay `npm` for the publish step, and wo
 Nx pushes the release commit, the tags and the GitHub release before it runs `npm publish`. If the
 publish then fails, a re-run finds nothing new to release. Fix the cause and land a releasable
 commit: the next run publishes the next version. A stranded version is never published by hand.
-The exception is a first publish: its tag exists from the moment Nx pushes, so a failed first
-publish (wrong token scope, expired token) leaves a project the workflow now treats as tagged, and
-OIDC cannot publish a package that is not on npm yet. Delete the tag (`git push origin
-:refs/tags/<project>@<version>`) and the GitHub release, revert the release commit, and start the
-first-release steps again. A dry run does not exercise the token, so it cannot catch this.
+The exception is a first publish: its tag exists from the moment Nx pushes, so a failed staging
+(wrong token scope, expired token) leaves a project with a tag and nothing on npm. The workflow
+files it as *staged* and skips it with a notice, as if it waited for approval. If Staged Packages
+on npmjs.com does not list it, delete the tag (`git push origin :refs/tags/<project>@<version>`)
+and the GitHub release, revert the release commit, and start the first-release steps again. A dry
+run does not exercise the token, so it cannot catch this.
 
 Locally, the same dry run of the tagged projects is:
 
@@ -75,46 +77,63 @@ bunx nx release 0.1.0 --first-release --projects themes --dry-run
 
 ## Tagged projects and new ones
 
-The workflow sorts the releasable projects by their tags on origin and by whether the package is on
-npm (its "Pick" step):
+The workflow sorts the releasable projects by their tags on origin and by what npm has approved (its
+"Pick" step, `scripts/releasePick.ts`, tested in `packages/themes-shared`). npm's `0.0.0-stage`
+placeholder, which npm publishes when a brand-new package is staged, does not count as approved:
 
 - **Tagged** (a `<project>@<version>` tag exists and the package is on npm): released by conventional
   commits, as above, through OIDC.
 - **New** (no such tag): its first publish, in its own step ("First release"), at the version
   already in its `package.json`. Nothing about which projects are new is listed anywhere; it is
   computed from tags.
-- **Renamed** (a tag exists, but the package name is not on npm): see "Renaming a package". Released
-  by conventional commits, authenticated by `NPM_TOKEN` like a first publish.
+- **Renamed** (a tag exists, cut under another package name, and nothing is approved on npm): see
+  "Renaming a package". Released by conventional commits and staged with `NPM_TOKEN` like a first
+  publish.
+- **Staged** (a tag exists, cut under this package name, and nothing is approved on npm): an earlier
+  run staged its first version and it waits for the maintainer. The run skips it with a notice, so
+  a dispatch while it waits neither fails nor bumps it again. Once approved, it is *tagged*.
 
 Nx's `git-tag` version resolver refuses a project with no tag, which is why *new* is a separate Nx
 invocation. The first-release step runs `nx release <version-on-disk> --first-release --projects
-<project>` once per new project: `--first-release` falls back to the version on disk, starts the
-changelog at the first commit and skips the "already on npm" check, and the explicit specifier keeps
-conventional commits from bumping it. It tags `<project>@<version>`, writes `CHANGELOG.md`, pushes
-and creates the GitHub release. Because it now has a tag, the project is a tagged project from the
-next run on. New, renamed and tagged projects can be in the same run, in that order.
+<project> --skip-publish` once per new project: `--first-release` falls back to the version on disk
+and starts the changelog at the first commit, and the explicit specifier keeps conventional commits
+from bumping it. It tags `<project>@<version>`, writes `CHANGELOG.md`, pushes and creates the GitHub
+release; then `npm stage publish` stages that version. Because it now has a tag, the project is
+*staged* from the next run on, and *tagged* once its version is approved. New, renamed and tagged
+projects can be in the same run, in that order.
 
 ## First publish of a new package
 
 OIDC trusted publishing cannot make a package's first publish, because npm cannot attach a trusted
-publisher to a package that does not exist yet. So the first release authenticates with a
-short-lived token that only the workflow's first-release step sees. If a releasable project has no
-tag and `NPM_TOKEN` is unset, the workflow fails before it versions, tags or pushes anything, and
-names the project. (`themes` goes through this once. The earlier `@hackcove/theme-*` packages stay on npm as they are, and their tags stay as history.)
+publisher to a package that does not exist yet. So the workflow **stages** the first version with
+`npm stage publish` (npm 11.15.0 or newer), authenticated by `NPM_TOKEN`, a granular token that does
+not bypass 2FA: it may stage, but a plain `npm publish` with it stops at npm's OTP prompt. Nothing
+is public until the maintainer approves the staged version with 2FA on npmjs.com. Nx's publish
+executor can only run `npm publish`, so the two NPM_TOKEN steps run `nx release --skip-publish` (the
+version, changelog, tag, push and GitHub release) and then stage the package folder themselves. The
+token is written to a private `.npmrc` outside the checkout that the step removes on exit, and no
+other step sees it. If a project needs staging and `NPM_TOKEN` is unset, the workflow fails before
+it versions, tags or pushes anything, and names the project.
 
-1. On npmjs.com, make a granular access token: publish rights for the `@hackcove` scope, bypass 2FA,
-   shortest expiry that covers the run.
+1. On npmjs.com, make a granular access token: "Read and write (publish and stage)" on the
+   `@hackcove` packages, bypass 2FA off. (npm's changelog of 2026-07-08: tokens that bypass 2FA
+   stop publishing directly around January 2027; staging needs no bypass.)
 2. `gh secret set NPM_TOKEN --env npm-publish` (paste the token when prompted).
 3. Run the workflow with `dry_run` on and read the log: the version (`0.1.0`), the tag
-   (`themes@0.1.0`), the changelog and the GitHub release it would create. Then run it
-   again with `dry_run` off. npm stages a brand-new package's first publish, so a `0.0.0-stage`
-   placeholder version may also appear alongside it.
-4. On npmjs.com, add the trusted publisher for `@hackcove/themes` (workflow
-   `publish.yml`, environment `npm-publish`), or `npm trust github …`.
-5. `gh secret delete NPM_TOKEN --env npm-publish`, and revoke the token on npmjs.com.
+   (`oxlint-testing@0.1.0`), the changelog, the GitHub release it would create, and
+   `npm stage publish`'s tarball listing. Then run it again with `dry_run` off. npm publishes a
+   `0.0.0-stage` placeholder version of a brand-new package alongside the staged one.
+4. **Approve it**: on npmjs.com, open the package's **Staged Packages** tab, review the staged
+   version and click **Approve**; npm asks for your 2FA (or `npm stage approve <stage-id>`). Until
+   then later runs skip the project (*staged*), and a run started meanwhile neither fails on it
+   nor bumps it again.
+5. Add the trusted publisher for the package (workflow `publish.yml`, environment `npm-publish`),
+   or `npm trust github …`.
 
 From then on the workflow releases it through OIDC whenever it has releasable commits, and npm
-attaches provenance for a public repository.
+attaches provenance for a public repository. The token stays on the environment for the next new
+package until it expires; replace it before then, and revoke it on npmjs.com if it is no longer
+wanted.
 
 ## Renaming a package
 
@@ -142,15 +161,15 @@ that restarts at the first commit.
    Leave the old `ui@…` tags and GitHub releases alone: they are the history of `@hackcove/ui`.
 2. **Check**: `bunx nx release --dry-run --projects ui-react` must print `0.8.0`, a tag
    `ui-react@0.8.0`, and a changelog that starts after `ui-react@0.7.1`.
-3. **First publish needs the token.** The new name is not on npm, so OIDC cannot publish it (see
-   "First publish of a new package"). Set `NPM_TOKEN` as there. The workflow sees a tagged project
-   that npm does not have, files it under *renamed* and runs it in the "Release (renamed projects,
-   NPM_TOKEN)" step; with no token it stops before it versions anything. Run a dry run first, then
-   the real release.
+3. **First publish is staged.** The new name is not on npm, so OIDC cannot publish it (see
+   "First publish of a new package"). The workflow sees a project whose last tag was cut under the
+   old name and that npm does not have, files it under *renamed* and runs it in the "Release
+   (renamed projects, staged with NPM_TOKEN)" step, which bumps it by conventional commits and stages
+   the new version; with no token it stops before it versions anything. Run a dry run first, then
+   the real release, then approve the staged version on npmjs.com as in step 4 there.
 4. **Trusted publisher, afterwards.** On npmjs.com add the trusted publisher for
-   `@hackcove/ui-react` (workflow `publish.yml`, environment `npm-publish`), then delete the secret
-   and revoke the token as in steps 4 and 5 above. From then on the package is *tagged* and goes
-   through OIDC.
+   `@hackcove/ui-react` (workflow `publish.yml`, environment `npm-publish`). From then on the
+   package is *tagged* and goes through OIDC.
 5. **The old package.** `@hackcove/ui` stays on npm at `0.7.1`; whether to `npm deprecate` it, with a
    message pointing at `@hackcove/ui-react`, is the maintainer's call, made after the first
    `ui-react` release. Its trusted publisher is no longer needed.
