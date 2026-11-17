@@ -28,9 +28,9 @@ describe("Video", () => {
   // A <track> has no role, name or text, and jsdom has no `textTracks`, so its markup is read as
   // data: the captions file is a default captions track, and there is none without one.
   it("adds a default captions track only when given captions", () => {
-    expect(renderToStaticMarkup(<Video src="/intro.mp4" captions="/intro.vtt" />)).toContain(
-      '<track kind="captions" src="/intro.vtt" default=""/>',
-    );
-    expect(renderToStaticMarkup(<Video src="/intro.mp4" />)).not.toContain("<track");
+    const captioned = renderToStaticMarkup(<Video src="/intro.mp4" captions="/intro.vtt" />); // markup read as data
+    const bare = renderToStaticMarkup(<Video src="/intro.mp4" />); // markup read as data
+    expect(captioned).toContain('<track kind="captions" src="/intro.vtt" default=""/>');
+    expect(bare).not.toContain("<track");
   });
 });

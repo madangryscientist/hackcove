@@ -18,7 +18,7 @@ const writeText = vi.fn<(text: string) => Promise<void>>();
  */
 function staticPage(node: ReactNode): HTMLDivElement {
   const container = document.createElement("div");
-  container.innerHTML = renderToStaticMarkup(node);
+  container.innerHTML = renderToStaticMarkup(node); // the server page the script runs on
   document.body.append(container);
   return container;
 }
