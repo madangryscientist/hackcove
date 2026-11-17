@@ -6,7 +6,12 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { isRecord } from "./visual-index.js";
-import { lookupFailure, lookupResult, type LookupMiss, type LookupResult } from "./visual-lookup.js";
+import {
+  lookupFailure,
+  lookupResult,
+  type LookupMiss,
+  type LookupResult,
+} from "./visual-lookup.js";
 import { VisualError, git, log, pixelslashCli, repoRoot, run } from "./visual-tools.js";
 import {
   baselineFailure,
@@ -145,7 +150,8 @@ const POLL_INTERVAL_MS = 3000;
  */
 async function readBuildState(project: string, id: string): Promise<BuildState> {
   const result = await listBuilds(project, "--limit", "20");
-  if (result.kind !== "ok") throw new VisualError(lookupFailure([{ project, result }]) ?? result.line);
+  if (result.kind !== "ok")
+    throw new VisualError(lookupFailure([{ project, result }]) ?? result.line);
   const build = buildIn(result.listing, id);
   if (build === undefined)
     throw new VisualError(`${project} lists no build ${id} among its newest 20`);
