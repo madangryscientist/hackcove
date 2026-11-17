@@ -113,6 +113,32 @@ describe("contrastFailures", () => {
       failures.every((line) => line.startsWith("chart colour: text-indigo-600 #45475a on ")),
     ).toBe(true);
   });
+
+  it("measures an outline button's accent text on another tone's tint, named", () => {
+    const withTones: Palette = {
+      ...palette,
+      accent: ["text-violet-600", "bg-violet-50"],
+      positive: ["bg-emerald-50"],
+    };
+    // The accent text clears the page and its own tint, but not the light emerald tint of a positive Callout.
+    const split = theme({
+      "text-violet-600": "#cba6f7",
+      "bg-violet-50": "#2a2540",
+      "bg-emerald-50": "#a6e3a1",
+    });
+    const failures = contrastFailures(split, withTones);
+    expect(
+      failures.filter((line) =>
+        line.startsWith("button text on a tone tint: text-violet-600 #cba6f7 on bg-emerald-50"),
+      ),
+    ).not.toHaveLength(0);
+    expect(failures.some((line) => line.startsWith("accent text on its tint"))).toBe(false);
+    const sameTint = contrastFailures(split, {
+      ...palette,
+      accent: ["text-violet-600", "bg-violet-50"],
+    });
+    expect(sameTint.some((line) => line.startsWith("button text on a tone tint"))).toBe(false);
+  });
 });
 
 describe("propertyOf", () => {

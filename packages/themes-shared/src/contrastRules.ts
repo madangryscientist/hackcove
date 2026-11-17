@@ -120,6 +120,40 @@ function toneRules(palette: Palette, role: string, narrow: string[]): Rule[] {
 }
 
 /**
+ * The text of an outline or ghost Button, and of a link, drawn inside a Callout. A Callout sits on
+ * one of its five tints (`TONE_SURFACE` in `Callout.tsx`: neutral, info, positive, warn, danger), and
+ * a Button in it takes the Button's own tone (neutral, positive or danger). So the text is held
+ * on each Callout tint, not on the tints of every tone: the accent (`text-violet-600`), the ink
+ * ghost text (`text-slate-600`) and the positive and danger `text-*-700` are measured on the
+ * neutral, info, positive, warn and danger tints. `toneRules` measures each tone's text only on its
+ * own tint, so this rule is the one that sees a cross-tone pair.
+ */
+function buttonTintRule(palette: Palette, narrow: string[]): Rule {
+  const calloutTints = [
+    ...roleOf(palette, "subtle").filter((utility) => utility === "bg-slate-50"),
+    ...["info", "positive", "warn", "danger"].flatMap((role) =>
+      roleOf(palette, role).filter((utility) => /^(?:hover:)?bg-[a-z]+-50$/.test(utility)),
+    ),
+  ];
+  const fg = [
+    ...roleOf(palette, "accent").filter((utility) =>
+      /^(?:hover:)?text-[a-z]+-(?:600|700)$/.test(utility),
+    ),
+    ...roleOf(palette, "ink").filter((utility) => utility === "text-slate-600"),
+    ...["positive", "danger"].flatMap((role) =>
+      roleOf(palette, role).filter((utility) => /^(?:hover:)?text-[a-z]+-700$/.test(utility)),
+    ),
+  ];
+  return {
+    name: "button text on a tone tint",
+    bar: TEXT_BAR,
+    fg: [...new Set(fg)],
+    on: stacks([...new Set(calloutTints)]),
+    base: narrow,
+  };
+}
+
+/**
  * The invalid field's edge is the one tinted edge that must be seen: nothing else marks it. It is
  * the edge of an errored `DateField`, and of an `aria-invalid` `Input`, `Select`, `Textarea` or
  * `FileDrop` (the `aria-invalid:` and `has-aria-invalid:` forms).
@@ -229,6 +263,7 @@ export function rulesFor(palette: Palette): Rule[] {
       base: narrow,
     },
     ...TONES.flatMap((role) => toneRules(palette, role, narrow)),
+    buttonTintRule(palette, narrow),
     invalidEdge(palette, narrow),
     ...scrimRules(palette, narrow),
     ...glowRules(palette),
