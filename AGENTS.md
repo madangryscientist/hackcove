@@ -96,6 +96,13 @@ and why. `bunx moon run storybook:visual -- --all` (or `VISUAL_ALL=1 bunx moon r
 captures everything. A gate run is `--all`. Every story file is
 named by a docs page (`pairs`, `fullPage` or `stories`); the storybook tests fail on one that is not.
 
+**A full run splits into one run per group.** `-- --all --plan-only` writes the plan and builds the
+base (no browser); `-- --all --group <slug>` (repeatable) runs those groups of the saved plan, one
+browser run each; `-- --summary-only` totals them and fails naming any group with no result. A group
+run takes the plan's own `--all` and `--upload`, and refuses a missing plan, a plan made with other
+flags, a `HEAD` that moved since the plan, and an unknown slug. A bare `--run` still does all three in one process
+(`CONTRIBUTING.md`, "The visual check").
+
 **CI uploads the screenshots.** `.github/workflows/visual.yml` runs `storybook:visual-upload` on every
 pull request's head commit and on every push to `main`, against the maintainers' PixelSlash server
 (its address is the `PIXELSLASH_SERVER` secret), which builds one `hackcove-ui-<section>` project per

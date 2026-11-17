@@ -17,6 +17,17 @@
  *   under one lock; an upload runs `VISUAL_PARALLEL` of them at once (default 1).
  * - The summary reads every group's result and totals them. It runs only when every group passed.
  *
+ * Each step can also run on its own, so a full check splits into short runs (`visual-args.ts`):
+ *
+ * - `--plan-only` writes the plan and stops. A local compare also builds the base Storybook here,
+ *   which starts no browser.
+ * - `--group <slug>` (repeatable) runs only those groups of the saved plan. It refuses when there is
+ *   no plan, when the plan was made with other flags (`--upload` or `--all`), when `HEAD` has moved
+ *   since the plan (plan again), or for a slug the plan does not have.
+ * - `--summary-only` totals the saved plan's results, failing on each group that has none.
+ *
+ * A bare `--run` does all three in one process.
+ *
  * Locally the base is the branch's merge-base with origin/main (the fork point, so a main that
  * moved since stays out of the diff); `VISUAL_BASE` names another ref. It is built in a shared
  * worktree and captured, and `pixelslash compare` writes the local report.
@@ -52,6 +63,7 @@ import {
   checkShotSizes,
   compare,
   ensurePixelslashInstall,
+  git,
   log,
   out,
   repoRoot,
@@ -59,6 +71,13 @@ import {
   withBaselineLock,
   type Selection,
 } from "./visual-tools.js";
+import {
+  pickGroups,
+  savedPlanFrom,
+  stepFrom,
+  type PlannedGroup,
+  type SavedPlan,
+} from "./visual-args.js";
 import { eachAtOnce, parallelFrom, uploadWorkers } from "./visual-parallel.js";
 import { checkUpload, uploadGroup } from "./visual-remote.js";
 import {
@@ -66,26 +85,24 @@ import {
   uploadTotalLine,
   type Counts,
   type GroupResult,
-  type UploadMode,
 } from "./visual-upload.js";
 
 const upload = process.argv.includes("--upload");
 const everything = process.argv.includes("--all") || process.env["VISUAL_ALL"] === "1";
 const planPath = join(out, "plan.json");
 
-/** A group's captures, in order: the reference theme's, then the Gallery sections' in the others. */
-type PlannedGroup = { slug: string; project: string; skipped: boolean; captures: Selection[] };
-// `mode` is the upload's: the branch alone, or this commit as `main`; absent for a local run.
-type SavedPlan = {
-  id: string;
-  upload: boolean;
-  mode: UploadMode | null;
-  sha: string;
-  groups: PlannedGroup[];
-};
-
 function readJson(path: string): unknown {
   return existsSync(path) ? JSON.parse(readFileSync(path, "utf8")) : null;
+}
+
+/** The saved plan's JSON; a file cut short (a plan step killed mid-write) reads as no plan. */
+function readPlan(): unknown {
+  try {
+    return readJson(planPath);
+  } catch (error) {
+    if (error instanceof SyntaxError) return null;
+    throw error;
+  }
 }
 
 /** The repo's groups, failing on a story file no docs page names, or a page naming no story file. */
@@ -160,7 +177,16 @@ async function planMode(): Promise<SavedPlan> {
     const captures = titlesOf(pick?.captures ?? []);
     return { slug: group.slug, project: group.project, skipped: !pick, captures };
   });
-  const saved: SavedPlan = { id: randomUUID(), upload, mode, sha: base.sha, groups };
+  const head = await git(repoRoot, "rev-parse", "HEAD");
+  const saved: SavedPlan = {
+    id: randomUUID(),
+    upload,
+    all: everything || upload,
+    mode,
+    sha: base.sha,
+    head,
+    groups,
+  };
   mkdirSync(out, { recursive: true });
   writeFileSync(planPath, `${JSON.stringify(saved, null, 2)}\n`);
   if (mode === "main")
@@ -285,8 +311,16 @@ function readResult(id: string, slug: string): GroupResult | undefined {
 
 function summaryMode(plan: SavedPlan) {
   const results: GroupResult[] = [];
+  const missing: string[] = [];
   for (const group of plan.groups) {
-    const result = readResult(plan.id, group.slug);
+    let result: GroupResult | undefined;
+    try {
+      result = readResult(plan.id, group.slug);
+    } catch (error) {
+      if (!(error instanceof VisualError)) throw error;
+      missing.push(error.message);
+      continue;
+    }
     if (result === undefined) {
       log(`${group.slug}: skipped, unaffected`);
       continue;
@@ -294,6 +328,7 @@ function summaryMode(plan: SavedPlan) {
     results.push(result);
     log(uploadSummaryLine(group.slug, result, plan.mode));
   }
+  if (missing.length > 0) throw new VisualError(missing.join("; "));
   log(uploadTotalLine(results, plan.mode));
 }
 
@@ -302,11 +337,46 @@ function summaryMode(plan: SavedPlan) {
  * group at a time (they build and capture the base under one lock); an upload takes
  * `VISUAL_PARALLEL` at once, each writing its own `.pixelslash/<slug>/` and uploading to its own
  * server project. A failed group does not stop the others; the summary runs only when none failed.
+ *
+ * The split run takes the same three steps one invocation at a time: `--plan-only` writes the plan
+ * (and, for a local compare, builds the base, which starts no browser), `--group <slug>` runs the
+ * named groups of the saved plan, and `--summary-only` totals the saved plan's results.
  */
 async function main() {
-  if (!process.argv.includes("--run")) throw new VisualError("give --run [--upload] [--all]");
-  const plan = await planMode();
+  if (!process.argv.includes("--run"))
+    throw new VisualError(
+      "give --run [--upload] [--all] [--plan-only | --group <slug>... | --summary-only]",
+    );
+  const step = stepFrom(process.argv.slice(2));
   const parallel = upload ? parallelFrom(process.env["VISUAL_PARALLEL"]) : 1;
+  if (step.kind === "summary") {
+    summaryMode(savedPlanFrom(readPlan()));
+    return;
+  }
+  if (step.kind === "groups") {
+    const plan = savedPlanFrom(readPlan());
+    const head = await git(repoRoot, "rev-parse", "HEAD");
+    const groups = pickGroups(plan, {
+      upload,
+      all: everything || upload,
+      head,
+      slugs: step.slugs,
+    });
+    await ensurePixelslashInstall();
+    await eachAtOnce(groups, parallel, (group) => groupMode(plan, group));
+    return;
+  }
+  const plan = await planMode();
+  if (step.kind === "plan") {
+    // An upload compares against the server's builds; a local compare needs the base built.
+    if (!upload && plan.groups.some((g) => !g.skipped))
+      await withBaselineLock(() => buildBase(plan.sha));
+    log(
+      `plan saved; run each group with --group <slug>: ${plan.groups.map((g) => g.slug).join(", ")}`,
+    );
+    log("then total them with --summary-only");
+    return;
+  }
   await eachAtOnce(plan.groups, parallel, (group) => groupMode(plan, group));
   summaryMode(plan);
 }
