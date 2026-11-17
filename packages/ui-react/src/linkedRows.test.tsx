@@ -9,8 +9,9 @@ import { TextLink } from "./TextLink.js";
 
 // A linked ListRow, TableRow and Card hold their own links and buttons. The row link is never an
 // ancestor of them, so a click on one is not a click on the row; the row (or card) lifts them
-// above the stretched link with `liftInteractive`, which a browser, not jsdom, lays out
-// (`card-under-sticky-bars.spec.ts` and `list-row-button.spec.ts` click them there).
+// above the stretched link with `liftInteractive`, which a browser, not jsdom, lays out. A Card's
+// lift is clicked in a browser by `card-under-sticky-bars.spec.ts`, and a button ListRow's by
+// `list-row-button.spec.ts`; a linked ListRow's and a TableRow's have no browser spec yet.
 
 const clicks = {
   row: vi.fn<() => void>(),
