@@ -30,7 +30,14 @@ tasks:
     inputs: ["**/*", "@group(deps)"]
   lint:
     command: "bun run lint"
-    inputs: ["**/*", "@group(deps)"]
+    # The testing config this project's .oxlintrc.json extends: another project's files.
+    inputs:
+      [
+        "**/*",
+        "@group(deps)",
+        "/packages/oxlint-testing/.oxlintrc.json",
+        "/packages/oxlint-testing/plugin.js",
+      ]
   # scripts/visual-plan.test.ts and visual-shots.test.ts read the theme files (themeFiles, readRepo).
   test:
     command: "bun run test"
