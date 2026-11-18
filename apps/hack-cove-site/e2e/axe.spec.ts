@@ -1,6 +1,6 @@
 import { AxeBuilder } from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
-import { shardPages } from "./shard";
+import { sitePages } from "../test/pages";
 
 /** WCAG 2.1 AA: the levels A and AA of WCAG 2.0 and of 2.1. */
 const tags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
@@ -86,7 +86,7 @@ for (const colorScheme of ["light", "dark"] as const) {
   test.describe(`${colorScheme} scheme`, () => {
     test.use({ colorScheme });
 
-    for (const path of shardPages()) {
+    for (const path of sitePages) {
       test(`${path}: no WCAG 2.1 AA violations`, async ({ page }) => {
         await page.goto(path);
         const known = knownAxe.filter((entry) => entry.page === path).map((entry) => entry.rule);

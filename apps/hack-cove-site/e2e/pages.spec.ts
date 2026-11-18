@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { shardPages } from "./shard";
+import { sitePages } from "../test/pages";
 
 /**
  * Pages whose h1 count is a known finding, each with the ticket that fixes it. The page stays in the
@@ -25,7 +25,7 @@ const knownH1: readonly { page: string; ticket: string }[] = [
 
 // Every page the site builds, on desktop and on a phone: it is served, it has exactly one h1, and
 // nothing on it scrolls sideways (content off the side of a phone cannot be reached).
-for (const path of shardPages()) {
+for (const path of sitePages) {
   test(`${path}: served, one h1, nothing scrolls sideways`, async ({ page }) => {
     const response = await page.goto(path);
     expect(response?.status()).toBe(200);
