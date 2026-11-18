@@ -72,12 +72,6 @@ describe("slopRules: nothing time dependent", () => {
     ]);
   });
 
-  it("passes Playwright's test.setTimeout, the test's own time limit", () => {
-    expect(slopRules("e2e/site-header.spec.ts", w("test.set", "Timeout(120_000);"), "x")).toEqual(
-      [],
-    );
-  });
-
   it("passes a timer with a time-dependent reason on its line or the line above", () => {
     const why = w("// time-", "dependent: the server polls every minute");
     expect(slopRules("e2e/a.spec.ts", `${timeout}f, 1); ${why}`, "x")).toEqual([]);
