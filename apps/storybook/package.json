@@ -7,7 +7,7 @@
     "storybook": "storybook dev -p 6006",
     "build": "storybook build",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint -c ../../.oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
+    "lint": "oxlint -c .oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
     "test": "vitest run scripts playwright.config.test.ts",
     "test:e2e": "playwright test",
     "visual": "bun scripts/visual.ts --run",

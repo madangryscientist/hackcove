@@ -26,9 +26,7 @@ for (const { id, name, light, dark } of stories) {
     await expect(toggle).toHaveCount(1);
 
     const setScheme = (classes: string) =>
-      page.evaluate((value) => {
-        document.documentElement.className = value;
-      }, classes);
+      page.evaluate((value) => document.documentElement.setAttribute("class", value), classes);
 
     await setScheme(light);
     await expect(toggle).toHaveAccessibleName("Switch to dark theme");

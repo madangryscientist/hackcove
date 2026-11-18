@@ -30,10 +30,13 @@ const stories = [
 const open = async (page: Page, id: string, theme: string) => {
   await page.setViewportSize({ width: WIDTH, height: 700 });
   await page.goto(`/iframe.html?id=${id}&viewMode=story&globals=theme:${theme}`);
-  const menu = page.getByRole("banner").locator("details");
+  // The Menu is a native `<details>` (a group); its `<summary>` is the button, found by its text.
+  const menu = page.getByRole("banner").getByRole("group");
   await menu.waitFor();
   return menu;
 };
+
+const menuButton = (menu: Locator) => menu.getByText("Menu", { exact: true });
 
 const noSidewaysScroll = (page: Page) =>
   page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
@@ -67,7 +70,7 @@ for (const { id: theme } of themes) {
         page,
       }) => {
         const menu = await open(page, id, theme);
-        const button = menu.getByText("Menu", { exact: true });
+        const button = menuButton(menu);
 
         // Closed: the links are not on screen, and nothing scrolls sideways.
         await expect(menu.getByRole("link").first()).toBeHidden();
@@ -95,7 +98,7 @@ test("the Menu button works from the keyboard: Enter and Space open it, Tab ente
   page,
 }) => {
   const menu = await open(page, "layout-appshell--long-page", "default");
-  const button = menu.locator("summary");
+  const button = menuButton(menu);
 
   await button.focus();
   await page.keyboard.press("Enter");
@@ -126,22 +129,16 @@ test("from md there is no Menu button and the nav and subnav are rows", async ({
   const header = page.getByRole("banner");
   await expect(header.getByRole("link", { name: "Builds" })).toBeVisible();
   await expect(header.getByRole("link", { name: "Branches" })).toBeVisible();
-  await expect(header.locator("summary")).toBeHidden();
+  await expect(header.getByText("Menu", { exact: true })).toBeHidden();
 });
-
-/** The Menu button sits wholly inside the viewport's width. */
-async function inViewport(page: Page, button: Locator): Promise<boolean> {
-  const box = await button.boundingBox();
-  const width = page.viewportSize()?.width ?? 0;
-  return !!box && box.width > 0 && box.x >= 0 && box.x + box.width <= width;
-}
 
 test(`at ${WIDTH}px menuControls are at the top of the Menu, each operable, with the nav after them`, async ({
   page,
 }) => {
   const menu = await open(page, "layout-appshell--menu-controls", "default");
-  const button = menu.locator("summary");
-  expect(await inViewport(page, button), "the Menu button is off screen").toBe(true);
+  const button = menuButton(menu);
+  // The Menu button sits wholly on screen.
+  await expect(button).toBeInViewport({ ratio: 1 });
 
   const project = page.getByLabel("Project");
   const environment = page.getByLabel("Environment");
@@ -181,7 +178,7 @@ test("at 1280px menuControls are in the header, once each, with no Menu button",
     "/iframe.html?id=layout-appshell--menu-controls&viewMode=story&globals=theme:default",
   );
   const header = page.getByRole("banner");
-  await expect(header.locator("summary")).toBeHidden();
+  await expect(header.getByText("Menu", { exact: true })).toBeHidden();
 
   const project = page.getByLabel("Project");
   const environment = page.getByLabel("Environment");
@@ -202,8 +199,9 @@ test(`at ${WIDTH}px controls that overflow the row clip, and the Menu button sta
   page,
 }) => {
   const menu = await open(page, "layout-appshell--crowded-controls", "default");
-  const button = menu.locator("summary");
-  expect(await inViewport(page, button), "the Menu button is off screen").toBe(true);
+  const button = menuButton(menu);
+  // The Menu button sits wholly on screen.
+  await expect(button).toBeInViewport({ ratio: 1 });
   await button.click();
   await expect(menu).toHaveJSProperty("open", true);
   for (const link of await menu.getByRole("link").all()) {

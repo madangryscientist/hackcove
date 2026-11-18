@@ -17,7 +17,9 @@ const open = async (page: Page, id: string, theme: string, width: number) => {
   await page.getByRole("banner").waitFor();
 };
 
-const menuButton = (page: Page) => page.getByRole("banner").locator("summary");
+// The Menu is a native `<details>` (a group); its `<summary>` is the button, found by its text.
+const menu = (page: Page) => page.getByRole("banner").getByRole("group");
+const menuButton = (page: Page) => page.getByRole("banner").getByText("Menu", { exact: true });
 const rowLink = (page: Page) =>
   page.getByRole("banner").getByRole("link", { name: "Settings", exact: true });
 
@@ -41,14 +43,13 @@ for (const { id: theme } of themes) {
       page,
     }) => {
       await open(page, STORY, theme, 900);
-      const menu = page.getByRole("banner").locator("details");
       await expect(menuButton(page)).toBeVisible();
       expect(await sideways(page)).toBeLessThanOrEqual(0);
       await menuButton(page).click();
-      await expect(menu).toHaveJSProperty("open", true);
-      await expect(menu.getByRole("link")).toHaveCount(LINKS);
-      await menu.getByRole("link", { name: "Audit" }).click();
-      await expect(menu).toHaveJSProperty("open", false);
+      await expect(menu(page)).toHaveJSProperty("open", true);
+      await expect(menu(page).getByRole("link")).toHaveCount(LINKS);
+      await menu(page).getByRole("link", { name: "Audit" }).click();
+      await expect(menu(page)).toHaveJSProperty("open", false);
       expect(await sideways(page)).toBeLessThanOrEqual(0);
     });
   });

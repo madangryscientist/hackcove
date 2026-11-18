@@ -1,15 +1,20 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const story = (id: string) => `/iframe.html?id=${id}&viewMode=story`;
+
+/** Escape, or a press of the named button inside the modal. */
+const escape = (page: Page) => page.keyboard.press("Escape");
+const press = (name: string) => (_page: Page, modal: Locator) =>
+  modal.getByRole("button", { name }).click();
 
 // A <dialog> animates out only while it is still in the DOM, so the library calls `onClose` (where
 // the parent unmounts it) after the exit transition has ended. Esc, the footer button and the close
 // button all go through the <dialog>'s own close.
-for (const [id, name, closer] of [
-  ["feedback-dialog--default", "Delete build", "Esc"],
-  ["feedback-dialog--default", "Delete build", "Cancel"],
-  ["feedback-drawer--default", "HC-65 · Tabs", "Esc"],
-  ["feedback-drawer--default", "HC-65 · Tabs", "Close"],
+for (const [id, name, closer, close] of [
+  ["feedback-dialog--default", "Delete build", "Esc", escape],
+  ["feedback-dialog--default", "Delete build", "Cancel", press("Cancel")],
+  ["feedback-drawer--default", "HC-65 · Tabs", "Esc", escape],
+  ["feedback-drawer--default", "HC-65 · Tabs", "Close", press("Close")],
 ] as const) {
   test(`${id} stays on screen while it animates out, then unmounts (${closer})`, async ({
     page,
@@ -17,8 +22,10 @@ for (const [id, name, closer] of [
     await page.goto(story(id));
     const modal = page.getByRole("dialog");
     await expect(modal).toBeVisible();
-    // The enter transition has finished.
-    await expect(modal).toHaveCSS("opacity", "1");
+    // The enter transition has finished: every animation on the dialog has settled.
+    await modal.evaluate((el) =>
+      Promise.all(el.getAnimations({ subtree: true }).map((animation) => animation.finished)),
+    );
     await expect(modal).toHaveAccessibleName(name);
 
     // No clock: each exit transition is paused halfway as it starts, read there, then finished.
@@ -34,8 +41,7 @@ for (const [id, name, closer] of [
       }),
     );
 
-    if (closer === "Esc") await page.keyboard.press("Escape");
-    else await modal.getByRole("button", { name: closer }).click();
+    await close(page, modal);
 
     // Closed, so the page is no longer inert, but the element is still there, partway through its exit.
     await expect
@@ -63,7 +69,7 @@ for (const [id, name, closer] of [
     );
 
     // Then onClose ran and the story unmounted it.
-    await expect(page.locator("dialog")).toHaveCount(0);
+    await expect(page.getByRole("dialog", { includeHidden: true })).toHaveCount(0);
   });
 }
 
@@ -72,5 +78,5 @@ test("Dialog: with reduced motion it closes at once", async ({ page }) => {
   await page.goto(story("feedback-dialog--default"));
   await expect(page.getByRole("dialog")).toBeVisible();
   await page.keyboard.press("Escape");
-  await expect(page.locator("dialog")).toHaveCount(0, { timeout: 150 });
+  await expect(page.getByRole("dialog", { includeHidden: true })).toHaveCount(0, { timeout: 150 });
 });

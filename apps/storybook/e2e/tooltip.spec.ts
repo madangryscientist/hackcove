@@ -1,6 +1,10 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 const story = (id: string) => `/iframe.html?id=${id}&viewMode=story`;
+
+/** A tooltip that repeats its trigger's name is aria-hidden, so it is found among the hidden ones. */
+const hiddenTip = (page: Page, text: string) =>
+  page.getByRole("tooltip", { includeHidden: true }).filter({ hasText: text });
 
 test("a blocked Button shows its reason on keyboard focus, as its description, and Escape hides it", async ({
   page,
@@ -29,8 +33,9 @@ test("an IconButton shows its label on hover and hides it when the pointer leave
   await page.goto(story("actions-iconbutton--do-label"));
   const button = page.getByRole("button", { name: "Delete quote" });
   await expect(button).toBeVisible();
-  // The tooltip repeats the name, so it is hidden from assistive tech: found by its text.
-  const tip = page.locator("[role=tooltip]", { hasText: "Delete quote" });
+  // The tooltip repeats the name, so it is hidden from assistive tech: found by its role among the
+  // hidden ones, and its text.
+  const tip = hiddenTip(page, "Delete quote");
 
   await button.hover();
   // The half-second wait is a CSS animation delay; a web-first assertion waits it out.
@@ -45,7 +50,7 @@ test("an IconButton's hover tooltip closes on Escape with the pointer still over
   await page.goto(story("actions-iconbutton--do-label"));
   const button = page.getByRole("button", { name: "Delete quote" });
   await expect(button).toBeVisible();
-  const tip = page.locator("[role=tooltip]", { hasText: "Delete quote" });
+  const tip = hiddenTip(page, "Delete quote");
 
   await button.hover();
   await expect(tip).toBeVisible();
@@ -63,7 +68,7 @@ for (const [id, text] of [
 ] as const) {
   test(`${id} holds its tooltip open`, async ({ page }) => {
     await page.goto(story(id));
-    const tip = page.locator("[role=tooltip]", { hasText: text });
+    const tip = hiddenTip(page, text);
     await expect(tip).toBeVisible();
     await expect(tip).toBeInViewport({ ratio: 1 });
   });
@@ -89,7 +94,7 @@ test("the arrow keys reach a Tabs option with a disabledReason, choose nothing a
 test("the Menu trigger shows its name on hover and hides it when pressed", async ({ page }) => {
   await page.goto(story("actions-menu--closed"));
   const trigger = page.getByRole("button", { name: "More actions" });
-  const tip = page.locator("[role=tooltip]", { hasText: "More actions" });
+  const tip = hiddenTip(page, "More actions");
   await trigger.hover();
   await expect(tip).toBeVisible();
   await trigger.click();

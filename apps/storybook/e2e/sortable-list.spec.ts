@@ -2,9 +2,12 @@ import { expect, type Locator, type Page, test } from "@playwright/test";
 
 const story = (id: string) => `/iframe.html?id=${id}&viewMode=story`;
 
-/** The moves a story's list reported, in order (the story writes them on its caption). */
+/** The moves a story's list reported, in order (the story writes them on its caption, as data). */
 async function moves(page: Page, index = 0): Promise<unknown> {
-  const raw = await page.locator("[data-moves]").nth(index).getAttribute("data-moves");
+  const raw = await page
+    .getByText(/^(No moves yet\.|\d+ moved\.)$/)
+    .nth(index)
+    .getAttribute("data-moves");
   return JSON.parse(raw ?? "[]");
 }
 
@@ -64,13 +67,13 @@ async function pickUp(page: Page, rowIndex: number) {
   }
   await page.keyboard.press("ArrowRight");
   await expect(grid.getByRole("button", { name: `Reorder ${ROWS[rowIndex] ?? ""}` })).toBeFocused();
-  await startDrag(page);
+  await startDrag(page, ROWS[rowIndex] ?? "");
 }
 
-/** Enter on the focused handle, then wait until its row is dragging. */
-async function startDrag(page: Page) {
+/** Enter on the focused handle of `title`'s row, then wait until that row is dragging. */
+async function startDrag(page: Page, title: string) {
   await page.keyboard.press("Enter");
-  await expect(page.locator('[role="row"][data-dragging]')).toHaveCount(1);
+  await expect(row(list(page), title)).toHaveAttribute("data-dragging");
   // The row is marked before react-aria's drag manager takes the keyboard; it moves focus to the
   // list it drops into when it does, and a key pressed before that is lost.
   await expect(list(page)).toBeFocused();
@@ -168,11 +171,11 @@ for (const [name, keys] of [
     // The move ends with focus back on the handle and the order unchanged.
     const handle = grid.getByRole("button", { name: `Reorder ${URGENT[1]}` });
     await expect(handle).toBeFocused();
-    await expect(page.locator('[role="row"][data-dragging]')).toHaveCount(0);
+    await expect(row(grid, URGENT[1])).not.toHaveAttribute("data-dragging");
     expect(await sectionTitles(grid, "Urgent")).toEqual([...URGENT]);
     // A cancelled move fires nothing, so there is no event to wait for: a finished move after it
     // lands, and must be the only one reported.
-    await startDrag(page);
+    await startDrag(page, URGENT[1]);
     await press(page, ["ArrowUp", "ArrowUp", "Enter"]);
     await expect
       .poll(() => moves(page))

@@ -1,21 +1,28 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 const storyUrl = (id: string) => `/iframe.html?id=${id}&viewMode=story&globals=theme:default`;
 
-for (const width of [375, 768, 1280]) {
-  test(`at ${width}px the builds table shows from sm and the rows below it`, async ({ page }) => {
-    await page.setViewportSize({ width, height: 800 });
-    await page.goto(storyUrl("layout-show--default"));
-    const table = page.getByRole("table", { name: "Builds" });
-    const rows = page.getByRole("list", { name: "Builds" });
-    if (width >= 640) {
-      await expect(table).toBeVisible();
-      await expect(rows).toBeHidden();
-    } else {
-      await expect(rows).toBeVisible();
-      await expect(table).toBeHidden();
-      await expect(page.getByRole("table")).toHaveCount(0);
-    }
+const builds = async (page: Page, width: number) => {
+  await page.setViewportSize({ width, height: 800 });
+  await page.goto(storyUrl("layout-show--default"));
+  return {
+    table: page.getByRole("table", { name: "Builds" }),
+    rows: page.getByRole("list", { name: "Builds" }),
+  };
+};
+
+test("at 375px the builds show as rows, and no table is rendered", async ({ page }) => {
+  const { table, rows } = await builds(page, 375);
+  await expect(rows).toBeVisible();
+  await expect(table).toBeHidden();
+  await expect(page.getByRole("table")).toHaveCount(0);
+});
+
+for (const width of [768, 1280]) {
+  test(`at ${width}px the builds table shows from sm and the rows are hidden`, async ({ page }) => {
+    const { table, rows } = await builds(page, width);
+    await expect(table).toBeVisible();
+    await expect(rows).toBeHidden();
   });
 }
 

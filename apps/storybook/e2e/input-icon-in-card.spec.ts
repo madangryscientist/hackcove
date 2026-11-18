@@ -1,4 +1,4 @@
-import { expect, test, type Locator } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 import { themeFiles } from "@hackcove/themes-shared/files";
 
 // A Card lifts its fields above a stretched link (`liftInteractive`: `relative z-10`). A click on an
@@ -22,18 +22,31 @@ const isHit = (target: Locator): Promise<boolean> =>
     return hit !== null && el.contains(hit);
   });
 
+/** The three fields, each with a leading icon, in the order the story draws them. */
+const fields = (page: Page) => [
+  page.getByRole("textbox", { name: "Name", exact: true }),
+  page.getByRole("searchbox", { name: "Search", exact: true }),
+  page.getByRole("searchbox", { name: "Search, filled", exact: true }),
+];
+
+/**
+ * The leading icons, in field order: each is an aria-hidden svg, so they are found among the hidden
+ * images. The clear button's icon comes after them.
+ */
+const icons = (page: Page) =>
+  page.getByRole("region", { name: "Filter stores" }).getByRole("img", { includeHidden: true });
+
 for (const { id: theme } of themes) {
   test(`${theme}: a click on an Input's icon in a Card focuses the field`, async ({ page }) => {
     await page.goto(`${story}&globals=theme:${theme}`);
-    const fields = page.locator("input");
-    await expect(fields).toHaveCount(3);
-    for (let i = 0; i < 3; i++) {
-      const icon = fields.nth(i).locator("xpath=preceding-sibling::span[@aria-hidden='true']");
+    await expect(icons(page)).toHaveCount(4);
+    for (const [i, field] of fields(page).entries()) {
+      const icon = icons(page).nth(i);
       await expect(icon).toBeVisible();
-      const box = await icon.boundingBox();
-      if (!box) throw new Error("the icon has no box");
-      await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-      await expect(fields.nth(i)).toBeFocused();
+      // A real mouse click at the icon's centre; `force` skips Playwright's check that the icon is
+      // the topmost element there, since the field under it is meant to take the click.
+      await icon.click({ force: true });
+      await expect(field).toBeFocused();
     }
   });
 

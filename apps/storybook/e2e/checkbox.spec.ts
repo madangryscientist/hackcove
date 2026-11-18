@@ -9,8 +9,23 @@ async function open(page: Page, story: string, theme: string) {
   await page.getByRole("checkbox").first().waitFor();
 }
 
-/** The drawn check mark that belongs to a checkbox: the label's first element, before the input. */
-const mark = (box: Locator) => box.locator("xpath=preceding-sibling::span[1]");
+/**
+ * The drawn check mark inside a checkbox's label or table cell: an aria-hidden svg, so it is found
+ * among the hidden images.
+ */
+const mark = (holder: Locator) => holder.getByRole("img", { includeHidden: true });
+
+/** Where each ticked box in the story lives: its label in the Card, its cell in the table. */
+const ticked = [
+  {
+    name: "Email me when a shop I follow posts",
+    holder: (page: Page) => page.getByText("Email me when a shop I follow posts", { exact: true }),
+  },
+  {
+    name: "Select Hack Cove Finds",
+    holder: (page: Page) => page.getByRole("cell", { name: "Select Hack Cove Finds" }),
+  },
+];
 
 /**
  * Whether the element at the centre of `target` is `target` or inside it. The tick is
@@ -20,7 +35,8 @@ const mark = (box: Locator) => box.locator("xpath=preceding-sibling::span[1]");
  */
 const isHit = (target: Locator): Promise<boolean> =>
   target.evaluate((el) => {
-    const style = el instanceof HTMLElement ? el.style : undefined;
+    // The tick is an svg, so an HTML or an SVG element's inline style.
+    const style = el instanceof HTMLElement || el instanceof SVGElement ? el.style : undefined;
     const before = style?.pointerEvents ?? "";
     if (style) style.pointerEvents = "auto";
     const { left, top, width, height } = el.getBoundingClientRect();
@@ -38,10 +54,10 @@ for (const { id: theme } of themes) {
     page,
   }) => {
     await open(page, "forms-checkbox--in-card", theme);
-    for (const name of ["Email me when a shop I follow posts", "Select Hack Cove Finds"]) {
+    for (const { name, holder } of ticked) {
       const box = page.getByRole("checkbox", { name });
       await expect(box).toBeChecked();
-      const drawn = mark(box);
+      const drawn = mark(holder(page));
       await expect(drawn).toBeVisible();
       expect(await isHit(drawn), `${name}: the tick is the topmost element at its centre`).toBe(
         true,

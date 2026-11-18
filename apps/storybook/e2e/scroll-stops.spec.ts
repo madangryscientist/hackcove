@@ -11,21 +11,23 @@ const settle = (page: Page) =>
 
 const rail = (page: Page) => page.getByRole("complementary", { name: "All sections" });
 const aside = (page: Page) => page.getByRole("complementary", { name: "Quote notes" });
+/** The folded column: the rail's native `<details>`, a group. */
+const column = (page: Page) => rail(page).getByRole("group");
+/** The aside's scroller while it holds a tab stop: a group named as the aside is. */
+const asideStop = (page: Page) => aside(page).getByRole("group", { name: "Quote notes" });
 
 test.describe("a SidebarLayout with railLabel opens its folded column for real", () => {
   test("at 1280x720 the <details> is open and the rail's links are visible", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto(storyUrl("page-layouts-sidebarlayout--long-rail"));
-    const column = rail(page).locator("details");
-    await expect(column).toHaveJSProperty("open", true);
+    await expect(column(page)).toHaveJSProperty("open", true);
     await expect(rail(page).getByRole("link", { name: "Section 1", exact: true })).toBeVisible();
   });
 
   test("at 400 wide it is closed and the summary shows", async ({ page }) => {
     await page.setViewportSize({ width: 400, height: 800 });
     await page.goto(storyUrl("page-layouts-sidebarlayout--long-rail"));
-    const column = rail(page).locator("details");
-    await expect(column).toHaveJSProperty("open", false);
+    await expect(column(page)).toHaveJSProperty("open", false);
     await expect(rail(page).getByText("All sections")).toBeVisible();
     await expect(rail(page).getByRole("link").first()).toBeHidden();
   });
@@ -33,13 +35,12 @@ test.describe("a SidebarLayout with railLabel opens its folded column for real",
   test("resizing across md follows, both ways", async ({ page }) => {
     await page.setViewportSize({ width: 400, height: 800 });
     await page.goto(storyUrl("page-layouts-sidebarlayout--long-rail"));
-    const column = rail(page).locator("details");
-    await expect(column).toHaveJSProperty("open", false);
+    await expect(column(page)).toHaveJSProperty("open", false);
     await page.setViewportSize({ width: 1280, height: 800 });
-    await expect(column).toHaveJSProperty("open", true);
+    await expect(column(page)).toHaveJSProperty("open", true);
     await expect(rail(page).getByRole("link", { name: "Section 1", exact: true })).toBeVisible();
     await page.setViewportSize({ width: 400, height: 800 });
-    await expect(column).toHaveJSProperty("open", false);
+    await expect(column(page)).toHaveJSProperty("open", false);
     await expect(rail(page).getByText("All sections")).toBeVisible();
   });
 });
@@ -47,15 +48,19 @@ test.describe("a SidebarLayout with railLabel opens its folded column for real",
 test("a sticky rail of links that overflows has no tab stop of its own", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto(storyUrl("page-layouts-sidebarlayout--tall-rail"));
-  const scroller = page.getByRole("complementary", { name: "All sections" }).locator("> div");
-  await expect(scroller).toBeVisible();
-  expect(
-    await scroller.evaluate((el) => el.scrollHeight > el.clientHeight),
-    "the rail overflows",
-  ).toBe(true);
+  const sections = rail(page).getByRole("navigation", { name: "Sections" });
+  await expect(sections.getByRole("link", { name: "Section 1", exact: true })).toBeInViewport();
+  // The rail overflows: its last link is below the room it has.
+  await expect(
+    sections.getByRole("link", { name: "Section 60", exact: true }),
+  ).not.toBeInViewport();
   await settle(page);
-  await expect(scroller).not.toHaveAttribute("tabindex", /.*/);
-  await expect(scroller).not.toHaveAttribute("role", /.*/);
+  // Tab from the header's last link goes straight to the rail's first link: no stop in between.
+  await page.getByRole("banner").getByRole("link", { name: "Settings" }).focus();
+  await page.keyboard.press("Tab");
+  await expect(sections.getByRole("link", { name: "Section 1", exact: true })).toBeFocused();
+  // And nothing in the rail is a named scroll stop.
+  await expect(rail(page).getByRole("group", { name: "All sections" })).toHaveCount(0);
 });
 
 test.describe("a sticky DetailLayout aside of plain text", () => {
@@ -64,19 +69,13 @@ test.describe("a sticky DetailLayout aside of plain text", () => {
   }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
     await page.goto(storyUrl("page-layouts-detaillayout--sticky-aside-text"));
-    const scroller = aside(page).locator("> div");
+    const scroller = asideStop(page);
     await expect(scroller).toHaveAttribute("tabindex", "0");
-    await expect(scroller).toHaveAttribute("role", "group");
-    await expect(scroller).toHaveAttribute("aria-label", "Quote notes");
     expect(await scroller.evaluate((el) => el.scrollHeight > el.clientHeight)).toBe(true);
-    // The stop is reached with Tab, not only with a script's focus().
+    // The stop is reached with Tab, not only with a script's focus(): it is the next stop after
+    // Edit, since the record's blocks between them hold nothing the keyboard reaches.
     await page.getByRole("button", { name: "Edit" }).focus();
-    for (
-      let i = 0;
-      i < 10 && !(await scroller.evaluate((el) => el === document.activeElement));
-      i++
-    )
-      await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
     await expect(scroller).toBeFocused();
     const before = await scroller.evaluate((el) => el.scrollTop);
     await page.keyboard.press("ArrowDown");
@@ -86,23 +85,21 @@ test.describe("a sticky DetailLayout aside of plain text", () => {
   test("takes none when it fits, and again when it stops fitting", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 2400 });
     await page.goto(storyUrl("page-layouts-detaillayout--sticky-aside-text"));
-    const scroller = aside(page).locator("> div");
-    await expect(scroller).toBeVisible();
-    expect(await scroller.evaluate((el) => el.scrollHeight > el.clientHeight)).toBe(false);
+    // It fits: its last note is on screen with the rest of the aside.
+    await expect(aside(page).getByText(/^Note 18:/)).toBeInViewport({ ratio: 1 });
     await settle(page);
-    await expect(scroller).not.toHaveAttribute("tabindex", /.*/);
+    await expect(asideStop(page)).toHaveCount(0);
     await page.setViewportSize({ width: 1280, height: 720 });
-    await expect(scroller).toHaveAttribute("tabindex", "0");
+    await expect(asideStop(page)).toHaveAttribute("tabindex", "0");
     await page.setViewportSize({ width: 1280, height: 2400 });
-    await expect(scroller).not.toHaveAttribute("tabindex", /.*/);
+    await expect(asideStop(page)).toHaveCount(0);
   });
 
   test("below lg nothing scrolls, so nothing takes a stop", async ({ page }) => {
     await page.setViewportSize({ width: 800, height: 720 });
     await page.goto(storyUrl("page-layouts-detaillayout--sticky-aside-text"));
-    const scroller = aside(page).locator("> div");
-    await expect(scroller).toBeVisible();
+    await expect(aside(page)).toBeVisible();
     await settle(page);
-    await expect(scroller).not.toHaveAttribute("tabindex", /.*/);
+    await expect(asideStop(page)).toHaveCount(0);
   });
 });

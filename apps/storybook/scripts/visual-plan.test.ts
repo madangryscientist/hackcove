@@ -208,6 +208,13 @@ describe("planCapture", () => {
   });
 });
 
+/** The title a story file must carry: the site's for its page, else (an Overview file) its own. */
+const wantedTitle = (expected: Map<string, string>, file: { path: string; title: string }) =>
+  expected.get(file.path) ?? file.title;
+
+/** Whether a sidebar title (undefined for a path with no story file) is one of `titles`. */
+const isIn = (titles: string[]) => (title: string | undefined) => titles.includes(title ?? "");
+
 /** A theme id as code would name it: a string, alone or as its file name, not a word in a comment. */
 const escaped = (text: string) => text.replaceAll(/[.*+?^$|()[\]{}\\]/g, "\\$&");
 const quoted = (id: string) => new RegExp(`["'\`/]${escaped(id)}(\\.css)?["'\`]`);
@@ -253,7 +260,7 @@ describe("this repo", () => {
     );
     // A story file the site's sections do not name is an Overview one, and keeps its own title.
     const wrong = real.storyFiles
-      .filter((file) => file.title !== (expected.get(file.path) ?? file.title))
+      .filter((file) => file.title !== wantedTitle(expected, file))
       .map((file) => `${file.path}: ${file.title} (want ${expected.get(file.path)})`);
     expect(wrong).toEqual([]);
     const outside = real.storyFiles.filter((file) => !expected.has(file.path));
@@ -271,7 +278,7 @@ describe("this repo", () => {
       ...real.sections.map((section) => section.title),
     ]);
     expect(railTitles.filter((title) => titles.includes(title))).toEqual([
-      ...new Set(titles.filter((title) => railTitles.includes(title ?? ""))),
+      ...new Set(titles.filter(isIn(railTitles))),
     ]);
   });
 });

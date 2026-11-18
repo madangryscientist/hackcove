@@ -9,6 +9,16 @@ const segment = (page: Page, part: "day" | "month" | "year", side: "Start" | "En
 const sideText = (page: Page, side: "Start" | "End") =>
   page.getByRole("group", { name: `${side} date` });
 
+/**
+ * What a form around the picker would post, read as data by each field's name: the posted values
+ * are hidden inputs, which a user never sees, so they are read the way the form submission reads them.
+ */
+const posted = (page: Page, name: string) =>
+  page.evaluate((field) => {
+    const input = document.getElementsByName(field)[0];
+    return input instanceof HTMLInputElement ? input.value : null;
+  }, name);
+
 const caption = (page: Page) => page.getByText(/^(From .* to .*\.|No period yet\.)$/);
 
 // DoPresets holds the range in its own state and prints it, and posts it under `from` and `to`.
@@ -25,8 +35,8 @@ test.describe("DateRangePicker", () => {
     await page.keyboard.type("31102026");
 
     await expect(caption(page)).toHaveText("From 2026-10-01 to 2026-10-31.");
-    await expect(page.locator('input[name="from"]')).toHaveValue("2026-10-01");
-    await expect(page.locator('input[name="to"]')).toHaveValue("2026-10-31");
+    await expect.poll(() => posted(page, "from")).toBe("2026-10-01");
+    await expect.poll(() => posted(page, "to")).toBe("2026-10-31");
   });
 
   test("an end before the start reports null and marks the field invalid", async ({ page }) => {
@@ -38,8 +48,8 @@ test.describe("DateRangePicker", () => {
 
     await expect(caption(page)).toHaveText("No period yet.");
     await expect(page.getByText("The end date is before the start date.")).toBeVisible();
-    await expect(sideText(page, "End").locator("[aria-invalid=true]").first()).toBeAttached();
-    await expect(page.locator('input[name="from"]')).toHaveValue("");
+    await expect(segment(page, "day", "End")).toHaveAttribute("aria-invalid", "true");
+    await expect.poll(() => posted(page, "from")).toBe("");
   });
 
   test("two clicks in the calendar pick the range and close it", async ({ page }) => {
