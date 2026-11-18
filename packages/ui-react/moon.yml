@@ -11,7 +11,9 @@ tasks:
     inputs: ["**/*"]
   lint:
     command: "bun run lint"
-    inputs: ["**/*"]
+    # The testing config this project's .oxlintrc.json extends: another project's files.
+    inputs:
+      ["**/*", "/packages/oxlint-testing/.oxlintrc.json", "/packages/oxlint-testing/plugin.js"]
   test:
     command: "bun run test"
     inputs: ["**/*"]

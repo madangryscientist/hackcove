@@ -10,7 +10,6 @@ import { resolve } from "node:path";
 import { lint } from "../packages/oxlint-testing/scripts/lint";
 
 const PROJECTS = [
-  "packages/ui-react",
   "apps/storybook",
   "apps/hack-cove-site",
   "tools/ui-review",

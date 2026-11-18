@@ -62,9 +62,10 @@ bunx moon run hack-cove-site:e2e                 # Playwright: builds the site, 
 moon runs every task through the cache, so an unchanged project is a cache hit; `--force` reruns
 one anyway. Lint rules are all errors: fix the code, do not disable a rule.
 
-`bun run lint:testing` reports, per project and per rule, what the shared testing lint
-(`@hackcove/oxlint-testing`) finds in the tests, and always exits 0. It is not part of the gate yet:
-each project moves into its own `lint` once its count is 0 (`packages/oxlint-testing/README.md`).
+The shared testing lint (`@hackcove/oxlint-testing`) is part of `ui-react`'s `lint`, so a ui-react
+test that walks the DOM fails the gate. For every other project, `bun run lint:testing` reports, per
+project and per rule, what it finds in the tests, and always exits 0. Each project moves into its own
+`lint` once its count is 0 (`packages/oxlint-testing/README.md`).
 
 **Nothing is time dependent.** Jacobus, 2026-11-14: "The architecture of the test is wrong if it relies on timings for displaying it. We should be able to pass it in a value and then render that. It should not be time dependent. The component itself should not be time dependent." A component renders from the value it is given, and a test passes that value and asserts what renders. No fake timers, no waiting on a delay, no story driven by a timer, no `waitForTimeout` in an e2e spec. A visual delay, a fade or a label that reverts is CSS (an animation and its delay), as `CopyButton` and `NavigationProgress` do; a pending state is a value the story holds (a promise that never settles, or a button that lands it). The lint (`scripts/slopRules.ts`) fails a test, story or e2e file that uses a fake or real timer, and a `@hackcove/ui-react` component that calls `setTimeout` or `setInterval`; a line with `// time-dependent: <why>` on it or above it is exempt, and needs a reason a reviewer accepts.
 
