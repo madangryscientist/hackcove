@@ -178,7 +178,7 @@ export const pagelayouts: ComponentSection = {
         'The rail is an `<aside>` named `navLabel`; each group is a `<nav>` named by its title (the top group by `navLabel`), and the current page has `aria-current="page"`.',
         "The title is the page's one `h1`.",
         'The On this page list is one `<nav>` named `contentsLabel` at every width, so there is one copy of each link; the entry for `current` has `aria-current="location"`.',
-        'Previous and next are one `<nav>` named from `previousLabel` and `nextLabel`; each link\'s name is the word and the page ("Previous: Install").',
+        'Previous and next are one `<nav>` named from `previousLabel` and `nextLabel`; each link\'s name is its visible text, the word then the page ("Previous Install").',
       ],
       api: ["DocsLayout"],
       types: ["DocsHeading", "DocsNavGroup", "DocsNeighbour"],

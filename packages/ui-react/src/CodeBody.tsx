@@ -3,6 +3,15 @@ import { CodeText } from "./CodeText.js";
 import { CopyButton } from "./CopyButton.js";
 import { cx, themedScrollbar } from "./cx.js";
 import { consoleCommands, type CodeLanguage } from "./highlight.js";
+import { useScrollStop } from "./scrollStop.js";
+
+/**
+ * The strip's focus ring, drawn inside it: the frame around the code clips anything outside the
+ * strip. `focusRing` with `-outline-offset-2` added would not do, since `outline-offset-2` comes
+ * later in the CSS and wins.
+ */
+const INSET_RING =
+  "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-violet-600";
 
 /**
  * The code of a `CodeBlock` or a `CodeExample`: the `<pre>` and, with `copy`, a `CopyButton` beside
@@ -25,9 +34,21 @@ export function CodeBody({
   wrap: boolean;
   copy: boolean;
 }): ReactElement {
+  // A strip that scrolls sideways holds no link or button, so when it overflows it takes a tab
+  // stop of its own, or the keyboard could never scroll it (axe's scrollable-region-focusable).
+  const { attach, stop } = useScrollStop("x");
+  const tabStop = !wrap && stop;
   return (
     <div className={cx("flex items-start", copy && "gap-1 pr-1.5")}>
-      <div className={cx("min-w-0 flex-1", !wrap && `overflow-x-auto ${themedScrollbar}`)}>
+      <div
+        ref={wrap ? undefined : attach}
+        tabIndex={tabStop ? 0 : undefined}
+        className={cx(
+          "min-w-0 flex-1",
+          !wrap && `overflow-x-auto ${themedScrollbar}`,
+          tabStop && INSET_RING,
+        )}
+      >
         <pre
           className={cx(
             "px-3 py-2.5 font-mono text-[12.5px] leading-normal text-slate-900",

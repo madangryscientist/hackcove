@@ -38,12 +38,8 @@ describe("rankSiteSearch", () => {
   });
 });
 
-/** The first of the two triggers (the wide one; the other is the phone's icon button). */
-function firstTrigger(): HTMLElement {
-  const [first] = screen.getAllByRole("button", { name: "Search components" });
-  if (!first) throw new Error("no trigger");
-  return first;
-}
+/** The wide trigger (the other is the phone's icon button), named by its visible text. */
+const firstTrigger = (): HTMLElement => screen.getByRole("button", { name: "Search" });
 
 const search = () => render(<SiteSearch items={ITEMS} label="Search components" />);
 
@@ -61,13 +57,21 @@ function lastKeyPrevented(): () => boolean | undefined {
 }
 
 describe("SiteSearch", () => {
-  it("renders two triggers named by the label, showing Ctrl K, and no dialog until asked", () => {
+  it("renders two triggers, showing Ctrl K, and no dialog until asked", () => {
     search();
-    const triggers = screen.getAllByRole("button", { name: "Search components" });
-    expect(triggers).toHaveLength(2);
+    const triggers = [firstTrigger(), screen.getByRole("button", { name: "Search components" })];
     expect(triggers.map((t) => t.getAttribute("aria-haspopup"))).toEqual(["dialog", "dialog"]);
+    expect(screen.getAllByRole("button")).toHaveLength(2);
     expect(screen.getByText("Ctrl K")).not.toBeNull();
     expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("names the wide trigger by its visible text alone, the shortcut hidden from the name", () => {
+    search();
+    const trigger = firstTrigger();
+    expect(trigger.hasAttribute("aria-label")).toBe(false);
+    expect(trigger.getAttribute("aria-keyshortcuts")).toBe("Control+K Meta+K");
+    expect(screen.getByText("Ctrl K").getAttribute("aria-hidden")).toBe("true");
   });
 
   it("opens on Ctrl+K, named by the label, and the browser's own shortcut is prevented", async () => {

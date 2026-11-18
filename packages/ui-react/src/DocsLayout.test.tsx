@@ -132,7 +132,9 @@ describe("DocsLayout", () => {
     });
     expect(screen.getByRole("navigation", { name: "Auf dieser Seite" })).toBeTruthy();
     const pager = screen.getByRole("navigation", { name: "Zurück and Weiter" });
-    expect(within(pager).getByRole("link", { name: "Zurück: Start" })).toBeTruthy();
-    expect(within(pager).getByRole("link", { name: "Weiter: Deploy" })).toBeTruthy();
+    const back = within(pager).getByRole("link", { name: "Zurück Start" });
+    const onwards = within(pager).getByRole("link", { name: "Weiter Deploy" });
+    expect(back.hasAttribute("aria-label")).toBe(false);
+    expect(onwards.hasAttribute("aria-label")).toBe(false);
   });
 });

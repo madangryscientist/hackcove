@@ -16,14 +16,16 @@ function holdsTabbable(scroller: HTMLElement): boolean {
 }
 
 /**
- * The keyboard side of a box that scrolls (a `Dialog`'s body, a sticky column): a box that
- * overflows and holds nothing the keyboard can reach has no way to be scrolled from the keyboard,
- * so it takes a tab stop (axe's `scrollable-region-focusable`). A box that holds a link, a field or
- * a button needs none: the keyboard scrolls it by moving focus inside. `attach` is the box's `ref`;
- * `element` is the box once it is mounted; `stop` is whether it takes the tab stop. Attach it to
- * nothing and `stop` stays false.
+ * The keyboard side of a box that scrolls (a `Dialog`'s body, a sticky column, a code strip): a
+ * box that overflows along `axis` and holds nothing the keyboard can reach has no way to be
+ * scrolled from the keyboard, so it takes a tab stop (axe's `scrollable-region-focusable`). A box
+ * that holds a link, a field or a button needs none: the keyboard scrolls it by moving focus
+ * inside. `attach` is the box's `ref`; `element` is the box once it is mounted; `stop` is whether
+ * it takes the tab stop. Attach it to nothing and `stop` stays false. `axis` is the way the box
+ * scrolls: "y" (down, the default) or "x" (sideways); overflow the other way is not measured,
+ * since the box does not scroll that way.
  */
-export function useScrollStop(): {
+export function useScrollStop(axis: "x" | "y" = "y"): {
   element: HTMLElement | null;
   attach: (el: HTMLDivElement | null) => void;
   stop: boolean;
@@ -34,8 +36,11 @@ export function useScrollStop(): {
   useEffect(() => {
     // jsdom (a consumer's own tests) has no ResizeObserver.
     if (!element || typeof ResizeObserver === "undefined") return undefined;
-    const measure = () =>
-      setStop(element.scrollHeight > element.clientHeight && !holdsTabbable(element));
+    const overflows = () =>
+      axis === "y"
+        ? element.scrollHeight > element.clientHeight
+        : element.scrollWidth > element.clientWidth;
+    const measure = () => setStop(overflows() && !holdsTabbable(element));
     // Each observer reports once when it starts, and again when the box is resized, its content
     // changes or something in it becomes (un)reachable by the keyboard.
     const resize = new ResizeObserver(measure);
@@ -52,7 +57,7 @@ export function useScrollStop(): {
       resize.disconnect();
       change.disconnect();
     };
-  }, [element]);
+  }, [element, axis]);
 
   return { element, attach: setElement, stop: stop && element !== null };
 }

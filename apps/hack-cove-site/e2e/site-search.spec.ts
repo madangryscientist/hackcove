@@ -11,7 +11,8 @@ test(`from /, Ctrl+K opens the search and "dia" Enter lands on /ui/dialog/`, asy
   await page.goto("/");
   await searchReady(page);
   await expect(
-    page.getByRole("banner").getByRole("button", { name: "Search components" }),
+    // Desktop: the button's visible text, "Search". Phone: the icon button, named by `label`.
+    page.getByRole("banner").getByRole("button", { name: /^Search( components)?$/ }),
   ).toBeVisible();
 
   await page.keyboard.press("Control+k");

@@ -9,7 +9,7 @@ const story = "/iframe.html?id=navigation-sitesearch--default&viewMode=story";
 
 const open = async (page: Page) => {
   await page.goto(story);
-  const trigger = page.getByRole("button", { name: "Search components" });
+  const trigger = page.getByRole("button", { name: "Search", exact: true });
   await expect(trigger).toBeVisible();
   return trigger;
 };

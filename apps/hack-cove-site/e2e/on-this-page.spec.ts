@@ -42,23 +42,23 @@ test("the first page has no Previous and the last no Next, and Next follows the 
   expect(rail.length).toBe(componentPages.length);
 
   await page.goto(rail[0] ?? "");
-  await expect(page.getByRole("link", { name: /^Previous:/ })).toHaveCount(0);
-  await expect(page.getByRole("link", { name: /^Next:/ })).toHaveAttribute("href", rail[1] ?? "");
+  await expect(page.getByRole("link", { name: /^Previous / })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /^Next / })).toHaveAttribute("href", rail[1] ?? "");
 
   await page.goto(rail.at(-1) ?? "");
-  await expect(page.getByRole("link", { name: /^Next:/ })).toHaveCount(0);
-  await expect(page.getByRole("link", { name: /^Previous:/ })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: /^Next / })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /^Previous / })).toHaveAttribute(
     "href",
     rail.at(-2) ?? "",
   );
 
   const at = Math.floor(rail.length / 2);
   await page.goto(rail[at] ?? "");
-  await expect(page.getByRole("link", { name: /^Previous:/ })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: /^Previous / })).toHaveAttribute(
     "href",
     rail[at - 1] ?? "",
   );
-  await expect(page.getByRole("link", { name: /^Next:/ })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: /^Next / })).toHaveAttribute(
     "href",
     rail[at + 1] ?? "",
   );
