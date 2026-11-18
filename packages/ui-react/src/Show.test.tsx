@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
-import { render, screen } from "./render.harness.js";
+import { render, screen, within } from "./render.harness.js";
 import { Show } from "./Show.js";
 import { Text } from "./typography.js";
 
@@ -24,7 +24,9 @@ describe("Show", () => {
         to send
       </Text>,
     );
-    expect(screen.getByText("Enter").closest("p")?.textContent).toBe("Press Enter to send");
+    const paragraph = screen.getByRole("paragraph");
+    expect(within(paragraph).getByText("Enter")).toBeTruthy();
+    expect(paragraph.textContent).toBe("Press Enter to send");
   });
 
   it("takes exactly one of from or below", () => {

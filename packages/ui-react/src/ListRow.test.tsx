@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { queryByAttribute } from "@testing-library/dom";
 import { describe, expect, it, vi } from "vitest";
 import { ListRow } from "./ListRow.js";
 import { follows, render, screen, user } from "./render.harness.js";
@@ -132,7 +133,7 @@ describe("ListRow label", () => {
     const labelId = String(
       screen.getByRole("button", { name: "Name" }).getAttribute("aria-labelledby"),
     );
-    expect(document.getElementById(labelId)?.tagName).toBe("DIV");
+    expect(queryByAttribute("id", document.body, labelId)?.tagName).toBe("DIV");
   });
 });
 

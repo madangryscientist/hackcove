@@ -1,11 +1,12 @@
 // @vitest-environment jsdom
+import { isInaccessible, queryAllByAttribute } from "@testing-library/dom";
 import { describe, expect, it } from "vitest";
 import { Badge } from "./Badge.js";
 import { KeyValue, KeyValueList } from "./KeyValueList.js";
 import { Markdown } from "./Markdown.js";
 import { MetaList } from "./MetaList.js";
 import { Pill } from "./Pill.js";
-import { render, screen } from "./render.harness.js";
+import { render, screen, within } from "./render.harness.js";
 import { StatTile } from "./StatTile.js";
 import {
   Caption,
@@ -18,12 +19,15 @@ import {
   Text,
 } from "./typography.js";
 
-/** The bones drawn in `root`: every one hidden from assistive tech. */
-function bones(root: ParentNode = document.body): Element[] {
-  const found = [...root.querySelectorAll("[data-skeleton]")];
-  for (const bone of found) expect(bone.closest("[aria-hidden='true']")).not.toBeNull();
+/** The bones on the page, by the marker each one renders: every one hidden from assistive tech. */
+function bones(): HTMLElement[] {
+  const found = queryAllByAttribute("data-skeleton", document.body, "");
+  for (const bone of found) expect(isInaccessible(bone)).toBe(true);
   return found;
 }
+
+/** The elements that say they are busy, with any value. */
+const busy = (): HTMLElement[] => queryAllByAttribute("aria-busy", document.body, () => true);
 
 describe("loading text roles", () => {
   const roles = {
@@ -52,7 +56,7 @@ describe("loading text roles", () => {
     render(<Text loading={false}>Hello</Text>);
     expect(bones()).toHaveLength(0);
     expect(screen.queryByText("Loading")).toBeNull();
-    expect(document.querySelector("[aria-busy]")).toBeNull();
+    expect(busy()).toHaveLength(0);
   });
 
   it("a heading keeps its role while loading, the owner busy with one label", () => {
@@ -101,14 +105,23 @@ describe("loading figures", () => {
 
   it("a loading KeyValueList holds only groups of dt and dd, its hidden label in a dd", () => {
     render(<KeyValueList loading />);
-    const list = document.querySelector("dl");
-    for (const child of list?.children ?? []) expect(["DIV", "DT", "DD"]).toContain(child.tagName);
-    expect(screen.getByText("Loading").closest("dd")).not.toBeNull();
+    // Three rows of a term and its definition, and one more definition that holds the label.
+    const terms = screen.getAllByRole("term");
+    const definitions = screen.getAllByRole("definition");
+    expect(terms).toHaveLength(3);
+    expect(definitions).toHaveLength(4);
+    expect(definitions.filter((dd) => within(dd).queryByText("Loading") !== null)).toHaveLength(1);
+    // Everything else it draws is a bone, and every bone sits in a term or a definition.
+    const inGroups = [...terms, ...definitions].flatMap((part) =>
+      queryAllByAttribute("data-skeleton", part, ""),
+    );
+    expect(new Set(inGroups)).toEqual(new Set(bones()));
+    expect(inGroups).toHaveLength(6);
   });
 
   it("an empty KeyValueList draws three rows of bones, busy with one label", () => {
     render(<KeyValueList loading />);
-    expect(document.querySelectorAll("[aria-busy='true']")).toHaveLength(1);
+    expect(queryAllByAttribute("aria-busy", document.body, "true")).toHaveLength(1);
     expect(bones()).toHaveLength(6);
     expect(screen.getAllByText("Loading")).toHaveLength(1);
   });
@@ -125,7 +138,7 @@ describe("loading figures", () => {
     expect(screen.getByText("Subtotal")).toBeTruthy();
     expect(screen.getByText("R 15")).toBeTruthy();
     expect(bones()).toHaveLength(1);
-    expect(document.querySelectorAll("[aria-busy]")).toHaveLength(1);
+    expect(busy()).toHaveLength(1);
     expect(screen.getAllByText("Loading")).toHaveLength(1);
   });
 

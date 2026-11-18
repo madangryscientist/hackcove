@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { queryAllByAttribute } from "@testing-library/dom";
 import { describe, expect, it, vi } from "vitest";
 import { Button } from "./Button.js";
 import { fireEvent, render, screen, user, within } from "./render.harness.js";
@@ -10,10 +11,12 @@ import { type Toast, ToastRegion } from "./ToastRegion.js";
 
 const SAVED: Toast = { id: "saved", tone: "positive", title: "Saved", body: "Your draft is safe." };
 
-/** The toast whose title is `title`: the box that holds it. */
-function toastOf(title: string): Element {
-  const box = screen.getByText(title).closest("[data-toast]");
-  if (!box) throw new Error(`no toast titled ${title}`);
+/** The toast whose title is `title`: the one box, by the marker each toast renders, that holds it. */
+function toastOf(title: string): HTMLElement {
+  const [box, ...more] = queryAllByAttribute("data-toast", document.body, "").filter(
+    (toast) => within(toast).queryByText(title) !== null,
+  );
+  if (!box || more.length > 0) throw new Error(`not one toast titled ${title}`);
   return box;
 }
 

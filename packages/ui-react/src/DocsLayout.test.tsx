@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import type { ComponentProps } from "react";
+import { queryAllByAttribute } from "@testing-library/dom";
 import { describe, expect, it } from "vitest";
 import { DocsLayout, type DocsHeading } from "./DocsLayout.js";
 import { render, screen, within } from "./render.harness.js";
@@ -29,8 +30,13 @@ function page(props: Partial<ComponentProps<typeof DocsLayout>> = {}) {
   );
 }
 
+/** Every element in the On this page list marked as the reader's place, link or not. */
 const marked = () =>
-  document.querySelectorAll('[aria-label="On this page"] [aria-current="location"]');
+  queryAllByAttribute(
+    "aria-current",
+    screen.getByRole("navigation", { name: "On this page" }),
+    "location",
+  );
 
 const onThisPage = () => screen.queryAllByRole("navigation", { name: "On this page" });
 
@@ -61,9 +67,8 @@ describe("DocsLayout", () => {
 
   it("with two or more contents, one On this page navigation with one link to each #id", () => {
     page({ contents });
-    const [list, ...more] = onThisPage();
-    expect(more).toHaveLength(0);
-    if (!list) throw new Error("no On this page list");
+    expect(onThisPage()).toHaveLength(1);
+    const list = screen.getByRole("navigation", { name: "On this page" });
     const links = within(list).getAllByRole("link", { hidden: true });
     expect(links.map((link) => link.getAttribute("href"))).toEqual(["#setup", "#keys", "#run"]);
     expect(screen.getAllByText("Keys")).toHaveLength(1);
@@ -87,8 +92,7 @@ describe("DocsLayout", () => {
 
   it("a level-3 entry follows its level-2 entry in the list", () => {
     page({ contents });
-    const [list] = onThisPage();
-    if (!list) throw new Error("no On this page list");
+    const list = screen.getByRole("navigation", { name: "On this page" });
     const labels = within(list)
       .getAllByRole("link", { hidden: true })
       .map((link) => link.textContent);
