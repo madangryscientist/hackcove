@@ -1,4 +1,5 @@
-import { expect, test } from "@playwright/test";
+import { type APIRequestContext, expect, test } from "@playwright/test";
+import { BUILD_COMMIT_PATTERN } from "../src/content/build-commit";
 import { site } from "../src/content/site";
 
 // Post-deploy smoke checks against the live host (SMOKE_BASE_URL). Requests only, no page is opened.
@@ -68,4 +69,52 @@ test("every sitemap loc answers 200 with no redirect, and its canonical is that 
     expect(page.href, `${page.loc} has a canonical link`).toBeDefined();
     expect(page.href, page.loc).toBe(page.loc);
   }
+});
+
+const EXPECT_COMMIT = process.env["SMOKE_EXPECT_COMMIT"];
+/** How long an edge may keep serving the previous page after the upload before the check fails. */
+const COMMIT_WAIT_MS = 120_000;
+
+const buildCommitOf = (html: string): string | undefined =>
+  /<meta name="build-commit" content="([^"]*)"/.exec(html)?.[1];
+
+// With SMOKE_EXPECT_COMMIT set (the commit just deployed), the home page must name it; unset, the check
+// prints the commit it finds. `curl -s https://hack-cove.com/ | grep build-commit` reads the same meta.
+type CommitRead = { status: number; seen: string | undefined };
+
+// One read of the home page. A fresh query each time, so no cache answers with an older copy of the page.
+async function readCommit(request: APIRequestContext): Promise<CommitRead> {
+  const response = await request.get(`/?commit-check=${crypto.randomUUID()}`, { timeout: 15_000 });
+  const seen = response.ok() ? buildCommitOf(await response.text()) : undefined;
+  return { status: response.status(), seen };
+}
+
+// Reads until the home page names `expected` or the wait runs out. An error answer or a dropped
+// connection while the edge switches over counts as not yet, like an older sha.
+async function waitForCommit(request: APIRequestContext, expected: string): Promise<CommitRead> {
+  const deadline = Date.now() + COMMIT_WAIT_MS;
+  for (;;) {
+    const read = await readCommit(request).catch((error: unknown) => {
+      if (Date.now() >= deadline) throw error;
+      return { status: 0, seen: undefined };
+    });
+    if (read.seen === expected || Date.now() >= deadline) return read;
+    // time-dependent: a live edge serves the previous deploy for a while after the upload; retry until it switches.
+    await new Promise((done) => setTimeout(done, 5_000));
+  }
+}
+
+test("the home page names the commit it was built from", async ({ request }) => {
+  test.setTimeout(COMMIT_WAIT_MS + 30_000);
+  const { status, seen } = EXPECT_COMMIT
+    ? await waitForCommit(request, EXPECT_COMMIT)
+    : await readCommit(request);
+  process.stdout.write(`build-commit on the home page: ${seen ?? "(none)"} (HTTP ${status})\n`);
+  expect(status).toBe(200);
+  expect(seen, "the home page has no build-commit meta").toBeDefined();
+  expect(seen).toMatch(BUILD_COMMIT_PATTERN);
+  if (EXPECT_COMMIT)
+    expect(seen, `the live home page names ${seen}, not the deployed ${EXPECT_COMMIT}`).toBe(
+      EXPECT_COMMIT,
+    );
 });

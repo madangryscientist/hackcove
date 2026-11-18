@@ -32,9 +32,11 @@ tasks:
     outputs: ["src/generated/props.json", "src/generated/types.json"]
     options:
       cache: false
+  # BUILD_COMMIT is an input, so a build for another commit is never a cache hit that ships the
+  # previous commit's sha in the build-commit meta.
   build:
     command: "bun run build"
-    inputs: ["**/*", "@group(deps)"]
+    inputs: ["**/*", "@group(deps)", "$BUILD_COMMIT"]
     outputs: ["dist"]
     deps: ["~:props", "^:build"]
   preview:
@@ -49,10 +51,11 @@ tasks:
     command: "bun run lint"
     inputs: ["**/*", "@group(deps)"]
     deps: ["~:props", "^:build"]
+  # Depends on build: test/build-commit.dist.test.ts reads dist/.
   test:
     command: "bun run test"
     inputs: ["**/*", "@group(deps)"]
-    deps: ["~:props", "^:build"]
+    deps: ["~:props", "~:build", "^:build"]
   deploy:
     command: "bun run deploy"
     deps: ["~:build"]
@@ -60,7 +63,7 @@ tasks:
       cache: false
   # The post-deploy smoke suite: Playwright requests (no browser) against SMOKE_BASE_URL, a live host
   # that changes outside this repo, so it is never cached. Run it after every production deploy:
-  # SMOKE_BASE_URL=https://hack-cove.com bunx moon run hack-cove-site:smoke
+  # SMOKE_EXPECT_COMMIT=$(git rev-parse HEAD) SMOKE_BASE_URL=https://hack-cove.com bunx moon run hack-cove-site:smoke
   smoke:
     command: "bun run smoke"
     options:

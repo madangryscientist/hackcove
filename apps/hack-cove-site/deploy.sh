@@ -27,6 +27,19 @@ if [[ ! -f dist/index.html ]]; then
   exit 1
 fi
 
+# Only a dist/ built from the clean HEAD goes out, so the build-commit meta on the live site names the
+# commit that was deployed. Build it with: BUILD_COMMIT=$(git rev-parse HEAD) bunx moon run hack-cove-site:build
+if [[ -n "$(git status --porcelain)" ]]; then
+  echo "the working tree is dirty; commit or drop the changes, rebuild, then deploy" >&2
+  exit 3
+fi
+HEAD_SHA="$(git rev-parse HEAD)"
+BUILT_SHA="$(sed -n 's/.*<meta name="build-commit" content="\([^"]*\)".*/\1/p' dist/index.html | head -n 1)"
+if [[ "$BUILT_SHA" != "$HEAD_SHA" ]]; then
+  echo "dist/ was built from '${BUILT_SHA:-no build-commit meta}', not HEAD $HEAD_SHA; rebuild with BUILD_COMMIT=\$(git rev-parse HEAD)" >&2
+  exit 3
+fi
+
 secret() {
   local value
   if ! value="$(ob secret get "$1" 2>/dev/null)" || [[ -z "$value" ]]; then
