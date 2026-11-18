@@ -13,6 +13,11 @@ import { useScrollStop } from "./scrollStop.js";
 const INSET_RING =
   "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-violet-600";
 
+/** Whether a strip that scrolls sideways takes its tab stop: always, until it has been measured. */
+function takesStop(measured: boolean, stop: boolean): boolean {
+  return measured ? stop : true;
+}
+
 /**
  * The code of a `CodeBlock` or a `CodeExample`: the `<pre>` and, with `copy`, a `CopyButton` beside
  * it that copies `code` exactly as given (wrapping is CSS, so it adds no characters), except in a
@@ -36,8 +41,10 @@ export function CodeBody({
 }): ReactElement {
   // A strip that scrolls sideways holds no link or button, so when it overflows it takes a tab
   // stop of its own, or the keyboard could never scroll it (axe's scrollable-region-focusable).
-  const { attach, stop } = useScrollStop("x");
-  const tabStop = !wrap && stop;
+  // Until it has been measured it takes the stop anyway: a page rendered to HTML and never
+  // hydrated is never measured and still needs the stop. Once measured, a strip that fits drops it.
+  const { attach, stop, measured } = useScrollStop("x");
+  const tabStop = !wrap && takesStop(measured, stop);
   return (
     <div className={cx("flex items-start", copy && "gap-1 pr-1.5")}>
       <div

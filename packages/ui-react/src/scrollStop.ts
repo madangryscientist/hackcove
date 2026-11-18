@@ -23,15 +23,19 @@ function holdsTabbable(scroller: HTMLElement): boolean {
  * inside. `attach` is the box's `ref`; `element` is the box once it is mounted; `stop` is whether
  * it takes the tab stop. Attach it to nothing and `stop` stays false. `axis` is the way the box
  * scrolls: "y" (down, the default) or "x" (sideways); overflow the other way is not measured,
- * since the box does not scroll that way.
+ * since the box does not scroll that way. `measured` is false until the box has been measured once
+ * and true after: a page rendered to HTML and never hydrated is never measured, and neither is a
+ * box where `ResizeObserver` is missing (a consumer's jsdom tests with no stub).
  */
 export function useScrollStop(axis: "x" | "y" = "y"): {
   element: HTMLElement | null;
   attach: (el: HTMLDivElement | null) => void;
   stop: boolean;
+  measured: boolean;
 } {
   const [element, setElement] = useState<HTMLElement | null>(null);
   const [stop, setStop] = useState(false);
+  const [measured, setMeasured] = useState(false);
 
   useEffect(() => {
     // jsdom (a consumer's own tests) has no ResizeObserver.
@@ -40,7 +44,10 @@ export function useScrollStop(axis: "x" | "y" = "y"): {
       axis === "y"
         ? element.scrollHeight > element.clientHeight
         : element.scrollWidth > element.clientWidth;
-    const measure = () => setStop(overflows() && !holdsTabbable(element));
+    const measure = () => {
+      setStop(overflows() && !holdsTabbable(element));
+      setMeasured(true);
+    };
     // Each observer reports once when it starts, and again when the box is resized, its content
     // changes or something in it becomes (un)reachable by the keyboard.
     const resize = new ResizeObserver(measure);
@@ -59,7 +66,7 @@ export function useScrollStop(axis: "x" | "y" = "y"): {
     };
   }, [element, axis]);
 
-  return { element, attach: setElement, stop: stop && element !== null };
+  return { element, attach: setElement, stop: stop && element !== null, measured };
 }
 
 /**

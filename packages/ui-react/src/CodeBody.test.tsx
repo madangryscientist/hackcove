@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { renderToString } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CodeBody } from "./CodeBody.js";
 import { render, user, within } from "./render.harness.js";
@@ -63,5 +64,18 @@ describe("CodeBody", () => {
     overflowing(900, 300);
     render(<CodeBody code={LONG} language="console" wrap copy={false} />);
     expect(await firstTabStop()).toBe(document.body);
+  });
+
+  it("a strip rendered to HTML on the server carries its tab stop", () => {
+    const html = renderToString(
+      <CodeBody code={LONG} language="console" wrap={false} copy={false} />,
+    );
+    // The strip itself, the box that scrolls sideways, carries the stop.
+    expect(html).toMatch(/<div tabindex="0" class="[^"]*overflow-x-auto[^"]*">/);
+  });
+
+  it("a wrap strip rendered to HTML on the server has no tab stop", () => {
+    const html = renderToString(<CodeBody code={LONG} language="console" wrap copy={false} />);
+    expect(html).not.toContain("tabindex");
   });
 });
