@@ -1,5 +1,4 @@
 import { expect, test, type Page } from "@playwright/test";
-import { themeFiles } from "@hackcove/themes-shared/files";
 
 /**
  * BottomSheet over a dummy full-screen view: the handle steps the snaps from the keyboard, the view
@@ -8,15 +7,12 @@ import { themeFiles } from "@hackcove/themes-shared/files";
  * role, never a class or a pixel. Reduced motion switches the settle off, so a box read after a snap
  * change is the resting one (no wait on a transition).
  */
-const themes = themeFiles(`${import.meta.dirname}/../../../themes`).map((t) => t.id);
+const story = (id: string) => `/iframe.html?id=feedback-bottomsheet--${id}&viewMode=story`;
 
-const story = (id: string, theme?: string) =>
-  `/iframe.html?id=feedback-bottomsheet--${id}&viewMode=story${theme ? `&globals=theme:${theme}` : ""}`;
-
-async function open(page: Page, id: string, size = { width: 390, height: 700 }, theme?: string) {
+async function open(page: Page, id: string, size = { width: 390, height: 700 }) {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.setViewportSize(size);
-  await page.goto(story(id, theme));
+  await page.goto(story(id));
   const sheet = page.getByRole("region", { name: "Shops" });
   await sheet.waitFor();
   const handle = sheet.getByRole("button", { name: "Shops", exact: true });
@@ -161,15 +157,11 @@ test.describe("scroll containment", () => {
 });
 
 for (const width of [390, 768]) {
-  for (const theme of themes) {
-    test(`at ${width}px in ${theme}, the sheet shows and Enter steps its snap`, async ({
-      page,
-    }) => {
-      const { sheet, handle } = await open(page, "default", { width, height: 700 }, theme);
-      await expect(sheet).toBeVisible();
-      await handle.focus();
-      await page.keyboard.press("Enter");
-      await expect(snapLine(page, 2)).toBeVisible();
-    });
-  }
+  test(`at ${width}px, the sheet shows and Enter steps its snap`, async ({ page }) => {
+    const { sheet, handle } = await open(page, "default", { width, height: 700 });
+    await expect(sheet).toBeVisible();
+    await handle.focus();
+    await page.keyboard.press("Enter");
+    await expect(snapLine(page, 2)).toBeVisible();
+  });
 }

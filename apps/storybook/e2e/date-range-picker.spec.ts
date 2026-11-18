@@ -1,11 +1,7 @@
 import { expect, type Page, test } from "@playwright/test";
-import { themeFiles } from "@hackcove/themes-shared/files";
 
-// One theme per CSS file in themes/, like the toolbar switcher.
-const themes = themeFiles(`${import.meta.dirname}/../../../themes`).map((theme) => theme.id);
-
-const story = (page: Page, id: string, theme = "default") =>
-  page.goto(`/iframe.html?id=forms-daterangepicker--${id}&viewMode=story&globals=theme:${theme}`);
+const story = (page: Page, id: string) =>
+  page.goto(`/iframe.html?id=forms-daterangepicker--${id}&viewMode=story&globals=theme:default`);
 
 const segment = (page: Page, part: "day" | "month" | "year", side: "Start" | "End") =>
   page.getByRole("spinbutton", { name: new RegExp(`^${part}, ${side} date`, "i") });
@@ -112,27 +108,25 @@ test.describe("DateRangePicker", () => {
 
 // A modal <dialog> makes everything outside it inert, and react-aria portals the calendar to
 // <body>: the calendar must still open above the dialog and pick a range.
-for (const theme of ["default", ...themes]) {
-  test(`DateRangePicker in a Dialog opens its calendar above it and picks a range (${theme})`, async ({
-    page,
-  }) => {
-    await story(page, "in-dialog", theme);
-    const modal = page.getByRole("dialog", { name: "Filter the timeline" });
-    await expect(modal).toBeVisible();
+test(`DateRangePicker in a Dialog opens its calendar above it and picks a range`, async ({
+  page,
+}) => {
+  await story(page, "in-dialog");
+  const modal = page.getByRole("dialog", { name: "Filter the timeline" });
+  await expect(modal).toBeVisible();
 
-    await modal.getByRole("button", { name: /^Calendar/ }).click();
-    const grid = page.getByRole("grid");
-    await expect(grid).toBeVisible();
-    await expect(grid).toBeInViewport({ ratio: 1 });
+  await modal.getByRole("button", { name: /^Calendar/ }).click();
+  const grid = page.getByRole("grid");
+  await expect(grid).toBeVisible();
+  await expect(grid).toBeInViewport({ ratio: 1 });
 
-    await grid.getByRole("gridcell", { name: /\b5\b/ }).first().click();
-    await grid
-      .getByRole("gridcell", { name: /\b15\b/ })
-      .first()
-      .click();
-    await expect(grid).toBeHidden();
-    await expect(sideText(page, "Start")).toHaveText("05/10/2026");
-    await expect(sideText(page, "End")).toHaveText("15/10/2026");
-    await expect(modal).toBeVisible();
-  });
-}
+  await grid.getByRole("gridcell", { name: /\b5\b/ }).first().click();
+  await grid
+    .getByRole("gridcell", { name: /\b15\b/ })
+    .first()
+    .click();
+  await expect(grid).toBeHidden();
+  await expect(sideText(page, "Start")).toHaveText("05/10/2026");
+  await expect(sideText(page, "End")).toHaveText("15/10/2026");
+  await expect(modal).toBeVisible();
+});

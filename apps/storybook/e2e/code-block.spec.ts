@@ -2,7 +2,8 @@ import { expect, test, type Page } from "@playwright/test";
 import { themeFiles } from "@hackcove/themes-shared/files";
 import { themeScope } from "@hackcove/themes-shared/scope";
 
-// Same source of truth as the toolbar switcher and theme.spec.ts: one theme per CSS file in themes/.
+// The layout runs once, in the reference theme (the first theme file in sorted order); how each theme
+// looks is the visual check's.
 const themes = themeFiles(`${import.meta.dirname}/../../../themes`);
 
 const COMMAND = "bunx playwright test --project=chromium --reporter=list --output=out";
@@ -37,9 +38,10 @@ test("the themes folder lists at least one theme", () => {
   expect(themes.length).toBeGreaterThan(0);
 });
 
-for (const theme of themes) {
+const theme = themes[0];
+if (theme) {
   for (const id of wrapping) {
-    test(`390px, ${theme.id}: ${id} wraps, so no part of the line is clipped and the page does not scroll sideways`, async ({
+    test(`390px: ${id} wraps, so no part of the line is clipped and the page does not scroll sideways`, async ({
       page,
     }) => {
       await open(page, id, theme);
@@ -68,7 +70,7 @@ for (const theme of themes) {
     });
   }
 
-  test(`390px, ${theme.id}: wrapping breaks at spaces only, so a hyphenated flag stays on one line at every box width`, async ({
+  test(`390px: wrapping breaks at spaces only, so a hyphenated flag stays on one line at every box width`, async ({
     page,
   }) => {
     await open(page, "text-code--long-line", theme);
@@ -119,7 +121,7 @@ for (const theme of themes) {
   });
 
   for (const id of scrolling) {
-    test(`390px, ${theme.id}: ${id} scrolls inside its box, reaches the end of the line, and the page does not scroll sideways`, async ({
+    test(`390px: ${id} scrolls inside its box, reaches the end of the line, and the page does not scroll sideways`, async ({
       page,
     }) => {
       await open(page, id, theme);

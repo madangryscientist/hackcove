@@ -5,8 +5,10 @@ const port = 6007;
 export default defineConfig({
   testDir: "e2e",
   testMatch: "*.spec.ts",
-  reporter: "list",
-  use: { baseURL: `http://127.0.0.1:${port}` },
+  forbidOnly: !!process.env["CI"],
+  retries: 0,
+  reporter: process.env["CI"] ? [["github"], ["html", { open: "never" }]] : "list",
+  use: { baseURL: `http://127.0.0.1:${port}`, trace: "retain-on-failure" },
   // Every spec runs in Chromium and nothing else (playwright.config.test.ts fails on another engine).
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   // The `e2e` moon task builds Storybook first; this only serves the result. STATIC_DIR is set here,
