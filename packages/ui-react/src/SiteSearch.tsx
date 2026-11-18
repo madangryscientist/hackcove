@@ -181,7 +181,10 @@ export function SiteSearch({
 }: {
   /** Every page to search, in the order ties are listed (the rail's order). */
   items: readonly SiteSearchItem[];
-  /** The dialog's title and the button's accessible name: "Search components". */
+  /**
+   * The dialog's title and the phone's icon button's accessible name: "Search components". The wide
+   * button is named by its own text, "Search".
+   */
   label: string;
   /**
    * The name of the list of matches, for an app in another language.
@@ -228,14 +231,13 @@ export function SiteSearch({
         <Button
           variant="outline"
           size="sm"
-          aria-label={label}
           aria-haspopup="dialog"
           aria-keyshortcuts="Control+K Meta+K"
           onClick={openFrom}
         >
           <Icon name="search" size="sm" />
           Search
-          <Kbd>{keys}</Kbd>
+          <Kbd aria-hidden="true">{keys}</Kbd>
         </Button>
       </span>
       <span className="inline-flex sm:hidden">

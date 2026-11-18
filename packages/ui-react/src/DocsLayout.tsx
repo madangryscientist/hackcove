@@ -90,13 +90,13 @@ function DocsContents({
 }
 
 /**
- * One way onwards: the small `word` line over the page's label, in a bordered box. Its name is the
- * two joined ("Previous: Install"), so a screen reader hears them as one phrase.
+ * One way onwards: the small `word` line over the page's label, in a bordered box. Its name is its
+ * visible text, the two read in order ("Previous Install"), so a speech-input user can say what
+ * they see.
  */
 function Neighbour({ to, word, end }: { to: DocsNeighbour; word: string; end: boolean }) {
   return renderLink({
     href: to.href,
-    "aria-label": `${word}: ${to.label}`,
     className: cx(
       "flex flex-col gap-1 rounded-lg border border-slate-200 px-4 py-3 hover:border-violet-400",
       end && "text-right sm:col-start-2",
@@ -104,7 +104,7 @@ function Neighbour({ to, word, end }: { to: DocsNeighbour; word: string; end: bo
     ),
     children: (
       <>
-        <span className="text-sm text-slate-500">{word}</span>
+        <span className="text-sm text-slate-500">{word}</span>{" "}
         <span className="font-medium text-slate-900">{to.label}</span>
       </>
     ),
