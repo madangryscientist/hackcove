@@ -1,12 +1,12 @@
 /**
- * PixelSlash capture config for `bunx moon run storybook:visual`: one desktop variant of the stories and
- * themes the script picked, or every story under every theme on a bare run. Read by a pixelslash
+ * PixelSlash capture config for `bunx moon run storybook:visual`: a desktop and a phone variant of the
+ * stories and themes the script picked, or every story under every theme on a bare run. Read by a pixelslash
  * checkout (see scripts/visual.ts), which runs from its own directory, so every path here is
  * absolute.
  */
 import { join } from "node:path";
 import { themeFiles } from "@hackcove/themes-shared/files";
-import { visualSkipped } from "./scripts/visual-shots.js";
+import { variants, visualSkipped } from "./scripts/visual-shots.js";
 
 // Same list as the toolbar: one id per CSS file in themes/.
 const themes = themeFiles(join(import.meta.dirname, "..", "..", "themes")).map((theme) => theme.id);
@@ -53,7 +53,7 @@ export default {
     exclude: visualSkipped,
     ...(include === undefined ? {} : { include }),
   },
-  variants: [{ name: "desktop", viewport: { width: 1280, height: 720 } }],
+  variants,
   // PS-230: pixelslash cannot pause or seek media, so the <video>'s loading spinner is captured at a
   // random rotation and every shot with a video flakes (ui-video-*, overview-gallery,
   // overview-all-themes). The selector is measured on the live page at capture time, so it covers

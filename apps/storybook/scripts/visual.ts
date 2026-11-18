@@ -51,6 +51,7 @@ import { join } from "node:path";
 import { themeFiles } from "@hackcove/themes-shared/files";
 import { baseThemeIds, capturesOnBase } from "./theme-reach.js";
 import { indexOf, isRecord, shotsByTheme, shotsOf } from "./visual-index.js";
+import { variants } from "./visual-shots.js";
 import { groupStories, planCapture, readRepo, type Grouping, type Plan } from "./visual-plan.js";
 import {
   VisualError,
@@ -131,7 +132,8 @@ function reportPlan(plan: Plan, grouping: Grouping, saved: SavedPlan, whole: Pla
   const index = indexOf(branchStatic);
   const shots = (captures: Selection[]) =>
     captures.reduce(
-      (n, c) => n + (c.themes.length > 0 ? shotsOf(index, c.titles, c.themes.length) : 0),
+      (n, c) =>
+        n + (c.themes.length > 0 ? shotsOf(index, c.titles, c.themes.length, variants.length) : 0),
       0,
     );
   const planned = saved.groups.flatMap((g) => g.captures);
@@ -152,8 +154,8 @@ function reportPlan(plan: Plan, grouping: Grouping, saved: SavedPlan, whole: Pla
   }
   const skipped = plan.skipped.map((g) => `${g.slug} (${g.files.length} story files)`);
   if (skipped.length > 0) log(`skipped as unaffected: ${skipped.join(", ")}`);
-  const now = shotsByTheme(index, planned);
-  const all = shotsByTheme(index, wholeCaptures);
+  const now = shotsByTheme(index, planned, variants.length);
+  const all = shotsByTheme(index, wholeCaptures, variants.length);
   const perTheme = [...all.themes].map(([id, n]) => `${id} ${now.themes.get(id) ?? 0} of ${n}`);
   log(`shots per theme: ${perTheme.join(", ")}; shot once: ${now.once} of ${all.once}`);
 }
