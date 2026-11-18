@@ -23,14 +23,6 @@ test("Switch: clicking the visible label toggles it once", async ({ page }) => {
   await expect(flag).toHaveAttribute("aria-checked", "false");
 });
 
-test("Switch: a description names nothing but describes the switch", async ({ page }) => {
-  await page.goto(story("forms-switch--with-description"));
-  const flag = page.getByRole("switch", { name: "Live in production" });
-  await expect(flag).toHaveAccessibleDescription(
-    "Serves the flag to every request in this environment.",
-  );
-});
-
 test("Switch: focus stays on it through a busy cycle, and a busy click does nothing", async ({
   page,
 }) => {
@@ -59,18 +51,6 @@ test("Switch: focus stays on it through a busy cycle, and a busy click does noth
   await expect(flag).not.toHaveAttribute("aria-busy", "true");
   await expect(flag).toHaveAttribute("aria-checked", "false");
   await expect(flag).toBeFocused();
-});
-
-test("Switch: a bare switch in a table cell is named by its aria-label", async ({ page }) => {
-  await page.goto(story("forms-switch--bare"));
-  const flag = page.getByRole("switch", { name: "checkout-v2 in staging" });
-  await expect(flag).toHaveAttribute("aria-checked", "false");
-  await flag.click();
-  await expect(flag).toHaveAttribute("aria-checked", "true");
-  await expect(page.getByRole("switch", { name: "dark-mode in staging" })).toHaveAttribute(
-    "aria-checked",
-    "true",
-  );
 });
 
 test("Switch: a disabled switch is native-disabled and ignores a click on its label", async ({

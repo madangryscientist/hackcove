@@ -4,7 +4,7 @@ import { themeFiles } from "@hackcove/themes-shared/files";
 /**
  * From `md` a nav too wide for the header row folds into the Menu, as on a phone, and comes back
  * when the screen is wide enough again. Measured by the row's own size, so a resize drives it both
- * ways. Themes are found the way theme.spec.ts finds them, so a new theme is checked with no edit here.
+ * ways. Themes are found the way the toolbar switcher finds them, so a new theme is checked with no edit here.
  */
 const themes = themeFiles(`${import.meta.dirname}/../../../themes`);
 

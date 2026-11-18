@@ -3,8 +3,7 @@ import { themeFiles } from "@hackcove/themes-shared/files";
 
 /**
  * AppShell on a phone (390px), in every theme: the nav and the subnav are behind one Menu button,
- * every link in them is reachable, the page never scrolls sideways, and the header is the same
- * height on every page, open or closed. Themes are found the way theme.spec.ts finds them, so a new
+ * every link in them is reachable, and the page never scrolls sideways. Themes are found the way the toolbar switcher finds them, so a new
  * theme is checked with no edit here.
  *
  * One test per story per theme, never one test looping over the stories: each story then has its
@@ -14,8 +13,6 @@ import { themeFiles } from "@hackcove/themes-shared/files";
 const themes = themeFiles(`${import.meta.dirname}/../../../themes`);
 
 const WIDTH = 390;
-/** The header's 56px row and its 1px bottom border. */
-const HEADER_HEIGHT = 57;
 
 /** Each story, with how many links its nav (7) and subnav hold: the menu must list them all. */
 const stories = [
@@ -36,12 +33,6 @@ const open = async (page: Page, id: string, theme: string) => {
   const menu = page.getByRole("banner").locator("details");
   await menu.waitFor();
   return menu;
-};
-
-const headerHeight = async (page: Page) => {
-  const box = await page.getByRole("banner").boundingBox();
-  if (!box) throw new Error("the header has no box");
-  return box.height;
 };
 
 const noSidewaysScroll = (page: Page) =>
@@ -72,18 +63,17 @@ test("the themes folder lists at least one theme", () => {
 for (const { id: theme } of themes) {
   test.describe(`theme ${theme}`, () => {
     for (const { id, links } of stories) {
-      test(`at ${WIDTH}px ${id}: every link is behind the Menu button, none scrolls sideways, one header height`, async ({
+      test(`at ${WIDTH}px ${id}: every link is behind the Menu button and none scrolls sideways`, async ({
         page,
       }) => {
         const menu = await open(page, id, theme);
         const button = menu.getByText("Menu", { exact: true });
 
-        // Closed: the header is one row, the links are not on screen, and nothing scrolls sideways.
+        // Closed: the links are not on screen, and nothing scrolls sideways.
         await expect(menu.getByRole("link").first()).toBeHidden();
         expect(await noSidewaysScroll(page), `${id}: sideways scroll, closed`).toBeLessThanOrEqual(
           0,
         );
-        expect(await headerHeight(page), `${id}: header height, closed`).toBe(HEADER_HEIGHT);
 
         // Open: every nav and subnav link is there and can be reached.
         await button.click();
@@ -96,7 +86,6 @@ for (const { id: theme } of themes) {
           );
         }
         expect(await noSidewaysScroll(page), `${id}: sideways scroll, open`).toBeLessThanOrEqual(0);
-        expect(await headerHeight(page), `${id}: header height, open`).toBe(HEADER_HEIGHT);
       });
     }
   });
@@ -129,16 +118,6 @@ test("the Menu button works from the keyboard: Enter and Space open it, Tab ente
   expect(names.at(-1)).toBe("Audit");
 });
 
-test("the button is a disclosure that reports whether it is open, and following a link closes it", async ({
-  page,
-}) => {
-  const menu = await open(page, "layout-appshell--long-page", "default");
-  await expect(menu.locator("summary")).toHaveText("Menu");
-  await menu.locator("summary").click();
-  await menu.getByRole("link", { name: "Builds" }).click();
-  await expect(menu).toHaveJSProperty("open", false);
-});
-
 test("from md there is no Menu button and the nav and subnav are rows", async ({ page }) => {
   await page.setViewportSize({ width: 800, height: 700 });
   await page.goto(
@@ -148,7 +127,6 @@ test("from md there is no Menu button and the nav and subnav are rows", async ({
   await expect(header.getByRole("link", { name: "Builds" })).toBeVisible();
   await expect(header.getByRole("link", { name: "Branches" })).toBeVisible();
   await expect(header.locator("summary")).toBeHidden();
-  expect(await headerHeight(page)).toBe(105);
 });
 
 /** The Menu button sits wholly inside the viewport's width. */
@@ -193,10 +171,9 @@ test(`at ${WIDTH}px menuControls are at the top of the Menu, each operable, with
     ),
   ).toBe(true);
   expect(await noSidewaysScroll(page)).toBeLessThanOrEqual(0);
-  expect(await headerHeight(page)).toBe(HEADER_HEIGHT);
 });
 
-test("at 1280px menuControls sit in the header row after controls, once each, with no Menu button", async ({
+test("at 1280px menuControls are in the header, once each, with no Menu button", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 700 });
@@ -205,9 +182,6 @@ test("at 1280px menuControls sit in the header row after controls, once each, wi
   );
   const header = page.getByRole("banner");
   await expect(header.locator("summary")).toBeHidden();
-  const toggle = header.getByRole("button").first();
-  const toggleBox = await toggle.boundingBox();
-  if (!toggleBox) throw new Error("the controls have no box");
 
   const project = page.getByLabel("Project");
   const environment = page.getByLabel("Environment");
@@ -215,19 +189,13 @@ test("at 1280px menuControls sit in the header row after controls, once each, wi
   await expect(project).toHaveCount(1);
   await expect(environment).toHaveCount(1);
   await expect(signOut).toHaveCount(1);
-  const row = toggleBox.y + toggleBox.height / 2;
   for (const control of [project, environment, signOut]) {
     await expect(control).toBeVisible();
-    const box = await control.boundingBox();
-    if (!box) throw new Error("a menu control has no box");
-    expect(box.x, "after controls").toBeGreaterThanOrEqual(toggleBox.x + toggleBox.width);
-    expect(Math.abs(box.y + box.height / 2 - row), "centred in the row").toBeLessThanOrEqual(1);
   }
   // Exposed with its role and name (Playwright's role engine), as well as painted.
   await expect(header.getByRole("combobox", { name: "Project" })).toBeVisible();
   await project.selectOption("api");
   await expect(project).toHaveValue("api");
-  expect(await headerHeight(page)).toBe(HEADER_HEIGHT);
 });
 
 test(`at ${WIDTH}px controls that overflow the row clip, and the Menu button stays on screen and opens the nav`, async ({

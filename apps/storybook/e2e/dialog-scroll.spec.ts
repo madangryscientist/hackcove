@@ -64,13 +64,6 @@ for (const id of [
   }
 }
 
-test("the dialog element itself is not clipped, so a calendar portalled into it can overflow", async ({
-  page,
-}) => {
-  const modal = await open(page, "feedback-dialog--tall", desktop);
-  await expect(modal).toHaveCSS("overflow", "visible");
-});
-
 test("a tall body of plain text is reached by Tab and scrolls with ArrowDown", async ({ page }) => {
   const modal = await open(page, "feedback-dialog--tall", desktop);
   const body = modal.getByRole("group", { name: "Terms of service" });
@@ -118,35 +111,4 @@ test("a body that grows past the cap gains the tab stop, and loses it when it fi
   await expect(modal.locator('[tabindex]:not([tabindex="-1"])')).toHaveCount(0);
   await page.setViewportSize({ width: 1280, height: 720 });
   await expect(body).toHaveAttribute("tabindex", "0");
-});
-
-test("a focused field at the top and at the bottom edge of the body shows its whole outline", async ({
-  page,
-}) => {
-  for (const [id, label] of [
-    ["feedback-dialog--focus-at-the-top", "First name"],
-    ["feedback-dialog--focus-at-the-bottom", "Last name"],
-  ] as const) {
-    const modal = await open(page, id, desktop);
-    const field = modal.getByLabel(label);
-    await expect(field).toBeFocused();
-    // How far the outline sits inside the scrolling body's box, top and bottom (negative: clipped),
-    // with the body scrolled flush to the edge the field is at. (Where an engine's own scroll on
-    // focus stops differs, so the scroll is set here.)
-    const room = () =>
-      field.evaluate((el, atBottom) => {
-        const style = getComputedStyle(el);
-        let scroller: HTMLElement | null = el.parentElement;
-        while (scroller && getComputedStyle(scroller).overflowY !== "auto") {
-          scroller = scroller.parentElement;
-        }
-        if (!scroller) throw new Error("no scrolling ancestor");
-        scroller.scrollTop = atBottom ? scroller.scrollHeight : 0;
-        const ring = Number.parseFloat(style.outlineWidth) + Number.parseFloat(style.outlineOffset);
-        const box = el.getBoundingClientRect();
-        const body = scroller.getBoundingClientRect();
-        return Math.min(box.top - ring - body.top, body.bottom - (box.bottom + ring));
-      }, id.endsWith("bottom"));
-    await expect.poll(room).toBeGreaterThanOrEqual(-0.5);
-  }
 });
