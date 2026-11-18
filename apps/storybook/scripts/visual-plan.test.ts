@@ -208,7 +208,6 @@ describe("planCapture", () => {
   });
 });
 
-/** A theme id as code would name it: a string, alone or as its file name, not a word in a comment. */
 /** The title a story file must carry: the site's for its page, else (an Overview file) its own. */
 const wantedTitle = (expected: Map<string, string>, file: { path: string; title: string }) =>
   expected.get(file.path) ?? file.title;
@@ -216,6 +215,7 @@ const wantedTitle = (expected: Map<string, string>, file: { path: string; title:
 /** Whether a sidebar title (undefined for a path with no story file) is one of `titles`. */
 const isIn = (titles: string[]) => (title: string | undefined) => titles.includes(title ?? "");
 
+/** A theme id as code would name it: a string, alone or as its file name, not a word in a comment. */
 const escaped = (text: string) => text.replaceAll(/[.*+?^$|()[\]{}\\]/g, "\\$&");
 const quoted = (id: string) => new RegExp(`["'\`/]${escaped(id)}(\\.css)?["'\`]`);
 

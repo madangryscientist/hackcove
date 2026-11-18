@@ -35,8 +35,8 @@ test.describe("DateRangePicker", () => {
     await page.keyboard.type("31102026");
 
     await expect(caption(page)).toHaveText("From 2026-10-01 to 2026-10-31.");
-    expect(await posted(page, "from")).toBe("2026-10-01");
-    expect(await posted(page, "to")).toBe("2026-10-31");
+    await expect.poll(() => posted(page, "from")).toBe("2026-10-01");
+    await expect.poll(() => posted(page, "to")).toBe("2026-10-31");
   });
 
   test("an end before the start reports null and marks the field invalid", async ({ page }) => {
@@ -49,7 +49,7 @@ test.describe("DateRangePicker", () => {
     await expect(caption(page)).toHaveText("No period yet.");
     await expect(page.getByText("The end date is before the start date.")).toBeVisible();
     await expect(segment(page, "day", "End")).toHaveAttribute("aria-invalid", "true");
-    expect(await posted(page, "from")).toBe("");
+    await expect.poll(() => posted(page, "from")).toBe("");
   });
 
   test("two clicks in the calendar pick the range and close it", async ({ page }) => {
