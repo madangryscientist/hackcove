@@ -4,7 +4,7 @@ import { execFileSync } from "node:child_process";
  * The commit a build was made from, for the hidden `<meta name="build-commit">` in every page's head, so
  * anyone can read which commit is live: `curl -s https://hack-cove.com/ | grep build-commit`.
  *
- * `BUILD_COMMIT` wins when set. It is an input of the moon `build` task, so a build with another value is
+ * `BUILD_COMMIT` wins when set, with `-dirty` added when the tree has uncommitted changes. It is an input of the moon `build` task, so a build with another value is
  * never a cache hit that reuses a dist/ carrying another commit's sha. Otherwise it is
  * `git rev-parse HEAD`, with `-dirty` when `git status --porcelain` lists anything. Locally, with
  * BUILD_COMMIT unset, a moon cache hit can still serve a dist/ built at an older commit, which is why the
@@ -53,7 +53,12 @@ function fromGit(cwd: string): string {
 }
 
 export function buildCommit({ env = process.env, cwd = process.cwd() }: Sources = {}): string {
-  return fromEnv(env) ?? fromGit(cwd);
+  const given = fromEnv(env);
+  if (!given) return fromGit(cwd);
+  // A given sha still says when the tree it was built from had uncommitted changes, so a dirty build is
+  // never labelled with the clean HEAD (the deploy recipe passes BUILD_COMMIT=$(git rev-parse HEAD)).
+  const dirty = git(cwd, ["status", "--porcelain"])?.trim();
+  return dirty && !given.endsWith("-dirty") ? `${given}-dirty` : given;
 }
 
 let memo: string | undefined;

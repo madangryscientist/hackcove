@@ -38,6 +38,12 @@ describe("buildCommit", () => {
     expect(buildCommit({ env: { BUILD_COMMIT: SHA }, cwd: dir })).toBe(SHA);
   });
 
+  test("BUILD_COMMIT on a dirty tree is marked -dirty", () => {
+    const { dir } = repo();
+    writeFileSync(join(dir, "b.txt"), "b\n");
+    expect(buildCommit({ env: { BUILD_COMMIT: SHA }, cwd: dir })).toBe(`${SHA}-dirty`);
+  });
+
   test("BUILD_COMMIT that is not a sha fails", () => {
     expect(() => buildCommit({ env: { BUILD_COMMIT: "main" }, cwd: tempDir() })).toThrow(
       /BUILD_COMMIT/,

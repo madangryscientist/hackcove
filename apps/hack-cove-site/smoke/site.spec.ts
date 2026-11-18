@@ -106,6 +106,8 @@ async function waitForCommit(request: APIRequestContext, expected: string): Prom
 
 test("the home page names the commit it was built from", async ({ request }) => {
   test.setTimeout(COMMIT_WAIT_MS + 30_000);
+  if (EXPECT_COMMIT)
+    expect(EXPECT_COMMIT, "SMOKE_EXPECT_COMMIT is a full sha").toMatch(BUILD_COMMIT_PATTERN);
   const { status, seen } = EXPECT_COMMIT
     ? await waitForCommit(request, EXPECT_COMMIT)
     : await readCommit(request);
