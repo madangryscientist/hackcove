@@ -120,6 +120,7 @@ describe.each(kinds)("%s", (_name, { Component, group, role, selected }) => {
     await u.tab();
     expect(document.activeElement).toBe(document.body);
     await u.click(option("Yearly"));
+    expect(document.activeElement).toBe(option("Yearly"));
     await u.keyboard("{ArrowLeft}");
     expect(onChange).not.toHaveBeenCalled();
   });
@@ -271,5 +272,7 @@ type Keys<T> = T extends unknown ? keyof T : never;
 describe("an item", () => {
   it("takes no styling key, only data-*", () => {
     expectTypeOf<Extract<Keys<SwitchItem>, `class${string}` | "style">>().toEqualTypeOf<never>();
+    // and no catch-all key, which would let any name through the check above
+    expectTypeOf<string>().not.toMatchTypeOf<Keys<SwitchItem>>();
   });
 });

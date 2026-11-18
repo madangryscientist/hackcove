@@ -40,11 +40,12 @@ describe("LinkAdapterProps", () => {
       </LinkProvider>,
     );
     expect(seen).toHaveLength(1);
-    const unset = seen.flatMap((props) => Object.entries(props)).filter(([, v]) => v === undefined);
-    expect(unset).toEqual([]);
-    expect(seen[0]).toMatchObject({ href: "/x", children: "X" });
-    expect(seen[0]).not.toHaveProperty("target");
-    expect(seen[0]).not.toHaveProperty("rel");
+    expect(seen.flatMap((props) => Object.keys(props)).toSorted()).toEqual([
+      "children",
+      // oxlint-disable-next-line no-restricted-properties -- the adapter's prop names, read as data, not a class check
+      "className",
+      "href",
+    ]);
   });
 });
 

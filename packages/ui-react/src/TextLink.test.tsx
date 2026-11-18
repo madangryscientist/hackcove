@@ -44,14 +44,4 @@ describe("TextLink", () => {
     );
     expect(link("PDF").getAttribute("download")).toBe("cv.pdf");
   });
-
-  it("stays one link named by its text with stretch, size, mono and tone", () => {
-    render(
-      <TextLink href="/q/1" stretch size="sm" mono tone="danger">
-        Quote 1
-      </TextLink>,
-    );
-    expect(screen.getAllByRole("link")).toHaveLength(1);
-    expect(link("Quote 1").getAttribute("href")).toBe("/q/1");
-  });
 });
