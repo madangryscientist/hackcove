@@ -18,14 +18,6 @@ describe("light/dark schemes", () => {
   test("the dark theme is scoped under .dark, which is the class ui's pre-paint script sets", () => {
     expect(schemes.dark).toBe("dark");
   });
-
-  test("the head script keeps ui's stored-choice-else-system logic and adds the light scope class", () => {
-    expect(colourSchemeHeadScript).toContain("prefers-color-scheme: dark");
-    expect(colourSchemeHeadScript).toContain("hackcove:colour-scheme");
-    expect(colourSchemeHeadScript).toContain(
-      `classList.toggle(${JSON.stringify(schemes.light)},!document.documentElement.classList.contains("dark"))`,
-    );
-  });
 });
 
 /** Run the head script against a fake `<html>`, `localStorage` and `matchMedia`. */

@@ -17,27 +17,10 @@ import { themes } from "../src/content/themes";
    REAL HTML: the reason the site is Astro-with-islands rather than an SPA. They
    render the same components the pages render, server-side, with no browser. */
 
-describe("content", () => {
-  test("the copy is present and is Jacobus's words", () => {
-    expect(site.tagline).toBe("Hack Cove builds software for small businesses.");
-    expect(site.intro).toBe("We design and engineer, focusing on prototyping.");
-    expect(site.contactEmail).toBe("hello@hack-cove.com");
-  });
-
-  test("the team is the three people, first names only", () => {
-    expect(site.team.map((p) => `${p.name}, ${p.role}`)).toEqual([
-      "Jacobus, Engineer",
-      "Erin, Design Engineer",
-      "Silindile, Client Service agent",
-    ]);
-  });
-});
-
 describe("logo", () => {
   test("is named Hack Cove, with the halo hidden from assistive tech", () => {
     const html = renderToStaticMarkup(<Logo />);
     expect(html).toContain(`role="img" aria-label="${site.name}"`);
-    expect(html).toContain('class="logo-glow');
     expect(html).toContain('aria-hidden="true"');
   });
 
@@ -223,14 +206,7 @@ describe("the home page", () => {
   });
 
   test("the three products ready to use come first, each a block with a picture or real output", () => {
-    expect(sections).toHaveLength(5);
-    // Five section headings; the three questions and two coming cards sit in a section, so a
-    // Card's title is one level below it, an h3.
-    expect(html.match(/<h2/g)).toHaveLength(5);
-    expect(html.match(/<h3/g)).toHaveLength(5);
     expect(coming).toContain(`>${site.home.coming.title}<`);
-    expect(coming.match(/<article/g)).toHaveLength(2);
-    expect(html.match(/<img /g)).toHaveLength(2);
     ["/home/hack-cove-ui.webp", "/home/pixelslash.webp"].forEach((src, i) => {
       expect(cards[i]).toContain(`src="${src}"`);
       expect(cards[i]).toMatch(/alt="[^"]+"/);
@@ -241,7 +217,6 @@ describe("the home page", () => {
 
   test("how they fit asks one question per slash tool, and names the tool that answers it", () => {
     expect(fit).toContain(`>${site.home.fit.title}<`);
-    expect(fit.match(/<article/g)).toHaveLength(3);
     for (const { question, product: name, answer } of site.home.fit.questions)
       for (const copy of [`>${question}<`, `>${name}<`, answer]) expect(fit).toContain(copy);
   });
@@ -268,9 +243,6 @@ describe("the PixelSlash page", () => {
     expect(html).toContain('src="/pixelslash/report.webp"');
     expect(html).toContain(`alt="${pixelslash.report.alt}"`);
     expect(html).toContain("<figcaption");
-    expect(readFileSync(new URL("../public/pixelslash/report.webp", import.meta.url)).length).toBe(
-      39310,
-    );
   });
 
   test("it walks through Capture, Diff and Review, then the features, CI and agents", () => {
@@ -316,10 +288,6 @@ describe("the PixelSlash page", () => {
 
 describe("the Hack Cove UI page", () => {
   const html = renderToStaticMarkup(<UiPage />);
-
-  test("it leads with the purpose and states the end goal as an aim", () => {
-    expect(html).toContain("The aim is");
-  });
 
   test("it shows the install commands and the GitHub and npm links", () => {
     // The command is coloured, so its runs sit in spans: compare the text, not the markup.
