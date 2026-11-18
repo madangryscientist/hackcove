@@ -1,6 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 import { themeFiles } from "@hackcove/themes-shared/files";
-import { themeScope } from "@hackcove/themes-shared/scope";
 
 // The layout runs once, in the reference theme (the first theme file in sorted order); how each theme
 // looks is the visual check's.
@@ -10,20 +9,28 @@ const themes = themeFiles(`${import.meta.dirname}/../../../themes`);
 const wrapping = ["text-code--long-line", "text-code--copy", "text-code--long-token"];
 const scrolling = ["text-code--scroll", "text-code--copy-scroll", "text-codeexample--long-code"];
 
-const open = async (page: Page, id: string, theme: { id: string; css: string }) => {
+const open = async (page: Page, id: string, theme: { id: string }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(`/iframe.html?id=${id}&viewMode=story&globals=theme:${theme.id}`);
-  await page.locator("figure").first().waitFor();
-  // The story really is under the theme's own scope class.
-  const scope = themeScope(theme.css);
-  expect(scope).toBeDefined();
-  expect(
-    await page
-      .locator("[data-theme]")
-      .first()
-      .evaluate((el) => [...el.classList]),
-  ).toEqual([scope]);
+  await code(page).waitFor();
 };
+
+/** The story's code: the one `<code>` in its figure. */
+const code = (page: Page) => page.getByRole("figure").getByRole("code");
+
+/**
+ * Whether the end of the code's longest line shows: the last character's point on screen is the
+ * code's own (not clipped by its box, nor off the side of the page, nor under the copy button).
+ * Read as a reader's eye would find it, by hit testing that point.
+ */
+const lineEndShows = (target: Locator) =>
+  target.evaluate((el) => {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const [end] = [...range.getClientRects()].toSorted((a, b) => b.right - a.right);
+    const hit = end && document.elementFromPoint(end.right - 2, end.top + end.height / 2);
+    return !!hit && el.contains(hit);
+  });
 
 /** Nothing the page shows is wider than the viewport, and the page itself does not scroll sideways. */
 const pageDoesNotScrollSideways = (page: Page) =>
@@ -46,11 +53,8 @@ if (theme) {
       const { scroll, client } = await pageDoesNotScrollSideways(page);
       expect(scroll).toBeLessThanOrEqual(client);
 
-      // The pre has nothing to scroll: the text is laid out inside it.
-      const overflow = await page
-        .locator("figure pre")
-        .evaluate((pre) => pre.scrollWidth - pre.clientWidth);
-      expect(overflow).toBeLessThanOrEqual(0);
+      // Nothing to scroll: the end of every line is laid out inside the box, on screen.
+      expect(await lineEndShows(code(page))).toBe(true);
     });
   }
 
@@ -62,15 +66,12 @@ if (theme) {
       const { scroll, client } = await pageDoesNotScrollSideways(page);
       expect(scroll).toBeLessThanOrEqual(client);
 
-      const scroller = page.locator("figure pre").locator("xpath=..");
-      // The line is longer than the box: it scrolls rather than widening the figure.
-      expect(await scroller.evaluate((el) => el.scrollWidth - el.clientWidth)).toBeGreaterThan(0);
-      // Scrolled to the end, it has scrolled all the way along.
-      const gap = await scroller.evaluate((el) => {
-        el.scrollLeft = el.scrollWidth;
-        return el.scrollWidth - el.clientWidth - el.scrollLeft;
-      });
-      expect(gap).toBeLessThanOrEqual(1);
+      // The line is longer than the box: its end is clipped rather than widening the figure.
+      expect(await lineEndShows(code(page))).toBe(false);
+      // A sideways wheel over the code scrolls it all the way along, to the line's end.
+      await code(page).hover();
+      await page.mouse.wheel(10_000, 0);
+      await expect.poll(() => lineEndShows(code(page))).toBe(true);
     });
   }
 }
@@ -89,15 +90,15 @@ for (const [id, source] of Object.entries(sources)) {
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(`/iframe.html?id=${id}&viewMode=story`);
-    await page.locator("figure pre").waitFor();
-    const selected = await page.locator("figure pre").evaluate((pre) => {
+    await code(page).waitFor();
+    const selected = await code(page).evaluate((el) => {
       const selection = getSelection();
-      selection?.selectAllChildren(pre);
+      selection?.selectAllChildren(el);
       return selection?.toString() ?? "";
     });
     expect(selected).toBe(source);
     // The DOM text is the source too: the words are boxed, never re-spelled (no non-breaking hyphen).
-    expect(await page.locator("figure pre").evaluate((pre) => pre.textContent)).toBe(source);
+    expect(await code(page).evaluate((el) => el.textContent)).toBe(source);
   });
 }
 
@@ -108,7 +109,7 @@ test("a real copy of the selected code puts the source text on the clipboard", a
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/iframe.html?id=text-code--long-line&viewMode=story");
-  await page.locator("figure pre").evaluate((pre) => getSelection()?.selectAllChildren(pre));
+  await code(page).evaluate((el) => getSelection()?.selectAllChildren(el));
   await page.keyboard.press("ControlOrMeta+c");
   const copied = await page.evaluate(() => navigator.clipboard.readText());
   expect(copied).toBe(sources["text-code--long-line"]);

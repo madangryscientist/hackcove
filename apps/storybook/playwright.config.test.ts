@@ -10,11 +10,11 @@ import config from "./playwright.config.js";
 const engine = (use: PlaywrightTestConfig["use"]) =>
   use?.browserName ?? use?.defaultBrowserType ?? "chromium";
 
+/** Every project's `use`, each over the config's own, as Playwright merges them. */
+const projectUses = (config.projects ?? []).map((p) => ({ ...config.use, ...p.use }));
+
 test("every Storybook e2e project runs in Chromium", () => {
-  const engines = [
-    config.use,
-    ...(config.projects ?? []).map((p) => ({ ...config.use, ...p.use })),
-  ].map(engine);
+  const engines = [config.use, ...projectUses].map(engine);
   expect(engines).toEqual(engines.map(() => "chromium"));
 });
 

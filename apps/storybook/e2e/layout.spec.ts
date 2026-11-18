@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 /**
  * How the page layouts look (the title x, the form column, the rail, the canvas, the centred card)
@@ -7,25 +7,33 @@ import { expect, test } from "@playwright/test";
  */
 const storyUrl = (id: string) => `/iframe.html?id=${id}&viewMode=story&globals=theme:default`;
 
-for (const width of [375, 768, 1280]) {
-  test(`at ${width}px a SidebarLayout with railLabel folds the rail below md and shows it from md`, async ({
+const open = async (page: Page, width: number) => {
+  await page.setViewportSize({ width, height: 800 });
+  await page.goto(storyUrl("page-layouts-sidebarlayout--long-rail"));
+  await page.getByRole("heading", { level: 1 }).waitFor();
+  return {
+    nav: page.getByRole("navigation", { name: "Sections" }),
+    summary: page.getByText("All sections"),
+  };
+};
+
+test("at 375px a SidebarLayout with railLabel folds the rail behind its summary, which opens it", async ({
+  page,
+}) => {
+  const { nav, summary } = await open(page, 375);
+  await expect(nav).toBeHidden();
+  await expect(summary).toBeVisible();
+  await summary.click();
+  await expect(nav).toBeVisible();
+});
+
+for (const width of [768, 1280]) {
+  test(`at ${width}px a SidebarLayout with railLabel shows the rail and no summary`, async ({
     page,
   }) => {
-    await page.setViewportSize({ width, height: 800 });
-    await page.goto(storyUrl("page-layouts-sidebarlayout--long-rail"));
-    const title = page.getByRole("heading", { level: 1 });
-    await title.waitFor();
-    const nav = page.getByRole("navigation", { name: "Sections" });
-    const summary = page.getByText("All sections");
-    if (width < 768) {
-      await expect(nav).toBeHidden();
-      await expect(summary).toBeVisible();
-      await summary.click();
-      await expect(nav).toBeVisible();
-    } else {
-      await expect(summary).toBeHidden();
-      await expect(nav).toBeVisible();
-    }
+    const { nav, summary } = await open(page, width);
+    await expect(summary).toBeHidden();
+    await expect(nav).toBeVisible();
   });
 }
 

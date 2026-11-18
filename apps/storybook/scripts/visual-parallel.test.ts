@@ -56,6 +56,13 @@ function tracked() {
   return { task, started, most: () => most };
 }
 
+/** A group task that records each item it runs and throws `error` on `failing`. */
+const failsAt =
+  (failing: string, error: Error, ran: string[] = []) =>
+  async (item: string): Promise<void> => {
+    ran.push(item);
+    if (item === failing) throw error;
+  };
 describe("eachAtOnce", () => {
   it("runs one item at a time, in order, when parallel is 1", async () => {
     const t = tracked();
@@ -73,19 +80,18 @@ describe("eachAtOnce", () => {
 
   it("runs the rest after a group fails, then fails naming the count", async () => {
     const ran: string[] = [];
-    const run = eachAtOnce(["a", "b", "c"], 1, async (item) => {
-      ran.push(item);
-      if (item === "a") throw new VisualError("a: capture failed");
-    });
+    const run = eachAtOnce(
+      ["a", "b", "c"],
+      1,
+      failsAt("a", new VisualError("a: capture failed"), ran),
+    );
     await expect(run).rejects.toThrow("1 of 3 groups failed");
     expect(ran).toEqual(["a", "b", "c"]);
   });
 
   it("throws a bug as it is, not as a group failure", async () => {
     const bug = new TypeError("not a visual error");
-    const run = eachAtOnce(["a", "b"], 2, async (item) => {
-      if (item === "b") throw bug;
-    });
+    const run = eachAtOnce(["a", "b"], 2, failsAt("b", bug));
     await expect(run).rejects.toBe(bug);
   });
 });

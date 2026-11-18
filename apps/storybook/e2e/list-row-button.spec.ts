@@ -29,13 +29,13 @@ for (const { id: theme } of themes) {
 
     // The trailing link is not part of the row button's name, and no link sits inside a button.
     await expect(row).toHaveAccessibleName("Grace");
-    await expect(page.locator("button a, a button")).toHaveCount(0);
+    await expect(page.getByRole("button").getByRole("link")).toHaveCount(0);
+    await expect(page.getByRole("link").getByRole("button")).toHaveCount(0);
 
-    // The label's own text is under the stretched button: a click on it is a click on the row.
-    const label = page.getByText("Grace", { exact: true });
-    const box = await label.boundingBox();
-    if (!box) throw new Error("the label has no box");
-    await page.mouse.click(box.x + 4, box.y + box.height / 2);
+    // The label's own text is under the stretched button: a real mouse click on it is a click on
+    // the row. `force` skips Playwright's own check that the text is the topmost element, since the
+    // point of the test is that the row's button is.
+    await page.getByText("Grace", { exact: true }).click({ force: true });
     await expect(status).toHaveText("Selected: Grace");
     await expect(row).toHaveAttribute("aria-current", "true");
 

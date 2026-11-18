@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 /**
  * BottomSheet over a dummy full-screen view: the handle steps the snaps from the keyboard, the view
@@ -21,12 +21,17 @@ async function open(page: Page, id: string, size = { width: 390, height: 700 }) 
 
 const snapLine = (page: Page, n: number) => page.getByText(`Snap ${n} of 3`);
 
+/** The centre of `target` on screen, read only to aim a real pointer or touch at it. */
+const centre = (target: Locator) =>
+  target.evaluate((el) => {
+    const { left, top, width, height } = el.getBoundingClientRect();
+    return { x: left + width / 2, y: top + height / 2 };
+  });
+
 /** Drag the handle's centre to `y` with the mouse (real pointer events in every engine). */
-async function dragTo(page: Page, handle: ReturnType<Page["locator"]>, y: number) {
-  const box = await handle.boundingBox();
-  if (!box) throw new Error("the handle has no box");
-  const x = box.x + box.width / 2;
-  await page.mouse.move(x, box.y + box.height / 2);
+async function dragTo(page: Page, handle: Locator, y: number) {
+  const { x, y: from } = await centre(handle);
+  await page.mouse.move(x, from);
   await page.mouse.down();
   await page.mouse.move(x, y, { steps: 12 });
   await page.mouse.up();
@@ -38,10 +43,9 @@ test.describe("keyboard", () => {
   }) => {
     const { handle } = await open(page, "default");
     await expect(snapLine(page, 1)).toBeVisible();
-    for (let i = 0; i < 10; i += 1) {
-      await page.keyboard.press("Tab");
-      if (await handle.evaluate((el) => el === document.activeElement)) break;
-    }
+    // The view's last pin comes before the sheet: one Tab from it reaches the handle.
+    await page.getByRole("button", { name: "Pin C" }).focus();
+    await page.keyboard.press("Tab");
     await expect(handle).toBeFocused();
     await page.keyboard.press("Enter");
     await expect(handle).toHaveAttribute("aria-expanded", "true");
@@ -81,10 +85,7 @@ test.describe("drag", () => {
 
   test("a touch drag of the handle to the top lands on the last snap", async ({ page }) => {
     const { handle } = await open(page, "default");
-    const box = await handle.boundingBox();
-    if (!box) throw new Error("the handle has no box");
-    const x = box.x + box.width / 2;
-    const from = box.y + box.height / 2;
+    const { x, y: from } = await centre(handle);
     const cdp = await page.context().newCDPSession(page);
     await cdp.send("Input.dispatchTouchEvent", {
       type: "touchStart",
@@ -101,20 +102,19 @@ test.describe("drag", () => {
   });
 });
 
-/** Open ScrollingPage with the sheet at its second snap; returns the body's centre. */
+/**
+ * Open ScrollingPage with the sheet at its second snap. Returns the body's last shop (on screen
+ * only once the body has scrolled to its end) and the centre of a shop near the body's middle,
+ * where the pointer or finger goes.
+ */
 async function bodyAtSnap2(page: Page) {
-  const { handle } = await open(page, "scrolling-page");
+  const { sheet, handle } = await open(page, "scrolling-page");
   await handle.click();
   await expect(snapLine(page, 2)).toBeVisible();
-  const id = await handle.getAttribute("aria-controls");
-  const body = page.locator(`[id="${id}"]`);
-  const box = await body.boundingBox();
-  if (!box) throw new Error("the body has no box");
-  return { body, x: box.x + box.width / 2, y: box.y + box.height / 2 };
+  const last = sheet.getByText("31 Long Street", { exact: true });
+  await expect(last).not.toBeInViewport();
+  return { last, ...(await centre(sheet.getByText("13 Long Street", { exact: true }))) };
 }
-
-const atEnd = (body: ReturnType<Page["locator"]>) =>
-  body.evaluate((el) => el.scrollTop + el.clientHeight >= el.scrollHeight - 1);
 
 const pageScroll = (page: Page) => page.evaluate(() => window.scrollY);
 
@@ -122,20 +122,20 @@ test.describe("scroll containment", () => {
   test.use({ hasTouch: true });
 
   test("wheeling far past the body's end scrolls the body, never the page", async ({ page }) => {
-    const { body, x, y } = await bodyAtSnap2(page);
+    const { last, x, y } = await bodyAtSnap2(page);
     expect(await page.evaluate(() => document.documentElement.scrollHeight > innerHeight)).toBe(
       true,
     );
     await page.mouse.move(x, y);
     for (let i = 0; i < 6; i += 1) await page.mouse.wheel(0, 1500);
-    await expect.poll(() => atEnd(body)).toBe(true);
+    await expect(last).toBeInViewport({ ratio: 1 });
     for (let i = 0; i < 4; i += 1) await page.mouse.wheel(0, 1500);
-    await expect.poll(() => atEnd(body)).toBe(true);
+    await expect(last).toBeInViewport({ ratio: 1 });
     expect(await pageScroll(page)).toBe(0);
   });
 
   test("a touch fling over the body never scrolls the page", async ({ page }) => {
-    const { body, x, y } = await bodyAtSnap2(page);
+    const { last, x, y } = await bodyAtSnap2(page);
     const cdp = await page.context().newCDPSession(page);
     // Ten swipes up (1500px, past the body's end), each a finger dragged 150px over the body in 10 moves, then lifted.
     for (let swipe = 0; swipe < 10; swipe += 1) {
@@ -151,7 +151,7 @@ test.describe("scroll containment", () => {
       }
       await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
     }
-    await expect.poll(() => atEnd(body)).toBe(true);
+    await expect(last).toBeInViewport({ ratio: 1 });
     expect(await pageScroll(page)).toBe(0);
   });
 });

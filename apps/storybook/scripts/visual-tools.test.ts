@@ -30,19 +30,30 @@ describe("stepFailure", () => {
   });
 });
 
+/** A port picker that hands out `ports` in order, then 0. */
+const picker = (ports: number[]) => async () => ports.shift() ?? 0;
+
+/** A capture that records each port it is given and finds `taken` already bound. */
+const takenAt =
+  (taken: number, used: number[]) =>
+  async (port: number): Promise<string> => {
+    used.push(port);
+    if (port === taken) throw new PortTaken(port);
+    return "captured";
+  };
+
+/** A capture that binds its port, or finds it taken when another capture bound it first. */
+const binder = (bound: Set<number>) => async (port: number) => {
+  await Promise.resolve();
+  if (bound.has(port)) throw new PortTaken(port);
+  bound.add(port);
+  return port;
+};
+
 describe("withFreePort", () => {
   it("picks another port when the first is taken before the capture binds it", async () => {
-    const picks = [5000, 5001];
     const used: number[] = [];
-    const result = await withFreePort(
-      async (port) => {
-        used.push(port);
-        if (port === 5000) throw new PortTaken(port);
-        return "captured";
-      },
-      async () => picks.shift() ?? 0,
-      3,
-    );
+    const result = await withFreePort(takenAt(5000, used), picker([5000, 5001]), 3);
     expect(result).toBe("captured");
     expect(used).toEqual([5000, 5001]);
     expect(new Set(used).size).toBe(2);
@@ -50,23 +61,16 @@ describe("withFreePort", () => {
 
   it("gives two groups started at the same moment different ports", async () => {
     // Both pick 5000 at once; whichever binds second finds it taken and takes the next one.
-    const picks = [5000, 5000, 5001, 5002];
-    const bound = new Set<number>();
-    const attempt = async (port: number) => {
-      await Promise.resolve();
-      if (bound.has(port)) throw new PortTaken(port);
-      bound.add(port);
-      return port;
-    };
+    const pick = picker([5000, 5000, 5001, 5002]);
+    const attempt = binder(new Set<number>());
     const ports = await Promise.all([
-      withFreePort(attempt, async () => picks.shift() ?? 0, 3),
-      withFreePort(attempt, async () => picks.shift() ?? 0, 3),
+      withFreePort(attempt, pick, 3),
+      withFreePort(attempt, pick, 3),
     ]);
     expect(new Set(ports).size).toBe(2);
   });
 
   it("fails naming the port after the last try", async () => {
-    const picks = [5000, 5001, 5002, 5003];
     let tries = 0;
     await expect(
       withFreePort(
@@ -74,7 +78,7 @@ describe("withFreePort", () => {
           tries++;
           throw new PortTaken(port);
         },
-        async () => picks.shift() ?? 0,
+        picker([5000, 5001, 5002, 5003]),
         3,
       ),
     ).rejects.toThrow("port 5000, 5001, 5002 was taken on each of 3 tries");

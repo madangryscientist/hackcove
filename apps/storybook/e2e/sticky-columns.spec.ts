@@ -37,15 +37,13 @@ test("a SidebarLayout rail taller than the viewport scrolls itself and reaches i
   await page.goto(storyUrl("page-layouts-sidebarlayout--tall-rail"));
   const nav = page.getByRole("navigation", { name: "Sections" });
   await nav.waitFor();
-  const rail = page.getByRole("complementary");
-  const scroller = rail.locator("> div");
-  expect(
-    await scroller.evaluate((el) => el.scrollHeight > el.clientHeight),
-    "the rail is taller than the room",
-  ).toBe(true);
   await scrollToEnd(page);
   const last = nav.getByRole("link", { name: "Section 60", exact: true });
-  await scroller.evaluate((el) => el.scrollTo(0, el.scrollHeight));
+  // The rail is taller than the room: at the page's end its last link is still below the fold.
+  await expect(last).not.toBeInViewport();
+  // A wheel over the rail scrolls the rail itself, to its last link.
+  await nav.getByRole("link", { name: "Section 1", exact: true }).hover();
+  await page.mouse.wheel(0, 10_000);
   await expect(last).toBeInViewport();
   // The page still scrolls on its own: the rail did not trap the wheel's work.
   expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(400);
@@ -91,12 +89,13 @@ for (const [id, what] of [
   });
 }
 
-const scrollerAt = async (page: Page, id: string) => {
+/** The rail's links, on a desktop, once the story has rendered. */
+const railAt = async (page: Page, id: string) => {
   await page.setViewportSize(desktop);
   await page.goto(storyUrl(id));
-  const scroller = page.getByRole("complementary").first().locator("> div");
-  await scroller.waitFor();
-  return scroller;
+  const nav = page.getByRole("navigation", { name: "Sections" });
+  await nav.waitFor();
+  return nav;
 };
 
 /**
@@ -107,22 +106,27 @@ const scrollerAt = async (page: Page, id: string) => {
 test("a SidebarLayout rail with its current link low in the list scrolls it into view, not the page", async ({
   page,
 }) => {
-  const scroller = await scrollerAt(page, "page-layouts-sidebarlayout--current-low");
-  const current = scroller.locator("[aria-current]");
-  await expect(current).toHaveText("Section 45");
-  await expect.poll(() => scroller.evaluate((el) => el.scrollTop)).toBeGreaterThan(0);
+  const nav = await railAt(page, "page-layouts-sidebarlayout--current-low");
+  const current = nav.getByRole("link", { name: "Section 45", exact: true });
+  await expect(current).toHaveAttribute("aria-current", "page");
+  // Section 45 starts far below the fold: in view means the rail scrolled to it.
+  await expect(current).toBeInViewport({ ratio: 1 });
   expect(await page.evaluate(() => window.scrollY), "the page did not move").toBe(0);
 });
 
 test("a SidebarLayout rail whose current link is at the top stays at the top", async ({ page }) => {
-  const scroller = await scrollerAt(page, "page-layouts-sidebarlayout--tall-rail");
-  await expect(scroller.locator("[aria-current]")).toHaveText("Section 1");
-  expect(await scroller.evaluate((el) => el.scrollTop)).toBe(0);
+  const nav = await railAt(page, "page-layouts-sidebarlayout--tall-rail");
+  const current = nav.getByRole("link", { name: "Section 1", exact: true });
+  await expect(current).toHaveAttribute("aria-current", "page");
+  await expect(current).toBeInViewport({ ratio: 1 });
+  expect(await page.evaluate(() => window.scrollY), "the page did not move").toBe(0);
 });
 
 test("below md the folded rail's summary names the current link", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: desktop.height });
   await page.goto(storyUrl("page-layouts-sidebarlayout--current-low"));
-  const summary = page.getByRole("complementary").locator("summary");
-  await expect(summary).toHaveText("All sections: Section 45");
+  // The summary is the disclosure's own label, found by the text it shows.
+  await expect(
+    page.getByRole("complementary").getByText("All sections: Section 45", { exact: true }),
+  ).toBeVisible();
 });

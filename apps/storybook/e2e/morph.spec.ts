@@ -2,8 +2,9 @@ import { expect, test, type Page } from "@playwright/test";
 import { themeFiles } from "@hackcove/themes-shared/files";
 
 /**
- * Morph in the Default story: each card in the grid carries its own view-transition name, the
- * detail carries the name of the card that opened it, the change runs through one view transition
+ * Morph in the Default story: the browser captures each card in the grid under its own
+ * view-transition name and the detail under the name of the card that opened it (read from the
+ * transition's own pseudo-elements, not from a style), the change runs through one view transition
  * each way, under reduced motion it runs none, and where the browser has no View Transitions the
  * page still swaps. The part has no colour, so the first theme is enough.
  */
@@ -58,8 +59,11 @@ const open = async (page: Page) => {
   await expect(page.getByRole("button", { name: "Open Shop B" })).toBeVisible();
 };
 
-const transitionName = (page: Page, testId: string) =>
-  page.getByTestId(testId).evaluate((el) => getComputedStyle(el).viewTransitionName);
+/**
+ * A Morph's own box. It wraps the card or the detail with no role or name of its own, so the story's
+ * test id is the only way to it; only its `data-morph-near` state is read, never its look.
+ */
+const morphBox = (page: Page, testId: string) => page.getByTestId(testId);
 
 const transitions = (page: Page) =>
   page.evaluate((): number | undefined => {
@@ -71,25 +75,26 @@ test("the themes folder lists at least one theme", () => {
   expect(theme).toBeDefined();
 });
 
-test("each card has its own name, and the detail takes the pressed card's", async ({ page }) => {
+test("each card has its own name, and the detail takes the pressed card's, one view transition each way", async ({
+  page,
+}) => {
   await page.addInitScript(COUNT_TRANSITIONS);
+  await page.addInitScript(RECORD_CAPTURE);
   await open(page);
-  const all = await Promise.all(
-    ["morph-a", "morph-b", "morph-c"].map((id) => transitionName(page, id)),
-  );
-  expect(new Set(all).size).toBe(3);
-  expect(all).not.toContain("none");
-  const shopB = all[1] ?? "";
 
   await page.getByRole("button", { name: "Open Shop B" }).click();
   await expect(page.getByRole("heading", { name: "Shop B" })).toBeVisible();
-  await expect(page.getByTestId("morph-a")).toHaveCount(0);
-  expect(await transitionName(page, "morph-detail")).toBe(shopB);
+  await expect(page.getByRole("button", { name: "Open Shop A" })).toHaveCount(0);
+  // The browser captured the detail under Shop B's card name, so the card grows into it.
+  expect(await captured(page)).toEqual(expect.arrayContaining(["hc-morph-shop-b"]));
   expect(await transitions(page)).toBe(1);
 
   await page.getByRole("button", { name: "Back" }).click();
   await expect(page.getByRole("button", { name: "Open Shop B" })).toBeVisible();
-  expect(await transitionName(page, "morph-b")).toBe(shopB);
+  // Back in the grid, every card was captured under a name of its own, Shop B's the same as before.
+  expect(await captured(page)).toEqual(
+    expect.arrayContaining(["hc-morph-shop-a", "hc-morph-shop-b", "hc-morph-shop-c"]),
+  );
   expect(await transitions(page)).toBe(2);
 });
 
@@ -125,23 +130,13 @@ test.describe("a long list", () => {
     );
     const first = page.getByRole("button", { name: "Open Market 1", exact: true });
     await expect(first).toBeVisible();
-    const all = await page
-      .locator('[data-testid^="long-"][data-morph]')
-      .evaluateAll((els) => els.map((el) => getComputedStyle(el).viewTransitionName));
-    expect(all).toHaveLength(30);
-    expect(all[0]).toBe("hc-morph-long-1");
-    expect(all[29]).toBe("none");
-    expect(all.filter((n) => n !== "none").length).toBeLessThan(30);
-
-    // The page's fade is the root transition, captured at the viewport's size, not a named box.
-    expect(await transitionName(page, "long-page")).toBe("none");
-    expect(
-      await page.evaluate(() => getComputedStyle(document.documentElement).viewTransitionName),
-    ).toBe("root");
-
-    const last = page.getByTestId("long-30");
-    await last.scrollIntoViewIfNeeded();
-    await expect.poll(() => transitionName(page, "long-30")).toBe("hc-morph-long-30");
+    // Only the cards near the screen are named: the first is, the thirtieth is not until it nears.
+    await expect(morphBox(page, "long-1")).toHaveAttribute("data-morph-near", "");
+    await expect(morphBox(page, "long-30")).not.toHaveAttribute("data-morph-near");
+    await page
+      .getByRole("button", { name: "Open Market 30", exact: true })
+      .scrollIntoViewIfNeeded();
+    await expect(morphBox(page, "long-30")).toHaveAttribute("data-morph-near", "");
     await page.evaluate(() => window.scrollTo(0, 0));
 
     await first.click();
@@ -150,11 +145,15 @@ test.describe("a long list", () => {
     await page.getByRole("button", { name: "Back" }).click();
     await expect(first).toBeVisible();
     expect(await transitions(page)).toBe(2);
-    expect(await transitionName(page, "long-1")).toBe("hc-morph-long-1");
     // The list remounted inside the transition, and only its near cards were captured named.
     const back = await captured(page);
     expect(back).toContain("hc-morph-long-1");
     expect(back).not.toContain("hc-morph-long-30");
+    // The page's fade is the root transition, captured at the viewport's size: it names no box.
+    expect(back).toContain("root");
+    expect(back.filter((name) => name !== "root" && !name.startsWith("hc-morph-long-"))).toEqual(
+      [],
+    );
   });
 });
 
@@ -171,7 +170,7 @@ for (const [story, name, when] of [
     );
     const stall = page.getByRole("button", { name: "Open Stall 30", exact: true });
     await stall.scrollIntoViewIfNeeded();
-    await expect.poll(() => transitionName(page, `${name}-30`)).toBe(`hc-morph-${name}-30`);
+    await expect(morphBox(page, `${name}-30`)).toHaveAttribute("data-morph-near", "");
     await stall.click();
     await expect(page.getByRole("heading", { name: "Stall 30", exact: true })).toBeVisible();
     expect(await captured(page)).toContain(`hc-morph-${name}-30`);

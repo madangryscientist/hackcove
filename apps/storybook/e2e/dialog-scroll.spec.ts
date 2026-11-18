@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 /**
  * A windowed Dialog is capped to the viewport and scrolls its body, so a tall one keeps its title
@@ -14,10 +14,15 @@ const open = async (page: Page, id: string, size: typeof desktop) => {
   await page.goto(`/iframe.html?id=${id}&viewMode=story`);
   const modal = page.getByRole("dialog");
   await expect(modal).toBeVisible();
-  // The slide-in has finished: the dialog is where it will stay.
-  await expect(modal).toHaveCSS("opacity", "1");
+  // The slide-in has finished: every animation on the dialog has settled, so it is where it will stay.
+  await modal.evaluate((el) =>
+    Promise.all(el.getAnimations({ subtree: true }).map((animation) => animation.finished)),
+  );
   return modal;
 };
+
+/** The body's own tab stop: a group named by the dialog's title, there only while it holds one. */
+const bodyStop = (modal: Locator, title: string) => modal.getByRole("group", { name: title });
 
 for (const size of sizes) {
   test(`Tall, ${size.name}: the footer button is fully on screen and the body's last line is reached by scrolling the body`, async ({
@@ -47,26 +52,25 @@ for (const size of sizes) {
   });
 }
 
-for (const id of [
-  "feedback-dialog--tall-form",
-  "feedback-dialog--tall-form-error",
-  "feedback-dialog--focus-at-the-bottom",
-]) {
+// Each story with what must stay fully on screen beside the footer's buttons: the error's alert.
+for (const { id, also } of [
+  { id: "feedback-dialog--tall-form", also: [] },
+  { id: "feedback-dialog--tall-form-error", also: ["alert"] },
+  { id: "feedback-dialog--focus-at-the-bottom", also: [] },
+] as const) {
   for (const size of sizes) {
     test(`${id}, ${size.name}: the footer stays on screen`, async ({ page }) => {
       const modal = await open(page, id, size);
       await expect(modal.getByRole("button", { name: "Accept" })).toBeInViewport({ ratio: 1 });
       await expect(modal.getByRole("button", { name: "Cancel" })).toBeInViewport({ ratio: 1 });
-      if (id.endsWith("-error")) {
-        await expect(modal.getByRole("alert")).toBeInViewport({ ratio: 1 });
-      }
+      for (const role of also) await expect(modal.getByRole(role)).toBeInViewport({ ratio: 1 });
     });
   }
 }
 
 test("a tall body of plain text is reached by Tab and scrolls with ArrowDown", async ({ page }) => {
   const modal = await open(page, "feedback-dialog--tall", desktop);
-  const body = modal.getByRole("group", { name: "Terms of service" });
+  const body = bodyStop(modal, "Terms of service");
   await expect(body).toHaveAttribute("tabindex", "0");
 
   // The footer's first button has first focus (the body had no tab stop when the dialog opened),
@@ -90,14 +94,14 @@ test("a tall form still opens with focus on its first field, and its body takes 
 }) => {
   const modal = await open(page, "feedback-dialog--tall-form", desktop);
   await expect(modal.getByLabel("Name")).toBeFocused();
-  await expect(modal.locator('[tabindex]:not([tabindex="-1"])')).toHaveCount(0);
+  await expect(bodyStop(modal, "New segment")).toHaveCount(0);
 });
 
 test("a short dialog keeps its first focus where it is, and its body takes no tab stop", async ({
   page,
 }) => {
   const modal = await open(page, "feedback-dialog--default", desktop);
-  await expect(modal.locator('[tabindex]:not([tabindex="-1"])')).toHaveCount(0);
+  await expect(bodyStop(modal, "Delete build")).toHaveCount(0);
   await expect(modal.getByRole("button", { name: "Cancel" })).toBeFocused();
 });
 
@@ -105,10 +109,10 @@ test("a body that grows past the cap gains the tab stop, and loses it when it fi
   page,
 }) => {
   const modal = await open(page, "feedback-dialog--tall", desktop);
-  const body = modal.getByRole("group", { name: "Terms of service" });
+  const body = bodyStop(modal, "Terms of service");
   await expect(body).toHaveAttribute("tabindex", "0");
   await page.setViewportSize({ width: 1280, height: 4000 });
-  await expect(modal.locator('[tabindex]:not([tabindex="-1"])')).toHaveCount(0);
+  await expect(bodyStop(modal, "Terms of service")).toHaveCount(0);
   await page.setViewportSize({ width: 1280, height: 720 });
   await expect(body).toHaveAttribute("tabindex", "0");
 });

@@ -15,6 +15,16 @@ async function scrollTo(target: Locator, y: number): Promise<void> {
   }, y);
 }
 
+/**
+ * The rectangle of `target` on screen, read only to aim a real pointer or a hit test at it; no test
+ * asserts a size or a position.
+ */
+const rect = (target: Locator) =>
+  target.evaluate((el) => {
+    const { left, top, width, height } = el.getBoundingClientRect();
+    return { x: left, y: top, width, height };
+  });
+
 /** Whether the element at the centre of `target` is `target` itself or inside it: what a click there reaches. */
 async function isHit(target: Locator): Promise<boolean> {
   return target.evaluate((el) => {
@@ -55,10 +65,10 @@ for (const { name, at } of controls) {
   test(`a Card's ${name} scrolled under a StickyBar: the StickyBar is hit`, async ({ page }) => {
     await page.goto(story);
     const control = at(page);
+    // The StickyBar is a plain bar with no landmark role, so no role or name reaches it.
     const bar = page.getByTestId("sticky-bar");
     await expect(bar).toBeVisible();
-    const box = await bar.boundingBox();
-    if (!box) throw new Error("no StickyBar box");
+    const box = await rect(bar);
     await scrollTo(control, box.y + box.height / 2);
     expect(await barIsHit(control, bar)).toBe(true);
   });
@@ -88,7 +98,7 @@ test("a Card's own link and button stay clickable, and the rest of the card foll
   };
 
   // Plain body text is not interactive, so a click on it reaches the card's stretched link.
-  await clickAt(page.locator("a.link-stretch"));
+  await clickAt(page.getByRole("link", { name: /^Build 41 / }));
   await expect(page).toHaveURL(/#build-41$/);
 
   await page.goto(story);
@@ -103,11 +113,10 @@ test("a calendar opened from a date field in a Card is a popover over the card b
   await page.getByRole("button", { name: /^Calendar/ }).click();
   await expect(page.getByRole("grid")).toBeVisible();
 
-  const popover = page.getByRole("dialog").locator("xpath=..");
+  const popover = page.getByRole("dialog", { name: /^Calendar/ });
   const below = page.getByRole("region", { name: "Below" });
-  const popBox = await popover.boundingBox();
-  const belowBox = await below.boundingBox();
-  if (!popBox || !belowBox) throw new Error("no popover or card box");
+  const popBox = await rect(popover);
+  const belowBox = await rect(below);
   const left = Math.max(popBox.x, belowBox.x);
   const right = Math.min(popBox.x + popBox.width, belowBox.x + belowBox.width);
   const top = Math.max(popBox.y, belowBox.y);
