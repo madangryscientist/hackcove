@@ -5,6 +5,7 @@ import { setScheme, toggle } from "./scheme";
 // The header is one row from `md`: the brand, the section links and the toggle, not a second row for
 // the links. 56px for the row and 1px for its bottom border, the same height as the phone header.
 const HEADER = 57;
+// The home page, the docs index and a docs page: one of each header context, not every page.
 const paths = ["/", "/ui/", "/ui/button/"];
 
 for (const width of [1440, 768]) {
@@ -12,7 +13,6 @@ for (const width of [1440, 768]) {
     test(`at ${width}px under ${scheme} the header is one row with the section links and the toggle, and the page does not scroll sideways`, async ({
       page,
     }) => {
-      test.setTimeout(120_000);
       await page.setViewportSize({ width, height: 900 });
       await page.goto("/");
       await setScheme(page, scheme);

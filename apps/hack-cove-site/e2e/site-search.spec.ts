@@ -10,6 +10,7 @@ const searchReady = (page: Page) =>
   page.locator('astro-island[component-export="SiteSearch"]:not([ssr])').waitFor();
 
 for (const width of [1280, 390]) {
+  // The home page and the docs index: the two places a visitor starts a search from, not every page.
   for (const path of ["/", "/ui/"]) {
     test(`${path} at ${width}px: the trigger is in the header, Ctrl+K opens the search and "dia" Enter lands on /ui/dialog/`, async ({
       page,

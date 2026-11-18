@@ -1,11 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { site } from "../src/content/site";
-import { everyPage, setScheme } from "./scheme";
+import { sitePages } from "../test/pages";
+import { setScheme } from "./scheme";
 
 /** The header's 56px row and its 1px bottom border: the one phone header height. */
 const PHONE_HEADER = 57;
-
-const paths = [...new Set(everyPage)];
 
 /**
  * One test per page, per scheme, never one test looping over the pages: each load then has its own
@@ -15,7 +14,7 @@ const paths = [...new Set(everyPage)];
  */
 for (const scheme of ["dark", "light"] as const) {
   test.describe(`at 390px under ${scheme}`, () => {
-    for (const path of paths) {
+    for (const path of sitePages) {
       test(`${path}: the section nav is behind the Menu button, every section reachable, no sideways scroll`, async ({
         page,
       }) => {

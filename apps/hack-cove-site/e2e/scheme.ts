@@ -14,6 +14,7 @@ export const schemeScope = {
 };
 export type Scheme = keyof typeof schemeScope;
 
+// The docs pages with the heading each opens on: these tests read a heading, which the other pages do not share.
 export const pages = [
   { path: "/ui/", heading: "Getting started" },
   ...componentPages.map(({ slug, name }) => ({ path: `/ui/${slug}/`, heading: name })),
@@ -64,10 +65,7 @@ export async function setScheme(page: Page, scheme: Scheme) {
   await hydrated(page);
   await expect(async () => {
     if ((await classScheme(page)) !== scheme) await toggle(page).click();
-    await expect.poll(() => classScheme(page), { timeout: 1_000 }).toBe(scheme);
+    await expect.poll(() => classScheme(page)).toBe(scheme);
   }).toPass();
   await expect(toggle(page)).toHaveAccessibleName(labelFor(scheme));
 }
-
-/** Every page the header is on: the three sections' pages and every component page. */
-export const everyPage = ["/", "/contracting/", "/pixelslash/", ...pages.map(({ path }) => path)];

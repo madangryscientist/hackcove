@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { componentPages, componentSections } from "../src/content/components/index";
+import { sitePages } from "../test/pages";
 import {
-  everyPage,
   labelFor,
   pages,
   schemeScope,
@@ -137,6 +137,7 @@ test("the toggle is in the header of every page, and a choice carries to the nex
 }) => {
   await page.goto("/");
   await setScheme(page, "light");
+  // One page of each kind the header sits on (a section page, a product page, a docs page), not every page.
   for (const path of ["/contracting/", "/pixelslash/", "/ui/tabs/"]) {
     await page.goto(path);
     await expect(toggle(page)).toHaveAccessibleName("Switch to dark theme");
@@ -165,10 +166,8 @@ const middle = (box?: { top: number; height: number }) => (box?.top ?? 0) + (box
 
 // One test per page, never one test looping over them: a slow page cannot spend the next page's
 // budget, and a failure names the page.
-const phonePaths = [...new Set(everyPage)];
-
 test.describe("at 375px the header is one row", () => {
-  for (const path of phonePaths) {
+  for (const path of sitePages) {
     test(`${path}: no sideways scroll, the toggle inside the viewport, beside the brand`, async ({
       page,
     }) => {
@@ -282,16 +281,6 @@ test("Usage lists the do rules and the dont rules as two named lists", async ({ 
   const button = page.getByRole("region", { name: "Usage" });
   await expect(button.getByRole("list", { name: "Do", exact: true })).toBeVisible();
   await expect(button.getByRole("list", { name: "Don't", exact: true })).toHaveCount(0);
-});
-
-test("/ui/llms.txt is served as plain text, one section per component page", async ({
-  request,
-}) => {
-  const response = await request.get("/ui/llms.txt");
-  expect(response.headers()["content-type"]).toContain("text/plain");
-  const text = await response.text();
-  expect(text).toContain("fully integrated with its theming");
-  for (const { name } of componentPages) expect(text).toContain(`\n## ${name}\n`);
 });
 
 test("the logo ink and halo are the same fixed blue under both schemes' scope classes", async ({

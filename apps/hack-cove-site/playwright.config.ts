@@ -5,8 +5,10 @@ const port = 4322;
 export default defineConfig({
   testDir: "e2e",
   testMatch: "*.spec.ts",
-  reporter: "list",
-  use: { baseURL: `http://127.0.0.1:${port}` },
+  forbidOnly: !!process.env["CI"],
+  retries: 0, // a flaky test is a bug to fix, never retried
+  reporter: process.env["CI"] ? [["github"], ["html", { open: "never" }]] : "list",
+  use: { baseURL: `http://127.0.0.1:${port}`, trace: "retain-on-failure" },
   // The `e2e` moon task builds the site first; this only serves `dist/`. Storybook's static server
   // is used because `astro preview` leaves its server running when Playwright stops it.
   webServer: {
