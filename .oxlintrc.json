@@ -90,7 +90,7 @@
       }
     },
     {
-      "files": ["**/.storybook/**", "apps/hack-cove-site/**/*.astro"],
+      "files": ["**/.storybook/**", "**/*.astro"],
       "rules": {
         "import/no-unassigned-import": "off"
       }

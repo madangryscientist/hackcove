@@ -1,15 +1,13 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { islandHydrated } from "./scheme";
 
 /**
  * The header's search, on desktop and on a phone: from the home page Ctrl+K opens it, and "dia" then
  * Enter lands on the Dialog page. The open dialog makes nothing scroll sideways.
  */
-const searchReady = (page: Page) =>
-  page.locator('astro-island[component-export="SiteSearch"]:not([ssr])').waitFor();
-
 test(`from /, Ctrl+K opens the search and "dia" Enter lands on /ui/dialog/`, async ({ page }) => {
   await page.goto("/");
-  await searchReady(page);
+  await islandHydrated(page, "SiteSearch");
   await expect(
     // Desktop: the button's visible text, "Search". Phone: the icon button, named by `label`.
     page.getByRole("banner").getByRole("button", { name: /^Search( components)?$/ }),

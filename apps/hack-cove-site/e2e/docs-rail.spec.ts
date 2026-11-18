@@ -1,29 +1,19 @@
-import { expect, test, type Locator } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 // HC-259: the rail shows where you are. The frame hydrates (the rail's effects run on the site), so a
-// page low in the list has its current link scrolled into view inside the rail, and the rail's
-// scrollbar is the thin themed one. The phone's folded rail is docs-rail.phone.spec.ts.
-const boxOf = async (locator: Locator) => {
-  const box = await locator.boundingBox();
-  if (!box) throw new Error("no box");
-  return box;
-};
-
+// page low in the list has its current link scrolled into view inside the rail. The rail's fade and
+// thin scrollbar are look, so they are the visual check's. The phone's folded rail is
+// docs-rail.phone.spec.ts.
 test("/ui/button/ on a desktop has its current link in view in the rail, and the page has not moved", async ({
   page,
 }) => {
   await page.goto("/ui/button/");
-  const scroller = page.getByRole("complementary", { name: "All components" }).locator("> div");
-  const current = scroller.locator("[aria-current]");
-  await expect(current).toHaveText("Button");
-  await expect.poll(() => scroller.evaluate((el) => el.scrollTop)).toBeGreaterThan(0);
-  const [box, at] = await Promise.all([boxOf(scroller), boxOf(current)]);
-  expect(at.y, "the current link is below the rail's top").toBeGreaterThanOrEqual(box.y);
-  expect(at.y + at.height, "the current link is above the rail's end").toBeLessThanOrEqual(
-    box.y + box.height,
-  );
+  const rail = page.getByRole("complementary", { name: "All components" });
+  const current = rail.getByRole("link", { name: "Button", exact: true });
+  await expect(current).toHaveAttribute("aria-current", "page");
+  // The rail scrolled: its first link went off the top, and the current link is wholly inside it
+  // (in view counts the rail's own clipping, not only the window's).
+  await expect(rail.getByRole("link").first()).not.toBeInViewport();
+  await expect(current).toBeInViewport({ ratio: 1 });
   expect(await page.evaluate(() => window.scrollY), "the page did not move").toBe(0);
-  // The fade (HC-251) is live on the site, and the scrollbar is the thin themed one.
-  await expect(scroller).toHaveAttribute("data-more", "");
-  expect(await scroller.evaluate((el) => getComputedStyle(el).scrollbarWidth)).toBe("thin");
 });

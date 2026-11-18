@@ -1,0 +1,11 @@
+{
+  "extends": ["../../.oxlintrc.json", "../../packages/oxlint-testing/.oxlintrc.json"],
+  "overrides": [
+    {
+      "files": ["scripts/**"],
+      "rules": {
+        "no-console": "error"
+      }
+    }
+  ]
+}

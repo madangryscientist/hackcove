@@ -12,6 +12,7 @@ import { componentPages, componentSections } from "../src/content/components/ind
 import { type Person, sectionOf, site } from "../src/content/site";
 import { themeFiles } from "@hackcove/themes-shared/files";
 import { themes } from "../src/content/themes";
+import { must } from "./must";
 
 /* The point of these tests is that the words and the people survive rendering as
    REAL HTML: the reason the site is Astro-with-islands rather than an SPA. They
@@ -162,6 +163,30 @@ describe("the home page", () => {
     },
   ];
 
+  /** The words a product's card says, in order. */
+  const wordsFor = (want: (typeof expected)[number]) => {
+    const { features = [], sample } = product(want.name) ?? {};
+    // A product ready to use is a landing section: its pitch is the lede under the title, then its
+    // status. A coming card shows its status in its header.
+    const lead =
+      "overline" in want
+        ? [want.overline, want.name, want.pitch, want.label]
+        : [want.name, want.label, want.pitch];
+    return [...lead, ...features, want.action, sample?.label, ...(sample?.lines ?? [])]
+      .filter(Boolean)
+      .join(" ")
+      .replace(/\s+/g, " ");
+  };
+
+  // Each product with its card's markup, the words the card must say, and its one link out.
+  const productCases = expected.map((want, i) => ({
+    name: want.name,
+    card: cards[i] ?? "",
+    words: wordsFor(want),
+    links: want.href ? [want.href] : [],
+    newTab: want.href?.startsWith("https://") ?? false,
+  }));
+
   test("opens on one h1 under a Products overline, with a lead", () => {
     expect(html.match(/<h1/g)).toHaveLength(1);
     expect(html).toContain(">Products<");
@@ -171,37 +196,28 @@ describe("the home page", () => {
     expect(html).not.toContain(site.legalName);
   });
 
-  test("has the five products in order, each with its name, status, pitch and what it does", () => {
+  test("has the five products in order", () => {
     expect(cards).toHaveLength(5);
-    expected.forEach((want, i) => {
-      const { features, sample } = product(want.name) ?? {};
-      // The product's whole text (from inside its opening tag), so extra copy fails too.
-      expect(wordsOf((cards[i] ?? "").replace(/^[^>]*>/, "")).trim()).toBe(
-        [
-          "overline" in want ? want.overline : undefined,
-          want.name,
-          // A product ready to use is a landing section: its pitch is the lede under the title,
-          // then its status. A coming card shows its status in its header.
-          ...("overline" in want ? [want.pitch, want.label] : [want.label, want.pitch]),
-          ...(features ?? []),
-          want.action,
-          sample?.label,
-          ...(sample?.lines ?? []),
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .replace(/\s+/g, " "),
-      );
-    });
     expect(site.products.map((p) => p.name)).toEqual(expected.map((p) => p.name));
   });
 
-  test("every product but ThriftLoop has one link out, only an external one in a new tab", () => {
-    expected.forEach((want, i) => {
-      const links = [...(cards[i] ?? "").matchAll(/<a [^>]*href="([^"]+)"/g)].map((m) => m[1]);
-      expect(links).toEqual(want.href ? [want.href] : []);
-      expect(cards[i]?.includes("_blank")).toBe(want.href?.startsWith("https://") ?? false);
-    });
+  test.each(productCases)(
+    "$name: its card has its name, status, pitch and what it does, and nothing else",
+    ({ card, words }) => {
+      // The product's whole text (from inside its opening tag), so extra copy fails too.
+      expect(wordsOf(card.replace(/^[^>]*>/, "")).trim()).toBe(words);
+    },
+  );
+
+  test.each(productCases)(
+    "$name: its card links out at most once, and only an external link opens a new tab",
+    ({ card, links, newTab }) => {
+      expect([...card.matchAll(/<a [^>]*href="([^"]+)"/g)].map((m) => m[1])).toEqual(links);
+      expect(card.includes("_blank")).toBe(newTab);
+    },
+  );
+
+  test("how they fit links nowhere", () => {
     expect(fit).not.toContain("<a ");
   });
 
@@ -261,18 +277,22 @@ describe("the PixelSlash page", () => {
     expect(html).toContain('href="/ui/"');
   });
 
+  // PixelSlash's block as the home page renders it.
+  const homeCard = must(
+    renderToStaticMarkup(<ProductCards />)
+      .split("<section")
+      .find((block) => block.includes('aria-labelledby="product-pixelslash"'))
+      ?.split("</section>")[0],
+    "PixelSlash's block on the home page",
+  );
+
   test("it calls PixelSlash source available, never open source or MIT, here or on the home card", () => {
     const section = sectionOf("pixelslash");
     // The block as the home page renders it, and the page itself. Markup too, since an alt
     // or aria-label could carry the claim. Hack Cove UI is MIT, so only PixelSlash's own
     // block and page are read; a licence claim in the page's Hack Cove UI proof block would
     // be a true one and would need this check scoped to the PixelSlash blocks.
-    const homeCard = renderToStaticMarkup(<ProductCards />)
-      .split("<section")
-      .find((block) => block.includes('aria-labelledby="product-pixelslash"'))
-      ?.split("</section>")[0];
-    expect(homeCard).toBeDefined();
-    for (const copy of [homeCard ?? "", html, section.summary, section.description]) {
+    for (const copy of [homeCard, html, section.summary, section.description]) {
       expect(copy).not.toMatch(/open[-\s]?source/i);
       expect(copy).not.toMatch(/\bMIT\b/i);
     }

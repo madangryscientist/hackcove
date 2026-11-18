@@ -1,31 +1,35 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
 // The docs body is static HTML that is never hydrated, so these clicks reach `copyScript`, not React.
 test.use({ permissions: ["clipboard-read", "clipboard-write"] });
 
-const clipboard = (page: import("@playwright/test").Page) =>
-  page.evaluate(() => navigator.clipboard.readText());
+const clipboard = (page: Page) => page.evaluate(() => navigator.clipboard.readText());
+
+/** The code examples on a docs page: every figure there is one (a preview, its code, a caption). */
+const examples = (page: Page) => page.getByRole("figure");
 
 /** After a copy: the copied label shows, the idle one hides, the name stays, the region says it. */
-async function expectCopied(button: import("@playwright/test").Locator): Promise<void> {
+async function expectCopied(example: Locator): Promise<void> {
+  const button = example.getByRole("button", { name: "Copy" });
   await expect(button.getByText("Copied", { exact: true })).toBeVisible();
   await expect(button.getByText("Copy", { exact: true })).toBeHidden();
   await expect(button).toHaveAccessibleName("Copy");
-  await expect(button.locator("+ [data-copy-status]")).toHaveText("Copied");
+  await expect(example.getByRole("status")).toHaveText("Copied");
 }
 
 test("on /ui/button/ the first example's copy button copies its source and shows copied", async ({
   page,
 }) => {
   await page.goto("/ui/button/");
-  const figure = page.locator("figure", { has: page.locator("pre") }).first();
-  const button = figure.locator("button[data-copy-text]");
-  await expect(button).toHaveAccessibleName("Copy");
+  const example = examples(page).first();
+  const button = example.getByRole("button", { name: "Copy" });
+  await expect(button).toBeVisible();
   await expect(button.getByText("Copied", { exact: true })).toBeHidden();
-  const source = await figure.locator("pre").evaluate((el) => el.textContent ?? "");
-  expect(source.length).toBeGreaterThan(0);
+  // The example's code block comes before its caption, which may hold inline code of its own.
+  const source = await example.getByRole("code").first().textContent();
+  expect(source?.length).toBeGreaterThan(0);
   await button.click();
-  await expectCopied(button);
+  await expectCopied(example);
   expect(await clipboard(page)).toBe(source);
 });
 
@@ -33,26 +37,29 @@ test("on /ui/button/ every code example has a named copy button reached by Tab, 
   page,
 }) => {
   await page.goto("/ui/button/");
-  const examples = await page.locator("figure", { has: page.locator("pre") }).count();
+  const count = await examples(page).count();
   const donts = await page
     .getByRole("region", { name: "Overview" })
     .getByText("Don't", { exact: true })
     .count();
-  expect(examples).toBeGreaterThan(donts);
-  const buttons = page.locator("figure").getByRole("button", { name: "Copy" });
-  await expect(buttons).toHaveCount(examples - donts);
+  expect(count).toBeGreaterThan(donts);
+  const buttons = examples(page).getByRole("button", { name: "Copy" });
+  await expect(buttons).toHaveCount(count - donts);
 
-  // Tab through the page and collect the copy buttons that take focus.
-  const reached = new Set<string>();
-  for (let i = 0; i < 400 && reached.size < examples - donts; i++) {
-    await page.keyboard.press("Tab");
-    const text = await page.evaluate(() => {
-      const el = document.activeElement;
-      return el instanceof HTMLElement && el.dataset.copyText !== undefined
-        ? `${el.dataset.copyText}\u0000${[...document.querySelectorAll("[data-copy-text]")].indexOf(el)}`
-        : null;
+  // Every element that takes focus is marked, then Tab walks the page until each copy button has
+  // had it.
+  await page.evaluate(() => {
+    document.addEventListener("focusin", (event) => {
+      if (event.target instanceof HTMLElement) event.target.dataset["focused"] = "";
     });
-    if (text !== null) reached.add(text);
-  }
-  expect(reached.size).toBe(examples - donts);
+  });
+  const reached = () =>
+    buttons.evaluateAll(
+      (all) =>
+        all.filter((el) => el instanceof HTMLElement && el.dataset["focused"] !== undefined).length,
+    );
+  await expect(async () => {
+    await page.keyboard.press("Tab");
+    expect(await reached()).toBe(count - donts);
+  }).toPass({ intervals: [0], timeout: 30_000 });
 });

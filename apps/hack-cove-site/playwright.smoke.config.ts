@@ -17,6 +17,6 @@ export default defineConfig({
   reporter: "list",
   // Its own folder: a smoke run empties its output directory, and the e2e run keeps its traces in test-results/.
   outputDir: "test-results/smoke",
-  use: { baseURL },
+  use: { baseURL, trace: "retain-on-failure" },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 });

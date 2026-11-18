@@ -49,7 +49,14 @@ tasks:
     deps: ["~:props", "^:build"]
   lint:
     command: "bun run lint"
-    inputs: ["**/*", "@group(deps)"]
+    # The testing config this project's .oxlintrc.json extends: another project's files.
+    inputs:
+      [
+        "**/*",
+        "@group(deps)",
+        "/packages/oxlint-testing/.oxlintrc.json",
+        "/packages/oxlint-testing/plugin.js",
+      ]
     deps: ["~:props", "^:build"]
   # Depends on build: test/build-commit.dist.test.ts reads dist/.
   test:

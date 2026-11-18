@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { afterEach, describe, expect, test } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 import { buildCommit } from "../src/content/build-commit";
 
 const SHA = "0123456789abcdef0123456789abcdef01234567";
@@ -15,6 +15,7 @@ const tempDir = (): string => {
 };
 afterEach(() => {
   for (const dir of temps.splice(0)) rmSync(dir, { recursive: true, force: true });
+  vi.unstubAllEnvs();
 });
 
 /** A one-commit repo in a temp dir, with git's identity given on the command line. */
@@ -64,15 +65,9 @@ describe("buildCommit", () => {
   test("neither source fails, naming both", () => {
     // GIT_CEILING_DIRECTORIES keeps git from finding a repo above the temp dir.
     const dir = tempDir();
-    const saved = process.env["GIT_CEILING_DIRECTORIES"];
-    process.env["GIT_CEILING_DIRECTORIES"] = tmpdir();
-    try {
-      expect(() => buildCommit({ env: {}, cwd: dir })).toThrow(
-        /BUILD_COMMIT is unset and `git rev-parse HEAD`/,
-      );
-    } finally {
-      if (saved === undefined) delete process.env["GIT_CEILING_DIRECTORIES"];
-      else process.env["GIT_CEILING_DIRECTORIES"] = saved;
-    }
+    vi.stubEnv("GIT_CEILING_DIRECTORIES", tmpdir());
+    expect(() => buildCommit({ env: {}, cwd: dir })).toThrow(
+      /BUILD_COMMIT is unset and `git rev-parse HEAD`/,
+    );
   });
 });
