@@ -28,6 +28,12 @@ export const NEAR_LIMIT = 0.75;
 /** Story ids the run does not shoot: the one-page Overviews, shot as their sections instead. */
 export const visualSkipped = ["overview--gallery", "overview--all-themes"];
 
+/** The viewports every story is shot at, once each; the config passes them and the run counts them. */
+export const variants = [
+  { name: "desktop", viewport: { width: 1280, height: 720 } },
+  { name: "phone", viewport: { width: 390, height: 844 } },
+];
+
 export type ShotSize = { name: string; width: number; height: number };
 
 const PNG_SIGNATURE = "89504e470d0a1a0a";

@@ -38,30 +38,40 @@ export function indexOf(staticDir: string): StoryIndex {
   return titles;
 }
 
-/** The shots `titles` in `themes` themes take in the Storybook `index` describes. */
-export function shotsOf(index: StoryIndex, titles: string[], themes: number): number {
+/**
+ * The shots `titles` in `themes` themes take in the Storybook `index` describes, at `variants`
+ * viewports: every story is shot once per variant.
+ */
+export function shotsOf(
+  index: StoryIndex,
+  titles: string[],
+  themes: number,
+  variants: number,
+): number {
   let shots = 0;
   for (const title of titles) {
     const counts = index.get(title);
     if (counts !== undefined) shots += (counts.stories - counts.once) * themes + counts.once;
   }
-  return shots;
+  return shots * variants;
 }
 
 /**
- * The shots `captures` take, per theme, and the shots of stories that are shot once (at the
- * globals' defaults, so in no theme of their own).
+ * The shots `captures` take at `variants` viewports, per theme, and the shots of stories that are
+ * shot once per variant (at the globals' defaults, so in no theme of their own).
  */
 export function shotsByTheme(
   index: StoryIndex,
   captures: { titles: string[]; themes: string[] }[],
+  variants: number,
 ): { themes: Map<string, number>; once: number } {
   const themes = new Map<string, number>();
   let once = 0;
   for (const { titles, themes: ids } of captures) {
     if (ids.length === 0) continue;
-    once += shotsOf(index, titles, 0);
-    const each = shotsOf(index, titles, 1) - shotsOf(index, titles, 0);
+    const onceShots = shotsOf(index, titles, 0, variants);
+    once += onceShots;
+    const each = shotsOf(index, titles, 1, variants) - onceShots;
     for (const id of ids) themes.set(id, (themes.get(id) ?? 0) + each);
   }
   return { themes, once };
