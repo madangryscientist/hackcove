@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { queryByAttribute } from "@testing-library/dom";
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
 import { render, screen, user, within } from "./render.harness.js";
 import { Section } from "./Section.js";
@@ -113,7 +114,7 @@ describe("Section", () => {
   it("an `id` with no title puts nothing anywhere", () => {
     render(<Section id="usage">body</Section>);
     // The id is a link target, read as data: with no heading to carry it, no element has it.
-    expect(document.getElementById("usage")).toBeNull();
+    expect(queryByAttribute("id", document.body, "usage")).toBeNull();
     expect(screen.queryByRole("region")).toBeNull();
   });
 });
@@ -171,8 +172,11 @@ describe("Section overline, description and size lg", () => {
     );
     const region = screen.getByRole("region", { name: "Every theme" });
     const heading = within(region).getByRole("heading", { level: 2, name: "Every theme" });
-    expect(heading.closest("header")?.textContent).toContain("Feature");
-    expect(screen.getByText("One switch reskins it.").closest("h2")).toBeNull();
+    // Testing Library reads a <header> as a banner, inside a section too.
+    const header = within(region).getByRole("banner");
+    expect(within(header).getByRole("heading", { level: 2 })).toBe(heading);
+    expect(within(header).getByText("Feature")).toBeTruthy();
+    expect(within(heading).queryByText("One switch reskins it.")).toBeNull();
   });
 
   it('size="lg" is an h2 title named by it, the description a paragraph, then the actions', () => {

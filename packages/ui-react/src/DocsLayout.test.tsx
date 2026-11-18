@@ -30,7 +30,10 @@ function page(props: Partial<ComponentProps<typeof DocsLayout>> = {}) {
 }
 
 const marked = () =>
-  document.querySelectorAll('[aria-label="On this page"] [aria-current="location"]');
+  within(screen.getByRole("navigation", { name: "On this page" })).queryAllByRole("link", {
+    hidden: true,
+    current: "location",
+  });
 
 const onThisPage = () => screen.queryAllByRole("navigation", { name: "On this page" });
 
@@ -61,9 +64,8 @@ describe("DocsLayout", () => {
 
   it("with two or more contents, one On this page navigation with one link to each #id", () => {
     page({ contents });
-    const [list, ...more] = onThisPage();
-    expect(more).toHaveLength(0);
-    if (!list) throw new Error("no On this page list");
+    expect(onThisPage()).toHaveLength(1);
+    const list = screen.getByRole("navigation", { name: "On this page" });
     const links = within(list).getAllByRole("link", { hidden: true });
     expect(links.map((link) => link.getAttribute("href"))).toEqual(["#setup", "#keys", "#run"]);
     expect(screen.getAllByText("Keys")).toHaveLength(1);
@@ -87,8 +89,7 @@ describe("DocsLayout", () => {
 
   it("a level-3 entry follows its level-2 entry in the list", () => {
     page({ contents });
-    const [list] = onThisPage();
-    if (!list) throw new Error("no On this page list");
+    const list = screen.getByRole("navigation", { name: "On this page" });
     const labels = within(list)
       .getAllByRole("link", { hidden: true })
       .map((link) => link.textContent);

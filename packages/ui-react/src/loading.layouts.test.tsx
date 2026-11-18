@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import type { ReactNode } from "react";
+import { isInaccessible, queryAllByAttribute } from "@testing-library/dom";
 import { describe, expect, it } from "vitest";
 import { EmptyState } from "./EmptyState.js";
 import {
@@ -17,14 +18,14 @@ import { SidebarLayout } from "./SidebarLayout.js";
 import { StatTile } from "./StatTile.js";
 import { Text } from "./typography.js";
 
-/** The bones drawn in `root`: every one hidden from assistive tech. */
-function bones(root: ParentNode = document.body): Element[] {
-  const found = [...root.querySelectorAll("[data-skeleton]")];
-  for (const bone of found) expect(bone.closest("[aria-hidden='true']")).not.toBeNull();
+/** The bones on the page, by the marker each one renders: every one hidden from assistive tech. */
+function bones(): HTMLElement[] {
+  const found = queryAllByAttribute("data-skeleton", document.body, "");
+  for (const bone of found) expect(isInaccessible(bone)).toBe(true);
   return found;
 }
 
-const busyRoots = (): Element[] => [...document.querySelectorAll("[aria-busy='true']")];
+const busyRoots = (): HTMLElement[] => queryAllByAttribute("aria-busy", document.body, "true");
 
 /** What each layout holds: a tile whose figure is not here yet. */
 const inside = <StatTile label="Revenue" value={undefined} />;

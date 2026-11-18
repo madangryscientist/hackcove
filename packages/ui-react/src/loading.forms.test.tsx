@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import type { ReactNode } from "react";
+import { isInaccessible, queryAllByAttribute } from "@testing-library/dom";
 import { describe, expect, it } from "vitest";
 import { Checkbox } from "./Checkbox.js";
 import { DateField } from "./DateField.js";
@@ -11,14 +12,14 @@ import { render, screen } from "./render.harness.js";
 import { LoadingScope } from "./skeleton.js";
 import { Switch } from "./Switch.js";
 
-/** The bones drawn in `root`: every one hidden from assistive tech. */
-function bones(root: ParentNode = document.body): Element[] {
-  const found = [...root.querySelectorAll("[data-skeleton]")];
-  for (const bone of found) expect(bone.closest("[aria-hidden='true']")).not.toBeNull();
+/** The bones on the page, by the marker each one renders: every one hidden from assistive tech. */
+function bones(): HTMLElement[] {
+  const found = queryAllByAttribute("data-skeleton", document.body, "");
+  for (const bone of found) expect(isInaccessible(bone)).toBe(true);
   return found;
 }
 
-const busyRoots = (): Element[] => [...document.querySelectorAll("[aria-busy='true']")];
+const busyRoots = (): HTMLElement[] => queryAllByAttribute("aria-busy", document.body, "true");
 
 /** Each form part, its label "Delivery", with `loading` as given. */
 const parts: Record<string, (loading?: boolean) => ReactNode> = {

@@ -1,5 +1,5 @@
 import { act, type ReactNode } from "react";
-import { type Root, hydrateRoot } from "react-dom/client";
+import { hydrateRoot } from "react-dom/client";
 import { renderToStaticMarkup } from "react-dom/server";
 import { vi } from "vitest";
 
@@ -26,8 +26,6 @@ export function stubDialog(): void {
   HTMLDialogElement.prototype.close = closeStub;
 }
 
-let mounted: { root: Root; container: HTMLElement } | undefined;
-
 /**
  * Server-render `node`, mark its <img> as the browser left it (`complete`, `naturalWidth`), then
  * hydrate. jsdom loads no images, so a test sets the state a browser would have. The container is
@@ -50,19 +48,21 @@ export async function hydrateWith(
   return container;
 }
 
-export function unmount(): void {
-  if (!mounted) return;
-  const { root, container } = mounted;
-  act(() => root.unmount());
-  container.remove();
-  mounted = undefined;
+/** The popovers shown and not hidden since: a browser's `:popover-open`, which jsdom lacks. */
+const openPopovers = new Set<Element>();
+
+/** Whether `element` is an open popover, as `:popover-open` says in a browser. */
+export function popoverOpen(element: Element): boolean {
+  return openPopovers.has(element);
 }
 
 function showPopoverStub(this: HTMLElement): void {
+  openPopovers.add(this);
   this.style.display = "block";
 }
 
 function hidePopoverStub(this: HTMLElement): void {
+  openPopovers.delete(this);
   this.style.removeProperty("display");
 }
 
@@ -86,6 +86,7 @@ export function stubPopover(): void {
 
 /** Undo `stubPopover`. Call from `afterEach`. */
 export function unstubPopover(): void {
+  openPopovers.clear();
   Reflect.deleteProperty(HTMLElement.prototype, "showPopover");
   Reflect.deleteProperty(HTMLElement.prototype, "hidePopover");
 }

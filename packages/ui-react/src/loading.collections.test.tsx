@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import type { ReactNode } from "react";
+import { isInaccessible, queryAllByAttribute } from "@testing-library/dom";
 import { describe, expect, it } from "vitest";
 import { Avatar } from "./Avatar.js";
 import { AvatarStack } from "./AvatarStack.js";
@@ -9,7 +10,7 @@ import { Image } from "./Image.js";
 import { ListRow } from "./ListRow.js";
 import { MediaTile } from "./MediaTile.js";
 import { ProgressBar } from "./ProgressBar.js";
-import { render, screen } from "./render.harness.js";
+import { render, screen, within } from "./render.harness.js";
 import { LoadingScope } from "./skeleton.js";
 import { SplitBar } from "./SplitBar.js";
 import { Legend, StackedBar } from "./StackedBar.js";
@@ -17,14 +18,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeaderCell, TableRow } fro
 import { Timeline, TimelineItem } from "./Timeline.js";
 import { TrendChart } from "./TrendChart.js";
 
-/** The bones drawn in `root`: every one hidden from assistive tech. */
-function bones(root: ParentNode = document.body): Element[] {
-  const found = [...root.querySelectorAll("[data-skeleton]")];
-  for (const bone of found) expect(bone.closest("[aria-hidden='true']")).not.toBeNull();
+/** The bones on the page, by the marker each one renders: every one hidden from assistive tech. */
+function bones(): HTMLElement[] {
+  const found = queryAllByAttribute("data-skeleton", document.body, "");
+  for (const bone of found) expect(isInaccessible(bone)).toBe(true);
   return found;
 }
 
-const busyRoots = (): Element[] => [...document.querySelectorAll("[aria-busy='true']")];
+const busyRoots = (): HTMLElement[] => queryAllByAttribute("aria-busy", document.body, "true");
 
 /** Each part with an empty slot, and with that slot filled by "Q-1043". */
 const parts: Record<string, (filled: boolean, loading?: boolean) => ReactNode> = {
@@ -118,9 +119,13 @@ describe("loading containers draw a fixed set", () => {
     );
     const table = screen.getByRole("table", { name: "Quotes" });
     expect(table.getAttribute("aria-busy")).toBe("true");
-    const rows = table.querySelectorAll("tbody tr");
+    // The row groups are the head, then the body.
+    const bodies = within(table).getAllByRole("rowgroup", { hidden: true }).slice(1);
+    expect(bodies).toHaveLength(1);
+    const rows = bodies.flatMap((body) => within(body).getAllByRole("row", { hidden: true }));
     expect(rows).toHaveLength(5);
-    for (const row of rows) expect(row.querySelectorAll("td")).toHaveLength(3);
+    for (const row of rows)
+      expect(within(row).getAllByRole("cell", { hidden: true })).toHaveLength(3);
     expect(screen.queryByText("Nothing yet")).toBeNull();
     expect(screen.getAllByText("Loading")).toHaveLength(1);
   });
@@ -142,7 +147,10 @@ describe("loading containers draw a fixed set", () => {
   it("a loading Timeline is three items of bones, never its empty state", () => {
     render(<Timeline label="History" loading empty={<EmptyState title="Nothing yet" />} />);
     const list = screen.getByRole("list", { name: "History" });
-    expect(list.querySelectorAll("li[aria-hidden], li:not(.sr-only)")).toHaveLength(3);
+    // Three items of bones, and the one that holds the label.
+    const items = within(list).getAllByRole("listitem", { hidden: true });
+    expect(items.filter((item) => within(item).queryByText("Loading") === null)).toHaveLength(3);
+    expect(items).toHaveLength(4);
     expect(screen.queryByText("Nothing yet")).toBeNull();
   });
 
@@ -183,7 +191,7 @@ describe("parts whose value is a number are all bone while loading", () => {
     it(`${name}: no figure is drawn or spoken, the owner busy with one label`, () => {
       render(figure);
       expect(bones().length).toBeGreaterThan(0);
-      expect(document.querySelector("[aria-valuenow]")).toBeNull();
+      expect(queryAllByAttribute("aria-valuenow", document.body, () => true)).toHaveLength(0);
       expect(screen.queryByText(/40|33|67|%/)).toBeNull();
       expect(busyRoots()).toHaveLength(1);
       expect(screen.getAllByText("Loading")).toHaveLength(1);
@@ -228,8 +236,10 @@ describe("pictures while loading", () => {
   it("an Image with no src is a bone, not the placeholder, and keeps its name", () => {
     render(<Image loading alt="The shop front" />);
     expect(bones()).toHaveLength(1);
-    expect(screen.getByRole("img", { name: "The shop front" })).toBeTruthy();
-    expect(document.querySelector("svg")).toBeNull();
+    const picture = screen.getByRole("img", { name: "The shop front" });
+    expect(queryAllByAttribute("data-skeleton", picture, "")).toEqual(bones());
+    // The placeholder is a picture icon, an <svg>, found by the viewBox every svg icon has.
+    expect(queryAllByAttribute("viewBox", document.body, () => true)).toHaveLength(0);
   });
 
   it("an Image with a src draws it", () => {

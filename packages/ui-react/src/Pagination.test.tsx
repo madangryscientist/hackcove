@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { queryAllByAttribute } from "@testing-library/dom";
 import { describe, expect, it } from "vitest";
 import { pageWindow, Pagination } from "./Pagination.js";
 import { render, screen } from "./render.harness.js";
@@ -36,14 +37,14 @@ describe("pageWindow", () => {
       for (let page = 1; page <= pageCount; page += 1) {
         const slots = pageWindow(page, pageCount);
         expect(slots.length).toBeLessThanOrEqual(7);
-        slots.forEach((slot, index) => {
-          if (slot !== "gap") return;
-          const before = slots[index - 1];
-          const after = slots[index + 1];
-          const hidden =
-            typeof before === "number" && typeof after === "number" ? after - before - 1 : 0;
-          expect(hidden).toBeGreaterThanOrEqual(2);
-        });
+        // Each gap with the slots either side of it: two page numbers at least three apart.
+        const gaps = slots
+          .map((slot, index) => [slots[index - 1], slot, slots[index + 1]] as const)
+          .filter(([, slot]) => slot === "gap");
+        for (const [before, , after] of gaps) {
+          expect([typeof before, typeof after]).toEqual(["number", "number"]);
+          expect(Number(after) - Number(before) - 1).toBeGreaterThanOrEqual(2);
+        }
         expect(slots).toContain(page);
       }
     }
@@ -54,10 +55,10 @@ describe("Pagination", () => {
   it("is a nav named by label, the current page marked and every link from pageHref", () => {
     render(<Pagination label="Directory pages" page={3} pageCount={10} pageHref={href} />);
     const nav = screen.getByRole("navigation", { name: "Directory pages" });
-    const current = nav.querySelectorAll("[aria-current]");
-    expect(
-      [...current].map((link) => [link.textContent, link.getAttribute("aria-current")]),
-    ).toEqual([["3", "page"]]);
+    const current = queryAllByAttribute("aria-current", nav, () => true);
+    expect(current.map((link) => [link.textContent, link.getAttribute("aria-current")])).toEqual([
+      ["3", "page"],
+    ]);
     expect(screen.getByRole("link", { name: "3" }).getAttribute("href")).toBe(href(3));
     expect(screen.getByRole("link", { name: "Previous" }).getAttribute("href")).toBe(href(2));
     expect(screen.getByRole("link", { name: "Next" }).getAttribute("href")).toBe(href(4));

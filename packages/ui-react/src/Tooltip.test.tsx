@@ -1,18 +1,18 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Button } from "./Button.js";
-import { stubPopover, unstubPopover } from "./dom.harness.js";
+import { popoverOpen, stubPopover, unstubPopover } from "./dom.harness.js";
 import { IconButton } from "./IconButton.js";
 import { Pill } from "./Pill.js";
-import { render, screen, user } from "./render.harness.js";
+import { render, screen, user, within } from "./render.harness.js";
 
 // jsdom has no popover API and no anchor positioning: `stubPopover` adds the API, and its
 // `CSS.supports` says yes, so the tooltip takes its enhanced path. Without the stub it keeps the
 // native `title`, which is what a browser without anchor positioning gets.
 
 /** The accessible description: the text of the elements `aria-describedby` names, in order. */
-function description(element: Element): string {
-  const ids = element.getAttribute("aria-describedby")?.split(/\s+/) ?? [];
+function description(element: Element | null): string {
+  const ids = element?.getAttribute("aria-describedby")?.split(/\s+/) ?? [];
   return ids
     .map((id) => document.getElementById(id)?.textContent ?? "")
     .filter(Boolean)
@@ -29,11 +29,12 @@ function blocked(props: { "aria-describedby"?: string; onClick?: () => void } = 
 
 const save = () => screen.getByRole("button", { name: "Save" });
 
-/** The tooltips on screen: a closed popover is not drawn (`display: none`), as in a browser. */
-function shown(): Element[] {
-  return screen
-    .queryAllByRole("tooltip", { hidden: true })
-    .filter((tip) => getComputedStyle(tip).display !== "none");
+/**
+ * The tooltips on screen: an open popover, as in a browser. Found among every tooltip, hidden ones
+ * included, since a label's tooltip is aria-hidden.
+ */
+function shown(): HTMLElement[] {
+  return screen.queryAllByRole("tooltip", { hidden: true }).filter(popoverOpen);
 }
 
 describe("tooltip, without anchor positioning", () => {
@@ -47,9 +48,7 @@ describe("tooltip, without anchor positioning", () => {
     );
     expect(screen.getByRole("button", { name: "Settings" }).getAttribute("title")).toBe("Settings");
     expect(save().getAttribute("title")).toBe("Pick a shop first");
-    expect(screen.getByText("Paid").closest("[title]")?.getAttribute("title")).toBe(
-      "Paid on 3 May",
-    );
+    expect(within(screen.getByTitle("Paid on 3 May")).getByText("Paid")).toBeTruthy();
     expect(screen.queryAllByRole("tooltip", { hidden: true })).toEqual([]);
   });
 
@@ -102,9 +101,9 @@ describe("tooltip, with anchor positioning", () => {
     render(<IconButton label="Settings" icon="settings" />);
     const u = user();
     await u.hover(screen.getByRole("button", { name: "Settings" }));
-    const seen: { prevented: boolean }[] = [];
+    const seen: { key: string; prevented: boolean }[] = [];
     const reached = (event: KeyboardEvent) => {
-      if (event.key === "Escape") seen.push({ prevented: event.defaultPrevented });
+      seen.push({ key: event.key, prevented: event.defaultPrevented });
     };
     window.addEventListener("keydown", reached);
     try {
@@ -112,7 +111,7 @@ describe("tooltip, with anchor positioning", () => {
     } finally {
       window.removeEventListener("keydown", reached);
     }
-    expect(seen).toEqual([{ prevented: false }]);
+    expect(seen).toEqual([{ key: "Escape", prevented: false }]);
     expect(shown()).toEqual([]);
   });
 
@@ -120,9 +119,13 @@ describe("tooltip, with anchor positioning", () => {
     const add = vi.spyOn(document, "addEventListener");
     const remove = vi.spyOn(document, "removeEventListener");
     const escapeAdds = () =>
-      add.mock.calls.filter(([type, , capture]) => type === "keydown" && capture === true);
+      add.mock.calls
+        .filter(([type]) => type === "keydown")
+        .filter(([, , capture]) => capture === true);
     const escapeRemoves = () =>
-      remove.mock.calls.filter(([type, , capture]) => type === "keydown" && capture === true);
+      remove.mock.calls
+        .filter(([type]) => type === "keydown")
+        .filter(([, , capture]) => capture === true);
     try {
       const { unmount } = render(<IconButton label="Settings" icon="settings" />);
       const u = user();
@@ -263,7 +266,7 @@ describe("tooltip, with anchor positioning", () => {
     const focused = document.activeElement;
     expect(focused?.textContent).toBe("Paid");
     expect(screen.getByRole("tooltip").textContent).toBe("Paid on 3 May");
-    expect(focused ? description(focused) : "").toBe("Paid on 3 May");
+    expect(description(focused)).toBe("Paid on 3 May");
   });
 
   it("on a removable titled Pill, keeps the pill's tooltip and the x's apart", async () => {

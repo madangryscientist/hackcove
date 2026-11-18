@@ -114,10 +114,14 @@ const CASES: Case[] = [
   },
 ];
 
+/** The title a browser shows on hover, where the reason lives without anchor positioning. */
+const title = (element: Element): string | null => element.getAttribute("title");
+
+// Enhanced, the reason is the tooltip, linked as the description; else the native title.
 describe.each([
-  ["with anchor positioning", true],
-  ["with the native title", false],
-])("disabledReason, %s", (_, enhanced) => {
+  ["with anchor positioning", true, description],
+  ["with the native title", false, title],
+] as const)("disabledReason, %s", (_, enhanced, reason) => {
   beforeEach(() => {
     if (enhanced) stubPopover();
   });
@@ -135,9 +139,8 @@ describe.each([
       await u.keyboard(part.keys);
       await u.click(control);
       expect(act).not.toHaveBeenCalled();
-      expect(control instanceof HTMLInputElement && control.checked).toBe(false);
-      // Enhanced, the reason is the tooltip, linked as the description; else the native title.
-      expect(enhanced ? description(control) : control.getAttribute("title")).toBe(REASON);
+      expect(control).not.toHaveProperty("checked", true);
+      expect(reason(control)).toBe(REASON);
     });
   }
 });

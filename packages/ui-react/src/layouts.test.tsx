@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 import { createRef } from "react";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { Breadcrumbs } from "./Breadcrumbs.js";
 import { Container } from "./Container.js";
-import { stubDialog, unmount } from "./dom.harness.js";
+import { stubDialog } from "./dom.harness.js";
 import { Lightbox } from "./Lightbox.js";
 import { MediaTile } from "./MediaTile.js";
 import { ListLayout } from "./PageLayouts.js";
@@ -13,7 +13,6 @@ import { NotFound } from "./StatusPages.js";
 import { Tabs } from "./Tabs.js";
 
 beforeEach(stubDialog);
-afterEach(unmount);
 
 describe("ListLayout", () => {
   it("shows empty when there are no children, and the list when there are", () => {
