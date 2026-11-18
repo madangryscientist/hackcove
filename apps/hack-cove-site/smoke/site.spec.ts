@@ -32,19 +32,40 @@ test("/sitemap.xml is XML, not the homepage HTML", async ({ request }) => {
   expect(await response.text()).toContain("<urlset");
 });
 
+// Runs `task` over `items` with at most `limit` in flight, keeping the results in input order. The live
+// host answers in about 300 ms, so one page at a time would take longer than Playwright's test timeout.
+async function mapConcurrent<T, R>(
+  items: readonly T[],
+  limit: number,
+  task: (item: T) => Promise<R>,
+): Promise<R[]> {
+  const queue = items.map((item, index) => ({ item, index }));
+  const results: R[] = [];
+  const worker = async (): Promise<void> => {
+    for (let entry = queue.shift(); entry !== undefined; entry = queue.shift()) {
+      results[entry.index] = await task(entry.item);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
+}
+
 test("every sitemap loc answers 200 with no redirect, and its canonical is that loc", async ({
   request,
 }) => {
   const sitemap = await (await request.get("/sitemap.xml", { maxRedirects: 0 })).text();
   const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1] ?? "");
   expect(locs.length, "the sitemap lists pages").toBeGreaterThan(0);
-  for (const loc of locs) {
+  const pages = await mapConcurrent(locs, 8, async (loc) => {
     const response = await request.get(new URL(loc).pathname, { maxRedirects: 0 });
-    expect(response.status(), loc).toBe(200);
     const tags = [...(await response.text()).matchAll(/<link\b[^>]*>/g)].map((match) => match[0]);
     const canonical = tags.find((tag) => /\brel="canonical"/.test(tag));
-    const href = canonical?.match(/\bhref="([^"]*)"/)?.[1];
-    expect(href, `${loc} has a canonical link`).toBeDefined();
-    expect(href, loc).toBe(loc);
+    return { loc, status: response.status(), href: canonical?.match(/\bhref="([^"]*)"/)?.[1] };
+  });
+  // Assert per loc, after every fetch, so a failure names the loc that broke.
+  for (const page of pages) {
+    expect(page.status, page.loc).toBe(200);
+    expect(page.href, `${page.loc} has a canonical link`).toBeDefined();
+    expect(page.href, page.loc).toBe(page.loc);
   }
 });
