@@ -26,16 +26,25 @@ export const toggle = (page: Page) =>
 
 /** The scope classes on `<html>`, which is where the toggle puts the scheme's. */
 export const scopeClasses = (page: Page) =>
-  page
-    .locator("html")
-    .evaluate((el, all) => all.filter((scope) => el.classList.contains(scope)), scopes);
+  page.evaluate(
+    (all) => all.filter((scope) => scope !== "" && document.documentElement.matches(`.${scope}`)),
+    scopes,
+  );
 
 /**
- * The toggle's own island is hydrated once Astro drops `ssr` from it. Another island on the page can
- * be hydrated first, so this waits for the toggle's, not the first one's.
+ * The page's ready marker for one island: Astro drops `ssr` from an `<astro-island>` once it has
+ * hydrated it. Another island on the page can be hydrated first, so this waits for the named one's.
  */
-export const hydrated = (page: Page) =>
-  page.locator('astro-island[component-export="ColourSchemeToggle"]:not([ssr])').waitFor();
+export const islandHydrated = async (page: Page, component: string) => {
+  await page.waitForFunction(
+    (name) =>
+      document.querySelector(`astro-island[component-export="${name}"]:not([ssr])`) !== null,
+    component,
+  );
+};
+
+/** The header toggle's island is hydrated: a click before that does nothing. */
+export const hydrated = (page: Page) => islandHydrated(page, "ColourSchemeToggle");
 
 /** The scheme `<html>` is in now, read from its classes. */
 export const classScheme = async (page: Page): Promise<Scheme> =>

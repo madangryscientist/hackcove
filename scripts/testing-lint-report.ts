@@ -9,7 +9,7 @@
 import { resolve } from "node:path";
 import { lint } from "../packages/oxlint-testing/scripts/lint";
 
-const PROJECTS = ["apps/hack-cove-site", "tools/ui-review", "packages/themes-shared"];
+const PROJECTS = ["tools/ui-review", "packages/themes-shared"];
 
 const root = resolve(import.meta.dirname, "..");
 const rows: [string, string, number][] = [];

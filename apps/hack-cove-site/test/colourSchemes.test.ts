@@ -5,13 +5,15 @@ import { themeFiles } from "@hackcove/themes-shared/files";
 import { colourSchemeHeadScript, schemes } from "../src/content/colourSchemes";
 
 const css = themeFiles(`${import.meta.dirname}/../../../themes`).map((theme) => theme.css);
+/** What the schemes should be, read from the theme files the way the site reads them. */
+const fromThemes = {
+  light: themeScope(css.findLast((theme) => !declaresDark(theme)) ?? ""),
+  dark: themeScope(css.find((theme) => themeScope(theme) === "dark") ?? ""),
+};
 
 describe("light/dark schemes", () => {
   test("light is the last theme by id with no dark variant, dark the one scoped .dark", () => {
-    expect(schemes).toEqual({
-      light: themeScope(css.findLast((theme) => !declaresDark(theme)) ?? ""),
-      dark: themeScope(css.find((theme) => themeScope(theme) === "dark") ?? ""),
-    });
+    expect(schemes).toEqual(fromThemes);
     expect(schemes.light).not.toBe(schemes.dark);
   });
 

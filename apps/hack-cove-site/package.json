@@ -7,7 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "typecheck": "astro check --minimumFailingSeverity error",
-    "lint": "oxlint -c ../../.oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
+    "lint": "oxlint -c .oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
     "test": "vitest run",
     "deploy": "./deploy.sh",
     "props": "bun scripts/props.ts",

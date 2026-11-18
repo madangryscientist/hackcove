@@ -19,6 +19,8 @@ import { pairOf } from "../src/docs/pairs";
 import { storyParts } from "../src/docs/source";
 import { GET } from "../src/pages/ui/llms.txt";
 import { generateProps, PROPS_JSON } from "../scripts/generate-props";
+import { llmsSection } from "./llms";
+import { must } from "./must";
 import { dontWorded, opensDont } from "./usageRules";
 
 /** The section ids a page's "On this page" list links to, in the order it lists them. */
@@ -45,6 +47,39 @@ function railCurrent(pathname: string, title: string): string[] {
   );
 }
 
+type Page = (typeof componentPages)[number];
+
+/** A page's lead pair: its first topic, the one right way. */
+const leadOf = (page: Page) => pairOf(page.pairs[0] ?? "");
+
+/** How many of a topic's two halves (Do and Don't) have a story. */
+const halvesOf = (topic: string) => {
+  const { do: right, dont: wrong } = pairOf(topic);
+  return [right, wrong].filter((half) => half !== undefined).length;
+};
+
+/** Every name the docs pages document: their components' API and their functions. */
+const documented = componentPages.flatMap(({ api, functions = [] }) => [
+  ...api,
+  ...functions.map((fn) => fn.name),
+]);
+
+/** Each page with the sections its On this page list has: a full page adds one. */
+const withSectionCount = componentPages.map((page) => ({
+  ...page,
+  sections: page.fullPage === undefined ? 4 : 5,
+}));
+
+const withFullPage = must(
+  componentPages.find((p) => p.fullPage !== undefined),
+  "a component page with a full page",
+);
+
+const order = componentPages.map((p) => p.slug);
+const firstPage = must(componentPages[0], "a first component page");
+const lastPage = must(componentPages.at(-1), "a last component page");
+const middle = must(order[Math.floor(order.length / 2)], "a middle component page");
+
 describe("the component pages", () => {
   test("a page is found by its slug, and an unknown slug fails", () => {
     expect(componentPageOf("button").name).toBe("Button");
@@ -61,10 +96,6 @@ describe("the component pages", () => {
   // The docs equivalent of the Gallery rule: a new export with no page fails here.
   test("every export of @hackcove/ui-react is on exactly one page, and a page names only real exports", () => {
     const exported = Object.keys(ui).toSorted();
-    const documented = componentPages.flatMap((p) => [
-      ...p.api,
-      ...(p.functions ?? []).map((fn) => fn.name),
-    ]);
     const missing = exported.filter((name) => !documented.includes(name));
     expect(missing, `exported from packages/ui-react/src/index.ts but on no docs page`).toEqual([]);
     const unknown = documented.filter((name) => !exported.includes(name));
@@ -75,13 +106,10 @@ describe("the component pages", () => {
 
   test.each(componentPages)("$name: the right way and every Example resolve to a story", (page) => {
     expect(page.pairs.length).toBeGreaterThan(0);
-    const lead = pairOf(page.pairs[0] ?? "").do;
+    const lead = leadOf(page).do;
     expect(lead).toBeDefined();
     expect(lead?.code).toContain("import {");
-    for (const topic of page.pairs) {
-      const { do: right, dont: wrong } = pairOf(topic);
-      expect(right ?? wrong).toBeDefined();
-    }
+    expect(page.pairs.filter((topic) => halvesOf(topic) === 0)).toEqual([]);
   });
 
   test.each(componentPages)("$name: the right way leads, before the props table", (page) => {
@@ -100,30 +128,21 @@ describe("the component pages", () => {
 
   test("the On this page list names the sections the page has, in page order", () => {
     expect(onThisPageHrefs("button")).toEqual(["overview", "usage", "accessibility", "api"]);
-    const withFullPage = componentPages.find((p) => p.fullPage !== undefined);
-    expect(withFullPage).toBeDefined();
-    expect(onThisPageHrefs(withFullPage?.slug ?? "")).toContain("full-page");
+    expect(onThisPageHrefs(withFullPage.slug)).toContain("full-page");
   });
 
   // The list names each section by hand in two places: the ids it links to, and the Sections that
   // carry them. This is the guard against the two drifting apart.
-  test.each(componentPages)("$name: every On this page link lands on a heading", (page) => {
+  test.each(withSectionCount)("$name: every On this page link lands on a heading", (page) => {
     const html = renderToStaticMarkup(<ComponentPage page={page} />);
     const ids = onThisPageHrefs(page.slug);
-    expect(ids.length).toBe(page.fullPage === undefined ? 4 : 5);
+    expect(ids.length).toBe(page.sections);
     for (const id of ids) expect(html).toContain(`<h2 id="${id}"`);
   });
 
   test("previous and next walk the rail's order, and the ends have one", () => {
-    const first = componentPages[0];
-    const last = componentPages.at(-1);
-    expect(first).toBeDefined();
-    expect(last).toBeDefined();
-    if (!first || !last) return;
-    const order = componentPages.map((p) => p.slug);
-    expect(neighboursOf(first.slug)).toEqual({ next: componentPages[1] });
-    expect(neighboursOf(last.slug)).toEqual({ previous: componentPages.at(-2) });
-    const middle = order[Math.floor(order.length / 2)] ?? "";
+    expect(neighboursOf(firstPage.slug)).toEqual({ next: componentPages[1] });
+    expect(neighboursOf(lastPage.slug)).toEqual({ previous: componentPages.at(-2) });
     expect(neighboursOf(middle)).toEqual({
       previous: componentPages[order.indexOf(middle) - 1],
       next: componentPages[order.indexOf(middle) + 1],
@@ -147,10 +166,7 @@ describe("the component pages", () => {
   test("a topic with only one half is one of these, each with the reason it has no other", () => {
     const oneHalf = componentPages
       .flatMap((page) => page.pairs)
-      .filter((topic) => {
-        const { do: right, dont: wrong } = pairOf(topic);
-        return right === undefined || wrong === undefined;
-      })
+      .filter((topic) => halvesOf(topic) < 2)
       .toSorted();
     expect(oneHalf).toEqual(Object.keys(ONE_HALF).toSorted());
     // A topic's other half teaches something unless the types refuse the wrong way outright.
@@ -162,7 +178,7 @@ describe("the component pages", () => {
   test.each(componentPages)(
     "$name: the first pair, the one right way, has a Do and a Dont",
     (page) => {
-      const { do: right, dont: wrong } = pairOf(page.pairs[0] ?? "");
+      const { do: right, dont: wrong } = leadOf(page);
       expect(right, `${page.pairs[0]} has no Do story`).toBeDefined();
       expect(wrong, `${page.pairs[0]} has no Dont story`).toBeDefined();
     },
@@ -209,18 +225,20 @@ describe("props.json", () => {
   });
 
   test("describes every export and every prop: no description is empty", () => {
-    const empty = Object.keys(ui).flatMap((name) => {
-      const doc = docOf(name);
-      const props = doc.props
-        .filter((p) => p.description.trim() === "")
-        .map((p) => `${name}.${p.name}`);
-      return doc.description.trim() === "" ? [name, ...props] : props;
-    });
-    expect(empty).toEqual([]);
+    const exports = Object.keys(ui).filter((name) => docOf(name).description.trim() === "");
+    const props = Object.keys(ui).flatMap((name) =>
+      docOf(name)
+        .props.filter((p) => p.description.trim() === "")
+        .map((p) => `${name}.${p.name}`),
+    );
+    expect(exports).toEqual([]);
+    expect(props).toEqual([]);
   });
 
   test("gives every helper (a lower-case export) its signature", () => {
-    const missing = Object.keys(ui).filter((name) => /^[a-z]/.test(name) && !docOf(name).signature);
+    const missing = Object.keys(ui)
+      .filter((name) => /^[a-z]/.test(name))
+      .filter((name) => !docOf(name).signature);
     expect(missing).toEqual([]);
   });
 });
@@ -228,19 +246,20 @@ describe("props.json", () => {
 describe("the usage rules", () => {
   // A do bullet that says what not to use without a don't word: it must read as a do.
   const framed = componentPageOf("image").usage.do.find((rule) => rule.startsWith("`framed`"));
-
-  test("the framed bullet is still on the Image page", () => {
-    expect(framed).toBeDefined();
-  });
-
-  test.each([
+  const dontWordedCases: [string, boolean][] = [
     ["Never nest a `Container` in a `Container`: the padding doubles.", true],
     ["Use `TextLink` for every link in running text. Never a bare `<a>`.", true],
     ["Draw it once: Avoid a second rule under it.", true],
     ["Don't type the numbers.", true],
     [framed ?? "", false],
     ["Fill the slots and write no wrapper.", false],
-  ])("dontWorded(%j) is %s", (rule, expected) => {
+  ];
+
+  test("the framed bullet is still on the Image page", () => {
+    expect(framed).toBeDefined();
+  });
+
+  test.each(dontWordedCases)("dontWorded(%j) is %s", (rule, expected) => {
     expect(dontWorded(rule)).toBe(expected);
   });
 
@@ -257,6 +276,12 @@ describe("the usage rules", () => {
 
 describe("/ui/llms.txt", () => {
   const text = renderLlms();
+  // The code each page shows: its lead Do and every Don't.
+  const codes = componentPages.flatMap((page) =>
+    [leadOf(page).do, ...page.pairs.map((topic) => pairOf(topic).dont)].flatMap((half) =>
+      half === undefined ? [] : [half.code],
+    ),
+  );
 
   test("GET serves exactly the generated text as text/plain", async () => {
     const response = GET();
@@ -279,20 +304,17 @@ describe("/ui/llms.txt", () => {
   });
 
   test("has one section per component", () => {
-    for (const page of componentPages) {
-      expect(text.match(new RegExp(`^## ${page.name}$`, "gm"))).toHaveLength(1);
-      for (const fn of page.functions ?? []) expect(text).toContain(`- ${fn.name}: `);
-      expect(text).toContain(`When to use: ${page.whenToUse}`);
+    for (const { name, functions = [], whenToUse } of componentPages) {
+      expect(text.match(new RegExp(`^## ${name}$`, "gm"))).toHaveLength(1);
+      for (const fn of functions) expect(text).toContain(`- ${fn.name}: `);
+      expect(text).toContain(`When to use: ${whenToUse}`);
     }
   });
 
   test("is current: the right way's code, the Don't stories' code and the props come from their sources", () => {
+    expect(codes.length).toBeGreaterThan(componentPages.length);
+    for (const code of codes) expect(text).toContain(code);
     for (const page of componentPages) {
-      expect(text).toContain(pairOf(page.pairs[0] ?? "").do?.code ?? "");
-      for (const topic of page.pairs) {
-        const { dont } = pairOf(topic);
-        expect(text).toContain(dont?.code ?? "");
-      }
       for (const name of page.api) {
         for (const prop of docOf(name).props) expect(text).toContain(`- ${prop.name}: `);
       }
@@ -303,8 +325,7 @@ describe("/ui/llms.txt", () => {
     "$name: the do rules print under Do and the dont rules under Don't",
     (page) => {
       const start = text.indexOf(`\n## ${page.name}\n`);
-      const end = text.indexOf("\n## ", start + 1);
-      const section = text.slice(start, end === -1 ? undefined : end);
+      const section = llmsSection(text, page.name);
       const doAt = section.indexOf("\n### Do\n");
       const dontAt = section.indexOf("\n### Don't\n");
       const a11yAt = section.indexOf("\n### Accessibility\n");

@@ -62,9 +62,9 @@ bunx moon run hack-cove-site:e2e                 # Playwright: builds the site, 
 moon runs every task through the cache, so an unchanged project is a cache hit; `--force` reruns
 one anyway. Lint rules are all errors: fix the code, do not disable a rule.
 
-The shared testing lint (`@hackcove/oxlint-testing`) is part of `ui-react`'s and `storybook`'s
-`lint`, so a ui-react test that walks the DOM, or a Storybook spec that finds an element by CSS,
-branches or waits on a style, fails the gate. For every other project, `bun run lint:testing` reports, per
+The shared testing lint (`@hackcove/oxlint-testing`) is part of `ui-react`'s, `storybook`'s and
+`hack-cove-site`'s `lint`, so a ui-react test that walks the DOM, or a Storybook or site spec that
+finds an element by CSS, branches or waits on a style, fails the gate. For every other project, `bun run lint:testing` reports, per
 project and per rule, what it finds in the tests, and always exits 0. Each project moves into its own
 `lint` once its count is 0 (`packages/oxlint-testing/README.md`).
 

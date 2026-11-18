@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { componentPages } from "../src/content/components/index";
+import { must } from "../test/must";
 import { hydrated, pages, schemeScope, scopeClasses, setScheme, toggle } from "./scheme";
 
 for (const { path, heading } of pages) {
@@ -19,8 +20,9 @@ for (const { path, heading } of pages) {
 test("there is no theme Select in the header: the toggle is the only control", async ({ page }) => {
   await page.goto("/ui/");
   await hydrated(page);
-  await expect(page.locator("header select")).toHaveCount(0);
+  // A native select is a combobox (a listbox when it shows several rows): neither is on the page.
   await expect(page.getByRole("combobox")).toHaveCount(0);
+  await expect(page.getByRole("listbox")).toHaveCount(0);
   await expect(toggle(page)).toHaveCount(1);
 });
 
@@ -60,9 +62,12 @@ test("the right scheme is on <html> before the page scripts run: no flash", asyn
 /** A rule as it reads on the page: `InlineCode` renders the backticked parts as code, without the backticks. */
 const visible = (rule: string) => rule.replaceAll("`", "");
 
+const withDont = must(
+  componentPages.find((p) => (p.usage.dont ?? []).length > 0),
+  "a component page with a usage.dont rule",
+);
+
 test("Usage lists the do rules and the dont rules as two named lists", async ({ page }) => {
-  const withDont = componentPages.find((p) => (p.usage.dont ?? []).length > 0);
-  if (withDont === undefined) throw new Error("no component page has a usage.dont rule");
   const { slug, usage } = withDont;
   await page.goto(`/ui/${slug}/`);
   const region = page.getByRole("region", { name: "Usage" });

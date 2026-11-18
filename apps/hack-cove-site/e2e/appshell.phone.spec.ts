@@ -7,10 +7,12 @@ test("on a phone the section nav is behind the Menu button, and every section is
   page,
 }) => {
   await page.goto("/");
-  const menu = page.getByRole("banner").locator("details");
-  await expect(menu.locator("summary")).toHaveText("Menu");
+  // The Menu is a native `<details>` (a group); its `<summary>` is the button, found by its text.
+  const menu = page.getByRole("banner").getByRole("group");
+  const button = menu.getByText("Menu", { exact: true });
+  await expect(button).toBeVisible();
   await expect(menu.getByRole("link").first()).toBeHidden();
-  await menu.locator("summary").click();
+  await button.click();
   await expect(menu).toHaveJSProperty("open", true);
   const links = menu.getByRole("link");
   await expect(links, "the menu lists every section").toHaveCount(site.sections.length);

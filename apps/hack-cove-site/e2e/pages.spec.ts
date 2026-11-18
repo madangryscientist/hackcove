@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { sitePages } from "../test/pages";
 
 /**
@@ -23,18 +23,32 @@ const knownH1: readonly { page: string; ticket: string }[] = [
   { page: "/ui/status-pages/", ticket: "HC-499" },
 ];
 
+const isKnownH1 = (path: string) => knownH1.some((known) => known.page === path);
+
+/** Open `path`: it is served, and nothing on it scrolls sideways. */
+async function servedWithoutSidewaysScroll(page: Page, path: string): Promise<void> {
+  const response = await page.goto(path);
+  expect(response?.status()).toBe(200);
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  expect(overflow).toBe(0);
+}
+
 // Every page the site builds, on desktop and on a phone: it is served, it has exactly one h1, and
 // nothing on it scrolls sideways (content off the side of a phone cannot be reached).
-for (const path of sitePages) {
+for (const path of sitePages.filter((known) => !isKnownH1(known))) {
   test(`${path}: served, one h1, nothing scrolls sideways`, async ({ page }) => {
-    const response = await page.goto(path);
-    expect(response?.status()).toBe(200);
-    if (!knownH1.some((known) => known.page === path)) {
-      await expect(page.locator("h1")).toHaveCount(1);
-    }
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-    );
-    expect(overflow).toBe(0);
+    await servedWithoutSidewaysScroll(page, path);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+  });
+}
+
+// A page whose h1 count is a known finding still gets the rest.
+for (const path of sitePages.filter(isKnownH1)) {
+  test(`${path}: served, nothing scrolls sideways (h1 count is a known finding)`, async ({
+    page,
+  }) => {
+    await servedWithoutSidewaysScroll(page, path);
   });
 }

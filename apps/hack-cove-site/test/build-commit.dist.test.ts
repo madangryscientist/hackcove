@@ -14,22 +14,25 @@ const pages = (): string[] => {
   return globSync("**/*.html", { cwd: DIST }).toSorted();
 };
 
+/** What is wrong with one built page's build-commit meta: nothing, or the one thing found. */
+function wrongMeta(page: string): string[] {
+  const html = readFileSync(resolve(DIST, page), "utf8");
+  const metas = [...html.matchAll(/<meta name="build-commit" content="([^"]*)"\s*\/?>/g)];
+  if (metas.length !== 1) return [`${page}: ${metas.length} build-commit metas`];
+  const [meta] = metas;
+  const value = meta?.[1] ?? "";
+  if (!BUILD_COMMIT_PATTERN.test(value)) return [`${page}: malformed "${value}"`];
+  const headEnd = html.indexOf("</head>");
+  if ((meta?.index ?? Infinity) > headEnd) return [`${page}: meta outside the head`];
+  // The sha appears once: in the meta. Nothing of it is written where it renders.
+  const sha = value.replace(/-dirty$/, "");
+  if (html.split(sha).length !== 2) return [`${page}: the sha appears outside the meta`];
+  return [];
+}
+
 describe("built pages", () => {
   test("every page carries one well-formed build-commit meta in its head, and nowhere else", () => {
-    const wrong = pages().flatMap((page) => {
-      const html = readFileSync(resolve(DIST, page), "utf8");
-      const metas = [...html.matchAll(/<meta name="build-commit" content="([^"]*)"\s*\/?>/g)];
-      if (metas.length !== 1) return [`${page}: ${metas.length} build-commit metas`];
-      const [meta] = metas;
-      const value = meta?.[1] ?? "";
-      if (!BUILD_COMMIT_PATTERN.test(value)) return [`${page}: malformed "${value}"`];
-      const headEnd = html.indexOf("</head>");
-      if ((meta?.index ?? Infinity) > headEnd) return [`${page}: meta outside the head`];
-      // The sha appears once: in the meta. Nothing of it is written where it renders.
-      const sha = value.replace(/-dirty$/, "");
-      if (html.split(sha).length !== 2) return [`${page}: the sha appears outside the meta`];
-      return [];
-    });
+    const wrong = pages().flatMap(wrongMeta);
     expect(pages()).toEqual(expect.arrayContaining(["index.html", "404.html"]));
     expect(wrong).toEqual([]);
   });

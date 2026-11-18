@@ -4,6 +4,7 @@ import { generateTypes, TYPES_JSON } from "../scripts/generate-props";
 import { componentPages } from "../src/content/components/index";
 import typesJson from "../src/generated/types.json";
 import { renderLlms } from "../src/docs/llms";
+import { llmsSection } from "./llms";
 
 const exported = Object.keys(typesJson);
 const listed = componentPages.flatMap((page) => page.types ?? []);
@@ -39,17 +40,16 @@ describe("types.json", () => {
 describe("/ui/llms.txt: types", () => {
   const text = renderLlms();
 
-  test.each(componentPages.filter((page) => (page.types ?? []).length > 0))(
-    "$name: its types print under Types, after the props",
-    (page) => {
-      const start = text.indexOf(`\n## ${page.name}\n`);
-      const end = text.indexOf("\n## ", start + 1);
-      const section = text.slice(start, end === -1 ? undefined : end);
-      const at = section.indexOf("\n### Types\n");
-      expect(at).toBeGreaterThan(section.indexOf("\n### Props\n"));
-      for (const name of page.types ?? []) expect(section.slice(at)).toContain(`- ${name}: `);
-    },
+  const withTypes = componentPages.flatMap(({ name, types = [] }) =>
+    types.length > 0 ? [{ name, types }] : [],
   );
+
+  test.each(withTypes)("$name: its types print under Types, after the props", ({ name, types }) => {
+    const section = llmsSection(text, name);
+    const at = section.indexOf("\n### Types\n");
+    expect(at).toBeGreaterThan(section.indexOf("\n### Props\n"));
+    for (const type of types) expect(section.slice(at)).toContain(`- ${type}: `);
+  });
 });
 
 describe("/ui/llms.txt: function examples", () => {
@@ -65,10 +65,6 @@ describe("/ui/llms.txt: function examples", () => {
   });
 
   test.each(examples)("$name: its example is fenced as tsx in $page", ({ page, example }) => {
-    const start = text.indexOf(`\n## ${page}\n`);
-    const end = text.indexOf("\n## ", start + 1);
-    expect(text.slice(start, end === -1 ? undefined : end)).toContain(
-      `\`\`\`tsx\n${example}\n\`\`\``,
-    );
+    expect(llmsSection(text, page)).toContain(`\`\`\`tsx\n${example}\n\`\`\``);
   });
 });

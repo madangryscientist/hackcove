@@ -89,34 +89,31 @@ async function readCommit(request: APIRequestContext): Promise<CommitRead> {
   return { status: response.status(), seen };
 }
 
-// Reads until the home page names `expected` or the wait runs out. An error answer or a dropped
-// connection while the edge switches over counts as not yet, like an older sha.
-async function waitForCommit(request: APIRequestContext, expected: string): Promise<CommitRead> {
-  const deadline = Date.now() + COMMIT_WAIT_MS;
-  for (;;) {
-    const read = await readCommit(request).catch((error: unknown) => {
-      if (Date.now() >= deadline) throw error;
-      return { status: 0, seen: undefined };
-    });
-    if (read.seen === expected || Date.now() >= deadline) return read;
-    // time-dependent: a live edge serves the previous deploy for a while after the upload; retry until it switches.
-    await new Promise((done) => setTimeout(done, 5_000));
-  }
+if (EXPECT_COMMIT === undefined || EXPECT_COMMIT === "") {
+  test("the home page names the commit it was built from", async ({ request }) => {
+    const { status, seen } = await readCommit(request);
+    process.stdout.write(`build-commit on the home page: ${seen ?? "(none)"} (HTTP ${status})\n`);
+    expect(status).toBe(200);
+    expect(seen, "the home page has no build-commit meta").toBeDefined();
+    expect(seen).toMatch(BUILD_COMMIT_PATTERN);
+  });
+} else {
+  const expected = EXPECT_COMMIT;
+  test("the home page names the commit it was built from, the one just deployed", async ({
+    request,
+  }) => {
+    test.setTimeout(COMMIT_WAIT_MS + 30_000);
+    expect(expected, "SMOKE_EXPECT_COMMIT is a full sha").toMatch(BUILD_COMMIT_PATTERN);
+    // A live edge serves the previous deploy for a while after the upload, so this reads until the
+    // home page names `expected` or the wait runs out. An error answer or a dropped connection while
+    // the edge switches over counts as not yet, like an older sha.
+    await expect
+      .poll(async () => (await readCommit(request).catch(() => ({ seen: undefined }))).seen, {
+        message: `the live home page does not name the deployed ${expected}`,
+        timeout: COMMIT_WAIT_MS,
+        intervals: [5_000],
+      })
+      .toBe(expected);
+    process.stdout.write(`build-commit on the home page: ${expected}\n`);
+  });
 }
-
-test("the home page names the commit it was built from", async ({ request }) => {
-  test.setTimeout(COMMIT_WAIT_MS + 30_000);
-  if (EXPECT_COMMIT)
-    expect(EXPECT_COMMIT, "SMOKE_EXPECT_COMMIT is a full sha").toMatch(BUILD_COMMIT_PATTERN);
-  const { status, seen } = EXPECT_COMMIT
-    ? await waitForCommit(request, EXPECT_COMMIT)
-    : await readCommit(request);
-  process.stdout.write(`build-commit on the home page: ${seen ?? "(none)"} (HTTP ${status})\n`);
-  expect(status).toBe(200);
-  expect(seen, "the home page has no build-commit meta").toBeDefined();
-  expect(seen).toMatch(BUILD_COMMIT_PATTERN);
-  if (EXPECT_COMMIT)
-    expect(seen, `the live home page names ${seen}, not the deployed ${EXPECT_COMMIT}`).toBe(
-      EXPECT_COMMIT,
-    );
-});
