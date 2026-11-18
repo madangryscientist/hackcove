@@ -17,7 +17,7 @@ export default defineConfig({
     { name: "desktop", testIgnore: "*.phone.spec.ts", use: { ...devices["Desktop Chrome"] } },
     {
       name: "phone",
-      testMatch: ["*.phone.spec.ts", "site-search.spec.ts"],
+      testMatch: ["*.phone.spec.ts", "site-search.spec.ts", "pages.spec.ts"],
       use: {
         ...devices["iPhone 15"],
         browserName: "chromium",
