@@ -5,6 +5,7 @@ import { THEMES } from "@hackcove/themes-shared";
 import { SiteShell } from "../components/SiteShell";
 import { componentPages } from "../content/components";
 import { site } from "../content/site";
+import { thisBuildCommit } from "../content/build-commit";
 import { colourSchemeHeadScript, schemes } from "../content/colourSchemes";
 
 type Props = {
@@ -47,6 +48,7 @@ const searchItems = componentPages.map((page) => ({
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary" />
+    <meta name="build-commit" content={thisBuildCommit()} />
     <style set:html={themeCss} />
     <script is:inline set:html={colourSchemeHeadScript} />
     <script is:inline set:html={copyScript} />
