@@ -54,6 +54,15 @@ describe("the one page list", () => {
   });
 });
 
+describe("404.html", () => {
+  // The host serves this file for any path it cannot find (the live status is the smoke check's).
+  test("it says the page was not found and links back to /", () => {
+    const html = read("404.html");
+    expect(html).toMatch(/<h1[^>]*>Page not found<\/h1>/);
+    expect(html).toMatch(/<a [^>]*href="\/"[^>]*>Back to home<\/a>/);
+  });
+});
+
 describe("sitemap.xml and robots.txt", () => {
   test("the sitemap is a urlset that lists every page in sitePages once, on the live host, and nothing else", () => {
     const xml = read("sitemap.xml");

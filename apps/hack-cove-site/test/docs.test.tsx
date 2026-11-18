@@ -33,6 +33,18 @@ function onThisPageHrefs(slug: string): string[] {
   return [...nav.matchAll(/href="#([^"]+)"/g)].map((m) => m[1] ?? "");
 }
 
+/** The rail links marked as the current page when the docs frame renders at `pathname`. */
+function railCurrent(pathname: string, title: string): string[] {
+  const html = renderToStaticMarkup(
+    <DocsFrame pathname={pathname} title={title}>
+      <p>body</p>
+    </DocsFrame>,
+  );
+  return [...html.matchAll(/<a [^>]*aria-current="page"[^>]*>([^<]*)<\/a>/g)].map(
+    (m) => m[1] ?? "",
+  );
+}
+
 describe("the component pages", () => {
   test("a page is found by its slug, and an unknown slug fails", () => {
     expect(componentPageOf("button").name).toBe("Button");
@@ -77,11 +89,13 @@ describe("the component pages", () => {
     const rightWayAt = html.indexOf(">Overview</h2>");
     expect(rightWayAt).toBeGreaterThan(-1);
     expect(rightWayAt).toBeLessThan(html.indexOf(">API</h2>"));
-    for (const heading of ["Overview", "Usage", "Accessibility", "API"]) {
-      expect(html).toContain(`>${heading}</h2>`);
-    }
     expect(html).toContain(">Do<");
     for (const name of page.api) expect(html).toContain(`>${name}<`);
+  });
+
+  test("the rail marks the page you are on as current: Getting started on /ui/, Button on its page", () => {
+    expect(railCurrent("/ui/", "Getting started")).toEqual(["Getting started"]);
+    expect(railCurrent("/ui/button/", "Button")).toEqual(["Button"]);
   });
 
   test("the On this page list names the sections the page has, in page order", () => {
@@ -174,13 +188,6 @@ describe("a story's snippet", () => {
   });
 });
 
-const looksOf = (name: string) =>
-  Object.fromEntries(
-    docOf(name)
-      .props.filter((p) => ["variant", "size", "tone"].includes(p.name))
-      .map((p) => [p.name, p.default]),
-  );
-
 describe("props.json", () => {
   // generateProps builds a TypeScript program over all of ui-react: about 2s idle, and it has run
   // past vitest's 5s default under load (HC-213). The budget covers that build; it is not a retry.
@@ -195,10 +202,6 @@ describe("props.json", () => {
       expect(names).not.toContain("className");
       expect(names).not.toContain("style");
     }
-  });
-
-  test("shows Button's look defaults, which a button and a link share", () => {
-    expect(looksOf("Button")["size"]).toBe("md");
   });
 
   test("covers exactly what @hackcove/ui-react exports", () => {

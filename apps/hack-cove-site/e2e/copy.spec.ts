@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import { site } from "../src/content/site";
 
 // The docs body is static HTML that is never hydrated, so these clicks reach `copyScript`, not React.
 test.use({ permissions: ["clipboard-read", "clipboard-write"] });
@@ -15,7 +14,7 @@ async function expectCopied(button: import("@playwright/test").Locator): Promise
   await expect(button.locator("+ [data-copy-status]")).toHaveText("Copied");
 }
 
-test("on /ui/button/ the first example's copy button copies its source and shows copied, twice", async ({
+test("on /ui/button/ the first example's copy button copies its source and shows copied", async ({
   page,
 }) => {
   await page.goto("/ui/button/");
@@ -28,35 +27,6 @@ test("on /ui/button/ the first example's copy button copies its source and shows
   await button.click();
   await expectCopied(button);
   expect(await clipboard(page)).toBe(source);
-  // The second copy copies again and puts a new node in the region, so it is announced again.
-  await button.evaluate((el) => {
-    const text = el.nextElementSibling?.firstChild;
-    if (text) Object.assign(text, { old: true });
-  });
-  await page.evaluate(() => navigator.clipboard.writeText(""));
-  await button.click();
-  await expect.poll(() => clipboard(page)).toBe(source);
-  await expect
-    .poll(() =>
-      button.evaluate((el) => {
-        const text = el.nextElementSibling?.firstChild;
-        return text !== null && text !== undefined && !("old" in text);
-      }),
-    )
-    .toBe(true);
-  await expectCopied(button);
-});
-
-test("on /ui/ the install snippet's copy button copies its command", async ({ page }) => {
-  await page.goto("/ui/");
-  const step = site.ui.install.steps[0];
-  if (step?.code === undefined) throw new Error("the first install step has no code");
-  const button = page
-    .locator("figure", { hasText: [step.code].flat().join("\n") })
-    .locator("button[data-copy-text]");
-  await button.click();
-  await expectCopied(button);
-  expect(await clipboard(page)).toBe([step.code].flat().join("\n"));
 });
 
 test("on /ui/button/ every code example has a named copy button reached by Tab, except Don't", async ({

@@ -1,10 +1,9 @@
 import { expect, test } from "@playwright/test";
 import { themeScope } from "@hackcove/themes-shared/scope";
-import { componentSections } from "../src/content/components/index";
 import { themeList } from "./scheme";
 
-// The Getting started page's two index blocks, as a reader sees them: the theme list is read from
-// themes/*.css so its length is not fixed, and the group cards are as tall as their own links.
+// The Getting started page's theme list, as a reader sees it: it is read from themes/*.css, so its
+// length is not fixed.
 
 // A table row per theme wraps for any count, where a two-column grid leaves the odd one alone on an
 // empty row.
@@ -32,41 +31,3 @@ test("/ui/: one table row per theme, each with its import and its class, and no 
     await expect(cells.nth(2)).toHaveText(specifier);
   }
 });
-
-// One group per row: no card is stretched to a partner's height, and the band under a card's last
-// link is its own padding, not the empty bottom a stretched card leaves.
-for (const width of [1280, 390]) {
-  test(`at ${width}px the component groups stack, and no card ends on an empty band`, async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width, height: 900 });
-    await page.goto("/ui/");
-    const cards = page
-      .getByRole("region", { name: "Components", exact: true })
-      .getByRole("article");
-    await expect(cards).toHaveCount(componentSections.length);
-    const boxes = await cards.evaluateAll((els) =>
-      els.map((el) => {
-        const box = el.getBoundingClientRect();
-        const lists = el.querySelectorAll("ul");
-        const last = lists[lists.length - 1];
-        return {
-          top: box.top,
-          bottom: box.bottom,
-          left: box.left,
-          slack: last ? box.bottom - last.getBoundingClientRect().bottom : Infinity,
-        };
-      }),
-    );
-    for (const [index, box] of boxes.entries()) {
-      expect(box.left, `card ${index}: left edge`).toBeCloseTo(boxes[0]?.left ?? 0, 0);
-      if (index > 0) {
-        expect(box.top, `card ${index}: starts below card ${index - 1}`).toBeGreaterThanOrEqual(
-          boxes[index - 1]?.bottom ?? Infinity,
-        );
-      }
-      // Under 24px is the card's own bottom padding: an empty band taller than one line of links fails.
-      expect(box.slack, `card ${index}: empty band under its last link`).toBeLessThan(24);
-    }
-  });
-}

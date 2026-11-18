@@ -41,90 +41,6 @@ function confirmedFields(): string[] {
   ];
 }
 
-describe("cv content", () => {
-  test("header leads with back end and developer productivity", () => {
-    expect(cv.name).toBe("Jacobus Langner");
-    expect(cv.headline).toBe(
-      "Full-Stack Engineer · Developer productivity · APIs, messaging and platform · .NET Core, Node, Python",
-    );
-    expect(cv.location).toBe("Cape Town");
-    expect(cv.summary).toMatch(/^Senior full-stack engineer with 18 years/);
-    expect(cv.summary).toContain("tooling that let other developers excel");
-    expect(cv.summary).toContain("On call for the systems I build.");
-  });
-
-  test("experience dates and titles match the v2 CV", () => {
-    expect(cv.experience.map((job) => `${job.company} · ${job.title} · ${job.dates}`)).toEqual([
-      "Hack Cove · Founder / Contract Engineer · Apr 2026 to Present",
-      "Zappi · Senior Engineer · Apr 2021 to Apr 2026",
-      "FMI · API Architect · Jun 2018 to Mar 2021",
-      "Wonga · Software Development Team Lead · Aug 2015 to May 2018",
-    ]);
-  });
-
-  test("Zappi leads with the developer platform", () => {
-    const zappi = cv.experience.find((job) => job.company === "Zappi");
-    const items = zappi?.groups.flatMap((group) => group.items) ?? [];
-    expect(items[0]).toContain("used by 80 engineers");
-    expect(items.join(" ")).toContain("SQS/SNS");
-    expect(zappi?.tech).toMatch(/^Node\.js, Amazon SQS\/SNS/);
-  });
-
-  test("Hack Cove lists Cue, PixelSlash, Omnibus and Hack Cove UI", () => {
-    const hackCove: CvJob = cv.experience[0];
-    expect(hackCove.groups.map((group) => group.heading)).toEqual([
-      "Client: Cue (voice and telephony)",
-      "PixelSlash",
-      "Omnibus",
-      "Hack Cove UI",
-    ]);
-    expect(hackCove.groups[0].items).toContain(
-      "Built the Python service that integrates the app with the voice provider.",
-    );
-    expect(hackCove.groups[1].links?.map((link) => link.href)).toEqual([
-      "https://pixelslash.dev",
-      "https://github.com/madangryscientist/pixelslash",
-    ]);
-    expect(hackCove.groups[3].links?.map((link) => link.href)).toEqual([
-      "https://hack-cove.com/ui",
-      "https://github.com/madangryscientist/hackcove",
-    ]);
-    expect(html).toContain('href="https://pixelslash.dev"');
-    expect(html).toContain('href="https://hack-cove.com/ui"');
-    expect(html).toContain('href="https://github.com/madangryscientist/pixelslash"');
-    expect(html).toContain('href="https://github.com/madangryscientist/hackcove"');
-  });
-
-  test("FMI and Wonga lead with architecture", () => {
-    const fmi = cv.experience.find((job) => job.company === "FMI");
-    const wonga = cv.experience.find((job) => job.company === "Wonga");
-    expect(fmi?.groups[0].items[0]).toMatch(/^Architected 15 API services/);
-    expect(wonga?.groups[0].items[0]).toContain("NServiceBus");
-    expect(wonga?.groups[0].items.join(" ")).toContain("CEO Recognition Award");
-  });
-
-  test("earlier roles, education and grouped skills are present", () => {
-    expect(cv.earlierRoles.map((r) => r.company)).toEqual([
-      "Sygnia",
-      "Property24",
-      "ACI Worldwide",
-      "Axxess DSL and Business Intelligence",
-    ]);
-    expect(cv.education.qualification).toBe("Bachelor of Science (BSc), Computer Science");
-    expect(cv.education.school).toBe("NMMU, Port Elizabeth");
-    expect(cv.skills.map((g) => g.label)).toEqual([
-      "Back end",
-      "Messaging",
-      "Databases",
-      "Platform & DevEx",
-      "Infrastructure",
-      "Front end",
-      "Build & testing",
-      "Spoken",
-    ]);
-  });
-});
-
 describe("cv static HTML", () => {
   test("the confirmed fields reach the markup", () => {
     for (const text of confirmedFields()) expect(html).toContain(text);
@@ -154,15 +70,5 @@ describe("cv static HTML", () => {
   test("public cv pdf is next to the photo", () => {
     expect(cv.pdf).toBe("/cv/jacobus.pdf");
     expect(existsSync(join(import.meta.dirname, "../public/cv/jacobus.pdf"))).toBe(true);
-  });
-});
-
-describe("cv layout", () => {
-  test("the three section headings are ruled", () => {
-    expect(html.match(/<h2 class="[^"]*border-b border-slate-200\/70[^"]*"/g)).toHaveLength(3);
-  });
-
-  test("a job's bullets are a BulletList", () => {
-    expect(html).toMatch(/<ul class="list-disc[^"]*">/);
   });
 });

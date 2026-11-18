@@ -3,7 +3,7 @@ import config from "./playwright.config.js";
 
 // Browser tests run in Chromium and nothing else (as apps/storybook/playwright.config.test.ts
 // checks there). A project's engine is its `browserName`, else its device's
-// `defaultBrowserType`, else Playwright's default, Chromium; the site sets no projects.
+// `defaultBrowserType`, else Playwright's default, Chromium: the phone project sets `browserName` over its WebKit device.
 test("every site e2e project runs in Chromium", () => {
   const engines = [
     config.use,

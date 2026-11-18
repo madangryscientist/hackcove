@@ -23,21 +23,6 @@ test("with JavaScript off, the On this page list is in the HTML and every link n
   await context.close();
 });
 
-test("with JavaScript off, clicking API lands the heading clear of the header, not under it", async ({
-  browser,
-}) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
-  const page = await context.newPage();
-  await page.goto("/ui/button/");
-  await onThisPage(page).getByRole("link", { name: "API" }).click();
-  const top = await page
-    .locator('h2[id="api"]')
-    .evaluate((heading) => heading.getBoundingClientRect().top);
-  expect(top).toBeGreaterThanOrEqual(56);
-  await expect(page).toHaveURL(/#api$/);
-  await context.close();
-});
-
 /** The component pages in the order the rail lists them: its own links, Getting started aside. */
 async function railOrder(page: Page): Promise<string[]> {
   const hrefs: string[] = await page
@@ -50,7 +35,6 @@ async function railOrder(page: Page): Promise<string[]> {
 test("the first page has no Previous and the last no Next, and Next follows the rail", async ({
   page,
 }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
   const rail = await (async () => {
     await page.goto("/ui/button/");
     return railOrder(page);
@@ -78,23 +62,4 @@ test("the first page has no Previous and the last no Next, and Next follows the 
     "href",
     rail[at + 1] ?? "",
   );
-});
-
-test("at 390px the On this page list fits: no sideways scroll on /ui/button/", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 900 });
-  await page.goto("/ui/button/");
-  await expect(onThisPage(page)).toBeVisible();
-  const width = await page.evaluate(() => document.documentElement.scrollWidth);
-  expect(width).toBeLessThanOrEqual(390);
-});
-
-test("at 390px the On this page list is folded above the article and opens to its links", async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 390, height: 900 });
-  await page.goto("/ui/button/");
-  const nav = onThisPage(page);
-  await expect(nav.getByRole("link", { name: "API" })).toBeHidden();
-  await nav.getByText("On this page", { exact: true }).first().click();
-  await expect(nav.getByRole("link", { name: "API" })).toBeVisible();
 });

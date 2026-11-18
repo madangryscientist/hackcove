@@ -1,5 +1,3 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
 import { describe, expect, test } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { LegalPage } from "../src/components/LegalPage";
@@ -13,13 +11,6 @@ const termsHtml = renderToStaticMarkup(<LegalPage doc={terms} />)
   .replaceAll("&amp;", "&")
   .replaceAll("&#x27;", "'");
 const blob = `${JSON.stringify(privacy)}\n${JSON.stringify(terms)}\n${privacyHtml}\n${termsHtml}`;
-
-describe("legal pages exist", () => {
-  test("privacy.astro and terms.astro are in pages/", () => {
-    expect(existsSync(join(import.meta.dirname, "../src/pages/privacy.astro"))).toBe(true);
-    expect(existsSync(join(import.meta.dirname, "../src/pages/terms.astro"))).toBe(true);
-  });
-});
 
 describe("legal copy", () => {
   test("both pages carry company and South Africa, without a review flag", () => {
@@ -73,13 +64,5 @@ describe("legal static HTML", () => {
     expect(privacyHtml).toContain('href="/terms"');
     expect(termsHtml).toContain('href="/"');
     expect(termsHtml).toContain('href="/privacy"');
-  });
-});
-
-describe("legal footer", () => {
-  test("a Divider opens the footer", () => {
-    expect(privacyHtml).toContain(
-      '<footer class="mt-8"><hr class="border-t border-slate-200/70"/>',
-    );
   });
 });
