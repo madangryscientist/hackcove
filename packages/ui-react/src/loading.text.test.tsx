@@ -106,10 +106,17 @@ describe("loading figures", () => {
   it("a loading KeyValueList holds only groups of dt and dd, its hidden label in a dd", () => {
     render(<KeyValueList loading />);
     // Three rows of a term and its definition, and one more definition that holds the label.
-    expect(screen.getAllByRole("term")).toHaveLength(3);
+    const terms = screen.getAllByRole("term");
     const definitions = screen.getAllByRole("definition");
+    expect(terms).toHaveLength(3);
     expect(definitions).toHaveLength(4);
     expect(definitions.filter((dd) => within(dd).queryByText("Loading") !== null)).toHaveLength(1);
+    // Everything else it draws is a bone, and every bone sits in a term or a definition.
+    const inGroups = [...terms, ...definitions].flatMap((part) =>
+      queryAllByAttribute("data-skeleton", part, ""),
+    );
+    expect(new Set(inGroups)).toEqual(new Set(bones()));
+    expect(inGroups).toHaveLength(6);
   });
 
   it("an empty KeyValueList draws three rows of bones, busy with one label", () => {

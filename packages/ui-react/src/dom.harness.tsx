@@ -56,12 +56,21 @@ export function popoverOpen(element: Element): boolean {
   return openPopovers.has(element);
 }
 
+/** As a browser does, an element with no `popover` attribute refuses to show or hide as one. */
+function assertPopover(element: HTMLElement): void {
+  if (!element.hasAttribute("popover")) {
+    throw new DOMException("Not a popover element", "NotSupportedError");
+  }
+}
+
 function showPopoverStub(this: HTMLElement): void {
+  assertPopover(this);
   openPopovers.add(this);
   this.style.display = "block";
 }
 
 function hidePopoverStub(this: HTMLElement): void {
+  assertPopover(this);
   openPopovers.delete(this);
   this.style.removeProperty("display");
 }

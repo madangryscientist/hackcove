@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import type { ComponentProps } from "react";
+import { queryAllByAttribute } from "@testing-library/dom";
 import { describe, expect, it } from "vitest";
 import { DocsLayout, type DocsHeading } from "./DocsLayout.js";
 import { render, screen, within } from "./render.harness.js";
@@ -29,11 +30,13 @@ function page(props: Partial<ComponentProps<typeof DocsLayout>> = {}) {
   );
 }
 
+/** Every element in the On this page list marked as the reader's place, link or not. */
 const marked = () =>
-  within(screen.getByRole("navigation", { name: "On this page" })).queryAllByRole("link", {
-    hidden: true,
-    current: "location",
-  });
+  queryAllByAttribute(
+    "aria-current",
+    screen.getByRole("navigation", { name: "On this page" }),
+    "location",
+  );
 
 const onThisPage = () => screen.queryAllByRole("navigation", { name: "On this page" });
 
