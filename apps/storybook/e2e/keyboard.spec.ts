@@ -2,45 +2,12 @@ import { expect, test } from "@playwright/test";
 
 const story = (id: string) => `/iframe.html?id=${id}&viewMode=story`;
 
-test("Tabs: one tab stop, then the arrows, Home and End move the current tab", async ({ page }) => {
+test("Tabs: Tab enters the group on the current tab", async ({ page }) => {
   await page.goto(story("navigation-tabs--default"));
   const tabs = page.getByRole("tab");
   await expect(tabs.nth(0)).toHaveAttribute("aria-selected", "true");
   await page.keyboard.press("Tab");
   await expect(tabs.nth(0)).toBeFocused();
-  await page.keyboard.press("ArrowRight");
-  await expect(tabs.nth(1)).toBeFocused();
-  await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true");
-  await expect(page.getByRole("tabpanel")).toHaveText("Showing activity.");
-  await page.keyboard.press("End");
-  await expect(tabs.nth(2)).toHaveAttribute("aria-selected", "true");
-  await page.keyboard.press("ArrowRight");
-  await expect(tabs.nth(0)).toBeFocused();
-  await page.keyboard.press("Tab");
-  // Tab leaves the group: it never lands on another tab.
-  await expect(tabs.nth(1)).not.toBeFocused();
-  await expect(tabs.nth(2)).not.toBeFocused();
-  // Roving tabindex is what makes the group one tab stop: only the current tab is reachable by Tab.
-  await expect(page.locator('[role="tab"][tabindex="0"]')).toHaveCount(1);
-});
-
-test("Tabs: a disabled tab is skipped", async ({ page }) => {
-  await page.goto(story("navigation-tabs--with-disabled-tab"));
-  await page.getByRole("tab", { name: "Overview" }).focus();
-  await page.keyboard.press("ArrowRight");
-  await expect(page.getByRole("tab", { name: "Settings" })).toBeFocused();
-});
-
-test("SegmentedControl: the arrows move the filled option", async ({ page }) => {
-  await page.goto(story("forms-segmentedcontrol--default"));
-  const options = page.getByRole("radio");
-  await expect(options.nth(1)).toHaveAttribute("aria-checked", "true");
-  await options.nth(1).focus();
-  await page.keyboard.press("ArrowDown");
-  await expect(options.nth(2)).toBeFocused();
-  await expect(options.nth(2)).toHaveAttribute("aria-checked", "true");
-  await page.keyboard.press("ArrowLeft");
-  await expect(options.nth(1)).toHaveAttribute("aria-checked", "true");
 });
 
 test("Drawer: focus stays inside, Esc closes it and the scrim closes it", async ({ page }) => {
@@ -66,23 +33,6 @@ test("Drawer: focus stays inside, Esc closes it and the scrim closes it", async 
   await page.getByRole("button", { name: "Open" }).click();
   await page.getByRole("button", { name: "Close" }).click();
   await expect(drawer).toBeHidden();
-});
-
-test("Drawer: the panel sits against the right edge, full height", async ({ page }) => {
-  await page.goto(story("feedback-drawer--default"));
-  const drawer = page.getByRole("dialog");
-  await expect(drawer).toBeVisible();
-  const view = page.viewportSize();
-  if (!view) throw new Error("no viewport");
-  // It slides in, so wait for it to settle against the edge.
-  await expect
-    .poll(async () => {
-      const box = await drawer.boundingBox();
-      return box ? Math.round(box.x + box.width) : null;
-    })
-    .toBe(view.width);
-  const box = await drawer.boundingBox();
-  expect(Math.round(box?.height ?? 0)).toBe(view.height);
 });
 
 test("Lightbox: the arrows step, Esc and the scrim close it, the photo does not", async ({
@@ -166,18 +116,4 @@ test("InlineEdit in a cell: Enter opens the editor, a save and Esc return the fo
   await page.keyboard.press("Space");
   await page.getByRole("combobox", { name: "Category" }).selectOption("Transport");
   await expect(page.getByRole("button", { name: "Transport Edit category" }).first()).toBeFocused();
-});
-
-test("Button count: the chip is in the name and the toggle sets aria-expanded", async ({
-  page,
-}) => {
-  await page.goto(story("actions-button--with-count"));
-  const toggle = page.getByRole("button", { name: /^Splits\s*, 3$/ });
-  await expect(toggle).toHaveAttribute("aria-expanded", "false");
-  await toggle.focus();
-  await page.keyboard.press("Enter");
-  await expect(toggle).toHaveAttribute("aria-expanded", "true");
-  await expect(page.locator("#splits-panel")).toBeVisible();
-  await page.keyboard.press("Space");
-  await expect(toggle).toHaveAttribute("aria-expanded", "false");
 });

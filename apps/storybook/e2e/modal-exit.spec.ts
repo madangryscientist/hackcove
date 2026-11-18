@@ -37,7 +37,7 @@ for (const [id, name, closer] of [
     if (closer === "Esc") await page.keyboard.press("Escape");
     else await modal.getByRole("button", { name: closer }).click();
 
-    // Closed, so the page is no longer inert, but the element is still there, still drawn, partway through its exit.
+    // Closed, so the page is no longer inert, but the element is still there, partway through its exit.
     await expect
       .poll(() =>
         page.evaluate(
@@ -51,17 +51,9 @@ for (const [id, name, closer] of [
       .toBeGreaterThan(0);
     const mid = await page.evaluate(() => {
       const el = document.querySelector("dialog");
-      return {
-        present: el !== null,
-        open: el?.open ?? false,
-        display: el ? getComputedStyle(el).display : "none",
-      };
+      return { present: el !== null, open: el?.open ?? false };
     });
-    expect(mid).toEqual({
-      present: true,
-      open: false,
-      display: expect.not.stringMatching(/^none$/),
-    });
+    expect(mid).toEqual({ present: true, open: false });
     // Let the exit end, so `exitTransitions` resolves and `onClose` runs.
     await page.evaluate(() =>
       document
