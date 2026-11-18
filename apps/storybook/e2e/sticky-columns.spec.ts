@@ -18,7 +18,7 @@ async function scrollToEnd(page: Page) {
     .toBe(true);
 }
 
-test("from md a long SidebarLayout page keeps its rail in view under the header, with railLabel", async ({
+test("from md a long SidebarLayout page keeps its rail in view, with railLabel", async ({
   page,
 }) => {
   await page.setViewportSize(desktop);
@@ -51,9 +51,7 @@ test("a SidebarLayout rail taller than the viewport scrolls itself and reaches i
   expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(400);
 });
 
-test("from lg a long DetailLayout with stickyAside keeps its aside in view under the header", async ({
-  page,
-}) => {
+test("from lg a long DetailLayout with stickyAside keeps its aside in view", async ({ page }) => {
   await page.setViewportSize(desktop);
   await page.goto(storyUrl("page-layouts-detaillayout--sticky-aside"));
   const aside = page.getByRole("complementary");
@@ -93,8 +91,8 @@ for (const [id, what] of [
   });
 }
 
-const scrollerAt = async (page: Page, id: string, width = desktop.width) => {
-  await page.setViewportSize({ width, height: desktop.height });
+const scrollerAt = async (page: Page, id: string) => {
+  await page.setViewportSize(desktop);
   await page.goto(storyUrl(id));
   const scroller = page.getByRole("complementary").first().locator("> div");
   await scroller.waitFor();

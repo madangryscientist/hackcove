@@ -14,6 +14,15 @@ test("Switch: Space and Enter toggle it, and getByRole finds it by name", async 
   await expect(flag).toBeFocused();
 });
 
+test("Switch: clicking the visible label toggles it once", async ({ page }) => {
+  await page.goto(story("forms-switch--off"));
+  const flag = page.getByRole("switch", { name: "Live in staging" });
+  await page.getByText("Live in staging", { exact: true }).click();
+  await expect(flag).toHaveAttribute("aria-checked", "true");
+  await page.getByText("Live in staging", { exact: true }).click();
+  await expect(flag).toHaveAttribute("aria-checked", "false");
+});
+
 test("Switch: focus stays on it through a busy cycle, and a busy click does nothing", async ({
   page,
 }) => {

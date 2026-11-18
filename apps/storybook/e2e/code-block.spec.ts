@@ -39,7 +39,7 @@ test("the themes folder lists at least one theme", () => {
 const theme = themes[0];
 if (theme) {
   for (const id of wrapping) {
-    test(`390px: ${id} wraps, so the pre does not clip and the page does not scroll sideways`, async ({
+    test(`390px: ${id} does not clip the pre, and the page does not scroll sideways`, async ({
       page,
     }) => {
       await open(page, id, theme);
