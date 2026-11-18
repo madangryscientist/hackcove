@@ -1,6 +1,6 @@
 # UISlash facts
 
-Checked against main at efa0f991 on 2026-11-17.
+Checked against main at 6c4c2a39 on 2026-11-18.
 
 ## What it is
 UI components your agents can't get wrong: React components and the themes made for them, which a site is built from with props alone, never its own CSS. Early, every package at version 0.x.
@@ -25,6 +25,6 @@ UI components your agents can't get wrong: React components and the themes made 
 
 ## Where it runs
 - `npm-install`: any React 19 app using Tailwind v4, installed from npm.
-- `chromium`: Chromium browsers (the end to end tests run in Chromium only).
+- `tested-in-chromium`: the end to end and visual tests run in Chromium only.
 - `github-actions`: the UI review workflow runs on GitHub Actions.
 - `docs-site`: https://hack-cove.com/ui/
