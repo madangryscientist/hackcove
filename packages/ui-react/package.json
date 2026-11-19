@@ -1,13 +1,13 @@
 {
-  "name": "@hackcove/ui-react",
+  "name": "@slashsuite/ui-react",
   "version": "0.11.3",
-  "description": "UISlash React components: primitives, typography roles and a safe Markdown renderer, written against Tailwind v4 utilities. Pair with a theme from @hackcove/themes.",
+  "description": "UISlash React components: primitives, typography roles and a safe Markdown renderer, written against Tailwind v4 utilities. Pair with a theme from @slashsuite/themes.",
   "keywords": [
     "components",
     "design-system",
-    "hackcove",
     "markdown",
     "react",
+    "slashsuite",
     "tailwind",
     "tailwindcss",
     "ui"

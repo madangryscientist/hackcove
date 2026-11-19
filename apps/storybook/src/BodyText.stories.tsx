@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Caption, Overline, SectionHeading, Stack, Text } from "@hackcove/ui-react";
+import { Caption, Overline, SectionHeading, Stack, Text } from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Text/Body text" };
 export default meta;

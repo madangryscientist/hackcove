@@ -14,7 +14,7 @@ import {
   TableHeaderCell,
   TableRow,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 /** A linked ListRow (and an `active` one), a linked TableRow and a link Card, each holding its own link and button above the stretched link, then a badged link Card and an `attention` Card, then Cards with an `icon`. */
 export function GalleryLinkedRows() {

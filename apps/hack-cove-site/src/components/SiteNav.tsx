@@ -1,4 +1,4 @@
-import { Tabs } from "@hackcove/ui-react";
+import { Tabs } from "@slashsuite/ui-react";
 import { type NavTab, site } from "../content/site";
 
 const plain = (path: string) => (path.length > 1 ? path.replace(/\/+$/, "") : path);

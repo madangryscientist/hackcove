@@ -7,7 +7,7 @@ import {
   SiteSearch,
   Stack,
   type SiteSearchItem,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Navigation/SiteSearch" };
 export default meta;

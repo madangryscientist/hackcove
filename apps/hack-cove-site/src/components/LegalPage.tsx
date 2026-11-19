@@ -7,7 +7,7 @@ import {
   Stack,
   Text,
   TextLink,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { type LegalDoc } from "../content/legal";
 import { site } from "../content/site";
 

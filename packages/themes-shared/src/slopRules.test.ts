@@ -7,7 +7,7 @@ const fake = w("vi.use", "FakeTimers();");
 const timeout = w("set", "Timeout(");
 const interval = w("set", "Interval(");
 const todo = w("TO", "DO");
-const ui = "@hackcove/ui-react";
+const ui = "@slashsuite/ui-react";
 // Built from code points, so this file carries neither dash.
 const em = String.fromCodePoint(0x2014);
 const en = String.fromCodePoint(0x2013);
@@ -59,7 +59,7 @@ describe("slopRules: nothing time dependent", () => {
       1,
     );
     expect(
-      slopRules("src/CopyButton.tsx", `const t = ${timeout}reset, 2000);`, "@hackcove/storybook"),
+      slopRules("src/CopyButton.tsx", `const t = ${timeout}reset, 2000);`, "@slashsuite/storybook"),
     ).toEqual([]);
   });
 
@@ -131,13 +131,15 @@ describe("slopRules: docs prose calls the purple the accent", () => {
 
   it("fails the word in the component docs and in a README", () => {
     const page = "docs/components/card.ts";
-    expect(slopRules(page, `"outlines it in ${word}"`, "@hackcove/ui-react")).toEqual([hit(page)]);
+    expect(slopRules(page, `"outlines it in ${word}"`, "@slashsuite/ui-react")).toEqual([
+      hit(page),
+    ]);
     expect(slopRules("README.md", `a ${word} fill`, "x")).toEqual([hit("README.md")]);
   });
 
   it("passes it as a value in backticks, in a utility, and in a component file", () => {
     const page = "docs/components/card.ts";
-    expect(slopRules(page, `"the \`${word}\` tone"`, "@hackcove/ui-react")).toEqual([]);
+    expect(slopRules(page, `"the \`${word}\` tone"`, "@slashsuite/ui-react")).toEqual([]);
     expect(slopRules("README.md", `\`bg-${word}-600\` is remapped`, "x")).toEqual([]);
     expect(slopRules("src/Card.tsx", `// a ${word} ring`, ui)).toEqual([]);
   });
@@ -167,7 +169,7 @@ describe("slopRules: a component uses only the palette's colour utilities", () =
   it("reads only a ui-react component: not a test, not another package", () => {
     const line = `"text-pink-500"`;
     expect(slopRules("src/Pill.test.tsx", line, ui, palette)).toEqual([]);
-    expect(slopRules("src/Pill.tsx", line, "@hackcove/other", palette)).toEqual([]);
+    expect(slopRules("src/Pill.tsx", line, "@slashsuite/other", palette)).toEqual([]);
     expect(slopRules("src/Pill.tsx", line, ui)).toEqual([]);
   });
 });
@@ -179,5 +181,13 @@ describe("slopRules: a component's classes", () => {
     ]);
     expect(slopRules("src/Hero.tsx", `"px-4 sm:px-6"`, ui)).toHaveLength(1);
     expect(slopRules("src/Container.tsx", `"max-w-6xl px-4 sm:px-6"`, ui)).toEqual([]);
+  });
+});
+
+describe("slopRules: both npm scopes name the component package", () => {
+  it("applies the docs-prose rule under @hackcove/ui-react and under @slashsuite/ui-react", () => {
+    for (const name of ["@hackcove/ui-react", "@slashsuite/ui-react"]) {
+      expect(slopRules("docs/a.md", "The violet ink is the accent.", name)).toHaveLength(1);
+    }
   });
 });

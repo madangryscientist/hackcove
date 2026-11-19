@@ -134,7 +134,7 @@ function helperDoc(checker: ts.TypeChecker, name: string, symbol: ts.Symbol): Co
   };
 }
 
-/** Every export of `@hackcove/ui-react`, in name order: a component's props, a helper's signature. */
+/** Every export of `@slashsuite/ui-react`, in name order: a component's props, a helper's signature. */
 export function generateProps(): PropsJson {
   const source = program();
   const checker = source.getTypeChecker();
@@ -201,7 +201,7 @@ function definitionOf(checker: ts.TypeChecker, symbol: ts.Symbol): string {
   return `{ ${fields.join("; ")} }`;
 }
 
-/** Every type `@hackcove/ui-react` exports, in name order: its JSDoc and its definition. */
+/** Every type `@slashsuite/ui-react` exports, in name order: its JSDoc and its definition. */
 export function generateTypes(): TypesJson {
   const source = program();
   const checker = source.getTypeChecker();

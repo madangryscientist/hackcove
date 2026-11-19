@@ -19,7 +19,7 @@ import {
   Text,
   Timeline,
   TimelineItem,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { samplePhoto } from "./samplePhoto";
 import { InsetAndNested } from "./GalleryCardInset";
 import { DenseRows } from "./GalleryDenseRows";

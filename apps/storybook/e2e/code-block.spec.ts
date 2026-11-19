@@ -1,5 +1,5 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
-import { themeFiles } from "@hackcove/themes-shared/files";
+import { themeFiles } from "@slashsuite/themes-shared/files";
 
 // The layout runs once, in the reference theme (the first theme file in sorted order); how each theme
 // looks is the visual check's.

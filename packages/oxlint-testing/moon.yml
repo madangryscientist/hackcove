@@ -1,6 +1,6 @@
 $schema: "../../.moon/cache/schemas/project.json"
 
-# @hackcove/oxlint-testing: the shared oxlint config and plugin for UI tests. Each task runs the
+# @slashsuite/oxlint-testing: the shared oxlint config and plugin for UI tests. Each task runs the
 # package.json script of its name. The test and the pack check run the root's pinned oxlint and
 # the ESLint plugins the root installs; the root manifest is already an input of every task
 # (.moon/tasks/all.yml).

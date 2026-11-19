@@ -10,7 +10,7 @@ import {
   Stack,
   Tabs,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Feedback/NavigationProgress", parameters: { layout: "fullscreen" } };
 export default meta;

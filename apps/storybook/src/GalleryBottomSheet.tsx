@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BottomSheet, ListRow, Pill, SectionHeading } from "@hackcove/ui-react";
+import { BottomSheet, ListRow, Pill, SectionHeading } from "@slashsuite/ui-react";
 
 /** A BottomSheet at its first snap over a dummy full-screen view, with a header and three rows. */
 export function GalleryBottomSheet() {

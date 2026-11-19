@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { TrendChart } from "@hackcove/ui-react";
+import { TrendChart } from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Data/TrendChart", parameters: { layout: "padded" } };
 export default meta;

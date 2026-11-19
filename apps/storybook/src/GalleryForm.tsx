@@ -7,7 +7,7 @@ import {
   FormRowField,
   Input,
   Textarea,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 /** The search Field of the Gallery's control column. */
 export function GalleryNameField() {

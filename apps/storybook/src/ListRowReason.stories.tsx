@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Avatar, Card, ListRow } from "@hackcove/ui-react";
+import { Avatar, Card, ListRow } from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Data/ListRow" };
 export default meta;

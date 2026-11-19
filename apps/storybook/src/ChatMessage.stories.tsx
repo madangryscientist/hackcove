@@ -8,7 +8,7 @@ import {
   Pill,
   Stack,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { sampleScenes } from "./sampleScene";
 
 const meta: Meta = {

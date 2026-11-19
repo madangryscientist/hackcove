@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Pagination } from "@hackcove/ui-react";
+import { Pagination } from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Navigation/Pagination" };
 export default meta;

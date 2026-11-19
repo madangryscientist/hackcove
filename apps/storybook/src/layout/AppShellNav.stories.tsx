@@ -1,5 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { AppShell, AppShellBrand, ColourSchemeToggle, PageHeader, Tabs } from "@hackcove/ui-react";
+import {
+  AppShell,
+  AppShellBrand,
+  ColourSchemeToggle,
+  PageHeader,
+  Tabs,
+} from "@slashsuite/ui-react";
 import { layoutPage } from "./DemoShell";
 
 /** The header's nav measured against its row: the visual check shoots it at 1280, where it fits. */

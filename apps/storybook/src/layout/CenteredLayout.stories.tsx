@@ -8,7 +8,7 @@ import {
   Input,
   Tabs,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 /** The one layout whose width differs on purpose: a narrow centred card, asserted on its own terms (e2e/layout.spec.ts). */

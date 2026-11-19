@@ -1,5 +1,5 @@
 {
-  "name": "@hackcove/ui-review",
+  "name": "@slashsuite/ui-review",
   "version": "0.0.0",
   "private": true,
   "description": "The PR UI reviewer behind .github/workflows/ui-review.yml: a deterministic diff check (layer 1) and an advisory model review (layer 2). Dev tooling, not published.",

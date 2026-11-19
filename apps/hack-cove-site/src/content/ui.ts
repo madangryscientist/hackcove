@@ -14,7 +14,7 @@ export const ui = {
       {
         text: "Add the components and a theme. React, React DOM and Tailwind CSS v4 are peers.",
         language: "bash" as const,
-        code: "bun add @hackcove/ui-react @hackcove/themes",
+        code: "bun add @slashsuite/ui-react @slashsuite/themes",
       },
       {
         text: "Import the theme in your CSS, after Tailwind, and point Tailwind at the components' build, since it skips node_modules:",
@@ -22,8 +22,8 @@ export const ui = {
         language: "css" as const,
         code: [
           '@import "tailwindcss";',
-          '@import "@hackcove/themes/catppuccin-mocha.css";',
-          '@source "../node_modules/@hackcove/ui-react/dist";',
+          '@import "@slashsuite/themes/catppuccin-mocha.css";',
+          '@source "../node_modules/@slashsuite/ui-react/dist";',
         ],
       },
       {
@@ -52,7 +52,7 @@ export const ui = {
   },
   components: {
     title: "Components",
-    intro: "Every component in @hackcove/ui-react has a page, in these groups.",
+    intro: "Every component in @slashsuite/ui-react has a page, in these groups.",
   },
   docs: {
     title: "Component docs",

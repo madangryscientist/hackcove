@@ -12,7 +12,7 @@ import {
   TableHeaderCell,
   TableRow,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Forms/Switch" };
 export default meta;

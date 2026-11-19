@@ -77,7 +77,7 @@ Light and dark themselves: ours renders a warm paper look in light and Catppucci
 
 ## Getting started and install
 
-Ours: one install command, `bun add @hackcove/ui-react @hackcove/themes`, then the CSS imports and the `@source` line (`hackcove-landing-1440.png`). shadcn offers Command and Manual tabs with pnpm, npm, yarn and bun tabs under them (`shadcn-component-1440.png`). Park UI offers CLI and Manual tabs (`parkui-component-1440.png`). Chakra shows the import (`chakra-component-1440.png`). For Radix, Mantine, MUI and React Aria the install step was not checked; only the Button pages were compared. Package manager tabs are an options catalogue and are not wanted.
+Ours: one install command, `bun add @slashsuite/ui-react @slashsuite/themes`, then the CSS imports and the `@source` line (`hackcove-landing-1440.png`). shadcn offers Command and Manual tabs with pnpm, npm, yarn and bun tabs under them (`shadcn-component-1440.png`). Park UI offers CLI and Manual tabs (`parkui-component-1440.png`). Chakra shows the import (`chakra-component-1440.png`). For Radix, Mantine, MUI and React Aria the install step was not checked; only the Button pages were compared. Package manager tabs are an options catalogue and are not wanted.
 
 ## Copy to clipboard
 

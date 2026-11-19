@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Stack, Tabs } from "@hackcove/ui-react";
+import { Button, Stack, Tabs } from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Navigation/Tabs" };
 export default meta;

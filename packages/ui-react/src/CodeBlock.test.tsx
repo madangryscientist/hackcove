@@ -33,7 +33,7 @@ function overflowing(scrollWidth: number, clientWidth: number) {
 
 describe("CodeBlock", () => {
   it("shows a string as code, newlines kept", () => {
-    const code = "bun add @hackcove/ui-react\nbun install";
+    const code = "bun add @slashsuite/ui-react\nbun install";
     render(<CodeBlock>{code}</CodeBlock>);
     expect(screen.getByRole("code").textContent).toBe(code);
   });

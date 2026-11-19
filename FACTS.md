@@ -18,7 +18,7 @@ UI components your agents can't get wrong: React components and the themes made 
 - `component-docs`: the component docs and an `llms.txt` for agents are published at hack-cove.com/ui/.
 
 ## Planned
-- `react-native`: a React Native package, `@hackcove/ui-react-native`, built natively; not built yet.
+- `react-native`: a React Native package, `@slashsuite/ui-react-native`, built natively; not built yet.
 
 ## Licence
 - `licence`: open source under the MIT licence

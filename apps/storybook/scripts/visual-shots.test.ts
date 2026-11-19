@@ -144,7 +144,7 @@ describe("the sliced Overview captures", () => {
 });
 
 /**
- * The component names `@hackcove/ui-react` exports: the value names of its barrel's `export { … }`
+ * The component names `@slashsuite/ui-react` exports: the value names of its barrel's `export { … }`
  * lines that start with a capital, so types, hooks and helper functions are left out.
  */
 function exportedComponents(): string[] {
@@ -194,7 +194,7 @@ async function galleryTags(): Promise<Set<string>> {
 describe("the Gallery sections", () => {
   // Every theme but the reference one is shot in these sections only, so a component missing here
   // would never be seen in those themes. The Gallery is made of `gallerySections` alone.
-  it("render every component @hackcove/ui-react exports", async () => {
+  it("render every component @slashsuite/ui-react exports", async () => {
     const components = exportedComponents();
     expect(components.length).toBeGreaterThan(50);
     const tags = await galleryTags();

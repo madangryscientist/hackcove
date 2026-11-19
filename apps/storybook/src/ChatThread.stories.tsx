@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, ChatMessage, ChatThread, EmptyState, Stack, Text } from "@hackcove/ui-react";
+import { Button, ChatMessage, ChatThread, EmptyState, Stack, Text } from "@slashsuite/ui-react";
 import { SampleChat } from "./sampleChat";
 
 const meta: Meta = {

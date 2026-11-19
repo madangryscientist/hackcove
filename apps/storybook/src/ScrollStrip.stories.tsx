@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Avatar, Cluster, MediaTile, ScrollStrip } from "@hackcove/ui-react";
+import { Avatar, Cluster, MediaTile, ScrollStrip } from "@slashsuite/ui-react";
 import { sampleScenes } from "./sampleScene";
 
 const meta: Meta = { title: "Content/ScrollStrip" };

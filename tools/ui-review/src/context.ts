@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 /** What the rules need to know about Hack Cove, read from a hackcove checkout. */
 export type Context = {
-  /** Every component `@hackcove/ui-react` exports (capitalised, not a type). */
+  /** Every component `@slashsuite/ui-react` exports (capitalised, not a type). */
   components: ReadonlySet<string>;
   /** A palette utility to the role `packages/ui-react/palette.json` files it under. */
   palette: ReadonlyMap<string, string>;

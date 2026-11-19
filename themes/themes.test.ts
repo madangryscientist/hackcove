@@ -53,7 +53,7 @@ const files = readdirSync(dir)
   .toSorted();
 
 it("is one package, and lists no theme", () => {
-  expect(pkg.name).toBe("@hackcove/themes");
+  expect(pkg.name).toBe("@slashsuite/themes");
   expect(pkg.license).toBe("MIT");
   expect(Object.keys(pkg.exports)).toEqual(["./*.css", "./package.json"]);
   expect(pkg.exports["./*.css"]).toBe("./*.css");
@@ -152,7 +152,7 @@ describe.each(files)("%s", (file) => {
     expect(css).toMatch(/^\/\*! /);
   });
 
-  it("remaps every utility in @hackcove/ui-react's palette", () => {
+  it("remaps every utility in @slashsuite/ui-react's palette", () => {
     const missing = Object.values(palette)
       .flat()
       .filter((utility) => {

@@ -1,5 +1,5 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
-import { themeFiles } from "@hackcove/themes-shared/files";
+import { themeFiles } from "@slashsuite/themes-shared/files";
 
 // One theme per CSS file in themes/, found by the glob like the toolbar switcher does.
 const themes = themeFiles(`${import.meta.dirname}/../../../themes`);

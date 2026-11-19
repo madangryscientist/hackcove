@@ -1,5 +1,5 @@
 {
-  "name": "@hackcove/codemod",
+  "name": "@slashsuite/codemod",
   "version": "0.0.0",
   "private": true,
   "description": "Rewrites an app's @hackcove/ui-react 0.10 code for 0.11 and reports what a person must decide. Dev tooling, not published.",

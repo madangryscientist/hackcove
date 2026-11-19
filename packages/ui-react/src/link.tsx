@@ -14,7 +14,7 @@ type AriaCurrent = NonNullable<ComponentPropsWithoutRef<"a">["aria-current"]>;
  * What the app's `LinkAdapter` receives to draw an in-app link with its router's `<Link>`: the
  * destination as `href` (search and hash included), the component's classes, its label as
  * `children`, and (for a tab that is current, or an option with a tooltip) `aria-current`, `target`,
- * `rel` and `title`. `@hackcove/ui-react` has no router dependency.
+ * `rel` and `title`. `@slashsuite/ui-react` has no router dependency.
  *
  * An optional field is `?: T`, never `?: T | undefined`, and a key that has no value is left out
  * rather than set to `undefined`. A router's `<Link>` declares its props that way, so under

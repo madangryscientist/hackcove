@@ -1,5 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { AppShell, Caption, MetaList, SiteFooter, Stack, Text, TextLink } from "@hackcove/ui-react";
+import {
+  AppShell,
+  Caption,
+  MetaList,
+  SiteFooter,
+  Stack,
+  Text,
+  TextLink,
+} from "@slashsuite/ui-react";
 
 /** The footer a site puts in `AppShell`'s `footer` slot. */
 const meta: Meta = { title: "Layout/SiteFooter", parameters: { layout: "fullscreen" } };

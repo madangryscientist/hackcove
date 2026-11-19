@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button } from "@hackcove/ui-react";
+import { Button } from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Actions/Button" };
 export default meta;

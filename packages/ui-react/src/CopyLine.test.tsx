@@ -5,8 +5,8 @@ import { render, screen } from "./render.harness.js";
 
 describe("CopyLine", () => {
   it("shows the text as code with a copy button beside it", () => {
-    render(<CopyLine text="bun add @hackcove/ui-react" />);
-    expect(screen.getByText("bun add @hackcove/ui-react").tagName).toBe("CODE");
+    render(<CopyLine text="bun add @slashsuite/ui-react" />);
+    expect(screen.getByText("bun add @slashsuite/ui-react").tagName).toBe("CODE");
     expect(screen.getByRole("button", { name: "Copy" })).not.toBeNull();
   });
 

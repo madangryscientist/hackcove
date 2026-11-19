@@ -8,7 +8,7 @@ import {
   type BarTone,
   type StackedSegment,
   type VizTone,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const CATS: VizTone[] = ["cat1", "cat2", "cat3", "cat4", "cat5", "cat6", "cat7", "cat8"];
 

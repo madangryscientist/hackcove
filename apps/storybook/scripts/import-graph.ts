@@ -1,6 +1,6 @@
 /**
  * The import graph the visual plan reads: which repo files a story file reaches through its static
- * imports, following `@hackcove/ui-react` through its barrel to the module that exports each name.
+ * imports, following `@slashsuite/ui-react` through its barrel to the module that exports each name.
  */
 import { posix } from "node:path";
 
@@ -73,7 +73,7 @@ export function barrelOf(read: Reader): Map<string, string> {
 function targetsOf(from: string, edge: Edge, read: Reader, barrel: Map<string, string>) {
   if (edge.spec.startsWith(".")) return [resolveRelative(from, edge.spec, read)];
   // Any other package is the lockfile's, which is shared ground.
-  if (edge.spec !== "@hackcove/ui-react") return [];
+  if (edge.spec !== "@slashsuite/ui-react") return [];
   const modules =
     edge.names === "all" ? [...barrel.values()] : edge.names.map((n) => barrel.get(n));
   return [UI_BARREL, ...modules];

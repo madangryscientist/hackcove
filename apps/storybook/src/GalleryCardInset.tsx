@@ -1,4 +1,4 @@
-import { Card, ProgressBar } from "@hackcove/ui-react";
+import { Card, ProgressBar } from "@slashsuite/ui-react";
 
 /** Card `inset` (a full-bleed band) and a nested `Card tone="neutral"` (the bordered sub-card). */
 export function InsetAndNested() {

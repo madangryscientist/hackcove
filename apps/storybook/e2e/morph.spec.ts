@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { themeFiles } from "@hackcove/themes-shared/files";
+import { themeFiles } from "@slashsuite/themes-shared/files";
 
 /**
  * Morph in the Default story: the browser captures each card in the grid under its own

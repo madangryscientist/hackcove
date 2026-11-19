@@ -1,6 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { Avatar, Button, Caption, Card, IconButton, ListRow, Pill, Text } from "@hackcove/ui-react";
+import {
+  Avatar,
+  Button,
+  Caption,
+  Card,
+  IconButton,
+  ListRow,
+  Pill,
+  Text,
+} from "@slashsuite/ui-react";
+import { Collapsible } from "./ListRowCollapsible";
 import { samplePhoto } from "./samplePhoto";
 
 const meta: Meta = { title: "Data/ListRow" };
@@ -24,30 +34,6 @@ export const Rows: S = {
     </div>
   ),
 };
-
-function Collapsible() {
-  const [open, setOpen] = useState(true);
-  return (
-    <Card flush>
-      <ListRow
-        divided
-        expanded={open}
-        aria-controls="monthly-plan"
-        trailing="R 15 550"
-        onClick={() => setOpen(!open)}
-      >
-        Monthly plan
-      </ListRow>
-      <div
-        id="monthly-plan"
-        hidden={!open}
-        className="border-t border-slate-200/70 px-4 py-3 text-sm"
-      >
-        Rent, groceries and transport.
-      </div>
-    </Card>
-  );
-}
 
 export const CollapsibleHeader: S = {
   render: () => (

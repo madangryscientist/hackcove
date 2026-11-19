@@ -3,7 +3,7 @@
  * a TODO/FIXME with no ticket ref, commented-out code, and anything time dependent, which read
  * only TypeScript, and an em or en dash, which reads every file (copy, CSS, docs, scripts). Docs
  * prose (the site's component pages, a README) calls the palette's purple the accent. In a
- * `@hackcove/ui-react` component it also holds the palette: a stock colour utility the themes do not
+ * `@slashsuite/ui-react` component it also holds the palette: a stock colour utility the themes do not
  * remap (one outside `palette.json`), or one behind an arbitrary `[&...]` variant, which no theme can
  * reach; and the content width and side padding outside `Container`. `check-slop.ts` globs the files and prints what this returns.
  */
@@ -54,13 +54,16 @@ const CONTENT_EDGE = /max-w-6xl|px-4 sm:px-6/;
 
 // The palette's names are the theme's: the purple ink is the accent in every theme, so docs prose
 // that calls it violet is wrong in all but one. A value in backticks (`violet`) is code and passes.
+// Both names while consumers move to @slashsuite: a package still named @hackcove/ui-react is the same library.
+const UI_REACT = new Set(["@slashsuite/ui-react", "@hackcove/ui-react"]);
+
 const VIOLET = /(?<![\w-])violet(?![\w-])/i;
 const VIOLET_RULE = '"violet" in prose; the palette calls it accent';
 /** The component docs, the site's words and any package README: prose a reader takes the palette's names from. */
 const isDocsProse = (path: string, pkg: string): boolean =>
   path === "README.md" ||
   path.endsWith("/README.md") ||
-  (pkg === "@hackcove/ui-react" && path.startsWith("docs/")) ||
+  (UI_REACT.has(pkg) && path.startsWith("docs/")) ||
   (pkg === "hack-cove-site" && path.startsWith("src/content/"));
 const outsideBackticks = (line: string): string => line.replace(/`[^`]*`/g, "``");
 
@@ -72,7 +75,7 @@ const isTest = (path: string): boolean =>
 
 /**
  * Each hit as `path:line: message`. `path` is relative to the package; `pkg` is its `name`.
- * `palette` is every utility `packages/ui-react/palette.json` lists, for `@hackcove/ui-react`.
+ * `palette` is every utility `packages/ui-react/palette.json` lists, for `@slashsuite/ui-react`.
  */
 export function slopRules(
   path: string,
@@ -82,7 +85,7 @@ export function slopRules(
 ): string[] {
   const code = /\.tsx?$/.test(path);
   const test = isTest(path);
-  const component = pkg === "@hackcove/ui-react" && path.startsWith("src/") && !test;
+  const component = UI_REACT.has(pkg) && path.startsWith("src/") && !test;
   const paletted = component && palette !== undefined && path.endsWith(".tsx");
   const prose = isDocsProse(path, pkg);
   const hits: string[] = [];

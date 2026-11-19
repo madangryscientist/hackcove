@@ -16,7 +16,7 @@ import {
   TableHeaderCell,
   TableRow,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Data/ListRow" };
 export default meta;

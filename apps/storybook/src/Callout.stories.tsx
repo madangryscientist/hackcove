@@ -9,7 +9,7 @@ import {
   Stack,
   Text,
   TextLink,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Feedback/Callout" };
 export default meta;

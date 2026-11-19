@@ -9,7 +9,7 @@ import {
   KeyValueList,
   Stack,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Feedback/Drawer" };
 export default meta;

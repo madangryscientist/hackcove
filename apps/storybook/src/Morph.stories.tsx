@@ -11,7 +11,7 @@ import {
   Stack,
   startPageTransition,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Feedback/Morph" };
 export default meta;

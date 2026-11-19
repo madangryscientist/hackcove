@@ -4,9 +4,9 @@
    rule has no meaning of its own, it keeps the look the site has, and a new light theme that sorts
    last would take the light scheme, so a change that adds one looks at the site. */
 
-import { colourSchemeScript } from "@hackcove/ui-react";
-import type { ColourSchemeClasses } from "@hackcove/ui-react";
-import { THEMES, declaresDark, themeNames, themeScope } from "@hackcove/themes-shared";
+import { colourSchemeScript } from "@slashsuite/ui-react";
+import type { ColourSchemeClasses } from "@slashsuite/ui-react";
+import { THEMES, declaresDark, themeNames, themeScope } from "@slashsuite/themes-shared";
 
 const isDark = (name: string): boolean => declaresDark(THEMES[name] ?? "");
 

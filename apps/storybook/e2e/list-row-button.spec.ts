@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { themeFiles } from "@hackcove/themes-shared/files";
+import { themeFiles } from "@slashsuite/themes-shared/files";
 
 // A button ListRow is a div with its button stretched over it, so a link in `trailing` sits above
 // that button: a tap on the row runs the row's action, a tap on the link follows the link only.

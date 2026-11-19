@@ -1,7 +1,7 @@
 import { runInNewContext } from "node:vm";
 import { describe, expect, test } from "vitest";
-import { declaresDark, themeScope } from "@hackcove/themes-shared";
-import { themeFiles } from "@hackcove/themes-shared/files";
+import { declaresDark, themeScope } from "@slashsuite/themes-shared";
+import { themeFiles } from "@slashsuite/themes-shared/files";
 import { colourSchemeHeadScript, schemes } from "../src/content/colourSchemes";
 
 const css = themeFiles(`${import.meta.dirname}/../../../themes`).map((theme) => theme.css);

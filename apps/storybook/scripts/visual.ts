@@ -48,7 +48,7 @@
 import { randomUUID } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { themeFiles } from "@hackcove/themes-shared/files";
+import { themeFiles } from "@slashsuite/themes-shared/files";
 import { baseThemeIds, capturesOnBase } from "./theme-reach.js";
 import { indexOf, isRecord, shotsByTheme, shotsOf } from "./visual-index.js";
 import { variants } from "./visual-shots.js";

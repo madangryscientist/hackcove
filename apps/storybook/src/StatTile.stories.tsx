@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { CardGrid, StatTile } from "@hackcove/ui-react";
+import { CardGrid, StatTile } from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Data/StatTile" };
 export default meta;

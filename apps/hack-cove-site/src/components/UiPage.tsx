@@ -13,7 +13,7 @@ import {
   TableRow,
   Text,
   TextLink,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { componentSections } from "../../../../packages/ui-react/docs/components/index";
 import { site } from "../content/site";
 import { themes } from "../content/themes";

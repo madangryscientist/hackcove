@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, ErrorPage, Forbidden, Maintenance, NotFound, Offline } from "@hackcove/ui-react";
+import { Button, ErrorPage, Forbidden, Maintenance, NotFound, Offline } from "@slashsuite/ui-react";
 import { DemoShell, layoutPage } from "./layout/DemoShell";
 
 /** Whole pages for the states every site has. Each renders as the content of an AppShell, with fixed copy; `title` and the body can be overridden. */

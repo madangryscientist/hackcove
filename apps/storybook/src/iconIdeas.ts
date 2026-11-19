@@ -1,4 +1,4 @@
-import type { IconName } from "@hackcove/ui-react";
+import type { IconName } from "@slashsuite/ui-react";
 
 /** What each icon in the set stands for. Typed over every `IconName`, so a new icon cannot ship without a line here. */
 export const iconIdeas: Record<IconName, string> = {

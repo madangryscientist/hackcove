@@ -19,7 +19,7 @@ import {
   Overline,
   Text,
   Video,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { ProseDoc } from "./ProseDoc";
 import { samplePhoto } from "./samplePhoto";
 import { sampleShot, sampleShotSize } from "./sampleShot";
@@ -152,7 +152,7 @@ export function GalleryText() {
       <CodeBlock
         label="bash"
         language="bash"
-        lines={["bun add @hackcove/ui-react", "bun install"]}
+        lines={["bun add @slashsuite/ui-react", "bun install"]}
       />
       <CodeBlock copy label="bash" language="bash">
         bunx playwright test --project=chromium --reporter=list --output=out

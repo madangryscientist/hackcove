@@ -1,6 +1,6 @@
 $schema: "../.moon/cache/schemas/project.json"
 
-# @hackcove/themes: one CSS file per theme. Each task runs the package.json script of its name.
+# @slashsuite/themes: one CSS file per theme. Each task runs the package.json script of its name.
 # themes.test.ts holds every theme to the palette ui-react uses and to the contrast and
 # distinction contracts in themes-shared, so those files are inputs of every task that reads it.
 fileGroups:

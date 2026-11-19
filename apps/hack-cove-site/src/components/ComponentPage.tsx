@@ -17,7 +17,7 @@ import {
   TableRow,
   Text,
   TextLink,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { useId } from "react";
 import type { ComponentPage as Page } from "../../../../packages/ui-react/docs/components/index";
 import { componentPageOf, neighboursOf } from "../../../../packages/ui-react/docs/components/index";

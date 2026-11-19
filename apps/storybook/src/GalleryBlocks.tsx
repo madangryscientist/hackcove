@@ -28,7 +28,7 @@ import {
   Text,
   type Toast,
   ToastRegion,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { GalleryMarketing } from "./GalleryMarketing";
 import { samplePhoto } from "./samplePhoto";
 import { sampleCode } from "./sampleCode";
@@ -233,10 +233,10 @@ export function GalleryDialogs() {
 export function GalleryCopy() {
   return (
     <div className="flex max-w-sm flex-col gap-3">
-      <CopyLine text="bun add @hackcove/ui-react" />
-      <CopyLine text="bun add @hackcove/ui-react" disabled />
+      <CopyLine text="bun add @slashsuite/ui-react" />
+      <CopyLine text="bun add @slashsuite/ui-react" disabled />
       <div className="self-start">
-        <CopyButton text="bun add @hackcove/ui-react" />
+        <CopyButton text="bun add @slashsuite/ui-react" />
       </div>
     </div>
   );

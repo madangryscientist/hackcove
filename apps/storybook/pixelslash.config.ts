@@ -5,7 +5,7 @@
  * absolute.
  */
 import { join } from "node:path";
-import { themeFiles } from "@hackcove/themes-shared/files";
+import { themeFiles } from "@slashsuite/themes-shared/files";
 import { variants, visualSkipped } from "./scripts/visual-shots.js";
 
 // Same list as the toolbar: one id per CSS file in themes/.

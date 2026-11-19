@@ -15,7 +15,7 @@ import {
   Text,
   ListLayout,
   ListRow,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Feedback/Loading" };
 export default meta;

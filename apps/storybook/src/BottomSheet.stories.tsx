@@ -8,7 +8,7 @@ import {
   Pill,
   SectionHeading,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const meta: Meta = {
   title: "Feedback/BottomSheet",

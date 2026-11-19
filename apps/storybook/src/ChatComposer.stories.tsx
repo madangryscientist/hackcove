@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { ChatComposer, Stack } from "@hackcove/ui-react";
+import { ChatComposer, Stack } from "@slashsuite/ui-react";
 
 const meta: Meta = {
   title: "Content/ChatComposer",

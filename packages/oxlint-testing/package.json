@@ -1,15 +1,15 @@
 {
-  "name": "@hackcove/oxlint-testing",
+  "name": "@slashsuite/oxlint-testing",
   "version": "0.1.0",
   "description": "A shared oxlint config and plugin for UI tests (Playwright, Testing Library, Vitest): find elements the way a user does, wait on a state, assert behaviour not look, and keep one Playwright config shape.",
   "keywords": [
     "e2e",
     "eslint-plugin-playwright",
     "eslint-plugin-testing-library",
-    "hackcove",
     "lint",
     "oxlint",
     "playwright",
+    "slashsuite",
     "testing-library",
     "vitest"
   ],

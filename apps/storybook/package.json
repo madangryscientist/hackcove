@@ -1,5 +1,5 @@
 {
-  "name": "@hackcove/storybook",
+  "name": "@slashsuite/storybook",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -14,8 +14,8 @@
     "visual:upload": "bun scripts/visual.ts --run --upload"
   },
   "dependencies": {
-    "@hackcove/themes-shared": "workspace:*",
-    "@hackcove/ui-react": "workspace:*",
+    "@slashsuite/themes-shared": "workspace:*",
+    "@slashsuite/ui-react": "workspace:*",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },

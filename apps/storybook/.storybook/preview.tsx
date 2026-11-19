@@ -1,6 +1,6 @@
 import type { Preview } from "@storybook/react-vite";
-import { type LinkAdapter, LinkProvider } from "@hackcove/ui-react";
-import { declaresDark } from "@hackcove/themes-shared";
+import { type LinkAdapter, LinkProvider } from "@slashsuite/ui-react";
+import { declaresDark } from "@slashsuite/themes-shared";
 import { ThemeDocument, THEMES, themeNames } from "./themes";
 import "./tailwind.css";
 

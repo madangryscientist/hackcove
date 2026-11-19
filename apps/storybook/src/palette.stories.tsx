@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
-import { Caption, Overline } from "@hackcove/ui-react";
+import { Caption, Overline } from "@slashsuite/ui-react";
 import palette from "../../../packages/ui-react/palette.json";
 
 const meta: Meta = { title: "Overview/Palette", parameters: { layout: "fullscreen" } };
@@ -27,7 +27,7 @@ const sample = (utility: string): ReactNode => {
   return null;
 };
 
-/** Every role in `@hackcove/ui-react`'s palette; follows the toolbar theme. */
+/** Every role in `@slashsuite/ui-react`'s palette; follows the toolbar theme. */
 export const Roles: S = {
   render: () => (
     <div className="flex flex-col gap-6 p-4">

@@ -1,4 +1,4 @@
-import { Pill, SortableItem, SortableList, SortableSection } from "@hackcove/ui-react";
+import { Pill, SortableItem, SortableList, SortableSection } from "@slashsuite/ui-react";
 
 /** A SortableList: a section with two items (one with a meta line) and an empty section's Drop here row. */
 export function GallerySortableList() {

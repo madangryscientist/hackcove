@@ -1,4 +1,4 @@
-# @hackcove/oxlint-testing
+# @slashsuite/oxlint-testing
 
 A shared [oxlint](https://oxc.rs/docs/guide/usage/linter.html) config and plugin for UI tests:
 Playwright specs, Testing Library and Vitest tests, and Playwright configs. It enforces the parts of
@@ -13,7 +13,7 @@ our UI testing rules (the `ob-ui-testing` rules every message names) that a lint
 - **Rule 8: One config shape.** `retries: 0`, `reuseExistingServer: false`, `trace: "retain-on-failure"`,
    and no bare, focused or ticketless skip.
 
-It is about tests only. Lint rules for using `@hackcove/ui-react` itself are a separate package, and
+It is about tests only. Lint rules for using `@slashsuite/ui-react` itself are a separate package, and
 a repo can extend either without the other.
 
 Status: `0.x`. License: MIT.
@@ -21,7 +21,7 @@ Status: `0.x`. License: MIT.
 ## Install
 
 ```sh
-bun add -d -E @hackcove/oxlint-testing oxlint@1.89.0 eslint-plugin-playwright@2.12.2 eslint-plugin-testing-library@7.16.2
+bun add -d -E @slashsuite/oxlint-testing oxlint@1.89.0 eslint-plugin-playwright@2.12.2 eslint-plugin-testing-library@7.16.2
 ```
 
 The three peers are exact versions. oxlint's `jsPlugins`, which loads the ESLint plugins and this
@@ -34,7 +34,7 @@ Extend the config from the repo's `.oxlintrc.json`. `extends` takes a path, rela
 
 ```json
 {
-  "extends": ["./node_modules/@hackcove/oxlint-testing/.oxlintrc.json"]
+  "extends": ["./node_modules/@slashsuite/oxlint-testing/.oxlintrc.json"]
 }
 ```
 

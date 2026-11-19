@@ -26,7 +26,7 @@ it("a real branch that adds a raw bg-slate-800 div fails on that line, and a cle
   mkdirSync(join(cwd, "src"));
   writeFileSync(
     join(cwd, "src", "Page.tsx"),
-    'import { Card } from "@hackcove/ui-react";\nexport const a = <Card />;\n',
+    'import { Card } from "@slashsuite/ui-react";\nexport const a = <Card />;\n',
   );
   git(cwd, "add", ".");
   git(cwd, "commit", "-q", "-m", "base");
@@ -34,13 +34,13 @@ it("a real branch that adds a raw bg-slate-800 div fails on that line, and a cle
 
   writeFileSync(
     join(cwd, "src", "Page.tsx"),
-    'import { Card } from "@hackcove/ui-react";\nexport const a = <Card />;\n',
+    'import { Card } from "@slashsuite/ui-react";\nexport const a = <Card />;\n',
   );
   expect(checkChange({ cwd, base, head: "HEAD", globs: [], ctx })).toEqual([]);
 
   writeFileSync(
     join(cwd, "src", "Page.tsx"),
-    'import { Card } from "@hackcove/ui-react";\nexport const a = <Card />;\nexport const b = <div className="bg-slate-800">x</div>;\n',
+    'import { Card } from "@slashsuite/ui-react";\nexport const a = <Card />;\nexport const b = <div className="bg-slate-800">x</div>;\n',
   );
   git(cwd, "commit", "-q", "-am", "feature");
   const found = checkChange({ cwd, base, head: "HEAD", globs: [], ctx });
@@ -65,7 +65,7 @@ it("the check prints UISlash check on its output line, clean or with a count", (
   dirs.push(cwd);
   git(cwd, "init", "-q", "-b", "main");
   mkdirSync(join(cwd, "src"));
-  const clean = 'import { Card } from "@hackcove/ui-react";\nexport const a = <Card />;\n';
+  const clean = 'import { Card } from "@slashsuite/ui-react";\nexport const a = <Card />;\n';
   writeFileSync(join(cwd, "src", "Page.tsx"), clean);
   git(cwd, "add", ".");
   git(cwd, "commit", "-q", "-m", "base");

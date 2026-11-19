@@ -10,7 +10,7 @@ import {
   Menu,
   type MenuAction,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { useState } from "react";
 
 const meta: Meta = {

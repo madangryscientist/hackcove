@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Breadcrumbs, Button, Tabs, PageHeader, Text } from "@hackcove/ui-react";
+import { Breadcrumbs, Button, Tabs, PageHeader, Text } from "@slashsuite/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 const meta: Meta = {

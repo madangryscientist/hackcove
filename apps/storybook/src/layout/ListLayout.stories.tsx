@@ -12,7 +12,7 @@ import {
   Pill,
   Stack,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { ListPage } from "./pages";
 

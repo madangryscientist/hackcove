@@ -1,6 +1,6 @@
 import { expect, type Page } from "@playwright/test";
-import { themeFiles } from "@hackcove/themes-shared/files";
-import { declaresDark, themeScope } from "@hackcove/themes-shared/scope";
+import { themeFiles } from "@slashsuite/themes-shared/files";
+import { declaresDark, themeScope } from "@slashsuite/themes-shared/scope";
 import { componentPages } from "../../../packages/ui-react/docs/components/index";
 
 // One theme per CSS file in themes/. The header toggle switches between the last light theme by id

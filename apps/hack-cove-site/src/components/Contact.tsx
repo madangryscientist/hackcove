@@ -1,4 +1,4 @@
-import { SiteFooter, Text, TextLink } from "@hackcove/ui-react";
+import { SiteFooter, Text, TextLink } from "@slashsuite/ui-react";
 import { site } from "../content/site";
 
 /**

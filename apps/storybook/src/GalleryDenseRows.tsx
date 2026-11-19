@@ -1,4 +1,4 @@
-import { Avatar, Card, ListRow, Text } from "@hackcove/ui-react";
+import { Avatar, Card, ListRow, Text } from "@slashsuite/ui-react";
 
 /** A dense ListRow in a small flush Card, and a compact bordered list: a flush Card of `static` `size="sm"` rows, and a static row with `detail`. */
 export function DenseRows() {

@@ -8,14 +8,14 @@ utility the components use, so switching theme reskins a whole site with no comp
 nothing to configure. It fixes the look and feel so agents reliably build good-looking sites; it is
 not an extensible framework with every option in the world.
 
-It is a moon + Bun-workspaces monorepo. Every package here is published on its own and is on npm
-under the `@hackcove` scope (MIT, all `0.x`).
+It is a moon + Bun-workspaces monorepo. Every package here is published on its own, under the `@slashsuite` scope from the next release
+(MIT, all `0.x`). Until then the old `@hackcove` names are what is on npm.
 
 | Folder | Package | What it is |
 | --- | --- | --- |
-| `packages/ui-react` | `@hackcove/ui-react` | The React components: primitives, typography roles, a safe Markdown renderer. Written against Tailwind v4 utilities. No theme CSS. |
-| `themes` | `@hackcove/themes` | Every theme, one CSS file each, remapping those utilities: `catppuccin-mocha.css` (dark, scope `.dark`), `catppuccin-latte.css` (light, scope `.latte`), `thrifty-paper.css` (light, scope `.thrifty-paper`), `thriftloop.css` (light, scope `.thriftloop`), `thriftloop-dark.css` (dark, scope `.thriftloop-dark`), `slash-suite.css` (light, scope `.slash-suite`) and `slash-suite-dark.css` (dark, scope `.slash-suite-dark`). |
-| `packages/oxlint-testing` | `@hackcove/oxlint-testing` | A shared oxlint config and plugin for UI tests (Playwright, Testing Library, Vitest): elements found the way a user does, waits on a state, behaviour asserted rather than look, one Playwright config shape. |
+| `packages/ui-react` | `@slashsuite/ui-react` | The React components: primitives, typography roles, a safe Markdown renderer. Written against Tailwind v4 utilities. No theme CSS. |
+| `themes` | `@slashsuite/themes` | Every theme, one CSS file each, remapping those utilities: `catppuccin-mocha.css` (dark, scope `.dark`), `catppuccin-latte.css` (light, scope `.latte`), `thrifty-paper.css` (light, scope `.thrifty-paper`), `thriftloop.css` (light, scope `.thriftloop`), `thriftloop-dark.css` (dark, scope `.thriftloop-dark`), `slash-suite.css` (light, scope `.slash-suite`) and `slash-suite-dark.css` (dark, scope `.slash-suite-dark`). |
+| `packages/oxlint-testing` | `@slashsuite/oxlint-testing` | A shared oxlint config and plugin for UI tests (Playwright, Testing Library, Vitest): elements found the way a user does, waits on a state, behaviour asserted rather than look, one Playwright config shape. |
 | `apps/storybook` | (private) | Storybook for the components, with a toolbar theme switcher that lists every CSS file in `themes/`. |
 | `apps/hack-cove-site` | (private) | The hack-cove.com website (Astro), built on the workspace components and the Mocha theme. |
 
@@ -29,25 +29,25 @@ Cove designs or checks, so Storybook and the visual check list the themes and no
 ## Use it
 
 ```sh
-bun add @hackcove/ui-react @hackcove/themes
+bun add @slashsuite/ui-react @slashsuite/themes
 # peers: react >= 18, react-dom >= 18, tailwindcss ^4
 # optional type peers: @types/react, @types/react-dom (install them in a TypeScript app)
 ```
 
 ```css
 @import "tailwindcss";
-@import "@hackcove/themes/catppuccin-mocha.css";
+@import "@slashsuite/themes/catppuccin-mocha.css";
 
 /* The components use Tailwind utilities, and Tailwind skips node_modules, so point it at the
    package's build. The path is relative to this stylesheet. */
-@source "../node_modules/@hackcove/ui-react/dist";
+@source "../node_modules/@slashsuite/ui-react/dist";
 ```
 
 Put `class="dark"` on `<html>`. The theme declares the class-based `dark` variant and remaps the
 slate/colour utilities to Mocha tokens under `.dark`.
 
 ```tsx
-import { Card, PageHeading, Pill, Text } from "@hackcove/ui-react";
+import { Card, PageHeading, Pill, Text } from "@slashsuite/ui-react";
 
 export const Example = () => (
   <Card title="Status" count={2}>
@@ -57,19 +57,19 @@ export const Example = () => (
 );
 ```
 
-`@hackcove/ui-react` has one runtime dependency, `react-aria-components` (with `@internationalized/date`),
+`@slashsuite/ui-react` has one runtime dependency, `react-aria-components` (with `@internationalized/date`),
 for the date picker. Any other dependency is a human decision.
 
 ### Coming from `@hackcove/ui`?
 
-The package was renamed to `@hackcove/ui-react` in 0.8.0 (the React Native package that comes later is
-`@hackcove/ui-react-native`). It is the same components under a new name, with no alias package and no
-re-export, so the old name stays at 0.7.1. To move:
+The package was renamed to `@hackcove/ui-react` in 0.8.0, and every Slash package has since moved to the
+`@slashsuite` scope (the React Native package that comes later is `@slashsuite/ui-react-native`). It is the
+same components under a new name, with no alias package and no re-export, so the old name stays at 0.7.1. To move:
 
-1. Swap the dependency: `bun remove @hackcove/ui && bun add @hackcove/ui-react`.
-2. Find and replace the import specifier `"@hackcove/ui"` with `"@hackcove/ui-react"`.
+1. Swap the dependency: `bun remove @hackcove/ui && bun add @slashsuite/ui-react`.
+2. Find and replace the import specifier `"@hackcove/ui"` with `"@slashsuite/ui-react"`.
 3. Find and replace the `@source` path `node_modules/@hackcove/ui/dist` with
-   `node_modules/@hackcove/ui-react/dist`.
+   `node_modules/@slashsuite/ui-react/dist`.
 
 ## Browser support
 
@@ -132,14 +132,14 @@ See [`packages/ui-react/README.md`](packages/ui-react/README.md#dates).
 
 ## Light and dark
 
-`@hackcove/ui-react` ships the switch for the `.dark` class: inline `colourSchemeScript` in `<head>` (it
+`@slashsuite/ui-react` ships the switch for the `.dark` class: inline `colourSchemeScript` in `<head>` (it
 applies the stored choice, else the system preference, before first paint), drop the hard-coded
 `class="dark"` from `<html>`, and place `<ColourSchemeToggle />` in the header. Two states, no
 provider. See [`packages/ui-react/README.md`](packages/ui-react/README.md#light-and-dark).
 
 ## Copy buttons on a static page
 
-On a page rendered to static HTML and never hydrated, inline `copyScript` (from `@hackcove/ui-react`)
+On a page rendered to static HTML and never hydrated, inline `copyScript` (from `@slashsuite/ui-react`)
 once, as `colourSchemeScript` is, and every `CopyButton`, `CopyLine` and `copy` code block works there.
 See [`packages/ui-react/README.md`](packages/ui-react/README.md#copy-on-a-static-page).
 
@@ -151,7 +151,7 @@ A theme is one CSS file in the `themes/` package, and its file name is its id:
    changes once it has baselines.
 2. Edit it. The contract: pick the theme's scope class and make its first top-level rule
    `.<scope> { color-scheme: …; }` (Storybook and the e2e read the scope from that rule), remap the
-   utilities `@hackcove/ui-react` uses under `.<scope>`, and do not import Tailwind (the consumer does).
+   utilities `@slashsuite/ui-react` uses under `.<scope>`, and do not import Tailwind (the consumer does).
    A dark theme also declares `@custom-variant dark (&:where(.<scope>, .<scope> *));`. The scope
    also sets the fourteen `--hc-*` colour properties for chrome the kit cannot draw (`--hc-surface`,
    `--hc-subtle`, `--hc-line`, `--hc-ink`, `--hc-mute`, `--hc-accent`, and `--hc-cat-1` to
@@ -195,8 +195,8 @@ It runs two layers on the lines the pull request adds:
 
 - **Rules (no model).** Fails the check with a `file:line` annotation on a new CSS file or
   `<style>` block, a raw palette utility (`bg-slate-800`), a `dark:` variant, a `className` or
-  `style` on an `@hackcove/ui-react` component, and a local component that duplicates a UISlash export.
-  The palette and the export list are read from `@hackcove/ui-react` itself, never copied.
+  `style` on an `@slashsuite/ui-react` component, and a local component that duplicates a UISlash export.
+  The palette and the export list are read from `@slashsuite/ui-react` itself, never copied.
 - **Model review (advisory).** An OpenCode Zen model (`opencode/deepseek-v4.1-flash`) reads the diff
   against the UISlash purpose and the generated `/ui/llms.txt`, and posts inline comments plus one
   summary. A part UISlash lacks is reported as "ask uislash for X", never "build it locally". Its
@@ -258,6 +258,6 @@ bunx moon run hack-cove-site:dev                 # the website, http://localhost
 Contributing? Start with [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 Try an unpublished change in a consumer checkout: run `bun link` once inside `packages/ui-react` and
-`themes`, then `bun link @hackcove/ui-react` and `bun link @hackcove/themes` in the consumer. Consumers
+`themes`, then `bun link @slashsuite/ui-react` and `bun link @slashsuite/themes` in the consumer. Consumers
 install the published `0.x` from npm, so the link is only for checking a change before it is
 published. Rebuild `packages/ui-react` (`bunx moon run ui-react:build`) after a change; a linked consumer reads its `dist/`.

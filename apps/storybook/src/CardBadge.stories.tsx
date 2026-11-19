@@ -10,7 +10,7 @@ import {
   StickyBar,
   Text,
   TextLink,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { DemoShell, layoutPage } from "./layout/DemoShell";
 
 /** Card's `badge` and `attention`, apart from Card.stories.tsx so each file stays short. */

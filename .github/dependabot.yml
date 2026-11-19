@@ -10,5 +10,4 @@ updates:
         update-types: [minor, patch]
     ignore:
       # Our own packages move by an architect's bump ticket on a new 0.x minor, not by Dependabot.
-      - dependency-name: "@hackcove/*"
       - dependency-name: "@slashsuite/*"

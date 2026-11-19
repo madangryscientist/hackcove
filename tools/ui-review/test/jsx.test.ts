@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { stylingProps } from "../src/jsx.js";
 import { diffOf, run } from "./fixtures.js";
 
-const IMPORT = 'import { Button } from "@hackcove/ui-react";\n';
+const IMPORT = 'import { Button } from "@slashsuite/ui-react";\n';
 const scan = (tag: string) => stylingProps(`${IMPORT}${tag}`).map((use) => use.prop);
 
 describe("a template literal in an attribute value", () => {
@@ -63,5 +63,14 @@ export const a = (
     const value = "`" + "a ${b} ".repeat(150_000) + "`";
     expect(value.length).toBeGreaterThan(1_000_000);
     expect(scan(`<Button label={${value}} className="q" />`)).toEqual(["className"]);
+  });
+});
+
+describe("the package under either npm scope", () => {
+  it("finds a styling prop on a component imported from @slashsuite/ui-react and from @hackcove/ui-react", () => {
+    for (const scope of ["@slashsuite", "@hackcove"]) {
+      const source = `import { Card } from "${scope}/ui-react";\nexport const a = <Card className="p-2" />;\n`;
+      expect(stylingProps(source).map((use) => use.prop)).toEqual(["className"]);
+    }
   });
 });

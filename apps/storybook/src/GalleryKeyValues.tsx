@@ -1,4 +1,4 @@
-import { Kbd, KeyValue, KeyValueList } from "@hackcove/ui-react";
+import { Kbd, KeyValue, KeyValueList } from "@slashsuite/ui-react";
 
 /** The KeyValueList block of the Gallery: a label/value row with a value and a Kbd key, then the left-aligned variant, a total and a total in the `warn` tone. */
 export function GalleryKeyValues() {

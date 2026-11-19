@@ -2,7 +2,7 @@
 /* ---------------------------------------------------------------------------
    Thrifty Paper: a light theme for the UISlash design system.
    ---------------------------------------------------------------------------
-   The @hackcove/ui-react components are written against Tailwind's slate/colour
+   The @slashsuite/ui-react components are written against Tailwind's slate/colour
    utilities directly (bg-white, text-slate-900, …). This file remaps those
    utilities to Thrifty's light tokens under `.thrifty-paper`. The rules are
    unlayered, so they override Tailwind's (layered) utilities.
@@ -377,7 +377,7 @@
 }
 
 /* Inline links: the deep clay accent ink, a step darker than the primary button's fill. Alias of
-   @hackcove/ui-react's TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for
+   @slashsuite/ui-react's TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for
    consumers that still write class="link" on a bare <a>. */
 .thrifty-paper .link {
   color: #9a3412; /* accent-ink */

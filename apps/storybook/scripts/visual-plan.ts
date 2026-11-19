@@ -16,7 +16,7 @@
  * in the other themes. A theme added costs the Gallery sections, not every story.
  *
  * A change reaches a story file when the file's static imports (followed through the
- * `@hackcove/ui-react` barrel to the module that exports each name) lead to a changed file. It is
+ * `@slashsuite/ui-react` barrel to the module that exports each name) lead to a changed file. It is
  * captured in the reference theme, and when the Gallery sections are among the files reached, they
  * are captured in every other theme too. A change to the reference theme's CSS file reaches every
  * group in that theme; to another theme's CSS file, `themes/<id>.css`, only the Gallery sections in
@@ -29,7 +29,7 @@
  */
 import { globSync, readFileSync } from "node:fs";
 import { join, posix } from "node:path";
-import { themeFiles } from "@hackcove/themes-shared/files";
+import { themeFiles } from "@slashsuite/themes-shared/files";
 import { barrelOf, closureOf, type Reader } from "./import-graph.js";
 import type { Page, Placement, Section } from "./site-types.js";
 import { referenceOf, themesOf } from "./theme-reach.js";

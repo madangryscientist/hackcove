@@ -9,7 +9,7 @@ import {
   SubsectionHeading,
   Text,
   Textarea,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import type { ReactNode } from "react";
 
 /**
