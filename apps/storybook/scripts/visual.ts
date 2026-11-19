@@ -35,8 +35,8 @@
  * `--upload` builds and captures no base at all. It captures the working tree and sends it to the
  * group's PixelSlash project on `PIXELSLASH_SERVER`, in one of two modes (`visual-upload.ts`):
  *
- * - On a branch (rebased on origin/main), it uploads the branch and the server diffs it against the
- *   main build it already holds. It first checks that each project holds one at the merge-base or
+ * - On a branch (on origin/main's tip or behind it), it uploads the branch and the server diffs it
+ *   against the main build at its merge-base or nearest ancestor. It first checks that each project holds one at the merge-base or
  *   an ancestor, and fails naming the project when not.
  * - On a checkout at origin/main's tip, it uploads that commit as branch `main`, which the server
  *   auto-accepts as the baseline. This is the post-merge step that keeps those main builds there.

@@ -144,7 +144,8 @@ the maintainers' PixelSlash server, whose address is the `PIXELSLASH_SERVER` sec
 a pull request against the `main` build it holds, one `hackcove-ui-<section>` project per section, and
 the maintainers review the result there (it posts no GitHub check); a push to `main` becomes the next
 baseline. A fork's pull request gets no secrets, so the job skips with a notice and the maintainers
-check its visuals. A pull request not based on `main`'s tip fails the job with "rebase": rebase it.
+check its visuals. A pull request behind `main`'s tip needs no rebase for this: the server diffs it
+against the `main` build at its merge-base, so it shows only its own changes.
 A local `bunx moon run storybook:visual` is your own check and needs no server. A manual
 `visual-upload` to that server (with `PIXELSLASH_SERVER` and `PIXELSLASH_TOKEN`) is only for re-seeding `main`, and
 never mixes a local capture into a pull request's build.
@@ -209,14 +210,16 @@ writes one report per group to `apps/storybook/.pixelslash/<slug>/report/index.h
 see "Uploads can run side by side" below) builds and
 captures no base at all. It has two modes, picked from the checkout:
 
-- **A branch rebased on origin/main** captures the branch only and uploads it. The server diffs it
-  against the `main` build it already holds, so the run's summary prints the server's counts against main
+- **A branch**, on origin/main's tip or behind it, captures the branch only and uploads it. The
+  server diffs it against the newest `main` build at its merge-base or an ancestor, so the run's summary prints the server's counts against main
   (changed and new, and how many shots are to review, with the build's status) and the
   build's page. Before any capture it checks that each project holds a `main` build at the
   merge-base or an ancestor, and fails naming the project when none does.
 - **A checkout at origin/main's tip** (clean; a detached HEAD in a throwaway worktree counts)
   uploads that commit as branch `main` and compares nothing. The `Visual` run on a push to `main`
-  does this, which keeps those `main` builds on the server. Any other commit on `main` is refused.
+  does this, which keeps those `main` builds on the server. Any other commit on `main` is refused,
+  and so is a commit already on origin/main but behind its tip (a `main` run that a later push
+  overtook): re-seed `main` from its tip instead.
 
 **Uploads can run side by side.** The groups of an upload each write their own
 `.pixelslash/<section>/` and send to their own PixelSlash project, so the run can take several at
