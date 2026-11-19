@@ -8,8 +8,8 @@ import { Switcher, type SwitchItem, type SwitchProps } from "./switcher.js";
 export type Segment = SwitchItem;
 
 // The focus ring sits inside the option, since the group's rounded edge would clip an outer one.
-const BASE =
-  "border-l border-slate-300 transition first:rounded-l-full first:border-l-0 last:rounded-r-full focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-violet-600";
+const RING = "focus-visible:outline-2 focus-visible:outline-violet-600";
+const BASE = `border-l border-slate-300 transition first:rounded-l-full first:border-l-0 last:rounded-r-full ${RING} focus-visible:-outline-offset-2`;
 /**
  * An option's padding, by `size`; its text is a control's (`controlText`). With the group's border,
  * the heights of a `Button`.
@@ -35,21 +35,25 @@ const ROOT: Record<Layout, string> = {
     "flex w-full border border-slate-300 @min-[32rem]:rounded-full @max-[32rem]:flex-wrap @max-[32rem]:overflow-hidden @max-[32rem]:rounded-2xl",
 };
 
-const FOCUS =
-  "border-slate-300 text-center transition focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-violet-600";
 /**
  * An option's own lines. In the box each option draws its top and left line one pixel up and left,
  * over its neighbour's edge, so the lines between options are one pixel and the outer ones fall
- * under the group's border. A row holds at most three (`30%` each), and they grow to fill it.
+ * under the group's border. A row holds at most three (`30%` each), and they grow to fill it. The
+ * box clips that pixel, so its ring sits one pixel further in.
  */
 const OPTION: Record<Layout, string> = {
   inline: BASE,
-  fill: cx(FOCUS, "flex-auto border-l first:rounded-l-full first:border-l-0 last:rounded-r-full"),
-  wrap: cx(FOCUS, "-mt-px -ml-px flex-[1_1_30%] border-t border-l"),
+  fill: cx(BASE, "flex-auto text-center"),
+  wrap: cx(
+    "border-slate-300 text-center transition",
+    RING,
+    "-mt-px -ml-px flex-[1_1_30%] border-t border-l focus-visible:-outline-offset-3",
+  ),
   narrow: cx(
-    FOCUS,
-    "@min-[32rem]:flex-auto @min-[32rem]:border-l @min-[32rem]:first:rounded-l-full @min-[32rem]:first:border-l-0 @min-[32rem]:last:rounded-r-full",
-    "@max-[32rem]:-mt-px @max-[32rem]:-ml-px @max-[32rem]:flex-[1_1_30%] @max-[32rem]:border-t @max-[32rem]:border-l",
+    "border-slate-300 text-center transition",
+    RING,
+    "@min-[32rem]:flex-auto @min-[32rem]:border-l @min-[32rem]:first:rounded-l-full @min-[32rem]:first:border-l-0 @min-[32rem]:last:rounded-r-full @min-[32rem]:focus-visible:-outline-offset-2",
+    "@max-[32rem]:-mt-px @max-[32rem]:-ml-px @max-[32rem]:flex-[1_1_30%] @max-[32rem]:border-t @max-[32rem]:border-l @max-[32rem]:focus-visible:-outline-offset-3",
   ),
 };
 
@@ -111,5 +115,5 @@ export function SegmentedControl({
     />
   );
   // A container query needs an element around the group; every attribute stays on the group itself.
-  return shape === "narrow" ? <div className="@container">{group}</div> : group;
+  return shape === "narrow" ? <div className="@container w-full">{group}</div> : group;
 }
