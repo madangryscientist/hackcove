@@ -144,7 +144,7 @@ describe("the home page", () => {
       overline: "03 / Feature switches",
       name: "ToggleSlash",
       label: "Available now",
-      pitch: "It keeps track of feature switches, so you know what turning one on will do.",
+      pitch: "It keeps track of feature switches.",
       href: "https://slashslash.build/developers",
       action: "Read more on slashslash.build",
     },
@@ -172,7 +172,13 @@ describe("the home page", () => {
       "overline" in want
         ? [want.overline, want.name, want.pitch, want.label]
         : [want.name, want.label, want.pitch];
-    return [...lead, ...features, want.action, sample?.label, ...(sample?.lines ?? [])]
+    return [
+      ...lead,
+      ...features.map((f) => f.text),
+      want.action,
+      sample?.label,
+      ...(sample?.lines ?? []),
+    ]
       .filter(Boolean)
       .join(" ")
       .replace(/\s+/g, " ");
@@ -191,7 +197,7 @@ describe("the home page", () => {
     expect(html.match(/<h1/g)).toHaveLength(1);
     expect(html).toContain(">Products<");
     expect(html).toContain(site.home.title);
-    expect(wordsOf(html)).toContain(site.home.lead);
+    expect(wordsOf(html)).toContain(site.home.lead.text);
     expect(html).not.toContain(site.tagline);
     expect(html).not.toContain(site.legalName);
   });
@@ -234,7 +240,7 @@ describe("the home page", () => {
   test("how they fit asks one question per slash tool, and names the tool that answers it", () => {
     expect(fit).toContain(`>${site.home.fit.title}<`);
     for (const { question, product: name, answer } of site.home.fit.questions)
-      for (const copy of [`>${question}<`, `>${name}<`, answer]) expect(fit).toContain(copy);
+      for (const copy of [`>${question}<`, `>${name}<`, answer.text]) expect(fit).toContain(copy);
   });
 });
 
@@ -266,14 +272,14 @@ describe("the PixelSlash page", () => {
     expect(pixelslash.features.items.length).toBeGreaterThanOrEqual(6);
     expect(pixelslash.features.items.length).toBeLessThanOrEqual(8);
     for (const item of pixelslash.features.items) expect(html).toContain(item.title);
-    for (const command of ["pixelslash upload", "pixelslash check", "pixelslash mcp"])
+    for (const command of ["pixelslash upload", "pixelslash status --wait", "pixelslash mcp"])
       expect(text).toContain(command);
   });
 
   test("privacy, free and source available, and the Hack Cove UI proof", () => {
     expect(text).toContain("--upload");
     expect(text).toContain("Self-host");
-    expect(text).toContain("Paid hosting is planned, not available yet.");
+    expect(text).toContain("Elastic License 2.0");
     expect(html).toContain('href="/ui/"');
   });
 

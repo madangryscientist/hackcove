@@ -23,6 +23,7 @@ import {
   Text,
   TextLink,
 } from "@hackcove/ui-react";
+import type { Claim } from "../content/claims";
 import { site } from "../content/site";
 
 const { pixelslash } = site;
@@ -51,7 +52,7 @@ export function PixelSlashHero() {
   const { hero } = pixelslash;
   return (
     <Hero overline="PixelSlash" title={hero.title}>
-      <Lead>{hero.lead}</Lead>
+      <Lead>{hero.lead.text}</Lead>
       <Cluster wrap>
         {hero.pills.map((pill) => (
           <Pill key={pill.label} tone={pill.tone} round>
@@ -62,7 +63,7 @@ export function PixelSlashHero() {
       <Actions />
       <Stack gap="xs">
         <CopyLine text={hero.install} />
-        <Caption>{hero.installNote}</Caption>
+        <Caption>{hero.installNote.text}</Caption>
       </Stack>
     </Hero>
   );
@@ -74,7 +75,7 @@ function Report() {
     <figure>
       <Stack gap="xs">
         <RegionFrame src={report.src} alt={report.alt} aspect="16:9" />
-        <Caption as="figcaption">{report.caption}</Caption>
+        <Caption as="figcaption">{report.caption.text}</Caption>
       </Stack>
     </figure>
   );
@@ -87,7 +88,7 @@ function HowItWorks() {
       <Steps>
         {how.steps.map((step) => (
           <Step key={step.title} title={step.title}>
-            {step.text}
+            {step.text.text}
           </Step>
         ))}
       </Steps>
@@ -96,7 +97,7 @@ function HowItWorks() {
 }
 
 /** A grid of cards, each a command or flag in code and what it does for you. */
-function CommandGrid({ items }: { items: { title: string; code: string; text: string }[] }) {
+function CommandGrid({ items }: { items: { title: string; code: string; text: Claim }[] }) {
   return (
     <CardGrid columns={3} as="ul">
       {items.map((item) => (
@@ -105,7 +106,7 @@ function CommandGrid({ items }: { items: { title: string; code: string; text: st
             <Text>
               <Code>{item.code}</Code>
             </Text>
-            <Text>{item.text}</Text>
+            <Text>{item.text.text}</Text>
           </Stack>
         </Card>
       ))}
@@ -122,13 +123,13 @@ function PlaywrightCard() {
   return (
     <Card as="article" title={playwright.title}>
       <Stack gap="sm">
-        <Text>{playwright.intro}</Text>
+        <Text>{playwright.intro.text}</Text>
         <CodeBlock lines={[playwright.install]} label="bash" language="bash" />
         <CodeBlock language="ts">{playwright.example}</CodeBlock>
         <Text>
-          <Code>ignore</Code> {playwright.ignore}
+          <Code>ignore</Code> {playwright.ignore.text}
         </Text>
-        <Text>{playwright.upload}</Text>
+        <Text>{playwright.upload.text}</Text>
         <CodeBlock lines={[playwright.command]} label="bash" language="bash" />
         <TextLink href={links.playwright.href}>{links.playwright.label}</TextLink>
       </Stack>
@@ -150,7 +151,7 @@ function ForCi() {
   const { ci } = pixelslash;
   return (
     <Section title={ci.title}>
-      <Text>{ci.intro}</Text>
+      <Text>{ci.intro.text}</Text>
       <CommandGrid items={ci.items} />
     </Section>
   );
@@ -163,7 +164,7 @@ function Points({
   more,
 }: {
   title: string;
-  items: string[];
+  items: Claim[];
   more: { label: string; href: string }[];
 }) {
   return (
@@ -171,7 +172,7 @@ function Points({
       <Stack gap="sm">
         <BulletList>
           {items.map((item) => (
-            <BulletItem key={item}>{item}</BulletItem>
+            <BulletItem key={item.text}>{item.text}</BulletItem>
           ))}
         </BulletList>
         <MetaList separator="none">
@@ -194,7 +195,7 @@ function Proof() {
       title={proof.title}
       actions={<TextLink href={proof.link.href}>{proof.link.label}</TextLink>}
     >
-      {proof.text}
+      {proof.text.text}
     </Callout>
   );
 }
@@ -203,7 +204,7 @@ function Closing() {
   const { closing } = pixelslash;
   return (
     <Section title={closing.title}>
-      <Text>{closing.text}</Text>
+      <Text>{closing.text.text}</Text>
       <CodeBlock lines={closing.code} label="bash" language="bash" />
       <Actions />
     </Section>
