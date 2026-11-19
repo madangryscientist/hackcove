@@ -3,7 +3,7 @@ import { CodeText } from "./CodeText.js";
 import { CopyButton } from "./CopyButton.js";
 import { cx, themedScrollbar } from "./cx.js";
 import { consoleCommands, type CodeLanguage } from "./highlight.js";
-import { useScrollStop } from "./scrollStop.js";
+import { scrollStopProps, useScrollStop } from "./scrollStop.js";
 
 /**
  * The strip's focus ring, drawn inside it: the frame around the code clips anything outside the
@@ -33,11 +33,14 @@ export function CodeBody({
   language,
   wrap,
   copy,
+  labelledBy,
 }: {
   code: string;
   language: CodeLanguage;
   wrap: boolean;
   copy: boolean;
+  /** The id of the element that names the strip when it takes the stop; with none it is named "Code". */
+  labelledBy?: string | undefined;
 }): ReactElement {
   // A strip that scrolls sideways holds no link or button, so when it overflows it takes a tab
   // stop of its own, or the keyboard could never scroll it (axe's scrollable-region-focusable).
@@ -45,11 +48,17 @@ export function CodeBody({
   // hydrated is never measured and still needs the stop. Once measured, a strip that fits drops it.
   const { attach, stop, measured } = useScrollStop("x");
   const tabStop = !wrap && takesStop(measured, stop);
+  // The ring stays INSET_RING: scrollStopProps' own ring is drawn outside the box, which the strip's
+  // overflow-hidden frame would clip.
+  const { props: stopProps } = scrollStopProps(
+    tabStop,
+    labelledBy !== undefined ? { labelledBy } : { label: "Code" },
+  );
   return (
     <div className={cx("flex items-start", copy && "gap-1 pr-1.5")}>
       <div
         ref={wrap ? undefined : attach}
-        tabIndex={tabStop ? 0 : undefined}
+        {...stopProps}
         className={cx(
           "min-w-0 flex-1",
           !wrap && `overflow-x-auto ${themedScrollbar}`,

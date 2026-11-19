@@ -2,7 +2,7 @@
 import { renderToString } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CodeBody } from "./CodeBody.js";
-import { render, user, within } from "./render.harness.js";
+import { render, screen, user, within } from "./render.harness.js";
 
 afterEach(() => {
   Reflect.deleteProperty(HTMLElement.prototype, "scrollWidth");
@@ -44,14 +44,24 @@ async function firstTabStop(): Promise<HTMLElement> {
 }
 
 describe("CodeBody", () => {
-  it("a strip that scrolls sideways takes a tab stop, with no role and no name", async () => {
+  it("a strip that scrolls sideways takes a tab stop, named Code", async () => {
     overflowing(900, 300);
     render(<CodeBody code={LONG} language="console" wrap={false} copy={false} />);
-    const stop = await firstTabStop();
-    expect(within(stop).getByRole("code").textContent).toBe(LONG);
+    const stop = screen.getByRole("group", { name: "Code" });
+    expect(stop).toBe(await firstTabStop());
     expect(stop.getAttribute("tabindex")).toBe("0");
-    expect(stop.hasAttribute("role")).toBe(false);
-    expect(stop.hasAttribute("aria-label")).toBe(false);
+    expect(within(stop).getByRole("code").textContent).toBe(LONG);
+  });
+
+  it("a strip named by `labelledBy` takes its name from that element", async () => {
+    overflowing(900, 300);
+    render(
+      <>
+        <p id="caption">bash</p>
+        <CodeBody code={LONG} language="console" wrap={false} copy={false} labelledBy="caption" />
+      </>,
+    );
+    expect(screen.getByRole("group", { name: "bash" })).toBe(await firstTabStop());
   });
 
   it("a strip that fits takes no tab stop", async () => {
@@ -70,12 +80,15 @@ describe("CodeBody", () => {
     const html = renderToString(
       <CodeBody code={LONG} language="console" wrap={false} copy={false} />,
     );
-    // The strip itself, the box that scrolls sideways, carries the stop.
-    expect(html).toMatch(/<div tabindex="0" class="[^"]*overflow-x-auto[^"]*">/);
+    // The strip itself, the box that scrolls sideways, carries the stop, its role and its name.
+    expect(html).toMatch(
+      /<div tabindex="0" role="group" aria-label="Code" class="[^"]*overflow-x-auto[^"]*">/,
+    );
   });
 
   it("a wrap strip rendered to HTML on the server has no tab stop", () => {
     const html = renderToString(<CodeBody code={LONG} language="console" wrap copy={false} />);
     expect(html).not.toContain("tabindex");
+    expect(html).not.toContain('role="group"');
   });
 });
