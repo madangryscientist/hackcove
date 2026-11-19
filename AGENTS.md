@@ -171,14 +171,15 @@ global rule; what is particular to uislash:
   group whole, each to its own `hackcove-ui-<section>` project, and the server diffs it against the
   `main` build it already holds. The server posts no GitHub check, so the planner reads every
   group's build for the head with the PixelSlash CLI and opens the report for any group that changed. A PR
-  that is not based on origin/main's tip fails the job with "rebase", and a project that holds no
-  `main` build at the merge-base or an ancestor fails it, named. Nobody uploads a PR by hand.
+  behind origin/main's tip needs no rebase for it: the server diffs it against the `main` build at its
+  merge-base (or the nearest ancestor that has one), so it shows only the PR's own changes. A project
+  that holds no `main` build at the merge-base or an ancestor fails the job, named. Nobody uploads a PR by hand.
 - **Screenshots after the merge.** The `Visual` run on the push to `main` uploads the merge
   commit as `main`, which the server takes as the baseline for the next branch. Nobody uploads it
   by hand. A release commit that `publish.yml` pushes needs no upload of its own: the server picks
   its parent's build. That release push starts no `Visual` run, so a release dispatched while the
-  merge's `Visual` run is still going moves `main` past it, and the run fails with "rebase" and
-  uploads nothing. Dispatch a release only once the merge commit's `Visual` run is green. If it went
+  merge's `Visual` run is still going moves `main` past it, and the run fails with "on origin/main,
+  behind its tip" and uploads nothing. Dispatch a release only once the merge commit's `Visual` run is green. If it went
   red that way, re-seed `main` by hand: `visual-upload` (with `PIXELSLASH_TOKEN`) on a checkout at
   origin/main's tip.
 - **The squash subject stays conventional** (`gh pr merge <pr> --squash --subject "…"`),

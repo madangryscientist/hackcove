@@ -48,8 +48,16 @@ describe("decideUpload", () => {
     );
   });
 
-  it("refuses a branch that is not on origin/main's tip", () => {
-    expect(() => decideUpload(state({ mergeBase: other }))).toThrow(/rebase/);
+  it("uploads a clean branch behind origin/main's tip as the branch, with no rebase", () => {
+    const behind = "c".repeat(40);
+    expect(decideUpload(state({ mergeBase: behind }))).toBe("branch");
+  });
+
+  it("refuses a detached commit on origin/main behind its tip, which is no branch", () => {
+    const behind = "c".repeat(40);
+    expect(() => decideUpload(state({ branch: "", head: behind, mergeBase: behind }))).toThrow(
+      /on origin\/main, behind its tip/,
+    );
   });
 });
 

@@ -4,7 +4,9 @@
  *
  * An upload never builds or captures main. On a branch it sends the branch alone and the server
  * diffs it against the main build it already holds (the merge-base and up to 200 first-parent
- * ancestors are sent; the server picks the newest accepted `main` build among them). On a checkout
+ * ancestors are sent; the server picks the newest accepted `main` build among them). A branch
+ * behind origin/main's tip needs no rebase: nothing newer than its merge-base is picked, so its
+ * diff shows only its own changes. On a checkout
  * at origin/main's tip it sends that commit as branch `main`, which is the post-merge step that
  * keeps those main builds there.
  */
@@ -31,7 +33,9 @@ export type UploadMode = "branch" | "main";
  * Which upload this checkout does, or why it cannot. HEAD at origin/main's tip with a clean tree
  * (a detached HEAD counts: the planner runs it in a throwaway worktree) uploads as `main`; any
  * other commit on `main` is refused, since the server would auto-accept it as the baseline. A
- * branch uploads only when committed and on origin/main's tip, so its baseline is in reach.
+ * commit already on origin/main but behind its tip (a detached main checkout that a later push
+ * overtook) is refused too: it is not a branch, and main is re-seeded at the tip instead. Any
+ * other committed branch uploads, behind origin/main's tip or not.
  */
 export function decideUpload(state: UploadState): UploadMode {
   const { branch, head, tip, mergeBase, dirty } = state;
@@ -42,8 +46,11 @@ export function decideUpload(state: UploadState): UploadMode {
       "on main, but not at origin/main's tip: the server would auto-accept this commit as the " +
         "baseline; check out origin/main's tip (git fetch origin) and re-run",
     );
-  if (mergeBase !== tip)
-    throw new Error("not based on origin/main's tip, so its baseline is out of reach; rebase");
+  if (mergeBase === head)
+    throw new Error(
+      "this commit is on origin/main, behind its tip: it is not uploaded as a branch; upload " +
+        `main from a checkout at origin/main's tip (${MAIN_COMMAND})`,
+    );
   return "branch";
 }
 
