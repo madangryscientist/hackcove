@@ -75,14 +75,14 @@ describe("model reply", () => {
   });
 
   it("ends with one summary: the all-clear line, or a count", () => {
-    expect(summaryOf(0, [])).toBe("**UISlash review:** matches Hack Cove.");
+    expect(summaryOf(0, [])).toBe("**UISlash review:** matches UISlash.");
     expect(summaryOf(2, [])).toContain("2 notes");
   });
 
   it("does not say it all matches when files were left out, and lists them", () => {
     const left = leftLines([{ path: "src/a.tsx", reason: "over the size limit" }]);
     const text = summaryOf(0, [], left);
-    expect(text).not.toContain("matches Hack Cove");
+    expect(text).not.toContain("matches UISlash");
     expect(text).toContain("`src/a.tsx` (over the size limit)");
     expect(summaryOf(1, [], left)).toContain("Not reviewed by the model: 1 file");
   });

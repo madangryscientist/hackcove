@@ -85,12 +85,12 @@ export function summaryOf(
   if (total === 0) {
     const head =
       tail.length === 0
-        ? "**UISlash review:** matches Hack Cove."
+        ? "**UISlash review:** matches UISlash."
         : "**UISlash review:** no notes on the files it reviewed.";
     return [head, ...tail].join("\n");
   }
   const lines = [
-    `**UISlash review:** ${total} note${total === 1 ? "" : "s"} on how this change uses Hack Cove. Advisory: it does not block the pull request.`,
+    `**UISlash review:** ${total} note${total === 1 ? "" : "s"} on how this change uses UISlash. Advisory: it does not block the pull request.`,
   ];
   if (loose.length > 0) {
     lines.push(
