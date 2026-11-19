@@ -24,8 +24,29 @@
     padding: 0 !important;
   }
 
-  .cv-job {
+  /* A job may run across pages, so page 1 is not left half empty, but its
+     head stays with its first bullets, no bullet splits, and no heading sits
+     alone at a page foot. */
+  .cv h2,
+  .cv h3,
+  .cv-job > div:first-child,
+  .cv-job > p:not(:last-child),
+  .cv-job > div > p:first-child,
+  .cv-job ul > li:first-child {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .cv li,
+  .cv dl > div {
     break-inside: avoid;
     page-break-inside: avoid;
+  }
+
+  /* A group's links and the Tech line stay with the last bullet. */
+  .cv-job > div > p:last-child:not(:first-child),
+  .cv-job > p:last-child {
+    break-before: avoid;
+    page-break-before: avoid;
   }
 }
