@@ -14,6 +14,18 @@ export const InText: S = {
   ),
 };
 
+/** `underline` marks a link inside running text by more than its colour (WCAG 1.4.1). */
+export const Underlined: S = {
+  render: () => (
+    <Text strong>
+      Questions go to the team at{" "}
+      <TextLink href="#team" underline>
+        example.com
+      </TextLink>
+    </Text>
+  ),
+};
+
 export const External: S = {
   render: () => (
     <TextLink href="https://example.com" external>
