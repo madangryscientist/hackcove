@@ -25,18 +25,16 @@
   }
 
   /* A job may run across pages, so page 1 is not left half empty, but its
-     head stays with its first bullets, no bullet splits, and no heading sits
-     alone at a page foot. */
+     title row and summary, and each group's heading, stay with their first
+     bullet (the cv-keep block), no bullet splits, and no heading sits alone
+     at a page foot. */
   .cv h2,
-  .cv h3,
-  .cv-job > div:first-child,
-  .cv-job > p:not(:last-child),
-  .cv-job > div > p:first-child,
-  .cv-job ul > li:first-child {
+  .cv h3 {
     break-after: avoid;
     page-break-after: avoid;
   }
 
+  .cv-keep,
   .cv li,
   .cv dl > div {
     break-inside: avoid;
@@ -44,8 +42,7 @@
   }
 
   /* A group's links and the Tech line stay with the last bullet. */
-  .cv-job > div > p:last-child:not(:first-child),
-  .cv-job > p:last-child {
+  .cv-job > p {
     break-before: avoid;
     page-break-before: avoid;
   }

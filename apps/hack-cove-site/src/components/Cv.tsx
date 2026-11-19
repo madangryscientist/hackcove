@@ -11,8 +11,8 @@ import {
   Text,
   TextLink,
 } from "@hackcove/ui-react";
-import { Fragment } from "react";
-import { cv, type CvJob } from "../content/cv";
+import { Fragment, type ReactNode } from "react";
+import { cv, type CvHighlightGroup, type CvJob, type CvLink } from "../content/cv";
 import { site } from "../content/site";
 
 function Bullets({ items }: { items: string[] }) {
@@ -25,33 +25,91 @@ function Bullets({ items }: { items: string[] }) {
   );
 }
 
-function Job({ job }: { job: CvJob }) {
+/** The link a group's heading already names, set inline there rather than on a line of its own. */
+function inlineLink(group: CvHighlightGroup): CvLink | undefined {
+  const heading = group.heading;
+  return heading ? group.links?.find((link) => heading.includes(link.label)) : undefined;
+}
+
+function GroupHeading({ heading, link }: { heading: string; link: CvLink | undefined }) {
+  if (!link) return <Text strong>{heading}</Text>;
+  const at = heading.indexOf(link.label);
   return (
-    <article className="cv-job">
+    <Text strong>
+      {heading.slice(0, at)}
+      <TextLink href={link.href}>{link.label}</TextLink>
+      {heading.slice(at + link.label.length)}
+    </Text>
+  );
+}
+
+function GroupLinks({ links }: { links: CvLink[] }) {
+  if (links.length === 0) return null;
+  return (
+    <Text>
+      {links.map((link, index) => (
+        <Fragment key={link.href}>
+          {index > 0 && " · "}
+          <TextLink href={link.href}>{link.label}</TextLink>
+        </Fragment>
+      ))}
+    </Text>
+  );
+}
+
+/**
+ * One group of a job: its heading and first bullet in a `cv-keep` block that print never splits, so
+ * a page break can fall between bullets but never strands a heading. `lead` (the job's title row and
+ * summary, for its first group) joins that block. The rest of the bullets follow in a second list
+ * set the same distance below.
+ */
+function Group({ group, lead }: { group: CvHighlightGroup; lead?: ReactNode }) {
+  const [first, ...more] = group.items;
+  const link = inlineLink(group);
+  return (
+    <>
+      <div className="cv-keep">
+        {lead}
+        <div className="mt-3">
+          {group.heading && <GroupHeading heading={group.heading} link={link} />}
+          {first !== undefined && <Bullets items={[first]} />}
+        </div>
+      </div>
+      {more.length > 0 && (
+        <div className="mt-1">
+          <Bullets items={more} />
+        </div>
+      )}
+      <GroupLinks links={group.links?.filter((other) => other !== link) ?? []} />
+    </>
+  );
+}
+
+function Job({ job }: { job: CvJob }) {
+  const lead = (
+    <>
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <SubsectionHeading>
           {job.title}, {job.company}
         </SubsectionHeading>
-        <Caption tone="accent">{job.dates}</Caption>
+        <Caption tone="accent">
+          {job.location ? `${job.dates} (${job.location})` : job.dates}
+        </Caption>
       </div>
       {job.summary?.split("\n\n").map((para) => (
         <Text key={para}>{para}</Text>
       ))}
-      {job.groups.map((group) => (
-        <div key={group.heading ?? group.items[0]} className="mt-3">
-          {group.heading && <Text strong>{group.heading}</Text>}
-          <Bullets items={group.items} />
-          {group.links && (
-            <Text>
-              {group.links.map((link, index) => (
-                <Fragment key={link.href}>
-                  {index > 0 && " · "}
-                  <TextLink href={link.href}>{link.label}</TextLink>
-                </Fragment>
-              ))}
-            </Text>
-          )}
-        </div>
+    </>
+  );
+  return (
+    <article className="cv-job">
+      {job.groups.length === 0 && lead}
+      {job.groups.map((group, index) => (
+        <Group
+          key={group.heading ?? group.items[0]}
+          group={group}
+          lead={index === 0 ? lead : undefined}
+        />
       ))}
       {job.tech && <Caption>Tech: {job.tech}</Caption>}
     </article>
@@ -89,6 +147,21 @@ function Experience() {
   );
 }
 
+/**
+ * The headline and location, split at each " · ". Each part is an inline block that carries the
+ * separator after it on a no-break space, so a wrap falls between parts ("Cape Town" stays whole) and never puts a
+ * separator at the start of a line.
+ */
+function HeadlineParts() {
+  const parts = [...cv.headline.split(" · "), cv.location];
+  return parts.map((part, index) => (
+    <Fragment key={part}>
+      {index > 0 && " "}
+      <span className="inline-block">{index < parts.length - 1 ? `${part}\u00a0·` : part}</span>
+    </Fragment>
+  ));
+}
+
 export function Cv() {
   return (
     <div className="cv">
@@ -104,11 +177,7 @@ export function Cv() {
           </div>
         }
         title={cv.name}
-        description={
-          <>
-            {cv.headline} · {cv.location}
-          </>
-        }
+        description={<HeadlineParts />}
         actions={<Avatar name={cv.name} src={cv.photo} size="3xl" />}
         tabs={
           <MetaList separator="•">
@@ -138,11 +207,16 @@ export function Cv() {
 
           <section className="mt-12">
             <SectionHeading rule>Skills</SectionHeading>
-            <dl className="grid gap-2">
+            {/* Label above items on a phone; from sm up (and in print) a bold label column sized
+                to the longest label, with each group's items wrapping in the second column. */}
+            <dl className="grid gap-2 sm:grid-cols-[max-content_1fr] sm:gap-x-4">
               {cv.skills.map((group, i) => (
-                <div key={`${group.label}-${i}`} className="flex flex-wrap gap-x-2">
+                <div
+                  key={`${group.label}-${i}`}
+                  className="sm:col-span-2 sm:grid sm:grid-cols-subgrid"
+                >
                   <Text strong as="dt">
-                    {group.label}:
+                    <strong>{group.label}:</strong>
                   </Text>
                   <Text as="dd">{group.items.join(", ")}</Text>
                 </div>
