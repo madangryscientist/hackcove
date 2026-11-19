@@ -128,7 +128,7 @@ describe("the home page", () => {
   const expected = [
     {
       overline: "01 / Component library",
-      name: "Hack Cove UI",
+      name: "UISlash",
       label: "Available now",
       pitch:
         "Our opinionated React component library, fully integrated with its themes. This site is built with it.",
@@ -279,7 +279,7 @@ describe("the PixelSlash page", () => {
       expect(text).toContain(command);
   });
 
-  test("privacy, free and source available, and the Hack Cove UI proof", () => {
+  test("privacy, free and source available, and the UISlash proof", () => {
     expect(text).toContain("--upload");
     expect(text).toContain("Self-host");
     expect(text).toContain("Elastic License 2.0");
@@ -298,8 +298,8 @@ describe("the PixelSlash page", () => {
   test("it calls PixelSlash source available, never open source or MIT, here or on the home card", () => {
     const section = sectionOf("pixelslash");
     // The block as the home page renders it, and the page itself. Markup too, since an alt
-    // or aria-label could carry the claim. Hack Cove UI is MIT, so only PixelSlash's own
-    // block and page are read; a licence claim in the page's Hack Cove UI proof block would
+    // or aria-label could carry the claim. UISlash is MIT, so only PixelSlash's own
+    // block and page are read; a licence claim in the page's UISlash proof block would
     // be a true one and would need this check scoped to the PixelSlash blocks.
     for (const copy of [homeCard, html, section.summary, section.description]) {
       expect(copy).not.toMatch(/open[-\s]?source/i);
@@ -315,7 +315,7 @@ describe("the PixelSlash page", () => {
   });
 });
 
-describe("the Hack Cove UI page", () => {
+describe("the UISlash page", () => {
   const html = renderToStaticMarkup(<UiPage />);
 
   test("it shows the install commands and the GitHub and npm links", () => {

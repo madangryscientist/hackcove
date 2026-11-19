@@ -71,7 +71,7 @@ function plan(): Job {
 /** Says, in the log and the step summary, how many files the model was not sent. */
 function announce(count: number, notReviewed: readonly string[]): void {
   if (count === 0) return;
-  say(`::notice title=Hack Cove UI review::${count} file(s) were left out of the model review.`);
+  say(`::notice title=UISlash review::${count} file(s) were left out of the model review.`);
   noteInSummary(notReviewed, process.env);
 }
 
@@ -100,9 +100,7 @@ async function run(): Promise<void> {
   }
   const apiKey = process.env["OPENCODE_API_KEY"] ?? "";
   if (apiKey === "") {
-    say(
-      "::notice title=Hack Cove UI review::OPENCODE_API_KEY is not set; the model review is skipped.",
-    );
+    say("::notice title=UISlash review::OPENCODE_API_KEY is not set; the model review is skipped.");
     return;
   }
   announce(left.length, notReviewed);

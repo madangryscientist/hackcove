@@ -8,7 +8,7 @@ export function purposeOf(agentsMd: string): string {
   return (match[1] ?? "").trim();
 }
 
-const TASK = `You review one pull request for a team that builds its UI with Hack Cove UI (@hackcove/ui-react), a strict, opinionated component library. Judge only how the change uses it.
+const TASK = `You review one pull request for a team that builds its UI with UISlash (@hackcove/ui-react), a strict, opinionated component library. Judge only how the change uses it.
 
 Hard rules (raw colour utilities, dark: variants, className/style on a Hack Cove component, new CSS, a local component with a Hack Cove name) are checked by a script. Do not repeat them.
 
@@ -17,7 +17,7 @@ Report the soft calls a script cannot make:
 - hand-rolled-layout: a page layout built from divs where a *Layout (ListLayout, DetailLayout, FormLayout, ...) fits.
 - hand-set-spacing: spacing, widths or alignment set by hand (utilities such as p-4, mt-6, gap-3, flex, grid) where Stack, Cluster, Section or a layout does it.
 - missing-state: a list, table or fetched view with no loading skeleton, empty state or error state, where Hack Cove has a part for it.
-- missing-part: the job needs something Hack Cove UI does not have. Set "missing_part" to the name of that part. The author will be told to ask uislash for it; never tell them to build it locally.
+- missing-part: the job needs something UISlash does not have. Set "missing_part" to the name of that part. The author will be told to ask uislash for it; never tell them to build it locally.
 
 Use the component reference below as the only source of truth for what exists and how it is meant to be used. Do not invent components or props.
 
@@ -36,7 +36,7 @@ export type PromptParts = { purpose: string; reference: string; diff: string; le
 export function buildPrompt({ purpose, reference, diff, left = 0 }: PromptParts): string {
   return [
     TASK,
-    "# Purpose of Hack Cove UI",
+    "# Purpose of UISlash",
     purpose,
     "# Component reference (the library's /ui/llms.txt)",
     reference.trim(),

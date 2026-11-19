@@ -30,7 +30,7 @@ const slashSite = "https://slashslash.build/developers";
 export const products: Product[] = [
   {
     slug: "ui",
-    name: "Hack Cove UI",
+    name: "UISlash",
     status: "available",
     kind: "Component library",
     pitch: {
@@ -64,7 +64,7 @@ export const products: Product[] = [
     ],
     image: {
       src: "/home/hack-cove-ui.webp",
-      alt: "The same Hack Cove UI components twice, side by side: in the light Catppuccin Latte theme and the dark Catppuccin Mocha theme.",
+      alt: "The same UISlash components twice, side by side: in the light Catppuccin Latte theme and the dark Catppuccin Mocha theme.",
     },
   },
   {
@@ -99,7 +99,7 @@ export const products: Product[] = [
     ],
     image: {
       src: "/home/pixelslash.webp",
-      alt: "A PixelSlash review server build of Hack Cove UI: 178 changed shots to review, a progress bar with Review next and Accept all, and the first changed shots cropped to what moved, each with its theme, size and the AI judge's verdict.",
+      alt: "A PixelSlash review server build of UISlash: 178 changed shots to review, a progress bar with Review next and Accept all, and the first changed shots cropped to what moved, each with its theme, size and the AI judge's verdict.",
     },
   },
   {

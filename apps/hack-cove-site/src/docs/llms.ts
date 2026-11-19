@@ -128,7 +128,7 @@ function setupOf(): string {
 /** The whole file. */
 export function renderLlms(): string {
   const head = [
-    "# Hack Cove UI",
+    "# UISlash",
     `> ${site.ui.subtitle}`,
     ...site.ui.intro,
     "Every component has one right way to use it. There are no extension recipes and no styling escape hatches: do not restyle a component, compose the parts.",

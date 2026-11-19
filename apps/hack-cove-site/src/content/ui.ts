@@ -1,10 +1,10 @@
-/* The words of the Hack Cove UI page (/ui/), apart from site.ts so each file stays short. */
+/* The words of the UISlash page (/ui/), apart from site.ts so each file stays short. */
 
 export const ui = {
   /** Under the page title. */
   subtitle: "An opinionated UI library that is fully integrated with its theming.",
   intro: [
-    "Hack Cove UI is strict on purpose. It fixes the look and feel, so a site built with it, by people or by agents, looks good every time. It is not an extensible framework with every option.",
+    "UISlash is strict on purpose. It fixes the look and feel, so a site built with it, by people or by agents, looks good every time. It is not an extensible framework with every option.",
     "The components and the themes are designed together. Every theme remaps every palette utility the components use, and the library's tests enforce it for each theme. Switching theme reskins a whole site with no component change, and there is nothing to configure.",
     "The aim is a site built only from Hack Cove components, configured through props, with no custom CSS or Tailwind.",
   ],
@@ -46,7 +46,7 @@ export const ui = {
   links: {
     title: "Find it",
     items: [
-      { label: "GitHub", href: "https://github.com/madangryscientist/hackcove" },
+      { label: "GitHub", href: "https://github.com/slashsuite/uislash" },
       { label: "npm", href: "https://www.npmjs.com/package/@hackcove/ui-react" },
     ],
   },

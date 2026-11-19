@@ -212,13 +212,13 @@ export const pixelslash = {
     ] satisfies Claim[],
   },
   proof: {
-    title: "In use on every Hack Cove UI change",
+    title: "In use on every UISlash change",
     text: {
-      text: "Hack Cove UI's visual check captures every Storybook story in one theme and every component in each of the others, and uploads it to a PixelSlash project per docs section, where each change is reviewed before it merges.",
+      text: "UISlash's visual check captures every Storybook story in one theme and every component in each of the others, and uploads it to a PixelSlash project per docs section, where each change is reviewed before it merges.",
       facts: ["pixelslash/upload-to-review-app"],
       repo: [".github/workflows/visual.yml", "apps/storybook/scripts/visual-plan.ts"],
     } satisfies Claim,
-    link: { label: "See Hack Cove UI", href: "/ui/" },
+    link: { label: "See UISlash", href: "/ui/" },
   },
   closing: {
     title: "Try it on your own page",

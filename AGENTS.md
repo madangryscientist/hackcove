@@ -1,4 +1,4 @@
-# hackcove: repo conventions
+# uislash: repo conventions
 
 The UISlash design system: React components (`@hackcove/ui-react`) and the themes
 (`@hackcove/themes`, one CSS file per theme), each its own npm package, in a moon + Bun-workspaces monorepo. moon runs every task; Nx is
@@ -164,8 +164,8 @@ that touches only `packages/ui-react` bumps `@hackcove/ui-react`, and nothing el
 
 ## Landing: through a pull request
 
-hackcove lands through pull requests (Jacobus, 2026-10-27). Who opens and who merges is the
-global rule; what is particular to hackcove:
+uislash lands through pull requests (Jacobus, 2026-10-27). Who opens and who merges is the
+global rule; what is particular to uislash:
 
 - **Screenshots before the merge.** The `Visual` workflow uploads the PR's head commit, every
   group whole, each to its own `hackcove-ui-<section>` project, and the server diffs it against the
@@ -220,7 +220,7 @@ global rule; what is particular to hackcove:
 6. **Releases go only through the Action, and stay pre-release.** `.github/workflows/publish.yml`
    (which runs `nx release`) is the only way a package reaches npm: nothing is published from a
    laptop, a first publish included. Never run `nx release publish`, a bare `npm publish` or
-   `npm login`. Jacobus or the hackcove planner dispatches it whenever a release is needed, with no
+   `npm login`. Jacobus or the uislash planner dispatches it whenever a release is needed, with no
    sign-off; the `npm-publish` environment has no approval step and accepts runs from `main` only.
    Every release is a pre-release: versions stay `0.x`, and moving a package to `1.0.0` is
    Jacobus's decision. A new package's first version is staged by the workflow's `NPM_TOKEN` step

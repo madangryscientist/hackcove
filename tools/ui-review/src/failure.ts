@@ -1,6 +1,6 @@
 import { appendFileSync } from "node:fs";
 
-const TITLE = "Hack Cove UI review";
+const TITLE = "UISlash review";
 
 /** Appends a section to `$GITHUB_STEP_SUMMARY` (when set): what a green review did not cover. */
 export function noteInSummary(
