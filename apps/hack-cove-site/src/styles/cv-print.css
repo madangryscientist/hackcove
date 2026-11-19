@@ -6,7 +6,13 @@
 
   @page {
     size: A4;
-    margin: 14mm;
+    margin: 10mm;
+  }
+
+  /* Every size and gap is in rem, so the root sets the printed scale: at 13.75px the body text
+     prints at 10.3pt and a caption (0.875rem, the dates and Tech lines) at 9pt, the floor. */
+  html {
+    font-size: 13.75px;
   }
 
   html,
@@ -24,10 +30,48 @@
     padding: 0 !important;
   }
 
-  /* A job may run across pages, so page 1 is not left half empty, but its
-     title row and summary, and each group's heading, stay with their first
-     bullet (the cv-keep block), no bullet splits, and no heading sits alone
-     at a page foot. */
+  /* On paper the jobs and lines sit closer than on screen, so Zappi, FMI and Wonga share page 2.
+     Page 1 holds only the header, the summary and the Hack Cove job, so the summary keeps its
+     screen line height and the sections and that job's groups get more air, and page 1 does not
+     end a quarter empty. */
+  .cv section {
+    margin-top: 4rem;
+  }
+
+  .cv-job:has(> .cv-keep ~ .cv-keep) > .cv-keep ~ .cv-keep {
+    margin-top: 1.5rem;
+  }
+
+  .cv-jobs {
+    gap: 1.25rem;
+  }
+
+  .cv-jobs :is(p, li),
+  .cv dd {
+    line-height: 1.3;
+  }
+
+  /* Every job stays whole on one page. A job with more than one group (Hack Cove) is the exception:
+     when it is longer than what page 1 has left under the header, it may break between its groups,
+     and only there, so page 1 is not left half empty. A group (its heading and every bullet) and
+     the Tech line with the last bullet never split, and no heading sits alone at a page foot. */
+  .cv-job {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .cv-job:has(> .cv-keep ~ .cv-keep) {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+
+  .cv-job > :not(.cv-keep) {
+    break-before: avoid;
+    page-break-before: avoid;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
   .cv h2,
   .cv h3 {
     break-after: avoid;
@@ -39,12 +83,5 @@
   .cv dl > div {
     break-inside: avoid;
     page-break-inside: avoid;
-  }
-
-  /* A group's links and the Tech line stay with the last bullet. */
-  .cv-job > p,
-  .cv-job > .cv-tech {
-    break-before: avoid;
-    page-break-before: avoid;
   }
 }
