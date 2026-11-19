@@ -26,8 +26,9 @@ const state = (over: Partial<UploadState> = {}): UploadState => ({
 });
 
 describe("decideUpload", () => {
-  it("uploads a clean branch on origin/main's tip as the branch", () => {
+  it("uploads a clean branch as the branch, on origin/main's tip or behind it (no rebase)", () => {
     expect(decideUpload(state())).toBe("branch");
+    expect(decideUpload(state({ mergeBase: "c".repeat(40) }))).toBe("branch");
   });
 
   it("uploads a clean HEAD at origin/main's tip as main, on main or detached", () => {
@@ -48,16 +49,9 @@ describe("decideUpload", () => {
     );
   });
 
-  it("uploads a clean branch behind origin/main's tip as the branch, with no rebase", () => {
-    const behind = "c".repeat(40);
-    expect(decideUpload(state({ mergeBase: behind }))).toBe("branch");
-  });
-
   it("refuses a detached commit on origin/main behind its tip, which is no branch", () => {
-    const behind = "c".repeat(40);
-    expect(() => decideUpload(state({ branch: "", head: behind, mergeBase: behind }))).toThrow(
-      /on origin\/main, behind its tip/,
-    );
+    const stale = state({ branch: "", mergeBase: other });
+    expect(() => decideUpload(stale)).toThrow(/on origin\/main, behind its tip/);
   });
 });
 
