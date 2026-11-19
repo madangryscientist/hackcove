@@ -18,8 +18,8 @@ export type MetaListSeparator = "·" | "•" | "none";
 /**
  * A wrapping row of facts or links in muted small text, joined by a `·`: branch · SHA · date, or a
  * footer's Privacy · Terms · Email. An item is text, a `Code` or a `TextLink`. The separator is
- * `aria-hidden` and leads each item but the first, held to its item so a wrap never leaves one at a
- * line's end; `separator` swaps it for a `•` or none. An item never breaks inside itself: the
+ * `aria-hidden` and trails each item but the last, held to its item like a comma, so a wrap leaves
+ * it at the end of a line and never at the start; `separator` swaps it for a `•` or none. An item never breaks inside itself: the
  * row wraps between items. `mono` sets the whole row in the monospace face, for ids and paths.
  * While `loading` with no items it draws three word-sized bones.
  */
@@ -59,12 +59,12 @@ export function MetaList({
     >
       {items.map((child, index) => (
         <li key={index} className="inline-flex items-center gap-x-3 whitespace-nowrap">
-          {index > 0 && separator !== "none" && (
+          <LoadingScope loading={loading}>{child}</LoadingScope>
+          {index < items.length - 1 && separator !== "none" && (
             <Caption as="span" aria-hidden="true">
               {separator}
             </Caption>
           )}
-          <LoadingScope loading={loading}>{child}</LoadingScope>
         </li>
       ))}
       {owner && loading && (

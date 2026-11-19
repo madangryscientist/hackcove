@@ -17,7 +17,7 @@ describe("MetaList", () => {
     expect(within(screen.getByRole("list")).getAllByRole("listitem")).toHaveLength(3);
   });
 
-  it("leads every item but the first with a dot hidden from assistive tech", () => {
+  it("trails every item but the last with a dot hidden from assistive tech", () => {
     render(
       <MetaList>
         <span>a</span>
@@ -30,7 +30,7 @@ describe("MetaList", () => {
         .queryAllByText("·")
         .map((dot) => dot.getAttribute("aria-hidden")),
     );
-    expect(dots).toEqual([[], ["true"], ["true"]]);
+    expect(dots).toEqual([["true"], ["true"], []]);
   });
 
   it("takes text, Code and TextLink items", () => {
@@ -69,6 +69,13 @@ const links = [
 ];
 
 describe("MetaList separator", () => {
+  it("sits in the same item as the link before it, so no item starts with one", () => {
+    render(<MetaList separator="•">{links}</MetaList>);
+    const items = screen.getAllByRole("listitem");
+    expect(items.map((item) => item.textContent)).toEqual(["Privacy•", "Terms•", "Email"]);
+    expect(items.filter((item) => item.textContent?.startsWith("•"))).toHaveLength(0);
+  });
+
   it("takes a bullet in place of the dot", () => {
     render(<MetaList separator="•">{links}</MetaList>);
     expect(screen.getAllByText("•")).toHaveLength(2);

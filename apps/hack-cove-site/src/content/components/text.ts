@@ -282,12 +282,12 @@ export const text: ComponentSection = {
           "A labelled fact is a `KeyValueList`.",
         ],
         dont: [
-          "Never type the separators yourself: they wrap onto the end of a line and a screen reader reads them.",
+          "Never type the separators yourself: a wrap can leave one at the start of a line, and a screen reader reads them.",
         ],
       },
       accessibility: [
         "A `MetaList` renders a `<ul>` with an `<li>` per item.",
-        "The separators are `aria-hidden` and lead every item but the first, held to their item so a wrap never leaves one at the end of a line.",
+        "The separators are `aria-hidden` and trail every item but the last, held to their item like a comma, so a wrap never leaves one at the start of a line.",
         "Each link keeps its own focus ring; the row adds no extra tab stop.",
         "`aria-*` and `data-*` go on the list.",
       ],

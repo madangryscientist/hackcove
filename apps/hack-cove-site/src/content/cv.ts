@@ -81,7 +81,7 @@ export const cv = {
             "PixelSlash, visual review: a Rust/WebAssembly engine pixel-diffs two versions of a page, and a vision model reviews only the regions that changed. Coding agents drive it through its MCP server. Published on npm.",
             "FlakeSlash finds flaky tests in GitHub Actions history with plain rules, then makes one model call per flaky test to explain it.",
             "ToggleSlash, feature flags: an ASP.NET Core server on .NET 10 with an admin API and audit trail, and C# and TypeScript SDKs that pass one shared set of evaluation tests.",
-            "I build the suite with a multi-agent setup I designed: a planner agent hands each ticket to builder agents in isolated git worktrees, nothing merges until the test gate passes, and TaskSlash (Rust) queues their builds and tests so they do not overload the machine.",
+            "I build the suite with OmniSlash, a multi-agent system I designed for tasking and scheduling: a muse agent turns my ideas into designs, an architect agent plans them into tickets and schedules the builder agents, a sentinel agent gates and merges every pull request, and TaskSlash (Rust) queues their builds and tests so they do not overload the machine.",
           ],
           links: [{ label: "slashslash.build", href: "https://slashslash.build" }],
         },
@@ -93,8 +93,7 @@ export const cv = {
       title: "Senior Engineer",
       dates: "Apr 2021 to Apr 2026",
       location: "Remote",
-      summary:
-        "Multi-tenant SaaS. Developer platform, Node services, front-end guild lead (final year)",
+      summary: "Developer platform, Node services, front-end guild lead (final year)",
       groups: [
         {
           items: [
