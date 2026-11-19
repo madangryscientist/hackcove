@@ -241,7 +241,7 @@ export const Fill: S = {
   render: () => {
     const [value, setValue] = useState("active");
     return (
-      <div className="w-96">
+      <div className="w-96 max-w-[calc(100vw-2rem)]">
         <SegmentedControl
           fill
           label="Status"
@@ -271,7 +271,7 @@ export const Wrap: S = {
   render: () => {
     const [value, setValue] = useState("good");
     return (
-      <div className="w-80">
+      <div className="w-80 max-w-[calc(100vw-2rem)]">
         <SegmentedControl
           wrap
           label="Condition"
@@ -290,7 +290,7 @@ export const WrapNarrow: S = {
     const [value, setValue] = useState("good");
     return (
       <div className="flex flex-col items-start gap-6">
-        <div className="w-80">
+        <div className="w-80 max-w-[calc(100vw-2rem)]">
           <SegmentedControl
             wrap="narrow"
             label="Condition, narrow"
@@ -299,7 +299,7 @@ export const WrapNarrow: S = {
             onChange={setValue}
           />
         </div>
-        <div className="w-[40rem]">
+        <div className="w-[40rem] max-w-[calc(100vw-2rem)]">
           <SegmentedControl
             wrap="narrow"
             label="Condition, wide"
