@@ -202,8 +202,8 @@ export const home = {
         question: "What switches on, and for whom?",
         product: "ToggleSlash",
         answer: {
-          text: "Every switch, who turned it on and when, and how often each variation is served.",
-          facts: ["toggleslash/audit-trail", "toggleslash/usage-counts"],
+          text: "Every switch and how often each variation is served.",
+          facts: ["toggleslash/dashboard", "toggleslash/usage-counts"],
         },
       },
       {

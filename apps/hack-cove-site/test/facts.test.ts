@@ -24,19 +24,20 @@ const SITE = resolve(import.meta.dirname, "..");
 const REPO = resolve(SITE, "../..");
 const DIST = resolve(SITE, "dist");
 
-/** The content that holds product claims, by the name a failure prints. */
-const CONTENT: Record<string, unknown> = {
-  "home.lead": site.home.lead,
-  "home.fit.questions": site.home.fit.questions,
-  products: site.products,
-  pixelslash: site.pixelslash,
-};
-
-/** Words that make a sentence read as not built yet. */
-const READS_PLANNED = /\b(planned|will|would|next|not built|not yet|coming)\b/i;
-
-/** Where a claim sits: a product card's status says whether it works today or is coming soon. */
+/** Where a claim sits: under a label that says it works today, says it is coming soon, or neither. */
 type Label = "today" | "coming-soon" | "none";
+
+/**
+ * The content that holds product claims, by the name a failure prints, with the label it sits under.
+ * A product card's own status overrides it: "coming-soon" for a card that says so, else "today". The
+ * home lead names products of both kinds in one sentence, so it carries neither label.
+ */
+const CONTENT: Record<string, { value: unknown; label: Label }> = {
+  "home.lead": { value: site.home.lead, label: "none" },
+  "home.fit.questions": { value: site.home.fit.questions, label: "today" },
+  products: { value: site.products, label: "today" },
+  pixelslash: { value: site.pixelslash, label: "today" },
+};
 
 type Found = { where: string; claim: Claim; label: Label };
 
@@ -64,9 +65,9 @@ function claimsIn(value: unknown, where: string, outer: Label, out: Found[]): Fo
   return out;
 }
 
-const CLAIMS = Object.entries(CONTENT).map(([name, value]) => ({
+const CLAIMS = Object.entries(CONTENT).map(([name, { value, label }]) => ({
   name,
-  claims: claimsIn(value, name, "none", []),
+  claims: claimsIn(value, name, label, []),
 }));
 const ALL = CLAIMS.flatMap((entry) => entry.claims);
 
@@ -94,10 +95,16 @@ function notBuiltUnderToday({ claim, label }: Found): boolean {
   return label === "today" && plannedOf(claim).length + unbuiltOf(claim).length > 0;
 }
 
-/** A Planned fact in a sentence that neither sits on a coming-soon card nor reads as planned. */
-function plannedReadsBuilt({ claim, label }: Found): boolean {
-  if (plannedOf(claim).length === 0 || label === "coming-soon") return false;
-  return !READS_PLANNED.test(claim.text);
+/** A claim that cites nothing at all. */
+function citesNothing({ claim }: Found): boolean {
+  return factsOf(claim).length + unbuiltOf(claim).length === 0;
+}
+
+/** A cited id that is in no facts file. */
+function unknownIds({ where, claim }: Found): string[] {
+  return factsOf(claim)
+    .filter((id) => factKind(id) === undefined)
+    .map((id) => `${where} cites ${id}`);
 }
 
 describe("the facts files", () => {
@@ -134,16 +141,12 @@ describe("every product claim", () => {
   });
 
   test("cites at least one fact, or names a product with no facts file", () => {
-    const bare = ALL.filter(({ claim }) => factsOf(claim).length + unbuiltOf(claim).length === 0);
+    const bare = ALL.filter(citesNothing);
     expect(bare.map(show)).toEqual([]);
   });
 
   test("cites only ids that are in its product's facts file at the pinned commit", () => {
-    const unknown = ALL.flatMap(({ where, claim }) =>
-      factsOf(claim)
-        .filter((id) => factKind(id) === undefined)
-        .map((id) => `${where} cites ${id}`),
-    );
+    const unknown = ALL.flatMap(unknownIds);
     expect(unknown).toEqual([]);
   });
 
@@ -161,27 +164,26 @@ describe("every product claim", () => {
     expect(wrong.map(show)).toEqual([]);
   });
 
-  test("reads as not built yet when it cites a Planned fact", () => {
-    const wrong = ALL.filter(plannedReadsBuilt);
-    expect(wrong.map(show)).toEqual([]);
-  });
-
-  test("the checks catch a bare claim, an unknown id and a Planned fact under a today label", () => {
+  test("the checks catch a claim citing nothing, an unknown id and a Planned fact under a today label", () => {
     const fake = claimsIn(
       {
-        status: "available",
-        pitch: { text: "Blocks the merge.", facts: ["flakeslash/pr-check"] },
-        features: [{ text: "Does a thing.", facts: ["flakeslash/no-such-fact"] }],
+        today: {
+          status: "available",
+          pitch: { text: "Blocks the merge.", facts: ["flakeslash/pr-check"] },
+        },
+        unknown: { text: "Does a thing.", facts: ["flakeslash/no-such-fact"] },
+        bare: { text: "Says nothing.", unbuilt: [] },
+        coming: { status: "coming-soon", pitch: { text: "A shop.", unbuilt: ["ThriftLoop"] } },
+        lead: { text: "ThriftLoop, a shop.", unbuilt: ["ThriftLoop"] },
       },
       "fake",
       "none",
       [],
     );
-    expect(fake.map(({ label }) => label)).toEqual(["today", "today"]);
-    expect(fake.flatMap(({ claim }) => plannedOf(claim))).toEqual(["flakeslash/pr-check"]);
-    expect(fake.flatMap(({ claim }) => factsOf(claim).map(factKind))).toEqual([
-      "planned",
-      undefined,
+    expect(fake.filter(citesNothing).map(show)).toEqual(['fake.bare: "Says nothing."']);
+    expect(fake.flatMap(unknownIds)).toEqual(["fake.unknown cites flakeslash/no-such-fact"]);
+    expect(fake.filter(notBuiltUnderToday).map(show)).toEqual([
+      'fake.today.pitch: "Blocks the merge."',
     ]);
   });
 });

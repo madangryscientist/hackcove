@@ -193,8 +193,8 @@ export const pixelslash = {
         facts: ["pixelslash/local-unless-upload"],
       },
       {
-        text: "An AI judge is opt-in, and it sees only the crops of a changed region, never the whole page.",
-        facts: ["pixelslash/server-ai-explanations"],
+        text: "An AI judge is opt-in.",
+        facts: ["pixelslash/design-system-judge", "pixelslash/server-ai-explanations"],
       },
     ] satisfies Claim[],
   },
