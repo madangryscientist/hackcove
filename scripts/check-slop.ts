@@ -14,7 +14,7 @@ const palette = roles && new Set(Object.values(roles).flat());
 // Every source the project owns: its folders, and its root's CSS, docs, config and scripts. The
 // changelog is written by `nx release`, and generated files are not edited by hand.
 const sources = [
-  ...globSync("{src,test,e2e,smoke,scripts}/**/*.{ts,tsx,astro,css,md,mdx,mjs}"),
+  ...globSync("{src,test,e2e,smoke,scripts,docs}/**/*.{ts,tsx,astro,css,md,mdx,mjs}"),
   ...globSync("*.{css,md,mjs,sh}"),
 ];
 const generated = (path: string): boolean =>

@@ -21,15 +21,16 @@ tasks:
   dev:
     command: "bun run dev"
     preset: "server"
-  # The component reference (src/generated/props.json) from ui-react's source. Never cached; it
-  # rewrites the same bytes when nothing changed, so the tasks after it still hit the cache.
+  # The component reference (packages/ui-react/docs/props.json and types.json, committed) from
+  # ui-react's source. Never cached; it rewrites the same bytes when nothing changed, so the tasks
+  # after it still hit the cache, and CI fails when the committed copy differs from what it writes.
   props:
     command: "bun run props"
     inputs:
       - "scripts/**/*"
       - "/packages/ui-react/src/**/*"
       - "/packages/ui-react/tsconfig*.json"
-    outputs: ["src/generated/props.json", "src/generated/types.json"]
+    outputs: ["/packages/ui-react/docs/props.json", "/packages/ui-react/docs/types.json"]
     options:
       cache: false
   # BUILD_COMMIT is an input, so a build for another commit is never a cache hit that ships the

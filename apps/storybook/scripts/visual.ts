@@ -111,7 +111,7 @@ function checked(result: Grouping): Grouping {
   if (result.unsectioned.length > 0)
     throw new VisualError(
       `no page of the site's component docs names ${result.unsectioned.map((f) => f.path).join(", ")}; ` +
-        "add it to a page's `pairs` or `stories` in apps/hack-cove-site/src/content/components",
+        "add it to a page's `pairs` or `stories` in packages/ui-react/docs/components",
     );
   if (result.unknown.length > 0)
     throw new VisualError(

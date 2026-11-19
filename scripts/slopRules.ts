@@ -56,10 +56,11 @@ const CONTENT_EDGE = /max-w-6xl|px-4 sm:px-6/;
 // that calls it violet is wrong in all but one. A value in backticks (`violet`) is code and passes.
 const VIOLET = /(?<![\w-])violet(?![\w-])/i;
 const VIOLET_RULE = '"violet" in prose; the palette calls it accent';
-/** The site's component docs and any package README: prose a reader takes the palette's names from. */
+/** The component docs, the site's words and any package README: prose a reader takes the palette's names from. */
 const isDocsProse = (path: string, pkg: string): boolean =>
   path === "README.md" ||
   path.endsWith("/README.md") ||
+  (pkg === "@hackcove/ui-react" && path.startsWith("docs/")) ||
   (pkg === "hack-cove-site" && path.startsWith("src/content/"));
 const outsideBackticks = (line: string): string => line.replace(/`[^`]*`/g, "``");
 

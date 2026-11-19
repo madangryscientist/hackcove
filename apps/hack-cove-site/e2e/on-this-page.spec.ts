@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { componentPages } from "../src/content/components/index";
+import { componentPages } from "../../../packages/ui-react/docs/components/index";
 
 // The two ways around a component page: its own "On this page" list, and the previous and next links
 // at its foot. Both are in the HTML the server builds, so the list is checked with scripts off.

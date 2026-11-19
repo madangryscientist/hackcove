@@ -338,7 +338,7 @@ function isSection(value: unknown): value is Section {
  * (which would make the site's build a dependency of Storybook's).
  */
 export async function readRepo(root: string): Promise<Repo> {
-  const sectionsPath = join(root, "apps/hack-cove-site/src/content/components/index.ts");
+  const sectionsPath = join(root, "packages/ui-react/docs/components/index.ts");
   const module: unknown = await import(sectionsPath);
   const sections =
     typeof module === "object" && module !== null && "componentSections" in module

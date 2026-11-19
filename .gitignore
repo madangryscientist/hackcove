@@ -8,7 +8,6 @@ test-results
 playwright-report
 .pixelslash
 .opencode
-apps/hack-cove-site/src/generated
 # Local Nx overrides (may hold secrets); the tracked root .env holds none.
 .env.local
 .local.env

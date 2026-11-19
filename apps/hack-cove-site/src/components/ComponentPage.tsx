@@ -19,8 +19,8 @@ import {
   TextLink,
 } from "@hackcove/ui-react";
 import { useId } from "react";
-import type { ComponentPage as Page } from "../content/components/index";
-import { componentPageOf, neighboursOf } from "../content/components/index";
+import type { ComponentPage as Page } from "../../../../packages/ui-react/docs/components/index";
+import { componentPageOf, neighboursOf } from "../../../../packages/ui-react/docs/components/index";
 import { DoDont } from "../docs/DoDont";
 import { Example } from "../docs/Example";
 import { docOf, Props, Types } from "../docs/Props";
@@ -97,7 +97,7 @@ function UseInstead({ siblings }: { siblings: { slug: string; when: string }[] }
 }
 
 /**
- * A component's page, from its entry in `content/components.ts`: the one right way and its Do/Don'ts
+ * A component's page, from its entry in `packages/ui-react/docs/components/`: the one right way and its Do/Don'ts
  * first, then a layout's full page, Usage, Accessibility and the API. Its title, contents and
  * neighbours go up to the `DocsFrame` (`contentsOf`, `neighbourLinksOf`). `/ui/llms.txt` is made from the same entry.
  */

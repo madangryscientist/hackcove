@@ -14,7 +14,7 @@ fileGroups:
     - "/packages/themes-shared/**/*"
   # The site's docs sections name every story file and decide the sidebar and the visual groups.
   sections:
-    - "/apps/hack-cove-site/src/content/components/**/*"
+    - "/packages/ui-react/docs/components/**/*"
 
 tasks:
   storybook:

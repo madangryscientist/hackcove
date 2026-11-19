@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { componentPages } from "../src/content/components/index";
+import { componentPages } from "../../../packages/ui-react/docs/components/index";
 import { must } from "../test/must";
 import { hydrated, pages, schemeScope, scopeClasses, setScheme, toggle } from "./scheme";
 

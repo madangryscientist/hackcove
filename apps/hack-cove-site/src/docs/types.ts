@@ -19,11 +19,11 @@ export type ComponentDoc = {
   props: PropDoc[];
 };
 
-/** `src/generated/props.json`: every value `@hackcove/ui-react` exports, by name. */
+/** `packages/ui-react/docs/props.json`: every value `@hackcove/ui-react` exports, by name. */
 export type PropsJson = Record<string, ComponentDoc>;
 
 /** One type export (`Tone`, `Crumb`): its JSDoc and its definition, one level down. */
 export type TypeDoc = { name: string; description: string; definition: string };
 
-/** `src/generated/types.json`: every type `@hackcove/ui-react` exports, by name. */
+/** `packages/ui-react/docs/types.json`: every type `@hackcove/ui-react` exports, by name. */
 export type TypesJson = Record<string, TypeDoc>;

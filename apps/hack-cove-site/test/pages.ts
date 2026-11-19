@@ -1,5 +1,5 @@
 import { readdirSync } from "node:fs";
-import { componentPages } from "../src/content/components/index";
+import { componentPages } from "../../../packages/ui-react/docs/components/index";
 
 /**
  * Every page the site builds, as its URL path: the one list every test that means "every page" reads.

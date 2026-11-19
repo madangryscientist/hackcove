@@ -1,0 +1,337 @@
+{
+  "AppShellDensity": {
+    "name": "AppShellDensity",
+    "description": "The type step an app sets once on its `AppShell`: `compact` is one step down for the whole app.",
+    "definition": "\"compact\""
+  },
+  "AvatarShape": {
+    "name": "AvatarShape",
+    "description": "`round` for a person, `square` (rounded corners that grow with the size) for an org or a team.",
+    "definition": "\"round\" | \"square\""
+  },
+  "AvatarSize": {
+    "name": "AvatarSize",
+    "description": "An Avatar's size: `xs` 16px, `sm` 24px, `md` 32px, `lg` 40px, `xl` 56px, `2xl` 64px, `3xl` 96px.",
+    "definition": "\"sm\" | \"md\" | \"lg\" | \"xs\" | \"xl\" | \"2xl\" | \"3xl\""
+  },
+  "AvatarStackPerson": {
+    "name": "AvatarStackPerson",
+    "description": "One member of an `AvatarStack`: the same `name` and optional local `src` an `Avatar` takes.",
+    "definition": "{ name: string; src?: string }"
+  },
+  "BarSize": {
+    "name": "BarSize",
+    "description": "6px, 8px or 12px tall.",
+    "definition": "\"sm\" | \"md\" | \"lg\""
+  },
+  "BarTone": {
+    "name": "BarTone",
+    "description": "The colour of a bar's fill.",
+    "definition": "\"positive\" | \"warn\" | \"danger\" | \"accent\""
+  },
+  "BottomSheetSnap": {
+    "name": "BottomSheetSnap",
+    "description": "A snap height: a number from 0 to 1 is a share of the parent's height, a `\"120px\"` string is pixels.",
+    "definition": "number | `${number}px`"
+  },
+  "Breakpoint": {
+    "name": "Breakpoint",
+    "description": "A width step: `sm` 640px, `md` 768px, `lg` 1024px.",
+    "definition": "\"sm\" | \"md\" | \"lg\""
+  },
+  "ButtonSize": {
+    "name": "ButtonSize",
+    "description": "A Button's height and text, on the library's one `Size` scale.",
+    "definition": "\"sm\" | \"md\" | \"lg\""
+  },
+  "ButtonTone": {
+    "name": "ButtonTone",
+    "description": "A Button's tones: `neutral` (the accent fill, the default), `positive` and `danger`.",
+    "definition": "\"neutral\" | \"positive\" | \"danger\""
+  },
+  "ButtonVariant": {
+    "name": "ButtonVariant",
+    "description": "A Button's look: `primary` the one main action, `outline` and `ghost` the others, `link` text in running text, `dashed` the add-another row.",
+    "definition": "\"primary\" | \"outline\" | \"ghost\" | \"link\" | \"dashed\""
+  },
+  "CellTone": {
+    "name": "CellTone",
+    "description": "The text of a cell: its weight and colour. `neutral` (the default), `strong` and `muted` are the\nplain ones; the rest are the shared tones, for an amount that carries a meaning (a gain, an\noverspend). Colour alone does not say it, so a signed figure or a word says it too.",
+    "definition": "Tone | \"muted\" | \"strong\""
+  },
+  "ClusterAlign": {
+    "name": "ClusterAlign",
+    "description": "Where a `Cluster`'s items sit across the row: `center`, `baseline` for mixed text sizes, `start` or `end`.",
+    "definition": "\"center\" | \"baseline\" | \"start\" | \"end\""
+  },
+  "ClusterGap": {
+    "name": "ClusterGap",
+    "description": "The first three steps of `Stack`'s scale: `xs` between items in a line, `sm` inside a group, `md` between blocks.",
+    "definition": "\"sm\" | \"md\" | \"xs\""
+  },
+  "ClusterGrowMinWidth": {
+    "name": "ClusterGrowMinWidth",
+    "description": "The narrowest a `ClusterGrow` gets before the row wraps: `sm` or `md`.",
+    "definition": "\"sm\" | \"md\""
+  },
+  "ClusterJustify": {
+    "name": "ClusterJustify",
+    "description": "Where a `Cluster`'s items sit along the row: `start`, `end`, or `between` to spread them to both ends.",
+    "definition": "\"start\" | \"end\" | \"between\""
+  },
+  "CodeLanguage": {
+    "name": "CodeLanguage",
+    "description": "The languages a `CodeBlock` colours; `text` is plain, and `console` marks the commands of a terminal session.",
+    "definition": "\"text\" | \"tsx\" | \"ts\" | \"js\" | \"json\" | \"bash\" | \"console\" | \"css\" | \"html\" | \"yaml\""
+  },
+  "ColourScheme": {
+    "name": "ColourScheme",
+    "description": "The two colour schemes a site switches between: `light` and `dark`.",
+    "definition": "\"light\" | \"dark\""
+  },
+  "ColourSchemeClasses": {
+    "name": "ColourSchemeClasses",
+    "description": "The class each scheme puts on `<html>`: none for light and `dark` for dark, unless the app's theme says otherwise (a light theme with a scope class of its own).",
+    "definition": "{ light: string; dark: string }"
+  },
+  "ControlSize": {
+    "name": "ControlSize",
+    "description": "A control's size: the library's one `Size` scale.",
+    "definition": "\"sm\" | \"md\" | \"lg\""
+  },
+  "ControlWidth": {
+    "name": "ControlWidth",
+    "description": "`full` fills the parent (the default); `fill` grows to the space left in a flex row; `auto` adds no width class, so the control is as wide as the browser makes it; the rest are fixed.",
+    "definition": "\"sm\" | \"md\" | \"lg\" | \"xs\" | \"full\" | \"fill\" | \"auto\""
+  },
+  "Crumb": {
+    "name": "Crumb",
+    "description": "A crumb that links: `href`, drawn by the app's router link through `LinkProvider` for an in-app\npath, else a plain `<a>`. `external` opens in a new tab. The last crumb is the current page and is\nnever a link.",
+    "definition": "{ label: ReactNode; href: string; external?: boolean }"
+  },
+  "DateRange": {
+    "name": "DateRange",
+    "description": "A from and to date: `start` on or before `end`.",
+    "definition": "{ start: CalendarDate; end: CalendarDate }"
+  },
+  "DateRangePreset": {
+    "name": "DateRangePreset",
+    "description": "A ready-made range the app builds from its own today, such as \"Last 7 days\".",
+    "definition": "{ label: string; value: DateRange }"
+  },
+  "DocsHeading": {
+    "name": "DocsHeading",
+    "description": "One entry of \"On this page\": a heading's id, its text and its level.",
+    "definition": "{ id: string; label: string; level: 2 | 3 }"
+  },
+  "DocsNavGroup": {
+    "name": "DocsNavGroup",
+    "description": "One group of the docs nav: a title over its links (`Tab`s with an `href`). A group with no title is the nav's top.",
+    "definition": "{ title?: string; items: SwitchLink[] }"
+  },
+  "DocsNeighbour": {
+    "name": "DocsNeighbour",
+    "description": "The page before or after this one in reading order.",
+    "definition": "{ label: string; href: string }"
+  },
+  "FormRowSpan": {
+    "name": "FormRowSpan",
+    "description": "Relative widths in a `FormRow`: a field of `span` 2 is twice as wide as one of `span` 1.",
+    "definition": "1 | 2 | 3 | 4"
+  },
+  "IconButtonTone": {
+    "name": "IconButtonTone",
+    "description": "An IconButton's tones: `neutral` (the default) and `danger`.",
+    "definition": "\"neutral\" | \"danger\""
+  },
+  "IconButtonVariant": {
+    "name": "IconButtonVariant",
+    "description": "An IconButton's look: `outline` with a border, or `ghost` with none until hover.",
+    "definition": "\"outline\" | \"ghost\""
+  },
+  "IconName": {
+    "name": "IconName",
+    "description": "The names of the icon set: feature ideas, then UI glyphs, then the ideas the docs sections stand for.",
+    "definition": "\"baseline\" | \"diff\" | \"review\" | \"ci\" | \"self-host\" | \"privacy\" | \"capture\" | \"branch\" | \"theme\" | \"speed\" | \"search\" | \"chevron-right\" | \"chevron-down\" | \"close\" | \"external-link\" | \"settings\" | \"bell\" | \"check\" | \"plus\" | \"more\" | \"grid\" | \"window\" | \"type\" | \"card\" | \"pointer\" | \"field\" | \"table\" | \"compass\" | \"page\" | \"briefcase\""
+  },
+  "ImageAspect": {
+    "name": "ImageAspect",
+    "description": "The shapes an image is cropped or letterboxed to, or `natural`: no shape of its own, so the\npicture keeps its own proportions.",
+    "definition": "\"square\" | \"4:3\" | \"3:2\" | \"16:9\" | \"3:4\" | \"9:16\" | \"natural\""
+  },
+  "ImageWidth": {
+    "name": "ImageWidth",
+    "description": "How wide an image is: `full` fills its parent; the others are 96, 160 or 256px, capped at the parent's width.",
+    "definition": "Size | \"full\""
+  },
+  "LegendItem": {
+    "name": "LegendItem",
+    "description": "One entry of a `Legend`: the `label` the colour stands for, its swatch, and an optional `detail` (a count, a share) after it.",
+    "definition": "{ label: string; tone: VizTone; swatch?: \"solid\" | \"dashed\"; detail?: string | number }"
+  },
+  "LinkAdapter": {
+    "name": "LinkAdapter",
+    "description": "Draws one in-app link: the app's router `<Link>`, handed `LinkAdapterProps`.",
+    "definition": "(props: LinkAdapterProps) => ReactNode"
+  },
+  "LinkAdapterProps": {
+    "name": "LinkAdapterProps",
+    "description": "What the app's `LinkAdapter` receives to draw an in-app link with its router's `<Link>`: the\ndestination as `href` (search and hash included), the component's classes, its label as\n`children`, and (for a tab that is current, or an option with a tooltip) `aria-current`, `target`,\n`rel` and `title`. `@hackcove/ui-react` has no router dependency.\n\nAn optional field is `?: T`, never `?: T | undefined`, and a key that has no value is left out\nrather than set to `undefined`. A router's `<Link>` declares its props that way, so under\n`exactOptionalPropertyTypes` the spread compiles. Any other anchor prop the caller gave the\ncomponent (`id`, `data-*`, `download`, a handler) arrives too, untyped here, and `<Link>`\ntakes it as its own.",
+    "definition": "{ href: string; className: string; children: ReactNode; aria-current?: AriaCurrent; target?: string; rel?: string; title?: string }"
+  },
+  "MenuAction": {
+    "name": "MenuAction",
+    "description": "One entry of a `Menu`: an action that runs `onSelect`, or a link to `href`. Never both.",
+    "definition": "{ label: string; icon?: IconName | undefined; tone?: IconButtonTone | undefined; disabled?: boolean | undefined; } & ({ onSelect: () => void; href?: undefined; external?: undefined; } | { onSelect?: undefined; href: string; external?: boolean | undefined; })"
+  },
+  "MetaListSeparator": {
+    "name": "MetaListSeparator",
+    "description": "The mark between MetaList items: `·`, `•`, or `none` for a gap alone.",
+    "definition": "\"none\" | \"·\" | \"•\""
+  },
+  "PillTone": {
+    "name": "PillTone",
+    "description": "A Pill's tones: the five meanings, and `accent` for a category that is none of them.",
+    "definition": "Tone | \"accent\""
+  },
+  "RegionRect": {
+    "name": "RegionRect",
+    "description": "A box in a picture's own units (an image's pixels): its top-left corner and its size.",
+    "definition": "{ x: number; y: number; width: number; height: number }"
+  },
+  "RowTone": {
+    "name": "RowTone",
+    "description": "The status of a row: the Callout's tones, plus `muted`. A toned row gets a stripe on its leading\nedge and the tone's soft fill; `muted` fades the row instead, for one that matters less. The\nstripe takes the tone's text colour, which every theme already remaps, so no new palette entry.",
+    "definition": "\"neutral\" | \"info\" | \"positive\" | \"warn\" | \"danger\" | \"muted\""
+  },
+  "SectionSize": {
+    "name": "SectionSize",
+    "description": "A `Section`'s scale: `sm` a small titled group, `md` a page's section, `lg` a landing page's section.",
+    "definition": "\"sm\" | \"md\" | \"lg\""
+  },
+  "Segment": {
+    "name": "Segment",
+    "description": "One option of a SegmentedControl. See `SwitchItem`.",
+    "definition": "SwitchButton | SwitchLink"
+  },
+  "SideColumnWidth": {
+    "name": "SideColumnWidth",
+    "description": "How wide a `SideColumn`'s aside is from `lg`: `sm` 18rem, `md` 24rem, or `third` a third of the row.",
+    "definition": "\"sm\" | \"md\" | \"third\""
+  },
+  "SiteFooterLink": {
+    "name": "SiteFooterLink",
+    "description": "One link in a `SiteFooter`'s row: its words, where it goes, and whether it opens a new tab.",
+    "definition": "{ label: string; href: string; external?: boolean }"
+  },
+  "SiteSearchItem": {
+    "name": "SiteSearchItem",
+    "description": "One page the search can find.",
+    "definition": "{ label: string; description?: string; href: string; keywords?: string[] }"
+  },
+  "Size": {
+    "name": "Size",
+    "description": "The one size scale of the library: `sm`, `md` and `lg`, with `md` the default. This is the one\nlist of where it goes further and where the default is not `md`; the README and the docs point\nhere rather than count them again.\n\nPast `sm`, `md` and `lg`, only where there is a real use, and no scale skips `md`:\n- `Avatar` and `AvatarStack` `size`: also `xs`, `xl`, `2xl` and `3xl`.\n- The gap scale (`Stack`, `Section` and `ProseLayout` `gap`): also `xs` and `xl`.\n- `Cluster` and `ScrollStrip` `gap`: `xs`, `sm` and `md`, the first steps of the gap scale.\n- `Icon` `size`: also `feature`, the mark of a feature card.\n- `Dialog` `width`: also `full`, the whole screen. `ChatThread` `height`: also `fill`, its parent's.\n\nDefaults that are not `md`:\n- `Table` `size` is `sm`, its row padding, and the buttons and pills in a table take that size;\n  a field keeps `md`.\n- `Cluster` and `ScrollStrip` `gap` are `sm`: the items of a row sit closer than the blocks of a\n  column.\n- `Stack` and `Section` `gap` are `xs` inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`,\n  `Callout` or `ListRow`.\n- A `Pill`, `Button` or `IconButton` with no `size` takes the size of the `Card`, `ListRow` or\n  `Table` it sits in; an `EmptyState` takes its slot's.\n\nWith no `size` at all, because they take the size of the text or the control they sit on:\n`Callout`, `CopyButton`, `Kbd`, `Badge` and `Breadcrumbs`.",
+    "definition": "\"sm\" | \"md\" | \"lg\""
+  },
+  "SortableMove": {
+    "name": "SortableMove",
+    "description": "A move the user made: which item, the section it lands in, and the item it lands next to.",
+    "definition": "{ id: string; section?: string; target?: { id: string; position: \"before\" | \"after\" } }"
+  },
+  "StackAlign": {
+    "name": "StackAlign",
+    "description": "Where a Stack's children sit across the column: `stretch` spans it, `start` keeps each child's own width.",
+    "definition": "\"start\" | \"stretch\""
+  },
+  "StackedSegment": {
+    "name": "StackedSegment",
+    "description": "One part of a `StackedBar`: its `label`, its `value` (its share is `value` over the sum) and its colour.",
+    "definition": "{ label: string; value: number; tone: VizTone }"
+  },
+  "StackGap": {
+    "name": "StackGap",
+    "description": "The space between a `Stack`'s blocks, on the gap scale: `xs` 8px, `sm` 16px, `md` 24px, `lg` 32px, `xl` 48px (64px from `sm`).",
+    "definition": "\"sm\" | \"md\" | \"lg\" | \"xs\" | \"xl\""
+  },
+  "StackRowFrom": {
+    "name": "StackRowFrom",
+    "description": "The breakpoint from which a `Stack` turns from a column into a row: `sm`, `md` or `lg`.",
+    "definition": "\"sm\" | \"md\" | \"lg\""
+  },
+  "StackWidth": {
+    "name": "StackWidth",
+    "description": "A `Stack`'s width cap at the start edge: `compact`, `narrow` (a reading measure), `default`, `wide` or `full`.",
+    "definition": "\"compact\" | \"narrow\" | \"default\" | \"wide\" | \"full\""
+  },
+  "StatTileTone": {
+    "name": "StatTileTone",
+    "description": "The colour of a tile's value (and of its accent bar): plain ink, green, amber or red.",
+    "definition": "\"neutral\" | \"positive\" | \"warn\" | \"danger\""
+  },
+  "StepsSize": {
+    "name": "StepsSize",
+    "description": "A `Steps` scale: `md` the small list down a column, `lg` the steps across a landing page.",
+    "definition": "\"md\" | \"lg\""
+  },
+  "SubsectionHeadingSize": {
+    "name": "SubsectionHeadingSize",
+    "description": "A SubsectionHeading's type size: `sm` a form-group caption, `md` a card title, `lg` a drawer title.",
+    "definition": "\"sm\" | \"md\" | \"lg\""
+  },
+  "Tab": {
+    "name": "Tab",
+    "description": "One tab of a Tabs row. See `SwitchItem`.",
+    "definition": "SwitchButton | SwitchLink"
+  },
+  "TableSort": {
+    "name": "TableSort",
+    "description": "Where a sortable column stands: ARIA's own words. `none` is a column the table is not sorted by.",
+    "definition": "\"ascending\" | \"descending\" | \"none\""
+  },
+  "TextAlign": {
+    "name": "TextAlign",
+    "description": "Where a run of text sits across its block.",
+    "definition": "\"center\" | \"start\" | \"end\""
+  },
+  "TextLines": {
+    "name": "TextLines",
+    "description": "How many lines a clamped run shows before it ends in an ellipsis.",
+    "definition": "1 | 2 | 3 | 4"
+  },
+  "TextLinkSize": {
+    "name": "TextLinkSize",
+    "description": "A TextLink's pinned type size, on the `Size` scale; left out, it takes the size of the text around it.",
+    "definition": "\"sm\" | \"md\" | \"lg\""
+  },
+  "TextMinWidth": {
+    "name": "TextMinWidth",
+    "description": "A fixed width for a run of text: `amount` is a money figure, right-aligned, at a width that lines a column up.",
+    "definition": "\"amount\""
+  },
+  "TextTone": {
+    "name": "TextTone",
+    "description": "The meaning of a run of inline text: the library's `Tone`, plus `muted` for a quieter line and\n`accent` for the theme's accent ink. `neutral` (the default) is the role's own ink. Colour alone\ndoes not say a meaning, so the words do too.",
+    "definition": "Tone | \"accent\" | \"muted\""
+  },
+  "Toast": {
+    "name": "Toast",
+    "description": "One notice in a `ToastRegion`. The caller holds the list; the region draws it.",
+    "definition": "{ id: string; title: string; body?: ReactNode; tone?: Tone; actions?: ReactNode }"
+  },
+  "Tone": {
+    "name": "Tone",
+    "description": "The one tone vocabulary of the library: what a thing means, not what colour it is. `neutral`\n(no meaning, the role's own ink or surface) is every component's default, `info` is a note,\n`positive` a success, `warn` a caution and `danger` an error or a destructive act.\n\nA component extends it outward only where it has a real use, and says so beside its own type:\nthe text roles add `muted` (a quieter line) and `accent` (the theme's accent ink), `Pill` and the\ncharts add `accent` for a category that is none of the five meanings. No component renames a\ntone (`negative`, `default`, `slate` and the colour names are gone), and no scale skips `neutral`.",
+    "definition": "\"neutral\" | \"info\" | \"positive\" | \"warn\" | \"danger\""
+  },
+  "TrendSeries": {
+    "name": "TrendSeries",
+    "description": "One series of a `TrendChart`: its `label` (the table's column, the Legend's entry), its colour,\nand one value per bucket in the buckets' order. A `null`, or a list shorter than the buckets, is\na missing value.",
+    "definition": "{ label: string; tone: VizTone; values: readonly (number | null)[] }"
+  },
+  "VizTone": {
+    "name": "VizTone",
+    "description": "The colour of a `StackedBar` segment, a `Legend` swatch or a `TrendChart` series: the `TextTone`\nnames, painted as a fill, or a category colour, `cat1` to `cat8`. On a chart `neutral` is a grey\nof its own that sits apart from `muted` (for \"unmeasured\" next to \"same\"), and `accent` is the\ntheme's accent, apart from `info`. Categories with no meaning take `cat1` upwards in order; good\nand bad take the meaning tones; one chart never mixes the two.",
+    "definition": "TextTone | CategoryTone"
+  }
+}

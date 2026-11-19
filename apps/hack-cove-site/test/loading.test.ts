@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import * as ui from "@hackcove/ui-react";
-import { loadingPage } from "../src/content/components/loading";
+import { loadingPage } from "../../../packages/ui-react/docs/components/loading";
 
 /** Every component `@hackcove/ui-react` exports: its exported functions named in PascalCase. */
 const components = Object.entries(ui)

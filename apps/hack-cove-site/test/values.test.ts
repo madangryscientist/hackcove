@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { componentPages } from "../src/content/components/index";
+import { componentPages } from "../../../packages/ui-react/docs/components/index";
 import { docOf } from "../src/docs/Props";
 import { listedValues } from "./usageRules";
 

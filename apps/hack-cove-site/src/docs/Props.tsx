@@ -8,15 +8,15 @@ import {
   SubsectionHeading,
   Text,
 } from "@hackcove/ui-react";
-import propsJson from "../generated/props.json";
-import typesJson from "../generated/types.json";
+import propsJson from "../../../../packages/ui-react/docs/props.json";
+import typesJson from "../../../../packages/ui-react/docs/types.json";
 import { InlineCode } from "./InlineCode.js";
 import type { ComponentDoc, PropDoc, PropsJson, TypeDoc, TypesJson } from "./types.js";
 
 const all: PropsJson = propsJson;
 const allTypes: TypesJson = typesJson;
 
-/** One type export, from `src/generated/types.json`; an unknown name fails the build. */
+/** One type export, from `packages/ui-react/docs/types.json`; an unknown name fails the build. */
 export function typeOf(name: string): TypeDoc {
   const doc = allTypes[name];
   if (doc === undefined) throw new Error(`type ${name}: not in types.json`);
@@ -48,7 +48,7 @@ export function Types({ names }: { names: string[] }) {
   );
 }
 
-/** The doc of one component, from `src/generated/props.json`; an unknown name fails the build. */
+/** The doc of one component, from `packages/ui-react/docs/props.json`; an unknown name fails the build. */
 export function docOf(name: string): ComponentDoc {
   const doc = all[name];
   if (doc === undefined) throw new Error(`<Props of="${name}">: not in props.json`);
