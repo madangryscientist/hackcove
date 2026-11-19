@@ -42,7 +42,8 @@
   }
 
   /* A group's links and the Tech line stay with the last bullet. */
-  .cv-job > p {
+  .cv-job > p,
+  .cv-job > .cv-tech {
     break-before: avoid;
     page-break-before: avoid;
   }

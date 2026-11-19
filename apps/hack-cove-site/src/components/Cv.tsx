@@ -113,7 +113,16 @@ function Job({ job }: { job: CvJob }) {
           lead={index === 0 ? lead : undefined}
         />
       ))}
-      {job.tech && <Caption>Tech: {job.tech}</Caption>}
+      {job.tech && (
+        <div className="cv-tech mt-3">
+          <Caption>
+            <Caption as="span" tone="accent">
+              Tech:
+            </Caption>{" "}
+            {job.tech}
+          </Caption>
+        </div>
+      )}
     </article>
   );
 }
