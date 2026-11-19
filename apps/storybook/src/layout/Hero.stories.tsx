@@ -31,7 +31,7 @@ export const Landing: S = {
 export const WithActions: S = {
   render: () => (
     <DemoShell>
-      <Hero overline="Hack Cove UI" title="Build the page with props, not CSS.">
+      <Hero overline="UISlash" title="Build the page with props, not CSS.">
         <Lead>Components and themes designed together, so a site looks right from the start.</Lead>
         <Cluster gap="sm">
           <Button>Get started</Button>

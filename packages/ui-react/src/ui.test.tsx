@@ -64,11 +64,11 @@ describe("Card", () => {
 
   it("reads the title, the count, the status, then the actions", () => {
     render(
-      <Card title="Hack Cove UI" count={2} status={<b>s</b>} actions={<i>a</i>}>
+      <Card title="UISlash" count={2} status={<b>s</b>} actions={<i>a</i>}>
         body
       </Card>,
     );
-    const title = screen.getByRole("heading", { name: "Hack Cove UI" });
+    const title = screen.getByRole("heading", { name: "UISlash" });
     const count = screen.getByText("2");
     const status = screen.getByText("s");
     expect(follows(title, count)).toBe(true);

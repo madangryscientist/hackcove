@@ -61,13 +61,13 @@ const sections: Section[] = [
     slug: "ui",
     icon: "theme",
     href: "/ui/",
-    name: "Hack Cove UI",
+    name: "UISlash",
     navLabel: "UI",
     summary:
       "Our opinionated React component library, fully integrated with its themes. This site is built with it.",
-    cta: "About Hack Cove UI",
+    cta: "About UISlash",
     description:
-      "Hack Cove UI is an opinionated, strict React UI library, fully integrated with its theming.",
+      "UISlash is an opinionated, strict React UI library, fully integrated with its theming.",
   },
   {
     slug: "pixelslash",

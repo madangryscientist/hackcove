@@ -27,8 +27,8 @@ function main(): number {
     if (file !== undefined && file !== "") appendFileSync(file, summary(findings));
     process.stdout.write(
       findings.length === 0
-        ? "Hack Cove UI check: clean.\n"
-        : `Hack Cove UI check: ${findings.length} violation(s).\n`,
+        ? "UISlash check: clean.\n"
+        : `UISlash check: ${findings.length} violation(s).\n`,
     );
     return findings.length === 0 ? 0 : 1;
   } catch (error) {

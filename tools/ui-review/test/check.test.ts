@@ -47,6 +47,6 @@ it("a real branch that adds a raw bg-slate-800 div fails on that line, and a cle
     expect.objectContaining({ rule: "raw-colour", path: "src/Page.tsx", line: 3 }),
   ]);
   expect(annotation(found[0]!)).toMatch(
-    /^::error file=src\/Page\.tsx,line=3,title=Hack Cove UI \(raw-colour\)::/,
+    /^::error file=src\/Page\.tsx,line=3,title=UISlash \(raw-colour\)::/,
   );
 });

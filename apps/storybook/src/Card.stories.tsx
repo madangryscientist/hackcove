@@ -70,7 +70,7 @@ export const DontSpacing: S = {
 export const Status: S = {
   render: () => (
     <div className="flex max-w-md flex-col gap-4">
-      <Card title="Hack Cove UI" status={<Pill tone="positive">Available</Pill>}>
+      <Card title="UISlash" status={<Pill tone="positive">Available</Pill>}>
         <Text tone="muted">Components and themes, designed together.</Text>
       </Card>
       <Card

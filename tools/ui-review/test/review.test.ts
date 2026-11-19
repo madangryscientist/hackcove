@@ -75,7 +75,7 @@ describe("model reply", () => {
   });
 
   it("ends with one summary: the all-clear line, or a count", () => {
-    expect(summaryOf(0, [])).toBe("**Hack Cove UI review:** matches Hack Cove.");
+    expect(summaryOf(0, [])).toBe("**UISlash review:** matches Hack Cove.");
     expect(summaryOf(2, [])).toContain("2 notes");
   });
 
@@ -230,7 +230,7 @@ describe("a review that did not run", () => {
         GITHUB_STEP_SUMMARY: summary,
       });
       expect(annotation).toBe(
-        "::error title=Hack Cove UI review::the model review did not run: opencode exited 1: File not found: x",
+        "::error title=UISlash review::the model review did not run: opencode exited 1: File not found: x",
       );
       const text = readFileSync(summary, "utf8");
       expect(text).toContain("did not run");

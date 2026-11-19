@@ -137,7 +137,7 @@ jobs:
     steps:
       - name: Say when the review is skipped
         if: ${{ env.KEY_SET != 'true' }}
-        run: echo "::notice title=Hack Cove UI review::OPENCODE_API_KEY is not set; the model review is skipped."
+        run: echo "::notice title=UISlash review::OPENCODE_API_KEY is not set; the model review is skipped."
 
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         if: ${{ env.KEY_SET == 'true' }}
@@ -177,15 +177,15 @@ jobs:
             (cd "$HACKCOVE_DIR" && bun install --frozen-lockfile && $build) \
               && echo "path=$HACKCOVE_DIR/apps/hack-cove-site/dist/ui/llms.txt" >> "$GITHUB_OUTPUT" \
               || {
-                echo "::error title=Hack Cove UI review::could not build the component reference; the model review did not run."
-                printf '## Hack Cove UI review\n\n**The model review did not run**: could not build the component reference.\n' >> "$GITHUB_STEP_SUMMARY"
+                echo "::error title=UISlash review::could not build the component reference; the model review did not run."
+                printf '## UISlash review\n\n**The model review did not run**: could not build the component reference.\n' >> "$GITHUB_STEP_SUMMARY"
                 exit 1
               }
           elif curl --fail --silent --show-error --location "$LLMS_URL" --output "$RUNNER_TEMP/llms.txt"; then
             echo "path=$RUNNER_TEMP/llms.txt" >> "$GITHUB_OUTPUT"
           else
-            echo "::error title=Hack Cove UI review::could not fetch $LLMS_URL; the model review did not run."
-            printf '## Hack Cove UI review\n\n**The model review did not run**: could not fetch %s.\n' "$LLMS_URL" >> "$GITHUB_STEP_SUMMARY"
+            echo "::error title=UISlash review::could not fetch $LLMS_URL; the model review did not run."
+            printf '## UISlash review\n\n**The model review did not run**: could not fetch %s.\n' "$LLMS_URL" >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
 

@@ -1,4 +1,4 @@
-# Contributing to hackcove
+# Contributing to uislash
 
 Thanks for looking. This repo is the UISlash design system: React components (`@hackcove/ui-react`) and
 the themes (`@hackcove/themes`, one CSS file per theme), each its own npm package, in a moon +

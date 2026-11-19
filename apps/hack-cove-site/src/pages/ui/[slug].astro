@@ -14,7 +14,7 @@ const page = componentPageOf(Astro.params.slug ?? "");
 const { previous, next } = neighbourLinksOf(page);
 ---
 
-<Base title={`${page.name} · Hack Cove UI · ${site.name}`} description={page.summary}>
+<Base title={`${page.name} · UISlash · ${site.name}`} description={page.summary}>
   <DocsFrame
     client:load
     pathname={Astro.url.pathname}
