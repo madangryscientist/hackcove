@@ -176,7 +176,7 @@
   },
   "LinkAdapterProps": {
     "name": "LinkAdapterProps",
-    "description": "What the app's `LinkAdapter` receives to draw an in-app link with its router's `<Link>`: the\ndestination as `href` (search and hash included), the component's classes, its label as\n`children`, and (for a tab that is current, or an option with a tooltip) `aria-current`, `target`,\n`rel` and `title`. `@hackcove/ui-react` has no router dependency.\n\nAn optional field is `?: T`, never `?: T | undefined`, and a key that has no value is left out\nrather than set to `undefined`. A router's `<Link>` declares its props that way, so under\n`exactOptionalPropertyTypes` the spread compiles. Any other anchor prop the caller gave the\ncomponent (`id`, `data-*`, `download`, a handler) arrives too, untyped here, and `<Link>`\ntakes it as its own.",
+    "description": "What the app's `LinkAdapter` receives to draw an in-app link with its router's `<Link>`: the\ndestination as `href` (search and hash included), the component's classes, its label as\n`children`, and (for a tab that is current, or an option with a tooltip) `aria-current`, `target`,\n`rel` and `title`. `@slashsuite/ui-react` has no router dependency.\n\nAn optional field is `?: T`, never `?: T | undefined`, and a key that has no value is left out\nrather than set to `undefined`. A router's `<Link>` declares its props that way, so under\n`exactOptionalPropertyTypes` the spread compiles. Any other anchor prop the caller gave the\ncomponent (`id`, `data-*`, `download`, a handler) arrives too, untyped here, and `<Link>`\ntakes it as its own.",
     "definition": "{ href: string; className: string; children: ReactNode; aria-current?: AriaCurrent; target?: string; rel?: string; title?: string }"
   },
   "MenuAction": {

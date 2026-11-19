@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Card, type LinkAdapter, LinkProvider, Text, TextLink } from "@hackcove/ui-react";
+import { Card, type LinkAdapter, LinkProvider, Text, TextLink } from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Text/TextLink" };
 export default meta;

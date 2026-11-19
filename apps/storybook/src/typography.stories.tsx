@@ -10,7 +10,7 @@ import {
   SubsectionHeading,
   Text,
   type TextTone,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 import { CompactApp, TypeSpecimen } from "./typeSteps";
 

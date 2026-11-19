@@ -9,7 +9,7 @@
    without touching a component.
    --------------------------------------------------------------------------- */
 
-import type { IconName } from "@hackcove/ui-react";
+import type { IconName } from "@slashsuite/ui-react";
 import { pixelslash } from "./pixelslash";
 import { home, products } from "./products";
 import { ui } from "./ui";

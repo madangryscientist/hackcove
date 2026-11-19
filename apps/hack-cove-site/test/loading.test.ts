@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
-import * as ui from "@hackcove/ui-react";
+import * as ui from "@slashsuite/ui-react";
 import { loadingPage } from "../../../packages/ui-react/docs/components/loading";
 
-/** Every component `@hackcove/ui-react` exports: its exported functions named in PascalCase. */
+/** Every component `@slashsuite/ui-react` exports: its exported functions named in PascalCase. */
 const components = Object.entries(ui)
   .filter(([name, value]) => /^[A-Z]/.test(name) && typeof value === "function")
   .map(([name]) => name);

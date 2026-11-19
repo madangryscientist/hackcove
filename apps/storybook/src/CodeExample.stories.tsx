@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, CodeBlock, CodeExample, Stack } from "@hackcove/ui-react";
+import { Button, CodeBlock, CodeExample, Stack } from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Text/CodeExample" };
 export default meta;

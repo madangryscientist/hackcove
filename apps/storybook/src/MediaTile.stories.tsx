@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { Cluster, Lightbox, MediaTile } from "@hackcove/ui-react";
+import { Cluster, Lightbox, MediaTile } from "@slashsuite/ui-react";
 import { samplePortrait, sampleScenes } from "./sampleScene";
 
 const meta: Meta = { title: "Content/MediaTile" };

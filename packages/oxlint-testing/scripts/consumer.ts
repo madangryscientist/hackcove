@@ -13,14 +13,14 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
-const pkg: { version: string; peerDependencies: Record<string, string> } = JSON.parse(
+const pkg: { name: string; version: string; peerDependencies: Record<string, string> } = JSON.parse(
   readFileSync(join(root, "package.json"), "utf8"),
 );
 
 // One dir per checkout, so concurrent worktrees do not collide.
 const app = join(
   tmpdir(),
-  `hackcove-oxlint-testing-consumer-${createHash("sha1").update(root).digest("hex").slice(0, 8)}`,
+  `slashsuite-oxlint-testing-consumer-${createHash("sha1").update(root).digest("hex").slice(0, 8)}`,
 );
 rmSync(app, { recursive: true, force: true });
 mkdirSync(join(app, "e2e"), { recursive: true });
@@ -47,7 +47,7 @@ const BAD_SPEC = [
 
 try {
   mustRun(["npm", "pack", "--ignore-scripts", "--pack-destination", app], root);
-  const tarball = join(app, `hackcove-oxlint-testing-${pkg.version}.tgz`);
+  const tarball = join(app, `${pkg.name.slice(1).replace("/", "-")}-${pkg.version}.tgz`);
 
   writeFileSync(
     join(app, "package.json"),
@@ -55,13 +55,13 @@ try {
       name: "consumer",
       private: true,
       type: "module",
-      devDependencies: { "@hackcove/oxlint-testing": `file:${tarball}`, ...pkg.peerDependencies },
+      devDependencies: { "@slashsuite/oxlint-testing": `file:${tarball}`, ...pkg.peerDependencies },
     }),
   );
   writeFileSync(join(app, "bunfig.toml"), '[install]\nlinker = "isolated"\nglobalStore = true\n');
   writeFileSync(
     join(app, ".oxlintrc.json"),
-    JSON.stringify({ extends: ["./node_modules/@hackcove/oxlint-testing/.oxlintrc.json"] }),
+    JSON.stringify({ extends: ["./node_modules/@slashsuite/oxlint-testing/.oxlintrc.json"] }),
   );
   writeFileSync(join(app, "e2e", "save.spec.ts"), BAD_SPEC);
 

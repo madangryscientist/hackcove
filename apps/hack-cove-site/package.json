@@ -15,9 +15,9 @@
     "smoke": "playwright test -c playwright.smoke.config.ts"
   },
   "dependencies": {
-    "@hackcove/themes": "workspace:*",
-    "@hackcove/themes-shared": "workspace:*",
-    "@hackcove/ui-react": "workspace:*",
+    "@slashsuite/themes": "workspace:*",
+    "@slashsuite/themes-shared": "workspace:*",
+    "@slashsuite/ui-react": "workspace:*",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

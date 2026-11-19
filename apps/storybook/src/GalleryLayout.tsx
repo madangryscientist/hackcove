@@ -19,7 +19,7 @@ import {
   SubsectionHeading,
   Text,
   Show,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 /** The header's controls: a viewer chip that hides below `sm`, then the scheme toggle. */
 const galleryControls = (

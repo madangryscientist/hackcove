@@ -1,5 +1,5 @@
 /**
- * The testing lint, in report mode: runs `@hackcove/oxlint-testing`'s config (its own globs) over
+ * The testing lint, in report mode: runs `@slashsuite/oxlint-testing`'s config (its own globs) over
  * each project that does not enforce it yet, and prints how many lines each rule reports there.
  * Always exits 0, and is not part of the gate. A project whose count reaches 0 moves into its own
  * `lint` and off this list (packages/oxlint-testing/README.md, "In this repo").

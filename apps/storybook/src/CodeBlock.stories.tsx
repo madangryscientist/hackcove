@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { CodeBlock } from "@hackcove/ui-react";
+import { CodeBlock } from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Text/Code" };
 export default meta;
@@ -9,7 +9,7 @@ export const Default: S = {
   render: () => (
     <div className="max-w-xl">
       <CodeBlock language="bash">
-        {"bun add @hackcove/ui-react\nbun add @hackcove/themes"}
+        {"bun add @slashsuite/ui-react\nbun add @slashsuite/themes"}
       </CodeBlock>
     </div>
   ),
@@ -24,8 +24,8 @@ export const Labelled: S = {
         language="css"
         lines={[
           '@import "tailwindcss";',
-          '@import "@hackcove/themes/catppuccin-mocha.css";',
-          '@source "../node_modules/@hackcove/ui-react/dist";',
+          '@import "@slashsuite/themes/catppuccin-mocha.css";',
+          '@source "../node_modules/@slashsuite/ui-react/dist";',
         ]}
       />
     </div>
@@ -106,14 +106,14 @@ export const DoSnippet: S = {
     <CodeBlock
       label="bash"
       language="bash"
-      lines={["bun add @hackcove/ui-react", "bun add @hackcove/themes"]}
+      lines={["bun add @slashsuite/ui-react", "bun add @slashsuite/themes"]}
     />
   ),
 };
 
 /** One short line a reader copies is a `CopyLine`, the smaller box. A one-line `CodeBlock` is for a command that needs a `label` or colour. */
 export const DontSnippet: S = {
-  render: () => <CodeBlock language="bash">bun add @hackcove/ui-react</CodeBlock>,
+  render: () => <CodeBlock language="bash">bun add @slashsuite/ui-react</CodeBlock>,
 };
 
 /** `yaml` colours keys, strings, numbers and comments. The lines of a `run: |` script are left in one colour, since they are another language. */
@@ -161,7 +161,7 @@ export const Js: S = {
         label="theme.js"
         language="js"
         lines={[
-          'import { colourScheme } from "@hackcove/ui-react";',
+          'import { colourScheme } from "@slashsuite/ui-react";',
           "",
           "// Read the saved choice before the first paint.",
           "export function applyTheme(root = document.documentElement) {",
@@ -221,11 +221,11 @@ export const Console: S = {
         label="console"
         language="console"
         lines={[
-          "$ bun add @hackcove/ui-react @hackcove/themes",
+          "$ bun add @slashsuite/ui-react @slashsuite/themes",
           "bun add v1.3.0",
           "",
-          "installed @hackcove/ui-react@0.1.0",
-          "installed @hackcove/themes@0.1.0",
+          "installed @slashsuite/ui-react@0.1.0",
+          "installed @slashsuite/themes@0.1.0",
           "",
           "2 packages installed [312.00ms]",
           "$ bunx playwright test \\",

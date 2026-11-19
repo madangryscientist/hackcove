@@ -16,7 +16,7 @@ import {
   Text,
   Cluster,
   Show,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 /** Each page story here keeps the page title at the logo's x; the visual check shoots each at 1280. */

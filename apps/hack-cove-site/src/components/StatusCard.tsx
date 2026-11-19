@@ -7,7 +7,7 @@ import {
   Stack,
   Text,
   TextLink,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const STATUS = {
   available: { label: "Available", tone: "positive" },

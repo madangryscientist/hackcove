@@ -1,6 +1,6 @@
 $schema: "../../.moon/cache/schemas/project.json"
 
-# @hackcove/ui-react. Each task runs the package.json script of its name (`prepack` is npm's, not a task).
+# @slashsuite/ui-react. Each task runs the package.json script of its name (`prepack` is npm's, not a task).
 # docs/ is the component docs' data: only lint (check-slop) reads it, so the other tasks leave it out
 # of their hash.
 tasks:

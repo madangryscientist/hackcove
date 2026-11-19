@@ -9,7 +9,7 @@ import {
   Text,
   TextLink,
   Show,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 /**
  * The docs examples for `AppShell`. The shell is a whole page (`min-h-dvh`, a sticky header), so

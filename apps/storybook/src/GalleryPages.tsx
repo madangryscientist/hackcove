@@ -18,7 +18,7 @@ import {
   SideColumn,
   StickyBar,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { DemoShell } from "./layout/DemoShell";
 import { DetailPage, FormPage, ListPage, ProsePage, StatTiles } from "./layout/pages";
 

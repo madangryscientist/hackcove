@@ -9,7 +9,7 @@ import {
   ProseLayout,
   SectionHeading,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { ProsePage } from "./pages";
 

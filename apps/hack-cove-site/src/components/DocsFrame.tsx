@@ -1,4 +1,4 @@
-import { DocsLayout, type DocsHeading, type DocsNeighbour } from "@hackcove/ui-react";
+import { DocsLayout, type DocsHeading, type DocsNeighbour } from "@slashsuite/ui-react";
 import type { ReactNode } from "react";
 import { componentSections } from "../../../../packages/ui-react/docs/components/index";
 

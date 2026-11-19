@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { themeFiles } from "@hackcove/themes-shared/files";
+import { themeFiles } from "@slashsuite/themes-shared/files";
 
 /**
  * From `md` a nav too wide for the header row folds into the Menu, as on a phone, and comes back

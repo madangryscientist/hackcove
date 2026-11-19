@@ -110,11 +110,13 @@ describe("copyScript", () => {
   it("copies only the commands of a console block", async () => {
     staticPage(
       <CodeBlock copy language="console">
-        {"$ bun add @hackcove/ui-react\nadded 1 package\n$ bun run build"}
+        {"$ bun add @slashsuite/ui-react\nadded 1 package\n$ bun run build"}
       </CodeBlock>,
     );
     await press();
-    expect(writeText).toHaveBeenCalledExactlyOnceWith("bun add @hackcove/ui-react\nbun run build");
+    expect(writeText).toHaveBeenCalledExactlyOnceWith(
+      "bun add @slashsuite/ui-react\nbun run build",
+    );
   });
 
   it("works on a CopyLine", async () => {

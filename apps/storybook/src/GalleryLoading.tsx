@@ -35,7 +35,7 @@ import {
   StatTile,
   Switch,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 /** The parts that wait for their data, while they wait: known captions drawn, the rest bones. */
 export function GalleryLoading() {

@@ -10,7 +10,7 @@ import {
   SubsectionHeading,
   Text,
   TextLink,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { Fragment, type ReactNode } from "react";
 import { cv, type CvHighlightGroup, type CvJob, type CvLink } from "../content/cv";
 import { site } from "../content/site";

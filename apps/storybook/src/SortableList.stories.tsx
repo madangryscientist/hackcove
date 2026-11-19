@@ -12,7 +12,7 @@ import {
   type SortableMove,
   SortableSection,
   Stack,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Data/SortableList" };
 export default meta;

@@ -9,7 +9,7 @@ import {
   SubsectionHeading,
   Text,
   TextLink,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 /**
  * A short doc page: an h2, a paragraph, an h3, a list with a link and inline `Code`, an h4, a
@@ -30,7 +30,7 @@ export function ProseDoc() {
           React 19 and Tailwind v4, as in the <TextLink href="/ui/">component docs</TextLink>.
         </BulletItem>
         <BulletItem>
-          Run <Code>bun add @hackcove/ui-react</Code> in your app.
+          Run <Code>bun add @slashsuite/ui-react</Code> in your app.
         </BulletItem>
       </BulletList>
       <SubsectionHeading as="h4" size="sm">
@@ -40,7 +40,7 @@ export function ProseDoc() {
         Import a theme once, at the root of the app.
       </Callout>
       <CodeBlock label="bash" language="bash">
-        bun add @hackcove/ui-react @hackcove/themes
+        bun add @slashsuite/ui-react @slashsuite/themes
       </CodeBlock>
     </Stack>
   );

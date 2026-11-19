@@ -1,4 +1,4 @@
-import { Button, Section, SiteFooter, Text } from "@hackcove/ui-react";
+import { Button, Section, SiteFooter, Text } from "@slashsuite/ui-react";
 
 /** The marketing blocks of the Gallery's header slice: a Section size lg and a SiteFooter. */
 export function GalleryMarketing() {

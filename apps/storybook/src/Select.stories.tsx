@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Field, Select } from "@hackcove/ui-react";
+import { Button, Field, Select } from "@slashsuite/ui-react";
 import { CompactApp } from "./typeSteps";
 
 const meta: Meta = { title: "Forms/Select" };

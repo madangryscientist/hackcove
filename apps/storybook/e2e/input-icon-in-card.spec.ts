@@ -1,5 +1,5 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
-import { themeFiles } from "@hackcove/themes-shared/files";
+import { themeFiles } from "@slashsuite/themes-shared/files";
 
 // A Card lifts its fields above a stretched link (`liftInteractive`: `relative z-10`). A click on an
 // `Input`'s leading icon still focuses its field, and the clear button is on top of the field, so a

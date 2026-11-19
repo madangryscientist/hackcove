@@ -1,5 +1,5 @@
 import { useLayoutEffect, type ReactNode } from "react";
-import { SCOPES, THEMES, themeNames, themeScope } from "@hackcove/themes-shared";
+import { SCOPES, THEMES, themeNames, themeScope } from "@slashsuite/themes-shared";
 
 export { THEMES, themeNames };
 

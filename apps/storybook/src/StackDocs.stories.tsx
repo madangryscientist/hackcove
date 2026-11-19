@@ -15,7 +15,7 @@ import {
   SectionHeading,
   Stack,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 /** The docs examples for `Stack` and `Section`. */
 const meta: Meta = { title: "Layout/Stack" };

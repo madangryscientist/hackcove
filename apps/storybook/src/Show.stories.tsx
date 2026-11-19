@@ -12,7 +12,7 @@ import {
   TableHead,
   TableHeaderCell,
   TableRow,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 /** Content shown only from a width up, or only below it, by CSS alone. Narrow the viewport to see each swap. */
 const meta: Meta = { title: "Layout/Show", parameters: { layout: "padded" } };

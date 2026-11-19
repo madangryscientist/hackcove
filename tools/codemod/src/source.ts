@@ -2,6 +2,8 @@ import ts from "typescript";
 import type { Edit } from "./edits.js";
 
 /** The package whose elements the codemod touches. */
+// Deliberately still the old scope: the codemod rewrites 0.10-era app code, which only ever
+// imported @hackcove/ui-react, and its fixtures match that.
 export const PACKAGE = "@hackcove/ui-react";
 
 /** A JSX element's opening tag, with its attributes. */

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Display, Hero, Lead, Overline, PageHeader, Stack } from "@hackcove/ui-react";
+import { Display, Hero, Lead, Overline, PageHeader, Stack } from "@slashsuite/ui-react";
 
 /** The docs examples for `Hero`. */
 const meta: Meta = { title: "Layout/Hero" };

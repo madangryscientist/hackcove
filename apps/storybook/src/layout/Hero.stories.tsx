@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Cluster, Hero, Lead, Stack, Text } from "@hackcove/ui-react";
+import { Button, Cluster, Hero, Lead, Stack, Text } from "@slashsuite/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 
 const meta: Meta = {

@@ -1,4 +1,4 @@
-import { Badge, Icon, IconButton, Pill, type PillTone } from "@hackcove/ui-react";
+import { Badge, Icon, IconButton, Pill, type PillTone } from "@slashsuite/ui-react";
 import { iconNames } from "./iconIdeas.js";
 
 const tones: PillTone[] = ["neutral", "info", "positive", "warn", "danger", "accent"];

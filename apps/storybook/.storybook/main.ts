@@ -27,7 +27,7 @@ const config: StorybookConfig = {
     );
     cfg.resolve = {
       ...cfg.resolve,
-      alias: [...aliases, { find: "@hackcove/ui-react", replacement: source }],
+      alias: [...aliases, { find: "@slashsuite/ui-react", replacement: source }],
     };
     return cfg;
   },

@@ -9,7 +9,7 @@ import {
   Select,
   Textarea,
   type ControlWidth,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const [octoberStart, octoberEnd] = [fromISODate("2026-10-01"), fromISODate("2026-10-31")];
 const october = octoberStart && octoberEnd ? { start: octoberStart, end: octoberEnd } : null;

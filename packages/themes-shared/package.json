@@ -1,5 +1,5 @@
 {
-  "name": "@hackcove/themes-shared",
+  "name": "@slashsuite/themes-shared",
   "version": "0.0.0",
   "private": true,
   "description": "How the repo's own apps (Storybook, the docs) find the themes: the themes/*.css glob, each file's theme id and the scope-class rule. Not published.",

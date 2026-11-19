@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Card, Field, Input } from "@hackcove/ui-react";
+import { Button, Card, Field, Input } from "@slashsuite/ui-react";
 import { CompactApp } from "./typeSteps";
 
 const meta: Meta = { title: "Forms/Input" };

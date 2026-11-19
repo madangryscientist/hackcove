@@ -10,7 +10,7 @@ import {
   Tabs,
   Text,
   StatTile,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { DemoShell, layoutPage } from "./DemoShell";
 import { DetailPage } from "./pages";
 

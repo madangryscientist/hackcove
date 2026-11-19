@@ -1,7 +1,7 @@
-# @hackcove/ui-react
+# @slashsuite/ui-react
 
 UISlash React components, written against Tailwind v4 utilities. They carry no theme: pair them
-with a theme from `@hackcove/themes`, such as `@hackcove/themes/catppuccin-mocha.css`, and put its scope
+with a theme from `@slashsuite/themes`, such as `@slashsuite/themes/catppuccin-mocha.css`, and put its scope
 class on `<html>` (`.dark` for Mocha). With no theme they render in Tailwind's own default colours,
 a plain light look; it works, but it is not a look UISlash designs or checks.
 
@@ -10,7 +10,7 @@ Status: `0.x`, published to npm. License: MIT.
 ## Install
 
 ```sh
-bun add @hackcove/ui-react
+bun add @slashsuite/ui-react
 # peers: react >= 18, react-dom >= 18, tailwindcss ^4
 # optional type peers: @types/react, @types/react-dom (install them in a TypeScript app)
 ```
@@ -23,13 +23,13 @@ in the stylesheet that imports Tailwind (the path is relative to that file):
 
 ```css
 @import "tailwindcss";
-@source "../node_modules/@hackcove/ui-react/dist";
+@source "../node_modules/@slashsuite/ui-react/dist";
 ```
 
 ## Use
 
 ```tsx
-import { Card, PageHeading, Pill, Text } from "@hackcove/ui-react";
+import { Card, PageHeading, Pill, Text } from "@slashsuite/ui-react";
 
 export const Example = () => (
   <Card title="Status" count={2}>
@@ -61,7 +61,7 @@ wherever a component takes `size`. The controls (`Button` (also as a link), `Ico
 share heights at each step (`sm` 26px, `md` 38px, `lg` 46px, the same on a `Select` and a `DateField` as on an `Input`; a Playwright check measures them side by side in every theme), so a row of mixed controls at one size lines up. `Card`, `ListRow`,
 `FileDrop`, `Dialog`, `Drawer`, `Avatar`, `SubsectionHeading`, `TextLink` and the bars take the
 same three names. Where a scale goes past them, and the few defaults that are not `md`, are
-listed once, on the `Size` type. `TextLink` with no `size` takes the size of the text around it. Upgrading: `MIGRATING.md`, shipped in the package (`node_modules/@hackcove/ui-react/MIGRATING.md`).
+listed once, on the `Size` type. `TextLink` with no `size` takes the size of the text around it. Upgrading: `MIGRATING.md`, shipped in the package (`node_modules/@slashsuite/ui-react/MIGRATING.md`).
 
 ## Disabled
 
@@ -116,7 +116,7 @@ themselves; the docs' Loading page lists every part either way. There is no `Ske
 ## Dates
 
 ```tsx
-import { DateField, fromISODate, toISODate, type CalendarDate } from "@hackcove/ui-react";
+import { DateField, fromISODate, toISODate, type CalendarDate } from "@slashsuite/ui-react";
 
 <DateField
   calendar
@@ -157,7 +157,7 @@ import { DateField, fromISODate, toISODate, type CalendarDate } from "@hackcove/
 
 ## Router links
 
-`@hackcove/ui-react` has no router dependency. The app names its router's link once, on a
+`@slashsuite/ui-react` has no router dependency. The app names its router's link once, on a
 `LinkProvider`, and every part that links (`Button`, `IconButton`, `TextLink`, `Pill`, `Card`,
 `ListRow`, `Breadcrumbs`, `Tabs`, `SegmentedControl`, `AppShellBrand`, `SiteSearch`, `MediaTile`,
 `Avatar` and the status pages) takes a plain `href`. Do: set the adapter once, at the router.
@@ -213,7 +213,7 @@ import {
   Stack,
   Tabs,
   appShellRootClassFor,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 // Your root layout. `appShellRootClassFor` adds `overflow-y-scroll`: it reserves the scrollbar, so
 // a short page and a long one centre their content at the same x. AppShell cannot set it itself.
@@ -409,7 +409,7 @@ Two states, light and dark. The stored choice wins; with nothing stored the syst
    first paint and neither scheme flashes the other. It is a few hundred bytes of plain JavaScript:
 
    ```tsx
-   import { colourSchemeScript } from "@hackcove/ui-react";
+   import { colourSchemeScript } from "@slashsuite/ui-react";
 
    <head>
      <script dangerouslySetInnerHTML={{ __html: colourSchemeScript }} />
@@ -425,7 +425,7 @@ Two states, light and dark. The stored choice wins; with nothing stored the syst
 3. **Place the toggle** wherever the header wants it:
 
    ```tsx
-   import { ColourSchemeToggle } from "@hackcove/ui-react";
+   import { ColourSchemeToggle } from "@slashsuite/ui-react";
 
    <ColourSchemeToggle onChange={(scheme) => track(scheme)} />;
    ```
@@ -445,7 +445,7 @@ Two states, light and dark. The stored choice wins; with nothing stored the syst
    scheme from a cookie and whose light theme has a scope class passes both:
 
    ```tsx
-   import { ColourSchemeToggle, schemeClass } from "@hackcove/ui-react";
+   import { ColourSchemeToggle, schemeClass } from "@slashsuite/ui-react";
 
    const schemes = { light: "my-light", dark: "dark" }; // default: { light: "", dark: "dark" }
 

@@ -1,4 +1,4 @@
-import { Code, MetaList, TextLink, type LinkAdapter, LinkProvider } from "@hackcove/ui-react";
+import { Code, MetaList, TextLink, type LinkAdapter, LinkProvider } from "@slashsuite/ui-react";
 
 /** Stands in for a router's <Link>: the app's adapter, set once on a `LinkProvider`. */
 const FakeLink: LinkAdapter = ({ href, ...rest }) => <a {...rest} href={`#${href}`} />;

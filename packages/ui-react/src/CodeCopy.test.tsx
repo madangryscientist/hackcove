@@ -84,8 +84,8 @@ describe("the copy button on a code block", () => {
         copy
         language="console"
         lines={[
-          "$ bun add @hackcove/ui-react",
-          "installed @hackcove/ui-react@0.1.0",
+          "$ bun add @slashsuite/ui-react",
+          "installed @slashsuite/ui-react@0.1.0",
           "$ bunx playwright test \\",
           "  --project=chromium",
           "2 passed",
@@ -94,7 +94,7 @@ describe("the copy button on a code block", () => {
     );
     await pressCopy();
     expect(writeText).toHaveBeenCalledExactlyOnceWith(
-      "bun add @hackcove/ui-react\nbunx playwright test \\\n  --project=chromium",
+      "bun add @slashsuite/ui-react\nbunx playwright test \\\n  --project=chromium",
     );
   });
 

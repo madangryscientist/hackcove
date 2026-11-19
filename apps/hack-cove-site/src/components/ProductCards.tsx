@@ -13,7 +13,7 @@ import {
   Section,
   Stack,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { site } from "../content/site";
 import type { Product, Status } from "../content/site";
 

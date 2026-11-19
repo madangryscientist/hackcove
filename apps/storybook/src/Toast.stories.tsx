@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { Button, Callout, Stack, Text, type Toast, ToastRegion } from "@hackcove/ui-react";
+import { Button, Callout, Stack, Text, type Toast, ToastRegion } from "@slashsuite/ui-react";
 
 const meta: Meta = {
   title: "Feedback/Toast",

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, ButtonGroup } from "@hackcove/ui-react";
+import { Button, ButtonGroup } from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Actions/Button", parameters: { layout: "padded" } };
 export default meta;

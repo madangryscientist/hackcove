@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Code, Step, Steps } from "@hackcove/ui-react";
+import { Code, Step, Steps } from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Content/Steps" };
 export default meta;

@@ -17,7 +17,7 @@ import {
   Select,
   SubsectionHeading,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { GalleryBars } from "./GalleryBars";
 import { GalleryControls } from "./GalleryControls";
 import { GalleryButtons } from "./GalleryButtons";
@@ -277,7 +277,7 @@ export const gallerySections: GallerySection[] = [
   },
 ];
 
-/** Every component in @hackcove/ui-react, once each. Colour comes from the components and the theme only. */
+/** Every component in @slashsuite/ui-react, once each. Colour comes from the components and the theme only. */
 export function Gallery() {
   return (
     <div className="flex max-w-3xl flex-col gap-6">

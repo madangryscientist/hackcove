@@ -1,7 +1,7 @@
 # Contributing to uislash
 
-Thanks for looking. This repo is the UISlash design system: React components (`@hackcove/ui-react`) and
-the themes (`@hackcove/themes`, one CSS file per theme), each its own npm package, in a moon +
+Thanks for looking. This repo is the UISlash design system: React components (`@slashsuite/ui-react`) and
+the themes (`@slashsuite/themes`, one CSS file per theme), each its own npm package, in a moon +
 Bun-workspaces monorepo. By taking part you agree to the [Code of Conduct](CODE_OF_CONDUCT.md). For
 a security problem, follow [SECURITY.md](SECURITY.md) instead of opening an issue.
 
@@ -38,9 +38,9 @@ themes** shows every component in every theme on one page.
 
 | Folder | Package | What it is |
 | --- | --- | --- |
-| `packages/ui-react` | `@hackcove/ui-react` | The components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, react-dom, tailwindcss v4. No theme CSS. |
-| `themes` | `@hackcove/themes` | One CSS file per theme, `<id>.css`, shipped as-is. |
-| `packages/oxlint-testing` | `@hackcove/oxlint-testing` | The shared oxlint config and plugin for UI tests. Its fixture suite is its `test`; `bun run lint:testing` reports what it finds in this repo. |
+| `packages/ui-react` | `@slashsuite/ui-react` | The components. Builds to `dist/` (ESM + `.d.ts`). Peers: react, react-dom, tailwindcss v4. No theme CSS. |
+| `themes` | `@slashsuite/themes` | One CSS file per theme, `<id>.css`, shipped as-is. |
+| `packages/oxlint-testing` | `@slashsuite/oxlint-testing` | The shared oxlint config and plugin for UI tests. Its fixture suite is its `test`; `bun run lint:testing` reports what it finds in this repo. |
 | `apps/storybook` | (private) | Storybook and the Playwright e2e. |
 | `packages/themes-shared` | (private) | How Storybook and the docs find the themes: the `themes/*.css` glob, the theme ids and each theme's scope class. |
 | `apps/hack-cove-site` | (private) | The hack-cove.com Astro site, including the `/ui/` component docs; run it with `bunx moon run hack-cove-site:dev` (http://localhost:4321). Its e2e is `bunx moon run hack-cove-site:e2e`. |
@@ -62,13 +62,13 @@ bunx moon run hack-cove-site:e2e                 # Playwright: builds the site, 
 moon runs every task through the cache, so an unchanged project is a cache hit; `--force` reruns
 one anyway. Lint rules are all errors: fix the code, do not disable a rule.
 
-The shared testing lint (`@hackcove/oxlint-testing`) is part of `ui-react`'s, `storybook`'s and
+The shared testing lint (`@slashsuite/oxlint-testing`) is part of `ui-react`'s, `storybook`'s and
 `hack-cove-site`'s `lint`, so a ui-react test that walks the DOM, or a Storybook or site spec that
 finds an element by CSS, branches or waits on a style, fails the gate. For every other project, `bun run lint:testing` reports, per
 project and per rule, what it finds in the tests, and always exits 0. Each project moves into its own
 `lint` once its count is 0 (`packages/oxlint-testing/README.md`).
 
-**Nothing is time dependent.** Jacobus, 2026-11-14: "The architecture of the test is wrong if it relies on timings for displaying it. We should be able to pass it in a value and then render that. It should not be time dependent. The component itself should not be time dependent." A component renders from the value it is given, and a test passes that value and asserts what renders. No fake timers, no waiting on a delay, no story driven by a timer, no `waitForTimeout` in an e2e spec. A visual delay, a fade or a label that reverts is CSS (an animation and its delay), as `CopyButton` and `NavigationProgress` do; a pending state is a value the story holds (a promise that never settles, or a button that lands it). The lint (`scripts/slopRules.ts`) fails a test, story or e2e file that uses a fake or real timer, and a `@hackcove/ui-react` component that calls `setTimeout` or `setInterval`; a line with `// time-dependent: <why>` on it or above it is exempt, and needs a reason a reviewer accepts.
+**Nothing is time dependent.** Jacobus, 2026-11-14: "The architecture of the test is wrong if it relies on timings for displaying it. We should be able to pass it in a value and then render that. It should not be time dependent. The component itself should not be time dependent." A component renders from the value it is given, and a test passes that value and asserts what renders. No fake timers, no waiting on a delay, no story driven by a timer, no `waitForTimeout` in an e2e spec. A visual delay, a fade or a label that reverts is CSS (an animation and its delay), as `CopyButton` and `NavigationProgress` do; a pending state is a value the story holds (a promise that never settles, or a button that lands it). The lint (`scripts/slopRules.ts`) fails a test, story or e2e file that uses a fake or real timer, and a `@slashsuite/ui-react` component that calls `setTimeout` or `setInterval`; a line with `// time-dependent: <why>` on it or above it is exempt, and needs a reason a reviewer accepts.
 
 Stop a process by the pid you started or by its port. Never `pkill -f` or `killall` a word such as storybook, moon, bun or vite: a shared machine can be running someone else's capture or upload.
 
@@ -90,7 +90,7 @@ classic compiler API for it to parse them with.
 
 ## Rules of the repo
 
-1. **`@hackcove/ui-react` carries no theme.** Components use stock Tailwind utilities (`bg-white`,
+1. **`@slashsuite/ui-react` carries no theme.** Components use stock Tailwind utilities (`bg-white`,
    `text-slate-900`, …) and never a `dark:` variant or a palette colour. A theme is the only place
    a palette lives; it remaps those utilities under its own scope class. The colour utilities a
    component may use are listed in `packages/ui-react/palette.json`. A new one is a palette change: add
@@ -98,10 +98,10 @@ classic compiler API for it to parse them with.
    components render in Tailwind's own default colours; that works, but it is only what a theme
    remaps, not a look the repo designs or checks, so Storybook offers no unthemed choice.
 2. **A theme is a file and nothing else registers it.** No theme name appears in code.
-3. **Almost no runtime dependencies.** `@hackcove/ui-react` has one approved dependency,
+3. **Almost no runtime dependencies.** `@slashsuite/ui-react` has one approved dependency,
    `react-aria-components` (with `@internationalized/date`), for the date picker; its peers are react,
    react-dom and tailwindcss v4, plus `@types/react` and `@types/react-dom` as optional peers (types only, so a consumer's
-   tsc resolves `react` under strict linkers). `@hackcove/themes` has only the tailwindcss peer. A new dependency needs a
+   tsc resolves `react` under strict linkers). `@slashsuite/themes` has only the tailwindcss peer. A new dependency needs a
    maintainer's agreement first.
 4. **Source imports in `packages/ui-react` use `.js` specifiers** (`./Card.js`, resolved to `Card.tsx`),
    because a `.tsx` specifier is emitted into the `.d.ts` and breaks consumers' types.

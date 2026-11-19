@@ -2,7 +2,7 @@
 /* ---------------------------------------------------------------------------
    Slash suite dark: the dark theme of the Slash suite, on the Slash Night ground.
    ---------------------------------------------------------------------------
-   The @hackcove/ui-react components are written against Tailwind's slate/colour
+   The @slashsuite/ui-react components are written against Tailwind's slate/colour
    utilities directly (bg-white, text-slate-900, …) rather than carrying `dark:`
    variants. This file is what makes them dark: it remaps those core utilities
    under `.slash-suite-dark`. The rules are unlayered, so they override
@@ -411,7 +411,7 @@
   border-color: rgba(137, 180, 250, 0.4);
 }
 
-/* Inline links: peach (green is reserved for positive values). Alias of @hackcove/ui-react's
+/* Inline links: peach (green is reserved for positive values). Alias of @slashsuite/ui-react's
    TextLink (text-violet-600, hover:text-violet-700, remapped above), kept for consumers that still
    write class="link" on a bare <a>. */
 .slash-suite-dark .link {

@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { Button, Card, CardGrid, Morph, startPageTransition, Text } from "@hackcove/ui-react";
+import { Button, Card, CardGrid, Morph, startPageTransition, Text } from "@slashsuite/ui-react";
 
 const items = [
   { id: "one", title: "Shop one", text: "Denim and boots." },

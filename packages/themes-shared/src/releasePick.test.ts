@@ -9,7 +9,7 @@ import {
 
 // The release workflow's "Pick" step (scripts/releasePick.ts). The facts are what git and npm
 // report for one project; each case is a state a real package goes through.
-const name = "@hackcove/oxlint-testing";
+const name = "@slashsuite/oxlint-testing";
 const facts = (over: Partial<Facts>): Facts => ({
   name,
   tagged: true,
@@ -39,6 +39,10 @@ describe("releasePick: classify", () => {
   it("files a rename that carries its predecessor's tag as renamed", () => {
     // The copied tag points at a commit where the folder held the old package, or nothing.
     expect(classify(facts({ nameAtLastTag: "@hackcove/ui", npmVersions: null }))).toBe("renamed");
+    // A scope move keeps the project name and its tag, so the same rule files it as renamed.
+    expect(classify(facts({ nameAtLastTag: "@hackcove/oxlint-testing", npmVersions: null }))).toBe(
+      "renamed",
+    );
     expect(classify(facts({ nameAtLastTag: null, npmVersions: null }))).toBe("renamed");
   });
 });
@@ -48,7 +52,7 @@ describe("releasePick: pick and needsToken", () => {
     const sets = pick([
       {
         project: "ui-react",
-        facts: facts({ name: "@hackcove/ui-react", nameAtLastTag: "@hackcove/ui-react" }),
+        facts: facts({ name: "@slashsuite/ui-react", nameAtLastTag: "@slashsuite/ui-react" }),
       },
       { project: "oxlint-testing", facts: facts({ npmVersions: [stagePlaceholder] }) },
     ]);

@@ -12,7 +12,7 @@ import {
   RadioGroup,
   Stack,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Forms/Fieldset" };
 export default meta;

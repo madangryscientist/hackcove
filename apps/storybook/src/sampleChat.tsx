@@ -11,7 +11,7 @@ import {
   Markdown,
   Pill,
   Stack,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const noop = () => undefined;
 

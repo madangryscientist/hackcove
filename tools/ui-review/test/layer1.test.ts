@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { ctx, diffOf, run } from "./fixtures.js";
 
-const CLEAN = `import { Card, Stack } from "@hackcove/ui-react";
+const CLEAN = `import { Card, Stack } from "@slashsuite/ui-react";
 
 export function Page() {
   return (
@@ -22,7 +22,7 @@ describe("a clean diff", () => {
   it("passes a stylesheet that only wires Tailwind and a theme in", () => {
     const lines = [
       '@import "tailwindcss";',
-      '@import "@hackcove/themes/some-theme.css";',
+      '@import "@slashsuite/themes/some-theme.css";',
       '@source "../";',
     ];
     expect(run(diffOf({ path: "src/app.css", isNew: true, lines }))).toEqual([]);
@@ -34,13 +34,13 @@ describe("a clean diff", () => {
       "",
       "/* The theme comes from the uislash repo (a sibling checkout,",
       "   uislash repo, ~/dev/uislash), so the palette stays in one place. */",
-      '@import "@hackcove/themes/some-theme.css";',
+      '@import "@slashsuite/themes/some-theme.css";',
       "",
       "/*",
       "   Tailwind scans the app and the ui package for utilities",
       "   it has to generate.",
       "*/",
-      '@source "../../../node_modules/@hackcove/ui-react/dist";',
+      '@source "../../../node_modules/@slashsuite/ui-react/dist";',
     ];
     expect(run(diffOf({ path: "src/styles.css", isNew: true, lines }))).toEqual([]);
   });
@@ -129,7 +129,7 @@ describe("new-css and style-block", () => {
 });
 
 describe("styling-prop", () => {
-  const source = `import { Button, Card as Panel } from "@hackcove/ui-react";
+  const source = `import { Button, Card as Panel } from "@slashsuite/ui-react";
 import { Local } from "./Local";
 
 export const a = (

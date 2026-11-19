@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { type BarTone, Caption, Cluster, ProgressBar, Stack, Text } from "@hackcove/ui-react";
+import { type BarTone, Caption, Cluster, ProgressBar, Stack, Text } from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Data/ProgressBar", parameters: { layout: "padded" } };
 export default meta;

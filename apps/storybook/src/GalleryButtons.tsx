@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, ColourSchemeToggle, IconButton, Menu } from "@hackcove/ui-react";
+import { Button, ButtonGroup, ColourSchemeToggle, IconButton, Menu } from "@slashsuite/ui-react";
 
 const noop = () => undefined;
 

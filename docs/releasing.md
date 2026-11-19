@@ -1,6 +1,6 @@
 # Releasing
 
-Maintainer notes for publishing the `@hackcove/*` packages. Contributors do not need any of this: a
+Maintainer notes for publishing the `@slashsuite/*` packages. Contributors do not need any of this: a
 release is started by a maintainer, from Actions, whenever one is needed. Every release is a
 pre-release: versions stay `0.x`.
 
@@ -116,7 +116,7 @@ other step sees it. If a project needs staging and `NPM_TOKEN` is unset, the wor
 it versions, tags or pushes anything, and names the project.
 
 1. On npmjs.com, make a granular access token: "Read and write (publish and stage)" on the
-   `@hackcove` packages, bypass 2FA off. (npm's changelog of 2026-07-08: tokens that bypass 2FA
+   `@slashsuite` packages (the token must cover the new scope), bypass 2FA off. (npm's changelog of 2026-07-08: tokens that bypass 2FA
    stop publishing directly around January 2027; staging needs no bypass.)
 2. `gh secret set NPM_TOKEN --env npm-publish` (paste the token when prompted).
 3. Run the workflow with `dry_run` on and read the log: the version (`0.1.0`), the tag
@@ -168,11 +168,13 @@ that restarts at the first commit.
    the new version; with no token it stops before it versions anything. Run a dry run first, then
    the real release, then approve the staged version on npmjs.com as in step 4 there.
 4. **Trusted publisher, afterwards.** On npmjs.com add the trusted publisher for
-   `@hackcove/ui-react` (workflow `publish.yml`, environment `npm-publish`). From then on the
+   `@slashsuite/ui-react` (workflow `publish.yml`, environment `npm-publish`). From then on the
    package is *tagged* and goes through OIDC.
 5. **The old package.** `@hackcove/ui` stays on npm at `0.7.1`; whether to `npm deprecate` it, with a
-   message pointing at `@hackcove/ui-react`, is the maintainer's call, made after the first
+   message pointing at `@slashsuite/ui-react`, is the maintainer's call, made after the first
    `ui-react` release. Its trusted publisher is no longer needed.
 
 For the next rename of a published package: rename the folder, the `name` and the Nx project name in
 the same commit as a `!` commit, add the tag copy above, and follow 2 to 5.
+
+A move of scope (`@hackcove` to `@slashsuite`) is a rename that keeps the project name. The folder, the moon and Nx project name and the tags (`ui-react@0.11.3`) stay, so no tag copy is needed: the next release computes its bump from the commits since the last tag, and the workflow files the package as renamed and stages it under the new scope. The `@slashsuite` npm org has to exist (it does, created 2026-11-19) and the token has to cover the new scope, not only the old one, or the staging step fails before it versions anything.

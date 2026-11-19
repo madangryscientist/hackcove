@@ -1,4 +1,17 @@
-# Migrating @hackcove/ui-react
+# Migrating @slashsuite/ui-react
+
+## @hackcove is now @slashsuite: the npm scope moves
+
+If the app is still on 0.10, run the codemod (below, "Running the codemod") first: it matches imports from `@hackcove/ui-react`, so after the swap it finds nothing and says nothing.
+
+Every Slash package moves from the `@hackcove` npm scope to `@slashsuite`, and keeps the part after the scope:
+`@hackcove/ui-react` is `@slashsuite/ui-react`, `@hackcove/themes` is `@slashsuite/themes`. There is no alias
+package and no re-export. The old names stay on npm at their last version.
+
+1. Swap the dependencies: `bun remove @hackcove/ui-react @hackcove/themes && bun add @slashsuite/ui-react @slashsuite/themes`.
+2. Find and replace the import specifier `"@hackcove/ui-react"` with `"@slashsuite/ui-react"`, and the theme path
+   `@hackcove/themes/` with `@slashsuite/themes/` (in the CSS `@import`).
+3. Change the Tailwind `@source` path to `node_modules/@slashsuite/ui-react/dist`.
 
 ## 0.10 to 0.11: one API pass
 
@@ -402,7 +415,7 @@ not flag it**: `size="2xl"` still compiles and now draws 64px, not 96px.
 New, nothing to change: `Avatar` takes `onClick` (the whole avatar becomes one button, named by `name`);
 `MediaTile` takes `aspect="natural"` and `onRemove`; `Image` takes `aspect="natural"` and `framed`
 (a white mat that stays white in every theme). A theme of your own needs one rule for the mat, as
-the `@hackcove/themes` files have:
+the `@slashsuite/themes` files have:
 `.your-scope .bg-white\/100 { background-color: #ffffff; }`.
 
 `AppShell` renders its own `<main>`, so a page inside it must not render another; a page's root is a `<div>` or a fragment.

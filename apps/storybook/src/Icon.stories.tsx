@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Caption, Icon, Stack, Text } from "@hackcove/ui-react";
+import { Button, Caption, Icon, Stack, Text } from "@slashsuite/ui-react";
 import { iconIdeas, iconNames } from "./iconIdeas.js";
 
 const meta: Meta = { title: "Actions/Icon" };

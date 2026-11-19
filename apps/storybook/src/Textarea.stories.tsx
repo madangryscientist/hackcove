@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, Field, Input, Textarea } from "@hackcove/ui-react";
+import { Button, Field, Input, Textarea } from "@slashsuite/ui-react";
 import { CompactApp } from "./typeSteps";
 
 const meta: Meta = { title: "Forms/Textarea" };

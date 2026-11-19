@@ -22,7 +22,7 @@ import {
   Steps,
   Text,
   TextLink,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import type { Claim } from "../content/claims";
 import { site } from "../content/site";
 

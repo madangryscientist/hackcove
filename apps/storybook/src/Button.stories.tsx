@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Button, ButtonGroup } from "@hackcove/ui-react";
+import { Button, ButtonGroup } from "@slashsuite/ui-react";
 import { CompactApp } from "./typeSteps";
 
 const meta: Meta = { title: "Actions/Button" };
@@ -296,7 +296,7 @@ export const AsLink: S = {
     </div>
   ),
 };
-/** An in-app `href` is drawn by the app's router Link through `LinkProvider`; here a stand-in. No router lives in @hackcove/ui-react. */
+/** An in-app `href` is drawn by the app's router Link through `LinkProvider`; here a stand-in. No router lives in @slashsuite/ui-react. */
 export const WithRouterLink: S = {
   render: () => <Button href="/quotes">New quote</Button>,
 };

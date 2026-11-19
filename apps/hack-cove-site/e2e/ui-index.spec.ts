@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { themeScope } from "@hackcove/themes-shared/scope";
+import { themeScope } from "@slashsuite/themes-shared/scope";
 import { themeList } from "./scheme";
 
 // The Getting started page's theme list, as a reader sees it: it is read from themes/*.css, so its
@@ -14,7 +14,7 @@ test("/ui/: one table row per theme, each with its import and its class, and no 
   const table = page.getByRole("region", { name: "Themes", exact: true }).getByRole("table");
   await expect(table.getByRole("row")).toHaveCount(themeList.length + 1);
   for (const theme of themeList) {
-    const specifier = `@hackcove/themes/${theme.id}.css`;
+    const specifier = `@slashsuite/themes/${theme.id}.css`;
     const scope = themeScope(theme.css) ?? "";
     expect(scope, `${theme.id}: no scope class in its CSS`).not.toBe("");
     const row = table.getByRole("row").filter({ hasText: specifier });

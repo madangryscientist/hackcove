@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Overline } from "@hackcove/ui-react";
+import { Overline } from "@slashsuite/ui-react";
 import { ThemeFrame, themeNames } from "../.storybook/themes";
 
 /** Every theme side by side, each in its own frame with its name over `children`. */

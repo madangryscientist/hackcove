@@ -9,7 +9,7 @@ import {
   SectionHeading,
   Stack,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { ProseDoc } from "./ProseDoc";
 
 const meta: Meta = { title: "Text/Prose" };
@@ -68,9 +68,9 @@ export const CodeExampleInProse: S = {
             </Stack>
           </CodeExample>
           <CodeBlock label="bash" language="bash">
-            bun add @hackcove/ui-react
+            bun add @slashsuite/ui-react
           </CodeBlock>
-          <CopyLine text="bun add @hackcove/themes" />
+          <CopyLine text="bun add @slashsuite/themes" />
         </Stack>
       </Prose>
     </div>

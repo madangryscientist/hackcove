@@ -47,7 +47,7 @@ export type ComponentPage = {
   /**
    * Exports that are functions, not components (`fromISODate`, `schemeClass`), each with a line on
    * what it is for. A page lists a component under `api`, a function here or a type under `types`;
-   * every export of `@hackcove/ui-react`, value or type, is on exactly one page.
+   * every export of `@slashsuite/ui-react`, value or type, is on exactly one page.
    */
   functions?: {
     name: string;

@@ -1,6 +1,6 @@
 import { globSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { themeFiles } from "@hackcove/themes-shared/files";
+import { themeFiles } from "@slashsuite/themes-shared/files";
 import { describe, expect, it } from "vitest";
 import { GALLERY_TITLE, groupStories, planCapture, readRepo } from "./visual-plan.js";
 import { referenceOf } from "./theme-reach.js";

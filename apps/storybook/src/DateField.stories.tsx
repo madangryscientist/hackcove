@@ -11,7 +11,7 @@ import {
   Stack,
   Text,
   toISODate,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 
 /**

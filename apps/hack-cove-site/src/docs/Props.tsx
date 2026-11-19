@@ -7,7 +7,7 @@ import {
   Stack,
   SubsectionHeading,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 import propsJson from "../../../../packages/ui-react/docs/props.json";
 import typesJson from "../../../../packages/ui-react/docs/types.json";
 import { InlineCode } from "./InlineCode.js";

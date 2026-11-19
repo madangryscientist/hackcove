@@ -1,4 +1,4 @@
-import { themeId } from "@hackcove/themes-shared/ids";
+import { themeId } from "@slashsuite/themes-shared/ids";
 
 const THEME = /^themes\/(.*)$/;
 

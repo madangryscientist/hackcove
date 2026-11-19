@@ -13,7 +13,7 @@ import {
   componentSections,
 } from "../../../packages/ui-react/docs/components/index";
 import { type Person, sectionOf, site } from "../src/content/site";
-import { themeFiles } from "@hackcove/themes-shared/files";
+import { themeFiles } from "@slashsuite/themes-shared/files";
 import { themes } from "../src/content/themes";
 import { must } from "./must";
 
@@ -321,7 +321,7 @@ describe("the UISlash page", () => {
   test("it shows the install commands and the GitHub and npm links", () => {
     // The command is coloured, so its runs sit in spans: compare the text, not the markup.
     const text = html.replace(/<[^>]+>/g, "").replaceAll("&quot;", '"');
-    expect(text).toContain("bun add @hackcove/ui-react @hackcove/themes");
+    expect(text).toContain("bun add @slashsuite/ui-react @slashsuite/themes");
     expect(text).toContain('@import "tailwindcss";');
     for (const link of site.ui.links.items) expect(html).toContain(`href="${link.href}"`);
     expect(html).toContain(site.ui.docs.text.replaceAll("'", "&#x27;"));

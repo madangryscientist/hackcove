@@ -1,7 +1,7 @@
-# @hackcove/themes
+# @slashsuite/themes
 
 The UISlash themes, all in one package. Each theme is one CSS file with its own scope class, and
-each remaps the Tailwind slate/colour utilities that `@hackcove/ui-react` is written against to its
+each remaps the Tailwind slate/colour utilities that `@slashsuite/ui-react` is written against to its
 own tokens. Each also ships a `.link` class.
 
 | Theme | File | Scope | |
@@ -19,7 +19,7 @@ Status: `0.x`. License: MIT.
 ## Install
 
 ```sh
-bun add @hackcove/themes
+bun add @slashsuite/themes
 # peer: tailwindcss ^4
 ```
 
@@ -29,7 +29,7 @@ In your global stylesheet, after Tailwind, import the theme's file:
 
 ```css
 @import "tailwindcss";
-@import "@hackcove/themes/catppuccin-mocha.css";
+@import "@slashsuite/themes/catppuccin-mocha.css";
 ```
 
 and put its scope class on `<html>` (`class="dark"` here). Import one theme, or several and switch
@@ -57,7 +57,7 @@ file here. Run it with `bunx moon run themes:test`. The repo's
 
 ## Colours for chrome the kit cannot draw
 
-Some third-party DOM is not made of `@hackcove/ui-react` parts, so it cannot take a utility: a
+Some third-party DOM is not made of `@slashsuite/ui-react` parts, so it cannot take a utility: a
 MapLibre popup or control, a map marker. Each theme therefore sets fourteen custom properties on its scope,
 each equal to the value that theme's remap gives the utility named beside it:
 

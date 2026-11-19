@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Card, CardGrid, Pill, Text } from "@hackcove/ui-react";
+import { Card, CardGrid, Pill, Text } from "@slashsuite/ui-react";
 
 /** Card's `icon`, apart from Card.stories.tsx so each file stays short. */
 const meta: Meta = { title: "Content/Card" };

@@ -8,7 +8,7 @@ import {
   SideColumn,
   Stack,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 /** A main area beside a fixed-width side column from `lg`; the aside stacks under the main area below it. */
 const meta: Meta = { title: "Layout/SideColumn", parameters: { layout: "padded" } };

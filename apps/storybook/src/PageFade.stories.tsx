@@ -7,7 +7,7 @@ import {
   Stack,
   startPageTransition,
   Text,
-} from "@hackcove/ui-react";
+} from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Feedback/PageFade" };
 export default meta;

@@ -1,5 +1,5 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
-import { themeFiles } from "@hackcove/themes-shared/files";
+import { themeFiles } from "@slashsuite/themes-shared/files";
 
 /**
  * AppShell on a phone (390px), in every theme: the nav and the subnav are behind one Menu button,
