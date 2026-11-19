@@ -37,7 +37,9 @@ function GroupHeading({ heading, link }: { heading: string; link: CvLink | undef
   return (
     <Text strong>
       {heading.slice(0, at)}
-      <TextLink href={link.href}>{link.label}</TextLink>
+      <TextLink href={link.href} underline>
+        {link.label}
+      </TextLink>
       {heading.slice(at + link.label.length)}
     </Text>
   );

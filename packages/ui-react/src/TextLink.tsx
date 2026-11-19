@@ -23,6 +23,10 @@ const toneClass = (tone: Exclude<TextTone, "neutral">): string =>
  */
 export const linkStretchClass = "link-stretch after:absolute after:inset-0";
 
+// The tone's colour, or the accent with its hover shade.
+const colourClass = (tone: TextTone | undefined): string =>
+  tone && tone !== "neutral" ? toneClass(tone) : linkClass;
+
 /** A TextLink's pinned type size, on the `Size` scale; left out, it takes the size of the text around it. */
 export type TextLinkSize = Size;
 
@@ -49,6 +53,8 @@ type TextLinkProps = {
   external?: boolean | undefined;
   /** The link covers its nearest `relative` ancestor, so the whole row or card is the click target. */
   stretch?: boolean | undefined;
+  /** Always underlined, for a link set inside running text, where colour alone does not mark it (WCAG 1.4.1). */
+  underline?: boolean | undefined;
   /** Where the link goes; an in-app path goes through the app's `LinkProvider`. */
   href: string;
 } & Unstyled<Omit<ComponentPropsWithoutRef<"a">, "href">>;
@@ -65,6 +71,7 @@ export function TextLink({
   mono = false,
   external = false,
   stretch = false,
+  underline = false,
   href,
   children,
   ...rest
@@ -74,10 +81,11 @@ export function TextLink({
     href,
     external,
     className: cx(
-      tone && tone !== "neutral" ? toneClass(tone) : linkClass,
+      colourClass(tone),
       size && SIZE[size],
       mono && "font-mono",
       stretch && linkStretchClass,
+      underline && "underline",
     ),
     children,
   });
