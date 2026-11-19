@@ -41,8 +41,6 @@ export type Section = {
   summary: string;
   /** The link text into the section. */
   cta: string;
-  /** Other paths that belong to this section, so its tab stays current there. */
-  alsoPaths?: string[];
   /** The page's meta description. */
   description: string;
 };
@@ -56,7 +54,6 @@ const sections: Section[] = [
     navLabel: "Contracting",
     summary: "Design and engineering for small businesses, focusing on prototyping.",
     cta: "About contracting",
-    alsoPaths: ["/cv/"],
     description:
       "Hack Cove designs and engineers software for small businesses, focusing on prototyping.",
   },
@@ -85,6 +82,12 @@ const sections: Section[] = [
       "PixelSlash is a visual review tool: it screenshots your main branch and your branch, sets real change apart from rendering noise, and shows a report cropped to what moved. Free, source available under the Elastic License 2.0, on npm.",
   },
 ];
+
+/** A header tab: a section, or a page that is a tab without being a section (the CV). */
+export type NavTab = Pick<Section, "navLabel" | "href">;
+
+/** The header tabs, in order: the three sections, then the CV. */
+const nav: NavTab[] = [...sections, { navLabel: "CV", href: "/cv/" }];
 
 /** One section by its slug, for the page that is that section. */
 export function sectionOf(slug: Section["slug"]): Section {
@@ -118,6 +121,9 @@ export const site = {
 
   /** The three sections, in the order of the header tabs. */
   sections,
+
+  /** The header tabs: the sections, then the CV. */
+  nav,
 
   /** The top of the home page, above the cards. */
   home,

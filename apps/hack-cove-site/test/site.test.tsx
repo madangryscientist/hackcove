@@ -84,19 +84,19 @@ const wordsOf = (fragment: string) =>
 const hrefs = (html: string) => [...html.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
 
 describe("sections", () => {
-  test("the header nav links to the three sections", () => {
+  test("the header nav links to the three sections, then the CV", () => {
     const html = renderToStaticMarkup(<SiteNav pathname="/" />);
-    expect(hrefs(html)).toEqual(["/contracting/", "/ui/", "/pixelslash/"]);
+    expect(hrefs(html)).toEqual(["/contracting/", "/ui/", "/pixelslash/", "/cv/"]);
     expect(html).not.toContain("aria-current");
   });
 
   test.each([
     ["/contracting/", "Contracting"],
     ["/contracting", "Contracting"],
-    ["/cv/", "Contracting"],
+    ["/cv/", "CV"],
     ["/ui/", "UI"],
     ["/pixelslash/", "PixelSlash"],
-  ])("%s marks %s as the current section", (pathname, label) => {
+  ])("%s marks %s as the current tab", (pathname, label) => {
     const html = renderToStaticMarkup(<SiteNav pathname={pathname} />);
     expect(html.match(/aria-current="page"/g)).toHaveLength(1);
     expect(html).toMatch(new RegExp(`aria-current="page"[^>]*>${label}<`));

@@ -3,7 +3,7 @@ import { site } from "../src/content/site";
 
 // Every page shares the one AppShell header, so one page proves its phone menu; how each page's
 // header looks in each theme is the visual check's.
-test("on a phone the section nav is behind the Menu button, and every section is reachable", async ({
+test("on a phone the section nav is behind the Menu button, and every tab is reachable", async ({
   page,
 }) => {
   await page.goto("/");
@@ -15,8 +15,8 @@ test("on a phone the section nav is behind the Menu button, and every section is
   await button.click();
   await expect(menu).toHaveJSProperty("open", true);
   const links = menu.getByRole("link");
-  await expect(links, "the menu lists every section").toHaveCount(site.sections.length);
-  for (const [index, { navLabel }] of site.sections.entries()) {
+  await expect(links, "the menu lists every tab").toHaveCount(site.nav.length);
+  for (const [index, { navLabel }] of site.nav.entries()) {
     await expect(links.nth(index)).toHaveText(navLabel);
     await expect(links.nth(index)).toBeInViewport({ ratio: 1 });
   }
