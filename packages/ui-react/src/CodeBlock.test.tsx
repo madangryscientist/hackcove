@@ -1,7 +1,35 @@
 // @vitest-environment jsdom
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { CodeBlock } from "./CodeBlock.js";
-import { render, screen, within } from "./render.harness.js";
+import { render, screen, user, within } from "./render.harness.js";
+
+afterEach(() => {
+  Reflect.deleteProperty(HTMLElement.prototype, "scrollWidth");
+  Reflect.deleteProperty(HTMLElement.prototype, "clientWidth");
+  vi.unstubAllGlobals();
+});
+
+/** jsdom has no layout and no ResizeObserver: say how wide every box's content is and how much shows. */
+function overflowing(scrollWidth: number, clientWidth: number) {
+  Object.defineProperty(HTMLElement.prototype, "scrollWidth", {
+    configurable: true,
+    value: scrollWidth,
+  });
+  Object.defineProperty(HTMLElement.prototype, "clientWidth", {
+    configurable: true,
+    value: clientWidth,
+  });
+  vi.stubGlobal(
+    "ResizeObserver",
+    class {
+      constructor(private readonly notify: () => void) {}
+      observe() {
+        this.notify();
+      }
+      disconnect() {}
+    },
+  );
+}
 
 describe("CodeBlock", () => {
   it("shows a string as code, newlines kept", () => {
@@ -53,6 +81,30 @@ describe("CodeBlock", () => {
   it("has no caption without a label: the figure holds the code alone", () => {
     render(<CodeBlock>x</CodeBlock>);
     expect(screen.getByRole("figure").textContent).toBe("x");
+  });
+
+  it("a scrolling strip with a label is a tab stop named by that label", async () => {
+    overflowing(900, 300);
+    render(
+      <CodeBlock label="bash" overflow="scroll">
+        {"bun install --frozen-lockfile --verbose --dry-run --some-very-long-flag-name"}
+      </CodeBlock>,
+    );
+    await user().tab();
+    const stop = document.activeElement;
+    expect(stop).toBe(screen.getByRole("group", { name: "bash" }));
+    expect(stop?.getAttribute("tabindex")).toBe("0");
+  });
+
+  it("a scrolling strip with no label is a tab stop named Code", async () => {
+    overflowing(900, 300);
+    render(
+      <CodeBlock overflow="scroll">
+        {"bun install --frozen-lockfile --verbose --dry-run --some-very-long-flag-name"}
+      </CodeBlock>,
+    );
+    await user().tab();
+    expect(document.activeElement).toBe(screen.getByRole("group", { name: "Code" }));
   });
 
   it("has no copy button, and so no client JS, unless `copy` is set", () => {

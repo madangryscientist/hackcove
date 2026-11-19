@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef, ReactElement } from "react";
+import { type ComponentPropsWithoutRef, type ReactElement, useId } from "react";
 import { CodeBody } from "./CodeBody.js";
 import type { CodeLanguage } from "./highlight.js";
 import type { Unstyled } from "./props.js";
@@ -25,7 +25,8 @@ type CodeBlockSource =
  * `$ `. `label` names the language or file (`bash`, `css`) in a caption above the code. `text` (the
  * default) leaves the code in one colour, for a block that is not a language. Give the text as `children` or as `lines`. Long lines wrap, so
  * nothing is cut off and a command stays one copyable line; `overflow="scroll"` keeps lines whole
- * and scrolls them sideways under a thin themed scrollbar, for code whose layout matters. Every
+ * and scrolls them sideways under a thin themed scrollbar, for code whose layout matters. With
+ * `overflow="scroll"`, a strip wider than its box is a tab stop named by `label`, else "Code". Every
  * other figure prop goes on the root `<figure>`. For one short line to copy, `CopyLine` is the
  * smaller box.
  */
@@ -56,13 +57,17 @@ export function CodeBlock({
   copy?: boolean;
 } & CodeBlockSource &
   Unstyled<Omit<ComponentPropsWithoutRef<"figure">, "children">>): ReactElement {
+  const captionId = useId();
   return (
     <figure
       {...rest}
       className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50 font-mono text-[12.5px] leading-normal text-slate-900"
     >
       {label && (
-        <figcaption className="border-b border-slate-200 px-3 py-1.5 text-xs text-slate-500">
+        <figcaption
+          id={captionId}
+          className="border-b border-slate-200 px-3 py-1.5 text-xs text-slate-500"
+        >
           {label}
         </figcaption>
       )}
@@ -71,6 +76,7 @@ export function CodeBlock({
         language={language}
         wrap={overflow === "wrap"}
         copy={copy}
+        labelledBy={label ? captionId : undefined}
       />
     </figure>
   );
