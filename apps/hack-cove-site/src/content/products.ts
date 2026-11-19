@@ -1,5 +1,7 @@
 /* The home page's words and its products, apart from site.ts so each file stays short. */
 
+import type { Claim } from "./claims";
+
 /** How far along a product is: its label and the tone of its pill. */
 export type Status = "available" | "early-development" | "coming-soon";
 
@@ -8,8 +10,8 @@ export type Product = {
   slug: string;
   name: string;
   status: Status;
-  /** The one-line pitch, from the product's own source. */
-  pitch: string;
+  /** The one-line pitch, from the product's own facts. */
+  pitch: Claim;
   /** The card's one action. Left out while the product has no site of its own. */
   action?: { label: string; href: string; external: boolean };
   /** What kind of thing it is, in a word or two: the label over a product that has its own block. */
@@ -18,8 +20,8 @@ export type Product = {
   image?: { src: string; alt: string };
   /** Real terminal output, shown in place of a screenshot for a product that has none. */
   sample?: { label: string; lines: string[] };
-  /** What it does, a few short points from the product's own docs: shown on a product with its own block. */
-  features?: string[];
+  /** What it does, a few short points from the product's own facts: shown on a product with its own block. */
+  features?: Claim[];
 };
 
 const slashSite = "https://slashslash.build/developers";
@@ -31,15 +33,34 @@ export const products: Product[] = [
     name: "Hack Cove UI",
     status: "available",
     kind: "Component library",
-    pitch:
-      "Our opinionated React component library, fully integrated with its themes. This site is built with it.",
+    pitch: {
+      text: "Our opinionated React component library, fully integrated with its themes. This site is built with it.",
+      facts: ["uislash/what-it-is", "uislash/theme-reskins-all"],
+      repo: ["apps/hack-cove-site/package.json"],
+    },
     action: { label: "Read the docs", href: "/ui/", external: false },
     features: [
-      "Components and themes are made together: switch the theme and the whole site changes, with no component edits.",
-      "No component takes a class or a style, so you compose the parts and the look stays right.",
-      "Seven themes, Catppuccin Mocha, Catppuccin Latte, Thrifty Paper, Thriftloop, Thriftloop Dark, Slash suite and Slash suite dark, each checked for WCAG AA contrast.",
-      "Whole pages for errors, not found and offline, and a loading skeleton in every component's real shape.",
-      "MIT licensed, on npm as @hackcove/ui-react.",
+      {
+        text: "Components and themes are made together: switch the theme and the whole site changes, with no component edits.",
+        facts: ["uislash/theme-reskins-all"],
+      },
+      {
+        text: "No component takes a class or a style, so you compose the parts and the look stays right.",
+        facts: ["uislash/no-styling-escape"],
+      },
+      {
+        text: "Seven themes, Catppuccin Mocha, Catppuccin Latte, Thrifty Paper, Thriftloop, Thriftloop Dark, Slash suite and Slash suite dark, each checked for WCAG AA contrast.",
+        facts: ["uislash/seven-themes", "uislash/contrast-checked"],
+        repo: ["themes"],
+      },
+      {
+        text: "Whole pages for errors, not found and offline.",
+        facts: ["uislash/status-pages"],
+      },
+      {
+        text: "MIT licensed, on npm as @hackcove/ui-react.",
+        facts: ["uislash/licence", "uislash/react-components"],
+      },
     ],
     image: {
       src: "/home/hack-cove-ui.webp",
@@ -51,13 +72,30 @@ export const products: Product[] = [
     name: "PixelSlash",
     status: "available",
     kind: "Visual review",
-    pitch: "See what your change did to the page.",
+    pitch: { text: "See what your change did to the page.", facts: ["pixelslash/what-it-is"] },
     action: { label: "Visit pixelslash.dev", href: "https://pixelslash.dev", external: true },
     features: [
-      "Shoots Main and Branch with Playwright, or takes PNGs you already have, and writes a report of what changed.",
-      "A perceptual diff tells anti-aliasing and sub-pixel noise apart from a real change.",
-      "Runs on your machine, for free. A shot leaves it only when you ask.",
-      "A review server you run holds each build for a person to accept or reject, and reports a GitHub check.",
+      {
+        text: "Shoots Main and Branch with Playwright, or takes PNGs you already have, and writes a report of what changed.",
+        facts: ["pixelslash/compare-two-urls", "pixelslash/compare-two-pngs"],
+      },
+      {
+        text: "A perceptual diff tells anti-aliasing and sub-pixel noise apart from a real change.",
+        facts: ["pixelslash/perceptual-diff"],
+      },
+      {
+        text: "Runs on your machine. A shot leaves it only when you ask.",
+        facts: ["pixelslash/npm-cli", "pixelslash/local-unless-upload"],
+      },
+      {
+        text: "A review server you run holds each build for a person to accept or reject, and reports a GitHub check.",
+        facts: [
+          "pixelslash/upload-to-review-app",
+          "pixelslash/self-host-docker",
+          "pixelslash/self-host-cloudflare",
+          "pixelslash/github-status-and-comment",
+        ],
+      },
     ],
     image: {
       src: "/home/pixelslash.webp",
@@ -69,13 +107,30 @@ export const products: Product[] = [
     name: "ToggleSlash",
     status: "available",
     kind: "Feature switches",
-    pitch: "It keeps track of feature switches, so you know what turning one on will do.",
+    pitch: { text: "It keeps track of feature switches.", facts: ["toggleslash/what-it-is"] },
     action: { label: "Read more on slashslash.build", href: slashSite, external: true },
     features: [
-      "Run it yourself: a server keeps your switches, a toggleslash command manages them, and a TypeScript SDK reads them in your app.",
-      "Every change to a switch goes into an audit trail.",
-      "Daily counts show how often each variation is served, never who received it.",
-      "A dashboard to switch, target and read the history of each one.",
+      {
+        text: "Run it yourself: a server keeps your switches, a toggleslash command manages them, and a TypeScript SDK reads them in your app.",
+        facts: [
+          "toggleslash/server",
+          "toggleslash/server-from-source",
+          "toggleslash/cli",
+          "toggleslash/typescript-server-sdk",
+        ],
+      },
+      {
+        text: "Every change to a switch goes into an audit trail.",
+        facts: ["toggleslash/audit-trail"],
+      },
+      {
+        text: "Daily counts show how often each variation is served, never who received it.",
+        facts: ["toggleslash/usage-counts"],
+      },
+      {
+        text: "A dashboard to switch, target and read the history of each one.",
+        facts: ["toggleslash/dashboard"],
+      },
     ],
     sample: {
       label: "Real output, from slashslash.build",
@@ -94,14 +149,20 @@ export const products: Product[] = [
     slug: "flakeslash",
     name: "FlakeSlash",
     status: "early-development",
-    pitch: "It spots automated checks that pass and fail at random, so a failure means something.",
+    pitch: {
+      text: "It spots automated checks that pass and fail at random, so a failure means something.",
+      facts: ["flakeslash/what-it-is", "flakeslash/flake-same-commit"],
+    },
     action: { label: "Read more on slashslash.build", href: slashSite, external: true },
   },
   {
     slug: "thriftloop",
     name: "ThriftLoop",
     status: "coming-soon",
-    pitch: "A home for South Africa's thrift, charity and second-hand shops.",
+    pitch: {
+      text: "A home for South Africa's thrift, charity and second-hand shops.",
+      unbuilt: ["ThriftLoop"],
+    },
   },
 ];
 
@@ -109,7 +170,16 @@ export const products: Product[] = [
 export const home = {
   overline: "Products",
   title: "Software we make, and the tools we make it with.",
-  lead: "A component library, a visual review tool and feature switches you can use today, a flaky test spotter on the way, and ThriftLoop, a home for South Africa's second-hand shops.",
+  lead: {
+    text: "A component library, a visual review tool, feature switches and a flaky test spotter you can use today, and ThriftLoop, a home for South Africa's second-hand shops.",
+    facts: [
+      "uislash/what-it-is",
+      "pixelslash/what-it-is",
+      "toggleslash/what-it-is",
+      "flakeslash/flake-same-commit",
+    ],
+    unbuilt: ["ThriftLoop"],
+  } satisfies Claim,
   /** How the slash tools fit together, after slashslash.build: each answers one question about a change. */
   fit: {
     overline: "How they fit",
@@ -119,20 +189,32 @@ export const home = {
       {
         question: "Does the page look different?",
         product: "PixelSlash",
-        answer: "It takes a picture of every changed page before and after, and marks what moved.",
+        answer: {
+          text: "It takes a picture of every changed page before and after, and marks what moved.",
+          facts: [
+            "pixelslash/compare-two-urls",
+            "pixelslash/many-pages",
+            "pixelslash/perceptual-diff",
+          ],
+        },
       },
       {
         question: "What switches on, and for whom?",
         product: "ToggleSlash",
-        answer: "Every switch, who turned it on and when, and how often each variation is served.",
+        answer: {
+          text: "Every switch, who turned it on and when, and how often each variation is served.",
+          facts: ["toggleslash/audit-trail", "toggleslash/usage-counts"],
+        },
       },
       {
         question: "Can we trust the test results?",
         product: "FlakeSlash",
-        answer:
-          "It will find checks that fail and pass on the same code, so a red light means something again.",
+        answer: {
+          text: "It finds checks that fail and pass on the same code, so a red light means something again.",
+          facts: ["flakeslash/flake-same-commit"],
+        },
       },
-    ],
+    ] satisfies { question: string; product: string; answer: Claim }[],
   },
   coming: { overline: "On the way", title: "What we are building next." },
 };

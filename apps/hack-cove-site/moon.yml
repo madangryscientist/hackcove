@@ -58,11 +58,18 @@ tasks:
         "/packages/oxlint-testing/plugin.js",
       ]
     deps: ["~:props", "^:build"]
-  # Depends on build: test/build-commit.dist.test.ts reads dist/.
+  # Each product's FACTS.md at the commit facts.sha.json pins, into .sources/facts (gitignored).
+  # The pins are a tracked file, so moving one re-runs this and the tests after it.
+  fetch-facts:
+    command: "bun scripts/fetch-facts.ts"
+    inputs: ["scripts/fetch-facts.ts", "src/content/claims.ts", "facts.sha.json"]
+    outputs: [".sources/facts"]
+  # Depends on build: test/build-commit.dist.test.ts and test/facts.test.ts read dist/. Depends on
+  # fetch-facts: test/facts.test.ts reads the products' facts files.
   test:
     command: "bun run test"
     inputs: ["**/*", "@group(deps)"]
-    deps: ["~:props", "~:build", "^:build"]
+    deps: ["~:props", "~:fetch-facts", "~:build", "^:build"]
   deploy:
     command: "bun run deploy"
     deps: ["~:build"]

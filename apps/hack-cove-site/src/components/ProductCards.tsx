@@ -47,7 +47,7 @@ function Feature({ number, product }: { number: number; product: Product }) {
       id={titleId}
       overline={`${String(number).padStart(2, "0")} / ${kind}`}
       title={name}
-      description={pitch}
+      description={pitch.text}
     >
       <Stack gap="sm" width="narrow">
         <div>
@@ -56,7 +56,7 @@ function Feature({ number, product }: { number: number; product: Product }) {
         {features && (
           <BulletList>
             {features.map((feature) => (
-              <BulletItem key={feature}>{feature}</BulletItem>
+              <BulletItem key={feature.text}>{feature.text}</BulletItem>
             ))}
           </BulletList>
         )}
@@ -82,7 +82,7 @@ function Fit() {
               <div>
                 <Overline mono>{product}</Overline>
               </div>
-              <Text>{answer}</Text>
+              <Text>{answer.text}</Text>
             </Stack>
           </Card>
         ))}
@@ -102,7 +102,7 @@ function ComingCard({ name, status, pitch, action }: Product) {
       status={<Pill tone={tone}>{label}</Pill>}
       footer={action && <ActionButton action={action} />}
     >
-      <Text>{pitch}</Text>
+      <Text>{pitch.text}</Text>
     </Card>
   );
 }
@@ -119,7 +119,7 @@ export function ProductCards() {
   return (
     <Stack gap="xl">
       <Hero overline={home.overline} title={home.title}>
-        <Lead>{home.lead}</Lead>
+        <Lead>{home.lead.text}</Lead>
       </Hero>
       {ready.map((product, i) => (
         <Feature key={product.slug} number={i + 1} product={product} />
