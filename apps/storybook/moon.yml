@@ -7,14 +7,13 @@ dependsOn:
   - "themes-shared"
 
 # moon does not hash a dependency's files, so they are listed here (node_modules, dist and the
-# other build output are left out by .moon/tasks/all.yml).
+# other build output are left out by .moon/tasks/all.yml). The ui-react glob also takes in the docs
+# sections (packages/ui-react/docs/components), which name every story file and decide the sidebar
+# and the visual groups.
 fileGroups:
   deps:
     - "/packages/ui-react/**/*"
     - "/packages/themes-shared/**/*"
-  # The site's docs sections name every story file and decide the sidebar and the visual groups.
-  sections:
-    - "/packages/ui-react/docs/components/**/*"
 
 tasks:
   storybook:
@@ -22,7 +21,7 @@ tasks:
     preset: "server"
   build:
     command: "bun run build"
-    inputs: ["**/*", "@group(deps)", "@group(sections)", "/themes/*.css"]
+    inputs: ["**/*", "@group(deps)", "/themes/*.css"]
     outputs: ["storybook-static"]
     deps: ["^:build"]
   typecheck:
@@ -41,7 +40,7 @@ tasks:
   # scripts/visual-plan.test.ts and visual-shots.test.ts read the theme files (themeFiles, readRepo).
   test:
     command: "bun run test"
-    inputs: ["**/*", "@group(deps)", "@group(sections)", "/themes/*.css"]
+    inputs: ["**/*", "@group(deps)", "/themes/*.css"]
   # Playwright against the built Storybook, in every theme. Cached on what the run reads: the specs,
   # e2e/serve.ts and playwright.config.ts (in **/*), and everything build hashes, since the specs run
   # against its storybook-static (playwright.config.ts fixes that path, so no env var changes what it
@@ -50,7 +49,7 @@ tasks:
   # that differs between machines is a bug to fix. `--force` re-runs it.
   e2e:
     command: "bun run test:e2e"
-    inputs: ["**/*", "@group(deps)", "@group(sections)", "/themes/*.css"]
+    inputs: ["**/*", "@group(deps)", "/themes/*.css"]
     deps: ["~:build"]
   # The visual check: plans against the merge-base, captures each picked group, totals them
   # (scripts/visual.ts). What it compares lives outside any project, so it is never cached.
