@@ -20,7 +20,34 @@
  * - A `Pill`, `Button` or `IconButton` with no `size` takes the size of the `Card`, `ListRow` or
  *   `Table` it sits in; an `EmptyState` takes its slot's.
  *
+ * A responsive size, `{ base, md }` (`ResponsiveSize`), changes at Tailwind's `md` breakpoint (48rem)
+ * in CSS, with no script: `Button`, `IconButton`, `SegmentedControl` and `Icon` take it.
+ *
  * With no `size` at all, because they take the size of the text or the control they sit on:
  * `Callout`, `CopyButton`, `Kbd`, `Badge` and `Breadcrumbs`.
  */
 export type Size = "sm" | "md" | "lg";
+
+/**
+ * A size that changes with the screen: `base` at every width, `md` from Tailwind's `md` breakpoint
+ * (48rem) up. Done in CSS, so a server-rendered page paints the right size on its first load.
+ */
+export type ResponsiveSize = { base: Size; md: Size };
+
+/** Whether `size` is the responsive form. */
+export function isResponsive(size: string | ResponsiveSize): size is ResponsiveSize {
+  return typeof size === "object";
+}
+
+/**
+ * The classes of `size` from a table and its twin, the same classes each prefixed `md:` and written
+ * out in full (a consumer's Tailwind scans the built package, so a class built at run time would
+ * never be generated). A plain size is its table entry, unchanged.
+ */
+export function sizeClass<K extends string>(
+  table: Record<K, string> & Record<Size, string>,
+  twin: Record<Size, string>,
+  size: K | ResponsiveSize,
+): string {
+  return isResponsive(size) ? `${table[size.base]} ${twin[size.md]}` : table[size];
+}

@@ -1,7 +1,7 @@
 import type { ReactElement } from "react";
 import { cx } from "./cx.js";
 import { controlText, useTypeStep } from "./density.js";
-import type { Size } from "./size.js";
+import { type ResponsiveSize, type Size, sizeClass } from "./size.js";
 import { Switcher, type SwitchItem, type SwitchProps } from "./switcher.js";
 
 /** One option of a SegmentedControl. See `SwitchItem`. */
@@ -19,6 +19,14 @@ const SIZE: Record<Size, string> = {
   md: "px-3 py-2",
   lg: "px-4 py-2.5",
 };
+/** `SIZE` from the `md` breakpoint up, for a responsive size. */
+const SIZE_MD: Record<Size, string> = {
+  sm: "md:px-2.5 md:py-1",
+  md: "md:px-3 md:py-2",
+  lg: "md:px-4 md:py-2.5",
+};
+/** The padding table and its `md:` twin, for the data test. */
+export const segmentSizeTables = { size: SIZE, sizeMd: SIZE_MD };
 const ON = "bg-violet-600 font-medium text-violet-50";
 const OFF = "bg-white text-slate-600";
 const OFF_LIVE = "hover:bg-violet-50 hover:text-violet-700";
@@ -69,7 +77,8 @@ function layout(fill: boolean, wrap: boolean | "narrow"): Layout {
  * and End move the choice) or links (`href`, an in-app one drawn by the app's router `<Link>` through `LinkProvider`;
  * `value` marks the current one, which gets `aria-current`). An item may carry a `count`, and a
  * button one `disabledReason` (it stays reachable by the arrows and its reason is a tooltip) or a bare `disabled`; `disabled` on the group disables every
- * option. `label` names the group. `size` matches the height of a `Button` of the same size.
+ * option. `label` names the group. `size` matches the height of a `Button` of the same size, and
+ * `{ base, md }` changes it at 48rem.
  * `fill` stretches the options across the group's width; `wrap` lets them wrap into full rows of a
  * box, always or (`"narrow"`) only while the group is under 32rem wide.
  */
@@ -80,10 +89,11 @@ export function SegmentedControl({
   ...props
 }: SwitchProps & {
   /**
-   * The control's height and text, on the scale of a `Button`.
+   * The control's height and text, on the scale of a `Button`. `{ base: "md", md: "lg" }` changes
+   * size at the `md` breakpoint (48rem), in CSS.
    * @default md
    */
-  size?: Size;
+  size?: Size | ResponsiveSize;
   /**
    * The group takes its parent's full width and the options grow to share it, so the border ends
    * at the last option. Still a pill.
@@ -110,7 +120,13 @@ export function SegmentedControl({
         vertical: true,
         root: ROOT[shape],
         option: (active, disabled) =>
-          cx(OPTION[shape], SIZE[size], text, active ? ON : OFF, !active && !disabled && OFF_LIVE),
+          cx(
+            OPTION[shape],
+            sizeClass(SIZE, SIZE_MD, size),
+            text,
+            active ? ON : OFF,
+            !active && !disabled && OFF_LIVE,
+          ),
       }}
     />
   );

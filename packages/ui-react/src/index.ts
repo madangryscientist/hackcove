@@ -132,7 +132,7 @@ export { FormGrid, FormRow, FormRowField, type FormRowSpan } from "./FormRow.js"
 export { FieldDialog } from "./FieldDialog.js";
 export { Input } from "./Input.js";
 export type { ControlSize, ControlWidth } from "./control.js";
-export type { Size } from "./size.js";
+export type { ResponsiveSize, Size } from "./size.js";
 export type { Tone } from "./tone.js";
 export { MetaList, type MetaListSeparator } from "./MetaList.js";
 export { Kbd } from "./Kbd.js";

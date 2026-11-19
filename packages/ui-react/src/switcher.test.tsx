@@ -276,6 +276,7 @@ describe("SegmentedControl", () => {
     ["fill", { fill: true }],
     ["wrap", { wrap: true }],
     ['wrap="narrow"', { wrap: "narrow" as const }],
+    ["a responsive size", { size: { base: "md" as const, md: "lg" as const } }],
   ])("with %s, stays one named radiogroup in reading order", async (_name, layout) => {
     const onChange = vi.fn<(value: string) => void>();
     render(

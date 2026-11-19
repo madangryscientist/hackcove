@@ -1,14 +1,14 @@
 import type { ComponentPropsWithoutRef, ReactElement } from "react";
 import { Badge } from "./Badge.js";
 import { cx, focusRing } from "./cx.js";
-import { useDensity } from "./density.js";
+import { useResponsiveDensity } from "./density.js";
 import { Icon } from "./Icon.js";
 import type { IconName } from "./icons.js";
 import { renderLink } from "./link.js";
 import { blockedProps, hasReason } from "./blocked.js";
 import { Tipped } from "./Tooltip.js";
 import type { Unstyled } from "./props.js";
-import type { Size } from "./size.js";
+import { type ResponsiveSize, type Size, sizeClass } from "./size.js";
 import type { Tone } from "./tone.js";
 
 /** An IconButton's look: `outline` with a border, or `ghost` with none until hover. */
@@ -20,6 +20,10 @@ const BASE = `relative inline-flex items-center justify-center rounded-lg border
 
 /** The same heights as a `Button` of the size: 26px, 38px and 46px. */
 const SIZE: Record<Size, string> = { sm: "size-6.5", md: "size-9.5", lg: "size-11.5" };
+/** `SIZE` from the `md` breakpoint up, for a responsive size. */
+const SIZE_MD: Record<Size, string> = { sm: "md:size-6.5", md: "md:size-9.5", lg: "md:size-11.5" };
+/** The size table and its `md:` twin, for the data test. */
+export const iconButtonSizeTables = { size: SIZE, sizeMd: SIZE_MD };
 
 const LOOK: Record<IconButtonTone, Record<IconButtonVariant, string>> = {
   neutral: {
@@ -47,10 +51,11 @@ type IconButtonProps = {
   tone?: IconButtonTone | undefined;
   /**
    * The button's height, matching a `Button` or `Input` of the same size. Left out, it takes the
-   * size of the `Card`, `ListRow` or `Table` it sits in, else `md`.
+   * size of the `Card`, `ListRow` or `Table` it sits in, else `md`. `{ base: "md", md: "lg" }`
+   * changes size at the `md` breakpoint (48rem), in CSS.
    * @default md
    */
-  size?: Size | undefined;
+  size?: Size | ResponsiveSize | undefined;
   /** The one icon it holds, from the `Icon` set, at the button's size. */
   icon: IconName;
   /** A red count on the top-right corner, for unread alerts. Not shown at 0; the name carries it for a screen reader, "Alerts, 3". */
@@ -83,7 +88,7 @@ export function look({
   tone = "neutral",
   size = "md",
 }: Pick<IconButtonProps, "variant" | "tone" | "size">): string {
-  return cx(BASE, SIZE[size], LOOK[tone][variant]);
+  return cx(BASE, sizeClass(SIZE, SIZE_MD, size), LOOK[tone][variant]);
 }
 
 function isLink(props: IconButtonAsButton | IconButtonAsLink): props is IconButtonAsLink {
@@ -93,14 +98,15 @@ function isLink(props: IconButtonAsButton | IconButtonAsLink): props is IconButt
 /**
  * A square button holding one icon from the `Icon` set (`icon`). `label` is its accessible name
  * and tooltip. `variant="ghost"` drops the border for a quiet action in a row or a toolbar; `size`
- * matches the height of a `Button` of the same size (`sm` 26px, `md` 38px, `lg` 46px) and with no
+ * matches the height of a `Button` of the same size (`sm` 26px, `md` 38px, `lg` 46px; a
+ * responsive `{ base, md }` changes at 48rem) and with no
  * `size` it takes its container's; `tone="danger"` is red, for delete and clear; `count` pins a
  * red count to the corner; `disabledReason` blocks it and shows why. Defaults to `type="button"`. `href` makes it a link instead (the app's
  * router link through `LinkProvider` for an in-app path, else a plain `<a>`; `external` opens a
  * new tab), with the same look.
  */
 export function IconButton(props: IconButtonAsButton | IconButtonAsLink): ReactElement {
-  const drawn = useDensity(props.size);
+  const drawn = useResponsiveDensity(props.size);
   const inside = (count: number | undefined, icon: IconName) => (
     <>
       <Icon name={icon} size={drawn} />

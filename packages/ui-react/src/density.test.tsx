@@ -7,6 +7,7 @@ import { Dialog } from "./Dialog.js";
 import { stubDialog } from "./dom.harness.js";
 import { Drawer } from "./Drawer.js";
 import { DensityProvider, useDensity, useTypeStep } from "./density.js";
+import { Button } from "./Button.js";
 import { Input } from "./Input.js";
 import type { Size } from "./size.js";
 import { render, screen, user } from "./render.harness.js";
@@ -108,5 +109,16 @@ describe("density", () => {
       await user().type(input, "hi");
       expect(input.value).toBe("hi");
     }
+  });
+
+  it("a Button with no size in a sized container renders, and one with a responsive size too", () => {
+    render(
+      <Card size="sm">
+        <Button>Save</Button>
+        <Button size={{ base: "md", md: "lg" }}>Send</Button>
+      </Card>,
+    );
+    expect(screen.getByRole("button", { name: "Save" })).not.toBeNull();
+    expect(screen.getByRole("button", { name: "Send" })).not.toBeNull();
   });
 });
