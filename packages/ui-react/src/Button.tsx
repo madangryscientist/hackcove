@@ -1,12 +1,12 @@
 import type { ComponentPropsWithoutRef, ReactElement, ReactNode, Ref } from "react";
 import { cx, focusRing } from "./cx.js";
-import { controlText, type TypeStep, useDensity, useTypeStep } from "./density.js";
+import { controlText, type TypeStep, useResponsiveDensity, useTypeStep } from "./density.js";
 import { Icon } from "./Icon.js";
 import type { IconName } from "./icons.js";
 import { hasReason, useBlocked } from "./blocked.js";
 import { renderLink } from "./link.js";
 import type { Unstyled } from "./props.js";
-import type { Size } from "./size.js";
+import { type ResponsiveSize, type Size, sizeClass } from "./size.js";
 import type { Tone } from "./tone.js";
 
 /** A Button's look: `primary` the one main action, `outline` and `ghost` the others, `link` text in running text, `dashed` the add-another row. */
@@ -24,6 +24,14 @@ const BOX: Record<ButtonSize, string> = {
   md: "gap-2 px-4 py-2",
   lg: "gap-2 px-5 py-2.5",
 };
+// `BOX` from the `md` breakpoint up, for a responsive size, every class written out in full.
+const BOX_MD: Record<ButtonSize, string> = {
+  sm: "md:gap-1.5 md:px-2.5 md:py-1",
+  md: "md:gap-2 md:px-4 md:py-2",
+  lg: "md:gap-2 md:px-5 md:py-2.5",
+};
+/** The padding table and its `md:` twin, for the data test. */
+export const buttonSizeTables = { box: BOX, boxMd: BOX_MD };
 // A plain `disabled` washes out and ignores the pointer. A busy button is disabled too, but keeps
 // pointer events (the cursor says why) and does not take this; a blocked one is `aria-disabled`.
 const DISABLED_PLAIN = "disabled:pointer-events-none disabled:opacity-50";
@@ -124,9 +132,11 @@ type ButtonLook = {
   /**
    * `sm` is compact, for table rows and toolbars; `lg` is larger, for a hero call to action. Left
    * out, a Button takes the size of the `Card`, `ListRow` or `Table` it sits in, else `md`.
+   * `{ base: "md", md: "lg" }` changes size at the `md` breakpoint (48rem), in CSS: `md` on a phone,
+   * `lg` from 48rem up.
    * @default md
    */
-  size?: ButtonSize | undefined;
+  size?: ButtonSize | ResponsiveSize | undefined;
   /**
    * `positive` is green, for accept and approve; `danger` is red, for delete and clear. Not for
    * `dashed`, which has the one look.
@@ -137,10 +147,14 @@ type ButtonLook = {
   icon?: IconName | undefined;
 };
 
-function shape(variant: ButtonVariant, size: ButtonSize, step: TypeStep | undefined): string {
+function shape(
+  variant: ButtonVariant,
+  size: ButtonSize | ResponsiveSize,
+  step: TypeStep | undefined,
+): string {
   return cx(
     SHAPE,
-    variant !== "link" && BOX[size],
+    variant !== "link" && sizeClass(BOX, BOX_MD, size),
     variant === "link" && "gap-1.5",
     variant === "dashed" && "w-full border-dashed",
     controlText(size, step, false),
@@ -171,7 +185,7 @@ export function blockedButtonClass(
 
 function idleClass(
   variant: ButtonVariant,
-  size: ButtonSize,
+  size: ButtonSize | ResponsiveSize,
   tone: ButtonTone,
   { step, pressed }: { step: TypeStep | undefined; pressed?: boolean | undefined },
 ): string {
@@ -261,7 +275,8 @@ function stateClass(
  * A button in the primary, outline, ghost, link or dashed style (the link has no box: text with an
  * underline on hover, for an in-line action; `dashed` is the full-width "add" row, a dashed
  * outline with muted text that fills its container). `icon` puts an `Icon` before the label.
- * `size="sm"` is compact and `size="lg"` larger, and with no `size` it takes its container's;
+ * `size="sm"` is compact and `size="lg"` larger, `size={{ base: "md", md: "lg" }}` changes at 48rem,
+ * and with no `size` it takes its container's;
  * `tone="positive"` is green and `tone="danger"` is red;
  * `pressed` makes it a toggle: neutral when off, the tone's fill when on. `count` puts a small
  * number chip after the label; the chip is part of the name, and a button that opens something
@@ -277,7 +292,11 @@ export function Button(props: ButtonProps): ReactElement {
 }
 
 /** The icon, the label and the count chip: what a Button holds. */
-function content(icon: IconName | undefined, size: Size, label: ReactNode): ReactNode {
+function content(
+  icon: IconName | undefined,
+  size: Size | ResponsiveSize,
+  label: ReactNode,
+): ReactNode {
   if (icon === undefined) return label;
   return (
     <>
@@ -298,7 +317,7 @@ function LinkButton({
   children,
   ...rest
 }: ButtonAsLink): ReactElement {
-  const drawn = useDensity(size);
+  const drawn = useResponsiveDensity(size);
   const step = useTypeStep();
   return renderLink({
     ...rest,
@@ -323,7 +342,7 @@ function PlainButton({
   disabled,
   ...rest
 }: ButtonAsButton): ReactElement {
-  const drawn = useDensity(size);
+  const drawn = useResponsiveDensity(size);
   const step = useTypeStep();
   const working = Boolean(busy);
   const state = stateOf(working, disabledReason);

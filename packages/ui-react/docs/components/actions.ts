@@ -24,7 +24,7 @@ export const actions: ComponentSection = {
         "Button/Destructive",
         "ButtonGroup/Row",
       ],
-      stories: ["ButtonCount", "ButtonTooltip"],
+      stories: ["ButtonCount", "ButtonResponsiveSize", "ButtonTooltip"],
       usage: {
         do: [
           'Put one primary Button in a view. The other actions use `variant="outline"`, `"ghost"` or `"link"`; `variant="dashed"` is the full-width "add another" row at the foot of a list.',
@@ -32,6 +32,7 @@ export const actions: ComponentSection = {
           "Say why a button cannot be pressed with `disabledReason`; use `busy` while the work is in flight.",
           "Going to another page is a `Button` with `href`: a real `<a>` with the same look, drawn by the app's router link through `LinkProvider`.",
           'A destructive action is `tone="danger"`, an accept is `tone="positive"`; `size="sm"` is for a button inside a row or a card header, `size="lg"` for the one action of a hero or a sign-in form.',
+          'A size that changes with the screen is `size={{ base: "md", md: "lg" }}`: `md` below 48rem, `lg` from it, in CSS, so the first load paints the right size. Give every control in the row the same value, so it stays aligned.',
           '`pressed` makes a toggle. `busy` disables it while the work is in flight, and `busy="Saving"` also shows that label: one prop, `busy={saving && "Saving"}`.',
           '`count` puts a number chip after the label, for how many are behind the button (the splits of a row, the comments on a thread): `<Button variant="ghost" size="sm" count={3}>Splits</Button>`. A button that opens something also takes `aria-expanded`, and `aria-controls` for what it opens; the caller owns that state.',
           "An icon-only action is an `IconButton`, not a Button holding a glyph.",
@@ -46,7 +47,7 @@ export const actions: ComponentSection = {
         "The `count` chip is part of the button's name: `Splits, 3` (a `count` of 0 is shown as `Splits, 0`). Pass `aria-expanded` on a button that opens something, so a screen reader hears whether it is open.",
       ],
       api: ["Button", "ButtonGroup"],
-      types: ["ButtonSize", "ButtonTone", "ButtonVariant", "Size"],
+      types: ["ButtonSize", "ButtonTone", "ButtonVariant", "ResponsiveSize", "Size"],
     },
     {
       slug: "icon-button",
@@ -64,6 +65,7 @@ export const actions: ComponentSection = {
           "Always give the `label`: it is the accessible name and the tooltip, and the icon is only decoration.",
           '`variant="ghost"` is the quiet one for a row or a toolbar; `tone="danger"` is for delete and clear.',
           "`size` is `sm` (26px) inside a row or a chip, `md` (default, 38px, the height of a `Button`) or `lg` beside a large `Button`.",
+          '`size={{ base: "md", md: "lg" }}` changes size at 48rem, in CSS, to match a responsive `Button` beside it.',
           "An unread count is `count`, never part of the label; it is not shown at 0. The icon is `icon`, a name from the `Icon` set, never a child.",
           "Going to another page is `href` (through the app's `LinkProvider`), which draws the same button as a link.",
           "Say why it cannot be pressed with `disabledReason`: the reason becomes its tooltip in place of the label.",

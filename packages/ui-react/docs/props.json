@@ -467,7 +467,7 @@
   },
   "Button": {
     "name": "Button",
-    "description": "A button in the primary, outline, ghost, link or dashed style (the link has no box: text with an\nunderline on hover, for an in-line action; `dashed` is the full-width \"add\" row, a dashed\noutline with muted text that fills its container). `icon` puts an `Icon` before the label.\n`size=\"sm\"` is compact and `size=\"lg\"` larger, and with no `size` it takes its container's;\n`tone=\"positive\"` is green and `tone=\"danger\"` is red;\n`pressed` makes it a toggle: neutral when off, the tone's fill when on. `count` puts a small\nnumber chip after the label; the chip is part of the name, and a button that opens something\nalso takes `aria-expanded`.\nDefaults to `type=\"button\"`. `disabledReason` and `busy` are the two disabled states that say\nmore than a plain `disabled`, which keeps its half-opacity look; `busy=\"Saving\"` also swaps the\nlabel. `ref` reaches the `<button>` or the `<a>`. `href` makes it a link instead,\nwith the same look (the app's router link through `LinkProvider` for an in-app path, else a plain\n`<a>`; `external` opens a new tab).",
+    "description": "A button in the primary, outline, ghost, link or dashed style (the link has no box: text with an\nunderline on hover, for an in-line action; `dashed` is the full-width \"add\" row, a dashed\noutline with muted text that fills its container). `icon` puts an `Icon` before the label.\n`size=\"sm\"` is compact and `size=\"lg\"` larger, `size={{ base: \"md\", md: \"lg\" }}` changes at 48rem,\nand with no `size` it takes its container's;\n`tone=\"positive\"` is green and `tone=\"danger\"` is red;\n`pressed` makes it a toggle: neutral when off, the tone's fill when on. `count` puts a small\nnumber chip after the label; the chip is part of the name, and a button that opens something\nalso takes `aria-expanded`.\nDefaults to `type=\"button\"`. `disabledReason` and `busy` are the two disabled states that say\nmore than a plain `disabled`, which keeps its half-opacity look; `busy=\"Saving\"` also swaps the\nlabel. `ref` reaches the `<button>` or the `<a>`. `href` makes it a link instead,\nwith the same look (the app's router link through `LinkProvider` for an in-app path, else a plain\n`<a>`; `external` opens a new tab).",
     "props": [
       {
         "name": "busy",
@@ -534,10 +534,10 @@
       },
       {
         "name": "size",
-        "type": "\"sm\" | \"md\" | \"lg\"",
+        "type": "Size | ResponsiveSize",
         "required": false,
         "default": "md",
-        "description": "`sm` is compact, for table rows and toolbars; `lg` is larger, for a hero call to action. Left\nout, a Button takes the size of the `Card`, `ListRow` or `Table` it sits in, else `md`.",
+        "description": "`sm` is compact, for table rows and toolbars; `lg` is larger, for a hero call to action. Left\nout, a Button takes the size of the `Card`, `ListRow` or `Table` it sits in, else `md`.\n`{ base: \"md\", md: \"lg\" }` changes size at the `md` breakpoint (48rem), in CSS: `md` on a phone,\n`lg` from 48rem up.",
         "native": false
       },
       {
@@ -2899,10 +2899,10 @@
       },
       {
         "name": "size",
-        "type": "\"sm\" | \"md\" | \"lg\" | \"feature\"",
+        "type": "Size | ResponsiveSize | \"feature\"",
         "required": false,
         "default": "md",
-        "description": "The box: sm 14px, md 16px (the default), lg 20px, `feature` 32px for an icon that stands for an idea on its own (a feature card).",
+        "description": "The box: sm 14px, md 16px (the default), lg 20px, `feature` 32px for an icon that stands for an idea on its own (a feature card). `{ base, md }` (sm, md, lg) changes at the `md` breakpoint (48rem), as the icon in a Button of that size does.",
         "native": false
       },
       {
@@ -2916,7 +2916,7 @@
   },
   "IconButton": {
     "name": "IconButton",
-    "description": "A square button holding one icon from the `Icon` set (`icon`). `label` is its accessible name\nand tooltip. `variant=\"ghost\"` drops the border for a quiet action in a row or a toolbar; `size`\nmatches the height of a `Button` of the same size (`sm` 26px, `md` 38px, `lg` 46px) and with no\n`size` it takes its container's; `tone=\"danger\"` is red, for delete and clear; `count` pins a\nred count to the corner; `disabledReason` blocks it and shows why. Defaults to `type=\"button\"`. `href` makes it a link instead (the app's\nrouter link through `LinkProvider` for an in-app path, else a plain `<a>`; `external` opens a\nnew tab), with the same look.",
+    "description": "A square button holding one icon from the `Icon` set (`icon`). `label` is its accessible name\nand tooltip. `variant=\"ghost\"` drops the border for a quiet action in a row or a toolbar; `size`\nmatches the height of a `Button` of the same size (`sm` 26px, `md` 38px, `lg` 46px; a\nresponsive `{ base, md }` changes at 48rem) and with no\n`size` it takes its container's; `tone=\"danger\"` is red, for delete and clear; `count` pins a\nred count to the corner; `disabledReason` blocks it and shows why. Defaults to `type=\"button\"`. `href` makes it a link instead (the app's\nrouter link through `LinkProvider` for an in-app path, else a plain `<a>`; `external` opens a\nnew tab), with the same look.",
     "props": [
       {
         "name": "count",
@@ -2962,10 +2962,10 @@
       },
       {
         "name": "size",
-        "type": "\"sm\" | \"md\" | \"lg\"",
+        "type": "Size | ResponsiveSize",
         "required": false,
         "default": "md",
-        "description": "The button's height, matching a `Button` or `Input` of the same size. Left out, it takes the\nsize of the `Card`, `ListRow` or `Table` it sits in, else `md`.",
+        "description": "The button's height, matching a `Button` or `Input` of the same size. Left out, it takes the\nsize of the `Card`, `ListRow` or `Table` it sits in, else `md`. `{ base: \"md\", md: \"lg\" }`\nchanges size at the `md` breakpoint (48rem), in CSS.",
         "native": false
       },
       {
@@ -5037,7 +5037,7 @@
   },
   "SegmentedControl": {
     "name": "SegmentedControl",
-    "description": "A joined pill group where one option is filled: a mode or a range chosen in place. `items` are\n`{ value, label }` buttons (`value` and `onChange` are the caller's state; the arrow keys, Home\nand End move the choice) or links (`href`, an in-app one drawn by the app's router `<Link>` through `LinkProvider`;\n`value` marks the current one, which gets `aria-current`). An item may carry a `count`, and a\nbutton one `disabledReason` (it stays reachable by the arrows and its reason is a tooltip) or a bare `disabled`; `disabled` on the group disables every\noption. `label` names the group. `size` matches the height of a `Button` of the same size.\n`fill` stretches the options across the group's width; `wrap` lets them wrap into full rows of a\nbox, always or (`\"narrow\"`) only while the group is under 32rem wide.",
+    "description": "A joined pill group where one option is filled: a mode or a range chosen in place. `items` are\n`{ value, label }` buttons (`value` and `onChange` are the caller's state; the arrow keys, Home\nand End move the choice) or links (`href`, an in-app one drawn by the app's router `<Link>` through `LinkProvider`;\n`value` marks the current one, which gets `aria-current`). An item may carry a `count`, and a\nbutton one `disabledReason` (it stays reachable by the arrows and its reason is a tooltip) or a bare `disabled`; `disabled` on the group disables every\noption. `label` names the group. `size` matches the height of a `Button` of the same size, and\n`{ base, md }` changes it at 48rem.\n`fill` stretches the options across the group's width; `wrap` lets them wrap into full rows of a\nbox, always or (`\"narrow\"`) only while the group is under 32rem wide.",
     "props": [
       {
         "name": "disabled",
@@ -5084,10 +5084,10 @@
       },
       {
         "name": "size",
-        "type": "\"sm\" | \"md\" | \"lg\"",
+        "type": "Size | ResponsiveSize",
         "required": false,
         "default": "md",
-        "description": "The control's height and text, on the scale of a `Button`.",
+        "description": "The control's height and text, on the scale of a `Button`. `{ base: \"md\", md: \"lg\" }` changes\nsize at the `md` breakpoint (48rem), in CSS.",
         "native": false
       },
       {

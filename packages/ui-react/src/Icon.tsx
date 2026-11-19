@@ -2,7 +2,7 @@ import type { ReactElement, ReactNode } from "react";
 import { cx } from "./cx.js";
 import { type IconName, iconGlyph } from "./icons.js";
 import type { Passthrough } from "./props.js";
-import type { Size } from "./size.js";
+import { type ResponsiveSize, type Size, sizeClass } from "./size.js";
 import { type TextTone, textToneClass } from "./typography.js";
 
 const BOX: Record<Size | "feature", string> = {
@@ -11,10 +11,14 @@ const BOX: Record<Size | "feature", string> = {
   lg: "size-5",
   feature: "size-8",
 };
+/** `BOX` from the `md` breakpoint up, for a responsive size (`sm`, `md` and `lg` only). */
+const BOX_MD: Record<Size, string> = { sm: "md:size-3.5", md: "md:size-4", lg: "md:size-5" };
+/** The box table and its `md:` twin, for the data test. */
+export const iconSizeTables = { box: BOX, boxMd: BOX_MD };
 
 type IconProps = Passthrough & {
-  /** The box: sm 14px, md 16px (the default), lg 20px, `feature` 32px for an icon that stands for an idea on its own (a feature card). */
-  size?: Size | "feature";
+  /** The box: sm 14px, md 16px (the default), lg 20px, `feature` 32px for an icon that stands for an idea on its own (a feature card). `{ base, md }` (sm, md, lg) changes at the `md` breakpoint (48rem), as the icon in a Button of that size does. */
+  size?: Size | "feature" | ResponsiveSize;
   /** A text tone. Left out, the icon takes the colour of the text around it. */
   tone?: TextTone | undefined;
   /** Names the icon (`role="img"`). Without one the icon is hidden from assistive tech. */
@@ -57,7 +61,11 @@ export function Icon({
     <span
       {...rest}
       {...(label ? { role: "img", "aria-label": label } : { "aria-hidden": true })}
-      className={cx("inline-flex shrink-0 [&>svg]:size-full", BOX[size], textToneClass(tone))}
+      className={cx(
+        "inline-flex shrink-0 [&>svg]:size-full",
+        sizeClass(BOX, BOX_MD, size),
+        textToneClass(tone),
+      )}
     >
       {name === undefined ? children : iconGlyph(name)}
     </span>

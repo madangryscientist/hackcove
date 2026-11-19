@@ -199,6 +199,11 @@
     "description": "A box in a picture's own units (an image's pixels): its top-left corner and its size.",
     "definition": "{ x: number; y: number; width: number; height: number }"
   },
+  "ResponsiveSize": {
+    "name": "ResponsiveSize",
+    "description": "A size that changes with the screen: `base` at every width, `md` from Tailwind's `md` breakpoint\n(48rem) up. Done in CSS, so a server-rendered page paints the right size on its first load.",
+    "definition": "{ base: Size; md: Size }"
+  },
   "RowTone": {
     "name": "RowTone",
     "description": "The status of a row: the Callout's tones, plus `muted`. A toned row gets a stripe on its leading\nedge and the tone's soft fill; `muted` fades the row instead, for one that matters less. The\nstripe takes the tone's text colour, which every theme already remaps, so no new palette entry.",
@@ -231,7 +236,7 @@
   },
   "Size": {
     "name": "Size",
-    "description": "The one size scale of the library: `sm`, `md` and `lg`, with `md` the default. This is the one\nlist of where it goes further and where the default is not `md`; the README and the docs point\nhere rather than count them again.\n\nPast `sm`, `md` and `lg`, only where there is a real use, and no scale skips `md`:\n- `Avatar` and `AvatarStack` `size`: also `xs`, `xl`, `2xl` and `3xl`.\n- The gap scale (`Stack`, `Section` and `ProseLayout` `gap`): also `xs` and `xl`.\n- `Cluster` and `ScrollStrip` `gap`: `xs`, `sm` and `md`, the first steps of the gap scale.\n- `Icon` `size`: also `feature`, the mark of a feature card.\n- `Dialog` `width`: also `full`, the whole screen. `ChatThread` `height`: also `fill`, its parent's.\n\nDefaults that are not `md`:\n- `Table` `size` is `sm`, its row padding, and the buttons and pills in a table take that size;\n  a field keeps `md`.\n- `Cluster` and `ScrollStrip` `gap` are `sm`: the items of a row sit closer than the blocks of a\n  column.\n- `Stack` and `Section` `gap` are `xs` inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`,\n  `Callout` or `ListRow`.\n- A `Pill`, `Button` or `IconButton` with no `size` takes the size of the `Card`, `ListRow` or\n  `Table` it sits in; an `EmptyState` takes its slot's.\n\nWith no `size` at all, because they take the size of the text or the control they sit on:\n`Callout`, `CopyButton`, `Kbd`, `Badge` and `Breadcrumbs`.",
+    "description": "The one size scale of the library: `sm`, `md` and `lg`, with `md` the default. This is the one\nlist of where it goes further and where the default is not `md`; the README and the docs point\nhere rather than count them again.\n\nPast `sm`, `md` and `lg`, only where there is a real use, and no scale skips `md`:\n- `Avatar` and `AvatarStack` `size`: also `xs`, `xl`, `2xl` and `3xl`.\n- The gap scale (`Stack`, `Section` and `ProseLayout` `gap`): also `xs` and `xl`.\n- `Cluster` and `ScrollStrip` `gap`: `xs`, `sm` and `md`, the first steps of the gap scale.\n- `Icon` `size`: also `feature`, the mark of a feature card.\n- `Dialog` `width`: also `full`, the whole screen. `ChatThread` `height`: also `fill`, its parent's.\n\nDefaults that are not `md`:\n- `Table` `size` is `sm`, its row padding, and the buttons and pills in a table take that size;\n  a field keeps `md`.\n- `Cluster` and `ScrollStrip` `gap` are `sm`: the items of a row sit closer than the blocks of a\n  column.\n- `Stack` and `Section` `gap` are `xs` inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`,\n  `Callout` or `ListRow`.\n- A `Pill`, `Button` or `IconButton` with no `size` takes the size of the `Card`, `ListRow` or\n  `Table` it sits in; an `EmptyState` takes its slot's.\n\nA responsive size, `{ base, md }` (`ResponsiveSize`), changes at Tailwind's `md` breakpoint (48rem)\nin CSS, with no script: `Button`, `IconButton`, `SegmentedControl` and `Icon` take it.\n\nWith no `size` at all, because they take the size of the text or the control they sit on:\n`Callout`, `CopyButton`, `Kbd`, `Badge` and `Breadcrumbs`.",
     "definition": "\"sm\" | \"md\" | \"lg\""
   },
   "SortableMove": {

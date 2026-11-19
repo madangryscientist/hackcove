@@ -20,3 +20,11 @@ describe("IconButton", () => {
     expect(screen.getByRole("button", { name: "a" }).getAttribute("type")).toBe("submit");
   });
 });
+
+describe("IconButton with a responsive size", () => {
+  it("keeps its label as its name", () => {
+    render(<IconButton label="Close" icon="close" size={{ base: "md", md: "lg" }} />);
+    const button = screen.getByRole("button", { name: "Close" });
+    expect(button.getAttribute("title")).toBe("Close");
+  });
+});

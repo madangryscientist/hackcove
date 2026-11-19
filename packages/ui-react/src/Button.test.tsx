@@ -91,3 +91,25 @@ describe("Button states", () => {
     expect(save().hasAttribute("aria-busy")).toBe(false);
   });
 });
+
+describe("Button with a responsive size", () => {
+  it("renders with its icon, and a click runs onClick", async () => {
+    const onClick = vi.fn<() => void>();
+    render(
+      <Button size={{ base: "md", md: "lg" }} icon="plus" onClick={onClick}>
+        Save
+      </Button>,
+    );
+    await user().click(save());
+    expect(onClick).toHaveBeenCalledOnce();
+  });
+
+  it("a link Button takes one too", () => {
+    render(
+      <Button href="/items" size={{ base: "sm", md: "md" }}>
+        Items
+      </Button>,
+    );
+    expect(screen.getByRole("link", { name: "Items" }).getAttribute("href")).toBe("/items");
+  });
+});

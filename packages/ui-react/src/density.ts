@@ -6,7 +6,7 @@ import {
   useContext,
   useMemo,
 } from "react";
-import type { Size } from "./size.js";
+import { isResponsive, type ResponsiveSize, type Size } from "./size.js";
 
 /**
  * The type step a whole app may set once: `compact` is one step down for text, headings and
@@ -53,6 +53,17 @@ export function useDensity(size: Size | undefined): Size {
   return size ?? container ?? "md";
 }
 
+/**
+ * A control's size where it may also be responsive: its own `size` as given, else the nearest
+ * container's, else `md`.
+ */
+export function useResponsiveDensity(
+  size: Size | ResponsiveSize | undefined,
+): Size | ResponsiveSize {
+  const container = useContext(DensityContext).size;
+  return size ?? container ?? "md";
+}
+
 /** The type step in force: `compact` under an app that set it, else undefined (the default). */
 export function useTypeStep(): TypeStep | undefined {
   return useContext(DensityContext).type;
@@ -62,6 +73,12 @@ export function useTypeStep(): TypeStep | undefined {
 const CONTROL_TEXT: Record<"default" | TypeStep, Record<Size, string>> = {
   default: { sm: "text-sm", md: "text-base", lg: "text-lg" },
   compact: { sm: "text-xs", md: "text-sm", lg: "text-base" },
+};
+
+/** `CONTROL_TEXT` from the `md` breakpoint up, for a responsive size. */
+const CONTROL_TEXT_MD: Record<"default" | TypeStep, Record<Size, string>> = {
+  default: { sm: "md:text-sm", md: "md:text-base", lg: "md:text-lg" },
+  compact: { sm: "md:text-xs", md: "md:text-sm", lg: "md:text-base" },
 };
 
 /**
@@ -77,8 +94,34 @@ const TOUCH_TEXT = "pointer-coarse:text-base";
  */
 const CONTROL_LEADING: Record<Size, string> = { sm: "leading-4", md: "leading-5", lg: "leading-6" };
 
-/** The type class of a control of `size` at `step`; `entry` adds the 16px floor on touch for a field a person types in. */
-export function controlText(size: Size, step: TypeStep | undefined, entry: boolean): string {
-  const text = `${CONTROL_TEXT[step ?? "default"][size]} ${CONTROL_LEADING[size]}`;
-  return entry && !/text-(base|lg)/.test(text) ? `${text} ${TOUCH_TEXT}` : text;
+/** `CONTROL_LEADING` from the `md` breakpoint up, for a responsive size. */
+const CONTROL_LEADING_MD: Record<Size, string> = {
+  sm: "md:leading-4",
+  md: "md:leading-5",
+  lg: "md:leading-6",
+};
+
+/** The size twins, for the data test that each is its table with `md:` on every class. */
+export const controlTextTables = {
+  text: CONTROL_TEXT,
+  textMd: CONTROL_TEXT_MD,
+  leading: CONTROL_LEADING,
+  leadingMd: CONTROL_LEADING_MD,
+};
+
+/**
+ * The type class of a control of `size` at `step`; `entry` adds the 16px floor on touch for a field
+ * a person types in. A responsive size adds its `md` size from the breakpoint up.
+ */
+export function controlText(
+  size: Size | ResponsiveSize,
+  step: TypeStep | undefined,
+  entry: boolean,
+): string {
+  // The touch floor is judged on `base` only: no text-entry control takes a responsive size yet.
+  const base = isResponsive(size) ? size.base : size;
+  const plain = `${CONTROL_TEXT[step ?? "default"][base]} ${CONTROL_LEADING[base]}`;
+  const text = entry && !/text-(base|lg)/.test(plain) ? `${plain} ${TOUCH_TEXT}` : plain;
+  if (!isResponsive(size)) return text;
+  return `${text} ${CONTROL_TEXT_MD[step ?? "default"][size.md]} ${CONTROL_LEADING_MD[size.md]}`;
 }

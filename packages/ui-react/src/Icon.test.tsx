@@ -90,3 +90,10 @@ describe("Icon name data", () => {
     expect(new Set(drawn).size).toBe(ICON_NAMES.length);
   });
 });
+
+describe("Icon with a responsive size", () => {
+  it("takes a label as it does at a plain size", () => {
+    render(<Icon name="check" label="Done" size={{ base: "md", md: "lg" }} />);
+    expect(screen.getByRole("img", { name: "Done" })).not.toBeNull();
+  });
+});
