@@ -19,10 +19,10 @@ const site = join(import.meta.dirname, "..");
 const pdfPath = join(site, "public/cv/jacobus.pdf");
 
 /** A port the loopback has free right now. */
-function freePort(): number {
+async function freePort(): Promise<number> {
   const probe = Bun.serve({ hostname: "127.0.0.1", port: 0, fetch: () => new Response() });
   const { port } = probe;
-  void probe.stop(true);
+  await probe.stop(true);
   if (port === undefined) throw new Error("no free port");
   return port;
 }
@@ -40,7 +40,7 @@ async function waitFor(url: string): Promise<void> {
 }
 
 async function print(): Promise<void> {
-  const port = freePort();
+  const port = await freePort();
   const server = Bun.spawn(["bun", join(site, "../storybook/e2e/serve.ts")], {
     env: { ...process.env, PORT: String(port), STATIC_DIR: join(site, "dist") },
     stdout: "inherit",
