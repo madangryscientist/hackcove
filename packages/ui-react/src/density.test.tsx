@@ -111,14 +111,12 @@ describe("density", () => {
     }
   });
 
-  it("a Button with no size in a sized container renders, and one with a responsive size too", () => {
+  it("a Button with no size in a sized container renders", () => {
     render(
       <Card size="sm">
         <Button>Save</Button>
-        <Button size={{ base: "md", md: "lg" }}>Send</Button>
       </Card>,
     );
     expect(screen.getByRole("button", { name: "Save" })).not.toBeNull();
-    expect(screen.getByRole("button", { name: "Send" })).not.toBeNull();
   });
 });

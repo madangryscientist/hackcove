@@ -118,6 +118,7 @@ export function controlText(
   step: TypeStep | undefined,
   entry: boolean,
 ): string {
+  // The touch floor is judged on `base` only: no text-entry control takes a responsive size yet.
   const base = isResponsive(size) ? size.base : size;
   const plain = `${CONTROL_TEXT[step ?? "default"][base]} ${CONTROL_LEADING[base]}`;
   const text = entry && !/text-(base|lg)/.test(plain) ? `${plain} ${TOUCH_TEXT}` : plain;
