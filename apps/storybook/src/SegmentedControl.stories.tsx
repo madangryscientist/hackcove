@@ -235,3 +235,80 @@ export const Sizes: S = {
     </div>
   ),
 };
+
+/** `fill`: the group takes its parent's width and the options share it, so the border ends at the last option. */
+export const Fill: S = {
+  render: () => {
+    const [value, setValue] = useState("active");
+    return (
+      <div className="w-96 max-w-[calc(100vw-2rem)]">
+        <SegmentedControl
+          fill
+          label="Status"
+          items={[
+            { value: "draft", label: "Draft" },
+            { value: "active", label: "Active" },
+            { value: "sold", label: "Sold" },
+          ]}
+          value={value}
+          onChange={setValue}
+        />
+      </div>
+    );
+  },
+};
+
+const conditions = [
+  { value: "new", label: "New with tags" },
+  { value: "mint", label: "Like new, unworn" },
+  { value: "good", label: "Good, light wear" },
+  { value: "fair", label: "Fair, visible wear" },
+  { value: "worn", label: "Worn, needs repair" },
+];
+
+/** `wrap`: five options wrap into full rows of 3 and 2 in a box, with a line between options. */
+export const Wrap: S = {
+  render: () => {
+    const [value, setValue] = useState("good");
+    return (
+      <div className="w-80 max-w-[calc(100vw-2rem)]">
+        <SegmentedControl
+          wrap
+          label="Condition"
+          items={conditions}
+          value={value}
+          onChange={setValue}
+        />
+      </div>
+    );
+  },
+};
+
+/** `wrap="narrow"`: the box while the group is under 32rem wide, a filled pill from 32rem up. */
+export const WrapNarrow: S = {
+  render: () => {
+    const [value, setValue] = useState("good");
+    return (
+      <div className="flex flex-col items-start gap-6">
+        <div className="w-80 max-w-[calc(100vw-2rem)]">
+          <SegmentedControl
+            wrap="narrow"
+            label="Condition, narrow"
+            items={conditions}
+            value={value}
+            onChange={setValue}
+          />
+        </div>
+        <div className="w-[40rem] max-w-[calc(100vw-2rem)]">
+          <SegmentedControl
+            wrap="narrow"
+            label="Condition, wide"
+            items={conditions}
+            value={value}
+            onChange={setValue}
+          />
+        </div>
+      </div>
+    );
+  },
+};

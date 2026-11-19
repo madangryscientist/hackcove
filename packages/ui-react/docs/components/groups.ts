@@ -19,6 +19,8 @@ export const groupPages: ComponentPage[] = [
       do: [
         "Two to five short options. The caller owns `value` and `onChange`; `label` names the group.",
         "`size` is `sm`, `md` (default) or `lg`, the heights of a `Button`.",
+        "`fill` when the group sits in a column (a form field): the options share its full width, so the border ends at the last option.",
+        'Five options that will not fit one row take `wrap`: full rows of at most three in a box with a line between options. `wrap="narrow"` draws that box only while the group is under 32rem wide and a filled pill from 32rem up, so it follows the column, not the screen.',
         "An on/off setting is a `Checkbox` or a `Switch`; a long list is a `Select`.",
         "Switching the panel under a row of headings is `Tabs`.",
         "A `count` sits muted after the label.",

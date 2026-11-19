@@ -264,6 +264,42 @@ describe("SegmentedControl", () => {
     await u.keyboard("{ArrowDown}");
     expect(onChange).toHaveBeenLastCalledWith("week");
   });
+
+  const five = [
+    { value: "new", label: "New" },
+    { value: "mint", label: "Like new" },
+    { value: "good", label: "Good" },
+    { value: "fair", label: "Fair" },
+    { value: "worn", label: "Worn" },
+  ];
+  it.each([
+    ["fill", { fill: true }],
+    ["wrap", { wrap: true }],
+    ['wrap="narrow"', { wrap: "narrow" as const }],
+  ])("with %s, stays one named radiogroup in reading order", async (_name, layout) => {
+    const onChange = vi.fn<(value: string) => void>();
+    render(
+      <SegmentedControl
+        {...layout}
+        items={five}
+        value="good"
+        onChange={onChange}
+        label="Condition"
+        data-testid="condition"
+      />,
+    );
+    const group = screen.getByRole("radiogroup", { name: "Condition" });
+    expect(group.dataset["testid"]).toBe("condition");
+    expect(
+      within(group)
+        .getAllByRole("radio")
+        .map((radio) => radio.textContent),
+    ).toEqual(["New", "Like new", "Good", "Fair", "Worn"]);
+    const u = user();
+    await u.tab();
+    await u.keyboard("{ArrowRight}");
+    expect(onChange).toHaveBeenLastCalledWith("fair");
+  });
 });
 
 /** Every key of every member of a union. */
