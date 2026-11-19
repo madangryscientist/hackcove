@@ -1,6 +1,6 @@
 import { DocsLayout, type DocsHeading, type DocsNeighbour } from "@hackcove/ui-react";
 import type { ReactNode } from "react";
-import { componentSections } from "../content/components/index";
+import { componentSections } from "../../../../packages/ui-react/docs/components/index";
 
 const plain = (path: string) => (path.length > 1 ? path.replace(/\/+$/, "") : path);
 

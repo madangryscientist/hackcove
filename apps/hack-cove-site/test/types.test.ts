@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
 import { generateTypes, TYPES_JSON } from "../scripts/generate-props";
-import { componentPages } from "../src/content/components/index";
-import typesJson from "../src/generated/types.json";
+import { componentPages } from "../../../packages/ui-react/docs/components/index";
+import typesJson from "../../../packages/ui-react/docs/types.json";
 import { renderLlms } from "../src/docs/llms";
 import { llmsSection } from "./llms";
 

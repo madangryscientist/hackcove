@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { mergeArmDocs } from "../scripts/armDocs";
 import { NATIVE } from "../scripts/generate-props";
-import propsJson from "../src/generated/props.json";
+import propsJson from "../../../packages/ui-react/docs/props.json";
 import { docOf } from "../src/docs/Props";
 
 describe("props.json: native props", () => {

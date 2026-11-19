@@ -18,9 +18,9 @@ const UI = join(import.meta.dirname, "..", "..", "..", "packages", "ui-react");
 const TSCONFIG = join(UI, "tsconfig.json");
 const INDEX = join(UI, "src", "index.ts");
 /** Where `scripts/props.ts` writes the result and the docs read it. */
-export const PROPS_JSON = join(import.meta.dirname, "..", "src", "generated", "props.json");
+export const PROPS_JSON = join(UI, "docs", "props.json");
 /** Where the type exports go, beside the props. */
-export const TYPES_JSON = join(import.meta.dirname, "..", "src", "generated", "types.json");
+export const TYPES_JSON = join(UI, "docs", "types.json");
 const LEFT_OUT = new Set(["className", "style"]);
 
 /**

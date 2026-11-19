@@ -1,14 +1,14 @@
 /**
  * `/ui/llms.txt`: the component docs as plain text for agents, one section per component. It is
- * made from the same sources as the pages (`content/components/`, the stories and
- * `generated/props.json`), so the two cannot drift.
+ * made from the same sources as the pages (`packages/ui-react/docs/components/`, the
+ * stories and `packages/ui-react/docs/props.json`), so the two cannot drift.
  */
 import {
   componentPageOf,
   componentPages,
   sectionOfPage,
   type ComponentPage,
-} from "../content/components/index.js";
+} from "../../../../packages/ui-react/docs/components/index.js";
 import { site } from "../content/site.js";
 import { themes } from "../content/themes.js";
 import { pairOf } from "./pairs.js";

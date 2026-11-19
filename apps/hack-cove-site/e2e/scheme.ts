@@ -1,7 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 import { themeFiles } from "@hackcove/themes-shared/files";
 import { declaresDark, themeScope } from "@hackcove/themes-shared/scope";
-import { componentPages } from "../src/content/components/index";
+import { componentPages } from "../../../packages/ui-react/docs/components/index";
 
 // One theme per CSS file in themes/. The header toggle switches between the last light theme by id
 // and the one scoped `.dark` (the class ui's pre-paint script sets), told apart as the site does: a

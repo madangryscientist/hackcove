@@ -8,7 +8,10 @@ import { ProductCards } from "../src/components/ProductCards";
 import { SiteNav } from "../src/components/SiteNav";
 import { Team } from "../src/components/Team";
 import { UiPage } from "../src/components/UiPage";
-import { componentPages, componentSections } from "../src/content/components/index";
+import {
+  componentPages,
+  componentSections,
+} from "../../../packages/ui-react/docs/components/index";
 import { type Person, sectionOf, site } from "../src/content/site";
 import { themeFiles } from "@hackcove/themes-shared/files";
 import { themes } from "../src/content/themes";

@@ -9,10 +9,10 @@ import {
   componentPages,
   componentSections,
   neighboursOf,
-} from "../src/content/components/index";
+} from "../../../packages/ui-react/docs/components/index";
 import { site } from "../src/content/site";
 import { themes } from "../src/content/themes";
-import propsJson from "../src/generated/props.json";
+import propsJson from "../../../packages/ui-react/docs/props.json";
 import { docOf } from "../src/docs/Props";
 import { renderLlms } from "../src/docs/llms";
 import { pairOf } from "../src/docs/pairs";

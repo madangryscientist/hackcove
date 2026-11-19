@@ -1,4 +1,4 @@
-import { componentPages } from "../content/components";
+import { componentPages } from "../../../../packages/ui-react/docs/components";
 import { site } from "../content/site";
 
 /* Every page the site has, for crawlers: the top-level pages are read from `src/pages/*.astro`, so a

@@ -7,7 +7,7 @@
    extending a component and no styling escape hatch.
    --------------------------------------------------------------------------- */
 
-import type { IconName } from "@hackcove/ui-react";
+import type { IconName } from "../../src/icons";
 
 export type ComponentPage = {
   /** The page's path segment: /ui/<slug>/. */

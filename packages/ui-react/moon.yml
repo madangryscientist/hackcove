@@ -1,14 +1,16 @@
 $schema: "../../.moon/cache/schemas/project.json"
 
 # @hackcove/ui-react. Each task runs the package.json script of its name (`prepack` is npm's, not a task).
+# docs/ is the component docs' data: only lint (check-slop) reads it, so the other tasks leave it out
+# of their hash.
 tasks:
   build:
     command: "bun run build"
-    inputs: ["**/*"]
+    inputs: ["**/*", "!docs/**/*"]
     outputs: ["dist"]
   typecheck:
     command: "bun run typecheck"
-    inputs: ["**/*"]
+    inputs: ["**/*", "!docs/**/*"]
   lint:
     command: "bun run lint"
     # The testing config this project's .oxlintrc.json extends: another project's files.
@@ -16,8 +18,8 @@ tasks:
       ["**/*", "/packages/oxlint-testing/.oxlintrc.json", "/packages/oxlint-testing/plugin.js"]
   test:
     command: "bun run test"
-    inputs: ["**/*"]
+    inputs: ["**/*", "!docs/**/*"]
   pack-check:
     command: "bun run pack-check"
-    inputs: ["**/*"]
+    inputs: ["**/*", "!docs/**/*"]
     deps: ["~:build"]

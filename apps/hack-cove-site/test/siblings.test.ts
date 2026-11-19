@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { componentPageOf, componentPages } from "../src/content/components/index";
+import { componentPageOf, componentPages } from "../../../packages/ui-react/docs/components/index";
 import { renderLlms } from "../src/docs/llms";
 import { llmsSection } from "./llms";
 

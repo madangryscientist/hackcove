@@ -14,7 +14,7 @@ import {
   Text,
   TextLink,
 } from "@hackcove/ui-react";
-import { componentSections } from "../content/components/index";
+import { componentSections } from "../../../../packages/ui-react/docs/components/index";
 import { site } from "../content/site";
 import { themes } from "../content/themes";
 import { StatusCard } from "./StatusCard";

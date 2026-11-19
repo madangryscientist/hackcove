@@ -110,8 +110,8 @@ classic compiler API for it to parse them with.
    `Do<Topic>` and `Dont<Topic>`. A topic shows both halves when a counter-example teaches
    something; one shown on its own (a feature, or a wrong way the types already refuse) is listed
    with its reason in `ONE_HALF` in `apps/hack-cove-site/test/docs.test.tsx`.
-   Its story title is `<Section>/<Page name>`, read from the site's `componentSections`
-   (`apps/hack-cove-site/src/content/components/`): add the component to a page there first, then
+   Its story title is `<Section>/<Page name>`, read from the docs' `componentSections`
+   (`packages/ui-react/docs/components/`): add the component to a page there first, then
    title the story file with that page's section and name. Storybook's sidebar takes its order from
    the same list, so nothing else needs editing, and `visual-plan.test.ts` fails on a title that
    differs from the site's.
@@ -151,7 +151,7 @@ never mixes a local capture into a pull request's build.
 
 The stories are split into groups, one per section of the [component docs](https://hack-cove.com/ui/)
 (Layout, Page layouts, Text, … and Overview), read from
-`apps/hack-cove-site/src/content/components`. Each group is its own folder (`.pixelslash/<section>/`)
+`packages/ui-react/docs/components`. Each group is its own folder (`.pixelslash/<section>/`)
 and its own PixelSlash project (`hackcove-ui-<section>`), with its own baseline and review queue.
 A story file goes in the section of the docs page that names it in `pairs`, `fullPage` or
 `stories`; one that no page names fails the storybook tests, so a new story file comes with its

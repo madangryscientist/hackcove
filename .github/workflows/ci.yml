@@ -62,6 +62,12 @@ jobs:
       # Three tasks at once: moon's default of one per core is too much for a shared runner.
       - run: bunx moon run --concurrency 3 :typecheck :lint :test :build :pack-check
 
+      # The gate above ran the props task, which rewrites packages/ui-react/docs/props.json and
+      # types.json from this commit's source. A diff means the committed copy is stale: run
+      # `bunx moon run hack-cove-site:props` and commit what it writes.
+      - name: Committed props data is current
+        run: git diff --exit-code packages/ui-react/docs
+
       - run: bun run format:check
 
       - run: bunx playwright install --with-deps chromium firefox webkit
