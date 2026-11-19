@@ -59,9 +59,13 @@ async function listBuilds(project: string, ...flags: string[]): Promise<LookupRe
   return lookupResult(exitCode, stdout, stderr);
 }
 
-/** The shas of `project`'s 20 newest `main` builds, or why the server gave none. */
+/**
+ * The shas of `project`'s 100 newest `main` builds (the PixelSlash CLI's most), or why the server
+ * gave none. A branch behind origin/main's tip finds its merge-base's build among them; a branch
+ * more than 100 main uploads behind still fails with "upload main first".
+ */
 async function mainShas(project: string): Promise<MainShas> {
-  const result = await listBuilds(project, "--branch", "main", "--limit", "20");
+  const result = await listBuilds(project, "--branch", "main", "--limit", "100");
   return result.kind === "ok" ? { kind: "ok", shas: shasOf(result.listing) } : result;
 }
 
