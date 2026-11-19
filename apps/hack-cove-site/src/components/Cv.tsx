@@ -131,7 +131,7 @@ function Experience() {
   return (
     <section className="mt-12">
       <SectionHeading rule>Experience</SectionHeading>
-      <div className="grid gap-10">
+      <div className="cv-jobs grid gap-10">
         {cv.experience.map((job) => (
           <Job key={job.company} job={job} />
         ))}
