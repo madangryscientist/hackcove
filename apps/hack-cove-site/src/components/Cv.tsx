@@ -12,7 +12,7 @@ import {
   TextLink,
 } from "@hackcove/ui-react";
 import { Fragment, type ReactNode } from "react";
-import { cv, type CvHighlightGroup, type CvJob } from "../content/cv";
+import { cv, type CvHighlightGroup, type CvJob, type CvLink } from "../content/cv";
 import { site } from "../content/site";
 
 function Bullets({ items }: { items: string[] }) {
@@ -25,13 +25,13 @@ function Bullets({ items }: { items: string[] }) {
   );
 }
 
-/**
- * A group's heading, with any link whose label it already names set inline as that link, so the
- * label is not printed again on a line of its own.
- */
-function GroupHeading({ group }: { group: CvHighlightGroup }) {
-  const heading = group.heading ?? "";
-  const link = group.links?.find((candidate) => heading.includes(candidate.label));
+/** The link a group's heading already names, set inline there rather than on a line of its own. */
+function inlineLink(group: CvHighlightGroup): CvLink | undefined {
+  const heading = group.heading;
+  return heading ? group.links?.find((link) => heading.includes(link.label)) : undefined;
+}
+
+function GroupHeading({ heading, link }: { heading: string; link: CvLink | undefined }) {
   if (!link) return <Text strong>{heading}</Text>;
   const at = heading.indexOf(link.label);
   return (
@@ -43,8 +43,7 @@ function GroupHeading({ group }: { group: CvHighlightGroup }) {
   );
 }
 
-function GroupLinks({ group }: { group: CvHighlightGroup }) {
-  const links = group.links?.filter((link) => !group.heading?.includes(link.label)) ?? [];
+function GroupLinks({ links }: { links: CvLink[] }) {
   if (links.length === 0) return null;
   return (
     <Text>
@@ -65,14 +64,15 @@ function GroupLinks({ group }: { group: CvHighlightGroup }) {
  * set the same distance below.
  */
 function Group({ group, lead }: { group: CvHighlightGroup; lead?: ReactNode }) {
-  const [first = "", ...more] = group.items;
+  const [first, ...more] = group.items;
+  const link = inlineLink(group);
   return (
     <>
       <div className="cv-keep">
         {lead}
         <div className="mt-3">
-          {group.heading && <GroupHeading group={group} />}
-          <Bullets items={[first]} />
+          {group.heading && <GroupHeading heading={group.heading} link={link} />}
+          {first !== undefined && <Bullets items={[first]} />}
         </div>
       </div>
       {more.length > 0 && (
@@ -80,7 +80,7 @@ function Group({ group, lead }: { group: CvHighlightGroup; lead?: ReactNode }) {
           <Bullets items={more} />
         </div>
       )}
-      <GroupLinks group={group} />
+      <GroupLinks links={group.links?.filter((other) => other !== link) ?? []} />
     </>
   );
 }
@@ -103,6 +103,7 @@ function Job({ job }: { job: CvJob }) {
   );
   return (
     <article className="cv-job">
+      {job.groups.length === 0 && lead}
       {job.groups.map((group, index) => (
         <Group
           key={group.heading ?? group.items[0]}
@@ -148,7 +149,7 @@ function Experience() {
 
 /**
  * The headline and location, split at each " · ". Each part is an inline block that carries the
- * separator after it, so a wrap falls between parts ("Cape Town" stays whole) and never puts a
+ * separator after it on a no-break space, so a wrap falls between parts ("Cape Town" stays whole) and never puts a
  * separator at the start of a line.
  */
 function HeadlineParts() {
@@ -156,7 +157,7 @@ function HeadlineParts() {
   return parts.map((part, index) => (
     <Fragment key={part}>
       {index > 0 && " "}
-      <span className="inline-block">{index < parts.length - 1 ? `${part} ·` : part}</span>
+      <span className="inline-block">{index < parts.length - 1 ? `${part}\u00a0·` : part}</span>
     </Fragment>
   ));
 }
@@ -214,7 +215,7 @@ export function Cv() {
                   key={`${group.label}-${i}`}
                   className="sm:col-span-2 sm:grid sm:grid-cols-subgrid"
                 >
-                  <Text as="dt">
+                  <Text strong as="dt">
                     <strong>{group.label}:</strong>
                   </Text>
                   <Text as="dd">{group.items.join(", ")}</Text>

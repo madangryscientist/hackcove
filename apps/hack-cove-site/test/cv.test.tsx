@@ -9,8 +9,8 @@ const html = renderToStaticMarkup(<Cv />)
   .replaceAll("&amp;", "&")
   .replaceAll("&#x27;", "'");
 const blob = `${JSON.stringify(cv)}\n${html}`;
-/** The page's text as a reader sees it: tags dropped, so inline links and spans do not split a line. */
-const text = html.replace(/<[^>]*>/g, "");
+/** The page's text as a reader sees it: tags dropped and no-break spaces read as spaces. */
+const text = html.replace(/<[^>]*>/g, "").replaceAll("\u00a0", " ");
 /** The markup of every `tag` element (one that does not nest inside itself). */
 function elements(tag: string): string[] {
   return [...html.matchAll(new RegExp(`<${tag}[ >][\\s\\S]*?</${tag}>`, "g"))].map((m) => m[0]);
@@ -98,7 +98,7 @@ describe("cv static HTML", () => {
   });
 
   test("the headline breaks only between its parts, each holding its separator", () => {
-    const shown = [...cv.headline.split(" · ").map((part) => `${part} ·`), cv.location];
+    const shown = [...cv.headline.split(" · ").map((part) => `${part}\u00a0·`), cv.location];
     for (const part of shown) expect(html).toContain(`<span class="inline-block">${part}</span>`);
   });
 
