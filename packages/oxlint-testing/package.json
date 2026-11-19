@@ -45,8 +45,8 @@
     "pack-check": "npm pack --dry-run --json --ignore-scripts | bun scripts/pack-files.ts && bun scripts/consumer.ts"
   },
   "devDependencies": {
-    "@types/bun": "1.4.3",
-    "vitest": "5.0.5"
+    "@types/bun": "1.4.4",
+    "vitest": "5.1.0"
   },
   "peerDependencies": {
     "eslint-plugin-playwright": "2.12.2",

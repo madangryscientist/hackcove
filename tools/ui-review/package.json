@@ -12,8 +12,8 @@
     "review": "bun src/review.ts"
   },
   "devDependencies": {
-    "@types/bun": "1.4.3",
-    "vitest": "5.0.5"
+    "@types/bun": "1.4.4",
+    "vitest": "5.1.0"
   },
   "nx": {
     "name": "ui-review"
