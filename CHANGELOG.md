@@ -1,3 +1,32 @@
+## 0.3.2 (2026-11-19)
+
+### 🩹 Fixes
+
+- **themes:** hold outline and ghost button text to AA on every callout tint ([#168](https://github.com/slashsuite/uislash/pull/168))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+
+## 0.11.3 (2026-11-19)
+
+### 🚀 Features
+
+- **ui-react:** Button, IconButton, SegmentedControl and Icon take a size that changes at 48rem, in CSS ([#196](https://github.com/slashsuite/uislash/pull/196))
+- **ui-react:** SegmentedControl takes fill and wrap, so a group in a column has no empty end and wraps cleanly on a narrow screen ([#195](https://github.com/slashsuite/uislash/pull/195))
+- **ui-react:** TextLink takes underline, so a link inside running text is not marked by colour alone ([#193](https://github.com/slashsuite/uislash/pull/193))
+
+### 🩹 Fixes
+
+- **site:** CV layout, contact line, links, skills and print pages ([#191](https://github.com/slashsuite/uislash/pull/191))
+- **ui-react:** server-rendered code strips carry their tab stop until measured ([#188](https://github.com/slashsuite/uislash/pull/188))
+- **ui-react:** name the search and pager links by their visible text, and let the keyboard scroll code ([#185](https://github.com/slashsuite/uislash/pull/185))
+
+### ❤️ Thank You
+
+- Jacobus @madangryscientist
+- Jacobus Langner @madangryscientist
+
 ## 0.11.2 (2026-11-17)
 
 ### 🚀 Features
