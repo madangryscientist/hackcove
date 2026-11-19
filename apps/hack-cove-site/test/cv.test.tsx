@@ -46,6 +46,21 @@ describe("cv static HTML", () => {
     for (const text of confirmedFields()) expect(html).toContain(text);
   });
 
+  test("the approved 2026-11-19 lines render as written", () => {
+    expect(html).toContain(
+      "Senior Full-Stack Engineer · TypeScript, Node, React, C#/.NET Core, PostgreSQL · AI developer tooling · Cape Town",
+    );
+    expect(html).toContain("Contract Engineer, Hack Cove (my contracting company)");
+    expect(html).toContain(
+      "Slash suite (slashslash.build): tools I built for problems I hit while building with AI coding agents, and use every day. Public on GitHub, in alpha.",
+    );
+    expect(html).toContain("Cut the initial page load from 41 MB to 2.7 MB.");
+  });
+
+  test("no em dash or en dash in the CV copy", () => {
+    expect(blob).not.toMatch(/[\u2013\u2014]/);
+  });
+
   test("no contact form", () => {
     expect(html).not.toContain("<form");
     expect(html).not.toContain("<input");
