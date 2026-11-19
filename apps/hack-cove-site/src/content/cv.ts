@@ -156,7 +156,7 @@ export const cv = {
       title: "Software Developer",
       dates: "Sep 2014 to Aug 2015",
       summary:
-        "asset management; web and server-side work in C# and SQL Server, and tuning slow queries.",
+        "Asset management; web and server-side work in C# and SQL Server, and tuning slow queries.",
     },
     {
       company: "Property24",
