@@ -4,8 +4,7 @@
  *
  * - each claim cites facts (or names a product with no facts file), and every cited id is in its
  *   product's FACTS.md;
- * - a claim citing a Planned fact, or naming an unbuilt product, never sits under a today label, and
- *   one citing a Planned fact reads as not built yet;
+ * - a claim citing a Planned fact, or naming an unbuilt product, never sits under a today label;
  * - the wrong claims found on 2026-11-17 are not on the built site.
  *
  * It checks that a cited fact exists, not that it backs the sentence: that is the citation's author's
@@ -208,7 +207,10 @@ const WRONG: readonly { phrase: string; why: string }[] = [
   { phrase: "turning one on will do", why: "no toggleslash fact backs a verdict" },
   { phrase: "flaky test spotter on the way", why: "flakeslash/flake-same-commit is today" },
   { phrase: "It will find checks", why: "flakeslash/flake-same-commit is today" },
-  { phrase: "Paid hosting is planned", why: "pixelslash/hosted-review-app is today" },
+  {
+    phrase: "Paid hosting is planned",
+    why: "pixelslash/hosted-review-app: hosted at app.pixelslash.dev",
+  },
 ];
 
 function builtPages(): string[] {
