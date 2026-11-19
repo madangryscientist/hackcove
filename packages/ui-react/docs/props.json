@@ -5037,13 +5037,21 @@
   },
   "SegmentedControl": {
     "name": "SegmentedControl",
-    "description": "A joined pill group where one option is filled: a mode or a range chosen in place. `items` are\n`{ value, label }` buttons (`value` and `onChange` are the caller's state; the arrow keys, Home\nand End move the choice) or links (`href`, an in-app one drawn by the app's router `<Link>` through `LinkProvider`;\n`value` marks the current one, which gets `aria-current`). An item may carry a `count`, and a\nbutton one `disabledReason` (it stays reachable by the arrows and its reason is a tooltip) or a bare `disabled`; `disabled` on the group disables every\noption. `label` names the group. `size` matches the height of a `Button` of the same size.",
+    "description": "A joined pill group where one option is filled: a mode or a range chosen in place. `items` are\n`{ value, label }` buttons (`value` and `onChange` are the caller's state; the arrow keys, Home\nand End move the choice) or links (`href`, an in-app one drawn by the app's router `<Link>` through `LinkProvider`;\n`value` marks the current one, which gets `aria-current`). An item may carry a `count`, and a\nbutton one `disabledReason` (it stays reachable by the arrows and its reason is a tooltip) or a bare `disabled`; `disabled` on the group disables every\noption. `label` names the group. `size` matches the height of a `Button` of the same size.\n`fill` stretches the options across the group's width; `wrap` lets them wrap into full rows of a\nbox, always or (`\"narrow\"`) only while the group is under 32rem wide.",
     "props": [
       {
         "name": "disabled",
         "type": "boolean",
         "required": false,
         "description": "Every option is disabled, e.g. until the page has hydrated.",
+        "native": false
+      },
+      {
+        "name": "fill",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "The group takes its parent's full width and the options grow to share it, so the border ends\nat the last option. Still a pill.",
         "native": false
       },
       {
@@ -5087,6 +5095,14 @@
         "type": "string",
         "required": false,
         "description": "The `value` of the current option; for links, an alternative to `selected` on the item.",
+        "native": false
+      },
+      {
+        "name": "wrap",
+        "type": "boolean | \"narrow\"",
+        "required": false,
+        "default": "false",
+        "description": "The options wrap onto full rows of at most three (five are 3 then 2) in a box with rounded\ncorners and a line between options, instead of a pill. `\"narrow\"`: the box only while the group\nitself is under 32rem wide (a container query, so it follows the column it sits in), and a\nfilled pill from 32rem up. Implies `fill`.",
         "native": false
       }
     ]

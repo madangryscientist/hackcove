@@ -23,6 +23,42 @@ const ON = "bg-violet-600 font-medium text-violet-50";
 const OFF = "bg-white text-slate-600";
 const OFF_LIVE = "hover:bg-violet-50 hover:text-violet-700";
 
+/** How the group is laid out: the default inline pill, a filled pill, a wrapping box, or the box only while narrow. */
+type Layout = "inline" | "fill" | "wrap" | "narrow";
+
+const ROOT: Record<Layout, string> = {
+  inline: "inline-flex rounded-full border border-slate-300",
+  fill: "flex w-full rounded-full border border-slate-300",
+  // The box clips each option's top and left line where it meets the group's own border.
+  wrap: "flex w-full flex-wrap overflow-hidden rounded-2xl border border-slate-300",
+  narrow:
+    "flex w-full border border-slate-300 @min-[32rem]:rounded-full @max-[32rem]:flex-wrap @max-[32rem]:overflow-hidden @max-[32rem]:rounded-2xl",
+};
+
+const FOCUS =
+  "border-slate-300 text-center transition focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-violet-600";
+/**
+ * An option's own lines. In the box each option draws its top and left line one pixel up and left,
+ * over its neighbour's edge, so the lines between options are one pixel and the outer ones fall
+ * under the group's border. A row holds at most three (`30%` each), and they grow to fill it.
+ */
+const OPTION: Record<Layout, string> = {
+  inline: BASE,
+  fill: cx(FOCUS, "flex-auto border-l first:rounded-l-full first:border-l-0 last:rounded-r-full"),
+  wrap: cx(FOCUS, "-mt-px -ml-px flex-[1_1_30%] border-t border-l"),
+  narrow: cx(
+    FOCUS,
+    "@min-[32rem]:flex-auto @min-[32rem]:border-l @min-[32rem]:first:rounded-l-full @min-[32rem]:first:border-l-0 @min-[32rem]:last:rounded-r-full",
+    "@max-[32rem]:-mt-px @max-[32rem]:-ml-px @max-[32rem]:flex-[1_1_30%] @max-[32rem]:border-t @max-[32rem]:border-l",
+  ),
+};
+
+function layout(fill: boolean, wrap: boolean | "narrow"): Layout {
+  if (wrap === "narrow") return "narrow";
+  if (wrap) return "wrap";
+  return fill ? "fill" : "inline";
+}
+
 /**
  * A joined pill group where one option is filled: a mode or a range chosen in place. `items` are
  * `{ value, label }` buttons (`value` and `onChange` are the caller's state; the arrow keys, Home
@@ -30,9 +66,13 @@ const OFF_LIVE = "hover:bg-violet-50 hover:text-violet-700";
  * `value` marks the current one, which gets `aria-current`). An item may carry a `count`, and a
  * button one `disabledReason` (it stays reachable by the arrows and its reason is a tooltip) or a bare `disabled`; `disabled` on the group disables every
  * option. `label` names the group. `size` matches the height of a `Button` of the same size.
+ * `fill` stretches the options across the group's width; `wrap` lets them wrap into full rows of a
+ * box, always or (`"narrow"`) only while the group is under 32rem wide.
  */
 export function SegmentedControl({
   size = "md",
+  fill = false,
+  wrap = false,
   ...props
 }: SwitchProps & {
   /**
@@ -40,19 +80,36 @@ export function SegmentedControl({
    * @default md
    */
   size?: Size;
+  /**
+   * The group takes its parent's full width and the options grow to share it, so the border ends
+   * at the last option. Still a pill.
+   * @default false
+   */
+  fill?: boolean;
+  /**
+   * The options wrap onto full rows of at most three (five are 3 then 2) in a box with rounded
+   * corners and a line between options, instead of a pill. `"narrow"`: the box only while the group
+   * itself is under 32rem wide (a container query, so it follows the column it sits in), and a
+   * filled pill from 32rem up. Implies `fill`.
+   * @default false
+   */
+  wrap?: boolean | "narrow";
 }): ReactElement {
   const text = controlText(size, useTypeStep(), false);
-  return (
+  const shape = layout(fill, wrap);
+  const group = (
     <Switcher
       {...props}
       parts={{
         group: "radiogroup",
         item: "radio",
         vertical: true,
-        root: "inline-flex rounded-full border border-slate-300",
+        root: ROOT[shape],
         option: (active, disabled) =>
-          cx(BASE, SIZE[size], text, active ? ON : OFF, !active && !disabled && OFF_LIVE),
+          cx(OPTION[shape], SIZE[size], text, active ? ON : OFF, !active && !disabled && OFF_LIVE),
       }}
     />
   );
+  // A container query needs an element around the group; every attribute stays on the group itself.
+  return shape === "narrow" ? <div className="@container">{group}</div> : group;
 }
