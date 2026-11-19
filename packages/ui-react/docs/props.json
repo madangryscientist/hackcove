@@ -6596,6 +6596,14 @@
         "required": false,
         "description": "A meaning's colour, as on the inline roles: `warn` for a warning link, `danger`, `positive`,\n`info` or `muted`. Left out, the link is the accent colour.",
         "native": false
+      },
+      {
+        "name": "underline",
+        "type": "boolean",
+        "required": false,
+        "default": "false",
+        "description": "Always underlined, for a link set inside running text, where colour alone does not mark it (WCAG 1.4.1).",
+        "native": false
       }
     ]
   },
