@@ -95,6 +95,21 @@ export const Tones: S = {
   ),
 };
 
+/** `accent` is the link colour said on purpose; `neutral` is the body text colour, for a link that should not stand out. */
+export const AccentAndNeutral: S = {
+  render: () => (
+    <p className="max-w-xl text-sm text-slate-700">
+      <TextLink href="#plan" tone="accent">
+        Change plan
+      </TextLink>
+      {" · "}
+      <TextLink href="#terms" tone="neutral">
+        Terms
+      </TextLink>
+    </p>
+  ),
+};
+
 /** Stands in for a router's <Link>: the app's adapter, set once on a `LinkProvider`. */
 const FakeLink: LinkAdapter = ({ href, ...rest }) => <a {...rest} href={`#${href}`} />;
 

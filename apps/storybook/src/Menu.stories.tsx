@@ -165,6 +165,20 @@ export const ButtonTrigger: S = {
   ),
 };
 
+/** `size` sizes the trigger on a `Button`'s scale: `sm`, `md` (the default) and `lg`, the overflow button and the named one. */
+export const Sizes: S = {
+  render: () => (
+    <div className="flex flex-col items-start gap-3 p-4">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <div key={size} className="flex items-center gap-3">
+          <Menu size={size} label={`More actions, ${size}`} items={ROW_ACTIONS} />
+          <Menu size={size} trigger="button" label="Export" items={ROW_ACTIONS} />
+        </div>
+      ))}
+    </div>
+  ),
+};
+
 /** Link items: an in-app path through the app's `LinkProvider`, and an `external` one in a new tab. */
 export const Links: S = {
   render: () => (

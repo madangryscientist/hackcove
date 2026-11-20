@@ -89,6 +89,27 @@ export const Wide: S = {
   ),
 };
 
+/** `width="full"` runs the column to the Container's width, for a page of wide blocks such as a comparison of plans. Paragraphs keep their reading measure. */
+export const FullWidth: S = {
+  render: () => (
+    <DemoShell>
+      <ProseLayout
+        width="full"
+        title="Compare plans"
+        description="Every plan includes unlimited projects."
+      >
+        <CardGrid columns={4}>
+          {["Free", "Team", "Business", "Enterprise"].map((plan) => (
+            <Card key={plan} title={plan}>
+              <Text>Everything you need to review a visual change before it ships.</Text>
+            </Card>
+          ))}
+        </CardGrid>
+      </ProseLayout>
+    </DemoShell>
+  ),
+};
+
 /** `ListLayout` is for lists: its content runs the full width, so lines of text get too long to read. Use `ProseLayout`. */
 export const DontArticle: S = {
   render: () => (

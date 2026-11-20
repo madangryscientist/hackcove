@@ -45,6 +45,15 @@ export const Shapes: S = {
   ),
 };
 
+/** `width="full"` fills the parent: here a column of `max-w-md`. */
+export const FullWidth: S = {
+  render: () => (
+    <div className="max-w-md">
+      <MediaTile src={first.src} alt={first.alt} aspect="16:9" width="full" label="Anna" />
+    </div>
+  ),
+};
+
 /** `aspect="natural"` shows the picture whole at its own proportions, as a chat does; nothing is cropped. The other shapes crop to fill. */
 export const Natural: S = {
   render: () => (

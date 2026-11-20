@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import type { ReactNode } from "react";
 import { Caption, Overline, Text, type TextTone } from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Text/Body text" };
@@ -36,32 +35,56 @@ export const ToneAxis: S = {
         </tr>
       </thead>
       <tbody>
-        {(
-          [
-            ["Text", (t: TextTone) => <Text tone={t}>Text</Text>],
-            [
-              "Text strong",
-              (t: TextTone) => (
-                <Text strong tone={t}>
-                  Text strong
-                </Text>
-              ),
-            ],
-            ["Caption", (t: TextTone) => <Caption tone={t}>Caption</Caption>],
-            ["Overline", (t: TextTone) => <Overline tone={t}>Overline</Overline>],
-          ] satisfies Array<[string, (t: TextTone) => ReactNode]>
-        ).map(([label, render]) => (
-          <tr key={label}>
-            <td>
-              <Caption as="span" tone="muted">
-                {label}
-              </Caption>
+        <tr>
+          <td>
+            <Caption as="span" tone="muted">
+              Text
+            </Caption>
+          </td>
+          {TONES.map((t) => (
+            <td key={t}>
+              <Text tone={t}>Text</Text>
             </td>
-            {TONES.map((t) => (
-              <td key={t}>{render(t)}</td>
-            ))}
-          </tr>
-        ))}
+          ))}
+        </tr>
+        <tr>
+          <td>
+            <Caption as="span" tone="muted">
+              Text strong
+            </Caption>
+          </td>
+          {TONES.map((t) => (
+            <td key={t}>
+              <Text strong tone={t}>
+                Text strong
+              </Text>
+            </td>
+          ))}
+        </tr>
+        <tr>
+          <td>
+            <Caption as="span" tone="muted">
+              Caption
+            </Caption>
+          </td>
+          {TONES.map((t) => (
+            <td key={t}>
+              <Caption tone={t}>Caption</Caption>
+            </td>
+          ))}
+        </tr>
+        <tr>
+          <td>
+            <Caption as="span" tone="muted">
+              Overline
+            </Caption>
+          </td>
+          {TONES.map((t) => (
+            <td key={t}>
+              <Overline tone={t}>Overline</Overline>
+            </td>
+          ))}
+        </tr>
       </tbody>
     </table>
   ),

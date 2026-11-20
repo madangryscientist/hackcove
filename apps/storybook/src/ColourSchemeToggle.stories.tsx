@@ -62,3 +62,9 @@ export const Sizes: S = {
     </div>
   ),
 };
+
+/** `defaultValue="dark"` is the scheme the server rendered, for an app whose pages render dark. The server and the hydrating client draw the sun, the switch to light; the toggle then follows the class on `<html>`, so here, where the story starts light, it settles on the moon. */
+export const DefaultDark: S = {
+  beforeEach: resetColourScheme,
+  render: () => <ColourSchemeToggle defaultValue="dark" />,
+};
