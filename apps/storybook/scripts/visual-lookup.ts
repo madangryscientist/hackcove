@@ -51,7 +51,7 @@ export function lookupFailure(misses: LookupMiss[]): string | undefined {
   if (down !== "")
     lines.push(
       `PixelSlash did not answer for ${down}. This is a PixelSlash failure, not a missing ` +
-        "project, so do not create it: report it to the PixelSlash planner with this output",
+        "project, so do not create it: report it to the PixelSlash architect with this output",
     );
   if (refused !== "")
     lines.push(

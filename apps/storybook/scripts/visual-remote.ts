@@ -162,7 +162,7 @@ async function readBuildState(project: string, id: string): Promise<BuildState> 
   return build;
 }
 
-/** The build id `pixelslash upload` recorded in the snapshot dir it sent. */
+/** The build id `pixelslash upload` recorded in the shot dir it sent. */
 function recordedBuild(dir: string): string {
   const path = join(dir, "build.json");
   const recorded: unknown = existsSync(path) ? JSON.parse(readFileSync(path, "utf8")) : null;

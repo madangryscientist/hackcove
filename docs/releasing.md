@@ -149,7 +149,7 @@ rules and the new name inherits the old name's last tag. That makes `nx release`
 from the commits since the old package's last release and write a changelog that continues, not one
 that restarts at the first commit.
 
-1. **Tag, after the rename merges** (the planner; the rename PR does not push tags). Put the new
+1. **Tag, after the rename merges** (the architect; the rename PR does not push tags). Put the new
    name's tag on the commit the old name's last tag points at, and push only that tag:
 
    ```sh

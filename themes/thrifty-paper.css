@@ -4,7 +4,7 @@
    ---------------------------------------------------------------------------
    The @slashsuite/ui-react components are written against Tailwind's slate/colour
    utilities directly (bg-white, text-slate-900, …). This file remaps those
-   utilities to Thrifty's light tokens under `.thrifty-paper`. The rules are
+   utilities to Thrifty's light colours under `.thrifty-paper`. The rules are
    unlayered, so they override Tailwind's (layered) utilities.
 
    Consumers import it AFTER `@import "tailwindcss"` and put `.thrifty-paper`

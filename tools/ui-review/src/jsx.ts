@@ -1,4 +1,4 @@
-/** A styling attribute written on a Hack Cove component's opening tag. */
+/** A styling attribute written on a UISlash component's opening tag. */
 export type StylingProp = { component: string; prop: string; line: number };
 
 const STYLING = new Set(["className", "class", "class:list", "style"]);

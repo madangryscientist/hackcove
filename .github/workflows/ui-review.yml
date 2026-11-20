@@ -1,6 +1,6 @@
 name: UI review
 
-# Reusable: checks that a pull request builds its UI the Hack Cove way. A consumer repo calls it:
+# Reusable: checks that a pull request builds its UI the UISlash way. A consumer repo calls it:
 #
 #   on: pull_request
 #   jobs:
@@ -51,7 +51,7 @@ on:
         type: string
         default: ""
       hackcove-repo:
-        description: The repository that holds the Hack Cove tools, AGENTS.md and palette.
+        description: The repository that holds the UISlash tools, AGENTS.md and palette.
         type: string
         default: slashsuite/uislash
       hackcove-ref:

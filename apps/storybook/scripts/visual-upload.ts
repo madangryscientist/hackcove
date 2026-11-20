@@ -31,7 +31,7 @@ export type UploadMode = "branch" | "main";
 
 /**
  * Which upload this checkout does, or why it cannot. HEAD at origin/main's tip with a clean tree
- * (a detached HEAD counts: the planner runs it in a throwaway worktree) uploads as `main`; any
+ * (a detached HEAD counts: the architect runs it in a throwaway worktree) uploads as `main`; any
  * other commit on `main` is refused, since the server would auto-accept it as the baseline. A
  * commit already on origin/main but behind its tip (a detached main checkout that a later push
  * overtook) is refused too: it is not a branch, and main is re-seeded at the tip instead. Any

@@ -133,7 +133,7 @@ the theme's CSS file, with a comment saying why when a published token moves.
 
 ## The visual check
 
-The maintainers also run a screenshot comparison (PixelSlash, an internal tool that is not published)
+The maintainers also run a comparison of shots (PixelSlash, an internal tool that is not published)
 against the branch's merge-base with `main`. It is not part of the gate above and **you do not need
 it to contribute**: it runs from a separate checkout of PixelSlash.
 

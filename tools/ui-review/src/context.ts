@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-/** What the rules need to know about Hack Cove, read from a hackcove checkout. */
+/** What the rules need to know about UISlash, read from a hackcove checkout. */
 export type Context = {
   /** Every component `@slashsuite/ui-react` exports (capitalised, not a type). */
   components: ReadonlySet<string>;

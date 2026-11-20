@@ -104,7 +104,7 @@ run takes the plan's own `--all` and `--upload`, and refuses a missing plan, a p
 flags, a `HEAD` that moved since the plan, and an unknown slug. A bare `--run` still does all three in one process
 (`CONTRIBUTING.md`, "The visual check").
 
-**CI uploads the screenshots.** `.github/workflows/visual.yml` runs `storybook:visual-upload` on every
+**CI uploads the shots.** `.github/workflows/visual.yml` runs `storybook:visual-upload` on every
 pull request's head commit and on every push to `main`, against the maintainers' PixelSlash server
 (its address is the `PIXELSLASH_SERVER` secret), which builds one `hackcove-ui-<section>` project per
 section. It posts no GitHub check, so the builds are read on the server or with the PixelSlash CLI.
@@ -168,14 +168,14 @@ that touches only `packages/ui-react` bumps `@slashsuite/ui-react`, and nothing 
 uislash lands through pull requests (Jacobus, 2026-10-27). Who opens and who merges is the
 global rule; what is particular to uislash:
 
-- **Screenshots before the merge.** The `Visual` workflow uploads the PR's head commit, every
+- **Shots before the merge.** The `Visual` workflow uploads the PR's head commit, every
   group whole, each to its own `hackcove-ui-<section>` project, and the server diffs it against the
-  `main` build it already holds. The server posts no GitHub check, so the planner reads every
+  `main` build it already holds. The server posts no GitHub check, so the architect reads every
   group's build for the head with the PixelSlash CLI and opens the report for any group that changed. A PR
   behind origin/main's tip needs no rebase for it: the server diffs it against the `main` build at its
   merge-base (or the nearest ancestor that has one), so it shows only the PR's own changes. A project
   that holds no `main` build at the merge-base or an ancestor fails the job, named. Nobody uploads a PR by hand.
-- **Screenshots after the merge.** The `Visual` run on the push to `main` uploads the merge
+- **Shots after the merge.** The `Visual` run on the push to `main` uploads the merge
   commit as `main`, which the server takes as the baseline for the next branch. Nobody uploads it
   by hand. A release commit that `publish.yml` pushes needs no upload of its own: the server picks
   its parent's build. That release push starts no `Visual` run, so a release dispatched while the
@@ -186,8 +186,8 @@ global rule; what is particular to uislash:
 - **The squash subject stays conventional** (`gh pr merge <pr> --squash --subject "…"`),
   because `nx release` reads it.
 - **No branch protection.** `publish.yml` pushes its release commit straight to `main`, so
-  nothing on GitHub blocks a merge and the planner enforces the rule: no merge while CI or a
-  `hackcove-ui-<section>` build for the head is failing, pending or holds unreviewed changes, unless the PR changes nothing a screenshot can see and
+  nothing on GitHub blocks a merge and the architect enforces the rule: no merge while CI or a
+  `hackcove-ui-<section>` build for the head is failing, pending or holds unreviewed changes, unless the PR changes nothing a shot can see and
   says so.
 - No commit, PR title or PR body carries a `Co-Authored-By` or any other AI attribution line.
 
@@ -222,7 +222,7 @@ global rule; what is particular to uislash:
 6. **Releases go only through the Action, and stay pre-release.** `.github/workflows/publish.yml`
    (which runs `nx release`) is the only way a package reaches npm: nothing is published from a
    laptop, a first publish included. Never run `nx release publish`, a bare `npm publish` or
-   `npm login`. Jacobus or the uislash planner dispatches it whenever a release is needed, with no
+   `npm login`. Jacobus or the uislash architect dispatches it whenever a release is needed, with no
    sign-off; the `npm-publish` environment has no approval step and accepts runs from `main` only.
    Every release is a pre-release: versions stay `0.x`, and moving a package to `1.0.0` is
    Jacobus's decision. A new package's first version is staged by the workflow's `NPM_TOKEN` step

@@ -1,6 +1,6 @@
 /**
  * A theme is one CSS file at the top of `themes/`, and its id is how every reader (the Storybook
- * toolbar, `data-theme`, the snapshot names, the e2e) refers to it: the file name without `.css`.
+ * toolbar, `data-theme`, the shot names, the e2e) refers to it: the file name without `.css`.
  */
 
 /** The id of the theme at `path`, a bare file name or a path ending in one. */

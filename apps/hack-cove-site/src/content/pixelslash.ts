@@ -83,7 +83,7 @@ export const pixelslash = {
         title: "Every page in one run",
         code: "--routes",
         text: {
-          text: "Compares a list of paths in one run, and compare diffs two folders of snapshots.",
+          text: "Compares a list of paths in one run, and compare diffs two folders of shots.",
           facts: ["pixelslash/many-pages"],
         },
       },
@@ -189,7 +189,7 @@ export const pixelslash = {
     title: "Private by default",
     items: [
       {
-        text: "It runs on your machine. No screenshot leaves it unless you pass --upload, and then only to the server you name.",
+        text: "It runs on your machine. No shot leaves it unless you pass --upload, and then only to the server you name.",
         facts: ["pixelslash/local-unless-upload"],
       },
       {

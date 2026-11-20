@@ -70,7 +70,7 @@ function Feature({ number, product }: { number: number; product: Product }) {
   );
 }
 
-/** How the slash tools fit: each one's question about a change, the tool, and how it answers. */
+/** How the Slash products fit: each one's question about a change, the tool, and how it answers. */
 function Fit() {
   const { overline, title, lead, questions } = site.home.fit;
   return (
@@ -109,7 +109,7 @@ function ComingCard({ name, status, pitch, action }: Product) {
 
 /**
  * The home page, after slashslash.build: a display headline and a lead, then each product you can
- * use today as a numbered block with its screenshot, how the slash tools fit together, then what
+ * use today as a numbered block with its screenshot, how the Slash products fit together, then what
  * is still coming as a row of cards.
  */
 export function ProductCards() {
