@@ -1,0 +1,3 @@
+import { FormLayout } from "@hackcove/ui-react";
+
+export const view = <FormLayout title="New invoice" description="Every field is required.">x</FormLayout>;

@@ -19,7 +19,7 @@ export const DontLabel: S = {
   ),
 };
 
-/** `badge` pins the count to the corner and adds it to the accessible name ("Alerts, 3"). */
+/** `count` pins the count to the corner and adds it to the accessible name ("Alerts, 3"). */
 export const DoBadge: S = {
   render: () => <IconButton label="Alerts" count={3} icon="bell" />,
 };
@@ -74,7 +74,7 @@ export const AsLink: S = {
   ),
 };
 
-/** `badge` pins a red count to the corner, on a button or a link; `label` names the count for a screen reader. Not shown at 0. */
+/** `count` pins a red count to the corner, on a button or a link; `label` names the count for a screen reader. Not shown at 0. */
 export const Badged: S = {
   render: () => (
     <div className="flex items-center gap-4">

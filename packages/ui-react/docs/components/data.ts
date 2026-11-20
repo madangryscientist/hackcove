@@ -114,7 +114,7 @@ export const data: ComponentSection = {
         dont: ["Do not add your own indent or a wrapper around the row."],
       },
       accessibility: [
-        'A button row is a `<div>` with a native `<button type="button">` stretched over it, named by the label alone; a link row is a `<div>` with a real link stretched over it, named by the whole row; a `static` row is a plain `<div>` with no click target.',
+        'A button row is a `<div>` with a native `<button type="button">` stretched over it, named by the label alone; a link row is a `<div>` with a real link stretched over it, named by the whole row; a row with no `href` and no `onClick` is a plain `<div>` with no click target.',
         '`selected` sets `aria-current="true"` on the row.',
         "`expanded` sets `aria-expanded` and draws a chevron, which is hidden from assistive tech.",
         "A button or link row has a focus ring from the component; a button row's `disabled` fades the row and disables its button, so a tap on the row itself does nothing; a link or button in `trailing` still works.",

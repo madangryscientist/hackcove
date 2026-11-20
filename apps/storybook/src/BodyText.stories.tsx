@@ -53,7 +53,7 @@ export const DoMeaning: S = {
   ),
 };
 
-/** `color` is the hierarchy of text, not its meaning: an error in the accent colour reads as a link, and in muted grey as nothing at all. */
+/** `muted` and `accent` are the hierarchy of text, not its meaning: an error in the accent ink reads as a link, and in muted grey as nothing at all. */
 export const DontMeaning: S = {
   render: () => (
     <Stack gap="xs">

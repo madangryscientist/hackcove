@@ -1,0 +1,4 @@
+import { TrendChart } from "@hackcove/ui-react";
+
+const series = [{ label: "Visits", tone: "violet", values: [3, 5, 8] }];
+export const view = <TrendChart label="Visits a week" series={series} />;

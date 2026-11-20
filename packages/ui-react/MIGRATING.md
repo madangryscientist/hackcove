@@ -285,7 +285,7 @@ A table is named by `label`, says a column of figures once in its head, and is p
 | `TableCell tone="default"` | leave it out: `neutral` is the default | codemod drops it |
 | `TableCell tone="neutral"` (`text-slate-600`) | `neutral`, now `text-slate-700`, the one plain cell ink | nothing to change |
 
-New, nothing to change: `TableRow selected` (the `ListRow` selected fill and `aria-selected`) and
+New, nothing to change: `TableRow selected` (the `ListRow` selected fill and `aria-current`) and
 `Table size` (the row padding, `sm` by default).
 
 TypeScript does not flag these:

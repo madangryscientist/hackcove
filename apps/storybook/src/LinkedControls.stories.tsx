@@ -22,7 +22,7 @@ const meta: Meta = { title: "Data/ListRow" };
 export default meta;
 type S = StoryObj;
 
-/** A link and a button in a link row sit above the row's link and take their own click; a click anywhere else on the row still follows it. Put several in `trailing` inside a `Cluster`, which spaces them (`actions` is for `static` rows). */
+/** A link and a button in a link row sit above the row's link and take their own click; a click anywhere else on the row still follows it. Put several in `trailing` inside a `Cluster`, which spaces them (`actions` is for a row with no `href` and no `onClick`). */
 export const ListRowWithControls: S = {
   render: () => (
     <div className="max-w-md">

@@ -1,0 +1,3 @@
+import { ProseLayout } from "@hackcove/ui-react";
+
+export const view = <ProseLayout title="Terms" subtitle="Updated in May.">x</ProseLayout>;

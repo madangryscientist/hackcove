@@ -76,7 +76,7 @@ export const Row: S = {
   ),
 };
 
-/** `hideLabel` keeps the label for assistive tech and draws no text, for a control whose purpose is plain from what surrounds it. */
+/** `labelHidden` keeps the label for assistive tech and draws no text, for a control whose purpose is plain from what surrounds it. */
 export const HiddenLabel: S = {
   render: () => (
     <div className="flex max-w-md flex-col gap-4">

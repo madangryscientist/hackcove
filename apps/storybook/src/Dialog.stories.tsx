@@ -259,7 +259,7 @@ export const DontForm: S = {
   },
 };
 
-/** `size="lg"` (640px): a wider form or a table. `sm` is 320px and `md`, the default, 440px. */
+/** `width="lg"` (640px): a wider form or a table. `sm` is 320px and `md`, the default, 440px. */
 export const Large: S = {
   render: () => (
     <Opened>
@@ -289,7 +289,7 @@ export const Large: S = {
 };
 
 /**
- * `size="full"`: the whole screen, for media or a player. The body takes the height between the
+ * `width="full"`: the whole screen, for media or a player. The body takes the height between the
  * header and the footer, and there is no backdrop to click, so the footer holds a close action
  * on a `method="dialog"` form.
  */

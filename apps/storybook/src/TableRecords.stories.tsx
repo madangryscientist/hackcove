@@ -14,7 +14,7 @@ const meta: Meta = { title: "Data/Table" };
 export default meta;
 type S = StoryObj;
 
-/** A table is a head and a body: names in strong cells, amounts in `align="end" numeric` cells so the figures line up. */
+/** A table is a head and a body: names in strong cells, amounts in `numeric` cells so the figures line up. */
 export const DoRecords: S = {
   render: () => (
     <Table label="Quotes">

@@ -31,12 +31,12 @@ export const OnAnIcon: S = {
   ),
 };
 
-/** `badge` on an `IconButton` pins the count to the corner and adds it to the button's name ("Alerts, 3"). */
+/** `count` on an `IconButton` pins the count to the corner and adds it to the button's name ("Alerts, 3"). */
 export const DoOnIcon: S = {
   render: () => <IconButton label="Alerts" count={3} icon="bell" />,
 };
 
-/** A Pill beside the button is not pinned to it and a screen reader never hears it as part of the button. Use `badge`. */
+/** A Pill beside the button is not pinned to it and a screen reader never hears it as part of the button. Use `count`. */
 export const DontOnIcon: S = {
   render: () => (
     <Cluster>

@@ -125,7 +125,7 @@ export function GalleryData() {
   );
 }
 
-/** A static ListRow with `leading`, `selected` and `revealOnHover` actions, a `focused` row, and a thumbnail row with a block label. */
+/** A plain ListRow (no `href`, no `onClick`) with `leading`, `selected` and `revealOnHover` actions, a `focused` row, and a thumbnail row with a block label. */
 function GalleryStaticRows() {
   return (
     <Card flush>
