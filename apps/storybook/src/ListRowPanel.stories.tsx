@@ -43,7 +43,7 @@ export const ActiveOnPanel: S = {
 
 /**
  * `panel` is content under a row with no `href` or `onClick` that starts where its label does, past `leading`: a row
- * that opens in place. The line above the row (`divided`) and the hover fill cover the panel too,
+ * that opens in place. The line above the row (`divided`) covers the panel too,
  * so a list of them is `divided={index > 0}` on each.
  */
 export const StaticDetail: S = {
