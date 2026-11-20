@@ -127,7 +127,7 @@
   "DocsNavGroup": {
     "name": "DocsNavGroup",
     "description": "One group of the docs nav: a title over its links (`Tab`s with an `href`). A group with no title is the nav's top.",
-    "definition": "{ title?: string; items: SwitchLink[] }"
+    "definition": "{ title?: string; items: Tab[] }"
   },
   "DocsNeighbour": {
     "name": "DocsNeighbour",
@@ -177,7 +177,7 @@
   "LinkAdapterProps": {
     "name": "LinkAdapterProps",
     "description": "What the app's `LinkAdapter` receives to draw an in-app link with its router's `<Link>`: the\ndestination as `href` (search and hash included), the component's classes, its label as\n`children`, and (for a tab that is current, or an option with a tooltip) `aria-current`, `target`,\n`rel` and `title`. `@slashsuite/ui-react` has no router dependency.\n\nAn optional field is `?: T`, never `?: T | undefined`, and a key that has no value is left out\nrather than set to `undefined`. A router's `<Link>` declares its props that way, so under\n`exactOptionalPropertyTypes` the spread compiles. Any other anchor prop the caller gave the\ncomponent (`id`, `data-*`, `download`, a handler) arrives too, untyped here, and `<Link>`\ntakes it as its own.",
-    "definition": "{ href: string; className: string; children: ReactNode; aria-current?: AriaCurrent; target?: string; rel?: string; title?: string }"
+    "definition": "{ href: string; className: string; children: ReactNode; aria-current?: boolean | \"page\" | \"time\" | \"false\" | \"true\" | \"step\" | \"location\" | \"date\"; target?: string; rel?: string; title?: string }"
   },
   "MenuAction": {
     "name": "MenuAction",
@@ -216,8 +216,8 @@
   },
   "Segment": {
     "name": "Segment",
-    "description": "One option of a SegmentedControl. See `SwitchItem`.",
-    "definition": "SwitchButton | SwitchLink"
+    "description": "One option of a SegmentedControl: a button with a `value`, or a link with an `href`; never both kinds in one group.",
+    "definition": "{ label: ReactNode; count?: number; title?: string; value: string; disabled?: boolean; disabledReason?: string; controls?: string } | { label: ReactNode; count?: number; title?: string; value?: string; selected?: boolean; external?: boolean; href: string }"
   },
   "SideColumnWidth": {
     "name": "SideColumnWidth",
@@ -286,8 +286,8 @@
   },
   "Tab": {
     "name": "Tab",
-    "description": "One tab of a Tabs row. See `SwitchItem`.",
-    "definition": "SwitchButton | SwitchLink"
+    "description": "One tab of a Tabs row: a button with a `value`, or a link with an `href`; never both kinds in one row.",
+    "definition": "{ label: ReactNode; count?: number; title?: string; value: string; disabled?: boolean; disabledReason?: string; controls?: string } | { label: ReactNode; count?: number; title?: string; value?: string; selected?: boolean; external?: boolean; href: string }"
   },
   "TableSort": {
     "name": "TableSort",
@@ -337,6 +337,6 @@
   "VizTone": {
     "name": "VizTone",
     "description": "The colour of a `StackedBar` segment, a `Legend` swatch or a `TrendChart` series: the `TextTone`\nnames, painted as a fill, or a category colour, `cat1` to `cat8`. On a chart `neutral` is a grey\nof its own that sits apart from `muted` (for \"unmeasured\" next to \"same\"), and `accent` is the\ntheme's accent, apart from `info`. Categories with no meaning take `cat1` upwards in order; good\nand bad take the meaning tones; one chart never mixes the two.",
-    "definition": "TextTone | CategoryTone"
+    "definition": "TextTone | \"cat1\" | \"cat2\" | \"cat3\" | \"cat4\" | \"cat5\" | \"cat6\" | \"cat7\" | \"cat8\""
   }
 }

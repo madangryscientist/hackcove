@@ -58,7 +58,7 @@ type IconButtonProps = {
   size?: Size | ResponsiveSize | undefined;
   /** The one icon it holds, from the `Icon` set, at the button's size. */
   icon: IconName;
-  /** A red count on the top-right corner, for unread alerts. Not shown at 0; the name carries it for a screen reader, "Alerts, 3". */
+  /** A red count on the top corner at the end edge, for unread alerts. Not shown at 0; the name carries it for a screen reader, "Alerts, 3". */
   count?: number | undefined;
 };
 

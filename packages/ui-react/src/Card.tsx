@@ -108,7 +108,7 @@ type CardBase = LoadingProps & {
   icon?: IconName;
   /** A band across the card, edge to edge inside its padding, under the title and above the children: a `ProgressBar` or a strip of colour that runs the card's full width. */
   inset?: ReactNode;
-  /** A `Pill` (or any small node) pinned in the top-right corner, over the content and inside the radius, with no change to the layout. On a card that is a link it is part of the link's name, and a link or button in it is clickable on its own. */
+  /** A `Pill` (or any small node) pinned in the top corner at the end edge, over the content and inside the radius, with no change to the layout. On a card that is a link it is part of the link's name, and a link or button in it is clickable on its own. */
   badge?: ReactNode;
   /** The warn tone's strong border in place of the card's own, for the one card in a set that needs a look (a run that differed). It keeps the card's fill. Name why in the card too (a `Pill` in `badge`, or the body); the border alone says nothing to a screen reader. */
   attention?: boolean;

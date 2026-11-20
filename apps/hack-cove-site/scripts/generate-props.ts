@@ -73,13 +73,18 @@ function typeOf(prop: PropItem): string {
 
 const nativeOf = (component: string, prop: string): string | undefined => NATIVE[component]?.[prop];
 
-function propDoc(component: string, prop: PropItem, arms: Map<string, string>): PropDoc {
+function propDoc(
+  component: string,
+  prop: PropItem,
+  arms: Map<string, string>,
+  publicType: PublicType,
+): PropDoc {
   const fallback = prop.defaultValue?.value;
   const native = fromDom(prop) ? nativeOf(component, prop.name) : undefined;
   const fromArms = arms.get(prop.name);
   return {
     name: prop.name,
-    type: typeOf(prop),
+    type: publicType(typeOf(prop), component),
     required: prop.required,
     default: fallback === undefined ? undefined : String(fallback),
     description:
@@ -93,6 +98,95 @@ function program(): ts.Program {
   const { options } = ts.parseJsonConfigFileContent(config, ts.sys, dirname(TSCONFIG));
   const files = globSync("src/*.{ts,tsx}", { cwd: UI }).map((f) => join(UI, f));
   return ts.createProgram(files, options);
+}
+
+/** Rewrites a printed type so it names only what `index.ts` exports; `owner` names the export it prints for. */
+type PublicType = (text: string, owner: string) => string;
+
+/** Every name `index.ts` exports, type or value. */
+function exportNames(checker: ts.TypeChecker, index: ts.SourceFile): Set<string> {
+  const module = checker.getSymbolAtLocation(index);
+  if (module === undefined) throw new Error(`${INDEX}: not a module`);
+  return new Set(checker.getExportsOfModule(module).map((symbol) => symbol.name));
+}
+
+/**
+ * Every type alias and interface declared in `packages/ui-react/src` (tests left out) that `index.ts`
+ * does not export, by name. No docs page defines one, so a printed type must not name it.
+ */
+function internalTypes(source: ts.Program, checker: ts.TypeChecker): Map<string, ts.Symbol> {
+  const index = source.getSourceFile(INDEX);
+  if (index === undefined) throw new Error(`${INDEX}: not in the program`);
+  const exported = exportNames(checker, index);
+  const src = join(UI, "src");
+  const internal = new Map<string, ts.Symbol>();
+  for (const file of source.getSourceFiles()) {
+    if (dirname(file.fileName) !== src || /\.test\.tsx?$/.test(file.fileName)) continue;
+    for (const statement of file.statements) {
+      if (!ts.isTypeAliasDeclaration(statement) && !ts.isInterfaceDeclaration(statement)) continue;
+      const name = statement.name.text;
+      const symbol = checker.getSymbolAtLocation(statement.name);
+      if (!exported.has(name) && symbol !== undefined) internal.set(name, symbol);
+    }
+  }
+  return internal;
+}
+
+/** The names of the types `packages/ui-react/src` declares and `index.ts` does not export. */
+export function internalTypeNames(): string[] {
+  const source = program();
+  return [...internalTypes(source, source.getTypeChecker()).keys()].toSorted();
+}
+
+/**
+ * The public name of a list of switcher options, by the export that prints it: `Tabs` takes `Tab`s,
+ * `SegmentedControl` takes `Segment`s, and a `DocsNavGroup` lists link `Tab`s.
+ */
+const ITEM: Record<string, string> = {
+  Tabs: "Tab",
+  SegmentedControl: "Segment",
+  DocsNavGroup: "Tab",
+};
+
+/** How many times an internal name may expand into another before the generator gives up. */
+const DEPTH = 3;
+
+/** An internal name as a whole word, with the `[]` after it when it is a list. */
+function word(name: string): RegExp {
+  return new RegExp(`\\b${name}\\b(\\[\\])?`, "g");
+}
+
+/**
+ * Names a switcher option list by its export (`Tab[]`), then writes every other internal type out as
+ * its definition, up to `DEPTH` levels; a name still left after that throws, so nothing leaks.
+ */
+function publicTyper(source: ts.Program, checker: ts.TypeChecker): PublicType {
+  const internal = internalTypes(source, checker);
+  return (text, owner) => {
+    const item = ITEM[owner];
+    let out =
+      item === undefined
+        ? text
+        : text
+            .replaceAll("SwitchButton[] | SwitchLink[]", `${item}[]`)
+            .replace(/\bSwitchLink\[\]/g, `${item}[]`);
+    for (let level = 0; level <= DEPTH; level += 1) {
+      const left = [...internal.keys()].filter((name) => word(name).test(out));
+      if (left.length === 0) return out;
+      if (level === DEPTH) throw new Error(`${owner}: prints internal type ${left.join(", ")}`);
+      for (const name of left) {
+        const symbol = internal.get(name);
+        if (symbol === undefined) continue;
+        const definition = definitionOf(checker, symbol);
+        out = out.replace(word(name), (_, list: string | undefined) =>
+          list !== undefined && definition.includes(" | ")
+            ? `(${definition})[]`
+            : `${definition}${list ?? ""}`,
+        );
+      }
+    }
+    return out;
+  };
 }
 
 const typeOnly = (symbol: ts.Symbol): boolean =>
@@ -113,7 +207,12 @@ function exportsOf(checker: ts.TypeChecker, index: ts.SourceFile): Map<string, t
 }
 
 /** A helper (an export that starts lower-case, so not a component): its JSDoc and signature. */
-function helperDoc(checker: ts.TypeChecker, name: string, symbol: ts.Symbol): ComponentDoc {
+function helperDoc(
+  checker: ts.TypeChecker,
+  name: string,
+  symbol: ts.Symbol,
+  publicType: PublicType,
+): ComponentDoc {
   const declaration = symbol.valueDeclaration ?? symbol.declarations?.[0];
   if (declaration === undefined) throw new Error(`${name}: no declaration`);
   const type = checker.getTypeOfSymbolAtLocation(symbol, declaration);
@@ -129,7 +228,7 @@ function helperDoc(checker: ts.TypeChecker, name: string, symbol: ts.Symbol): Co
   return {
     name,
     description: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
-    signature,
+    signature: publicType(signature, name),
     props: [],
   };
 }
@@ -141,6 +240,7 @@ export function generateProps(): PropsJson {
   const index = source.getSourceFile(INDEX);
   if (index === undefined) throw new Error(`${INDEX}: not in the program`);
   const exported = exportsOf(checker, index);
+  const publicType = publicTyper(source, checker);
   const parser = withCustomConfig(TSCONFIG, {
     shouldExtractLiteralValuesFromEnum: true,
     shouldRemoveUndefinedFromOptional: true,
@@ -160,7 +260,7 @@ export function generateProps(): PropsJson {
     parser.parseWithProgramProvider(files, () => source).map((doc) => [doc.displayName, doc]),
   );
   const docs = [...exported.entries()].map(([name, symbol]): ComponentDoc => {
-    if (/^[a-z]/.test(name)) return helperDoc(checker, name, symbol);
+    if (/^[a-z]/.test(name)) return helperDoc(checker, name, symbol, publicType);
     const doc = components.get(name);
     if (doc === undefined)
       throw new Error(`${name}: exported, but react-docgen-typescript did not read it`);
@@ -168,7 +268,7 @@ export function generateProps(): PropsJson {
       name,
       description: doc.description,
       props: Object.values(doc.props)
-        .map((prop) => propDoc(name, prop, armDocsOf(name, checker, symbol)))
+        .map((prop) => propDoc(name, prop, armDocsOf(name, checker, symbol), publicType))
         .toSorted((a, b) => a.name.localeCompare(b.name)),
     };
   });
@@ -177,27 +277,48 @@ export function generateProps(): PropsJson {
   );
 }
 
+/** A field written as only `undefined`, read from its declaration (see `definitionOf`). */
+function onlyUndefined(prop: ts.Symbol): boolean {
+  const declared = prop.valueDeclaration;
+  return (
+    declared !== undefined &&
+    ts.isPropertySignature(declared) &&
+    declared.type?.kind === ts.SyntaxKind.UndefinedKeyword
+  );
+}
+
 const DEFINITION: ts.TypeFormatFlags =
   ts.TypeFormatFlags.NoTruncation |
   ts.TypeFormatFlags.InTypeAlias |
   ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope;
 
-/** A type's definition one level down: an object's fields with their types, else the type itself. */
+/**
+ * A type's definition one level down: an object's (or an intersection's) fields with their types,
+ * else the type itself. A field whose type is only `undefined` (`href?: undefined`, which keeps one
+ * arm of a union from taking the other's key) is left out.
+ */
 function definitionOf(checker: ts.TypeChecker, symbol: ts.Symbol): string {
   const type = checker.getDeclaredTypeOfSymbol(symbol);
   const at = symbol.declarations?.[0];
-  const isObject = type.flags & ts.TypeFlags.Object && !type.getCallSignatures().length;
+  const isObject =
+    type.flags & (ts.TypeFlags.Object | ts.TypeFlags.Intersection) &&
+    !type.getCallSignatures().length;
   if (!isObject || type.isUnion()) return checker.typeToString(type, at, DEFINITION);
-  const fields = checker.getPropertiesOfType(type).map((prop) => {
-    const optional = prop.flags & ts.SymbolFlags.Optional ? "?" : "";
-    const declared = prop.valueDeclaration;
-    const written =
-      declared && (ts.isPropertySignature(declared) || ts.isPropertyDeclaration(declared))
-        ? declared.type?.getText().replace(/\s+/g, " ")
-        : undefined;
-    const value = written ?? checker.typeToString(checker.getTypeOfSymbol(prop), at, DEFINITION);
-    return `${prop.name}${optional}: ${value.replace(/ \| undefined$/, "")}`;
-  });
+  // Read from the written field, not the checker: resolving every field's type here would create
+  // literal types early and reorder the unions printed after it.
+  const fields = checker
+    .getPropertiesOfType(type)
+    .filter((prop) => !onlyUndefined(prop))
+    .map((prop) => {
+      const optional = prop.flags & ts.SymbolFlags.Optional ? "?" : "";
+      const declared = prop.valueDeclaration;
+      const written =
+        declared && (ts.isPropertySignature(declared) || ts.isPropertyDeclaration(declared))
+          ? declared.type?.getText().replace(/\s+/g, " ")
+          : undefined;
+      const value = written ?? checker.typeToString(checker.getTypeOfSymbol(prop), at, DEFINITION);
+      return `${prop.name}${optional}: ${value.replace(/ \| undefined$/, "")}`;
+    });
   return `{ ${fields.join("; ")} }`;
 }
 
@@ -219,8 +340,14 @@ export function generateTypes(): TypesJson {
       },
     ];
   });
+  // After every definition is printed: expanding an internal type first would create its literal
+  // types early and reorder the unions printed after it.
+  const publicType = publicTyper(source, checker);
   return Object.fromEntries(
-    types.toSorted((a, b) => a.name.localeCompare(b.name)).map((doc) => [doc.name, doc]),
+    types
+      .map((doc) => ({ ...doc, definition: publicType(doc.definition, doc.name) }))
+      .toSorted((a, b) => a.name.localeCompare(b.name))
+      .map((doc) => [doc.name, doc]),
   );
 }
 

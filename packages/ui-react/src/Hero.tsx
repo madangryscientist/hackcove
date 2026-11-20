@@ -31,7 +31,7 @@ export type HeroProps = {
  * A landing page's top block: an overline, the display title (the page's `h1`) and the lede under
  * it, over a soft glow of three tilted ribbons that drift slowly behind the text. The glow is always
  * there and its colours and strength are the theme's (the palette's `glow` role), so a paper theme
- * keeps it faint. It is anchored to the text's own column (`max-w-3xl`, at the parent's left edge),
+ * keeps it faint. It is anchored to the text's own column (`max-w-3xl`, at the parent's start edge),
  * never the viewport, and clipped to it, so nothing scrolls sideways on a phone. It is
  * `aria-hidden`, and the text sits above it. Under `prefers-reduced-motion: reduce` it stands still.
  * Pure markup and one inline stylesheet: it works rendered on the server with no script.

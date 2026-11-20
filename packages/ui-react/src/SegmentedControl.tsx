@@ -4,7 +4,7 @@ import { controlText, useTypeStep } from "./density.js";
 import { type ResponsiveSize, type Size, sizeClass } from "./size.js";
 import { Switcher, type SwitchItem, type SwitchProps } from "./switcher.js";
 
-/** One option of a SegmentedControl. See `SwitchItem`. */
+/** One option of a SegmentedControl: a button with a `value`, or a link with an `href`; never both kinds in one group. */
 export type Segment = SwitchItem;
 
 // The focus ring sits inside the option, since the group's rounded edge would clip an outer one.

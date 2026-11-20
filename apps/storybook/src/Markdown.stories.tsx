@@ -29,6 +29,10 @@ export const DontSummary: S = {
   ),
 };
 
+export const MarkdownStory: S = {
+  render: () => <Markdown md={"## What I did\n- **HC-42** shipped\n- plain item"} />,
+};
+
 type Loading = StoryObj<{ loading: boolean }>;
 
 /** A note with no source yet is a paragraph of bones. */

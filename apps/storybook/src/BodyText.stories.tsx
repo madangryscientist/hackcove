@@ -1,5 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Caption, Overline, SectionHeading, Stack, Text } from "@slashsuite/ui-react";
+import {
+  Button,
+  Caption,
+  Card,
+  EmptyState,
+  Lead,
+  Overline,
+  SectionHeading,
+  Stack,
+  Text,
+} from "@slashsuite/ui-react";
 
 const meta: Meta = { title: "Text/Body text" };
 export default meta;
@@ -158,6 +168,125 @@ export const LinesStory: S = {
       </Text>
     </Stack>
   ),
+};
+
+export const EmptyLine: S = {
+  render: () => <Text tone="muted">nothing here yet</Text>,
+};
+
+/** A Card with nothing to show yet holds one muted line, `Text tone="muted"`. */
+export const DoEmptyNote: S = {
+  render: () => (
+    <Card title="Done" count={0}>
+      <Text tone="muted">Nothing finished yet.</Text>
+    </Card>
+  ),
+};
+
+/** A bare `<p>` in a Card has its own colour and size, so it drifts from every other empty Card: use `Text tone="muted"`. */
+export const DontEmptyNote: S = {
+  render: () => (
+    <Card title="Done" count={0}>
+      <p>Nothing finished yet.</p>
+    </Card>
+  ),
+};
+
+/** A whole view with nothing in it, and a way forward, is an `EmptyState` with its `actions`. */
+export const DoEmptyView: S = {
+  render: () => (
+    <EmptyState title="No projects yet" actions={<Button>Create a project</Button>}>
+      <Text>Projects collect the shots you upload.</Text>
+    </EmptyState>
+  ),
+};
+
+/** One muted line is not a view: with a button under it nothing says what the page is for. Use `EmptyState`. */
+export const DontEmptyView: S = {
+  render: () => (
+    <Stack>
+      <Text tone="muted">No projects yet.</Text>
+      <Button>Create a project</Button>
+    </Stack>
+  ),
+};
+
+export const LeadStory: S = {
+  name: "Lead",
+  render: () => <Lead>The supporting sentence that sits under a Display heading.</Lead>,
+};
+
+export const OverlineStory: S = {
+  name: "Overline",
+  render: () => <Overline>Section label</Overline>,
+};
+
+export const TextStory: S = {
+  name: "Text",
+  render: () => (
+    <Text>
+      Default running text. Inline by default, so an emphasised{" "}
+      <Text as="span" strong>
+        run of text
+      </Text>{" "}
+      composes right inside the sentence.
+    </Text>
+  ),
+};
+
+export const TextPreserveNewlines: S = {
+  name: "Text preserveNewlines",
+  render: () => (
+    <div className="flex max-w-xl flex-col gap-3">
+      <Text>{"Collapsed (default):\nthe note's line break is lost."}</Text>
+      <Text preserveNewlines>{"Preserved:\nthe note's line break is kept."}</Text>
+    </div>
+  ),
+};
+
+export const InlineFigures: S = {
+  name: "numeric, mono and lines",
+  render: () => (
+    <div className="flex w-72 flex-col gap-2">
+      <Text>
+        Amount{" "}
+        <Text as="span" strong numeric>
+          1,111.11
+        </Text>{" "}
+        vs{" "}
+        <Text as="span" strong numeric>
+          8,888.88
+        </Text>{" "}
+        (tabular figures)
+      </Text>
+      <Text>
+        Commit{" "}
+        <Text as="span" mono>
+          c870e81
+        </Text>{" "}
+        on{" "}
+        <Caption as="span" mono>
+          packages/ui-react/src/typography.tsx
+        </Caption>
+      </Text>
+      <Text lines={1}>
+        A long line of body text that does not fit the width of its container and is cut off.
+      </Text>
+      <Caption lines={1} tone="muted">
+        packages/ui-react/src/some/very/deeply/nested/path/typography.test.tsx
+      </Caption>
+    </div>
+  ),
+};
+
+export const TextStrongStory: S = {
+  name: "Text strong",
+  render: () => <Text strong>Emphasised body text</Text>,
+};
+
+export const CaptionStory: S = {
+  name: "Caption",
+  render: () => <Caption>Updated 2 minutes ago · HC-42</Caption>,
 };
 
 type Loading = StoryObj<{ loading: boolean }>;

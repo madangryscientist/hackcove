@@ -12,7 +12,6 @@ export const text: ComponentSection = {
       whenToUse:
         "Any title on a page: the public headline, the page title, a section, a subsection.",
       pairs: ["Headings/Scale", "Headings/Hero"],
-      stories: ["typography"],
       usage: {
         do: [
           "A page has one title: `PageHeading` for an app page, `Display` for the headline of a public page. A `PageHeader` already draws the `PageHeading` and its `description`, so use it for the top of a page.",
@@ -65,6 +64,7 @@ export const text: ComponentSection = {
     {
       slug: "body-text",
       name: "Body text",
+      stories: ["BodyTextTone"],
       summary:
         "Running text, emphasis, fine print, labels and the empty note, each with its size and weight fixed.",
       whenToUse:
@@ -73,8 +73,8 @@ export const text: ComponentSection = {
         "BodyText/Paragraph",
         "BodyText/Meaning",
         "BodyText/Labels",
-        "ui/EmptyNote",
-        "ui/EmptyView",
+        "BodyText/EmptyNote",
+        "BodyText/EmptyView",
       ],
       usage: {
         do: [
@@ -216,7 +216,7 @@ export const text: ComponentSection = {
           '`home` on the same `LinkProvider` is where every status page\'s "Back to home" goes, `/` by default (`home="https://example.com"` with no `link` for a home on another site). A provider inside another keeps what it does not set.',
           "Only an in-app path (`/quotes?page=2#top`) reaches the adapter; `external`, `https:`, `mailto:`, `#hash` and a relative path are a plain `<a>`.",
           "`size` pins the type size to `sm`, `md` or `lg`; left out, the link takes the size of its text. `mono` sets the monospace face for a path or an id.",
-          '`tone` gives the link a meaning\'s colour (`warn`, `danger`, `positive`, `info`, `muted`), underlined on hover. Use it for a link that is the message, like "3 failed".',
+          '`tone` gives the link a meaning\'s colour (`warn`, `danger`, `positive`, `info`, `muted`), underlined on hover. Use it for a link that is the message, like "3 failed". `underline` underlines it always: set it where the text around the link is as heavy as the link (a `Text strong`, a heading), since colour alone does not mark a link (WCAG 1.4.1); in plain `Text` its weight marks it.',
           "`stretch` makes the nearest `relative` ancestor the click target: a `Card` or a `TableRow`. Put it on the one link in that row; any other link or button in the row sits above it and is clickable on its own.",
         ],
         dont: [

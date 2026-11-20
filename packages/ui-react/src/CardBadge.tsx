@@ -4,9 +4,9 @@ import type { Size } from "./size.js";
 
 /** The corner a `badge` sits in, by `size`: inside the radius, clear of the edge. */
 const BADGE_CORNER: Record<Size, string> = {
-  sm: "top-2 right-2",
-  md: "top-3 right-3",
-  lg: "top-4 right-4",
+  sm: "top-2 end-2",
+  md: "top-3 end-3",
+  lg: "top-4 end-4",
 };
 
 /** A `Card`'s `badge`: pinned over the content; a click falls through to a link card, except on a link or button in it. */

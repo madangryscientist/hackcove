@@ -193,9 +193,9 @@ export const pagelayouts: ComponentSection = {
       fullPage: "FullBleedLayout/FullPage",
       usage: {
         do: [
-          "Render it in an `AppShell` with `bleed`; the canvas starts at the left edge of the viewport.",
+          "Render it in an `AppShell` with `bleed`; the canvas starts at the viewport's start edge.",
           "It adds no padding and has no page title; the canvas is the `children`. Set `padded` when the body is not a viewer and should have the other layouts' page padding.",
-          "Put the facts about what is shown in `aside`, a `KeyValueList` under an `Overline`. From `lg` the aside is a fixed-width column on the right; below it, it stacks under the canvas.",
+          "Put the facts about what is shown in `aside`, a `KeyValueList` under an `Overline`. From `lg` the aside is a fixed-width column at the end; below it, it stacks under the canvas.",
           "Omit `aside` when the canvas stands alone.",
           "`asideLabel` names the aside's landmark. Set it when the page has another complementary landmark.",
           "`bar` is a full-width row above the canvas and the panel, such as a viewer's title and its actions in a `Cluster justify=\"between\"`. It is a `StickyBar`: it sticks under the shell's header as the page scrolls; `padded` does not pad it.",
@@ -218,7 +218,7 @@ export const pagelayouts: ComponentSection = {
       usage: {
         do: [
           "Give it a `title` and a `description`; the `children` are the card's content: a `Field` or two and a `Button`.",
-          "It is the one layout that does not share the left edge: it is centred, at a fixed offset from the top.",
+          "It is the one layout that does not share the start edge: it is centred, at a fixed offset from the top.",
           "A form inside the app is `FormLayout`, not this.",
           "The ready-made status pages (not found, forbidden, offline, error, maintenance) are already built on it.",
           "`mark` is drawn first in the card, above the title: a large status numeral, as the status pages draw. It is not a heading.",

@@ -132,7 +132,7 @@ export function DetailLayout({
   );
 }
 
-/** A form page: header (no header `actions`), then a `max-w-3xl` column that starts at the Container's left edge (it is not re-centred), with an `actions` row at the end. `error` is the submit's failure, a danger `Callout` (an alert) directly above that row. Other props go on the `<form>`. While `loading` it owns the wait and passes it to everything inside, the header too. */
+/** A form page: header (no header `actions`), then a `max-w-3xl` column that starts at the Container's start edge (it is not re-centred), with an `actions` row at the end. `error` is the submit's failure, a danger `Callout` (an alert) directly above that row. Other props go on the `<form>`. While `loading` it owns the wait and passes it to everything inside, the header too. */
 export function FormLayout({
   actions,
   error,
@@ -172,7 +172,7 @@ export function FormLayout({
 
 /**
  * A text page: header, then `children` stacked `gap` apart (`md` by default), all in one column that
- * starts at the Container's left edge (it is not re-centred, so the title does not jump). `width`
+ * starts at the Container's start edge (it is not re-centred, so the title does not jump). `width`
  * sets the column: `narrow` (`max-w-3xl`, the default) is a reading measure; `wide` (`max-w-5xl`) and
  * `full` (the Container's whole width) suit a page that is not long prose, such as a pricing page.
  * Paragraphs (`Text`) and the header's lede keep their own reading measure whatever the width.
@@ -223,10 +223,10 @@ export function ProseLayout({
 }
 
 /**
- * Edge-to-edge `children` with an optional right `aside` (`lg:w-72`) that stacks below on a smaller
- * screen. Render it in `<AppShell bleed>`. It deliberately breaks the shared left edge: a viewer
+ * Edge-to-edge `children` with an optional `aside` at the end (`lg:w-72`) that stacks below on a smaller
+ * screen. Render it in `<AppShell bleed>`. It deliberately breaks the shared start edge: a viewer
  * that needs the whole width has no Container of its own, so `children` start at the viewport's
- * left edge. `padded` gives them the Container's padding instead (`px-4`, `sm:px-6`, `py-8`), for
+ * start edge. `padded` gives them the Container's padding instead (`px-4`, `sm:px-6`, `py-8`), for
  * a page of ordinary content beside a full-height `aside`. A `bar` is a `StickyBar` above both: the
  * full width, on the surface with a bottom line, sticking under AppShell's header as the page scrolls.
  * While `loading` it owns the wait and passes it to everything inside, the header too.
@@ -288,7 +288,7 @@ export function FullBleedLayout({
   );
 }
 
-/** A narrow card (`max-w-md`) centred in the Container at a fixed offset from the top, for sign-in, landing, not-found and error pages. The one layout that does not share the left edge. While `loading` it owns the wait and passes it to everything inside, the header too. */
+/** A narrow card (`max-w-md`) centred in the Container at a fixed offset from the top, for sign-in, landing, not-found and error pages. The one layout that does not share the start edge. While `loading` it owns the wait and passes it to everything inside, the header too. */
 export function CenteredLayout({
   mark,
   title,

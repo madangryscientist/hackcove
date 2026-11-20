@@ -4,7 +4,7 @@ import { controlText, type TypeStep, useTypeStep } from "./density.js";
 import type { Size } from "./size.js";
 import { Switcher, type SwitchItem, type SwitchProps } from "./switcher.js";
 
-/** One tab of a Tabs row. See `SwitchItem`. */
+/** One tab of a Tabs row: a button with a `value`, or a link with an `href`; never both kinds in one row. */
 export type Tab = SwitchItem;
 
 const BASE = `-mb-px border-b-2 px-0.5 py-2 transition ${focusRing}`;

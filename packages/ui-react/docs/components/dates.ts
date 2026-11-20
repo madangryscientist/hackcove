@@ -13,7 +13,7 @@ export const datePages: ComponentPage[] = [
       do: [
         "A date is a `DateField`, never an `Input`. The format is always DD/MM/YYYY and weeks start on Monday, whatever the browser's locale.",
         "`calendar` adds a calendar button, and `defaultOpen` opens it on mount; without `calendar` the field is typed only, for a date the person knows by heart (a birthday).",
-        "It draws its own label: give it `label` and `hint`, and do not wrap them in a `Field`.",
+        "It draws its own label: give it `label` and `hint`, and do not wrap it in a `Field`.",
         "A message from outside, a server's say, is `error`: it marks the field invalid and replaces the hint. An impossible date, such as 31/02/1990, shows its own message.",
         "The value is a `CalendarDate` (`value`, `defaultValue`, `onChange`, `minValue`, `maxValue`). `fromISODate` reads a stored `YYYY-MM-DD` and `toISODate` writes one.",
         "`name` posts the date as `YYYY-MM-DD` in a form, or an empty string.",

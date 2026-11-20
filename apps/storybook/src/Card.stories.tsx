@@ -293,6 +293,22 @@ export const Sizes: S = {
   ),
 };
 
+export const CardStory: S = {
+  render: () => (
+    <Card title="Section" count={3}>
+      body content
+    </Card>
+  ),
+};
+
+export const CardAsArticle: S = {
+  render: () => (
+    <Card as="article" title="Article card">
+      body
+    </Card>
+  ),
+};
+
 /** While `loading`, the title it knows is drawn and an empty body is three lines of bones; a `flush` card holds three row bones. */
 export const Loading: StoryObj<{ loading: boolean }> = {
   args: { loading: true },
