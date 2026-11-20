@@ -42,7 +42,6 @@ describe("LinkAdapterProps", () => {
     expect(seen).toHaveLength(1);
     expect(seen.flatMap((props) => Object.keys(props)).toSorted()).toEqual([
       "children",
-      // oxlint-disable-next-line no-restricted-properties -- the adapter's prop names, read as data, not a class check
       "className",
       "href",
     ]);
