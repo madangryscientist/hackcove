@@ -49,8 +49,7 @@ type Shared = LoadingProps & {
    * A fixed width for `leading`, for a thumbnail (an `<img>` fills it), so the labels of rows with
    * and without a picture still line up. Without it `leading` is as wide as its content.
    *
-   * For a row that shows a screenshot; the label may then hold block content, such as a title over
-   * a caption.
+   * For a row that shows a screenshot.
    */
   leadingWidth?: "thumbnail" | undefined;
   children: ReactNode;

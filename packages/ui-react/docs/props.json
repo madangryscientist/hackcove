@@ -3612,7 +3612,7 @@
         "name": "leadingWidth",
         "type": "\"thumbnail\"",
         "required": false,
-        "description": "A fixed width for `leading`, for a thumbnail (an `<img>` fills it), so the labels of rows with\nand without a picture still line up. Without it `leading` is as wide as its content.\n\nFor a row that shows a screenshot; the label may then hold block content, such as a title over\na caption.",
+        "description": "A fixed width for `leading`, for a thumbnail (an `<img>` fills it), so the labels of rows with\nand without a picture still line up. Without it `leading` is as wide as its content.\n\nFor a row that shows a screenshot.",
         "native": false
       },
       {
