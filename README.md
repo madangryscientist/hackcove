@@ -46,7 +46,7 @@ bun add @slashsuite/ui-react @slashsuite/themes
 ```
 
 Put `class="dark"` on `<html>`. The theme declares the class-based `dark` variant and remaps the
-slate/colour utilities to Mocha tokens under `.dark`.
+slate/colour utilities to Mocha colours under `.dark`.
 
 ```tsx
 import { Card, PageHeading, Pill, Text } from "@slashsuite/ui-react";
@@ -111,7 +111,7 @@ title at the logo's x, the same x on every one of them; the visual check shoots 
 beside the canvas, no page padding) and are asserted on their own terms in `e2e/layout.spec.ts`. `SidebarLayout`'s rail starts at the logo's x, so it keeps the edge.
 `FullBleedLayout` breaks it on purpose from `lg` up: an edge-to-edge viewer needs the viewport's
 edges (at 1280 px the logo and the other layouts are at x=88, the viewer at 0), so the header stays
-the constant and an app gives a whole section one layout. The screenshot-based visual check (see
+the constant and an app gives a whole section one layout. The visual check (see
 [`CONTRIBUTING.md`](CONTRIBUTING.md#the-visual-check)) shoots desktop (1280) only; for the narrow widths, pick
 Phone (375) or Tablet (768) from Storybook's viewport toolbar.
 

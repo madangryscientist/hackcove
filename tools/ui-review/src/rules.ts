@@ -62,7 +62,7 @@ export function newCss(file: ReviewFile): Finding[] {
       "new-css",
       file,
       first.line,
-      "New stylesheet. Hack Cove apps write no CSS of their own: compose @slashsuite/ui-react parts, and ask uislash for a part or variant that is missing.",
+      "New stylesheet. UISlash apps write no CSS of their own: compose @slashsuite/ui-react parts, and ask uislash for a part or variant that is missing.",
     ),
   ];
 }
@@ -76,7 +76,7 @@ export function styleBlocks(file: ReviewFile): Finding[] {
         "style-block",
         file,
         added.line,
-        "<style> block. Hack Cove apps write no CSS of their own: compose @slashsuite/ui-react parts, and ask uislash for what is missing.",
+        "<style> block. UISlash apps write no CSS of their own: compose @slashsuite/ui-react parts, and ask uislash for what is missing.",
       ),
     );
 }
@@ -131,7 +131,7 @@ export function stylingPropsRule(file: ReviewFile): Finding[] {
 }
 
 function duplicateMessage(name: string): string {
-  return `Local component \`${name}\` has the same name as an @slashsuite/ui-react export. If it does the same job, import the Hack Cove one, and if that one does not fit, ask uislash for what is missing rather than building a look-alike. If it is a different thing, rename it so it is not mistaken for the Hack Cove one.`;
+  return `Local component \`${name}\` has the same name as an @slashsuite/ui-react export. If it does the same job, import the UISlash one, and if that one does not fit, ask uislash for what is missing rather than building a look-alike. If it is a different thing, rename it so it is not mistaken for the UISlash one.`;
 }
 
 export function duplicateComponents(file: ReviewFile, ctx: Context): Finding[] {

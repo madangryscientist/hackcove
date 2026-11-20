@@ -2,7 +2,7 @@
 
 The UISlash themes, all in one package. Each theme is one CSS file with its own scope class, and
 each remaps the Tailwind slate/colour utilities that `@slashsuite/ui-react` is written against to its
-own tokens. Each also ships a `.link` class.
+own colours. Each also ships a `.link` class.
 
 | Theme | File | Scope | |
 | --- | --- | --- | --- |
@@ -131,7 +131,7 @@ base) · ink-2 `#3a3d52` · mute `#5b5e74` · faint `#85879c`. Slash Night is th
 The fills take the Mocha peach pastel `#fab387` in both, with a dark label. On Day the accent text,
 edges and focus rings are the deep peach `#a03604`, since a pastel line is under 3:1 on white. The
 status tones stay Latte's; the avatar initials are the accent's label, so on Day the avatar fills, the
-positive button among them, are Latte's own tokens, which the dark label clears. On Night everything is
+positive button among them, are Latte's own colours, which the dark label clears. On Night everything is
 the pastel, except the accent text (`#fbc5a1`, lifted so it clears AA on the Callout tints), and the status tones are Mocha's.
 
 ### Thriftloop

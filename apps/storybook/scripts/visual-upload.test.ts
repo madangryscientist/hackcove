@@ -96,7 +96,7 @@ describe("baselineFailure", () => {
     const gone = await baselineFailure(["gone"], deps);
     expect(gone).toMatch(/no PixelSlash project gone \(pixelslash: no project .*create/);
     const down = await baselineFailure(["down"], deps);
-    expect(down).toMatch(/did not answer for down \(pixelslash: .*-> 500 internal: boom.*planner/);
+    expect(down).toMatch(/did not answer for down \(pixelslash: .*500 internal: boom.*architect/);
     expect(down).not.toMatch(/no PixelSlash project|pixelslash project create/);
   });
 

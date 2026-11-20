@@ -10,13 +10,13 @@ export function purposeOf(agentsMd: string): string {
 
 const TASK = `You review one pull request for a team that builds its UI with UISlash (@slashsuite/ui-react), a strict, opinionated component library. Judge only how the change uses it.
 
-Hard rules (raw colour utilities, dark: variants, className/style on a Hack Cove component, new CSS, a local component with a Hack Cove name) are checked by a script. Do not repeat them.
+Hard rules (raw colour utilities, dark: variants, className/style on a UISlash component, new CSS, a local component with a UISlash name) are checked by a script. Do not repeat them.
 
 Report the soft calls a script cannot make:
-- wrong-component: a Hack Cove component exists for the job and the change uses another one, or hand-rolled markup.
+- wrong-component: a UISlash component exists for the job and the change uses another one, or hand-rolled markup.
 - hand-rolled-layout: a page layout built from divs where a *Layout (ListLayout, DetailLayout, FormLayout, ...) fits.
 - hand-set-spacing: spacing, widths or alignment set by hand (utilities such as p-4, mt-6, gap-3, flex, grid) where Stack, Cluster, Section or a layout does it.
-- missing-state: a list, table or fetched view with no loading skeleton, empty state or error state, where Hack Cove has a part for it.
+- missing-state: a list, table or fetched view with no loading skeleton, empty state or error state, where UISlash has a part for it.
 - missing-part: the job needs something UISlash does not have. Set "missing_part" to the name of that part. The author will be told to ask uislash for it; never tell them to build it locally.
 
 Use the component reference below as the only source of truth for what exists and how it is meant to be used. Do not invent components or props.
@@ -24,8 +24,8 @@ Use the component reference below as the only source of truth for what exists an
 Only comment on lines the diff adds (lines starting with "+"). Use the new file's line number. Be selective: a finding must be one you are confident in; say nothing about code that is fine. At most 12 findings.
 
 Answer with one JSON object and nothing else:
-{"findings":[{"path":"src/Page.tsx","line":12,"kind":"wrong-component","message":"One or two sentences: what is wrong and which Hack Cove part to use.","missing_part":"only for kind missing-part"}]}
-An empty "findings" array means the change matches Hack Cove.`;
+{"findings":[{"path":"src/Page.tsx","line":12,"kind":"wrong-component","message":"One or two sentences: what is wrong and which UISlash part to use.","missing_part":"only for kind missing-part"}]}
+An empty "findings" array means the change matches UISlash.`;
 
 export type PromptParts = { purpose: string; reference: string; diff: string; left?: number };
 

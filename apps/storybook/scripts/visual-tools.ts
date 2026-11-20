@@ -182,7 +182,7 @@ export async function withBaselineLock<T>(task: () => Promise<T>): Promise<T> {
 export type Selection = { titles: string[]; themes: string[] };
 
 /**
- * A group's captures of a built storybook-static into one fresh snapshot dir: each is taken beside
+ * A group's captures of a built storybook-static into one fresh shot dir: each is taken beside
  * it and merged in (`mergeCapture`). PixelSlash refuses an include that matches no story, so a
  * selection whose stories or themes are all absent here (new on the branch, say) is left out, and
  * none at all leaves an empty capture. Each is served on a free port, picked again when something

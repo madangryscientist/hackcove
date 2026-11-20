@@ -240,7 +240,7 @@ describe("the home page", () => {
     expect(cards[2]).toContain("<pre");
   });
 
-  test("how they fit asks one question per slash tool, and names the tool that answers it", () => {
+  test("how they fit asks one question per Slash product, and names the tool that answers it", () => {
     expect(fit).toContain(`>${site.home.fit.title}<`);
     for (const { question, product: name, answer } of site.home.fit.questions)
       for (const copy of [`>${question}<`, `>${name}<`, answer.text]) expect(fit).toContain(copy);

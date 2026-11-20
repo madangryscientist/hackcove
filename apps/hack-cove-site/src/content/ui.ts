@@ -6,7 +6,7 @@ export const ui = {
   intro: [
     "UISlash is strict on purpose. It fixes the look and feel, so a site built with it, by people or by agents, looks good every time. It is not an extensible framework with every option.",
     "The components and the themes are designed together. Every theme remaps every palette utility the components use, and the library's tests enforce it for each theme. Switching theme reskins a whole site with no component change, and there is nothing to configure.",
-    "The aim is a site built only from Hack Cove components, configured through props, with no custom CSS or Tailwind.",
+    "The aim is a site built only from UISlash components, configured through props, with no custom CSS or Tailwind.",
   ],
   install: {
     title: "Install",

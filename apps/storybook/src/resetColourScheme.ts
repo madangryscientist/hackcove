@@ -1,4 +1,4 @@
-/** ColourSchemeToggle switches <html>, which the toolbar's theme scope does not use. A story that shows it calls this as `beforeEach`, so the snapshot is the light state and leaving the story puts <html> and storage back. */
+/** ColourSchemeToggle switches <html>, which the toolbar's theme scope does not use. A story that shows it calls this as `beforeEach`, so the shot is the light state and leaving the story puts <html> and storage back. */
 export function resetColourScheme(): () => void {
   const root = document.documentElement;
   const reset = () => {

@@ -180,11 +180,11 @@ export const home = {
     ],
     unbuilt: ["ThriftLoop"],
   } satisfies Claim,
-  /** How the slash tools fit together, after slashslash.build: each answers one question about a change. */
+  /** How the Slash products fit together, after slashslash.build: each answers one question about a change. */
   fit: {
     overline: "How they fit",
     title: "One question each, about every change.",
-    lead: "Software teams check the code they change. Nobody checks what customers will see. Each slash tool answers one question about a change, before it goes live.",
+    lead: "Software teams check the code they change. Nobody checks what customers will see. Each Slash product answers one question about a change, before it goes live.",
     questions: [
       {
         question: "Does the page look different?",

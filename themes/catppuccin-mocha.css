@@ -5,7 +5,7 @@
    The @slashsuite/ui-react components are written against Tailwind's slate/colour
    utilities directly (bg-white, text-slate-900, …) rather than carrying `dark:`
    variants. This file is what makes them dark: it remaps those core utilities
-   to real Catppuccin Mocha tokens under `.dark`. The rules are unlayered, so
+   to real Catppuccin Mocha colours under `.dark`. The rules are unlayered, so
    they override Tailwind's (layered) utilities.
 
    Consumers import it AFTER `@import "tailwindcss"` and put `.dark` on <html>

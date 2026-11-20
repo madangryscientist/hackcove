@@ -18,7 +18,7 @@
    rings, since a pastel line is under 3:1 on white. The status tones stay
    Latte's deep ones. The avatar initials are the accent's label, now dark, so
    the avatar fills (the green and yellow ones are also the positive button and
-   the progress bars) are Latte's own tokens, which the dark label clears, not
+   the progress bars) are Latte's own colours, which the dark label clears, not
    the white-label darkened ones.
 
    Palette (Latte's role names, which the comments below use, on the Day values):
@@ -277,7 +277,7 @@
   color: #5b5e74; /* subtext0 */
 }
 
-/* Avatar identity colours: violet-600 is the peach accent above; the rest are Latte's own tokens,
+/* Avatar identity colours: violet-600 is the peach accent above; the rest are Latte's own colours,
    on which the dark initials (text-violet-50) clear 4.5:1. Emerald is also the positive button and
    bar fill, amber the warn bar fill (ProgressBar), so they stay deep enough to read on the track. */
 .slash-suite .bg-orange-600 {

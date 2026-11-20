@@ -175,7 +175,7 @@ describe("duplicate-component", () => {
 
   it("leaves the author both outcomes: import ours, or rename a different thing", () => {
     const found = run(diffOf({ path: "src/mine.tsx", lines: ["export function Card() {}"] }));
-    expect(found[0]?.message).toContain("import the Hack Cove one");
+    expect(found[0]?.message).toContain("import the UISlash one");
     expect(found[0]?.message).toContain("rename it");
   });
 
