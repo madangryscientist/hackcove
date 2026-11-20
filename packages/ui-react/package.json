@@ -43,7 +43,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit",
-    "lint": "oxlint -c .oxlintrc.json --type-aware --deny-warnings && bun ../../scripts/check-slop.ts",
+    "lint": "oxlint -c .oxlintrc.json --type-aware --deny-warnings --report-unused-disable-directives && bun ../../scripts/check-slop.ts",
     "test": "vitest run",
     "pack-check": "npm pack --dry-run --ignore-scripts && bun scripts/consumer-types.ts",
     "prepack": "bun run build"

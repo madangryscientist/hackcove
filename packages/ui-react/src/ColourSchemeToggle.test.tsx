@@ -3,6 +3,7 @@ import { hydrateRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ColourScheme } from "./colourScheme.js";
+import { schemeClasses } from "./colourScheme.harness.js";
 import { ColourSchemeToggle } from "./ColourSchemeToggle.js";
 import { act, render, screen, user } from "./render.harness.js";
 
@@ -31,16 +32,14 @@ describe("ColourSchemeToggle", () => {
     expect(title()).toBe("Switch to dark theme");
 
     await user().click(screen.getByRole("button"));
-    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
-    expect(root.classList.contains("dark")).toBe(true);
+    expect(schemeClasses().has("dark")).toBe(true);
     expect(root.style.colorScheme).toBe("dark");
     expect(localStorage.getItem(KEY)).toBe("dark");
     expect(onChange).toHaveBeenLastCalledWith("dark");
     expect(title()).toBe("Switch to light theme");
 
     await user().click(screen.getByRole("button"));
-    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
-    expect(root.classList.contains("dark")).toBe(false);
+    expect(schemeClasses().has("dark")).toBe(false);
     expect(root.style.colorScheme).toBe("light");
     expect(localStorage.getItem(KEY)).toBe("light");
     expect(onChange).toHaveBeenLastCalledWith("light");
@@ -48,8 +47,7 @@ describe("ColourSchemeToggle", () => {
   });
 
   it("agrees with the dark class the head script left on <html> when it mounts", () => {
-    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
-    root.classList.add("dark");
+    schemeClasses().add("dark");
     render(<ColourSchemeToggle />);
     expect(title()).toBe("Switch to light theme");
   });
@@ -57,8 +55,7 @@ describe("ColourSchemeToggle", () => {
   it("follows a change to <html> made elsewhere", async () => {
     render(<ColourSchemeToggle />);
     // The toggle follows <html> through a MutationObserver, which reports on a microtask.
-    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
-    await act(async () => root.classList.add("dark"));
+    await act(async () => schemeClasses().add("dark"));
     expect(title()).toBe("Switch to light theme");
   });
 
@@ -68,29 +65,25 @@ describe("ColourSchemeToggle", () => {
     });
     render(<ColourSchemeToggle />);
     await user().click(screen.getByRole("button"));
-    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
-    expect(root.classList.contains("dark")).toBe(true);
+    expect(schemeClasses().has("dark")).toBe(true);
     expect(title()).toBe("Switch to light theme");
   });
 
   it("takes its scheme classes from `schemes` and swaps them on click", async () => {
     const schemes = { light: "my-light", dark: "dark" };
-    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
-    root.classList.add("my-light");
+    schemeClasses().add("my-light");
     const onChange = vi.fn<(scheme: ColourScheme) => void>();
     render(<ColourSchemeToggle schemes={schemes} onChange={onChange} />);
     expect(title()).toBe("Switch to dark theme");
 
     await user().click(screen.getByRole("button"));
-    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
-    expect([...root.classList]).toEqual(["dark"]);
+    expect(schemeClasses().list()).toEqual(["dark"]);
     expect(root.style.colorScheme).toBe("dark");
     expect(onChange).toHaveBeenLastCalledWith("dark");
     expect(title()).toBe("Switch to light theme");
 
     await user().click(screen.getByRole("button"));
-    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
-    expect([...root.classList]).toEqual(["my-light"]);
+    expect(schemeClasses().list()).toEqual(["my-light"]);
     expect(root.style.colorScheme).toBe("light");
     expect(title()).toBe("Switch to dark theme");
   });
@@ -109,8 +102,7 @@ describe("ColourSchemeToggle", () => {
     const onChange = vi.fn<(scheme: ColourScheme) => void>();
     render(<ColourSchemeToggle store={false} onChange={onChange} />);
     await user().click(screen.getByRole("button"));
-    // oxlint-disable-next-line no-restricted-properties -- the head script's contract on <html>, not look
-    expect(root.classList.contains("dark")).toBe(true);
+    expect(schemeClasses().has("dark")).toBe(true);
     expect(onChange).toHaveBeenLastCalledWith("dark");
     expect(setItem).not.toHaveBeenCalled();
     expect(localStorage.getItem(KEY)).toBeNull();

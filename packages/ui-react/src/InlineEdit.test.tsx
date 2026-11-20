@@ -87,7 +87,7 @@ describe("InlineEdit", () => {
   it("Esc does not reach a handler above it, so it does not close a dialog around the table", async () => {
     const above = vi.fn<() => void>();
     render(
-      // oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- a test double for a Dialog above the cell
+      // a test double for a Dialog above the cell
       <div onKeyDown={above}>
         <table>
           <tbody>

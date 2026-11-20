@@ -119,7 +119,6 @@ export function AppShellMenu({
         {label}
       </summary>
       {/* A click on any link inside closes the menu; the panel's own padding does not. */}
-      {/* oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- the link itself is the keyboard target; this only reacts to its click */}
       <div
         // From `md` the panel draws no box (`contents`), so its dropdown look applies below `md` only.
         className="absolute inset-x-0 top-full max-h-[calc(100dvh-var(--app-header))] overflow-y-auto overscroll-contain border-y border-slate-200 bg-white shadow-lg md:contents"
