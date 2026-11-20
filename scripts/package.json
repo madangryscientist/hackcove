@@ -1,0 +1,11 @@
+{
+  "name": "@slashsuite/scripts",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The repo's own scripts: the slop check and its rules, the publish workflow's Pick step and the testing lint report. Typechecked and linted here; tested in themes-shared. Not a workspace, not published.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint -c ../.oxlintrc.json --type-aware --deny-warnings && cd .. && bun scripts/check-slop.ts"
+  }
+}

@@ -17,6 +17,7 @@ projects:
   ui-review: "tools/ui-review"
   codemod: "tools/codemod"
   oxlint-testing: "packages/oxlint-testing"
+  scripts: "scripts"
 
 vcs:
   client: "git"

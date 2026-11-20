@@ -1,0 +1,12 @@
+$schema: "../.moon/cache/schemas/project.json"
+
+# The repo's own scripts (check-slop, slopRules, releasePick, testing-lint-report). Each task runs
+# the package.json script of its name. Their tests live in themes-shared, so there is no `test`.
+# The slop step runs from the repo root, so it scans scripts/, the root docs/ and the root *.md.
+tasks:
+  typecheck:
+    command: "bun run typecheck"
+    inputs: ["**/*"]
+  lint:
+    command: "bun run lint"
+    inputs: ["**/*", "/docs/**/*", "/*.md"]

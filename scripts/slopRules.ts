@@ -69,9 +69,64 @@ const outsideBackticks = (line: string): string => line.replace(/`[^`]*`/g, "``"
 
 const isTest = (path: string): boolean =>
   /\.test\.tsx?$/.test(path) ||
-  /\.stories\.tsx$/.test(path) ||
+  path.endsWith(".stories.tsx") ||
   path.startsWith("e2e/") ||
   path.startsWith("test/");
+
+/** What the rules need to know about one file, worked out once. */
+type FileKind = {
+  path: string;
+  /** TypeScript: the TODO, commented-out code and time rules read only these. */
+  code: boolean;
+  test: boolean;
+  component: boolean;
+  /** The palette to hold a component's `.tsx` to; undefined when the palette rule does not apply. */
+  palette: ReadonlySet<string> | undefined;
+  prose: boolean;
+};
+
+/** The rules that read every file: a dash, and "violet" in docs prose. */
+function anyFileHits(line: string, file: FileKind): string[] {
+  const hits: string[] = [];
+  if (DASH.test(line)) hits.push(DASH_RULE);
+  if (file.prose && VIOLET.test(outsideBackticks(line))) hits.push(VIOLET_RULE);
+  return hits;
+}
+
+/** A component's palette and content edge. */
+function componentHits(line: string, file: FileKind): string[] {
+  const hits = file.palette === undefined ? [] : paletteHits(line, file.palette);
+  if (file.component && file.path !== "src/Container.tsx" && CONTENT_EDGE.test(line))
+    hits.push("the content width and side padding are Container's; render a Container");
+  return hits;
+}
+
+/** A TODO with no ticket ref and commented-out code. */
+function commentHits(line: string): string[] {
+  const hits: string[] = [];
+  if (TODO_WITHOUT_REF.test(line)) hits.push("TODO/FIXME needs a ticket ref, e.g. TODO(#123)");
+  if (CODE_IN_COMMENT.test(line)) hits.push("commented-out code; delete it (git keeps it)");
+  return hits;
+}
+
+/** A fake clock anywhere, or a bare timer in a test or a component, unless the line is exempt. */
+function timeHits(line: string, previous: string, file: FileKind): string[] {
+  if (EXEMPT.test(line) || EXEMPT.test(previous)) return [];
+  const timed = FAKE_CLOCK.test(line) || ((file.test || file.component) && BARE_TIMER.test(line));
+  return timed ? [TIME_RULE] : [];
+}
+
+/** Every message for one line, in the order the rules are listed above. */
+function lineHits(line: string, previous: string, file: FileKind): string[] {
+  const hits = anyFileHits(line, file);
+  if (!file.code) return hits;
+  return [
+    ...hits,
+    ...componentHits(line, file),
+    ...commentHits(line),
+    ...timeHits(line, previous, file),
+  ];
+}
 
 /**
  * Each hit as `path:line: message`. `path` is relative to the package; `pkg` is its `name`.
@@ -83,28 +138,18 @@ export function slopRules(
   pkg: string,
   palette?: ReadonlySet<string>,
 ): string[] {
-  const code = /\.tsx?$/.test(path);
   const test = isTest(path);
   const component = UI_REACT.has(pkg) && path.startsWith("src/") && !test;
-  const paletted = component && palette !== undefined && path.endsWith(".tsx");
-  const prose = isDocsProse(path, pkg);
-  const hits: string[] = [];
+  const file: FileKind = {
+    path,
+    code: /\.tsx?$/.test(path),
+    test,
+    component,
+    palette: component && path.endsWith(".tsx") ? palette : undefined,
+    prose: isDocsProse(path, pkg),
+  };
   const lines = text.split("\n");
-  lines.forEach((line, i) => {
-    const at = `${path}:${i + 1}`;
-    if (DASH.test(line)) hits.push(`${at}: ${DASH_RULE}`);
-    if (prose && VIOLET.test(outsideBackticks(line))) hits.push(`${at}: ${VIOLET_RULE}`);
-    if (!code) return;
-    if (paletted) for (const hit of paletteHits(line, palette)) hits.push(`${at}: ${hit}`);
-    if (component && path !== "src/Container.tsx" && CONTENT_EDGE.test(line))
-      hits.push(`${at}: the content width and side padding are Container's; render a Container`);
-    if (TODO_WITHOUT_REF.test(line))
-      hits.push(`${at}: TODO/FIXME needs a ticket ref, e.g. TODO(#123)`);
-    if (CODE_IN_COMMENT.test(line))
-      hits.push(`${at}: commented-out code; delete it (git keeps it)`);
-    if (EXEMPT.test(line) || EXEMPT.test(lines[i - 1] ?? "")) return;
-    if (FAKE_CLOCK.test(line) || ((test || component) && BARE_TIMER.test(line)))
-      hits.push(`${at}: ${TIME_RULE}`);
-  });
-  return hits;
+  return lines.flatMap((line, i) =>
+    lineHits(line, lines[i - 1] ?? "", file).map((message) => `${path}:${i + 1}: ${message}`),
+  );
 }
