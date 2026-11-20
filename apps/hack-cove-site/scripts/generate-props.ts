@@ -117,7 +117,7 @@ function helperDoc(checker: ts.TypeChecker, name: string, symbol: ts.Symbol): Co
   const declaration = symbol.valueDeclaration ?? symbol.declarations?.[0];
   if (declaration === undefined) throw new Error(`${name}: no declaration`);
   const type = checker.getTypeOfSymbolAtLocation(symbol, declaration);
-  const flags =
+  const flags: ts.TypeFormatFlags =
     ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope;
   const calls = type.getCallSignatures();
   const signature =
@@ -177,7 +177,7 @@ export function generateProps(): PropsJson {
   );
 }
 
-const DEFINITION =
+const DEFINITION: ts.TypeFormatFlags =
   ts.TypeFormatFlags.NoTruncation |
   ts.TypeFormatFlags.InTypeAlias |
   ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope;
