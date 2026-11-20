@@ -2,6 +2,8 @@
 
 UI components your agents can't get wrong.
 
+Every feature, with where it lives in the source: [FEATURES.md](FEATURES.md).
+
 The UISlash design system: an opinionated, strict UI library that is fully integrated with its
 theming. The components and the themes are designed together, and every theme remaps every palette
 utility the components use, so switching theme reskins a whole site with no component change and
