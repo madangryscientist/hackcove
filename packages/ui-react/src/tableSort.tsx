@@ -10,6 +10,9 @@ export type SortProps = {
   /**
    * Where this column stands: `ascending`, `descending`, or `none` when the table is sorted by
    * another column. The app sorts its rows and passes it back; one sorted column at a time.
+   *
+   * With `onSort` the title becomes a button that asks for the next direction. The table never
+   * sorts, filters or pages.
    */
   sort: TableSort;
   /** Called with the next direction on a click: `none` goes to `ascending`, then each click flips it. */

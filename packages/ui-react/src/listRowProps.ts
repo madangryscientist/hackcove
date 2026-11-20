@@ -41,11 +41,15 @@ type Shared = LoadingProps & {
    * `onPointerEnter` and `onFocus`): a fill one step deeper than hover, so it shows on a white card
    * and on a tinted panel alike. On a static row it shows the fill without `revealOnHover`, and
    * shows `actions` that `revealOnHover` hides. `selected` wins.
+   *
+   * Clear it from `onPointerLeave`.
    */
   highlighted?: boolean | undefined;
   /**
    * A fixed width for `leading`, for a thumbnail (an `<img>` fills it), so the labels of rows with
    * and without a picture still line up. Without it `leading` is as wide as its content.
+   *
+   * For a row that shows a screenshot.
    */
   leadingWidth?: "thumbnail" | undefined;
   children: ReactNode;

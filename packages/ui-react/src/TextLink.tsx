@@ -51,7 +51,13 @@ type TextLinkProps = {
   mono?: boolean | undefined;
   /** Opens in a new tab: adds `target="_blank"` and `rel="noreferrer"`. */
   external?: boolean | undefined;
-  /** The link covers its nearest `relative` ancestor, so the whole row or card is the click target. */
+  /**
+   * The link covers its nearest `relative` ancestor, so the whole row or card is the click target.
+   *
+   * Put it on the one link of a `Card` or a `TableRow` (a table row's first cell): any other link
+   * or button in it sits above the link and is clickable on its own. An action that is not
+   * navigation stays a `Button` in an actions column.
+   */
   stretch?: boolean | undefined;
   /** Always underlined, for a link set inside running text, where colour alone does not mark it (WCAG 1.4.1). */
   underline?: boolean | undefined;

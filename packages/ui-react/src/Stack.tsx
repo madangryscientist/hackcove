@@ -151,6 +151,8 @@ type StackSpaced = {
   /**
    * A line between each pair of children, which then touch (no gap): rows that carry their own
    * padding. Space and a line between blocks is a `Divider` in the Stack instead.
+   *
+   * Such as `ListRow`s in a `Card flush`.
    */
   divided?: false | undefined;
   /**
@@ -167,6 +169,8 @@ type StackDivided = {
   /**
    * A line between each pair of children, which then touch (no gap): rows that carry their own
    * padding. Space and a line between blocks is a `Divider` in the Stack instead.
+   *
+   * Such as `ListRow`s in a `Card flush`.
    */
   divided: true;
   gap?: never;

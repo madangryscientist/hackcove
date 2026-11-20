@@ -43,7 +43,11 @@ export function AppShellBrand({
 }: Passthrough & {
   /** The name beside the logo. It is the link's accessible name. */
   label: ReactNode;
-  /** Where the brand links, usually the app's home (`/`). */
+  /**
+   * Where the brand links, usually the app's home (`/`).
+   *
+   * With a router it goes through the app's `LinkProvider`, like every link.
+   */
   href: string;
   /** The logo slot's box: sm 20px, md 24px (the default, an `Avatar size="sm"`), lg 32px. An `<img>` or `<svg>` logo fills it. */
   logoSize?: Size;
@@ -303,7 +307,11 @@ export function AppShell({
    * `controls` stay in the row at every width, so keep those few.
    */
   menuControls?: ReactNode;
-  /** The escape hatch: a free node in the header row, after `brand` and `nav`. */
+  /**
+   * The escape hatch: a free node in the header row, after `brand` and `nav`.
+   *
+   * Only for a node no other slot covers: prefer `brand`, `nav` and `controls`.
+   */
   header?: ReactNode;
   /** A second fixed-height row under the header from `md`, e.g. a `Tabs` of links. Below `md` it is in the menu with `nav`. */
   subnav?: ReactNode;
@@ -315,11 +323,18 @@ export function AppShell({
   menuLabel?: string;
   /** The page footer: small muted text in a `Container`, under a hairline. Hidden in print with `printChrome={false}`. */
   footer?: ReactNode;
-  /** Main without a Container, for a full-bleed layout. */
+  /**
+   * Main without a Container, for a full-bleed layout.
+   *
+   * For a layout that needs the whole width, such as `FullBleedLayout`; `SidebarLayout` needs no
+   * `bleed`.
+   */
   bleed?: boolean;
   /**
    * Whether a print shows the header and footer. `false` prints only the page: the header and
    * footer are hidden, and main's Container drops its padding (the page margin is then `@page`'s).
+   *
+   * The screen is unchanged.
    * @default true
    */
   printChrome?: boolean;

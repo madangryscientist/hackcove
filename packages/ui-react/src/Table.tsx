@@ -170,7 +170,12 @@ export function TableRow({
   children,
   ...rest
 }: RowMark & {
-  /** The row in view (its detail open beside the table): the selected fill and `aria-current`. Body rows only. */
+  /**
+   * The row in view (its detail open beside the table): the selected fill and `aria-current`. Body
+   * rows only.
+   *
+   * As on a `ListRow`, it is not a multi-select, and a selected row takes no `tone`.
+   */
   selected?: boolean | undefined;
   children: ReactNode;
 } & Rest<"tr">): ReactElement {

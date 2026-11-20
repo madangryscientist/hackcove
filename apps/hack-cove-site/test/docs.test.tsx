@@ -183,6 +183,12 @@ describe("the component pages", () => {
       expect(wrong, `${page.pairs[0]} has no Dont story`).toBeDefined();
     },
   );
+
+  // The page cap: a detail about one prop goes in that prop's JSDoc, which the API table shows.
+  test.each(componentPages)("$name: at most 8 usage bullets and 6 pairs", (page) => {
+    expect(page.usage.do.length).toBeLessThanOrEqual(8);
+    expect(page.pairs.length).toBeLessThanOrEqual(6);
+  });
 });
 
 /**

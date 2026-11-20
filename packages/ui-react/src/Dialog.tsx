@@ -107,6 +107,8 @@ export type DialogProps = {
    * form or a table. `full` fills the whole screen, for media or a player: the body takes the
    * height between the header and the footer and scrolls if it is taller. It has no backdrop to
    * click, so give it a close action in the `footer` (a `<form method="dialog">` button).
+   *
+   * A single photo or video is a `Lightbox`.
    * @default md
    */
   width?: Size | "full";

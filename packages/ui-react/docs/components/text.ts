@@ -86,7 +86,6 @@ export const text: ComponentSection = {
           '`numeric` sets tabular figures so a column of amounts lines up and `mono` the monospace face for an id or a path. `lines` (1 to 4) on `Text` or `Caption` shows at most that many lines and ends in an ellipsis: `lines={1}` cuts a run where its box ends, `lines={3}` clamps a long description. A "Show all" is your own state: `lines={open ? undefined : 3}` beside a `Button`.',
           '`align` sets a run at `start`, `center` or `end` of its block, for a table header or a right-hand column. `minWidth="amount"` on `Text` fixes a width and right-aligns a money figure in it, so a column of amounts lines up.',
           "`italic` on `Text` or `Caption` sets a muted hint or a caption in italic. `breakWords` breaks a long unbroken string, such as a URL or a token, at the edge of its box.",
-          "`preserveNewlines` on `Text` keeps the line breaks of text a person typed, such as a note.",
         ],
         dont: [
           "Never write a bare `<p>`, `<span>`, `<strong>` or `<small>`: they carry none of the theme's type scale or colour.",
@@ -217,7 +216,6 @@ export const text: ComponentSection = {
           "Only an in-app path (`/quotes?page=2#top`) reaches the adapter; `external`, `https:`, `mailto:`, `#hash` and a relative path are a plain `<a>`.",
           "`size` pins the type size to `sm`, `md` or `lg`; left out, the link takes the size of its text. `mono` sets the monospace face for a path or an id.",
           '`tone` gives the link a meaning\'s colour (`warn`, `danger`, `positive`, `info`, `muted`), underlined on hover. Use it for a link that is the message, like "3 failed". `underline` underlines it always: set it where the text around the link is as heavy as the link (a `Text strong`, a heading), since colour alone does not mark a link (WCAG 1.4.1); in plain `Text` its weight marks it.',
-          "`stretch` makes the nearest `relative` ancestor the click target: a `Card` or a `TableRow`. Put it on the one link in that row; any other link or button in the row sits above it and is clickable on its own.",
         ],
         dont: [
           "Never write a bare `<a>` for a link in running text.",
