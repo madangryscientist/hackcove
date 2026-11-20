@@ -20,7 +20,12 @@ export function TableExpandCell({
   "aria-controls": controls,
   ...rest
 }: {
-  /** Whether the row is open. */
+  /**
+   * Whether the row is open.
+   *
+   * Hold it yourself and render what opens under the row: a `TableRow` with one `TableCell
+   * span="full"`, or indented child rows. Head the column `<TableHeaderCell label="Details" />`.
+   */
   expanded: boolean;
   /** The button's name, visually hidden: "Details". */
   label: string;

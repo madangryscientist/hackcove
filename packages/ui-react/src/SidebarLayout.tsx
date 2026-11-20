@@ -63,6 +63,8 @@ export function SidebarLayout({
   /**
    * Folds the rail behind a disclosure with this name below `md` (a long rail), and names the rail's
    * `<aside>` landmark. Left out, the rail is always open and the aside is unnamed.
+   *
+   * Folded, the page comes first on a phone; from `md` it is the same rail.
    */
   asideLabel?: string | undefined;
   children: ReactNode;

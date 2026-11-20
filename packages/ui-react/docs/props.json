@@ -14,7 +14,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Main without a Container, for a full-bleed layout.",
+        "description": "Main without a Container, for a full-bleed layout.\n\nFor a layout that needs the whole width, such as `FullBleedLayout`; `SidebarLayout` needs no\n`bleed`.",
         "native": false
       },
       {
@@ -49,7 +49,7 @@
         "name": "header",
         "type": "ReactNode",
         "required": false,
-        "description": "The escape hatch: a free node in the header row, after `brand` and `nav`.",
+        "description": "The escape hatch: a free node in the header row, after `brand` and `nav`.\n\nOnly for a node no other slot covers: prefer `brand`, `nav` and `controls`.",
         "native": false
       },
       {
@@ -86,7 +86,7 @@
         "type": "boolean",
         "required": false,
         "default": "true",
-        "description": "Whether a print shows the header and footer. `false` prints only the page: the header and\nfooter are hidden, and main's Container drops its padding (the page margin is then `@page`'s).",
+        "description": "Whether a print shows the header and footer. `false` prints only the page: the header and\nfooter are hidden, and main's Container drops its padding (the page margin is then `@page`'s).\n\nThe screen is unchanged.",
         "native": false
       },
       {
@@ -114,7 +114,7 @@
         "name": "href",
         "type": "string",
         "required": true,
-        "description": "Where the brand links, usually the app's home (`/`).",
+        "description": "Where the brand links, usually the app's home (`/`).\n\nWith a router it goes through the app's `LinkProvider`, like every link.",
         "native": false
       },
       {
@@ -480,7 +480,7 @@
         "name": "count",
         "type": "number",
         "required": false,
-        "description": "A small number in a chip after the label: how many are behind the button (the splits a row\nhas, the comments on a thread). It is part of the button's name, \"Splits, 3\", and `0` is\nshown. For a button that opens something, also pass `aria-expanded`.",
+        "description": "A small number in a chip after the label: how many are behind the button (the splits a row\nhas, the comments on a thread). It is part of the button's name, \"Splits, 3\", and `0` is\nshown. For a button that opens something, also pass `aria-expanded`.\n\nPass `aria-controls` for what it opens too; the caller owns that state.",
         "native": false
       },
       {
@@ -537,7 +537,7 @@
         "type": "Size | ResponsiveSize",
         "required": false,
         "default": "md",
-        "description": "`sm` is compact, for table rows and toolbars; `lg` is larger, for a hero call to action. Left\nout, a Button takes the size of the `Card`, `ListRow` or `Table` it sits in, else `md`.\n`{ base: \"md\", md: \"lg\" }` changes size at the `md` breakpoint (48rem), in CSS: `md` on a phone,\n`lg` from 48rem up.",
+        "description": "`sm` is compact, for table rows and toolbars; `lg` is larger, for a hero call to action. Left\nout, a Button takes the size of the `Card`, `ListRow` or `Table` it sits in, else `md`.\n`{ base: \"md\", md: \"lg\" }` changes size at the `md` breakpoint (48rem), in CSS: `md` on a phone,\n`lg` from 48rem up.\n\nThe first load paints the right size. Give every control in the row the same value, so it stays\naligned.",
         "native": false
       },
       {
@@ -749,14 +749,14 @@
         "name": "attention",
         "type": "boolean",
         "required": false,
-        "description": "The warn tone's strong border in place of the card's own, for the one card in a set that needs a look (a run that differed). It keeps the card's fill. Name why in the card too (a `Pill` in `badge`, or the body); the border alone says nothing to a screen reader.",
+        "description": "The warn tone's strong border in place of the card's own, for the one card in a set that needs\na look (a run that differed). It keeps the card's fill. Name why in the card too (a `Pill` in\n`badge`, or the body); the border alone says nothing to a screen reader.\n\nAdd `tone=\"warn\"` for the warn surface too.",
         "native": false
       },
       {
         "name": "badge",
         "type": "ReactNode",
         "required": false,
-        "description": "A `Pill` (or any small node) pinned in the top corner at the end edge, over the content and inside the radius, with no change to the layout. On a card that is a link it is part of the link's name, and a link or button in it is clickable on its own.",
+        "description": "A `Pill` (or any small node) pinned in the top corner at the end edge, over the content and\ninside the radius, with no change to the layout. On a card that is a link it is part of the\nlink's name, and a link or button in it is clickable on its own.\n\nUse it for a category (`Pill tone=\"info\"`) or a flag on the thing itself.",
         "native": false
       },
       {
@@ -784,7 +784,7 @@
         "name": "fill",
         "type": "boolean",
         "required": false,
-        "description": "Take the parent's full height: the title or bar stays put and the body scrolls. The parent sets the height.",
+        "description": "Take the parent's full height: the title or bar stays put and the body scrolls. The parent sets\nthe height.\n\nFor a panel in a fixed-height layout, such as a sheet over a map. Put links or controls in the\nbody, so a keyboard can reach and scroll it.",
         "native": false
       },
       {
@@ -812,14 +812,14 @@
         "name": "icon",
         "type": "\"page\" | \"grid\" | \"search\" | \"table\" | \"type\" | \"diff\" | \"baseline\" | \"review\" | \"ci\" | \"self-host\" | \"privacy\" | \"capture\" | \"branch\" | \"theme\" | \"speed\" | \"chevron-right\" | \"chevron-down\" | \"close\" | \"external-link\" | \"settings\" | \"bell\" | \"check\" | \"plus\" | \"more\" | \"window\" | \"card\" | \"pointer\" | \"field\" | \"compass\" | \"briefcase\"",
         "required": false,
-        "description": "One of the library's icons, drawn at feature size in the accent colour above the title: the mark of a feature card. Ignored with `bar` and `flush`.",
+        "description": "One of the library's icons, drawn at feature size in the accent colour above the title: the\nmark of a feature card. Ignored with `bar` and `flush`.\n\nPick it by the idea it stands for.",
         "native": false
       },
       {
         "name": "inset",
         "type": "ReactNode",
         "required": false,
-        "description": "A band across the card, edge to edge inside its padding, under the title and above the children: a `ProgressBar` or a strip of colour that runs the card's full width.",
+        "description": "A band across the card, edge to edge inside its padding, under the title and above the\nchildren: a `ProgressBar` or a strip of colour that runs the card's full width.\n\nA bordered sub-card inside a card is a nested `Card tone=\"neutral\"`, not a hand-built box.",
         "native": false
       },
       {
@@ -850,7 +850,7 @@
         "type": "\"sm\" | \"md\" | \"lg\"",
         "required": false,
         "default": "md",
-        "description": "`sm` is dense padding on the body, heading and bar, and makes a `Button`, `IconButton` or `Pill`\ninside with no `size` of its own `sm` too; `lg` is one step roomier than `md`.",
+        "description": "`sm` is dense padding on the body, heading and bar, and makes a `Button`, `IconButton` or `Pill`\ninside with no `size` of its own `sm` too; `lg` is one step roomier than `md`.\n\n`sm` suits a dense dashboard, `lg` a card that stands alone.",
         "native": false
       },
       {
@@ -1259,7 +1259,7 @@
         "type": "\"div\" | \"ol\" | \"span\" | \"ul\"",
         "required": false,
         "default": "div",
-        "description": "The element: `div`, `span` for a row inside a `<p>` or other phrasing content, or `ul` or `ol`\nfor a list (no markers; each child is an `<li>`).",
+        "description": "The element: `div`, `span` for a row inside a `<p>` or other phrasing content, or `ul` or `ol`\nfor a list (no markers; each child is an `<li>`).\n\nIn a `span` the items must be phrasing content, so no `ClusterGrow`.",
         "native": false
       },
       {
@@ -1962,7 +1962,7 @@
         "type": "\"sm\" | \"md\" | \"lg\" | \"full\"",
         "required": false,
         "default": "md",
-        "description": "The panel's width: `sm` (320px) is a list, `md` (440px) holds a form, `lg` (640px) a wider\nform or a table. `full` fills the whole screen, for media or a player: the body takes the\nheight between the header and the footer and scrolls if it is taller. It has no backdrop to\nclick, so give it a close action in the `footer` (a `<form method=\"dialog\">` button).",
+        "description": "The panel's width: `sm` (320px) is a list, `md` (440px) holds a form, `lg` (640px) a wider\nform or a table. `full` fills the whole screen, for media or a player: the body takes the\nheight between the header and the footer and scrolls if it is taller. It has no backdrop to\nclick, so give it a close action in the `footer` (a `<form method=\"dialog\">` button).\n\nA single photo or video is a `Lightbox`.",
         "native": false
       }
     ]
@@ -2965,7 +2965,7 @@
         "type": "Size | ResponsiveSize",
         "required": false,
         "default": "md",
-        "description": "The button's height, matching a `Button` or `Input` of the same size. Left out, it takes the\nsize of the `Card`, `ListRow` or `Table` it sits in, else `md`. `{ base: \"md\", md: \"lg\" }`\nchanges size at the `md` breakpoint (48rem), in CSS.",
+        "description": "The button's height, matching a `Button` or `Input` of the same size. Left out, it takes the\nsize of the `Card`, `ListRow` or `Table` it sits in, else `md`. `{ base: \"md\", md: \"lg\" }`\nchanges size at the `md` breakpoint (48rem), in CSS.\n\nGive it the same value as a responsive `Button` beside it.",
         "native": false
       },
       {
@@ -3591,7 +3591,7 @@
         "name": "highlighted",
         "type": "boolean",
         "required": false,
-        "description": "Marks the row a list follows with the pointer and the keyboard alike (set it from\n`onPointerEnter` and `onFocus`): a fill one step deeper than hover, so it shows on a white card\nand on a tinted panel alike. On a static row it shows the fill without `revealOnHover`, and\nshows `actions` that `revealOnHover` hides. `selected` wins.",
+        "description": "Marks the row a list follows with the pointer and the keyboard alike (set it from\n`onPointerEnter` and `onFocus`): a fill one step deeper than hover, so it shows on a white card\nand on a tinted panel alike. On a static row it shows the fill without `revealOnHover`, and\nshows `actions` that `revealOnHover` hides. `selected` wins.\n\nClear it from `onPointerLeave`.",
         "native": false
       },
       {
@@ -3612,7 +3612,7 @@
         "name": "leadingWidth",
         "type": "\"thumbnail\"",
         "required": false,
-        "description": "A fixed width for `leading`, for a thumbnail (an `<img>` fills it), so the labels of rows with\nand without a picture still line up. Without it `leading` is as wide as its content.",
+        "description": "A fixed width for `leading`, for a thumbnail (an `<img>` fills it), so the labels of rows with\nand without a picture still line up. Without it `leading` is as wide as its content.\n\nFor a row that shows a screenshot; the label may then hold block content, such as a title over\na caption.",
         "native": false
       },
       {
@@ -4483,7 +4483,7 @@
         "name": "title",
         "type": "string",
         "required": false,
-        "description": "The detail behind a pill whose text is short or cut off (the full status, a date): its tooltip\non hover, keyboard focus and a tap, and its description. A plain pill with a title is focusable.",
+        "description": "The detail behind a pill whose text is short or cut off (the full status, a date): its tooltip\non hover, keyboard focus and a tap, and its description. A plain pill with a title is focusable.\n\nKeep anything a reader needs on the pill itself.",
         "native": false
       },
       {
@@ -4973,7 +4973,7 @@
         "type": "\"sm\" | \"md\" | \"lg\"",
         "required": false,
         "default": "md",
-        "description": "`sm` a small titled group inside a page, a card or a panel, its title small and all-caps\nand its blocks `xs` apart; `md` a page's section; `lg` a landing page's section, a display\ntitle under a mono kicker, a `Lead`, then its calls to action.",
+        "description": "`sm` a small titled group inside a page, a card or a panel, its title small and all-caps\nand its blocks `xs` apart; `md` a page's section; `lg` a landing page's section, a display\ntitle under a mono kicker, a `Lead`, then its calls to action.\n\nA landing page's section under the `Hero` is `size=\"lg\"`: its opening is capped at the\nreading measure at the start edge and its blocks sit `lg` apart. A feature card in it is\na `Card href icon titleStyle=\"name\"` in a `CardGrid`; text beside code is a `SideColumn`.",
         "native": false
       },
       {
@@ -5087,7 +5087,7 @@
         "type": "Size | ResponsiveSize",
         "required": false,
         "default": "md",
-        "description": "The control's height and text, on the scale of a `Button`. `{ base: \"md\", md: \"lg\" }` changes\nsize at the `md` breakpoint (48rem), in CSS.",
+        "description": "The control's height and text, on the scale of a `Button`. `{ base: \"md\", md: \"lg\" }` changes\nsize at the `md` breakpoint (48rem), in CSS.\n\nGive it the same value as a responsive `Button` in the same row.",
         "native": false
       },
       {
@@ -5102,7 +5102,7 @@
         "type": "boolean | \"narrow\"",
         "required": false,
         "default": "false",
-        "description": "The options wrap onto full rows of at most three (five are 3 then 2) in a box with rounded\ncorners and a line between options, instead of a pill. `\"narrow\"`: the box only while the group\nitself is under 32rem wide (a container query, so it follows the column it sits in), and a\nfilled pill from 32rem up. Implies `fill`.",
+        "description": "The options wrap onto full rows of at most three (five are 3 then 2) in a box with rounded\ncorners and a line between options, instead of a pill. `\"narrow\"`: the box only while the group\nitself is under 32rem wide (a container query, so it follows the column it sits in), and a\nfilled pill from 32rem up. Implies `fill`.\n\nFor five options that will not fit one row.",
         "native": false
       }
     ]
@@ -5207,7 +5207,7 @@
         "name": "asideLabel",
         "type": "string",
         "required": false,
-        "description": "Folds the rail behind a disclosure with this name below `md` (a long rail), and names the rail's\n`<aside>` landmark. Left out, the rail is always open and the aside is unnamed.",
+        "description": "Folds the rail behind a disclosure with this name below `md` (a long rail), and names the rail's\n`<aside>` landmark. Left out, the rail is always open and the aside is unnamed.\n\nFolded, the page comes first on a phone; from `md` it is the same rail.",
         "native": false
       },
       {
@@ -5569,7 +5569,7 @@
         "name": "divided",
         "type": "boolean",
         "required": false,
-        "description": "A line between each pair of children, which then touch (no gap): rows that carry their own\npadding. Space and a line between blocks is a `Divider` in the Stack instead.",
+        "description": "A line between each pair of children, which then touch (no gap): rows that carry their own\npadding. Space and a line between blocks is a `Divider` in the Stack instead.\n\nSuch as `ListRow`s in a `Card flush`.",
         "native": false
       },
       {
@@ -6074,7 +6074,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Caps the width and cuts a long value with an ellipsis on one line, the full text in a `title`. Plain text content only.",
+        "description": "Caps the width and cuts a long value with an ellipsis on one line, the full text in a `title`.\nPlain text content only.\n\nWithout it, a prose cell wraps down to a floor so it never becomes a sliver, a cell that holds\na control or a link (a `Pill`, a `Switch`, a `Button`, a `TextLink`) takes its content's width,\nand a `numeric` or `mono` cell never breaks.",
         "native": false
       }
     ]
@@ -6153,7 +6153,7 @@
         "name": "renderEditor",
         "type": "(close: () => void) => ReactNode",
         "required": true,
-        "description": "The control that edits the value, drawn while open. `close` shuts it and returns the focus to the value.",
+        "description": "The control that edits the value, drawn while open. `close` shuts it and returns the focus to\nthe value.\n\nCall `close` once the control has saved: a press outside the cell, Tab out of it and Esc all\nclose it without a save, so save on the control's own change or submit. The control sits in the\ncell, not in a popover of its own.",
         "native": false
       },
       {
@@ -6194,7 +6194,7 @@
         "name": "expanded",
         "type": "boolean",
         "required": true,
-        "description": "Whether the row is open.",
+        "description": "Whether the row is open.\n\nHold it yourself and render what opens under the row: a `TableRow` with one `TableCell\nspan=\"full\"`, or indented child rows. Head the column `<TableHeaderCell label=\"Details\" />`.",
         "native": false
       },
       {
@@ -6296,7 +6296,7 @@
         "name": "sort",
         "type": "\"none\" | \"ascending\" | \"descending\"",
         "required": false,
-        "description": "Where this column stands: `ascending`, `descending`, or `none` when the table is sorted by\nanother column. The app sorts its rows and passes it back; one sorted column at a time.",
+        "description": "Where this column stands: `ascending`, `descending`, or `none` when the table is sorted by\nanother column. The app sorts its rows and passes it back; one sorted column at a time.\n\nWith `onSort` the title becomes a button that asks for the next direction. The table never\nsorts, filters or pages.",
         "native": false
       }
     ]
@@ -6310,7 +6310,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "A subtotal in the body: the look of a `TableFoot` row, with strong cells, a firmer line above and no hover. Give only one of `tone`, `stripe` and `emphasis`.",
+        "description": "A subtotal in the body: the look of a `TableFoot` row, with strong cells, a firmer line\nabove and no hover. Give only one of `tone`, `stripe` and `emphasis`.\n\nA sign row or a subtotal needs no other part.",
         "native": false
       },
       {
@@ -6318,7 +6318,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "The row in view (its detail open beside the table): the selected fill and `aria-current`. Body rows only.",
+        "description": "The row in view (its detail open beside the table): the selected fill and `aria-current`. Body\nrows only.\n\nAs on a `ListRow`, it is not a multi-select, and a selected row takes no `tone`.",
         "native": false
       },
       {
@@ -6603,7 +6603,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "The link covers its nearest `relative` ancestor, so the whole row or card is the click target.",
+        "description": "The link covers its nearest `relative` ancestor, so the whole row or card is the click target.\n\nPut it on the one link of a `Card` or a `TableRow` (a table row's first cell): any other link\nor button in it sits above the link and is clickable on its own. An action that is not\nnavigation stays a `Button` in an actions column.",
         "native": false
       },
       {

@@ -53,6 +53,8 @@ type IconButtonProps = {
    * The button's height, matching a `Button` or `Input` of the same size. Left out, it takes the
    * size of the `Card`, `ListRow` or `Table` it sits in, else `md`. `{ base: "md", md: "lg" }`
    * changes size at the `md` breakpoint (48rem), in CSS.
+   *
+   * Give it the same value as a responsive `Button` beside it.
    * @default md
    */
   size?: Size | ResponsiveSize | undefined;

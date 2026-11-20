@@ -104,17 +104,41 @@ type CardBase = LoadingProps & {
   flush?: boolean;
   /** A soft fill and border in the Callout's tones, for a data panel with a status. Ignored with `bar`. */
   tone?: Tone;
-  /** One of the library's icons, drawn at feature size in the accent colour above the title: the mark of a feature card. Ignored with `bar` and `flush`. */
+  /**
+   * One of the library's icons, drawn at feature size in the accent colour above the title: the
+   * mark of a feature card. Ignored with `bar` and `flush`.
+   *
+   * Pick it by the idea it stands for.
+   */
   icon?: IconName;
-  /** A band across the card, edge to edge inside its padding, under the title and above the children: a `ProgressBar` or a strip of colour that runs the card's full width. */
+  /**
+   * A band across the card, edge to edge inside its padding, under the title and above the
+   * children: a `ProgressBar` or a strip of colour that runs the card's full width.
+   *
+   * A bordered sub-card inside a card is a nested `Card tone="neutral"`, not a hand-built box.
+   */
   inset?: ReactNode;
-  /** A `Pill` (or any small node) pinned in the top corner at the end edge, over the content and inside the radius, with no change to the layout. On a card that is a link it is part of the link's name, and a link or button in it is clickable on its own. */
+  /**
+   * A `Pill` (or any small node) pinned in the top corner at the end edge, over the content and
+   * inside the radius, with no change to the layout. On a card that is a link it is part of the
+   * link's name, and a link or button in it is clickable on its own.
+   *
+   * Use it for a category (`Pill tone="info"`) or a flag on the thing itself.
+   */
   badge?: ReactNode;
-  /** The warn tone's strong border in place of the card's own, for the one card in a set that needs a look (a run that differed). It keeps the card's fill. Name why in the card too (a `Pill` in `badge`, or the body); the border alone says nothing to a screen reader. */
+  /**
+   * The warn tone's strong border in place of the card's own, for the one card in a set that needs
+   * a look (a run that differed). It keeps the card's fill. Name why in the card too (a `Pill` in
+   * `badge`, or the body); the border alone says nothing to a screen reader.
+   *
+   * Add `tone="warn"` for the warn surface too.
+   */
   attention?: boolean;
   /**
    * `sm` is dense padding on the body, heading and bar, and makes a `Button`, `IconButton` or `Pill`
    * inside with no `size` of its own `sm` too; `lg` is one step roomier than `md`.
+   *
+   * `sm` suits a dense dashboard, `lg` a card that stands alone.
    * @default md
    */
   size?: Size;
@@ -126,7 +150,13 @@ type CardPanelProps = CardBase & {
   actions?: ReactNode;
   /** A tinted strip across the bottom of the card, under a hairline, for the card's own actions or a total. It stays at the foot when the card is stretched in a `CardGrid`. */
   footer?: ReactNode;
-  /** Take the parent's full height: the title or bar stays put and the body scrolls. The parent sets the height. */
+  /**
+   * Take the parent's full height: the title or bar stays put and the body scrolls. The parent sets
+   * the height.
+   *
+   * For a panel in a fixed-height layout, such as a sheet over a map. Put links or controls in the
+   * body, so a keyboard can reach and scroll it.
+   */
   fill?: boolean;
   /**
    * `article` for a card that stands alone as a piece of content (a post, a listing). Left out, a

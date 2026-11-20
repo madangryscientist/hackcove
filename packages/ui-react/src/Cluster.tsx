@@ -50,6 +50,8 @@ export function Cluster({
   /**
    * The element: `div`, `span` for a row inside a `<p>` or other phrasing content, or `ul` or `ol`
    * for a list (no markers; each child is an `<li>`).
+   *
+   * In a `span` the items must be phrasing content, so no `ClusterGrow`.
    * @default div
    */
   as?: "div" | "span" | "ul" | "ol" | undefined;

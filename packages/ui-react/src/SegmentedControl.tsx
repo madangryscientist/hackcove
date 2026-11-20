@@ -91,6 +91,8 @@ export function SegmentedControl({
   /**
    * The control's height and text, on the scale of a `Button`. `{ base: "md", md: "lg" }` changes
    * size at the `md` breakpoint (48rem), in CSS.
+   *
+   * Give it the same value as a responsive `Button` in the same row.
    * @default md
    */
   size?: Size | ResponsiveSize;
@@ -105,6 +107,8 @@ export function SegmentedControl({
    * corners and a line between options, instead of a pill. `"narrow"`: the box only while the group
    * itself is under 32rem wide (a container query, so it follows the column it sits in), and a
    * filled pill from 32rem up. Implies `fill`.
+   *
+   * For five options that will not fit one row.
    * @default false
    */
   wrap?: boolean | "narrow";

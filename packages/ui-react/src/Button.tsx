@@ -134,6 +134,9 @@ type ButtonLook = {
    * out, a Button takes the size of the `Card`, `ListRow` or `Table` it sits in, else `md`.
    * `{ base: "md", md: "lg" }` changes size at the `md` breakpoint (48rem), in CSS: `md` on a phone,
    * `lg` from 48rem up.
+   *
+   * The first load paints the right size. Give every control in the row the same value, so it stays
+   * aligned.
    * @default md
    */
   size?: ButtonSize | ResponsiveSize | undefined;
@@ -215,6 +218,8 @@ type ButtonAsButton = ButtonLook & {
    * A small number in a chip after the label: how many are behind the button (the splits a row
    * has, the comments on a thread). It is part of the button's name, "Splits, 3", and `0` is
    * shown. For a button that opens something, also pass `aria-expanded`.
+   *
+   * Pass `aria-controls` for what it opens too; the caller owns that state.
    */
   count?: number | undefined;
   href?: undefined;
@@ -233,6 +238,8 @@ type ButtonAsLink = ButtonLook & {
    * A small number in a chip after the label: how many are behind the button (the splits a row
    * has, the comments on a thread). It is part of the button's name, "Splits, 3", and `0` is
    * shown. For a button that opens something, also pass `aria-expanded`.
+   *
+   * Pass `aria-controls` for what it opens too; the caller owns that state.
    */
   count?: number | undefined;
   /** Makes the button a link to this URL; an in-app path goes through the app's `LinkProvider`. */

@@ -61,6 +61,10 @@ type SectionProps = SectionBase &
          * `sm` a small titled group inside a page, a card or a panel, its title small and all-caps
          * and its blocks `xs` apart; `md` a page's section; `lg` a landing page's section, a display
          * title under a mono kicker, a `Lead`, then its calls to action.
+         *
+         * A landing page's section under the `Hero` is `size="lg"`: its opening is capped at the
+         * reading measure at the start edge and its blocks sit `lg` apart. A feature card in it is
+         * a `Card href icon titleStyle="name"` in a `CardGrid`; text beside code is a `SideColumn`.
          * @default md
          */
         size?: "md" | undefined;

@@ -160,7 +160,14 @@ export function TableCell({
   numeric?: boolean | undefined;
   /** A small monospace face for a code or a type, and the cell never wraps. */
   mono?: boolean | undefined;
-  /** Caps the width and cuts a long value with an ellipsis on one line, the full text in a `title`. Plain text content only. */
+  /**
+   * Caps the width and cuts a long value with an ellipsis on one line, the full text in a `title`.
+   * Plain text content only.
+   *
+   * Without it, a prose cell wraps down to a floor so it never becomes a sliver, a cell that holds
+   * a control or a link (a `Pill`, a `Switch`, a `Button`, a `TextLink`) takes its content's width,
+   * and a `numeric` or `mono` cell never breaks.
+   */
   truncate?: boolean | undefined;
   /** A second, muted line under the content. */
   secondary?: ReactNode;

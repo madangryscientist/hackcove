@@ -29,7 +29,14 @@ export function TableEditCell({
 }: {
   /** What the button does, for a screen reader, heard after the value: "Edit category". It also names the editor. */
   label: string;
-  /** The control that edits the value, drawn while open. `close` shuts it and returns the focus to the value. */
+  /**
+   * The control that edits the value, drawn while open. `close` shuts it and returns the focus to
+   * the value.
+   *
+   * Call `close` once the control has saved: a press outside the cell, Tab out of it and Esc all
+   * close it without a save, so save on the control's own change or submit. The control sits in the
+   * cell, not in a popover of its own.
+   */
   renderEditor: (close: () => void) => ReactNode;
   /** The value, shown while closed. */
   children: ReactNode;

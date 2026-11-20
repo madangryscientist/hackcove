@@ -40,6 +40,8 @@ type PillBase = LoadingProps & {
   /**
    * The detail behind a pill whose text is short or cut off (the full status, a date): its tooltip
    * on hover, keyboard focus and a tap, and its description. A plain pill with a title is focusable.
+   *
+   * Keep anything a reader needs on the pill itself.
    */
   title?: string | undefined;
   /**

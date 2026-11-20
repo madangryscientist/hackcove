@@ -33,7 +33,12 @@ export type RowMark =
       tone?: RowTone | undefined;
       /** A stripe on the leading edge in this tone, with no fill. Give only one of `tone`, `stripe` and `emphasis`. */
       stripe?: undefined;
-      /** A subtotal in the body: the look of a `TableFoot` row, with strong cells, a firmer line above and no hover. Give only one of `tone`, `stripe` and `emphasis`. */
+      /**
+       * A subtotal in the body: the look of a `TableFoot` row, with strong cells, a firmer line
+       * above and no hover. Give only one of `tone`, `stripe` and `emphasis`.
+       *
+       * A sign row or a subtotal needs no other part.
+       */
       emphasis?: false | undefined;
     }
   | {
@@ -41,11 +46,21 @@ export type RowMark =
       stripe?: Exclude<TextTone, "neutral"> | undefined;
       /** The row's status: a stripe on the leading edge plus the tone's soft fill, or `muted` to fade the row. Give only one of `tone`, `stripe` and `emphasis`. */
       tone?: undefined;
-      /** A subtotal in the body: the look of a `TableFoot` row, with strong cells, a firmer line above and no hover. Give only one of `tone`, `stripe` and `emphasis`. */
+      /**
+       * A subtotal in the body: the look of a `TableFoot` row, with strong cells, a firmer line
+       * above and no hover. Give only one of `tone`, `stripe` and `emphasis`.
+       *
+       * A sign row or a subtotal needs no other part.
+       */
       emphasis?: false | undefined;
     }
   | {
-      /** A subtotal in the body: the look of a `TableFoot` row, with strong cells, a firmer line above and no hover. Give only one of `tone`, `stripe` and `emphasis`. */
+      /**
+       * A subtotal in the body: the look of a `TableFoot` row, with strong cells, a firmer line
+       * above and no hover. Give only one of `tone`, `stripe` and `emphasis`.
+       *
+       * A sign row or a subtotal needs no other part.
+       */
       emphasis: boolean;
       /** The row's status: a stripe on the leading edge plus the tone's soft fill, or `muted` to fade the row. Give only one of `tone`, `stripe` and `emphasis`. */
       tone?: undefined;
