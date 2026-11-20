@@ -87,33 +87,36 @@ function nameAt(ref: string, path: string): string | null {
   return pkg.name ?? null;
 }
 
-function main(): void {
+/** The releasable projects Nx knows, narrowed to PROJECT when it is set. */
+function releasableProjects(): string[] {
   const nx: { release: { projects: string[] } } = JSON.parse(readFileSync("nx.json", "utf8"));
   const shown: string[] = JSON.parse(
     must(["bunx", "nx", "show", "projects", "-p", nx.release.projects.join(","), "--json"]),
   );
   if (shown.length === 0) fail("No releasable project (nx.json release.projects).");
   const only = process.env.PROJECT ?? "";
-  if (only !== "" && !shown.includes(only)) {
+  if (only === "") return shown;
+  if (!shown.includes(only))
     fail(`${only} is not a releasable project. Releasable: ${shown.join(" ")}`);
-  }
-  const projects = (only === "" ? shown : [only]).map((project) => {
-    const root: string = JSON.parse(
-      must(["bunx", "nx", "show", "project", project, "--json"]),
-    ).root;
-    const pkg: { name: string } = JSON.parse(readFileSync(`${root}/package.json`, "utf8"));
-    const lastTag = must(["git", "tag", "-l", `${project}@*`, "--sort=-v:refname"]).split("\n")[0];
-    const tagged = lastTag !== undefined && lastTag !== "";
-    const facts: Facts = {
-      name: pkg.name,
-      tagged,
-      nameAtLastTag: tagged ? nameAt(lastTag, `${root}/package.json`) : null,
-      npmVersions: tagged ? npmVersions(pkg.name) : null,
-    };
-    return { project, facts };
-  });
-  const sets = pick(projects);
-  for (const project of sets.staged) {
+  return [only];
+}
+
+/** What git and npm say about one project. */
+function factsFor(project: string): Facts {
+  const root: string = JSON.parse(must(["bunx", "nx", "show", "project", project, "--json"])).root;
+  const pkg: { name: string } = JSON.parse(readFileSync(`${root}/package.json`, "utf8"));
+  const lastTag = must(["git", "tag", "-l", `${project}@*`, "--sort=-v:refname"]).split("\n")[0];
+  const tagged = lastTag !== undefined && lastTag !== "";
+  return {
+    name: pkg.name,
+    tagged,
+    nameAtLastTag: tagged ? nameAt(lastTag, `${root}/package.json`) : null,
+    npmVersions: tagged ? npmVersions(pkg.name) : null,
+  };
+}
+
+function noticeStaged(projects: { project: string; facts: Facts }[], staged: string[]): void {
+  for (const project of staged) {
     const { name } = projects.find((p) => p.project === project)?.facts ?? { name: project };
     console.log(
       `::notice::${project} (${name}) has a release tag but no version approved on npm: it waits ` +
@@ -121,11 +124,21 @@ function main(): void {
         'listed there, its staging failed (docs/releasing.md, "First publish of a new package").',
     );
   }
+}
+
+function writeOutput(sets: Pick): void {
   const kinds: Kind[] = ["tagged", "renamed", "new", "staged"];
   const lines = kinds.map((kind) => `${kind}=${sets[kind].join(",")}`);
   console.log(lines.join("\n"));
   const output = process.env.GITHUB_OUTPUT;
   if (output) appendFileSync(output, `${lines.join("\n")}\n`);
+}
+
+function main(): void {
+  const projects = releasableProjects().map((project) => ({ project, facts: factsFor(project) }));
+  const sets = pick(projects);
+  noticeStaged(projects, sets.staged);
+  writeOutput(sets);
   if (needsToken(sets) && process.env.HAS_NPM_TOKEN !== "true") {
     fail(
       `Project(s) to stage: new (no release tag) [${sets.new.join(",")}], renamed (tagged under ` +
