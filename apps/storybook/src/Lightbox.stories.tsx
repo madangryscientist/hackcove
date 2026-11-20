@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { Button, Dialog, Lightbox } from "@slashsuite/ui-react";
+import { samplePhoto } from "./samplePhoto";
 import { sampleScenes } from "./sampleScene";
+import { sampleVideo } from "./sampleVideo";
 
 const meta: Meta = { title: "Feedback/Lightbox" };
 export default meta;
@@ -49,6 +51,32 @@ export const MediaOnly: S = {
         {open && photo && (
           <Lightbox label={photo.alt} onClose={() => setOpen(false)}>
             <img src={photo.src} alt={photo.alt} />
+          </Lightbox>
+        )}
+      </div>
+    );
+  },
+};
+
+/** A `<video>` is media as an `<img>` is: scaled down to fit, with the browser's own controls. */
+export const VideoMedia: S = {
+  render: () => {
+    const [open, setOpen] = useState(true);
+    return (
+      <div className="p-6">
+        <Button variant="outline" onClick={() => setOpen(true)}>
+          View video
+        </Button>
+        {open && (
+          <Lightbox
+            label="Video from Anna"
+            title="Anna"
+            meta="Today, 09:12"
+            onClose={() => setOpen(false)}
+          >
+            <video src={sampleVideo} poster={samplePhoto} controls muted>
+              Your browser cannot play this video.
+            </video>
           </Lightbox>
         )}
       </div>

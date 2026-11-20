@@ -5,6 +5,7 @@ import {
   CenteredLayout,
   Field,
   FormLayout,
+  Icon,
   Input,
   Tabs,
   Text,
@@ -63,6 +64,21 @@ export const NotFound: S = {
     <DemoShell>
       <CenteredLayout title="Page not found" description="It may have moved.">
         <Button variant="outline">Back to builds</Button>
+      </CenteredLayout>
+    </DemoShell>
+  ),
+};
+
+/** `mark` is drawn first in the card, above the title: an icon or a large status numeral. It is not a heading. */
+export const Mark: S = {
+  render: () => (
+    <DemoShell>
+      <CenteredLayout
+        mark={<Icon name="check" size="feature" tone="positive" />}
+        title="Email confirmed"
+        description="Your Hack Cove account is ready."
+      >
+        <Button>Continue</Button>
       </CenteredLayout>
     </DemoShell>
   ),

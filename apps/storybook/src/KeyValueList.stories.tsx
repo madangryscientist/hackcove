@@ -163,6 +163,28 @@ export const Tones: S = {
   ),
 };
 
+/** The other tones: `info` for a note, `accent` to draw the eye, `muted` for a figure that is not the point, and `neutral` for the body colour. */
+export const MoreTones: S = {
+  render: () => (
+    <div className="max-w-sm">
+      <KeyValueList>
+        <KeyValue label="Next run" tone="info">
+          Tonight, 02:00
+        </KeyValue>
+        <KeyValue label="Plan" tone="accent">
+          Pro
+        </KeyValue>
+        <KeyValue label="Transfers" tone="muted">
+          R 4 000
+        </KeyValue>
+        <KeyValue label="Balance" tone="neutral">
+          R 12 400
+        </KeyValue>
+      </KeyValueList>
+    </div>
+  ),
+};
+
 type Loading = StoryObj<{ loading: boolean }>;
 
 /** A list with no rows yet draws three rows of bones; one whose labels are known keeps them. */

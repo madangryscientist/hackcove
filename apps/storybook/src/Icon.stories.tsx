@@ -70,6 +70,17 @@ export const Tones: S = {
   ),
 };
 
+/** `tone="neutral"` is the body text colour set on purpose, so the icon keeps it inside a coloured line. */
+export const NeutralTone: S = {
+  render: () => (
+    <Text tone="danger">
+      <span className="inline-flex items-center gap-2">
+        <Icon tone="neutral">{flagIcon}</Icon>2 failed
+      </span>
+    </Text>
+  ),
+};
+
 /** An icon is decorative (`aria-hidden`) unless it carries meaning alone: then `label` makes it an image with that name. */
 export const Label: S = {
   render: () => (

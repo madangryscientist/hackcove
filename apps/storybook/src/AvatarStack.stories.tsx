@@ -37,6 +37,11 @@ export const Sizes: S = {
   ),
 };
 
+/** `xs`, the smallest, for a dense table row or a byline. */
+export const ExtraSmall: S = {
+  render: () => <AvatarStack items={team} max={3} size="xs" />,
+};
+
 /** `shape="square"` for a stack of orgs or teams. */
 export const Square: S = {
   render: () => (

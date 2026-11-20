@@ -295,19 +295,21 @@ export const WithRouterLink: S = {
   ),
 };
 
-/** The pill variant takes `size`: `sm`, `md` (the default, 38px) or `lg`. */
+/** The vertical pill rail takes `size`: `sm`, `md` (the default, 38px) or `lg`. */
 export const PillSizes: S = {
   render: () => (
-    <Stack gap="sm">
+    <div className="grid max-w-2xl grid-cols-3 items-start gap-6">
       {(["sm", "md", "lg"] as const).map((size) => (
         <Tabs
           key={size}
+          orientation="vertical"
+          size={size}
           label={`Project views, ${size}`}
           items={views.map(({ value, label }) => ({ value, label }))}
           value="overview"
           onChange={() => {}}
         />
       ))}
-    </Stack>
+    </div>
   ),
 };

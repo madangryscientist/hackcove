@@ -118,6 +118,24 @@ export const Widths: S = {
   ),
 };
 
+/** A `Section` takes the same `width` as a `Stack`: `compact`, `narrow`, `default`, `wide` and `full`, each kept at the left edge. */
+export const SectionWidths: S = {
+  render: () => (
+    <DemoShell>
+      <PageHeader title="Section widths" description="Each Section starts at the title's x." />
+      <Stack gap="lg">
+        {(["compact", "narrow", "default", "wide", "full"] as const).map((width) => (
+          <Section key={width} width={width} title={`width="${width}"`}>
+            <Card>
+              <Text>The section's body is capped with its title.</Text>
+            </Card>
+          </Section>
+        ))}
+      </Stack>
+    </DemoShell>
+  ),
+};
+
 /** `as="form"` is a `<form>` that spaces its fields: `onSubmit`, `action`, `method` and the other form props go on it. */
 export const AsForm: S = {
   render: () => (

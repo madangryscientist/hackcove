@@ -16,6 +16,20 @@ export const Small: S = {
 export const FixedWidth: S = {
   render: () => <Textarea width="lg" placeholder="A short note" />,
 };
+/** A fixed width replaces the full width: `xs`, `sm`, `md` or `lg`, on the scale an `Input` takes. */
+export const FixedWidths: S = {
+  render: () => (
+    <div className="flex flex-wrap items-start gap-2">
+      {(["xs", "sm", "md", "lg"] as const).map((width) => (
+        <Textarea key={width} width={width} rows={2} aria-label={width} placeholder={width} />
+      ))}
+    </div>
+  ),
+};
+/** `auto` carries no width class: the textarea is as wide as the browser makes it. */
+export const AutoWidth: S = {
+  render: () => <Textarea width="auto" rows={2} aria-label="Natural" placeholder="Natural" />,
+};
 /** `width="fill"` grows to the room left in a row, so the button beside it stays on the line. */
 export const FillWidth: S = {
   parameters: { layout: "padded" },

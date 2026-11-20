@@ -20,6 +20,16 @@ export const Default: S = {
 export const Small: S = {
   render: () => <Select size="sm" width="md" aria-label="Rating" defaultValue="5" items={rating} />,
 };
+/** A fixed width replaces the full width: `xs`, `sm`, `md` or `lg`, on the scale an `Input` takes. */
+export const FixedWidths: S = {
+  render: () => (
+    <div className="flex flex-wrap items-center gap-2">
+      {(["xs", "sm", "md", "lg"] as const).map((width) => (
+        <Select key={width} width={width} aria-label={width} defaultValue="5" items={rating} />
+      ))}
+    </div>
+  ),
+};
 export const AutoWidth: S = {
   render: () => <Select width="auto" aria-label="Rating" defaultValue="5" items={rating} />,
 };

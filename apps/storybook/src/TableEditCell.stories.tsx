@@ -94,3 +94,43 @@ export const InlineEdit: S = {
     </Table>
   ),
 };
+
+const toned = [
+  { tone: "strong", value: "Woolworths" },
+  { tone: "neutral", value: "Weekly shop" },
+  { tone: "info", value: "Synced" },
+  { tone: "positive", value: "R 1 200.00 in" },
+  { tone: "warn", value: "Check the amount" },
+  { tone: "danger", value: "R 349.00 over" },
+  { tone: "muted", value: "Transfer" },
+] as const;
+
+/** `tone` is a `TableCell`'s: the value keeps its colour while it is a button to edit. */
+export const EditCellTones: S = {
+  render: () => (
+    <Table label="Edit cell tones">
+      <TableHead>
+        <TableRow>
+          <TableHeaderCell>Tone</TableHeaderCell>
+          <TableHeaderCell>Value</TableHeaderCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {toned.map((row) => (
+          <TableRow key={row.tone}>
+            <TableCell>{row.tone}</TableCell>
+            <TableEditCell
+              label={`Edit ${row.tone}`}
+              tone={row.tone}
+              renderEditor={() => (
+                <Input aria-label={row.tone} size="sm" defaultValue={row.value} />
+              )}
+            >
+              {row.value}
+            </TableEditCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  ),
+};

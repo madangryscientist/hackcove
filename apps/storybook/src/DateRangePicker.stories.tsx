@@ -122,6 +122,55 @@ export const Impossible: S = {
   },
 };
 
+/** An `error` from outside, a server's say: shown in place of the hint, and the range is invalid. */
+export const ExternalError: S = {
+  render: () => (
+    <DateRangePicker
+      label="Report period"
+      hint="Up to one quarter."
+      defaultValue={october}
+      error="Reports run for 2026 only."
+    />
+  ),
+};
+
+/** `minValue` and `maxValue` bound the range: an end typed past `maxValue` is invalid once focus leaves, with the message. */
+export const OutOfRange: S = {
+  render: () => (
+    <DateRangePicker
+      label="Report period"
+      minValue={fromISODate("2026-01-01") ?? undefined}
+      maxValue={fromISODate("2026-10-15") ?? undefined}
+      defaultValue={october}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    await typeDigits(canvasElement, 3, "31");
+    await new Promise<void>((resolve) => queueMicrotask(resolve));
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+  },
+};
+
+export const Disabled: S = {
+  render: () => <DateRangePicker label="Report period" defaultValue={october} disabled />,
+};
+
+/** `sm`, `md` (the default) and `lg`, on the scale of a `DateField`. */
+export const Sizes: S = {
+  render: () => (
+    <>
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <DateRangePicker
+          key={size}
+          label={`Report period, ${size}`}
+          size={size}
+          defaultValue={october}
+        />
+      ))}
+    </>
+  ),
+};
+
 /** Open when the story loads; the button opens it again. */
 function Opened({ children }: { children: (close: () => void) => ReactNode }) {
   const [open, setOpen] = useState(true);

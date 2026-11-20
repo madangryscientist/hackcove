@@ -78,6 +78,22 @@ describe("RadioGroup selection", () => {
   });
 });
 
+describe("RadioGroup required", () => {
+  it("marks the group aria-required and each radio required, so a form will not submit with none chosen", () => {
+    scope({ required: true });
+    const group = screen.getByRole("radiogroup", { name: "Scope" });
+    expect(group.getAttribute("aria-required")).toBe("true");
+    expect(radios().map((r) => r.required)).toEqual([true, true, true]);
+  });
+
+  it("marks nothing required without required", () => {
+    scope();
+    const group = screen.getByRole("radiogroup", { name: "Scope" });
+    expect(group.hasAttribute("aria-required")).toBe(false);
+    expect(radios().map((r) => r.required)).toEqual([false, false, false]);
+  });
+});
+
 describe("RadioGroup keyboard", () => {
   it("is one tab stop once a radio is chosen: the chosen one", async () => {
     scope({ defaultValue: "folder" });

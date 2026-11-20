@@ -101,6 +101,38 @@ export const ExternalError: S = {
   ),
 };
 
+/** `required` with only the day typed: when the form is checked, the field asks for the whole date. */
+export const RequiredPartial: S = {
+  render: () => (
+    <form>
+      <DateField calendar required label="Date of birth" />
+    </form>
+  ),
+  play: async ({ canvasElement }) => {
+    await typeDigits(canvasElement, "17");
+    await new Promise<void>((resolve) => queueMicrotask(resolve));
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+    canvasElement.querySelector("form")?.checkValidity();
+  },
+};
+
+/** `minValue` and `maxValue` bound the date: a date typed outside them is invalid once focus leaves, with the message. */
+export const OutOfRange: S = {
+  render: () => (
+    <DateField
+      calendar
+      label="Start date"
+      minValue={fromISODate("2026-01-01") ?? undefined}
+      maxValue={fromISODate("2026-12-31") ?? undefined}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    await typeDigits(canvasElement, "24122025");
+    await new Promise<void>((resolve) => queueMicrotask(resolve));
+    if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+  },
+};
+
 export const Disabled: S = {
   render: () => <DateField calendar label="Date of birth" defaultValue={birthday} disabled />,
 };
