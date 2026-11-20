@@ -106,7 +106,7 @@ export const TwoColumnForm: S = {
   ),
 };
 
-/** A row of controls with proportional widths, an `action` after them, and one `hint` under the whole row. */
+/** A row of controls with proportional widths, `actions` after them, and one `hint` under the whole row. */
 export const DoInlineEdit: S = {
   render: () => (
     <FormRow hint="Press Save to apply the change." actions={<Button>Save</Button>}>

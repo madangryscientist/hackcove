@@ -57,7 +57,7 @@ export const Sizes: S = {
   ),
 };
 
-/** `description` is a muted line under the label that the switch is described by; the switch sits on the label's first line. */
+/** `hint` is a muted line under the label that the switch is described by; the switch sits on the label's first line. */
 export const WithDescription: S = {
   render: () => (
     <div className="flex w-80 flex-col gap-4">

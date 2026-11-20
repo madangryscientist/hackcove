@@ -89,7 +89,7 @@ export const Invalid: S = {
   },
 };
 
-/** An error from outside, a server's say: shown in place of the description, and the field is invalid. */
+/** An error from outside, a server's say: shown in place of the hint, and the field is invalid. */
 export const ExternalError: S = {
   render: () => (
     <DateField
@@ -182,7 +182,7 @@ export const DontDate: S = {
   render: () => <Input aria-label="Date of birth" placeholder="DD/MM/YYYY" />,
 };
 
-/** A message from outside the field, a server's say, is `error`: it replaces the description and is announced as an alert. */
+/** A message from outside the field, a server's say, is `error`: it replaces the hint and is announced as an alert. */
 export const DoError: S = {
   render: () => (
     <DateField
@@ -194,7 +194,7 @@ export const DoError: S = {
   ),
 };
 
-/** `isInvalid` alone turns the field red and says nothing about why. */
+/** A hint where the error belongs: the field is never marked invalid and the reader is not told what is wrong. A rejected date takes `error` with the reason. */
 export const DontError: S = {
   render: () => <DateField calendar label="Paid on" hint="The day the money moved." />,
 };

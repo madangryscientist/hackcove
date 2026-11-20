@@ -76,7 +76,7 @@ const links = [
   </TextLink>,
 ];
 
-/** A row of links: `nowrap` keeps each link whole, so a line breaks only between them. */
+/** A row of links: each link stays whole, so a line breaks only between them. */
 export const Links: S = { render: () => <MetaList>{links}</MetaList> };
 
 /** `separator="•"` swaps the dot for a bullet. */

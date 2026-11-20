@@ -14,7 +14,7 @@ const meta: Meta = { title: "Data/ListRow" };
 export default meta;
 type S = StoryObj;
 
-/** `active` on a `FullBleedLayout` panel, a `bg-slate-50` surface: its fill is one step deeper, so it still shows. `selected` is the violet one. */
+/** `highlighted` on a `FullBleedLayout` `aside`, a `bg-slate-50` surface: its fill is one step deeper, so it still shows. `selected` is the violet one. */
 export const ActiveOnPanel: S = {
   render: () => (
     <FullBleedLayout
@@ -42,8 +42,8 @@ export const ActiveOnPanel: S = {
 };
 
 /**
- * `detail` is content under a `static` row that starts where its label does, past `leading`: a row
- * that opens in place. The line above the row (`divided`) and the hover fill cover the detail too,
+ * `panel` is content under a row with no `href` or `onClick` that starts where its label does, past `leading`: a row
+ * that opens in place. The line above the row (`divided`) and the hover fill cover the panel too,
  * so a list of them is `divided={index > 0}` on each.
  */
 export const StaticDetail: S = {

@@ -1,0 +1,1 @@
+4: Card dashed is gone: an EmptyState draws the dashed frame

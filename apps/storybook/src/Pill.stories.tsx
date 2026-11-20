@@ -5,7 +5,7 @@ const meta: Meta = { title: "Content/Pill" };
 export default meta;
 type S = StoryObj;
 
-/** The tone carries the meaning: emerald for done, amber for waiting, red for failed, slate for neutral. */
+/** The tone carries the meaning: `positive` for done, `warn` for waiting, `danger` for failed, and no tone for a draft. */
 export const DoStatus: S = {
   render: () => (
     <Cluster>

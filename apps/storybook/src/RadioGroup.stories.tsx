@@ -41,7 +41,7 @@ export const Controlled: S = {
     );
   },
 };
-/** A `description` is a muted line under an option's label, read as the radio's description. */
+/** A `hint` is a muted line under an option's label, read as the radio's description. */
 export const WithDescriptions: S = {
   render: () => (
     <RadioGroup label="Who can see your reviews" defaultValue="followers">

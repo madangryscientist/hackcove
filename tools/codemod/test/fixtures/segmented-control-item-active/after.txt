@@ -1,0 +1,3 @@
+import { SegmentedControl } from "@hackcove/ui-react";
+
+export const view = <SegmentedControl label="View" items={[{ label: "List", href: "#list", selected: true }]} />;

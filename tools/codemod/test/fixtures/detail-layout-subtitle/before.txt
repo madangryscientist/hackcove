@@ -1,0 +1,3 @@
+import { DetailLayout } from "@hackcove/ui-react";
+
+export const view = <DetailLayout title="Invoice 12" subtitle="Sent today.">x</DetailLayout>;

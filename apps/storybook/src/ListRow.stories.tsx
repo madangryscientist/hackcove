@@ -62,7 +62,7 @@ export const Small: S = {
   ),
 };
 
-/** A compact bordered list, such as a split's summary: a `Card flush` around `static` rows at `size="sm"`, `divided` after the first; no hover fill, no click target. */
+/** A compact bordered list, such as a split's summary: a `Card flush` around plain rows (no `href`, no `onClick`) at `size="sm"`, `divided` after the first; no hover fill, no click target. */
 export const CompactList: S = {
   render: () => (
     <Card flush>
@@ -140,7 +140,7 @@ export const Thumbnail: S = {
   ),
 };
 
-/** `static`: a row that is not a button or a link, so it can hold its own buttons. */
+/** A row with no `href` and no `onClick` is not a button or a link, so it can hold its own buttons. */
 export const StaticWithActions: S = {
   render: () => (
     <div className="max-w-md">
@@ -227,7 +227,7 @@ export const DontList: S = {
   ),
 };
 
-/** A row that holds its own buttons is `static`, and the buttons go in `actions`. */
+/** A row that holds its own buttons has no `href` and no `onClick`, and the buttons go in `actions`. */
 export const DoRowActions: S = {
   render: () => (
     <Card flush>
@@ -262,7 +262,7 @@ export const Sizes: S = {
   ),
 };
 
-/** `active` marks the row a pointer or the keyboard is on, so a list can follow both with one state: here the pointer and Tab move the same mark. */
+/** `highlighted` marks the row a pointer or the keyboard is on, so a list can follow both with one state: here the pointer and Tab move the same mark. */
 export const ActiveFollowsPointerAndKeyboard: S = {
   render: function Render() {
     const names = ["Dashboard", "Settings", "Billing"];

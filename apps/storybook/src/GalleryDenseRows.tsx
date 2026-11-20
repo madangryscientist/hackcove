@@ -1,6 +1,6 @@
 import { Avatar, Card, ListRow, Text } from "@slashsuite/ui-react";
 
-/** A dense ListRow in a small flush Card, and a compact bordered list: a flush Card of `static` `size="sm"` rows, and a static row with `detail`. */
+/** A dense ListRow in a small flush Card, and a compact bordered list: a flush Card of plain `size="sm"` rows, and a plain row with a `panel`. */
 export function DenseRows() {
   return (
     <>

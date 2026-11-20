@@ -32,7 +32,7 @@ export const Bare: S = {
 export const Disabled: S = {
   render: () => <Checkbox label="Open now" disabled />,
 };
-/** `align="start"` puts the box on the first line of a label that wraps; the default centres it on all of them. */
+/** A label that wraps: the box sits on its first line. Every checkbox does this; there is no prop for it. */
 export const MultiLine: S = {
   render: () => (
     <div className="flex w-64 flex-col gap-4">
@@ -48,7 +48,7 @@ export const MultiLine: S = {
   ),
 };
 
-/** `description` is a muted line under the label that the box is described by; the box sits on the label's first line. */
+/** `hint` is a muted line under the label that the box is described by; the box sits on the label's first line. */
 export const WithDescription: S = {
   render: () => (
     <div className="flex w-72 flex-col gap-4">

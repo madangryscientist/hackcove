@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Disclosure, Radio, RadioGroup, Switch, Text } from "@slashsuite/ui-react";
 
-/** The Switch (off, on, a description, busy, disabled, bare), the RadioGroup (a description, an error) and the Disclosure (closed, open, `bordered`) of the Gallery. */
+/** The Switch (off, on, a hint, busy, disabled, bare), the RadioGroup (a hint, an error) and the Disclosure (closed, open, `bordered`) of the Gallery. */
 export function GalleryChoice() {
   const [live, setLive] = useState(true);
   const [staging, setStaging] = useState(false);

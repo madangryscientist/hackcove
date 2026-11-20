@@ -30,7 +30,7 @@ Cove designs or checks, so Storybook and the visual check list the themes and no
 
 ```sh
 bun add @slashsuite/ui-react @slashsuite/themes
-# peers: react >= 18, react-dom >= 18, tailwindcss ^4
+# peers: react >= 19, react-dom >= 19, tailwindcss ^4
 # optional type peers: @types/react, @types/react-dom (install them in a TypeScript app)
 ```
 

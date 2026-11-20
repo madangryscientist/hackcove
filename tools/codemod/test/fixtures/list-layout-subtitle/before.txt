@@ -1,0 +1,3 @@
+import { ListLayout } from "@hackcove/ui-react";
+
+export const view = <ListLayout title="Invoices" subtitle="Every invoice.">{rows}</ListLayout>;
