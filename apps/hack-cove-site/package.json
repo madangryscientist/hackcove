@@ -22,21 +22,21 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.11",
-    "@astrojs/react": "7.1.0",
+    "@astrojs/check": "0.9.12",
+    "@astrojs/react": "7.1.9",
     "@axe-core/playwright": "4.14.0",
-    "@storybook/react": "^10.6.2",
-    "@tailwindcss/vite": "^4.1.18",
-    "@types/bun": "1.4.3",
+    "@storybook/react": "^10.6.7",
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/bun": "1.4.4",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "astro": "7.4.12",
     "react-docgen-typescript": "^2.4.0",
-    "storybook": "^10.6.2",
-    "tailwindcss": "^4.1.18",
+    "storybook": "^10.6.7",
+    "tailwindcss": "^4.3.5",
     "typescript": "^5.7.0",
-    "vitest": "5.0.5",
-    "wrangler": "4.151.3"
+    "vitest": "5.1.0",
+    "wrangler": "4.163.0"
   },
   "nx": {
     "name": "hack-cove-site"
