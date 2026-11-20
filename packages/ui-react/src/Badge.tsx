@@ -18,7 +18,7 @@ export function Badge({
 }: {
   /** The number shown; above 99 it reads `99+`. */
   count: number;
-  /** Pin it to the top-right corner of its `relative` parent, over the icon. */
+  /** Pin it to the top corner at the end edge of its `relative` parent, over the icon. */
   corner?: boolean;
 } & LoadingProps &
   Passthrough): ReactElement {
@@ -28,7 +28,7 @@ export function Badge({
         own={ownLoading}
         label={loadingLabel}
         attrs={rest}
-        root={cx("inline-flex", corner && "absolute -right-1.5 -top-1.5")}
+        root={cx("inline-flex", corner && "absolute -end-1.5 -top-1.5")}
         shape="inline-block h-4 w-5 rounded-full"
       />
     );
@@ -38,7 +38,7 @@ export function Badge({
       {...rest}
       className={cx(
         "inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-semibold leading-none text-red-50",
-        corner && "absolute -right-1.5 -top-1.5",
+        corner && "absolute -end-1.5 -top-1.5",
       )}
     >
       {count > 99 ? "99+" : count}

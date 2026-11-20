@@ -51,7 +51,7 @@ export const STACK_WIDTH: Record<StackWidth, string | undefined> = {
  *
  * `width` caps the column: `compact` is the width of one card or one picture's column (28rem),
  * `narrow` is a reading measure, `wide` is wider again, `full` is the parent's whole width and
- * `default` sets nothing. A capped Stack starts at its parent's left edge (it is never re-centred),
+ * `default` sets nothing. A capped Stack starts at its parent's start edge (it is never re-centred),
  * so its first line lines up with every other block on the page. A width cap on any one block (a
  * `Card`, an `Image`) is a Stack around it.
  *

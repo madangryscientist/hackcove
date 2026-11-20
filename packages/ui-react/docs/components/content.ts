@@ -32,7 +32,7 @@ export const content: ComponentSection = {
           '`CardGrid` takes `columns` 2, 3 or 4, or `columns="auto"` with `minWidth` `sm` or `md` to fill by width; `align="start"` stops cards stretching to the tallest in their row.',
           '`inset` is a band across the card, edge to edge inside its padding, under the title: a `ProgressBar` that runs the card\'s full width. A bordered sub-card inside a card is a nested `Card tone="neutral"`, not a hand-built box.',
           "An empty state is an `EmptyState`, inside the card or on its own, where it draws its own dashed frame.",
-          '`badge` pins a `Pill` to the top-right corner, over the content, on a panel or a link card: a category (`Pill tone="info"`) or a flag on the thing itself.',
+          '`badge` pins a `Pill` to the top corner at the end edge, over the content, on a panel or a link card: a category (`Pill tone="info"`) or a flag on the thing itself.',
           '`attention` draws the strong warn edge round a card that needs a look (a flaky shot, a failing check); add `tone="warn"` for the warn surface too.',
           "`icon` puts one of the library's icons above the title at feature size, in the accent colour: the mark of a feature card. Pick it by the idea it stands for; it is ignored on a `bar` or `flush` card.",
           "`size` sets the padding: `sm` for a dense dashboard, `md` (default), `lg` for a card that stands alone. In a `sm` card a `Button`, `IconButton` or `Pill` with no `size` is `sm` too, and a `Stack` inside any card is `xs` apart.",

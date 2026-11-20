@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, test } from "vitest";
-import { generateTypes, TYPES_JSON } from "../scripts/generate-props";
+import { generateTypes, internalTypeNames, TYPES_JSON } from "../scripts/generate-props";
 import { componentPages } from "../../../packages/ui-react/docs/components/index";
+import propsJson from "../../../packages/ui-react/docs/props.json";
 import typesJson from "../../../packages/ui-react/docs/types.json";
 import { renderLlms } from "../src/docs/llms";
 import { llmsSection } from "./llms";
@@ -35,6 +36,30 @@ describe("types.json", () => {
     const empty = Object.values(typesJson).filter((type) => type.description.trim() === "");
     expect(empty.map((type) => type.name)).toEqual([]);
   });
+});
+
+describe("props.json and types.json: no internal type names", () => {
+  // A name `src/index.ts` does not export is defined on no page, so a reader cannot look it up.
+  const printed = [
+    ...Object.values(propsJson).flatMap((doc) => [
+      ...("signature" in doc && typeof doc.signature === "string"
+        ? [[doc.name, doc.signature]]
+        : []),
+      ...doc.props.map((prop) => [`${doc.name}.${prop.name}`, prop.type ?? ""]),
+    ]),
+    ...Object.values(typesJson).map((type) => [type.name, type.definition]),
+  ];
+
+  test("no type, signature or definition names a type src/index.ts does not export", () => {
+    const internal = internalTypeNames();
+    expect(internal.length).toBeGreaterThan(0);
+    const leaks = printed.flatMap(([owner, text]) =>
+      internal
+        .filter((name) => new RegExp(`\\b${name}\\b`).test(text))
+        .map((name) => `${owner}: ${name}`),
+    );
+    expect(leaks).toEqual([]);
+  }, 30_000);
 });
 
 describe("/ui/llms.txt: types", () => {

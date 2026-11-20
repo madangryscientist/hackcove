@@ -300,7 +300,7 @@
         "type": "boolean",
         "required": false,
         "default": "false",
-        "description": "Pin it to the top-right corner of its `relative` parent, over the icon.",
+        "description": "Pin it to the top corner at the end edge of its `relative` parent, over the icon.",
         "native": false
       },
       {
@@ -756,7 +756,7 @@
         "name": "badge",
         "type": "ReactNode",
         "required": false,
-        "description": "A `Pill` (or any small node) pinned in the top-right corner, over the content and inside the radius, with no change to the layout. On a card that is a link it is part of the link's name, and a link or button in it is clickable on its own.",
+        "description": "A `Pill` (or any small node) pinned in the top corner at the end edge, over the content and inside the radius, with no change to the layout. On a card that is a link it is part of the link's name, and a link or button in it is clickable on its own.",
         "native": false
       },
       {
@@ -953,7 +953,7 @@
   },
   "CenteredLayout": {
     "name": "CenteredLayout",
-    "description": "A narrow card (`max-w-md`) centred in the Container at a fixed offset from the top, for sign-in, landing, not-found and error pages. The one layout that does not share the left edge. While `loading` it owns the wait and passes it to everything inside, the header too.",
+    "description": "A narrow card (`max-w-md`) centred in the Container at a fixed offset from the top, for sign-in, landing, not-found and error pages. The one layout that does not share the start edge. While `loading` it owns the wait and passes it to everything inside, the header too.",
     "props": [
       {
         "name": "description",
@@ -1697,7 +1697,7 @@
       },
       {
         "name": "defaultValue",
-        "type": "ShownRange | null",
+        "type": "{ start: CalendarDate; end: CalendarDate } | null",
         "required": false,
         "description": "The range shown first when the picker holds its own value.",
         "native": false
@@ -1768,7 +1768,7 @@
       },
       {
         "name": "onChange",
-        "type": "((range: ShownRange | null) => void)",
+        "type": "((range: { start: CalendarDate; end: CalendarDate } | null) => void)",
         "required": false,
         "description": "Called with the range once both sides make one, and with `null` when they stop making one.",
         "native": false
@@ -1804,7 +1804,7 @@
       },
       {
         "name": "value",
-        "type": "ShownRange | null",
+        "type": "{ start: CalendarDate; end: CalendarDate } | null",
         "required": false,
         "description": "The range, or `null` for none. Reported only when both days are complete, real and in order.",
         "native": false
@@ -2623,7 +2623,7 @@
   },
   "FormLayout": {
     "name": "FormLayout",
-    "description": "A form page: header (no header `actions`), then a `max-w-3xl` column that starts at the Container's left edge (it is not re-centred), with an `actions` row at the end. `error` is the submit's failure, a danger `Callout` (an alert) directly above that row. Other props go on the `<form>`. While `loading` it owns the wait and passes it to everything inside, the header too.",
+    "description": "A form page: header (no header `actions`), then a `max-w-3xl` column that starts at the Container's start edge (it is not re-centred), with an `actions` row at the end. `error` is the submit's failure, a danger `Callout` (an alert) directly above that row. Other props go on the `<form>`. While `loading` it owns the wait and passes it to everything inside, the header too.",
     "props": [
       {
         "name": "actions",
@@ -2776,7 +2776,7 @@
   },
   "FullBleedLayout": {
     "name": "FullBleedLayout",
-    "description": "Edge-to-edge `children` with an optional right `aside` (`lg:w-72`) that stacks below on a smaller\nscreen. Render it in `<AppShell bleed>`. It deliberately breaks the shared left edge: a viewer\nthat needs the whole width has no Container of its own, so `children` start at the viewport's\nleft edge. `padded` gives them the Container's padding instead (`px-4`, `sm:px-6`, `py-8`), for\na page of ordinary content beside a full-height `aside`. A `bar` is a `StickyBar` above both: the\nfull width, on the surface with a bottom line, sticking under AppShell's header as the page scrolls.\nWhile `loading` it owns the wait and passes it to everything inside, the header too.",
+    "description": "Edge-to-edge `children` with an optional `aside` at the end (`lg:w-72`) that stacks below on a smaller\nscreen. Render it in `<AppShell bleed>`. It deliberately breaks the shared start edge: a viewer\nthat needs the whole width has no Container of its own, so `children` start at the viewport's\nstart edge. `padded` gives them the Container's padding instead (`px-4`, `sm:px-6`, `py-8`), for\na page of ordinary content beside a full-height `aside`. A `bar` is a `StickyBar` above both: the\nfull width, on the surface with a bottom line, sticking under AppShell's header as the page scrolls.\nWhile `loading` it owns the wait and passes it to everything inside, the header too.",
     "props": [
       {
         "name": "aside",
@@ -2833,7 +2833,7 @@
   },
   "Hero": {
     "name": "Hero",
-    "description": "A landing page's top block: an overline, the display title (the page's `h1`) and the lede under\nit, over a soft glow of three tilted ribbons that drift slowly behind the text. The glow is always\nthere and its colours and strength are the theme's (the palette's `glow` role), so a paper theme\nkeeps it faint. It is anchored to the text's own column (`max-w-3xl`, at the parent's left edge),\nnever the viewport, and clipped to it, so nothing scrolls sideways on a phone. It is\n`aria-hidden`, and the text sits above it. Under `prefers-reduced-motion: reduce` it stands still.\nPure markup and one inline stylesheet: it works rendered on the server with no script.\nOne per page, on a landing page; every other page opens with a `PageHeader`.",
+    "description": "A landing page's top block: an overline, the display title (the page's `h1`) and the lede under\nit, over a soft glow of three tilted ribbons that drift slowly behind the text. The glow is always\nthere and its colours and strength are the theme's (the palette's `glow` role), so a paper theme\nkeeps it faint. It is anchored to the text's own column (`max-w-3xl`, at the parent's start edge),\nnever the viewport, and clipped to it, so nothing scrolls sideways on a phone. It is\n`aria-hidden`, and the text sits above it. Under `prefers-reduced-motion: reduce` it stands still.\nPure markup and one inline stylesheet: it works rendered on the server with no script.\nOne per page, on a landing page; every other page opens with a `PageHeader`.",
     "props": [
       {
         "name": "children",
@@ -2922,7 +2922,7 @@
         "name": "count",
         "type": "number",
         "required": false,
-        "description": "A red count on the top-right corner, for unread alerts. Not shown at 0; the name carries it for a screen reader, \"Alerts, 3\".",
+        "description": "A red count on the top corner at the end edge, for unread alerts. Not shown at 0; the name carries it for a screen reader, \"Alerts, 3\".",
         "native": false
       },
       {
@@ -4577,7 +4577,7 @@
   },
   "ProseLayout": {
     "name": "ProseLayout",
-    "description": "A text page: header, then `children` stacked `gap` apart (`md` by default), all in one column that\nstarts at the Container's left edge (it is not re-centred, so the title does not jump). `width`\nsets the column: `narrow` (`max-w-3xl`, the default) is a reading measure; `wide` (`max-w-5xl`) and\n`full` (the Container's whole width) suit a page that is not long prose, such as a pricing page.\nParagraphs (`Text`) and the header's lede keep their own reading measure whatever the width.\nUnlike `FormLayout` the header sits inside the column, so its `actions` stay beside the text\ninstead of at the Container's far edge. While `loading` it owns the wait and passes it to everything inside, the header too.",
+    "description": "A text page: header, then `children` stacked `gap` apart (`md` by default), all in one column that\nstarts at the Container's start edge (it is not re-centred, so the title does not jump). `width`\nsets the column: `narrow` (`max-w-3xl`, the default) is a reading measure; `wide` (`max-w-5xl`) and\n`full` (the Container's whole width) suit a page that is not long prose, such as a pricing page.\nParagraphs (`Text`) and the header's lede keep their own reading measure whatever the width.\nUnlike `FormLayout` the header sits inside the column, so its `actions` stay beside the text\ninstead of at the Container's far edge. While `loading` it owns the wait and passes it to everything inside, the header too.",
     "props": [
       {
         "name": "actions",
@@ -4914,7 +4914,7 @@
   },
   "Section": {
     "name": "Section",
-    "description": "A `<section>` Stack with an optional title (which names it) and `actions`. Its blocks are `gap`\napart, from where it sits as in a `Stack`. `level` is the title's heading level, one below the\nheading that holds the section (an `h2` on the page), and a heading inside it (a `Card`'s title)\nis one below that. A line between two sections is a `Divider` in the `Stack` that holds them.\n\n`size` picks the scale:\n- `md` (default): a page's section. A `SectionHeading` title with `actions` at the end of its row;\n  `rule` draws a hairline under the row, `overline` a small label above the title and\n  `description` a muted line under it.\n- `sm`: the small titled group inside a page, a card, a drawer or a side panel (a panel's \"Flaky\"\n  block, a card's \"Ignore areas\"): the title small and all-caps like a `Card`'s, the blocks `xs`\n  apart. Never build one from a `Stack as=\"section\"` and an `Overline`.\n- `lg`: a landing page's section under the `Hero`: a mono `overline` kicker, the title at display\n  size, `description` as a `Lead` and `actions` under it as its calls to action, the opening\n  capped at the reading measure at the left edge, the blocks `lg` apart. It ignores the prose scale.",
+    "description": "A `<section>` Stack with an optional title (which names it) and `actions`. Its blocks are `gap`\napart, from where it sits as in a `Stack`. `level` is the title's heading level, one below the\nheading that holds the section (an `h2` on the page), and a heading inside it (a `Card`'s title)\nis one below that. A line between two sections is a `Divider` in the `Stack` that holds them.\n\n`size` picks the scale:\n- `md` (default): a page's section. A `SectionHeading` title with `actions` at the end of its row;\n  `rule` draws a hairline under the row, `overline` a small label above the title and\n  `description` a muted line under it.\n- `sm`: the small titled group inside a page, a card, a drawer or a side panel (a panel's \"Flaky\"\n  block, a card's \"Ignore areas\"): the title small and all-caps like a `Card`'s, the blocks `xs`\n  apart. Never build one from a `Stack as=\"section\"` and an `Overline`.\n- `lg`: a landing page's section under the `Hero`: a mono `overline` kicker, the title at display\n  size, `description` as a `Lead` and `actions` under it as its calls to action, the opening\n  capped at the reading measure at the start edge, the blocks `lg` apart. It ignores the prose scale.",
     "props": [
       {
         "name": "actions",
@@ -5063,7 +5063,7 @@
       },
       {
         "name": "items",
-        "type": "SwitchButton[] | SwitchLink[]",
+        "type": "Segment[]",
         "required": true,
         "description": "The options in order: `{ value, label }` buttons, or links (`href`), the current link marked by its `selected` or by a `value` equal to the group's. Either may carry a `count`; a button may be `disabled`.",
         "native": false
@@ -5120,7 +5120,7 @@
       },
       {
         "name": "items",
-        "type": "readonly SelectItem[]",
+        "type": "readonly { value: string; label: string; disabled?: boolean }[]",
         "required": true,
         "description": "The choices, in order.",
         "native": false
@@ -5548,7 +5548,7 @@
   },
   "Stack": {
     "name": "Stack",
-    "description": "A vertical column of blocks a fixed `gap` apart: `xs` between lines of text (a heading and the\nline under it), `sm` inside a group, `md` between blocks, `lg` between groups, `xl` between a page's top-level blocks\n(`gap-12`, `sm:gap-16`: the one responsive page rhythm). Left out, the gap comes from where the\nStack sits: `xs` inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow`, and\n`md` on the page.\n\n`width` caps the column: `compact` is the width of one card or one picture's column (28rem),\n`narrow` is a reading measure, `wide` is wider again, `full` is the parent's whole width and\n`default` sets nothing. A capped Stack starts at its parent's left edge (it is never re-centred),\nso its first line lines up with every other block on the page. A width cap on any one block (a\n`Card`, an `Image`) is a Stack around it.\n\n`align=\"start\"` keeps each child at its own width, capped at the column's (a `Button` under a\nform's fields); left out, every child spans the column.\n\n`divided` draws a line between each pair of children and sets them touching, with no gap: it is\nfor rows that carry their own padding (`ListRow`s in a `Card flush`). Space and a line between\nblocks is a `Divider` in the Stack instead.\n\n`rowFrom` turns the column into a row from `sm`, `md` or `lg` (a column below it): the blocks sit\nside by side, `gap` apart, and a `ClusterGrow` around one of them takes the width left. Without it the\nStack is always a column; a row that is a row at every width is a `Cluster`.\n\n`as` is a closed set: `div` (default), `section`, `form`, `ul` or `ol`. A `form` takes the form\nprops (`onSubmit`, `action`, `method`, `noValidate`, ...). A `ul` or `ol` is drawn with no\nmarkers and its children are `<li>`s, as in `BulletList` and `Timeline`: the Stack does not wrap\nthem, so a child is one list item and `Text as=\"li\"` or a bare `<li>` both work. A `ul` or `ol`\ntakes `empty` (an `EmptyState`, one muted line here), drawn in place of the list when it has no\nchildren.",
+    "description": "A vertical column of blocks a fixed `gap` apart: `xs` between lines of text (a heading and the\nline under it), `sm` inside a group, `md` between blocks, `lg` between groups, `xl` between a page's top-level blocks\n(`gap-12`, `sm:gap-16`: the one responsive page rhythm). Left out, the gap comes from where the\nStack sits: `xs` inside a `Card`, `Dialog`, `Drawer`, `BottomSheet`, `Callout` or `ListRow`, and\n`md` on the page.\n\n`width` caps the column: `compact` is the width of one card or one picture's column (28rem),\n`narrow` is a reading measure, `wide` is wider again, `full` is the parent's whole width and\n`default` sets nothing. A capped Stack starts at its parent's start edge (it is never re-centred),\nso its first line lines up with every other block on the page. A width cap on any one block (a\n`Card`, an `Image`) is a Stack around it.\n\n`align=\"start\"` keeps each child at its own width, capped at the column's (a `Button` under a\nform's fields); left out, every child spans the column.\n\n`divided` draws a line between each pair of children and sets them touching, with no gap: it is\nfor rows that carry their own padding (`ListRow`s in a `Card flush`). Space and a line between\nblocks is a `Divider` in the Stack instead.\n\n`rowFrom` turns the column into a row from `sm`, `md` or `lg` (a column below it): the blocks sit\nside by side, `gap` apart, and a `ClusterGrow` around one of them takes the width left. Without it the\nStack is always a column; a row that is a row at every width is a `Cluster`.\n\n`as` is a closed set: `div` (default), `section`, `form`, `ul` or `ol`. A `form` takes the form\nprops (`onSubmit`, `action`, `method`, `noValidate`, ...). A `ul` or `ol` is drawn with no\nmarkers and its children are `<li>`s, as in `BulletList` and `Timeline`: the Stack does not wrap\nthem, so a child is one list item and `Text as=\"li\"` or a bare `<li>` both work. A `ul` or `ol`\ntakes `empty` (an `EmptyState`, one muted line here), drawn in place of the list when it has no\nchildren.",
     "props": [
       {
         "name": "align",
@@ -6357,7 +6357,7 @@
       },
       {
         "name": "items",
-        "type": "SwitchButton[] | SwitchLink[]",
+        "type": "Tab[]",
         "required": true,
         "description": "The options in order: `{ value, label }` buttons, or links (`href`), the current link marked by its `selected` or by a `value` equal to the group's. Either may carry a `count`; a button may be `disabled`.",
         "native": false

@@ -150,6 +150,85 @@ export const TitleTooltip: S = {
   },
 };
 
+export const Pills: S = {
+  render: () => (
+    <div className="flex gap-2">
+      <Pill>neutral</Pill>
+      <Pill tone="warn">warn</Pill>
+      <Pill tone="positive">positive</Pill>
+      <Pill tone="info">info</Pill>
+      <Pill tone="danger">danger</Pill>
+      <Pill tone="accent">accent</Pill>
+    </div>
+  ),
+};
+
+/** `href` makes a Pill a link (an in-app one through the app's router `<Link>`), `onClick` a button: all with a hover dim and the focus ring. */
+export const PillsInteractive: S = {
+  render: () => (
+    <div className="flex items-center gap-2">
+      <Pill href="#flakes" tone="warn" round>
+        flaky
+      </Pill>
+      <Pill href="/flakes" tone="accent">
+        router link
+      </Pill>
+      <Pill onClick={() => undefined} tone="info" dot>
+        button
+      </Pill>
+    </div>
+  ),
+};
+
+export const PillsRound: S = {
+  render: () => (
+    <div className="flex gap-2">
+      <Pill round>neutral</Pill>
+      <Pill tone="warn" round>
+        warn
+      </Pill>
+      <Pill tone="positive" round>
+        positive
+      </Pill>
+      <Pill tone="info" round>
+        info
+      </Pill>
+      <Pill tone="danger" round>
+        danger
+      </Pill>
+      <Pill tone="accent" round>
+        accent
+      </Pill>
+      <Pill tone="info" round dot>
+        sky
+      </Pill>
+    </div>
+  ),
+};
+
+export const PillsWithDot: S = {
+  render: () => (
+    <div className="flex gap-2">
+      <Pill dot>neutral</Pill>
+      <Pill tone="warn" dot>
+        warn
+      </Pill>
+      <Pill tone="positive" dot>
+        positive
+      </Pill>
+      <Pill tone="info" dot>
+        info
+      </Pill>
+      <Pill tone="danger" dot>
+        danger
+      </Pill>
+      <Pill tone="accent" dot>
+        accent
+      </Pill>
+    </div>
+  ),
+};
+
 type Loading = StoryObj<{ loading: boolean }>;
 
 /** A pill with no text yet is a bone of its size; one with its text draws it. */

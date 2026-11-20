@@ -102,7 +102,7 @@ type SectionProps = SectionBase &
  *   apart. Never build one from a `Stack as="section"` and an `Overline`.
  * - `lg`: a landing page's section under the `Hero`: a mono `overline` kicker, the title at display
  *   size, `description` as a `Lead` and `actions` under it as its calls to action, the opening
- *   capped at the reading measure at the left edge, the blocks `lg` apart. It ignores the prose scale.
+ *   capped at the reading measure at the start edge, the blocks `lg` apart. It ignores the prose scale.
  */
 export function Section({
   id,
