@@ -76,7 +76,7 @@ const isTest = (path: string): boolean =>
 /** What the rules need to know about one file, worked out once. */
 type FileKind = {
   path: string;
-  /** TypeScript: the TODO, commented-out code and time rules read only these. */
+  /** TypeScript: every rule but the dash and "violet" reads only these. */
   code: boolean;
   test: boolean;
   component: boolean;

@@ -9,4 +9,4 @@ tasks:
     inputs: ["**/*"]
   lint:
     command: "bun run lint"
-    inputs: ["**/*", "/docs/**/*", "/*.md"]
+    inputs: ["**/*", "/docs/**/*", "/*.{css,md,mjs,sh}"]
